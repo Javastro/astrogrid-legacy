@@ -8,8 +8,11 @@ import java.util.Date;
 
 import javax.swing.Icon;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.provider.DelegateFileObject;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
@@ -57,27 +60,39 @@ public class StorageTableFormat implements AdvancedTableFormat {
 				return new Date(o.getContent().getLastModifiedTime());
 			case 3:
 				if (! o.getType().hasContent()) {
-					return new Long(-1);
+					return null;
 				}
 				long sz = o.getContent().getSize() ;
-				return new Long( (sz < 1024 && sz > 0 ? 1  : sz / 1024) );
+				return new Long(sz);
 			case 4:
-				if (o.getType().hasContent()) {
-					String cType =  o.getContent().getContentInfo().getContentType();
-					if (cType == null || cType.trim().length() ==0) {
-						return o.getType().getName();
-					} else {
-						return cType;
-					}
-				} else {
-					return o.getType().getName();
-				}
+				return findBestContentType(o);
+			
 			default:
 				throw new IndexOutOfBoundsException("Oversized column index " + arg1);
 		}
 		} catch (FileSystemException e) {
 			return null;
 		}
+	}
+
+    /** find the most user-readable type description for a file.
+     * @param o
+     * @return
+     * @throws FileSystemException
+     */
+	public static String  findBestContentType(FileObject o) throws FileSystemException {
+	    if (o.getType().hasContent()) {
+	        String cType =  o.getContent().getContentInfo().getContentType();
+	        while (StringUtils.isEmpty(cType) && o instanceof DelegateFileObject && !(o instanceof AstroscopeFileObject)) {
+	            o = ((DelegateFileObject)o).getDelegateFile();
+	            cType = o.getContent().getContentInfo().getContentType();
+	        }
+	        if (StringUtils.isNotEmpty(cType)) {
+	            return cType;
+	        }
+	    }
+	    // fallback position
+	    return o.getType().getName();
 	}
 
 	public Class getColumnClass(int arg0) {

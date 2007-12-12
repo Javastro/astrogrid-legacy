@@ -18,7 +18,7 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
-import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.SearchHistoryItem;
+import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.PositionHistoryItem;
 import org.astrogrid.io.Piper;
 
 import junit.framework.TestCase;
@@ -65,7 +65,7 @@ public class ScopeHistoryProviderUnitTest extends TestCase {
     public void testPopulatedList() throws Exception {
         this.prov = new ScopeHistoryProvider(ui,pref,xml);
 
-        final SearchHistoryItem i1 = new SearchHistoryItem();
+        final PositionHistoryItem i1 = new PositionHistoryItem();
         i1.setRadius(new DoubleDimension(2.0,1.1));
         SesamePositionBean pos = new SesamePositionBean();
         pos.setTarget("m32");

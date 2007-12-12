@@ -144,7 +144,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	            Object o = i.next();
 	            if (o instanceof FileObject) {                    
 	                FileObject f = (FileObject) o;
-	                if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+	                while (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
 	                    f = ((DelegateFileObject)f).getDelegateFile();
 	                }
 	                (new LoadVotableWorker(f)).start();

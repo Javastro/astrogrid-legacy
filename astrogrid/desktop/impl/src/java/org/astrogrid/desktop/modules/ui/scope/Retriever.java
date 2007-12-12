@@ -1,14 +1,19 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.Date;
+import java.util.Iterator;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -16,7 +21,6 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
@@ -27,16 +31,13 @@ import org.xml.sax.XMLReader;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.votable.TableContentHandler;
-import uk.ac.starlink.votable.TableHandler;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
-import edu.berkeley.guir.prefuse.graph.Edge;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** base class for something that fetches a resource
  *   extensible for siap, cone, ssap, etc by implementing the abstract {@link #construct} method. This method should
- *   return an instance of {@link Retriever.SummarizingTableHandler} that containis the parsed results of 
+ *   return an instance of {@link AstroscopeTableHandler} that containis the parsed results of 
  *   querying this service.
  *  
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Oct-2005
@@ -46,7 +47,7 @@ public abstract class Retriever extends BackgroundWorker {
 	/**
 	 * Logger for this class
 	 */
-	private static final Log logger = LogFactory.getLog(Retriever.class);
+	protected static final Log logger = LogFactory.getLog(Retriever.class);
 
     /** attribute pointing to the logo image for this service */
     public static final String SERVICE_LOGO_ATTRIBUTE = "img";
@@ -82,8 +83,8 @@ public abstract class Retriever extends BackgroundWorker {
     
 
     
-    public Retriever(UIComponent comp,Service information,TreeNode primaryNode,VizModel model,double ra, double dec) {
-        super(comp,information.getTitle(),SHORT_TIMEOUT,Thread.MIN_PRIORITY+3);
+    public Retriever(Service information,TreeNode primaryNode,VizModel model,double ra, double dec) {
+        super(model.getParent(),information.getTitle(),SHORT_TIMEOUT,Thread.MIN_PRIORITY+3);
         this.ra = ra;
         this.dec = dec;
         this.service = information;
@@ -103,7 +104,7 @@ public abstract class Retriever extends BackgroundWorker {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws IOException*/
-    protected void parseTable(InputSource source, VotableHandler tableHandler) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
+    protected final void parseTable(InputSource source, VotableHandler tableHandler) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
         XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
         VotableContentHandler votHandler = new VotableContentHandler(false);
         votHandler.setReadHrefTables(true);
@@ -112,32 +113,10 @@ public abstract class Retriever extends BackgroundWorker {
         parser.parse(source);        
     }
     
-    /** extension to the starlink tablehandler that produces a summary of what it's parsed too */
-    public interface SummarizingTableHandler extends VotableHandler {
-        /** return a count of the number of rows parsed - or {@link QueryResultSummarizer#ERROR} if failed to parse */
-        public int getResultCount();
-        /** return an optional message about the results of the parse */
-        public String getMessage();
-        /** return the service tree node with all the results attached to it */
-        public TreeNode getServiceNode();
-    }
-
-    /** exception to represent a failure of the dal request */
-    public static class DalProtocolException extends SAXException {
-
-        /**
-         * @param message
-         */
-        public DalProtocolException(String message) {
-            super(message);
-        }
-    }
-    
     /** sax-style parser for votables - these methods get called in callbacks, sax-style, as the document whizzes by, instead of having an in-memory model
-     * maybe this will stop my laptop overheating whenever I do M54,1.0 - at the moment the overheating trip cuts in and shus the machine down. :)
-     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Dec-2005
+    * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Dec-2005
      */
-   public class BasicTableHandler implements SummarizingTableHandler {
+   public class BasicTableHandler implements AstroscopeTableHandler {
 		/**
 		 * Logger for this class
 		 */
@@ -159,6 +138,25 @@ public abstract class Retriever extends BackgroundWorker {
 	    	return s.trim();
 	    }
 
+	    /** helper method - find node by label
+	     * 
+	     * @param label label to search for
+	     * @param startNode starting point to search downwards from. if null, use {@link #getRootNode()}
+	     * @return treenode with matching label, or null;
+	     */
+	    protected  TreeNode findNode(String label, TreeNode startNode) {
+	        if(startNode == null)  {
+	            startNode = model.getTree().getRoot();
+	        }
+	        Iterator iter = startNode.getChildren();
+	        while(iter.hasNext()) {
+	            TreeNode n = (TreeNode)iter.next();
+	            if(n.getAttribute(Retriever.LABEL_ATTRIBUTE).equals(label)) {
+	                return n;
+	            }
+	        }
+	        return null;
+	    }
 
     public BasicTableHandler(TreeNode serviceNode) {
            this.serviceNode = serviceNode;
@@ -178,26 +176,19 @@ public abstract class Retriever extends BackgroundWorker {
        }
        public final TreeNode getServiceNode() {
            return serviceNode;
-       }
+       } 
       
        
     /** here we get passed in a start table that is meta-data only
      * @see uk.ac.starlink.votable.TableHandler#startTable(uk.ac.starlink.table.StarTable)
      */
-     //  private int rowCount;
-     //  private int processedRows;
+
     public void startTable(StarTable starTable) throws SAXException {
             reportProgress("Parsing response");
-//        rowCount = (int)starTable.getRowCount();
-//        if (rowCount != -1) { // would be nice, but never works - rowcount is always -1
-//            processedRows = 0;
-//            setProgress(0,rowCount);
-//        } 
     	newTableExtensionPoint(starTable);
     	// get the info.
     	DescribedValue qStatus = starTable.getParameterByName("Error");
     	if (qStatus != null) {
-    	    resultCount = QueryResultSummarizer.ERROR;
     	    
     	    message = qStatus.getInfo().getDescription();
     	    if (message == null) {
@@ -207,7 +198,6 @@ public abstract class Retriever extends BackgroundWorker {
     	}
     	qStatus = starTable.getParameterByName("QUERY_STATUS");
     	if (qStatus != null && qStatus.getValue() != null &&  ! "OK".equalsIgnoreCase(qStatus.getValueAsString(1000))) {
-            resultCount = QueryResultSummarizer.ERROR;
             message = qStatus.getInfo().getDescription();
             if (message == null) {
                 message = qStatus.getValueAsString(1000);
@@ -247,12 +237,11 @@ public abstract class Retriever extends BackgroundWorker {
         * @param objectdec objects dec from results of a service/votable
         * @return distance between two points.
         */
-       protected double getOffset(double queryra, double querydec, double objectra, double objectdec) {
-           
+       protected final double getOffset(double queryra, double querydec, double objectra, double objectdec) {           
            return uk.ac.starlink.ttools.func.Coords.skyDistanceDegrees(queryra,querydec,objectra,objectdec);
        }  
        
-       protected String chopValue(String doubleValue, int scale) {
+       protected final String chopValue(String doubleValue, int scale) {
      	   // @todo would it be more efficient to use a NumberFormatter here? - this has Round_half_up behaviour too.
     	   try {
     	   return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
@@ -265,13 +254,9 @@ public abstract class Retriever extends BackgroundWorker {
      * @see uk.ac.starlink.votable.TableHandler#rowData(java.lang.Object[])
      */
     public void rowData(Object[] row) throws SAXException {
-//        if (rowCount != -1) {
-//            setProgress(++processedRows,rowCount);
-//        }
         if (!isWorthProceeding()) { // no point, not enough metadata 
-            resultCount = QueryResultSummarizer.ERROR;
             message = "Insufficient table metadata";
-            throw new SAXException(message);
+            throw new DalProtocolException(message);
         }
         resultCount++; 
         String rowRa = safeTrim(row[raCol]);
@@ -288,15 +273,15 @@ public abstract class Retriever extends BackgroundWorker {
         rowDataExtensionPoint(row,valNode);
         
         StringBuffer tooltip = new StringBuffer();
-        tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
+        tooltip.append("<html><p>Position (decimal degrees): ").append(rowRa).append(", ").append(rowDec);
         try {
-        tooltip.append("<br>")
+        tooltip.append("<br>Position (sexagesimal): ")
         .append(PositionUtils.getRASexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))))
         .append(",").append(PositionUtils.getDECSexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))));
 
         for (int v = 0; v < row.length; v++) {
             Object o = row[v];
-            if (o == null) {
+            if (o == null || omitRowFromTooltip(v)) {
                 continue;
             }
             tooltip.append("<br>")
@@ -308,24 +293,24 @@ public abstract class Retriever extends BackgroundWorker {
         valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  
         double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
         String offsetVal = chopValue(String.valueOf(offset),6);
-        TreeNode offsetNode = model.findNode(offsetVal, serviceNode);
+        TreeNode offsetNode = findNode(offsetVal, serviceNode);
         String tempAttr;
         if(offsetNode == null) { // not found offset node.
             offsetNode = new DefaultTreeNode();
             offsetNode.setAttribute(LABEL_ATTRIBUTE,offsetVal);
             offsetNode.setAttribute(OFFSET_ATTRIBUTE,String.valueOf(offset));
-            offsetNode.setAttribute(TOOLTIP_ATTRIBUTE,String.valueOf(offset));
+            offsetNode.setAttribute(TOOLTIP_ATTRIBUTE,"Offset from search position: " + String.valueOf(offset));
             serviceNode.addChild(new DefaultEdge(serviceNode,offsetNode));
             model.getNodeSizingMap().addOffset(offsetVal);
         }
 
         // now have found or created the offsetNode, find the pointNode within it.
-        TreeNode pointNode = model.findNode(positionString,offsetNode);
+        TreeNode pointNode = findNode(positionString,offsetNode);
         if (pointNode == null) {
             pointNode = new DefaultTreeNode();
             offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
             pointNode.setAttribute(LABEL_ATTRIBUTE,positionString);
-            pointNode.setAttribute(TOOLTIP_ATTRIBUTE,positionString);
+            pointNode.setAttribute(TOOLTIP_ATTRIBUTE,"Actual position of result: " + positionString);
         }
         // now have found or created point node. add new result to this.
         
@@ -337,6 +322,11 @@ public abstract class Retriever extends BackgroundWorker {
           }          
     }
 
+    /** maybe overridden by subclasses to skip row data from tooltip */
+    protected boolean omitRowFromTooltip(int rowIndex) {
+        return false;
+    }
+    
     /** can be extended by subclasses to provide extra functionalitiy */
 	public DefaultTreeNode createValueNode() {
 		return new DefaultTreeNode();
@@ -364,42 +354,47 @@ public abstract class Retriever extends BackgroundWorker {
 // methods for inspecting votable content outside tables.
     public void info(String name, String value, String content)
             throws SAXException {
+        // unused in this impl
     }
 
 
     public void param(String name, String value, String description)
             throws SAXException {
+        // unused in this impl        
     }
 
 
     public void resource(String name, String id, String type)
             throws SAXException {
-    }       
+        // unused in this impl        
+    }
+
+     
+    
     } //end of table parser.
 
 
-    protected void doError(Throwable ex) {
-    	logger.warn("Service failed " + ex.getMessage());
-    	logger.debug("Exception",ex);
-    	String formattedEx = ExceptionFormatter.formatException(ex);
-     //   parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
-    	parent.showTransientWarning("Unable to query " + service.getTitle(),formattedEx.length() < 200 ? formattedEx : "See services view for details");
-        model.addQueryResult(service,null,QueryResultSummarizer.ERROR,formattedEx);
+    protected final void doError(Throwable ex) {
+           model.getSummarizer().addQueryFailure(service,ex);
     }
     
 
-    protected void doAlways() {
-       parent.setProgressValue(parent.getProgressValue() + 1); // @issue -  sometimes we get a race here, leading to the display being off-by-one.
+    protected final void doAlways() {
+       parent.setProgressValue(parent.getProgressValue() + 1); 
+       if (parent.getProgressMax() <= parent.getProgressValue()) { // we've finished
+           parent.setProgressMax(0);
+           model.getParent()// same as this.parent, but saves casting..
+               .getSubmitButton().enableA(); // flip the button back again,
+       }
     }
 
     protected void doFinished(Object result) {        
         // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
         // concurrent modification exceptions
-        SummarizingTableHandler th = (SummarizingTableHandler)result;
-        TreeNode serviceNode = th.getServiceNode();
-        model.addQueryResult(service,serviceNode,th.getResultCount(),th.getMessage());
+        AstroscopeTableHandler th = (AstroscopeTableHandler)result;
+        model.getSummarizer().addQueryResult(service,th);
         if (th.getResultCount() > 0) {
-            DefaultEdge edge = new DefaultEdge(primaryNode,serviceNode);
+            DefaultEdge edge = new DefaultEdge(primaryNode,th.getServiceNode());
             edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              
             model.getTree().addChild(edge);   
         }                                       
@@ -408,18 +403,32 @@ public abstract class Retriever extends BackgroundWorker {
 
 
 
+    
     /** create a node to represent the service about to be called.
      * @param serviceURL
      * @return a new tree node.
      */
-    protected TreeNode createServiceNode(final URL serviceURL, String tooltip) {
-        TreeNode serviceNode = new FileProducingTreeNode() {
-        	// create a service node.
-			protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
-				return factory.new AstroscopeFileObject(VoDataFlavour.MIME_VOTABLE
-						,this,serviceURL.toString());
-			}
-        };
+    protected TreeNode createServiceNode(final URL serviceURL, long sz,String tooltip) {
+        TreeNode serviceNode;
+        try {
+            AstroscopeFileObject afo = model.createFileObject(
+                    serviceURL
+                    ,sz == -1 ? AstroscopeFileObject.UNKNOWN_SIZE : sz // translate from one representation of unknown size to the other.
+                    ,new Date().getTime()
+                    ,VoDataFlavour.MIME_VOTABLE);
+            String filename;
+            if (service.getShortName() != null) {
+                filename = StringUtils.replace(service.getShortName(),"/","-") + " Search Results.vot";
+            } else {
+                filename = StringUtils.replace(service.getTitle(),"/","-") + " Search Results.vot";
+            }
+            serviceNode = new FileProducingTreeNode();
+            model.addResultFor(service,filename,afo,(FileProducingTreeNode)serviceNode);
+        } catch (Exception e) {
+            logger.warn(service.getId() + " : Unable to create file object for serviceNode - falling back",e);
+            serviceNode = new DefaultTreeNode(); // fall back to a default tree node.
+        }
+
         serviceNode.setAttribute(LABEL_ATTRIBUTE,service.getTitle());
         serviceNode.setAttribute(WEIGHT_ATTRIBUTE,"2");
         serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, service.getId().toString());
@@ -430,31 +439,6 @@ public abstract class Retriever extends BackgroundWorker {
         	serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,service.getCuration().getCreators()[0].getLogo().toString());                    
         }
         return serviceNode;
-    }
-    
-    /** subclass of a treenode that knows how to produce a file node for it's selection. */
-    public static abstract class FileProducingTreeNode extends DefaultTreeNode implements ScopeTransferableFactory.HasFileObject {
-
-		public FileProducingTreeNode() {
-			super();
-		}
-
-		public FileProducingTreeNode(Edge arg0) {
-			super(arg0);
-		}
-		private FileObject fo;
-		public FileObject fileObject(ScopeTransferableFactory factory) {
-			if (fo == null) {
-				try {
-					fo = createFileObject(factory);
-				} catch (FileSystemException x) {
-					logger.error("FileSystemException",x);
-					fo = null;
-				}
-			} 
-			return fo;
-		}
-		protected abstract FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException;
     }
     
 }

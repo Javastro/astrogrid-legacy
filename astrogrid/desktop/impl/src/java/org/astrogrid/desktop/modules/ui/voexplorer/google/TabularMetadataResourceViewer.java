@@ -7,7 +7,7 @@ import javax.swing.JTabbedPane;
 
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.TabularMetadataViewer;
-import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** resource viewer that displays tabular metadata.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -16,7 +16,7 @@ import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 public class TabularMetadataResourceViewer extends TabularMetadataViewer implements ResourceViewer{
 
 
-	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
+	public void addTo( JTabbedPane t) {
 		t.addTab("Table Metadata",IconHelper.loadIcon("table16.png")
 				,this,"View the table metadata provided by this resource");
 				

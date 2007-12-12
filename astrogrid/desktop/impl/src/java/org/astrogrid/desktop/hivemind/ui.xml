@@ -21,6 +21,7 @@
 		
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="astroscope" interface="AstroScope"/>
+            <acrService id="helioscope" interface="HelioScope" />
 			<acrService id="applicationLauncher" interface="ApplicationLauncher" />
 			<acrService id="registryBrowser" interface="RegistryBrowser" />
 			<acrService id="fileManager" interface="FileManager" />
@@ -52,21 +53,24 @@ ASTROSCOPE
 		Describes how to build a new astroscope window.
 			<inject object="service:system.ui"/>			
 			<inject object="service:protocolsBuilder" />
-			<inject object="service:actionsBuilder" />	        		
+			<inject object="service:actionsBuilder" />	   
+            <inject object="service:UiBuilder" />     		
 			<inject object="service-property:scopeHistory:list" />
-			<inject object="ui:scopeServiceList" />
 			<inject object="service:system.vfs" />
 			<inject object="service:cds.sesame" />
 			<inject object="service:system.snitch" />
+            <inject object="service:ui.iconFinder" />            
 		</object>
 		<object name="scopeServiceList" 
 		class="org.astrogrid.desktop.modules.ui.scope.ScopeServicesList">
 		Describes how to builld a subclass of registry google, specialized for
 		displaying summaries in astroscope.
+            <inject-arg />
 			<inject object="service:ivoa.registry" />
 			<inject object="cache:resources" />
 			<inject object="cache:bulk" />
-			<inject object="service:dialogs.resourceViewersFactory" />			
+			<inject object="service:UiBuilder" />	
+            <inject-arg />		
 			<inject object="service:votech.vomon" />
 			<inject object="service:dialogs.capabilityIconFactory" />	
 			<inject object="service:votech.annotate" />
@@ -117,9 +121,11 @@ ASTROSCOPE
 			<inject object="service:ivoa.registry" />
 			<inject object="service:ivoa.cone" />
 		</object>
+        <!-- removed - query url does not work anymore. 
 		<object name="vizier" class="org.astrogrid.desktop.modules.ui.scope.AllVizierProtocol">
 			<inject object="service:ivoa.cone" />
 		</object>
+         -->
 		<object name="stap" class="org.astrogrid.desktop.modules.ui.scope.StapProtocol">
 			<inject object="service:ivoa.registry" />
 			<inject object="service:astrogrid.stap" />
@@ -133,6 +139,29 @@ ASTROSCOPE
 
 	</contribution>
 
+<!--  
+==============================
+HELIOSCOPE
+
+ -->
+    <service-point id="helioscope" interface="org.astrogrid.desktop.modules.ui.HelioScopeInternal">
+            <interceptor service-id="system.snitchInterceptor" />
+            <interceptor service-id="system.edtInvoke" />
+        <invoke-factory> 
+        <construct class="org.astrogrid.desktop.modules.ui.HelioScopeFactory" >
+                        <service>astroscope</service>
+                        <service>system.ui</service>
+                        <service>ivoa.registry</service>
+        </construct>
+        </invoke-factory>   
+    </service-point>
+
+    <contribution configuration-id="system.windowFactories">
+        <window name="Helio Scope">service:helioscope</window>
+    </contribution>
+        <contribution configuration-id="hivemind.EagerLoad">
+        <load service-id="helioscope"/><!--  loads the helopscope service list -->
+    </contribution>
 	<!-- -
 	====================================
 	TASK RUNNER
@@ -354,8 +383,8 @@ Query Builder
 		<object name="voexplorer" class="org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl">
 			<inject object="service:system.ui"/>
 			<inject object="service:actionsBuilder" />
+            <inject object="service:UiBuilder" />
 			<inject object="service-property:resourceFolderModel:treeModel" />
-			<inject object="ui:registryGooglePanel" />
 			<inject object="service:querySize" /> 
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:system.xmlPersist" />

@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.15 2007/09/11 12:11:48 nw Exp $
+/*$Id: ConeProtocol.java,v 1.16 2007/12/12 13:54:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Cone;
@@ -22,6 +23,7 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
@@ -32,7 +34,7 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 
     public ConeProtocol(Registry reg, Cone cone) {
-        super("Catalogues");
+        super("Catalogues",IconHelper.loadIcon("cone16.png").getImage());
         this.reg = reg;
         this.cone = cone;
     } 
@@ -49,9 +51,9 @@ public class ConeProtocol extends SpatialDalProtocol {
         return result;
     }
 
-    public Retriever createRetriever(UIComponent parent,Service i,double ra, double dec, double raSize, double decSize) {
+    public Retriever createRetriever(Service i,double ra, double dec, double raSize, double decSize) {
  //Replaced with a simpler version       return new ConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
-        return new CatalogTerminalConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
+        return new CatalogTerminalConeRetrieval(i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
         
     }
 
@@ -107,6 +109,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.16  2007/12/12 13:54:12  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.15  2007/09/11 12:11:48  nw
 improved handling of cds resources.
 

@@ -22,6 +22,7 @@ import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
 import org.apache.commons.vfs.provider.url.UrlFileObject;
 import org.apache.commons.vfs.provider.url.UrlFileSystem;
+import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceFileObject;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -81,20 +82,21 @@ public class BulkCopyWorker extends BackgroundWorker {
         setWouldLikeIndividualMonitor(true);
     }
 
-    /** necessary to work around a bug - allows me to access the constructor. 
-     * 
+    /** necessary to work around a bug - vfs doesn't respect the query portion of a url
+     * subclassing allows me to access the constructor. - and constructing an instance by hand fixes the problem. 
+     * not required any more - have fixed this at the core.
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Sep 11, 200712:09:07 PM
      */
-    private static class MyUrlFileObject extends UrlFileObject {
-        /**
-             * @param fs
-             * @param fileName
-             */
-            public MyUrlFileObject(UrlFileSystem fs, FileName fileName) {
-                super(fs, fileName);
-            }
-        }
+//    private static class MyUrlFileObject extends UrlFileObject {
+//        /**
+//             * @param fs
+//             * @param fileName
+//             */
+//            public MyUrlFileObject(UrlFileSystem fs, FileName fileName) {
+//                super(fs, fileName);
+//            }
+//        }
   
     protected FileObject saveTarget;
     protected Object construct() throws Exception {
@@ -109,15 +111,18 @@ public class BulkCopyWorker extends BackgroundWorker {
         } else { // have been given a UI 
             saveTarget = vfs.resolveFile(saveLoc.toString());
         }
-        
+          
+        boolean saveToMyspace = saveTarget instanceof MyspaceFileObject; 
+            
         if (! saveTarget.exists()) {
             reportProgress("Creating save location");
             saveTarget.createFolder();
         }
         if (! saveTarget.isWriteable()) {
             throw new Exception("Not permitted to write to " + saveTarget.getName());
-        }
-        reportProgress("Save location validated");
+        }                
+        
+        reportProgress((saveToMyspace ? "MySpace " : "" ) + "Save location validated");
         setProgress(++progress,tasksCount);
         // will records destinations or errors of copying each individual file, continue, and report at the end.
         Map outcome = new HashMap();
@@ -129,16 +134,7 @@ public class BulkCopyWorker extends BackgroundWorker {
                     src = (FileObject)something;
                 } else {
                     final String uriString = something.toString();
-                    if (StringUtils.contains(uriString,'?')) { // needs special treatment - just for http queries.
-                        // bug in vfs here - if I call 'resolveFile' directly, if drops all after the '?'.
-                        // so I need to create an object by hand.
-                        //see VfsLibraryTest for proof of this.
-                        FileName name = vfs.resolveURI(uriString);                    
-                        FileObject root = vfs.resolveFile(uriString); // just so we can get a handle on the correct filesystem.
-                        src = new MyUrlFileObject((UrlFileSystem)root.getFileSystem(),name);
-                    } else {
-                        src = vfs.resolveFile(uriString);
-                    }                    
+                    src =vfs.resolveFile(uriString);
                 }
                 reportProgress("Processing " + src.getName().getBaseName());
                 FileObject dest = null;
@@ -155,12 +151,14 @@ public class BulkCopyWorker extends BackgroundWorker {
                         n++;
                     } while  (dest.exists());
                     reportProgress("Destination will be " + dest.getName().getBaseName());
-                    // cool. now got a non-existent destination file.
+                    // cool. now got a non-existent destination file                    
                     dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
                     outcome.put(src,dest.getName().getURI());
                 } catch (FileSystemException x) {
                     outcome.put(src,x);
                     reportProgress("Copy from " + src.getName().getBaseName() + " failed");
+                    reportProgress("Cause: " + exFormatter.format(x,ExceptionFormatter.INNERMOST));
+                    
                 } finally {
                     setProgress(++progress,tasksCount);
                 }
@@ -174,6 +172,7 @@ public class BulkCopyWorker extends BackgroundWorker {
       //  }
         return outcome;
     }
+    private ExceptionFormatter exFormatter = new ExceptionFormatter();
 
     protected void doFinished(Object result) {
         Map outcome = (Map)result;

@@ -3,8 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
+
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** Base class for dal protocols that query on position.
  * @author Noel Winstanley
@@ -15,12 +16,11 @@ public abstract class SpatialDalProtocol extends DalProtocol {
 	/**
 	 * @param name
 	 */
-	public SpatialDalProtocol(String name) {
-		super(name);
+	public SpatialDalProtocol(String name,Image img) {
+		super(name,img);
 	}
 
-	public abstract Retriever createRetriever(UIComponent parent,
-			Service i, double ra, double dec, double raSize, double decSize);
+	public abstract Retriever createRetriever(Service i, double ra, double dec, double raSize, double decSize);
 
 
 	

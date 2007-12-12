@@ -657,7 +657,7 @@ todo see if we can include other things in the disk image too. -->
     -keep public class org.astrogrid.* {
         public static void main(java.lang.String[]);
         public protected *;
-        }
+        }     
 	    
     <!--  keep all classes referenced from hivemind visibly the same. -->	
     <j:forEach var="cl" items="${hivemindRequiredClasses}" trim="false">
@@ -671,6 +671,10 @@ todo see if we can include other things in the disk image too. -->
         public protected *;
         }
 
+    <!--  class dynamically instantiated -->
+    -keep class org.astrogrid.desktop.modules.system.BackgroundExecutorImpl** {
+        public protected *;
+        }
     <!--  seems to get missed. -->
     -keep class org.astrogrid.desktop.modules.util.Selftest {
         public protected *;

@@ -67,14 +67,13 @@ TOOL EDITOR
 ============================
 REGISTRY GOOGLE
  -->
-		<!-- FIXME: incomplete -->
 	<service-point id="registryGoogle" interface="RegistryGoogle">
 		Select a registry resource
             <interceptor service-id="system.edtInvoke" />        
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
 				<service>system.ui</service>
-				<object>ui:registryGooglePanel</object>
+                <service>ui.UiBuilder</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -86,10 +85,11 @@ REGISTRY GOOGLE
 		and then pass an instancoe of the ObjectBuilder factory
 		into wherever a googlePanel is needed.
 		<object name="registryGooglePanel" class="org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel">
-			<inject object="service:ivoa.registry" />
+			<inject-arg />
+            <inject object="service:ivoa.registry" />
 			<inject object="cache:resources" />
 			<inject object="cache:bulk" />
-			<inject object="service:resourceViewersFactory" />
+			<inject object="service:ui.UiBuilder" />
 			<inject object="service:votech.vomon" />
 			<inject object="service:capabilityIconFactory" />
 			<inject object="service:votech.annotate" />
@@ -125,40 +125,31 @@ REGISTRY GOOGLE
 		
 	</contribution>
 
-<service-point id="resourceViewersFactory" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder">
-		Object builder for resource viewers
-		<invoke-factory model="singleton">
-			<construct class="org.astrogrid.desktop.hivemind.IterableObjectBuilderImpl">
-				<log />
-				<configuration>resourceViewers</configuration>
-				<service>hiveutils.ObjectTranslator</service>
-				<service>hiveutils.EventLinker</service>
-			</construct>
-		</invoke-factory>
-	</service-point>	
 
-<configuration-point id="resourceViewers" schema-id="hiveutils.ObjectBuilderSchema">
-	Configuration point for the list of resource viewers
-</configuration-point>
 
-<!--  lists of available resource viewers. 
-which ones to display, and in which order, is specified in the program code.-->
-<contribution configuration-id="resourceViewers">
-	<object name="formatted" class="org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer">
+<!--  lists of available resource viewers -->
+<contribution configuration-id="ui.UiBuilderObjects">
+	<object name="formattedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer">
 			<inject object="service:system.browser" />
 			<inject object="service:ui.registryBrowser" />
 	</object>
-	<object name="annotated" class="org.astrogrid.desktop.modules.ui.voexplorer.google.AnnotatedResourceViewer">
+	<object name="annotatedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.AnnotatedResourceViewer">
 			<inject object="service:system.browser" />
 			<inject object="service:ui.registryBrowser" />
 			<inject object="service:votech.annotate" />
 	</object>	
-	<object name="table" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer"/>
-	<object name="xml" class="org.astrogrid.desktop.modules.ui.voexplorer.google.XMLResourceViewer">
+	<object name="tableResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer">
+    </object>
+	<object name="xmlResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.XMLResourceViewer">
+        <inject-arg />
 		<inject object="service:ivoa.registry" />
-			<inject object="preference:acr.advanced" />		
+	   <inject object="preference:acr.advanced" />		
 	</object>
-	<object name="results" class="org.astrogrid.desktop.modules.ui.scope.ResultsResourceViewer" />
+	<object name="resultsResourceView" class="org.astrogrid.desktop.modules.ui.scope.ResultsResourceViewer">
+        <inject-arg />
+        <inject object="service:ui.UiBuilder" />
+        <inject-arg />
+    </object>
 </contribution>
 					
  </module>

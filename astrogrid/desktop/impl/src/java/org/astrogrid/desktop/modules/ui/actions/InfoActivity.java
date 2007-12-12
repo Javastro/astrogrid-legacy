@@ -11,18 +11,26 @@ import javax.swing.JTextArea;
 
 import org.apache.commons.collections.Bag;
 import org.apache.commons.collections.bag.TreeBag;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ui.actions.Activity.Info;
-import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.ui.fileexplorer.StorageTableFormat;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
 /** information about the selection - a special kind of activity
  * @todo provide more metadata here.
  * @todo display a minimal icon, and make this a dragsource for the selection.
+ * @todo consider replacin the text box with a list - maybe backed by a counting
+ * event list or something.
+ *  - then selections update more smoothly.
+ *  @todo invesigate wther it's possible to get types of other kiinds of file objects - I beleiv that most getType is based on the filename, and so shoiuldn't cost
+ *      - however, I think just the act of getContent() forces an attach() - would need to work around this.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20071:29:37 PM
  */
@@ -35,6 +43,7 @@ public InfoActivity() {
 	typeField.setLineWrap(true);
 	typeField.setWrapStyleWord(true);
 	typeField.setVisible(false);
+	typeField.setFont(UIConstants.SMALL_DIALOG_FONT);
 }
 
 private JTextArea typeField;
@@ -51,11 +60,7 @@ private final Bag types = new TreeBag();
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
 				try {
-					if (l[i] instanceof AstroscopeFileObject) { // content type is inexpensive to access
-						types.add(l[i].getContent().getContentInfo().getContentType());
-					} else { // just use type
-						types.add(l[i].getType().getName());
-					}
+				    types.add(StorageTableFormat.findBestContentType(l[i]));
 				} catch (FileSystemException x) {
 					logger.error("FileSystemException",x);
 				}
@@ -88,12 +93,8 @@ private final Bag types = new TreeBag();
 	}
 	public void oneSelected(FileObject fo) {
 		try {
-			if (fo instanceof AstroscopeFileObject) {
-				typeField.setText("Selection: " + fo.getContent().getContentInfo().getContentType());				
-			} else {
-				typeField.setText("Selection: " + fo.getType().getName());
-			}
-			typeField.setVisible(true);
+		    typeField.setText(StorageTableFormat.findBestContentType(fo));
+		    typeField.setVisible(true);
 		} catch (FileSystemException x) {
 			logger.error("FileSystemException",x);
 		}

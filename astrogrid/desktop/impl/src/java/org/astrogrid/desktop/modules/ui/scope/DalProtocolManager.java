@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.9 2007/09/21 16:35:15 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.10 2007/12/12 13:54:13 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import ca.odell.glazedlists.ObservableElementList;
 /**
  * aggregates a set of retreivers together - so they can be operated as a whole.
  * also manages a tablemodel that summarizes the resultls of querying each service - this is also accessible through
- * the separate {@link QueryResultSummarizer} interface - as later, we may want to refactor this elewhere.
+ * the separate {@link QueryResultCollector} interface - as later, we may want to refactor this elewhere.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
@@ -103,6 +103,9 @@ public class DalProtocolManager {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.10  2007/12/12 13:54:13  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.9  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.

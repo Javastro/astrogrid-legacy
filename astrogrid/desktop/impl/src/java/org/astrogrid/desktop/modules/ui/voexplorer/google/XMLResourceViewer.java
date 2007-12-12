@@ -20,7 +20,7 @@ import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -33,8 +33,9 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 	/**
 	 * 
 	 */
-	public XMLResourceViewer(RegistryInternal reg, Preference advanced) {
+	public XMLResourceViewer(UIComponent parent,RegistryInternal reg, Preference advanced) {
 		this.reg = reg;
+		this.parent = parent;
 		this.advancedPreference = advanced;
 		CSH.setHelpIDString(this, "reg.xml");		
 		setBorder(BorderFactory.createEmptyBorder());		
@@ -47,7 +48,7 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 	private final Preference advancedPreference;
 	private final Point offset = new Point(8,8);
  	
-	private UIComponentBodyguard parent;
+	private final UIComponent parent;
 	private final RegistryInternal reg;
 	public void clear() {
 		setText("No entry selected");
@@ -55,7 +56,7 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 
 	public void display( final Resource res) {
 
-		(new BackgroundWorker(parent.get(),"Fetching Record",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
+		(new BackgroundWorker(parent,"Fetching Record",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 		    {
 		        setTransient(true);
 		    }
@@ -78,8 +79,7 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 
 	// delayed add. we take a reference to everything we need,
 	// but add in the propertyChange listener..
-	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
-		this.parent = parent;
+	public void addTo(JTabbedPane t) {
 		this.tabPane = t;
 		advancedPreference.addPropertyChangeListener(this);
 		advancedPreference.initializeThroughListener(this);		

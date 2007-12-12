@@ -15,9 +15,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSelector;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
+import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.AbstractFileObject;
+import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeIterator;
@@ -40,6 +43,34 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	.getLog(MyspaceFileObject.class);
     private final MyspaceFileSystem msFilesystem;
 
+    /** special-case optimization where the file object to copy from is http - can pass an call to myspace to do the copy directly, rather than the client reading the data. */
+    public void copyFrom(FileObject file, FileSelector selector)
+            throws FileSystemException {
+        while (file instanceof DelegateFileObject) {
+            file = ((DelegateFileObject)file).getDelegateFile();
+        }
+        if (file.getURL().getProtocol().equals("http")
+                && ( selector == Selectors.SELECT_ALL  || selector == Selectors.SELECT_FILES || selector == Selectors.SELECT_SELF || selector == Selectors.SELECT_SELF_AND_CHILDREN)) {
+            // unlikely any other kind of selector swould be intentionally used, but there miught be some pathological cases.
+            // dunno if it\s possible to copy a subtree from http - as you can't get an 'ls'
+            try {
+                logger.debug("Attempting to use optimized copy URL to myspace");
+                if (node == null) { // this file doesn't exist yet. need to create it
+                    node = msFilesystem.client().createFile(getMsName().getIvorn());
+                }
+                node.copyURLToContent(file.getURL());
+            } catch (Exception e) {
+                logger.warn("Failed to use optimized copy to myspace, falling back to direct copy", e);
+               super.copyFrom(file,selector);
+            }
+        } else {
+            super.copyFrom(file, selector);
+        }
+    }
+    public FileObject resolveFile(String path) throws FileSystemException {
+        return super.resolveFile(path);
+    }
+    
 	// can also implement doAttach and doDetach to perform lazy initializaiton.
 	/**
 	 * @param name

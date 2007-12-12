@@ -104,6 +104,9 @@ public class VoDataFlavour {
 		
 	public static final String MIME_OCTET_STREAM = "application/octet-stream";
 	
+	/** voevents */
+	
+	public static final String MIME_VOEVENT = "application/x-voevent+xml";
 	
 	/** Treenode flavour - not very vo, but keeps them all in one place. */
 	public static final DataFlavor TREENODE = localDataFlavor(DefaultMutableTreeNode.class,"Tree Node");

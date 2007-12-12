@@ -18,6 +18,8 @@ public class AllScopeUnitTests {
         //$JUnit-BEGIN$
         suite.addTestSuite(ScopeHistoryProviderUnitTest.class);
         suite.addTestSuite(VotableContentHandlerUnitTest.class);
+        suite.addTestSuite(AstroscopeFileObjectUnitTest.class);
+        suite.addTestSuite(VizModelUnitTest.class);
         //$JUnit-END$
         return suite;
     }

@@ -8,7 +8,7 @@ import javax.swing.event.ChangeListener;
 /** Extended interface to a resource viewer that 
  * allows editing of the resource in some way.
  * 
- * it's the resource viewer's responsibility to persist the saved data
+ * it's the resource viewer's responsibility to persist the edited data
  * but this interface provides a way for the viewer to notify the parent
  * ui of changes - which would require updates to the resource table, etc
  * 

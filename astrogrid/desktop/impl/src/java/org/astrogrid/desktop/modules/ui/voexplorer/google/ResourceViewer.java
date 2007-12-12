@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer.google;
 import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** Inteface to a component that views resources.
  * 
@@ -21,6 +21,6 @@ public interface ResourceViewer {
 	public void display(Resource res) ;
 	
 	
-	public void addTo(UIComponentBodyguard parent,JTabbedPane t);
+	public void addTo(JTabbedPane t);
 
 }

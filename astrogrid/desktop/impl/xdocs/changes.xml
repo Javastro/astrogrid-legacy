@@ -15,6 +15,24 @@
 	</head>
 <body>
 <release version="2007.4.beta1" date="unreleased">
+    <action dev="nw" type="fix" issue="2348">
+    Astroscope: made popup query failure messages configurable.
+    </action>
+    <action dev="nw" type="add">
+    Astroscope: Added icons to service types, and nodes that have result files associated - assists navigation,
+    and makes it clear where results are present in the tree.
+    </action>
+    <action dev="nw" type="add">
+     Astroscope: completed results table view.
+    </action>
+    <action dev="nw" type="remove">
+    Astroscope: removed Vizier search protocol, as the search url format
+    used (e.g. http://vizier.u-strasbg.fr/viz-bin/votable/-dtd/-A?RA=10.674458&amp;DEC=40.865889&amp;SR=0.01 )
+    has stopped working. A replacement is not documented on the CDS site.    
+    </action>
+    <action dev="nw" type="add">
+    Helioscope: Implemented as a subset of Astroscope resources
+    </action>
     <action dev="nw" type="fix" due-to="kevin">
     TaskRunner: fixed missing class error when executing an ADQL query.
     </action>

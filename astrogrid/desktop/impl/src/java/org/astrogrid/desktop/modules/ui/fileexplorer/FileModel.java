@@ -83,7 +83,7 @@ public class Filemodel implements ListSelectionListener{
          * rarely need to call this method directly, as selecction model events cause it
          * to be triggered anyhow.
          */
-        private void updateActivities() {
+        public void updateActivities() {
             Transferable tran =getSelectionTransferable();
                 if (tran == null) {
                     activities.clearSelection();

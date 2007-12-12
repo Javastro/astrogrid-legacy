@@ -22,7 +22,7 @@ import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
-import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.SearchHistoryItem;
+import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.PositionHistoryItem;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.KeywordSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
@@ -72,7 +72,7 @@ public class XStreamXmlPersist implements XmlPersist {
         xstream.useAttributeFor(UserAnnotation.class,"flagged");
         xstream.addImplicitCollection(Annotation.class,"tags","tag",String.class);
         
-        xstream.alias("astroscope-history",SearchHistoryItem.class);
+        xstream.alias("scope-position",PositionHistoryItem.class);
         
         xstream.alias("folder",Folder.class);
         xstream.alias("storage-folder",StorageFolder.class);

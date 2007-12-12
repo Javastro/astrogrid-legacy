@@ -50,11 +50,7 @@ public class OperableFilesTable extends FilesTable implements MouseListener {
     	java.awt.Point p = e.getPoint();
     	int rowIndex = rowAtPoint(p);
     	FileObject item = (FileObject)fileModel.getChildrenList().get(rowIndex);
-    	if (item == null) {
-    		return "";
-    	}
-    	//@todo add more info in here later.
-    	return item.getName().getFriendlyURI();
+    	return FilesList.createToolTipFromFileObject(item);
     }
     
     

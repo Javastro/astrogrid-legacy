@@ -36,6 +36,7 @@ public class MyspaceNameParser extends AbstractFileNameParser {
 		    throw new FileSystemException("Null filename");
 		}
 		
+		filename = StringUtils.replace(filename," ","_");
 		URI u;
 		try {
 			u = new URI(filename);

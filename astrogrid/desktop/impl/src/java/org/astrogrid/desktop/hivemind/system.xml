@@ -252,6 +252,7 @@ System module.
 			<description>Select which window to open at startup</description>
             <option>VO Explorer</option>
             <option>All-VO Scope</option>
+            <option>Helio Scope</option>
             <option>Task Runner</option>
             <option>File Explorer</option>
             <option>none</option>            
@@ -549,7 +550,10 @@ SYSTEM TRAY
 	 -->
 	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
 		Uniform access to all filesystems.
-        <interceptor service-id="system.edt" /><!-- doesn't give much protection, but might identify some problems. -->        
+        <interceptor service-id="system.edt" ><!-- doesn't give much protection, but might identify some problems. -->
+            <exclude method="createVirtualFileSystem" />
+            <exclude method="closeFileSystem" /> <!--  only strictly correect for virtual file systems. -->
+        </interceptor>        
 		<invoke-factory> <!-- should maybe be session later -->
 			<construct 
 			class="org.astrogrid.desktop.modules.system.HivemindFileSystemManager"
@@ -561,8 +565,14 @@ SYSTEM TRAY
 				<configuration>vfsExtensions</configuration>
 				<configuration>vfsMimes</configuration>                
 				<set-object property="filesCache" value="service:vfsCache" />
-				<set-object property="defaultProvider"
-				 value="instance:org.apache.commons.vfs.provider.url.UrlFileProvider" />
+                <!-- 
+                <set-object property="defaultProvider"
+				     value="instance:org.apache.commons.vfs.provider.url.UrlFileProvider" />
+                 -->
+                 <!-- try a subclass to work around a bug ignoring query in url. -->
+                <set-object property="defaultProvider"
+                 value="instance:org.astrogrid.desktop.modules.system.QueryRespectingUrlFileProvider" />
+
 				 <set-object property="replicator" value="service:replicator" />
 			<!-- 	 <set-object property="temporaryFileStore" value="service:tmpFileStore" /> -->
 				 <set property="baseFileString" value="${vfs.basefile}" />
@@ -678,7 +688,7 @@ SYSTEM TRAY
 			implementation="instance:org.apache.commons.vfs.provider.temp.TemporaryFileProvider" />
 		<provider scheme="ftp"
 			implementation="instance:org.apache.commons.vfs.provider.ftp.FtpFileProvider" />
-            <!--  removed for now - as latest vfs has a version class with httpclient.
+            <!--  removed for now - as latest vfs has a version clash with httpclient.
             removing this providers means that the native java lib's HTTP access is used - which is not a problem.
 		<provider scheme="http"
 			implementation="instance:org.apache.commons.vfs.provider.http.HttpFileProvider" />
@@ -751,7 +761,6 @@ SYSTEM TRAY
 				<service>builtin.sessionManager</service>
 				<set property="queueSize" value="${system.executor.queueSize}" />
 				<set property="startThreads" value="${performance.maxWorkerThreads}" />
-				<set property="maxThreads" value="${performance.maxWorkerThreads}" />
 				<event-listener service-id="builtin.shutdown" />				
 			</construct>		
 		</invoke-factory>
@@ -763,10 +772,6 @@ SYSTEM TRAY
 	
 	<contribution configuration-id="hivemind.FactoryDefaults">			
 	    <default symbol="system.executor.queueSize" value="10000" />
-        <!-- unused
-		<default symbol="system.executor.startThreads" value="15" />
-		<default symbol="system.executor.maxThreads" value="30" />
-         -->
 	</contribution>		
 	
 

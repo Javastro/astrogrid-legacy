@@ -35,13 +35,15 @@ public class MonitoringInputStream  extends ProxyInputStream {
     public static MonitoringInputStream create(WorkerProgressReporter reporter, URL url,long factor) throws IOException {
         URLConnection conn = url.openConnection();
         int size = conn.getContentLength();
-        return new MonitoringInputStream(reporter,conn.getInputStream(),size,factor);
+        long lastModified = conn.getLastModified();
+        return new MonitoringInputStream(reporter,conn.getInputStream(),lastModified,size,factor);
     }
 
     public static MonitoringInputStream create(WorkerProgressReporter reporter, FileObject fo,long factor) throws IOException {
        FileContent content = fo.getContent();
         long size = content.getSize();
-        return new MonitoringInputStream(reporter,content.getInputStream(),size,factor);
+        long lastModified = content.getLastModifiedTime();
+        return new MonitoringInputStream(reporter,content.getInputStream(),lastModified,size,factor);
     }
     
     
@@ -50,10 +52,13 @@ public class MonitoringInputStream  extends ProxyInputStream {
     private final long factor;
     private final int factoredSize;
     private long factoredCount;
-    private MonitoringInputStream(WorkerProgressReporter reporter,InputStream is,long size,long factor) {
+    private final long lastModified;
+    private MonitoringInputStream(WorkerProgressReporter reporter,InputStream is,long lastModified,long size,long factor) {
         super(is);
         this.reporter = reporter;
+        this.lastModified = lastModified;
         this.size = size;
+        
         this.factor = factor;
         this.factoredSize = (int)(size / factor);
         reporter.setProgress(0,factoredSize);
@@ -183,6 +188,10 @@ public class MonitoringInputStream  extends ProxyInputStream {
         long tmp = this.count;
         this.count = 0;
         return tmp;
+    }
+
+    public final long getLastModified() {
+        return this.lastModified;
     }
 
     

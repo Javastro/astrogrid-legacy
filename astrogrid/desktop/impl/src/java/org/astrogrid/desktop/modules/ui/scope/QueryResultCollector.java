@@ -1,4 +1,4 @@
-/*$Id: QueryResultSummarizer.java,v 1.4 2007/05/10 19:35:22 nw Exp $
+/*$Id: QueryResultCollector.java,v 1.1 2007/12/12 13:54:13 nw Exp $
  * Created on 30-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,31 +11,36 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 
-public interface QueryResultSummarizer {
+public interface QueryResultCollector {
 
-    /** called by a retriever to add a result to the table.
-     * also used to maintain the mapping between resource object and service node
-     *  - which are the primary data items in the glazed lists and prefuse worlds.
-     * 
-     * @param ri description of the service
-     * @param resultCount number of result returned (-1 indicates error)
-     * @param message optional message
+    /** report a query success
      */
-    public void addQueryResult(Service ri,TreeNode serviceNode, int resultCount, String message);
+    public void addQueryResult(Service ri,AstroscopeTableHandler handler);
 
+    
+    /** report a query failure */
+    public void addQueryFailure(Service ri,Throwable t);
     /** clear all previous summaries */
     public void clear();
     
-/** resultCount constant indicating 'error' */
-    public static int ERROR = -1;
+
+/** add these services to the list of things that are going to be queried.
+ * @param services
+ */
+void addAll(Service[] services);
+
 }
 
 /* 
- $Log: QueryResultSummarizer.java,v $
+ $Log: QueryResultCollector.java,v $
+ Revision 1.1  2007/12/12 13:54:13  nw
+ astroscope upgrade, and minor changes for first beta release
+
  Revision 1.4  2007/05/10 19:35:22  nw
  reqwork
 

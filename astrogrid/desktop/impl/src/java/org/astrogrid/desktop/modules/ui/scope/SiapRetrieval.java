@@ -1,15 +1,21 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -25,13 +31,10 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 /** task that retrives, parses and adds to the display results of one siap service 
  * */
 public class SiapRetrieval extends Retriever {
-    /**
-     * Logger for this class
-     */
-    static final Log logger = LogFactory.getLog(SiapRetrieval.class);
 
-    public SiapRetrieval(UIComponent comp,Service service,TreeNode primaryNode,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
-        super(comp,service,primaryNode,model,ra,dec);
+
+    public SiapRetrieval(Service service,TreeNode primaryNode,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
+        super(service,primaryNode,model,ra,dec);
         this.raSize = raSize;
         this.decSize = decSize;
         this.siap = siap;
@@ -45,21 +48,23 @@ public class SiapRetrieval extends Retriever {
             StringBuffer sb = new StringBuffer();
             sb.append("<html>Title: ").append(service.getTitle())
                 .append("<br>ID: ").append(service.getId());
-            if (service.getContent() != null) {
-               sb.append("<br>Description: <p>")
-                .append(service.getContent().getDescription()!= null 
-                			?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+//            if (service.getContent() != null) {
+//               sb.append("<br>Description: <p>")
+//                .append(service.getContent().getDescription()!= null 
+//                			?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+//            }
+            String serviceType = ((SiapService)service).findSiapCapability().getImageServiceType();
+            if (StringUtils.isNotEmpty(serviceType) ){
+                sb.append("</p><br>Service Type: ").append(serviceType);
             }
-                sb.append("</html>");
-                //@todo when we get more metadata parsed in new model.
-                //.append("</p><br>Service Type: ").append(((SiapInformation)information).getImageServiceType())
+            sb.append("</html>");
                   
-            TreeNode serviceNode = createServiceNode(siapURL,sb.toString());
             // build subtree for this service
             reportProgress("Querying service");
-            InputSource source = new InputSource(
-                    MonitoringInputStream.create(this,siapURL,MonitoringInputStream.ONE_KB ));
-            SummarizingTableHandler th = new SiapTableHandler(serviceNode);
+            final MonitoringInputStream monitorStream = MonitoringInputStream.create(this,siapURL,MonitoringInputStream.ONE_KB );
+            TreeNode serviceNode = createServiceNode(siapURL,monitorStream.getSize(),sb.toString());
+            InputSource source = new InputSource(monitorStream);
+            AstroscopeTableHandler th = new SiapTableHandler(serviceNode);
             parseTable(source, th);
             return th;           
     }
@@ -117,42 +122,65 @@ public class SiapRetrieval extends Retriever {
             titleCol = col;
         } else if (ucd.equalsIgnoreCase("DATA_LINK")) { // non-srtandard, but seen occasionally
         	dataLinkCol = col;
-        }
+        } 
      }
-protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
-        String imgURL = safeTrim(row[imgCol]);
-        long size;
-        try {
-            size = Long.parseLong(safeTrim(row[sizeCol])) / 1024; // kb.
-        } catch (Throwable t) { // not found, or can't parse
-            size = Long.MAX_VALUE; // assume the worse
+        
+        protected boolean omitRowFromTooltip(int rowIndex) {
+            return rowIndex ==dataLinkCol || rowIndex == imgCol;
         }
-        String title; 
-        if (titleCol > -1) {
-            title = safeTrim(row[titleCol]);
-        } else {
-            title  = "untitled";
-        }
-        valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
-        String type = safeTrim(row[formatCol]);
-        valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
+        
+        protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
+            try {
+                URL imgURL = new URL(safeTrim(row[imgCol]));
+                valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL.toString());
 
-        valNode.setAttribute(LABEL_ATTRIBUTE,title + ", " + StringUtils.substringAfterLast(type,"/") + ", " + size + "k");   
+                long size;
+                try {
+                    size = Long.parseLong(safeTrim(row[sizeCol])) ;
+                } catch (Throwable t) { // not found, or can't parse
+                    size = AstroscopeFileObject.UNKNOWN_SIZE;
+                }
+
+                String title; 
+                if (titleCol > -1) {
+                    title = safeTrim(row[titleCol]);
+                } else {
+                    title  = "untitled";
+                }
+                
+                String type = safeTrim(row[formatCol]);
+                valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
+
+                valNode.setAttribute(LABEL_ATTRIBUTE
+                        ,title + ", " + StringUtils.substringAfterLast(type,"/") 
+                        + ", " + 
+                          (size == AstroscopeFileObject.UNKNOWN_SIZE
+                              ? "unknown size"
+                              : FileUtils.byteCountToDisplaySize(size)));
+                try {
+                    long date = new Date().getTime(); //@fixme work out this 
+                    AstroscopeFileObject fileObject = model.createFileObject(imgURL
+                            ,size
+                            ,date
+                            ,StringUtils.containsIgnoreCase(type,"fits") ? VoDataFlavour.MIME_FITS_IMAGE : type
+                            );
+                    filenameBuilder.clear();
+                    filenameBuilder.append(StringUtils.replace(title,"/","_"));
+                    filenameBuilder.append(".");
+                    filenameBuilder.append(StringUtils.substringAfterLast(type,"/"));
+                    model.addResultFor(service,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);
+                } catch (FileSystemException e) {
+                    logger.warn(service.getId() + " : Unable to create result file object - skipping row ",e);
+                }
+            } catch(MalformedURLException e) {
+                logger.warn(service.getId() + " : Unable to parse url in service response - skipping row",e);
+            }
         }        
 
+        private final StrBuilder filenameBuilder = new StrBuilder();
+        
 	public DefaultTreeNode createValueNode() {
-		 return new FileProducingTreeNode() {
-	        	// create a service node.
-				protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
-					String type =getAttribute(IMAGE_TYPE_ATTRIBUTE);
-					String url = getAttribute(IMAGE_URL_ATTRIBUTE);
-					return factory.new AstroscopeFileObject(
-							StringUtils.containsIgnoreCase(type,"fits")
-								? VoDataFlavour.MIME_FITS_IMAGE
-								: type
-							,this,url);
-				}
-	        };
+	    return new FileProducingTreeNode();
 	}
         
     protected boolean isWorthProceeding() {

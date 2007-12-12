@@ -30,6 +30,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.votech.Annotation;
@@ -157,7 +158,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		}
 	}
 
-	public void addTo(UIComponentBodyguard ignored,JTabbedPane t) {
+	public void addTo(JTabbedPane t) {
 		t.addTab("Information", IconHelper.loadIcon("info16.png")
 				, scrollPane, "Information provided by the resource");			
 	}

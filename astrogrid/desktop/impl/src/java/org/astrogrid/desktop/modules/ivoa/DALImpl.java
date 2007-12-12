@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.16 2007/10/23 12:20:56 nw Exp $
+/*$Id: DALImpl.java,v 1.17 2007/12/12 13:54:15 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
+import org.astrogrid.desktop.modules.ui.scope.QueryResultCollector;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -456,6 +456,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.17  2007/12/12 13:54:15  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.16  2007/10/23 12:20:56  nw
 RESOLVED - bug 1837: Verify astroscope detects all error responses.
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1837

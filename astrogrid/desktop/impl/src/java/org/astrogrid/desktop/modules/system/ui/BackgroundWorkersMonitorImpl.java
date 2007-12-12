@@ -114,8 +114,10 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
                 String title;
                 if (value instanceof String) {
                     title = (String)value;
-                } else {
+                } else if (value != null){                    
                     title = ((UIComponent)value).getTitle();
+                } else {
+                    title = "Dialogue";
                 }
                 return super.getListCellRendererComponent(list, title, index, isSelected,
                         cellHasFocus);
@@ -365,7 +367,9 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
 
         public void actionPerformed(ActionEvent e) {
             if (HALT.equals(e.getActionCommand())) {
+                worker.reportProgress("Halting..");                
                 worker.interrupt();
+                worker.reportProgress("Halted");
             } else if (SINGLE.equals(e.getActionCommand())) {
                 worker.getControl().showSingleDialogue();
             }

@@ -26,6 +26,7 @@ import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
+import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement;
@@ -43,6 +44,7 @@ import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm.Model;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.impl.matchers.FixedMatcherEditor;
@@ -83,8 +85,11 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (StorageView)create("storageView",new Object[]{parent,acts});
     }
 
-    public RegistryGooglePanel createGooglePanel() {
-        return (RegistryGooglePanel)create("registryGooglePanel");
+    public RegistryGooglePanel createGooglePanel(UIComponent parent) {
+        return (RegistryGooglePanel)create("registryGooglePanel",parent);
+    }
+    public ScopeServicesList createScopeServicesList(UIComponent parent) {
+        return (ScopeServicesList)create("scopeServiceList",parent);
     }
 
     public QueryBuilderImpl createQueryBuilderImpl() {
@@ -184,6 +189,32 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
             EventList elements) {
         return (ParametersInfoPane)create("parametersInfoPane",new Object[]{model,elements});
      }
+
+    public ResourceViewer createAnnotatedResourceView() {
+        return (ResourceViewer)create("annotatedResourceView");
+    }
+
+    public ResourceViewer createFormattedResourceView() {
+        return (ResourceViewer)create("formattedResourceView");
+    }
+
+    public ResourceViewer createResultsResourceView(AstroScopeLauncherImpl parent,
+            ActivitiesManager acts) {
+        return (ResourceViewer)create("resultsResourceView",new Object[]{parent,acts});        
+    }
+
+    public ScopeServicesList createScopeServicesList(AstroScopeLauncherImpl parent,
+            ActivitiesManager acts) {
+        return (ScopeServicesList)create("scopeServiceList",new Object[]{parent,acts});
+    }
+
+    public ResourceViewer createTableResourceView() {
+        return (ResourceViewer)create("tableResourceView");
+    }
+
+    public ResourceViewer createXMLResourceView(UIComponent parent) {
+        return (ResourceViewer)create("xmlResourceView",parent);
+    }
 
 
 

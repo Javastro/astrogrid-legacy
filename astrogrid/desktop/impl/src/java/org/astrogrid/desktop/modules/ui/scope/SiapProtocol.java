@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.10 2007/06/18 16:42:36 nw Exp $
+/*$Id: SiapProtocol.java,v 1.11 2007/12/12 13:54:13 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,11 +14,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
@@ -30,7 +32,7 @@ public class SiapProtocol extends SpatialDalProtocol {
     /** Construct a new SiapProtocol
      */
     public SiapProtocol(Registry reg,Siap siap) {
-        super("Images");
+        super("Images",IconHelper.loadIcon("siap16.png").getImage());
         this.reg =  reg;
         this.siap = siap;
     }
@@ -48,8 +50,8 @@ public class SiapProtocol extends SpatialDalProtocol {
     } 
 
 
-    public Retriever createRetriever(UIComponent parent,Service i, double ra, double dec, double raSize, double decSize) {
-        return new SiapRetrieval(parent,i,getPrimaryNode(),getVizModel(),siap,ra,dec,raSize,decSize);
+    public Retriever createRetriever(Service i, double ra, double dec, double raSize, double decSize) {
+        return new SiapRetrieval(i,getPrimaryNode(),getVizModel(),siap,ra,dec,raSize,decSize);
     }
     
 	public Service[] filterServices(List resourceList) {
@@ -69,6 +71,9 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.11  2007/12/12 13:54:13  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.10  2007/06/18 16:42:36  nw
 javadoc fixes.
 

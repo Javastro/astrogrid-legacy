@@ -2,8 +2,6 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.scope.ConeRetrieval.ConeTableHandler;
 import org.xml.sax.SAXException;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
@@ -14,8 +12,8 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 public class CatalogTerminalConeRetrieval extends ConeRetrieval {
     
 
-	public CatalogTerminalConeRetrieval(UIComponent comp, Service service, TreeNode primaryNode, VizModel model, Cone cone, double ra, double dec, double sz) {
-		super(comp, service, primaryNode, model, cone, ra, dec, sz);
+	public CatalogTerminalConeRetrieval(Service service, TreeNode primaryNode, VizModel model, Cone cone, double ra, double dec, double sz) {
+		super(service, primaryNode, model, cone, ra, dec, sz);
 	}
 
 	protected BasicTableHandler createTableHandler(TreeNode serviceNode) {
@@ -34,9 +32,8 @@ public class CatalogTerminalConeRetrieval extends ConeRetrieval {
 		/** overridden - don't care about data - just want to count the rows */
 		public void rowData(Object[] row) throws SAXException {
 	        if (!isWorthProceeding()) { // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
-	            resultCount = QueryResultSummarizer.ERROR;
 	            message = "Insufficient table metadata";
-	            return;
+	            throw new DalProtocolException(message);
 	        }
 	        resultCount++;
 		}

@@ -116,8 +116,17 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		} else { // just skip these.
 			ix+=7;
 		}
-		caps.set(ix++,r instanceof CeaApplication);
-		caps.set(ix++,r instanceof CeaApplication && BuildQueryActivity.hasAdqlParameter((CeaApplication)r));
+		// cea app 
+		if (r instanceof CeaApplication) {
+		    boolean hasADQL = BuildQueryActivity.hasAdqlParameter((CeaApplication)r);
+		    //with no adql interface
+		    caps.set(ix++,! hasADQL);
+		    // cea apps with an adql interface.
+		    caps.set(ix++,hasADQL);
+		} else {
+		    ix +=2;
+		}
+		
 		caps.set(ix++, hasTabularMetadata(r));
 		caps.set(ix++,WebInterfaceActivity.hasWebBrowserInterface(r));
 		caps.set(ix++,r instanceof Organisation);

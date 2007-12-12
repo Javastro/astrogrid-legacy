@@ -306,7 +306,7 @@ public final ProcessMonitor getMoitor() {
                 }
 			});            
             navigator = uiBuilder.createFileNavigator(uiParent,acts);
-            results = new NavigableFilesList(navigator);
+            results = new NavigableFilesList(navigator); // shouldn't this be just operableFilesList - not that it matters too much, as no folders are shown.
             results.getActionMap().remove(UIComponentMenuBar.EditMenuBuilder.PASTE); // don't allow pasting into this menu.
 
             

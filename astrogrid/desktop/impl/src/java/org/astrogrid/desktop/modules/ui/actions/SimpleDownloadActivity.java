@@ -51,14 +51,13 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         return ConeProtocol.isCdsCatalog(r);
     }
 
-
 	public SimpleDownloadActivity(final FileSystemManager vfs, ResourceChooserInternal chooser) {
 		super();
         this.vfs = vfs;
         this.chooser = chooser;
 		setText("Download" + UIComponentMenuBar.ELLIPSIS);
 		setIcon(IconHelper.loadIcon("filesave16.png"));		
-		setToolTipText("Download the selected file(s) to local disk.");
+		setToolTipText("Download the selected file(s) to local disk or MySpace");
 		setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
 	}
 
@@ -87,8 +86,11 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 		logger.debug(files);
 		
 		// decided to use dirchooser here instead...
-        //final URI saveDir = chooser.chooseDirectoryWithParent("Select directory to download to",false,true,false,uiParent.get().getComponent());
-        JDirectoryChooser chooser = new JDirectoryChooser(SystemUtils.getUserHome());
+        final URI saveDir = chooser.chooseDirectoryWithParent("Choose destination for download",true,true,false,uiParent.get().getComponent());
+        if (saveDir == null) {
+            return;
+        }
+    /*    JDirectoryChooser chooser = new JDirectoryChooser(SystemUtils.getUserHome());
         chooser.setShowingCreateDirectory(false);
         chooser.setMultiSelectionEnabled(false);
         chooser.setApproveButtonText("Save");
@@ -98,6 +100,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
             return;
         }
         URI saveDir = chooser.getSelectedFile().toURI();
+     */
 		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, files)).start();
 		
 	}

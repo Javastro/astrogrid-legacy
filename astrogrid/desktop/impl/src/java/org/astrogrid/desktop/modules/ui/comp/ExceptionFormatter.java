@@ -37,7 +37,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.DalProtocolException;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolException;
 import org.xml.sax.SAXParseException;
 
 import com.l2fprod.common.swing.BaseDialog;

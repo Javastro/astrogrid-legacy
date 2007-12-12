@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.8 2007/03/08 17:43:56 nw Exp $
+/*$Id: SsapProtocol.java,v 1.9 2007/12/12 13:54:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,12 +18,13 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 public class SsapProtocol extends SpatialDalProtocol {
 
     public SsapProtocol(Registry reg, Ssap ssap) {
-        super("Spectra");
+        super("Spectra",IconHelper.loadIcon("ssap16.png").getImage());
         this.reg = reg;
         this.ssap = ssap;
     }
@@ -37,8 +38,8 @@ public class SsapProtocol extends SpatialDalProtocol {
         return result;
     }
 
-	public Retriever createRetriever(UIComponent parent, Service i, double ra, double dec, double raSize, double decSize) {
-	    return new SsapRetrieval(parent,i,getPrimaryNode(),getVizModel(),ssap,ra,dec,raSize,decSize);
+	public Retriever createRetriever(Service i, double ra, double dec, double raSize, double decSize) {
+	    return new SsapRetrieval(i,getPrimaryNode(),getVizModel(),ssap,ra,dec,raSize,decSize);
 	    
 	}
     
@@ -58,6 +59,9 @@ public class SsapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.9  2007/12/12 13:54:12  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.8  2007/03/08 17:43:56  nw
 first draft of voexplorer
 

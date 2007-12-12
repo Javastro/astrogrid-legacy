@@ -1,4 +1,4 @@
-/*$Id: Vizualization.java,v 1.7 2007/05/13 12:00:48 nw Exp $
+/*$Id: Vizualization.java,v 1.8 2007/12/12 13:54:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 
 
+import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
+
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.FocusManager;
 import edu.berkeley.guir.prefuse.ItemRegistry;
@@ -22,7 +24,7 @@ import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 import edu.berkeley.guir.prefuse.util.StringAbbreviator;
 
 public abstract class Vizualization extends GraphEventAdapter {
-        public Vizualization(String name, VizualizationManager vizs) {
+        public Vizualization(String name, VizualizationController vizs) {
             this.name = name;   
             this.vizs = vizs;
         }
@@ -30,21 +32,22 @@ public abstract class Vizualization extends GraphEventAdapter {
             return name;
         }
         final String name;
-        protected final VizualizationManager vizs;
+        protected final VizualizationController vizs;
     ItemRegistry itemRegistry;
    /** create default node renderer */
-    private TextImageItemSizeRenderer nodeRenderer;
+    private TextImageItemRenderer nodeRenderer;
     protected final TextImageItemRenderer getTextRenderer() {
         if (nodeRenderer == null) {
-            nodeRenderer = new TextImageItemSizeRenderer(vizs.getVizModel().getNodeSizingMap()) ;
-            nodeRenderer.setMaxTextWidth(150);
-            nodeRenderer.setRoundedCorner(8,8);
-            nodeRenderer.setTextAttributeName(Retriever.LABEL_ATTRIBUTE);
-            nodeRenderer.setSizeAttributeName(Retriever.RESULT_COUNT);
-            nodeRenderer.setImageAttributeName(Retriever.SERVICE_LOGO_ATTRIBUTE);
-            nodeRenderer.setMaxImageDimensions(20,20);
-            nodeRenderer.setAbbrevType(StringAbbreviator.TRUNCATE);
-            nodeRenderer.setImageFactory(vizs.getImageFactory());
+            TextImageTreeNodeRenderer renderer = new TextImageTreeNodeRenderer(vizs.getVizModel().getNodeSizingMap()) ;
+            renderer.setMaxTextWidth(150);
+            renderer.setRoundedCorner(8,8);
+            renderer.setTextAttributeName(Retriever.LABEL_ATTRIBUTE);
+            renderer.setSizeAttributeName(Retriever.RESULT_COUNT);
+            renderer.setImageAttributeName(Retriever.SERVICE_LOGO_ATTRIBUTE);
+            renderer.setMaxImageDimensions(20,20);
+            renderer.setAbbrevType(StringAbbreviator.TRUNCATE);
+            renderer.setImageFactory(vizs.getImageFactory());
+            nodeRenderer = renderer;
 
         }
         return nodeRenderer;
@@ -72,6 +75,9 @@ public abstract class Vizualization extends GraphEventAdapter {
 
 /* 
 $Log: Vizualization.java,v $
+Revision 1.8  2007/12/12 13:54:12  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.7  2007/05/13 12:00:48  nw
 changes for ivoa.
 

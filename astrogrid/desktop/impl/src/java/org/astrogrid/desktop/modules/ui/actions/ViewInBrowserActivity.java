@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileUtil;
+import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -58,16 +59,20 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 		(new BackgroundWorker(uiParent.get(),"Displaying " + fo.getName().getBaseName(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			protected Object construct() throws Exception {
-			    URL u = fo.getURL();
+			    FileObject f = fo;
+                while (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+                    f = ((DelegateFileObject)f).getDelegateFile();
+                }
+			    URL u = f.getURL();
 			    if (! (u.getProtocol().equals("file") || u.getProtocol().equals("http") || u.getProtocol().equals("ftp"))) { // pass it to the browser directly.
 			        // download file to temporary location, and then open it
 			        reportProgress("Downloading file to temporary location");
 			        String name = StringUtils.substringBeforeLast(fo.getName().getBaseName(),".");
 			        String ext = StringUtils.substringAfterLast(fo.getName().getBaseName(),".");
-			        File f = File.createTempFile("view-in-browser-" + name,"." + ext);
-			        f.deleteOnExit();
-			        logger.debug(f);
-			        FileObject tmp = vfs.resolveFile(f.toURI().toString());
+			        File tmpFile = File.createTempFile("view-in-browser-" + name,"." + ext);
+			        tmpFile.deleteOnExit();
+			        logger.debug(tmpFile);
+			        FileObject tmp = vfs.resolveFile(tmpFile.toURI().toString());
 			        FileUtil.copyContent(fo,tmp);
 			        u = tmp.getURL();
 			    }

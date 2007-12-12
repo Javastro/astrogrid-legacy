@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.dialogs;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 
 /**
@@ -14,9 +15,9 @@ import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
  */
 public class RegistryGoogleImpl implements RegistryGoogle {
 	
-	public RegistryGoogleImpl( UIContext context,RegistryGooglePanel regPanel) {
+	public RegistryGoogleImpl( UIContext context, TypesafeObjectBuilder builder) {
         super();
-        dialog = new RegistryGoogleDialog(context,regPanel);
+        dialog = new RegistryGoogleDialog(context,builder);
     }
     private final RegistryGoogleDialog dialog;
 

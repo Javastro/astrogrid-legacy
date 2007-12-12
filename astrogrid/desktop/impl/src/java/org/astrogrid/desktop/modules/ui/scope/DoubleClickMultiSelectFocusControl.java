@@ -17,11 +17,11 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 /** focus control - on double click, adds / removes node and children from focus set. */
 public class DoubleClickMultiSelectFocusControl extends ControlAdapter {
     
-    public DoubleClickMultiSelectFocusControl(VizualizationManager viz) {
+    public DoubleClickMultiSelectFocusControl(VizualizationController viz) {
         set = viz.getVizModel().getSelectionFocusSet();
         this.viz = viz;
     }
-    private final VizualizationManager viz;
+    private final VizualizationController viz;
     private final FocusSet set;
     public void itemClicked(VisualItem item, MouseEvent e) {            
         if ( e.getClickCount() ==2 && 

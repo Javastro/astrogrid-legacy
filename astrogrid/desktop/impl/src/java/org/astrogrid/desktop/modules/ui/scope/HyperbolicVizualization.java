@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
@@ -52,7 +53,7 @@ import edu.berkeley.guir.prefusex.controls.ZoomControl;
  * */
 public class HyperbolicVizualization extends Vizualization {
         
-    public HyperbolicVizualization(VizualizationManager vizs, JPopupMenu popup, UIComponent parent) {
+    public HyperbolicVizualization(VizualizationController vizs, JPopupMenu popup, UIComponent parent) {
             super("Hyperbolic", vizs);    
             this.parent = parent;
             this.menu = popup;
@@ -113,7 +114,7 @@ public class HyperbolicVizualization extends Vizualization {
            display.addControlListener(new ZoomControl());
            display.addControlListener(new DoubleClickMultiSelectFocusControl(vizs));
            display.addControlListener(new ToolTipControl(Retriever.TOOLTIP_ATTRIBUTE));
-           display.addControlListener(new SendToMenuControl(menu,parent));
+    //@todo renable       display.addControlListener(new SendToMenuControl(menu,parent));
             
            // initialize repaint list
            ActionList repaint = new ActionList(registry);
@@ -122,9 +123,11 @@ public class HyperbolicVizualization extends Vizualization {
            repaint.add(new RepaintAction());
            actmap.put("repaint", repaint);
            
-            // initialize filter
+            // initialize filter           
            ActionList filter  = new ActionList(registry);
            filter.add(new TreeFilter());
+       //@todo replace treefilter with this to enable service filtereing    filter.add(new ServiceListTreeFilter());
+           // still needs to be completed.
            filter.add(new HyperbolicTreeLayout());
            filter.add(new HyperbolicDemoColorFunction());
            filter.add(repaint);

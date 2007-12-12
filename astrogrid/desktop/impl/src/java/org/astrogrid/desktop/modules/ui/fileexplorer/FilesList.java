@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListModel;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +23,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
@@ -80,27 +82,38 @@ public class FilesList extends JList {
         ListModel dlm = getModel();
         ensureIndexIsVisible(index);
         FileObject item = (FileObject)dlm.getElementAt(index);
-       if (item == null) {
-           return "";
-       }
-       if (item instanceof DelegateFileObject) {
-           item = ((DelegateFileObject)item).getDelegateFile();
-       }
-       HtmlBuilder sb = new HtmlBuilder();
-       sb.h3(item.getName().getBaseName());
-       sb.append("URI: ").append(item.getName().getFriendlyURI());
-       try {
-       FileContent content = item.getContent();
-       sb.br().append("Last modified: ").append(new Date(content.getLastModifiedTime()));
-       if (item.getType().hasContent()) {
-           long sz = content.getSize();
-           sb.br().append("Size: ").append(sz < 1024 && sz > 0 ? 1 : sz / 1024).append("KB");
-           sb.br().append("Content type: ").append(content.getContentInfo().getContentType());
-       }
-       } catch (FileSystemException ex) {
-           // don't care
-       }
-       return sb.toString();
+       return createToolTipFromFileObject(item);
    }
+
+    /**
+     * @param item
+     * @return
+     */
+    public static String createToolTipFromFileObject(FileObject item) {
+        if (item == null) {
+            return null;
+        }
+        while (item instanceof DelegateFileObject && !(item instanceof AstroscopeFileObject)) {
+            item = ((DelegateFileObject)item).getDelegateFile();
+        }
+        HtmlBuilder sb = new HtmlBuilder();
+           sb.append("URI: ").append(item.getName().getURI());
+           try {
+           FileContent content = item.getContent();
+           sb.br().append("Last modified: ").append(new Date(content.getLastModifiedTime()));
+           if (item.getType().hasContent()) {
+               long sz = content.getSize();
+               sb.br()
+                   .append("Size: ")
+                   .append(sz == AstroscopeFileObject.UNKNOWN_SIZE ? "unknown" : FileUtils.byteCountToDisplaySize(sz));
+               sb.br()
+                   .append("Content type: ")
+                   .append(content.getContentInfo().getContentType());
+           }
+           } catch (FileSystemException ex) {
+               // don't care
+           }
+           return sb.toString();
+    }
 
 }

@@ -35,10 +35,8 @@ public class SendToMenuControl extends ControlAdapter {
 	
 	public void itemClicked(VisualItem item, MouseEvent e) {
 		if ( ( e.isPopupTrigger() || e.isControlDown() || e.getButton() == MouseEvent.BUTTON3) 
-			&& item instanceof NodeItem
-			&& ((NodeItem)item).getAttribute(VizModel.NOMENU_ATTRIBUTE) == null
-			) {
-			TreeNode node = (TreeNode)item.getEntity();
+			&& item.getEntity() instanceof FileProducingTreeNode) {
+			FileProducingTreeNode node = (FileProducingTreeNode)item.getEntity();
 		//	trans.setTreeNode(node);
 			//@fixme update current selection at this point..
 			//popup.show(trans,parent,e.getComponent(),e.getX(),e.getY());

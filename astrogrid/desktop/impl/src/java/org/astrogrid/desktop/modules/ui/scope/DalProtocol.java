@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.11 2007/06/18 16:42:36 nw Exp $
+/*$Id: DalProtocol.java,v 1.12 2007/12/12 13:54:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 
 import org.astrogrid.acr.ivoa.resource.Service;
 
@@ -27,37 +30,45 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  */
 public abstract class DalProtocol {
 
-    public DalProtocol(String name) {
+    public DalProtocol(String name, Image img) {
         super();
         this.name = name;
-        this.primaryNode = new DefaultTreeNode();
+        this.primaryNode = new ImageTreeNode();
+        primaryNode.setAttribute(Retriever.LABEL_ATTRIBUTE,name);
+        primaryNode.setImage(img);
         this.checkBox = new JCheckBox(name);
-        this.checkBox.setSelected(true);
         this.checkBox.putClientProperty(OWNER,this);
+        this.menuCheckBox = new JCheckBoxMenuItem(name);
+        this.menuCheckBox.setModel(this.checkBox.getModel());
+        this.menuCheckBox.putClientProperty(OWNER,this);
+        // setting shared between two models.
+        this.checkBox.setSelected(true);
     }
     public static final Class OWNER = DalProtocol.class;
     private final String name;
-    private final TreeNode primaryNode;
+    private final ImageTreeNode primaryNode;
     private final JCheckBox checkBox;
+    private final JCheckBoxMenuItem menuCheckBox;
     
     public String getName() {
         return name;
     }
     
-    public void setPrimaryNodeLabel(String name) {
-        this.primaryNode.setAttribute(Retriever.LABEL_ATTRIBUTE,name);
-    }
     
     /** access the primary node - from where all other results from this protocol
      * will be rooted
      */
-    public final TreeNode getPrimaryNode() {
+    public final ImageTreeNode getPrimaryNode() {
         return primaryNode;
     }
     
     /** get a UI component used for selecting / deselecting this protocol */
     public final JCheckBox getCheckBox() {
         return checkBox;
+    }
+    /** get a menu item for selecting / deselecting this protocol */
+    public final JCheckBoxMenuItem getMenuItemCheckBox() {
+        return menuCheckBox;
     }
     
     // back-to-front setter injection - neccessary, as there's a
@@ -90,6 +101,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.12  2007/12/12 13:54:12  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.11  2007/06/18 16:42:36  nw
 javadoc fixes.
 

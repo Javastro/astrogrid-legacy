@@ -105,7 +105,7 @@ private final PlasticScavenger scav;
 	        public void run() {
 	            for (Iterator i = l.iterator(); i.hasNext();) {
 	                FileObject f = (FileObject) i.next();
-	                if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+	                while (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
 	                    f = ((DelegateFileObject)f).getDelegateFile();
 	                }			
 	                sendLoadImageMessage(f);

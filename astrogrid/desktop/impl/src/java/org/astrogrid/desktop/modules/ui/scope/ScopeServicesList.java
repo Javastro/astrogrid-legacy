@@ -3,9 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.table.TableColumn;
 
@@ -14,21 +13,29 @@ import net.sf.ehcache.Ehcache;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
+import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
+import org.astrogrid.desktop.modules.ui.scope.QueryResults.QueryResult;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** specialized subtype of registrygooglepanel that displays summary
  * of queries services.
@@ -36,9 +43,10 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @since May 2, 20075:58:51 PM
  */
 public class ScopeServicesList extends RegistryGooglePanel
-	implements QueryResultSummarizer{
+	implements QueryResultCollector{
 
-	/**
+    private final AstroScopeLauncherImpl astroscope;
+    /**
 	 * @param reg
 	 * @param browser
 	 * @param regBrowser
@@ -48,62 +56,96 @@ public class ScopeServicesList extends RegistryGooglePanel
 	 * @param pref 
 	 * @param pref
 	 */
-	public ScopeServicesList(RegistryInternal reg, Ehcache resources, Ehcache bulk, IterableObjectBuilder views,VoMonInternal vomon, final CapabilityIconFactory iconFac,AnnotationService annServer, Preference pref) {
-		super(reg, resources, bulk, views,vomon, iconFac,annServer,pref);		
+	public ScopeServicesList(AstroScopeLauncherImpl parent,RegistryInternal reg, Ehcache resources, Ehcache bulk
+	        ,TypesafeObjectBuilder uiBuilder, ActivitiesManager acts
+	        ,VoMonInternal vomon, final CapabilityIconFactory iconFac,AnnotationService annServer, Preference pref) {
+		super(parent,reg, resources, bulk, uiBuilder
+		        ,createServicesListViews(parent,uiBuilder,acts)
+		        ,vomon, iconFac,annServer,pref);
+        this.astroscope = parent;		
 		summary.setTitle("Query Results");
 	} 
-	// overridden -- to return results too
-	protected String[] viewNames() {
-	    return (String[])ArrayUtils.addAll(new String[]{"results"},super.viewNames());
+
+	protected static  ResourceViewer[] createServicesListViews(AstroScopeLauncherImpl parent, TypesafeObjectBuilder uiBuilder, ActivitiesManager acts) {
+	    return (ResourceViewer[])ArrayUtils.addAll(
+                new ResourceViewer[]{
+                        uiBuilder.createResultsResourceView(parent,acts)
+                        }
+                ,createDefaultViews(parent,uiBuilder)
+                );
 	}
+
 /** map of additional informaiton for each service resource
  * key - the resource object
  * value - an Integer (number of results), or String (err message);
  */
-	final Map results = new HashMap();
-	/** bidirectional map between Resource objects and TreeNodes */
-	final BidiMap services = new DualHashBidiMap();
-
+	private final QueryResults queryResults = new QueryResults();
 	/** overridden - to show additional columns */
 	protected ResourceTableFomat createTableFormat() {
-		return new ServicesListTableFormat(annServer,vomon,iconFac);
+	    return new ServicesListTableFormat(annServer,vomon,iconFac);
 	}
-	
-// query summarizer interface
+
+	// query summarizer interface
 	public void clear() {
 		super.clear();
-		results.clear();
-		services.clear();
+		queryResults.clear();
+
 	}
-	public void addQueryResult(Service ri,TreeNode node, int resultCount, String message) {
-		if( node != null) {
-			services.put(ri,node);
-		}
-		items.getReadWriteLock().writeLock().lock();
-		try {
-			if (resultCount == QueryResultSummarizer.ERROR) {
-				results.put(ri,message);
-				super.items.add(ri);
-			} else {
-				results.put(ri,new Integer(resultCount));
-				super.items.add(ri);
-			}
-		} finally {
-			items.getReadWriteLock().writeLock().unlock();
-		}
+	/** add a number of services to the tabular display */
+	public void addAll(Service[] services) {
+	    VizModel model = astroscope.getVizModel(); // can only access this now, not in the construct, as it's not yet been initialized at this point.
+	    for (int i = 0; i < services.length; i++) {
+	        // eagerly create this, and hang onto it - else it tends to get GC'd and we
+	        // lost the results tree
+	        FileObject fo = null;
+	        try {
+	            fo = model.createResultsDirectory(services[i]);
+	        } catch (FileSystemException e) {
+	            logger.warn("Inable to create results directory for " + services[i].getId());
+	        }
+	        QueryResult qr = new QueryResult(services[i],fo);
+	        queryResults.addResult(qr);
+	    }
+	    items.getReadWriteLock().writeLock().lock();
+	    try {
+	        items.addAll(Arrays.asList(services));
+	    } finally {
+	        items.getReadWriteLock().writeLock().unlock();
+	    }        
 	}
-	// other public methods
-	/** for a service resource find the corresponding tree node */
-	public TreeNode findTreeNode(Service s) {
-		return (TreeNode)services.get(s);
+
+	public void addQueryFailure(Service ri, Throwable t) {
+	    String message= ExceptionFormatter.formatException(t);
+	    if (astroscope.isTransientWarnings()) {
+	        parent.showTransientWarning("Unable to query " + ri.getTitle()
+	            ,message.length() < 200 ? message : "See services view for details");
+	    }
+	    queryResults.getResult(ri).error = message;
+	    notifyServiceUpdated(ri);
 	}
+
+    public void addQueryResult(Service ri, AstroscopeTableHandler handler) {
+        final QueryResult qr = queryResults.getResult(ri);
+        qr.count = new Integer(handler.getResultCount());
+        queryResults.associateNode(qr,handler.getServiceNode());
+        notifyServiceUpdated(ri);
+    }
+    
+    private void notifyServiceUpdated(Service ri) {        
+        int ix = items.indexOf(ri);
+        if (ix != -1) {
+          items.set(ix,ri); // updates the table
+        }
+        // now if we're in results view, and it's the selected item that's just updated, make the 
+        // results view update to.
+        if (tabPane.getSelectedIndex() ==0 && ri.equals(currentlyDisplaying)) {
+            resourceViewers[0].display(ri);
+        }
+    }
 	
-	/** for a tree node, find the corresponding service resource */
-	public Service findService(TreeNode t) {
-		return (Service)services.getKey(t);
-	}
-	
-	/** give access to the table contents */
+	/** give access to the table contents 
+	 * @todo remove this if unused later
+	 * */
 	public EventList getList() {
 		return edtItems;
 	}
@@ -121,7 +163,11 @@ public class ScopeServicesList extends RegistryGooglePanel
                 // has to handle integers, and the string 'failed'
                 public int compare(Object arg0, Object arg1) {
                     if (arg0 instanceof String) {
-                        return -1;
+                        if (arg1 instanceof String) {
+                            return ((String)arg0).compareTo((String)arg1);
+                        } else {
+                            return -1;
+                        }
                     } else if (arg1 instanceof String) {
                         return 1;
                     } else {
@@ -130,37 +176,30 @@ public class ScopeServicesList extends RegistryGooglePanel
                 }
             }){
                 public Object getColumnValue(Object baseObj) {
-                    Resource r = (Resource)baseObj;
-                    Object o = results.get(r);
-                    return o != null && (o instanceof Integer) ? o : "Failed";                    
+                    Service r = (Service)baseObj;
+                    return queryResults.getResult(r).getFormattedResultCount();          
                 }
                 public void configureColumn(TableColumn tcol) {
                     tcol.setPreferredWidth(60);
                 }
             };
-            /* don't include this here - put it in the results pane instead 
-            more[already.length + 1] = new StringColumn(ERRORS_NAME,true) {
 
-                protected String getValue(Resource r) {
-                    Object o = results.get(r);
-                    return o != null && (o instanceof String) ? (String)o : "";
-                }
-                public void configureColumn(TableColumn tcol) {
-                    tcol.setPreferredWidth(500);
-                }
-            };
-            */
             setColumns(more);
         }
 
         private final static String RESULTS_NAME = "Results"; // integer, comparableComparator
-	    //private final static String ERRORS_NAME = "Error Message"; // long string, caseInsensitiveComparator
 
 	    
 	    public String[] getDefaultColumns() {
 	        return new String[] {
-	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,CAPABILITY_NAME//,ERRORS_NAME
+	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,CAPABILITY_NAME
 	        };
 	    }
 	}
+
+    public final QueryResults getQueryResults() {
+        return this.queryResults;
+    }
+
+
 }

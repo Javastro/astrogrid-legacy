@@ -13,14 +13,16 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
-
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 
+import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
@@ -32,6 +34,10 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * also acts as a bridge, to keep the selection set synchrobnized between the 
  * prefuse and glazed lists worlds. 
  * 
+ * There's code in here to do partial synching of selection.
+ * Also the start of code to do filtering of views - hiding this for the next release thoug
+ * @todo complete selection synch and filtering synch. needs an architectural rethink, and a clearer description of what I'm trying to do.
+ * 
  * at the moment this implementation listens to selection changes constantly - however, we could 
  * just do a synch-of-selection when the view flips? Depends how we're doing activity selections
  * 
@@ -40,21 +46,32 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 12, 200712:24:42 PM
  */
-public class VizualizationsPanel extends FlipPanel implements FocusListener, ListEventListener {
+public class VizualizationsPanel extends FlipPanel implements FocusListener, ListEventListener, FunctionList.AdvancedFunction {
 
-    private final VizualizationManager viz;
+    private final VizualizationController viz;
     private final EventList tableSelected;
-    private final FocusSet vizSelected;
-    private final ScopeServicesList table;    
+    private final FocusSet vizSelected;  
     private boolean servicesHasPrecedence = false;
+    private final QueryResults queryResults;
+    private final EventList displayedResources;
+    private final Vizualization radialViz;
+    private final Vizualization hyperbolicViz;
+    private final ScopeServicesList table;
     
-    public VizualizationsPanel(VizualizationManager viz,Vizualization radialViz, Vizualization hyperbolicViz, ScopeServicesList table) {
+    public VizualizationsPanel(VizualizationController viz,Vizualization radialViz, Vizualization hyperbolicViz, ScopeServicesList table) {
         this.viz = viz;
-        this.vizSelected = viz.getVizModel().getSelectionFocusSet();    
-        vizSelected.addFocusListener(this);
+        this.radialViz = radialViz;
+        this.hyperbolicViz = hyperbolicViz;
         this.table = table;
+        this.vizSelected = viz.getVizModel().getSelectionFocusSet();   
+        this.queryResults = table.getQueryResults();
         this.tableSelected = table.getCurrentResourceModel().getTogglingSelected();
-        tableSelected.addListEventListener(this);
+      //not sunching view selection at the moment... 
+        //vizSelected.addFocusListener(this);
+        //tableSelected.addListEventListener(this); // listen to this for selection changes
+        this.displayedResources = table.getCurrentDisplayedResources();
+        // create a funciton list, just for the side effect.
+        new FunctionList(displayedResources, this);
         add(RADIAL_VIEW,radialViz.getDisplay());
         add(HYPERBOLIC_VIEW,hyperbolicViz.getDisplay());
         add(SERVICES_VIEW,table);
@@ -71,7 +88,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
              for (int i = 0; i < added.length; i++) {
                  if (added[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = table.findService((TreeNode)added[i]);
+                     Service s = queryResults.findService((TreeNode)added[i]);
                      if (s != null && ! tableSelected.contains(s)) {
                          tableSelected.add(s); 
                      }
@@ -83,7 +100,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
              for (int i = 0; i < removed.length; i++) {
                  if (removed[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = table.findService((TreeNode)removed[i]);
+                     Service s = queryResults.findService((TreeNode)removed[i]);
                      if (s != null && tableSelected.contains(s)) {
                          tableSelected.remove(s); 
                      }
@@ -96,7 +113,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
                  TreeNode t = (TreeNode)i.next();
                  if (t.getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = table.findService(t);
+                     Service s = queryResults.findService(t);
                      if (s != null && ! tableSelected.contains(s)) {
                          tableSelected.add(s); 
                      }
@@ -106,22 +123,35 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
  }
 
 // table listener interface.
- public void listChanged(ListEvent listChanges) {
-     if (! servicesHasPrecedence) {
-         return;
-     }     
-     // just synch the two views - too fiddly to compute the differences.
-     // especially as prefuse might have non-service subtrees selected anyhow.
-     vizSelected.clear();    
-     for(int i = 0; i < tableSelected.size(); i++) {
-         Service s = (Service)tableSelected.get(i);
-         TreeNode t = table.findTreeNode(s);
-         if (t != null) {
-             DoubleClickMultiSelectFocusControl.selectSubtree(t,vizSelected);
-         }
-     }     
-     viz.reDrawGraphs();     
+ public void listChanged(ListEvent ev) {
+     if (ev.getSourceList() == tableSelected) { // selection changed event
+         if (! servicesHasPrecedence) {
+             return;
+         }     
+         clearPrefuseSelection();    
+         for(int i = 0; i < tableSelected.size(); i++) {
+             Service s = (Service)tableSelected.get(i);
+             TreeNode t = queryResults.findTreeNode(s);
+             if (t != null) {
+                 DoubleClickMultiSelectFocusControl.selectSubtree(t,vizSelected);
+             }
+         }     
+        viz.reDrawGraphs();     
+     }
  }
+
+/**
+ * 
+ */
+private void clearPrefuseSelection() {
+    // just synch the two views - too fiddly to compute the differences.
+     // especially as prefuse might have non-service subtrees selected anyhow.
+     for (Iterator i = vizSelected.iterator(); i.hasNext(); ) {
+         TreeNode n = (TreeNode)i.next();
+         n.setAttribute("selected","false");
+     }
+     vizSelected.clear();
+}
  
 //actions for use in menus. 
  protected class RadialAction extends AbstractAction {
@@ -132,6 +162,10 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
          putValue(SHORT_DESCRIPTION,"view the results as a spoked graph");            
      }
      public void actionPerformed(ActionEvent e) {
+         if (servicesHasPrecedence) { // we've flipped from services view - clear selection
+             clearPrefuseSelection();
+             viz.reDrawGraphs();               
+         }
          show(RADIAL_VIEW);
          servicesHasPrecedence = false;
      }
@@ -143,6 +177,10 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
          putValue(SHORT_DESCRIPTION,"view the results as a radial graph (shows all nodes)");            
      }
      public void actionPerformed(ActionEvent e) {
+         if (servicesHasPrecedence) { // we've flipped from services view - clear selection
+             clearPrefuseSelection();      
+             viz.reDrawGraphs();               
+         }         
          show(HYPERBOLIC_VIEW);
          servicesHasPrecedence = false;
      }
@@ -154,8 +192,13 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
          putValue(SHORT_DESCRIPTION,"view the results in a table of queried tables");
      }
      public void actionPerformed(ActionEvent e) {
+         // select all files contents.         
+         tableSelected.clear();
+         if (table.getCurrentDisplayedResources().size() > 0) {
+             tableSelected.add(table.getCurrentDisplayedResources().get(0));
+         }
          show(SERVICES_VIEW);
-         servicesHasPrecedence = true;
+         servicesHasPrecedence = true;        
      }
  }
 
@@ -174,6 +217,31 @@ public final Action getRadialAction() {
 }
 public final Action getHyperbolicAction() {
     return this.hyperbolicAction;
+}
+/** attribute set when this branch is to be filtered out of the results view */
+public static final String SERVICE_FILTERED_ATTR = "service-filtered";
+/** a resource is removed from the list */
+public void dispose(Object sourceValue, Object transformedValue) {
+    Service res = (Service)sourceValue;
+    TreeNode node = queryResults.findTreeNode(res);
+    if (node != null) {
+        node.setAttribute(SERVICE_FILTERED_ATTR,"true");
+    }
+}
+
+// shouldn't really ever happen.
+public Object reevaluate(Object sourceValue, Object transformedValue) {
+    return null;
+}
+
+/** called when an item appears in the list */
+public Object evaluate(Object sourceValue) {
+    Service res = (Service)sourceValue;
+    TreeNode node = queryResults.findTreeNode(res);
+    if (node != null) {        
+        node.setAttribute(SERVICE_FILTERED_ATTR,"false");
+    }
+    return sourceValue;
 }
 
 

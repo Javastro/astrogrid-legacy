@@ -1,11 +1,36 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.datatransfer.Transferable;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import junit.framework.Assert;
+
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.vfs.FileChangeEvent;
+import org.apache.commons.vfs.FileListener;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystem;
+import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.FileType;
+import org.apache.commons.vfs.provider.AbstractFileObject;
+import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FilesTable;
+import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
@@ -21,41 +46,55 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
  *
  */
-public  class VizModel implements QueryResultSummarizer {
-	public static final String NOMENU_ATTRIBUTE = "nomenu";
+public  final class VizModel {
     private final TreeNode rootNode;
-    private final ScopeTransferableFactory transferableFactory;
     private final FocusSet selectionFocusSet;
     private final NodeSizingMap nodeSizingMap;
-    private final QueryResultSummarizer summarizer;
     private final Tree tree;
     private final DalProtocolManager protocols;
-    public VizModel(DalProtocolManager protocols, QueryResultSummarizer summarizer
-    		, FileSystemManager vfs) {
-        this.protocols = protocols;        
-        this.summarizer = summarizer;
-        this.transferableFactory = new ScopeTransferableFactory(vfs);
+    private final AstroScopeLauncherImpl parent;    
+    private FileSystem resultsFS;
+    final FileSystemManager vfs;
+    private final QueryResultCollector summarizer;
+    private final IconFinder iconFinder;
+    public VizModel(AstroScopeLauncherImpl parent,DalProtocolManager protocols, QueryResultCollector summarizer
+    		, FileSystemManager vfs, IconFinder iconFinder) {
+        this.parent = parent;
+        this.protocols = protocols;
+        this.summarizer = summarizer;        
+        this.vfs = vfs;
+        this.iconFinder = iconFinder;
         this.nodeSizingMap = new NodeSizingMap();
         this.selectionFocusSet = new DefaultFocusSet();       
-        rootNode = new DefaultTreeNode();
+        rootNode = new ImageTreeNode(IconHelper.loadIcon("scope16.png").getImage());
         rootNode.setAttribute(Retriever.LABEL_ATTRIBUTE,"Search Results");
-        rootNode.setAttribute(NOMENU_ATTRIBUTE,"true");
         Font ft = new Font(null,Font.BOLD,14);
         rootNode.setAttribute(Retriever.FONT_ATTRIBUTE,ft.toString());
         
+        createResultsFilesystem();
+                
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
             p.setVizModel(this);
             TreeNode primary = p.getPrimaryNode();
-            primary.setAttribute(Retriever.LABEL_ATTRIBUTE,p.getName());
-            primary.setAttribute(NOMENU_ATTRIBUTE,"true");
-           
             DefaultEdge primaryEdge = new DefaultEdge(rootNode,primary);
             primaryEdge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");
             rootNode.addChild(primaryEdge);            
         }
+ 
+        tree = new DefaultTree(rootNode);   
+             
+    }
 
-        tree = new DefaultTree(rootNode);          
+    /**
+     * @param vfs
+     */
+    private void createResultsFilesystem() {
+        try {
+            this.resultsFS = vfs.createVirtualFileSystem("astroscope://").getFileSystem();
+        } catch (FileSystemException x) {
+            throw new RuntimeException("Not expected to fail",x);
+        }
     }
 
     /** clears the graph, plus all selections */
@@ -72,14 +111,13 @@ public  class VizModel implements QueryResultSummarizer {
         for (Iterator i = getTree().getNodes(); i.hasNext(); ) {
             Node n = (Node)i.next();
             n.setAttribute("selected","false");
-        }                
-    }        
-   
+        }    
 
-   
-    
-    public TreeNode getRootNode() {
-        return rootNode;
+        // seems like I can't remove these junctions - nuciance.
+        // just need to delete the whole fs.
+        vfs.closeFileSystem(resultsFS);
+        createResultsFilesystem();
+        
     }        
 
     /** focus set used to maintain list of nodes selected for download.
@@ -89,22 +127,9 @@ public  class VizModel implements QueryResultSummarizer {
         return selectionFocusSet;
     }
 
-
     /**access the shared data model */
     public Tree getTree() {
         return tree;
-    }
-    
-    /** returns true if this node is == to the root of one of the result branches
-     */
-    public boolean isPrimaryNode(TreeNode t) {
-        for (Iterator i = protocols.iterator(); i.hasNext(); ) {
-            DalProtocol p = (DalProtocol)i.next();
-            if (t == p.getPrimaryNode()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public DalProtocolManager getProtocols() {
@@ -115,37 +140,110 @@ public  class VizModel implements QueryResultSummarizer {
         return nodeSizingMap;
     }
 
-    /** helper method - find node by label
-     * 
-     * @param label label to search for
-     * @param startNode starting point to search downwards from. if null, use {@link #getRootNode()}
-     * @return treenode with matching label, or null;
-     */
-    protected TreeNode findNode(String label, TreeNode startNode) {
-        if(startNode == null)  {
-            startNode = getRootNode();
-        }
-        Iterator iter = startNode.getChildren();
-        while(iter.hasNext()) {
-            TreeNode n = (TreeNode)iter.next();
-            if(n.getAttribute(Retriever.LABEL_ATTRIBUTE).equals(label)) {
-                return n;
-            }
-        }
-        return null;
-    }
-    /** just delegates to the true summarizer */
-	public void addQueryResult(Service ri, TreeNode n,int resultCount, String message) {
-		summarizer.addQueryResult(ri,n,resultCount,message);
-	}
-
 	/** Build a transferable that represents the interesting parts of the selection
 	 * as file objects.
 	 * @future reimplement so this is a single object, repopulated on each selection change.
 	 */
 	public Transferable getSelectionTransferable() {
-		return transferableFactory.create(getSelectionFocusSet());
-		
+	    List l = new ArrayList();
+        // scan through the selection, looking for nodes who  offer a FileObject.
+        for (Iterator i = getSelectionFocusSet().iterator(); i.hasNext();) {
+            TreeNode tn = (TreeNode) i.next();
+            if (tn instanceof FileProducingTreeNode) {
+                FileObject fo = ((FileProducingTreeNode)tn).getFileObject();
+                if (fo != null) {
+                    l.add(fo);
+                }
+            }
+        }
+        switch (l.size()) {
+        case 0:
+            return null; 
+        case 1:
+            return new FileObjectTransferable((FileObject)l.get(0),false);
+        default:
+            return new FileObjectListTransferable(l); 
+        }
 	}
+
+	/** add a result into the results direcotry. 
+	 * 
+	 * @param serv the service to add a result for
+	 * @param name the name of the result
+	 * @param result the file object that contains the contents of the result.
+	 * @param the tree node to cache the freshly created file object in.
+	 */
+	public void addResultFor(Service serv,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
+	        final String serviceDir = mkFileName(serv);
+	        int renameCount = 0;	        
+	        final String prefix = StringUtils.substringBeforeLast(name,".");
+	        final String suffix = StringUtils.substringAfterLast(name,".");
+	            String fullName;
+	            FileObject candidate; 	        
+	            do { // make a unique name
+	                if (renameCount == 0) {
+	                    fullName = serviceDir + "/" + name;
+	                } else {
+	                    fullName = serviceDir + "/" + prefix + "-" + renameCount + "." + suffix;
+	                }
+	                synchronized(resultsFS) {
+	                    candidate = resultsFS.resolveFile(fullName);
+	                }
+	                renameCount++;
+	            } while (candidate != null && candidate.exists());
+	            // ok, found a candidate that doesn't yet exist.
+	            resultsFS.addJunction(fullName,result);
+	            
+	            // now find the image, based on the filename.
+	             Image image = iconFinder.find(candidate).getImage();
+
+                ((FileProducingTreeNode)node).setFileObject(candidate,image);
+	}
+	
+	/**
+	 *  Create an astroscope file object - a lazy wrapper around a 
+	 *  real url file result.
+	 * @param url the real data
+	 * @param size the data size - mustbe correct, else data will not be all read.
+	 * @param date last modification date
+	 * @param type the content-type of the data
+	 * @return
+	 * @throws FileSystemException
+	 */
+	public AstroscopeFileObject createFileObject(URL url,long size,long date,String type) throws FileSystemException {
+	    FileObject core = vfs.resolveFile(url.toString());
+	    return new AstroscopeFileObject(core,size,date,type);
+	}
+	
+	/** create a results directory for this service.
+	 * @param serv
+	 * @return
+	 * @throws FileSystemException 
+	 */
+	public FileObject createResultsDirectory(Service serv) throws FileSystemException {
+	    String name = mkFileName(serv);
+	    FileObject fo= resultsFS.resolveFile(name);	    
+	    return fo;
+     
+	}
+	
+	/** compute a legal and fairly pretty filename from a service id */
+	private String mkFileName(Service s) {
+	    java.net.URI id = s.getId();
+	    String munged = id.getAuthority()  + StringUtils.replace(id.getPath(),"/","_");
+	    return "/" + URLEncoder.encode(munged);
+	}
+	
+
+
+    public final AstroScopeLauncherImpl getParent() {
+        return this.parent;
+    }
+
+    public final QueryResultCollector getSummarizer() {
+        return this.summarizer;
+    }
+
+    
 
 }

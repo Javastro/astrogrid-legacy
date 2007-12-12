@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -28,6 +30,9 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 		PlasticScavenger.configureActivity("resources",this,plas);
 	}
 
+	public JMenuItem createMenuItem() {
+	    return super.createHidingMenuItem();
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		final List l = computeInvokable();

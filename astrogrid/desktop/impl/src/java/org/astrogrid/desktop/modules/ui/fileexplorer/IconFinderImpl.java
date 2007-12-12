@@ -47,8 +47,11 @@ public final class IconFinderImpl implements IconFinder {
 		typeMap.put(VoDataFlavour.MIME_ADQL,"fileadql16.png");
 		typeMap.put(VoDataFlavour.MIME_ADQLX,"fileadql16.png");		
 		typeMap.put(VoDataFlavour.MIME_CEA,"filetool16.png");
+		typeMap.put(VoDataFlavour.MIME_VOEVENT,"filenews16.png");
 		typeMap.put("text/x-python","source16.png");
 		typeMap.put("text/x-perl","source16.png");
+		typeMap.put("video/mpeg","filevideo16.png");
+		
 	}
 	public ImageIcon find(FileObject fo) {
 		try {

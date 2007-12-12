@@ -18,6 +18,7 @@ import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
+import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement;
@@ -35,6 +36,7 @@ import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm.Model;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
@@ -73,8 +75,10 @@ public interface TypesafeObjectBuilder {
     public ExecutionTracker createExecutionTracker(UIComponent parent);
     
     /** returns a new object as named <tt>registryGooglePanel</tt> */
-    public RegistryGooglePanel createGooglePanel();
+    public RegistryGooglePanel createGooglePanel(UIComponent parent);
     
+    /** returns a scope services list */
+    public ScopeServicesList createScopeServicesList(AstroScopeLauncherImpl parent,ActivitiesManager acts);
     
     /** returns a new object as named <tt>taskParametersForm</tt> */
     public TaskParametersForm createTaskParametersForm(UIComponentWithMenu parent);
@@ -103,8 +107,15 @@ public interface TypesafeObjectBuilder {
     
     
     //
+    // resource viewers.
+    ResourceViewer createFormattedResourceView();
+    ResourceViewer createAnnotatedResourceView();
+    ResourceViewer createTableResourceView();
+    ResourceViewer createXMLResourceView(UIComponent parent);
+    ResourceViewer createResultsResourceView(AstroScopeLauncherImpl parent,ActivitiesManager acts);
+   
     // access the core object builder
-    public ObjectBuilder getObjectBuilder();
+   // public ObjectBuilder getObjectBuilder();
 
 
     

@@ -30,6 +30,7 @@ public class AugmentedFileContentInfoFilenameFactory extends HashMap implements 
 			put("adql",VoDataFlavour.MIME_ADQL);
 			put("adqlx",VoDataFlavour.MIME_ADQLX);			
 			put("tool",VoDataFlavour.MIME_CEA);
+			put("voevent",VoDataFlavour.MIME_VOEVENT);
 			put("py","text/x-python");
 			put("pl","text/x-perl");
 			
@@ -38,9 +39,12 @@ public class AugmentedFileContentInfoFilenameFactory extends HashMap implements 
 	           String contentType = null;
 	           String name = fileContent.getFile().getName().getBaseName();
 	           if (name != null){
-	        	   contentType = (String) this.get(fileContent.getFile().getName().getExtension());
+	        	   final String extension = fileContent.getFile().getName().getExtension();
+	        	   if (extension != null) {
+	        	       contentType = (String) this.get(extension.toLowerCase());
 	        	   if (contentType == null) {
 	        		   contentType = inner.getContentTypeFor(name);
+	        	   }
 	        	   }
 	           }
 	           return new DefaultFileContentInfo(contentType, null);

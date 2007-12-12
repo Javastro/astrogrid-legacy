@@ -2,9 +2,12 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 
 
+import java.util.Iterator;
+
 import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.FocusManager;
@@ -45,8 +48,9 @@ import edu.berkeley.guir.prefusex.layout.RadialTreeLayout;
 
 public class WindowedRadialVizualization extends Vizualization {
 /** Construct a new Radial
+ * @param iconFinder 
      */
-    public WindowedRadialVizualization(VizualizationManager vizs, JPopupMenu menu, UIComponent parent) {
+    public WindowedRadialVizualization(VizualizationController vizs, JPopupMenu menu, UIComponent parent) {
         super("Radial", vizs);
         this.parent = parent;
         this.popup = menu;        
@@ -55,6 +59,20 @@ public class WindowedRadialVizualization extends Vizualization {
     protected ActionList graphLayout;
     private final UIComponent parent;
     private JPopupMenu popup;    
+    
+    
+    
+    /** returns true if this node is == to the root of one of the result branches
+     */
+    public boolean isPrimaryNode(TreeNode t) {
+        for (Iterator i = vizs.getVizModel().getProtocols().iterator(); i.hasNext(); ) {
+            DalProtocol p = (DalProtocol)i.next();
+            if (t == p.getPrimaryNode()) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     public Display getDisplay() {
             if (display == null) {
@@ -80,7 +98,7 @@ public class WindowedRadialVizualization extends Vizualization {
                         Entity e = event.getFirstAdded();
                         if (e instanceof TreeNode) {
                             TreeNode t = (TreeNode)e;
-                            if (vizs.getVizModel().isPrimaryNode(t)) {
+                            if (isPrimaryNode(t)) {
                                 filterSwitch.setSwitchValue(1);
                                 return;
                             } else if(t.getChildCount() == 0) {
@@ -135,7 +153,8 @@ public class WindowedRadialVizualization extends Vizualization {
            display.addControlListener(new ToolTipControl(Retriever.TOOLTIP_ATTRIBUTE));   
            display.addControlListener(new NeighborHighlightControl(update));
            display.addControlListener(new DoubleClickMultiSelectFocusControl(vizs));
-           display.addControlListener(new SendToMenuControl(popup,parent));           
+  
+//@todo renable           display.addControlListener(new SendToMenuControl(popup,parent));           
            
            registry.getFocusManager().putFocusSet(
                    FocusManager.HOVER_KEY, new DefaultFocusSet());

@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.17 2007/11/27 07:09:51 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.18 2007/12/12 13:54:14 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -88,6 +88,11 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             public final boolean isSystem() {
                 return system;
             }            
+            /** return the priority of this worker.
+             * If priority == Thread.MAX_PRIORITY then this thread will always be executed immediately.
+             * otherwise, if the thread pool is all busy, it'll be added to a prioritized queue, which selects next task based on priority.
+             * @return
+             */
             public final int getPriority() {
                 return priority;
             }            
@@ -503,7 +508,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                 BackgroundWorker other = (BackgroundWorker)o;
                 int val = other.priority - this.priority; // higher priority => higher value. the queue takes the _least_ value - so reversed here.
                 if (val == 0) {
-                    val =(int)( this.unqId - other.unqId); // smallest id takes priority 
+                    val =(int)( this.unqId - other.unqId); // smallest id (i.e. oldest task) takes priority 
                 }
                 return val;
         }
@@ -519,6 +524,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.18  2007/12/12 13:54:14  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.17  2007/11/27 07:09:51  nw
 integrate commons.io
 

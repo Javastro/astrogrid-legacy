@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.10 2007/10/23 09:26:00 nw Exp $
+/*$Id: StapProtocol.java,v 1.11 2007/12/12 13:54:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
@@ -31,7 +32,7 @@ public class StapProtocol extends TemporalDalProtocol {
     /** Construct a new StapProtocols
      */
     public StapProtocol(     Registry reg,Stap stap) {
-        super("Timed Data");
+        super("Timed Data",IconHelper.loadIcon("latest16.png").getImage());
         this.reg =  reg;
         this.stap = stap;
     }
@@ -50,14 +51,14 @@ public class StapProtocol extends TemporalDalProtocol {
 
 
 
-	public Retriever createRetriever(UIComponent parent, Service i, Date start, Date end, double ra, double dec, double raSize, double decSize, String format) {
-		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize,format); 
+	public Retriever createRetriever(Service i, Date start, Date end, double ra, double dec, double raSize, double decSize, String format) {
+		return new StapRetrieval(i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize,format); 
 				 
 	}
 
 
-	public Retriever createRetriever(UIComponent parent, Service i, Date start, Date end, double ra, double dec, double raSize, double decSize) {
-		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize); 
+	public Retriever createRetriever( Service i, Date start, Date end, double ra, double dec, double raSize, double decSize) {
+		return new StapRetrieval(i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize); 
 				 
 	}
     
@@ -77,6 +78,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.11  2007/12/12 13:54:12  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.10  2007/10/23 09:26:00  nw
 RESOLVED - bug 2189: How to query stap services
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2189

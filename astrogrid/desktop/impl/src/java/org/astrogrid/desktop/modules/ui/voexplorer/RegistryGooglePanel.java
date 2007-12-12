@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.23 2007/11/26 14:44:45 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.24 2007/12/12 13:54:15 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -74,12 +74,12 @@ import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.AdjustableColumnModel;
 import org.astrogrid.desktop.modules.ui.comp.CheckBoxMenu;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.TableColumnModelAdapter;
-import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.EditableResourceViewer;
@@ -130,7 +130,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class RegistryGooglePanel extends JPanel
 implements ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
 
-	private static final Log logger = LogFactory
+	protected static final Log logger = LogFactory
 			.getLog(RegistryGooglePanel.class);
 
     /** key in preferences database for this class giving list of table columns displayed.  The value is a tab-separated list of column names. */
@@ -323,9 +323,10 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 			
 		}		
 		protected void doAlways() {
-		    if (! isInterrupted()) {
+		    // think it should fire even on interrupt.
+		   // if (! isInterrupted()) {
 		        fireLoadCompleted();
-		    }
+		    //}
 		}
 	}
 	
@@ -419,10 +420,11 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	protected final CapabilityIconFactory iconFac;
 	protected final Ehcache bulk;
 	protected final JComponent toolbar;
-	private final ResourceViewer[] resourceViewers;
+	protected final ResourceViewer[] resourceViewers;
 	protected final AnnotationService annServer;
 	// stuff that's accessed when composing this pane together in the UI.
-	public final UIComponentBodyguard parent;
+	protected final UIComponent parent;
+	protected final TypesafeObjectBuilder uiBuilder;
 
     protected final SearchSummaryFormatter summary;
 
@@ -445,17 +447,29 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * @param advancedPreference 
 	 * @param pref controls whether to display 'advanced' features of the ui.
 	 */
-	public RegistryGooglePanel(final RegistryInternal reg,
-			final Ehcache resources, final Ehcache bulk, IterableObjectBuilder viewFactory
+	public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg,
+			final Ehcache resources, final Ehcache bulk
+			,TypesafeObjectBuilder uiBuilder
 			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {
+	    this(parent,reg,resources,bulk,uiBuilder,createDefaultViews(parent,uiBuilder)
+	        ,vm,iconFac,annServer,advancedPreference);
+	}
+	
+	/** constructor for extension that allows an alternate set of resource viewers to be provided */
+    protected RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg,
+            final Ehcache resources, final Ehcache bulk
+            ,TypesafeObjectBuilder uiBuilder, ResourceViewer[] viewers
+            , final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {	
 		super();    
-		this.parent = new UIComponentBodyguard();
+		this.parent = parent;
+		this.uiBuilder = uiBuilder;
 		this.reg = reg;
 		this.resources = resources;
 		this.bulk = bulk;
 		this.vomon = vm;
 		this.iconFac = iconFac;
 		this.annServer = annServer;
+		this.resourceViewers = viewers;
 		// prelims
 		//this.setSize(new Dimension(500,800));
 		setLayout(new BorderLayout());
@@ -490,9 +504,8 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
 				};
 		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
-		EventList filteredItems = mPipeline.getFilteredItems();
-
-		// item currenlty selected in table list.
+		filteredItems = mPipeline.getFilteredItems();
+        // item currenlty selected in table list.
 		currentResourceInView = new EventSelectionModel(filteredItems);
 		currentResourceInView.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
@@ -573,16 +586,13 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		tabPane.setBorder(BorderFactory.createEmptyBorder());
 		tabPane.addChangeListener(this);
 
-		String[] vns = viewNames();
-		resourceViewers = new ResourceViewer[vns.length];
-		for (int i = 0; i < vns.length; i++) {
-			ResourceViewer viewer= (ResourceViewer)viewFactory.create(vns[i]);
-			resourceViewers[i] = viewer;
-			viewer.addTo(parent,tabPane);
-			if (viewer instanceof EditableResourceViewer) {
+		/** attach all the resource viewers */
+		for (int i = 0; i < resourceViewers.length; i++) {
+			resourceViewers[i].addTo(tabPane);
+			if (resourceViewers[i] instanceof EditableResourceViewer) {
 			    // using an internal class here, as registryGooglePanel already implements 
 			    // change listener, and there's no easy way to distinguish between the different emitters.
-			    ((EditableResourceViewer)viewer).addChangeListener(new ChangeListener(){
+			    ((EditableResourceViewer)resourceViewers[i]).addChangeListener(new ChangeListener(){
 			        public void stateChanged(ChangeEvent e) {
 			            resourceTableModel.fireTableRowsUpdated(
 			                    currentResourceInView.getMinSelectionIndex()
@@ -601,14 +611,12 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		add(split,BorderLayout.CENTER);		
 	}
 
-	/** lists the views to create - these names are passed to the objectBuilder
-	 * this method acts as an extensio point - subclasses can alter the
-	 * number andorder of the views. */
-	protected String[] viewNames() {
-		return new String[] {
-		        "annotated"
-		        ,"table"
-		        ,"xml"
+	/** create a default set of resource views */
+	protected static ResourceViewer[] createDefaultViews(UIComponent parent,TypesafeObjectBuilder uiBuilder) {
+		return new ResourceViewer[] {
+		        uiBuilder.createAnnotatedResourceView()
+		        ,uiBuilder.createTableResourceView()
+		        ,uiBuilder.createXMLResourceView(parent)
 		        };
 	   
 	}
@@ -732,22 +740,21 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}
 	/** triggered when selected tab changes */
 	public void stateChanged(ChangeEvent evt) {
-	        previous = null; // view has changed, so need to re-render.
+	        currentlyDisplaying = null; // view has changed, so need to re-render.
 	        updateViewers();
 	}
-	private Resource previous;// tries to make things idempotent.
+	protected Resource currentlyDisplaying;// tries to make things idempotent.
 	/** controller that takes care of displayng the current resource in the currently visible viewer */
-	private void updateViewers() {
+	protected void updateViewers() {
 		List l  = currentResourceInView.getSelected();
 		if (l.isEmpty()) {
 			return;
 		}
-		//@todo for andy: try to recall what was said about multiple data displays - was it side-by-side?
 		Resource res = (Resource)l.get(0); //@todo make this work nicely when I've got a multiple selection going on - want to show latest selection.
-		if (res == previous) { // list has changed, but selected item is the same.
+		if (res == currentlyDisplaying) { // list has changed, but selected item is the same.
 			return;
 		}
-		previous = res;
+		currentlyDisplaying = res;
 		int ix = tabPane.getSelectedIndex();
 		if (ix > -1) {
 			resourceViewers[ix].display(res);
@@ -756,8 +763,8 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	
 /** halts the current query */
 	public void halt() {
-				this.parent.get().haltMyTasks();
-				fireLoadCompleted();
+				this.parent.haltMyTasks();
+				fireLoadCompleted(); 
 	}
 	
 	/** set a flag to indicate that next query will bypass the cache
@@ -767,6 +774,13 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	    bypassCache = true;
 	}
 	private boolean bypassCache = false;
+
+	/** the filtered list of items, as currently displayed in the table. */
+    private final EventList filteredItems;
+    /** access an event list of the items currently displayed in the table */
+    public EventList getCurrentDisplayedResources() {
+        return filteredItems;
+    }
 	
 	/** expose the currently viewed resource */
 	public EventSelectionModel getCurrentResourceModel() {
@@ -811,12 +825,12 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	/** set scope to just display this list of resources */
 	public void displayIdSet(Collection idList) {
 	    summary.setTitle("ID Set");
-		(new ListWorker(parent.get(),idList)).start();		
+		(new ListWorker(parent,idList)).start();		
 	}
 	
 	public void displayIdSet(String title,Collection idList) {
 	    summary.setTitle(title);
-		(new ListWorker(title,parent.get(),idList)).start();		
+		(new ListWorker(title,parent,idList)).start();		
 	}
 	
 	
@@ -825,21 +839,21 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 */
 	public void displayQuery(String query) {	
 	    summary.setTitle("XQuery");
-		(new XQueryWorker(parent.get(),query)).start();
+		(new XQueryWorker(parent,query)).start();
 	}
 	
 	public void displayQuery(String title,String query) {
         summary.setTitle(title);	
-		(new XQueryWorker(title,parent.get(),query)).start();
+		(new XQueryWorker(title,parent,query)).start();
 	}	
 	
 	public void displayQuery(SRQL query) {
 	    summary.setTitle("Query");
-		(new SRQLWorker(parent.get(),query)).start();
+		(new SRQLWorker(parent,query)).start();
 	}
 	public void displayQuery(String title,SRQL query) {
         summary.setTitle(title);		
-		(new SRQLWorker(title,parent.get(),query)).start();
+		(new SRQLWorker(title,parent,query)).start();
 	}
 
 	
@@ -943,6 +957,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.24  2007/12/12 13:54:15  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.23  2007/11/26 14:44:45  nw
 Complete - task 224: review configuration of all backgroiund workers
 

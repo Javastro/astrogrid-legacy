@@ -14,6 +14,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -57,8 +58,8 @@ public class FilesTable extends JTable {
         cm.getColumn(1).setMinWidth(200);
         cm.getColumn(2).setPreferredWidth(200);
         cm.getColumn(2).setMaxWidth(200);
-        cm.getColumn(3).setPreferredWidth(70);
-        cm.getColumn(3).setMaxWidth(70);
+        cm.getColumn(3).setPreferredWidth(90);
+        cm.getColumn(3).setMaxWidth(90);
         cm.getColumn(4).setPreferredWidth(200);
         cm.getColumn(4).setMaxWidth(200);
                 
@@ -78,14 +79,17 @@ public class FilesTable extends JTable {
                 setHorizontalAlignment(JLabel.RIGHT);
             }
             protected void setValue(Object value) {
-                long l =  value == null ? -1: ((Long)value).longValue();
-                if (l == -1) {
-                    setText(""); 
-                } else if (l > 1024) {
-                    setText(l/1024 + " MB");
-                } else {
-                    setText(l + " KB");
-                }       
+                final long l =  value == null ? -1: ((Long)value).longValue();
+                switch((int)l) {
+                    case -1:
+                        setText("");
+                        break;
+                    case -2:
+                        setText("unknown");
+                        break;
+                    default:
+                        setText(FileUtils.byteCountToDisplaySize(l));
+                }
             }
         });     
         

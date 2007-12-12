@@ -3,9 +3,13 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
+
+import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -20,17 +24,19 @@ public abstract class TemporalDalProtocol extends DalProtocol {
 	/**
 	 * @param name
 	 */
-	public TemporalDalProtocol(String name) {
-		super(name);
+	public TemporalDalProtocol(String name, Image img) {
+		super(name,img);
 	}
 
-	public abstract Retriever createRetriever(UIComponent parent,
-			Service i, Date start, Date end,
+	public abstract Retriever createRetriever(
+			Service i,
+			Date start, Date end,
 			 double ra, double dec, double raSize, double decSize,String format);
 
 	
-	public abstract Retriever createRetriever(UIComponent parent,
-			Service i, Date start, Date end,
+	public abstract Retriever createRetriever(
+			Service i,
+			Date start, Date end,
 			 double ra, double dec, double raSize, double decSize);
 
 

@@ -3,12 +3,15 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
 import java.net.URI;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +37,9 @@ import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/**
+/** At present - the query url has broken.
+ * so this reworked version (using file objects) has not been tested.
+ * If a replaceement query url is ever provided, this class will need to be tested again.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 7, 20073:35:59 PM
  */
@@ -47,7 +52,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 
 
 	public AllVizierProtocol(Cone cone) {
-		super("VizieR Tables");
+		super("All VizieR Tables",null); //@todo if we re-enable this, need to provide an image icon.
 		this.cone = cone;
 		getPrimaryNode().setAttribute(Retriever.SERVICE_LOGO_ATTRIBUTE,"http://vizier.u-strasbg.fr/vizier_tiny.gif");
 		getPrimaryNode().setAttribute(Retriever.SERVICE_ID_ATTRIBUTE,"ivo://CDS/Vizier");
@@ -67,27 +72,36 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 	}
 	
 
-	public Retriever createRetriever(UIComponent parent, Service i, double ra, double dec, double raSize, double decSize) {
+	public Retriever createRetriever(Service i, double ra, double dec, double raSize, double decSize) {
 //		return new VizierRetriever(parent,i,getPrimaryNode(),getVizModel(),ra,dec,raSize,decSize);
-		return new CatalogTerminalVizierRetriever(parent,i,getPrimaryNode(),getVizModel(),ra,dec,raSize,decSize);
+		return new CatalogTerminalVizierRetriever(i,getPrimaryNode(),getVizModel(),ra,dec,raSize,decSize);
 
 	}	
 	
 	/** variant of vizier retriever that stops at the 'catalog' node - as for catalog terminal cone retrieever */
 	public class CatalogTerminalVizierRetriever extends VizierRetriever {
 
-		public CatalogTerminalVizierRetriever(UIComponent comp, Service information, TreeNode primaryNode, VizModel model, double ra, double dec, double raSize, double decSize) {
-			super(comp, information, primaryNode, model, ra, dec, raSize, decSize);
+		public CatalogTerminalVizierRetriever(Service information, TreeNode primaryNode, VizModel model, double ra, double dec, double raSize, double decSize) {
+			super( information, primaryNode, model, ra, dec, raSize, decSize);
 		}
-		protected SummarizingTableHandler createTableHandler() {
-			return new CatalogTerminalVizierTableHandler();
+		protected AstroscopeTableHandler createTableHandler() {
+			return new CatalogTerminalVizierTableHandler( );
 		}
 		public class CatalogTerminalVizierTableHandler extends VizierTableHandler {
-			/** overridden - don't care about data - just want to count the rows */
+			/**
+             * @param serviceFolder
+             */
+            public CatalogTerminalVizierTableHandler() {
+                super();
+            }
+
+            /** overridden - don't care about data - just want to count the rows */
 			
 			public void rowData(Object[] row) throws SAXException {
-		        if (!isWorthProceeding()) { // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
-		            resultCount = QueryResultSummarizer.ERROR;
+		        if (!isWorthProceeding()) { 
+		            // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
+		            // can't throw an exception here, as with other retrievers, because I still want to 
+		            // parse the remaining tables.
 		            message = "Insufficient table metadata";
 		            return;
 		        }
@@ -106,6 +120,10 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 	
 	/** a different sort of retriever - as it fetches results for multiple 'tables'/ 'services' */
 	public class VizierRetriever extends Retriever {
+        /**
+         * Logger for this class
+         */
+        private final Log logger = LogFactory.getLog(VizierRetriever.class);
 
 		/**
 		 * @param comp
@@ -115,8 +133,8 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		 * @param ra
 		 * @param dec
 		 */
-		public VizierRetriever(UIComponent comp, Service information, TreeNode primaryNode, VizModel model, double ra, double dec,double raSize,double decSize) {
-			super(comp, information, primaryNode, model, ra, dec);
+		public VizierRetriever( Service information, TreeNode primaryNode, VizModel model, double ra, double dec,double raSize,double decSize) {
+			super(information, primaryNode, model, ra, dec);
 			this.raSize = raSize;
 		}
 		//@todo work out how to use this too.
@@ -129,8 +147,8 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		public static final String VIZIER = "vizier";
 		
 // override - don't want to return an augmented TreeNode from this one.		
-protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
-	TreeNode augmented =  super.createServiceNode(serviceURL, tooltip);
+protected TreeNode createServiceNode(URL serviceURL, long sz,String tooltip) {
+	TreeNode augmented =  super.createServiceNode(serviceURL, sz,tooltip);
 	// lazy - just copy the bits we want inro an un-augmented treenode..
 	TreeNode plain = new DefaultTreeNode();
 	plain.setAttributes(augmented.getAttributes());
@@ -139,28 +157,34 @@ protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
 		protected Object construct() throws Exception {
 	        reportProgress("Constructing query");		    
 			URL q = cone.constructQuery(vizierEndpoint,ra,dec,raSize);
+			System.err.println(q);
 	        reportProgress("Querying service");			
 			InputSource source = new InputSource(
-			        MonitoringInputStream.create(this,q,MonitoringInputStream.ONE_KB * 20));
-			SummarizingTableHandler th = createTableHandler();
+			        MonitoringInputStream.create(this,q,MonitoringInputStream.ONE_KB));
+			AstroscopeTableHandler th = createTableHandler();
 			parseTable(source,th);
 			return th;
 		}
 
-		protected SummarizingTableHandler createTableHandler() {
+		protected AstroscopeTableHandler createTableHandler() {
 			return new VizierTableHandler();
 		}
 		
 		protected void doFinished(Object result) {
 			// add summary of search results to table view.
-	       SummarizingTableHandler th = (SummarizingTableHandler)result;
-	        model.addQueryResult(service,getPrimaryNode(),th.getResultCount(),th.getMessage());                                   
-	        parent.setStatusMessage(service.getTitle() + " - " + th.getResultCount() + " results");
-	    
+	       AstroscopeTableHandler th = (AstroscopeTableHandler)result;
+	       model.getSummarizer().addQueryResult(service,th);
+		   parent.setStatusMessage(service.getTitle() + " - " + th.getResultCount() + " results");	    
 		}
 		
 		/** parser for the multi-table vizier response */
 		public class VizierTableHandler extends BasicTableHandler {
+            /**
+             * Logger for this class
+             */
+            private final Log logger = LogFactory
+                    .getLog(VizierTableHandler.class);
+
 			// count per table - different to per-service resultCount as vizier returns more than one table.
 			protected int tableRowCount; 
 			
@@ -170,39 +194,45 @@ protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
 			
 			// create a new service node for each table encountered.
 			protected void newTableExtensionPoint(StarTable st) {
-				tableRowCount =0;
-				// phew, lucky they're logical.
-				URI serviceURI = vizierEndpoint.resolve("?-source=" + st.getName());
-				String s = null;
-				try {
-					s = cone.constructQuery(serviceURI,ra,dec,raSize).toString();
-				} catch (InvalidArgumentException x) { // unlikely.
-					logger.error("InvalidArgumentException",x);
-				} catch (NotFoundException x) {
-					logger.error("NotFoundException",x);
-				}
-				// pesky finals.
-				final String serviceURL = s;
-		        serviceNode =  new FileProducingTreeNode() {
-		        	// create a service node.
-					protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
-						return factory.new AstroscopeFileObject(VoDataFlavour.MIME_VOTABLE
-								,this,serviceURL);
-					}
-		        };
-		        serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL);
-		        String title = st.getParameterByName("Description").getValue().toString();
-		        String wrapped = WordUtils.wrap(title,AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false);
-		        StringBuffer sb = new StringBuffer("<html>");
-		        sb.append(wrapped);
-		        sb.append("<br>ID: ").append(st.getName());
-		        sb.append("</html>");
-		        serviceNode.setAttribute(LABEL_ATTRIBUTE,title);
-		        serviceNode.setAttribute(WEIGHT_ATTRIBUTE,"2");
-		        serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE,st.getName());
-		        serviceNode.setAttribute(TOOLTIP_ATTRIBUTE,sb.toString());
-		        
-     
+			    tableRowCount =0;
+			    // phew, lucky they're logical.
+			    URL serviceURL = null;
+			    try {
+			        URI serviceURI = vizierEndpoint.resolve("?-source=" + st.getName());
+			        serviceURL = cone.constructQuery(serviceURI,ra,dec,raSize);
+			    } catch (InvalidArgumentException x) { // unlikely.
+			        logger.error("InvalidArgumentException",x);
+			    } catch (NotFoundException x) {
+			        logger.error("NotFoundException",x);
+			    }
+			    // pesky finals.
+			    try {
+			        AstroscopeFileObject afo = model.createFileObject(
+			                serviceURL
+			                ,AstroscopeFileObject.UNKNOWN_SIZE
+			                ,new Date().getTime()
+			                ,VoDataFlavour.MIME_VOTABLE
+			        );
+
+			        serviceNode =  new FileProducingTreeNode();
+			        String name = StringUtils.replace(st.getName(),"/","-") + ".vot"; 
+			        model.addResultFor(service,name,afo,(FileProducingTreeNode)serviceNode);
+			    } catch (FileSystemException e) {
+			        // unliklely. - fallback.
+			        serviceNode = new DefaultTreeNode();
+			    }
+			    serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL.toString());
+			    String title = st.getParameterByName("Description").getValue().toString();
+			    String wrapped = WordUtils.wrap(title,AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false);
+			    StringBuffer sb = new StringBuffer("<html>");
+			    sb.append(wrapped);
+			    sb.append("<br>ID: ").append(st.getName());
+			    sb.append("</html>");
+			    serviceNode.setAttribute(LABEL_ATTRIBUTE,title);
+			    serviceNode.setAttribute(WEIGHT_ATTRIBUTE,"2");
+			    serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE,st.getName());
+			    serviceNode.setAttribute(TOOLTIP_ATTRIBUTE,sb.toString());
+
 		    }
 			
 			public void rowData(Object[] row) throws SAXException {

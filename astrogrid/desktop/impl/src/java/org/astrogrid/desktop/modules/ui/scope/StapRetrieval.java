@@ -1,5 +1,7 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
@@ -7,6 +9,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -39,9 +42,9 @@ public class StapRetrieval extends Retriever {
 	private final Date end;
 	private final String format;
 
-	public StapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, 
+	public StapRetrieval(Service information,TreeNode primaryNode,VizModel model, 
 			Stap stap, Date start, Date end, double ra, double dec, double raSize,double decSize)  {
-		super(comp,information,primaryNode,model,ra,dec);
+		super(information,primaryNode,model,ra,dec);
 		this.raSize = raSize;
 		this.decSize = decSize;
 		this.stap = stap;
@@ -50,9 +53,9 @@ public class StapRetrieval extends Retriever {
 		this.format = null;
 	}
 
-	public StapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, 
+	public StapRetrieval(Service information,TreeNode primaryNode,VizModel model, 
 			Stap stap, Date start,Date end, double ra, double dec, double raSize,double decSize, String format)  {
-		super(comp,information,primaryNode,model,ra,dec);
+		super(information,primaryNode,model,ra,dec);
 		this.raSize = raSize;
 		this.decSize = decSize;
 		this.stap = stap;
@@ -86,20 +89,20 @@ public class StapRetrieval extends Retriever {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<html>Title: ").append(service.getTitle())
 		.append("<br>ID: ").append(service.getId());
-		if (service.getContent() != null) {
-			sb.append("<br>Description: <p>")
-			.append(service.getContent().getDescription()!= null 
-					?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
-		}
+//		if (service.getContent() != null) {
+//			sb.append("<br>Description: <p>")
+//			.append(service.getContent().getDescription()!= null 
+//					?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+//		}
 		sb.append("</html>");
 		//.append("</p><br>Service Type: ").append(((StapInformation)information).getImageServiceType())
 
-		TreeNode serviceNode = createServiceNode(stapURL, sb.toString());
+		reportProgress("Querying service");
 		// build subtree for this service
-        reportProgress("Querying service");
-		InputSource source = new InputSource(
-		        MonitoringInputStream.create(this,stapURL,MonitoringInputStream.ONE_KB ));
-		SummarizingTableHandler th = new StapTableHandler(serviceNode);
+		final MonitoringInputStream monitorStream = MonitoringInputStream.create(this,stapURL,MonitoringInputStream.ONE_KB );
+		TreeNode serviceNode = createServiceNode(stapURL,monitorStream.getSize(), sb.toString());
+        InputSource source = new InputSource( monitorStream);
+		AstroscopeTableHandler th = new StapTableHandler(serviceNode);
 		parseTable(source, th);
 		return th;           
 	}
@@ -153,7 +156,6 @@ public class StapRetrieval extends Retriever {
 		 */
 		public void rowData(Object[] row) throws SAXException {
 			if (!isWorthProceeding()) { // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
-				resultCount = QueryResultSummarizer.ERROR;
 				message = "Insufficient table metadata";
 				return;
 			}
@@ -171,9 +173,10 @@ public class StapRetrieval extends Retriever {
 			//valNode.setAttribute(DEC_ATTRIBUTE,rowDec);
 
 			// handle further parsing in subclasses.
-			String imgURL = "";
+			try {
+			URL imgURL = null;
 			if(row[accessCol] != null) {
-				imgURL = safeTrim(row[accessCol]);
+				imgURL = new URL(safeTrim(row[accessCol]));
 			}
 
 			String details; 
@@ -190,27 +193,28 @@ public class StapRetrieval extends Retriever {
             }
 			 */
 
-			valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
-			valNode.setAttribute(LABEL_ATTRIBUTE,details);
+			valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL.toString());
 			StringBuffer tooltip = new StringBuffer();
-			tooltip.append("<html><p>");//.append(rowRa).append(", ").append(rowDec);
+			tooltip.append("<html>");//.append(rowRa).append(", ").append(rowDec);
 			for (int v = 0; v < row.length; v++) {
-				if (v == parametersCol || v == referencesCol) {
+				if (v == parametersCol || v == referencesCol || v == accessCol) {
 					continue; // don't want to add these to the tooltip - treated separately below. 
 				}
 				Object o = row[v];
 				if (o == null) {
 					continue;
 				}
-				tooltip.append("<br>")
+				tooltip
 				.append(titles[v])
 				.append( ": ")
-				.append(safeTrim(o));
+				.append(safeTrim(o))
+				.append("<br>")
+				;
 			}
 			// tool tip finished later - after we've checked whether this is a voevent..
-
+			String type = null;
 			if(formatCol > -1 && row[formatCol] != null) {
-				String type = safeTrim(row[formatCol]);
+				type = safeTrim(row[formatCol]);
 				//NWW - don't see why the following is necessary..
 				//@todo Should fix this more correctly on the retriever or check about stap doing a real mime type on the return.
 				//    if(type.indexOf('-') > -1) {
@@ -229,18 +233,29 @@ public class StapRetrieval extends Retriever {
 							if (kv.length != 2) {
 								continue;
 							}
-							TreeNode referenceNode = new FileProducingTreeNode() {
-								protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
-									String url = getAttribute(IMAGE_URL_ATTRIBUTE);
-									// can't find out a real 'mimetype' here, sadly.
-									return factory.new AstroscopeFileObject("voevent reference",this,url);
-								}
-							};
-							referenceNode.setAttribute(LABEL_ATTRIBUTE,safeTrim(kv[0]));
-							String u = safeTrim(kv[1]);
-							referenceNode.setAttribute(IMAGE_URL_ATTRIBUTE,u);
-							referenceNode.setAttribute(TOOLTIP_ATTRIBUTE,u);
-							valNode.addChild(new DefaultEdge(valNode,referenceNode));
+							FileProducingTreeNode referenceNode = new FileProducingTreeNode();
+				            try {
+				                URL u = new URL(safeTrim(kv[1]));
+				                long date = new Date().getTime(); //@fixme worth this out.
+				                long size = AstroscopeFileObject.UNKNOWN_SIZE; //@todo possible to get this info from somewhere?
+				                String label = safeTrim(kv[0]);
+				                AstroscopeFileObject afo = model.createFileObject(u
+				                        ,size
+				                        ,date
+				                        ,null // don't know the mime type.
+				                );
+				                String name = afo.getName().getBaseName();
+				                model.addResultFor(service,StringUtils.replace(details,"/","_") + " - " + StringUtils.replace(label,"/","_") + " - " + name,afo,referenceNode);
+				                referenceNode.setAttribute(LABEL_ATTRIBUTE,label + " (" + name +")");
+				                referenceNode.setAttribute(IMAGE_URL_ATTRIBUTE,u.toString());
+				                referenceNode.setAttribute(TOOLTIP_ATTRIBUTE,u.toString());
+				                valNode.addChild(new DefaultEdge(valNode,referenceNode));
+				                resultCount++;
+				            } catch(FileSystemException e) {
+				                logger.warn(service.getId() + " : Unable to create result file object - skipping row",e);
+				            }catch(MalformedURLException e) {
+				                logger.warn(service.getId() + " : Unable to parse url in service response - skipping row",e);
+				            }
 						}
 					}
 					if (parametersCol != -1) {
@@ -263,33 +278,47 @@ public class StapRetrieval extends Retriever {
 			tooltip.append("</p></html>");
 			valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());            
 			String instrumentID = safeTrim(row[instCol]);
-			TreeNode instrNode = model.findNode(instrumentID, getServiceNode());
+			TreeNode instrNode =findNode(instrumentID, getServiceNode());
 			if(instrNode == null) {
 				instrNode = new DefaultTreeNode();
 				instrNode.setAttribute(LABEL_ATTRIBUTE,instrumentID);
-				instrNode.setAttribute(TOOLTIP_ATTRIBUTE,instrumentID);
+				instrNode.setAttribute(TOOLTIP_ATTRIBUTE,"Instrument: " + instrumentID);
 				getServiceNode().addChild(new DefaultEdge(getServiceNode(),instrNode));
 			}
 			instrNode.addChild(new DefaultEdge(instrNode,valNode));
+			try {
+			    long date = new Date().getTime(); //@fixme worth this out.
+			    long size = AstroscopeFileObject.UNKNOWN_SIZE; //@todo possible to get this info from somewhere?
+			    AstroscopeFileObject afo = model.createFileObject(imgURL
+			            ,size
+			            ,date
+                        ,StringUtils.containsIgnoreCase(type,"fits") ? VoDataFlavour.MIME_FITS_IMAGE : type
+                );
+			    filenameBuilder.clear();
+			    filenameBuilder.append(StringUtils.replace(details,"/","_"));
+			    if (StringUtils.contains(type,"/")) {
+			        filenameBuilder.append(".");
+			        filenameBuilder.append(StringUtils.substringAfterLast(type,"/"));
+			    } else if (StringUtils.isNotEmpty(type)) {
+		                 filenameBuilder.append(".");
+			        filenameBuilder.append(type.trim().toLowerCase());
+			    }
+			    model.addResultFor(service,filenameBuilder.toString(),afo,(FileProducingTreeNode)valNode);
+                valNode.setAttribute(LABEL_ATTRIBUTE,filenameBuilder.toString());
+			} catch(FileSystemException e) {
+			    logger.warn(service.getId() + " : Unable to create result file object - skipping row",e);
+			}
+            } catch(MalformedURLException e) {
+                logger.warn(service.getId() + " : Unable to parse url in service response - skipping row",e);
+            }			
 
 
 		}
-
-
+		private final StrBuilder filenameBuilder = new StrBuilder();
 
 		public DefaultTreeNode createValueNode() {
-			return new FileProducingTreeNode() {
-				// create a service node.
-				protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
-					String type =getAttribute(IMAGE_TYPE_ATTRIBUTE);
-					String url = getAttribute(IMAGE_URL_ATTRIBUTE);
-					return factory.new AstroscopeFileObject(
-							StringUtils.containsIgnoreCase(type,"fits")
-							? VoDataFlavour.MIME_FITS_IMAGE
-									: type
-									,this,url);
-				}
-			};
+		    return new FileProducingTreeNode();
+			
 		}
 
 		protected boolean isWorthProceeding() {

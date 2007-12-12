@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.76 2007/11/30 10:04:20 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.77 2007/12/12 13:54:14 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,19 +36,24 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
+import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
@@ -54,10 +61,12 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
@@ -70,6 +79,7 @@ import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField.ResolutionEvent;
+import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
@@ -78,20 +88,25 @@ import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
+import org.astrogrid.desktop.modules.ui.scope.VizualizationController;
 import org.astrogrid.desktop.modules.ui.scope.VizualizationsPanel;
 import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
-import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.SearchHistoryItem;
+import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.PositionHistoryItem;
 import org.freixas.jcalendar.JCalendarCombo;
 
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
+import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
+import ca.odell.glazedlists.matchers.Matcher;
+import ca.odell.glazedlists.matchers.MatcherEditor;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.l2fprod.common.propertysheet.Property;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
@@ -118,34 +133,36 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	public AstroScopeLauncherImpl(UIContext context
 			, IterableObjectBuilder protocolsBuilder
 			,  final ActivityFactory activityBuilder
+			, TypesafeObjectBuilder uiBuilder
 			, final EventList history
-			, ScopeServicesList summary
 			,FileSystemManager vfs
 			,Sesame ses
-			,SnitchInternal snitch)  {
+			,SnitchInternal snitch
+			,IconFinder iconFinder)  {
 		super(context,"Astroscope","scope.intro");
 		this.history = history;
 		this.snitch = snitch;
 		this.protocols = new DalProtocolManager();
 		this.ses = ses;
-		this.summary = summary;
-	    this.summary.parent.set(this);
+		// create the activities.
+		acts = activityBuilder.create(this, new Class[]{
+		        ViewInBrowserActivity.class
+		        ,SimpleDownloadActivity.class
+		        ,PlasticScavenger.class
+		        ,InfoActivity.class
+		});
+		JPopupMenu popup = acts.getPopupMenu();
+		// create summary after acts - as it relies upon
+		this.servicesList = uiBuilder.createScopeServicesList(this,acts);
 
 		for (Iterator i = protocolsBuilder.creationIterator(); i.hasNext(); ) {
 			protocols.add((DalProtocol)i.next());
 		}
 		
-		// create the activities.
-	      acts = activityBuilder.create(this, new Class[]{
-	              ViewInBrowserActivity.class
-	              ,SimpleDownloadActivity.class
-	              ,PlasticScavenger.class
-	      });
-	      JPopupMenu popup = acts.getPopupMenu();
 		// create the shared model
-		vizModel = new VizModel(protocols,summary,vfs);
+		vizModel = new VizModel(this,protocols,servicesList,vfs,iconFinder);
 		// create the vizualizations
-		vizualizations = new VizualizationManager(vizModel);
+		vizualizations = new VizualizationController(vizModel);
 		final WindowedRadialVizualization radialViz = new WindowedRadialVizualization(vizualizations,popup,this);
         vizualizations.add(radialViz);
 		final HyperbolicVizualization hyperbolicViz = new HyperbolicVizualization(vizualizations,popup,this);
@@ -185,8 +202,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				row++;
 			}			
 		}
-		final TemporalDalProtocol stap = tempStap; // pesky final variables..			
-		// move onto a final row if we've got an odd nummber of protocols..
+		stap = tempStap;
+        // move onto a final row if we've got an odd nummber of protocols..
 		// bearing in mind the loop iterator above will have hit again at this point.
 		if (!leftCol) {
 			row++;
@@ -360,10 +377,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		pane.add(searchPanel,BorderLayout.WEST);
 		
 	// main part of the window
-		flip = new VizualizationsPanel(vizualizations,radialViz,hyperbolicViz,summary);
+		flip = new VizualizationsPanel(vizualizations,radialViz,hyperbolicViz,servicesList);
 		
 		pane.add(flip, BorderLayout.CENTER);
-
+		showTransientWarnings = new JCheckBoxMenuItem("Show Popup Warnings");
+		showTransientWarnings.setSelected(true);
+        showTransientWarnings.setToolTipText("Show warnings about service failures in transient popup windows");
+		
 		UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
             protected void populateEditMenu(EditMenuBuilder emb) {
                 //@fixme hook these operations into the result displays.
@@ -377,38 +397,53 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
             protected void populateFileMenu(FileMenuBuilder fmb) {
                 fmb
-                //@fixme add some 'new' operations - need to think what optinos to provide for 'all'
-                // new all-vo
-                // select services
+                // @todo select services - requires reg google - maybe. or may just leave it.
                     .windowOperation(searchAction)
                     .windowOperation(haltAction)
-                    ;
+                    .separator();
+                for(Iterator i = protocols.iterator(); i.hasNext() ; ) {
+                    DalProtocol p = (DalProtocol)i.next();
+                    fmb.checkbox(p.getMenuItemCheckBox());
+                }
+                fmb.separator();
                 fmb.closeWindow();
             }
             
             protected void constructAdditionalMenus() {
                 MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
                        .windowOperation(topAction)
-                // up one level
+                       .windowOperation(upAction)
+                       .separator();
+                    JRadioButtonMenuItem radial = new JRadioButtonMenuItem(flip.getRadialAction());
+                    JRadioButtonMenuItem hyper = new JRadioButtonMenuItem(flip.getHyperbolicAction());
+                    JRadioButtonMenuItem services = new JRadioButtonMenuItem(flip.getServicesAction());
+                    ButtonGroup bg = new ButtonGroup();
+                    bg.add(radial);
+                    bg.add(hyper);
+                    bg.add(services);
+                    radial.setSelected(true);
+                       vmb.radiobox(radial)
+                           .radiobox(hyper)
+                           .radiobox(services)
                        .separator()
-                       .windowOperation(flip.getRadialAction())
-                       .windowOperation(flip.getHyperbolicAction())
-                       .windowOperation(flip.getServicesAction())
+                       .checkbox(showTransientWarnings)
                        ;                
                 add(vmb.create());
                 
                 final JMenu historyMenu = new JMenu("History");
                 historyMenu.setMnemonic(KeyEvent.VK_H);
+                FilterList filteredHistory = new FilterList(history,new ProtocolsMatcherEditor());
                 // map the history list to menu items, and display in the history menu.
-                new EventListMenuManager(new FunctionList(history,new FunctionList.Function() {
+                new EventListMenuManager(new FunctionList(filteredHistory,new FunctionList.Function() {
                     public Object evaluate(Object arg0) {
-                        SearchHistoryItem i = (SearchHistoryItem)arg0;
+                        PositionHistoryItem i = (PositionHistoryItem)arg0;
                         return new HistoryMenuItem(i);
                     }
                 }),historyMenu,false);
                 historyMenu.addSeparator();
                 historyMenu.add(new ClearHistoryAction());
                 add(historyMenu);
+                historyMenu.setEnabled(true); // can start off not.
                 
                 MenuBuilder rmb = new MenuBuilder("Result",KeyEvent.VK_R);
                 rmb
@@ -436,7 +471,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	private final EventList history;
 	private List resourceList;
 	private final SnitchInternal snitch;
-	private BiStateButton submitButton;
+	final BiStateButton submitButton;
 	final ActivitiesManager acts;	
 	protected final VizualizationsPanel flip;
 
@@ -448,21 +483,32 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	protected final RadiusTextField regionText;
 	protected final Sesame ses;
 	protected final Action topAction = new TopAction();
+	protected final Action upAction = new UpAction();
 	protected final VizModel vizModel;
-	protected final VizualizationManager vizualizations;
+	protected final VizualizationController vizualizations;
 	private final JCalendarCombo startCal;
 	private final JCalendarCombo endCal;
 	private final JCheckBox noPosition;
-	private final ScopeServicesList summary;	
+	private final ScopeServicesList servicesList;
+    private final JCheckBoxMenuItem showTransientWarnings;
+    private TemporalDalProtocol stap;	
 
+    public final boolean isTransientWarnings() {
+        return showTransientWarnings.isSelected();
+    }
+    
+	public final VizModel getVizModel() {
+	    return vizModel;
+	}
+	
 // DecSexListener interface
 	// another listener to the decSex toggle - convert node display
 	public void degreesSelected(EventObject e) {
-		toggleAndConvertNodes(vizModel.getRootNode(),false);
+		toggleAndConvertNodes(vizModel.getTree().getRoot(),false);
 		vizualizations.reDrawGraphs();		
 	}
 	public void sexaSelected(EventObject e) {
-		toggleAndConvertNodes(vizModel.getRootNode(),true);
+		toggleAndConvertNodes(vizModel.getTree().getRoot(),true);
 		vizualizations.reDrawGraphs();		
 	}
 //	 coordinate conversion stuff.
@@ -506,18 +552,20 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		StrBuilder sb = new StrBuilder("VOScope");
 		if (resources.size() == 1) {
 		    sb.append(" - ").append(((Resource)resources.get(0)).getTitle());
-		}
+		} 
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
 			DalProtocol p = (DalProtocol)i.next();
 			p.getCheckBox().setEnabled(false); // no point showing these - there's no option.
 			Service[] services = p.filterServices(resources);
 			if (services != null && services.length > 0) {
 			    p.getCheckBox().setSelected(true);
-			    sb.append(" - ")
-			        .append(services.length)
-			        .append(" ")
-			        .append(p.getName())
-			        .append(" service");			    
+			    if (resources.size() > 1) {
+			        sb.append(" - ")
+			            .append(services.length)
+			            .append(" ")
+			            .append(p.getName().endsWith("s") ? StringUtils.substringBeforeLast(p.getName(),"s") : p.getName());
+			        sb.append(services.length == 1 ? " Service" : " Services"); 
+			    }
 			} else {
 			    p.getCheckBox().setSelected(false);
 			}
@@ -531,6 +579,27 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 	/** perform a query */
 	protected void query() {
+	    for (Iterator i = protocols.iterator(); i.hasNext(); ) {
+            final DalProtocol p =(DalProtocol)i.next();
+            final TreeNode rootNode = vizModel.getTree().getRoot();
+            if (!p.getCheckBox().isSelected()) {
+                // remove this protocol node - we're not searching on it.
+                //@todo replace removal with just hiding it.
+                if (rootNode.isChild(p.getPrimaryNode())) {
+                    rootNode.removeChild(p.getPrimaryNode());
+                }
+            } else {
+                // previously this protocol has been removed - splice it back in
+                if (!rootNode.isChild(p.getPrimaryNode())) {
+                    DefaultEdge edge = new DefaultEdge(rootNode,p.getPrimaryNode());
+                    //blemish - code coopied verbatim from vizModel
+                    edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");                  
+                    rootNode.addChild(edge);
+                }
+            }
+        }
+	       clearTree();
+	       
 		// slightly tricky - what we do depends on whether posText is currently in the middle of resolving a name or not.
 		final String positionString = posText.getObjectName(); // grab this first, in case we need it in a mo.
 		Point2D position = posText.getPosition();	
@@ -564,8 +633,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	/** actually do the query */
 	private void queryBody(Point2D position) {  
 		setStatusMessage("" + position.getX() + ',' + position.getY());
-		clearTree();
 		topAction.setEnabled(true);
+		upAction.setEnabled(true);
 		setProgressMax(0);
 		// ok. everything looks valid. add a task to later on storee the history item
 		// make this a later task, so that resolver thread has chance to return.
@@ -582,20 +651,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
 			final DalProtocol p =(DalProtocol)i.next();
-			final TreeNode rootNode = vizModel.getRootNode();
-			if (!p.getCheckBox().isSelected()) {
-			    // remove this protocol node - we're not searching on it.
-			    if (rootNode.isChild(p.getPrimaryNode())) {
-			        rootNode.removeChild(p.getPrimaryNode());
-			    }
-			} else {
-			    // previously this protocol has been removed - splice it back in
-			    if (!rootNode.isChild(p.getPrimaryNode())) {
-			        DefaultEdge edge = new DefaultEdge(rootNode,p.getPrimaryNode());
-			        //blemish - code coopied verbatim from vizModel
-		            edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");			        
-			        rootNode.addChild(edge);
-			    }
+			final TreeNode rootNode = vizModel.getTree().getRoot();
+			if (p.getCheckBox().isSelected()) {
 				new ListServicesRegistryQuerier( radius, dec, ra, p).start();
 			}
 		}
@@ -610,13 +667,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		        w.interrupt();
 		    }
 		}
-		setProgressValue(getProgressMax());
+		setProgressMax(0);
 	}
 	/** removes previous results, just leaving the skeleton */
 	protected void clearTree() {
 		// reset selection too.
 		vizModel.clear();
 		vizualizations.refocusMainNodes();
+		vizualizations.reDrawGraphs();
 		setProgressMax(1);
 		setProgressValue(0);
 	}
@@ -625,17 +683,81 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	 * Call this at an appropriate point withing 'query()' to save searcg state to history.
 	 */
 	protected void storeHistoryItem() {
-		SearchHistoryItem shi = new SearchHistoryItem();
-		shi.setPosition(posText.getPositionAsSesameBean());
-		// blank out aliases - as long, and unneeded. - for storage efficiency.
-		shi.getPosition().setAliases(null);
-        double radius = regionText.getRadius();
-		shi.setRadius(new DoubleDimension(radius,radius));
-		history.add(0,shi); // insert at top of list.
+		PositionHistoryItem shi = new PositionHistoryItem();
+		if (posText.isShowing() && posText.isEnabled()) {
+		    shi.setPosition(posText.getPositionAsSesameBean());
+		    // blank out aliases - as long, and unneeded. - for storage efficiency.
+		    shi.getPosition().setAliases(null);
+		}
+		if (regionText.isShowing() && regionText.isEnabled()) {
+		    double radius = regionText.getRadius();
+		    shi.setRadius(new DoubleDimension(radius,radius));
+		}
+		if (startCal.isShowing() && startCal.isEnabled()) {
+		    shi.setStartTime(startCal.getDate());
+		}
+		if (endCal.isShowing() && endCal.isEnabled()) {
+		    shi.setEndTime(endCal.getDate());
+		}
+		try {
+		    history.getReadWriteLock().writeLock().lock();
+		    history.add(0,shi); // insert at top of list.
+		} finally {
+		    history.getReadWriteLock().writeLock().unlock();
+		}
 	}
 
 
-	/** worker that queries registry to produce a list of all services of a particlar type.
+	/** a matcher editor to filter the history list.
+	 * removes history items that aren't applicable to the current protocol
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Dec 11, 20071:31:30 PM
+     */
+    private final class ProtocolsMatcherEditor extends AbstractMatcherEditor implements PropertyChangeListener, ItemListener {
+
+        public ProtocolsMatcherEditor() {
+            // wanted to listen to startCal, but it's enabled property doen't seem to change.
+            posText.addPropertyChangeListener("enabled",this);
+            stap.getCheckBox().addItemListener(this);
+            updateFilter();
+        }
+        private final Matcher timeMatcher = new Matcher() {
+
+            public boolean matches(Object item) {
+                return ((PositionHistoryItem)item).getStartTime() != null;               
+            }
+        };
+        private final Matcher spaceMatcher = new Matcher() {
+
+            public boolean matches(Object item) {
+                return ((PositionHistoryItem)item).getPosition() != null;
+            }
+        };
+
+        public void propertyChange(PropertyChangeEvent evt) {
+            updateFilter();
+        }
+
+        public void itemStateChanged(ItemEvent e) {
+            updateFilter();
+        }
+        
+        private void updateFilter() {
+            boolean time= stap.getCheckBox().isSelected();
+            boolean space = posText.isEnabled();
+            if (time && space) {
+                fireMatchAll(); // even though some won't cover all inputs
+            } else if (time) {
+                fireChanged(timeMatcher);
+            } else if (space) {
+                fireChanged(spaceMatcher);
+            } else {                        
+                fireMatchNone();
+            }
+        }
+    }
+
+    /** worker that queries registry to produce a list of all services of a particlar type.
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 28, 20075:30:43 PM
      */
@@ -685,12 +807,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
         protected void doFinished(Object result) {
         	Service[] services = (Service[])result;
-        	parent.showTransientMessage(services.length + " " + this.p.getName() + " services to query","");
+        	vizModel.getSummarizer().addAll(services);
+        	parent.showTransientMessage(services.length + " " + this.p.getName().toLowerCase() + " services to query","");
         	setProgressMax(getProgressMax() + services.length);
         	if (this.p instanceof SpatialDalProtocol) {
         		SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
         		for (int i = 0; i < services.length; i++) {
-        			spatial.createRetriever(AstroScopeLauncherImpl.this,services[i],this.ra,this.dec,this.radius,this.radius).start();
+        			spatial.createRetriever(services[i],this.ra,this.dec,this.radius,this.radius).start();
         		}                            
         	} else if (this.p instanceof TemporalDalProtocol) {
         		TemporalDalProtocol temporal = (TemporalDalProtocol)this.p;
@@ -698,9 +821,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         		Date end = endCal.getDate();
         		for (int i = 0; i < services.length; i++) {
         			if (noPosition.isSelected()) { // zero out the positional fields.
-        				temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();
+        				temporal.createRetriever(services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();
         			} else {
-        				temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,this.ra,this.dec,this.radius,this.radius).start();
+        				temporal.createRetriever(services[i],start,end,this.ra,this.dec,this.radius,this.radius).start();
         			}
         		}      							
         	}
@@ -718,7 +841,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		/**
 		 * @param i
 		 */
-		public HistoryMenuItem(SearchHistoryItem i) {
+		public HistoryMenuItem(PositionHistoryItem i) {
 			this.shi = i;
 			if (dsToggle.isDegrees()) {
 				this.degreesSelected(null);
@@ -728,69 +851,88 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			this.addActionListener(this);
 			dsToggle.addListener(this);
 		}
-		private final SearchHistoryItem shi;
+		private final PositionHistoryItem shi;
 
+		// loads what fields this history object provides back into the form.
 		public void actionPerformed(ActionEvent e) {
+		        if (shi.getPosition() != null) {
 					posText.setPosition(shi.getPosition().getRa(),shi.getPosition().getDec());
+		        }
+		        if (shi.getRadius() != null) {
 					regionText.setRadius(shi.getRadius().getWidth());
+		        }
+		        if (shi.getStartTime() != null) {
+		            startCal.setDate(shi.getStartTime());
+		        }
+		        if (shi.getEndTime() != null) {
+		            endCal.setDate(shi.getEndTime());
+		        }
 		}
 
 		public void degreesSelected(EventObject ignored) {
-			StrBuilder sb = new StrBuilder();
-			try {
-				if (shi.getPosition().getOName() != null) {
-					sb.append(shi.getPosition().getOName()).append(", ");
-				}
-				sb.append("position: ")
-				.append(nf.format(shi.getPosition().getRa()))
-				.append(',')
-				.append(nf.format(shi.getPosition().getDec()))
-				.append(", radius: ");
-                double rw = shi.getRadius().getWidth();
-                double rh = shi.getRadius().getHeight();
-                if (rw == rh) {
-                    sb.append(nf.format(rw));
-                }
-                else {
-                    sb.append(nf.format(rw))
-                      .append(',')
-                      .append(nf.format(rh));
-                }
-			} catch (NumberFormatException e) {
-				// don't care too much.
-			}
-			setText(sb.toString());
+			buildMenuLabel();
 		}
 
-		public void sexaSelected(EventObject ignored) {
-			StrBuilder sb = new StrBuilder();
-			try {
-				if (shi.getPosition().getOName() != null) {
-					sb.append(shi.getPosition().getOName()).append(", ");
-				}
-				// thought - could use the sexa string provided in the position
-				// bean, if it's there - although this might be a bit inconsistent
-				// as we're converting everywhere else.
-				sb.append("position: ")
-				.append(PositionUtils.decimalToSexagesimal(
-						shi.getPosition().getRa()
-						,shi.getPosition().getDec()))
-				.append(" radius: "); 
-                double rw = shi.getRadius().getWidth();
-                double rh = shi.getRadius().getHeight();
-                if (rw == rh) {
-                    sb.append(RadiusTextField.formatAsArcsec(rw)).append('"');
-                }
-                else {
-                    sb.append(RadiusTextField.formatAsArcsec(rw)).append('"')
-                      .append(',')
-                      .append(RadiusTextField.formatAsArcsec(rh)).append('"');
-                }
-			} catch (NumberFormatException e) {
-				// don't care too much.
-			}
-			setText(sb.toString());		
+        public void sexaSelected(EventObject ignored) {
+            buildMenuLabel();
+        }		
+
+        /**
+         * 
+         */
+		private void buildMenuLabel() {
+		    StrBuilder sb = new StrBuilder();
+		    if (shi.getPosition() != null) { // assume that whatever applies to position applies to radius too.
+		        if (shi.getPosition().getOName() != null) {
+		            sb.append(shi.getPosition().getOName()).append(", ");
+		        }
+		        try { // assume that if we've got a position, we've got a radius as well.
+		            if (dsToggle.isDegrees()) {
+		                sb.append("position: ")
+		                .append(nf.format(shi.getPosition().getRa()))
+		                .append(',')
+		                .append(nf.format(shi.getPosition().getDec()))
+		                .append(", radius: ");
+		                double rw = shi.getRadius().getWidth();
+		                double rh = shi.getRadius().getHeight();
+		                if (rw == rh) {
+		                    sb.append(nf.format(rw));
+		                }
+		                else {
+		                    sb.append(nf.format(rw))
+		                    .append(',')
+		                    .append(nf.format(rh));
+		                }
+		            } else {
+		                sb.append("position: ")
+		                .append(PositionUtils.decimalToSexagesimal(
+		                        shi.getPosition().getRa()
+		                        ,shi.getPosition().getDec()))
+		                .append(" radius: "); 
+		                double rw = shi.getRadius().getWidth();
+		                double rh = shi.getRadius().getHeight();
+		                if (rw == rh) {
+		                    sb.append(RadiusTextField.formatAsArcsec(rw)).append('"');
+		                }
+		                else {
+		                    sb.append(RadiusTextField.formatAsArcsec(rw)).append('"')
+		                      .append(',')
+		                      .append(RadiusTextField.formatAsArcsec(rh)).append('"');
+		                }		                
+		            }
+		        } catch (NumberFormatException e) {
+		            // don't care too much.
+		        }
+		    }
+		    if (shi.getStartTime() != null) { // assume applies to end date too
+		        sb.appendSeparator(",");
+		        sb.append(startCal.getDateFormat().format(shi.getStartTime()));
+		        sb.append(" - ");
+		        sb.append(endCal.getDateFormat().format(shi.getEndTime()));
+		    }
+		    setText(sb.toString());
 		}
+
 	}
 	
 // focus listener interface - links in the activities, etc.
@@ -814,9 +956,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	/** clear selection action */
 	protected class ClearSelectionAction extends AbstractAction {
 		public ClearSelectionAction() {
-			super("Clear selection");//,IconHelper.loadIcon("editclear32.png"));
-			this.putValue(SHORT_DESCRIPTION,"Clear selected nodes");
-			this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+			super("Clear Selection");//,IconHelper.loadIcon("editclear32.png"));
+			this.putValue(SHORT_DESCRIPTION,"Clear the node selection");
 			this.setEnabled(false);           
 		}
 
@@ -828,7 +969,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				n.setAttribute("selected", "false");
 			}
 			set.clear();
-			summary.getCurrentResourceModel().clearSelection();
+			servicesList.getCurrentResourceModel().clearSelection();
 			vizualizations.reDrawGraphs();
 			this.setEnabled(false);
 		}    	
@@ -890,16 +1031,47 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 	}
 	
-	protected class ClearHistoryAction extends AbstractAction {
-	    /**
-         * 
-         */
-        public ClearHistoryAction() {
-            super("Clear History");
-        }
-        public void actionPerformed(ActionEvent e) {
-            history.clear();
-        }
+	   protected class UpAction extends AbstractAction {
+	        public UpAction() {
+	            super("Up"); //,IconHelper.loadIcon("top32.png"));
+	            this.putValue(SHORT_DESCRIPTION,"Focus display on the parent of the currently focussed node'");
+	            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.MENU_KEYMASK));
+	            this.setEnabled(false);
+	        }
+	        public void actionPerformed(ActionEvent e) {
+	            vizualizations.moveUp();
+	            vizualizations.reDrawGraphs();
+	        }
+	    }
+
+	   protected class ClearHistoryAction extends AbstractAction {
+	       /**
+	        * 
+	        */
+	       public ClearHistoryAction() {
+	           super("Clear History");
+	       }
+	       public void actionPerformed(ActionEvent e) {
+	           ConfirmDialog.newConfirmDialog(AstroScopeLauncherImpl.this,"Clear History","All history entries will be lost - continue?"
+	                   ,new Runnable() {
+	               public void run() {
+	                   history.clear();
+	               }
+	           }
+	           );
+	       }
 	}
+
+    public final ActivitiesManager getActs() {
+        return this.acts;
+    }
+
+    public final ScopeServicesList getServicesList() {
+        return this.servicesList;
+    }
+
+    public final BiStateButton getSubmitButton() {
+        return this.submitButton;
+    }
 
 }

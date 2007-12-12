@@ -1,4 +1,4 @@
-/*$Id: VizualizationManager.java,v 1.5 2007/01/29 10:43:49 nw Exp $
+/*$Id: VizualizationController.java,v 1.1 2007/12/12 13:54:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,8 @@ import org.apache.commons.collections.iterators.UnmodifiableIterator;
 
 import edu.berkeley.guir.prefuse.ItemRegistry;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.Entity;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 import edu.berkeley.guir.prefuse.render.ImageFactory;
 /**
  * aggregates a set of vizualizations together - enables them to be worked
@@ -28,8 +30,8 @@ import edu.berkeley.guir.prefuse.render.ImageFactory;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
-public class VizualizationManager {
-    public VizualizationManager(VizModel model) {            
+public class VizualizationController {
+    public VizualizationController(VizModel model) {            
         this.model = model;
         imageFactory = new ImageFactory(24,24); // small thumbnails.        
     
@@ -71,12 +73,38 @@ public class VizualizationManager {
                 DalProtocol p = (DalProtocol)j.next();
                 defaultFocusSet.set(p.getPrimaryNode());
             }  
-            defaultFocusSet.set(model.getRootNode());
-            // force a garbage collection too - will remove any old visual nodes lurking after the real nodes have been removed.
-            itemReg.garbageCollectAggregates();
-            itemReg.garbageCollectEdges();
-            itemReg.garbageCollectNodes();
+            defaultFocusSet.set(model.getTree().getRoot());
+            gc(itemReg);
         }    
+    }
+
+    /**
+    force a garbage collection too - will remove any old visual nodes lurking after the real nodes have been removed.
+     * @param itemReg
+     */
+    private void gc(ItemRegistry itemReg) {
+        itemReg.garbageCollectAggregates();
+        itemReg.garbageCollectEdges();
+        itemReg.garbageCollectNodes();
+    }
+    
+    public void moveUp() {
+        for (Iterator i = this.iterator(); i.hasNext(); ) {
+            Vizualization v = (Vizualization)i.next();
+            ItemRegistry itemReg = v.getItemRegistry();
+            FocusSet focusSet = itemReg.getFocusManager().getDefaultFocusSet();
+            Iterator j = focusSet.iterator();
+            if (j.hasNext()) {
+                Entity e = (Entity)j.next();
+                if (e instanceof TreeNode) {
+                    TreeNode parent = ((TreeNode)e).getParent();
+                    if (parent != null) {
+                        focusSet.set(parent);
+                    }
+                }
+            }
+            gc(itemReg);
+        }
     }
     
     /**
@@ -96,7 +124,10 @@ public class VizualizationManager {
 }
 
 /* 
-$Log: VizualizationManager.java,v $
+$Log: VizualizationController.java,v $
+Revision 1.1  2007/12/12 13:54:12  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.5  2007/01/29 10:43:49  nw
 documentation fixes.
 

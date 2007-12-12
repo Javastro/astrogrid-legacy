@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.16 2007/11/21 07:55:39 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.17 2007/12/12 13:54:15 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
@@ -40,12 +41,11 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
     /** Construct a new RegistryChooserDialog
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog( UIContext context, RegistryGooglePanel chooserPanel) throws HeadlessException {
+    public RegistryGoogleDialog( UIContext context, TypesafeObjectBuilder builder) throws HeadlessException {
         super(context,"Registry Resource Chooser","ui.registryChooserDialogue");
-        this.chooserPanel = chooserPanel;
+        this.chooserPanel = builder.createGooglePanel(this);
         this.okButton = getOkButton();
         this.okButton.setEnabled(false);
-        chooserPanel.parent.set(this);
         chooserPanel.getCurrentResourceModel().addListSelectionListener(this);
         JPanel main =getMainPanel();
         main.add(getTopLabel(),BorderLayout.NORTH);
@@ -63,8 +63,8 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
         this.setSize(600,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent,UIContext context,RegistryGooglePanel reg) throws HeadlessException {
-    	this(context,reg);
+    public RegistryGoogleDialog(Component parentComponent,UIContext context,TypesafeObjectBuilder builder) throws HeadlessException {
+    	this(context,builder);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -134,6 +134,9 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.17  2007/12/12 13:54:15  nw
+astroscope upgrade, and minor changes for first beta release
+
 Revision 1.16  2007/11/21 07:55:39  nw
 Complete - task 65: Replace modal dialogues
 

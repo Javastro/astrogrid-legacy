@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.16 2007/11/21 07:55:39 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.17 2007/12/12 13:54:15 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -52,6 +52,7 @@ import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
@@ -93,14 +94,14 @@ public class VOExplorerImpl extends UIComponentImpl
     public static final String EXPORT = "export";
 
 	public VOExplorerImpl( final UIContext context, final ActivityFactory activityBuilder
-			, TreeModel folderModel, final RegistryGooglePanel gl, QuerySizer sizer
-            ,ResourceChooserInternal chooser,  XmlPersist persister) { //@todo move these into a separate builder.
+	        , TypesafeObjectBuilder builder
+			, TreeModel folderModel, QuerySizer sizer
+            ,ResourceChooserInternal chooser,  XmlPersist persister) {
 		super(context,"VO Explorer","userInterface.voexplorer");
         this.chooser = chooser;
         this.persister = persister;
 		logger.info("Constructing new VOExplorer");
-        this.google = gl;
-        google.parent.set(this);		
+        this.google = builder.createGooglePanel(this);
 		this.setSize(800, 600);    
 		JPanel pane = getMainPanel();
 		pane.setBorder(BorderFactory.createEmptyBorder());
