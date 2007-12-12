@@ -1,10 +1,4 @@
 <?xml version="1.0"?>
-<!-- This is an application-description file of the kind read by the
-     command-line-application server. It has one application: a sleep for
-     a user-defined time. There must be at least one application in this file
-     to stop the parser crashing when the application-server starts up. This
-     application serves that purpose and will actually run on must servers: it
-     just needs /bin/sleep to be present on the host. -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CEAImplementation/v1"
     xmlns:ceai="http://www.astrogrid.org/schema/CEAImplementation/v1"
     xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
@@ -188,14 +182,14 @@
         <Units>Gyr</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="linear_decr_TAU" type="text" fileRef="false" switchType="keyword" commandSwitch="TAU">
+        name="linear_decr_TAU" type="real" fileRef="false" switchType="keyword" commandSwitch="TAU">
         <UI_Name>Linearly decreasing SFR tau</UI_Name>
         <UI_Description>SFR is 0 at time tau</UI_Description>
         <DefaultValue>1</DefaultValue>
         <Units>Gyr</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="linear_decr_TCUT" type="boolean" fileRef="false" switchType="keyword"
+        name="linear_decr_TCUT" type="real" fileRef="false" switchType="keyword"
         commandSwitch="TCUT">
         <UI_Name>Linearly decreasing SFR Tcut</UI_Name>
         <UI_Description>Set SFR back to zero at time Tcut</UI_Description>
@@ -203,21 +197,21 @@
         <Units>Gyr</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="W1" type="boolean" fileRef="false" switchType="keyword" commandSwitch="W1">
+        name="W1" type="real" fileRef="false" switchType="keyword" commandSwitch="W1">
         <UI_Name>Lower wavelength W1</UI_Name>
         <UI_Description>Lower limit to wavelength range of output spectra W0 [91,1.600E+06]</UI_Description>
         <DefaultValue>100</DefaultValue>
         <Units>Angstrom</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="W2" type="boolean" fileRef="false" switchType="keyword" commandSwitch="W2">
+        name="W2" type="real" fileRef="false" switchType="keyword" commandSwitch="W2">
         <UI_Name>Upper wavelength W2</UI_Name>
         <UI_Description>Upper limit to wavelength range of output spectra W0 [91,1.600E+06]</UI_Description>
         <DefaultValue>1.2E+06</DefaultValue>
         <Units>Angstrom</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="UNITS" type="boolean" fileRef="false" switchType="keyword" commandSwitch="UNITS">
+        name="UNITS" type="text" fileRef="false" switchType="keyword" commandSwitch="UNITS">
         <UI_Name>Flux axis units</UI_Name>
         <UI_Description>Flux axis of output is Flambda in Msun/Angstrom or Fnu in Msun/Hz</UI_Description>
         <DefaultValue>perAA</DefaultValue>
@@ -227,7 +221,7 @@
         </OptionList>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="NORMALISATION" type="boolean" fileRef="false" switchType="keyword"
+        name="NORMALISATION" type="text" fileRef="false" switchType="keyword"
         commandSwitch="NORMALISATION">
         <UI_Name>Normalisation</UI_Name>
         <UI_Description>Normalise output spectrum? If so, please see options for parameter selection
@@ -240,34 +234,34 @@
         </OptionList>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="WAVE_F0" type="boolean" fileRef="false" switchType="keyword" commandSwitch="F0">
+        name="WAVE_F0" type="text" fileRef="false" switchType="keyword" commandSwitch="F0">
         <UI_Name>WAVE_F0</UI_Name>
         <UI_Description>Normalise spectrum to luminosity F0 (at wavelength W0)</UI_Description>
         <DefaultValue>1</DefaultValue>
         <Units>Chosen unit (Msun perAA or perHz)</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="WAVE_W0" type="boolean" fileRef="false" switchType="keyword" commandSwitch="W0">
+        name="WAVE_W0" type="text" fileRef="false" switchType="keyword" commandSwitch="W0">
         <UI_Name>WAVE_W0</UI_Name>
         <UI_Description>Normalise spectrum (to luminosity F0) at wavelength W0</UI_Description>
         <DefaultValue>5000</DefaultValue>
         <Units>Angstrom</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="Fz_F0" type="boolean" fileRef="false" switchType="keyword" commandSwitch="F0">
+        name="Fz_F0" type="text" fileRef="false" switchType="keyword" commandSwitch="F0">
         <UI_Name>Fz_F0</UI_Name>
         <UI_Description>Normalise spectrum to luminosity F0 (for a source at redshift z in FILTER)</UI_Description>
         <DefaultValue>1</DefaultValue>
         <Units>Chosen unit (Msun perAA or perHz)</Units>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="Fz_z" type="boolean" fileRef="false" switchType="keyword" commandSwitch="z">
+        name="Fz_z" type="text" fileRef="false" switchType="keyword" commandSwitch="z">
         <UI_Name>Fz_z</UI_Name>
         <UI_Description>Normalise spectrum (to luminosity F0) for a source at redshift z (in FILTER)</UI_Description>
         <DefaultValue>1</DefaultValue>
       </ceai:CmdLineParameterDefn>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-        name="Fz_FILTER" type="boolean" fileRef="false" switchType="keyword" commandSwitch="FILTER">
+        name="Fz_FILTER" type="text" fileRef="false" switchType="keyword" commandSwitch="FILTER">
         <UI_Name>Fz_FILTER</UI_Name>
         <UI_Description>Filter in which source is observed, B+B = Bessel &amp; Brett, M+S =
           Matthews &amp; Sandage, P200IR = Palomar 200 IR detectors, S+S = Sandage &amp;
@@ -780,14 +774,10 @@ redshift evolution in FILTER1</agpd:UI_Description>
                     <pref ref="OTHERMAGS" minoccurs="0"/>
                     <pref ref="SPECTRA" minoccurs="0"/>
                     <pref ref="MAGZF1" minoccurs="0"/>
-               
         </output>
       </Interface>
     </Interfaces>
-    <!-- 
-     **UPDATE ALL BELOW HERE 
-      ExecutionPath set from uk.ac.starlink.ttools.cea.ImplementationCeaWriter command-line flag. -->
-        <ExecutionPath>/Users/pharriso/Work/tools/bc03/rungalaxev.py</ExecutionPath>
+         <ExecutionPath>/Users/pharriso/Work/tools/bc03/rungalaxev.py</ExecutionPath>
         <LongName>Galexev</LongName>
         <Description>GALAXEV is a library of evolutionary stellar population synthesis models computed using the new isochrone synthesis code of Bruzual &amp;Charlot (2003). This code allows one to computes the spectral evolution of stellar populations in wide ranges of ages and metallicities at a resolution of 3 ? across the whole wavelength range from 3200 ? to 9500 ?, and at lower resolution outside this range. </Description>
         <ReferenceURL>http://www.cida.ve/~bruzual/bc2003</ReferenceURL>
