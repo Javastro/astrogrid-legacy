@@ -331,7 +331,7 @@ public abstract class RegistryAdminService {
          if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;
       
          try {
-        	 if(xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",collectionName) == null) {
+        	 if(xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_"),collectionName) == null) {
         		 currentResource.setAttribute("created", updateDateString);
         	 }
          } catch(XMLDBException xdbe) {
