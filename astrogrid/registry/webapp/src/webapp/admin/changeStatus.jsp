@@ -141,7 +141,7 @@ just the custom or selected entries below.<br />
 				String resource = RegistryDOMHelper.getResourceKey(resourceElement);   
             	String ivoStr = RegistryDOMHelper.getIdentifier(resourceElement);
             	ivoStr = ivoStr.substring(6);
-            	System.out.println("here is the ivoStr in changeStatus = " + ivoStr);
+            	//System.out.println("here is the ivoStr in changeStatus = " + ivoStr);
    
             if (resource == null || resource.trim().length() <= 0) {
                out.write("<td><a href='changeStatus.jsp?IvornPart="+authority+"'>ivo://"+authority+"</a></td>\n");
