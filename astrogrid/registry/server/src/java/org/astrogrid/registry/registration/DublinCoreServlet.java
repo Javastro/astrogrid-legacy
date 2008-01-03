@@ -90,7 +90,7 @@ public class DublinCoreServlet extends RegistrarServlet {
       transformer.setTransformationParameter("shortName", request.getParameter("shortName"));
       transformer.setTransformationParameter("publisherName", request.getParameter("curation.publisher"));
       transformer.setTransformationParameter("publisherId", request.getParameter("curation.publisher.ivo-id"));
-      transformer.setTransformationParameter("creatorName", request.getParameter("curation.creator"));
+      transformer.setTransformationParameter("creatorName", request.getParameter("curation.creator.name"));
       transformer.setTransformationParameter("creatorId", request.getParameter("curation.creator.ivo-id"));
       transformer.setTransformationParameter("creatorLogo", request.getParameter("curation.logo"));
       transformer.setTransformationParameter("date", request.getParameter("curation.date"));

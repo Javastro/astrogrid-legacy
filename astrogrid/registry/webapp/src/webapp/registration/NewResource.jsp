@@ -39,12 +39,13 @@
           </p>
           <p>This entry describes:</p>
           <ul>
-            <li><input type="radio" name="xsiType" value="vs:CatalogService"/>A virtual observatory service.</li>
+            <li><input type="radio" name="xsiType" value="vr:Service"/>A virtual observatory service.</li>
+            <li><input type="radio" name="xsiType" value="vs:CatalogService"/>Catalog service.</li>
             <li><input type="radio" name="xsiType" value="vs:DataCollection"/>A data collection.</li>
             <li><input type="radio" name="xsiType" value="cea:CeaApplication"/>A CEA application.</li>
             <li><input type="radio" name="xsiType" value="va:Application"/>A non-CEA application.</li>
-	    <li><input type="radio" name="xsiType" value="vr:Organisation"/>An organization.</li>
-	    <li><input type="radio" name="xsiType" value="vr:Resource"/>None of the above; just a generic resource.</li>
+	    	<li><input type="radio" name="xsiType" value="vr:Organisation"/>An organization.</li>
+	    	<li><input type="radio" name="xsiType" value="vr:Resource"/>None of the above; just a generic resource.</li>
 	  </ul>
           <p><input type="submit" value="Create this entry"/></p>
         </form>

@@ -15,7 +15,10 @@
        end inside the document element. -->
   <xsl:template match="ri:Resource">
     <agr:AstrogridResource>
-      <ri:Resource updated="{$updated}">
+      <ri:Resource updated="{$updated}" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+        xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+        xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1">
         
         <!-- Copy the attributes (but not "updated" which is overridden above) -->
         <xsl:copy-of select="@status"/>

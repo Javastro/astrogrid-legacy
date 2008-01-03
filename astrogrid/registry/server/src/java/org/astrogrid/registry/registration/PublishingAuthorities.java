@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
+import org.astrogrid.util.DomHelper;
 
 /**
  * Java bean to handle the list of authority identifiers managed in
@@ -56,9 +57,10 @@ public class PublishingAuthorities {
       StringBuffer b  = new StringBuffer();
       for (int j = 0; j < c.getLength(); j++) {
         Node n = c.item(j);
-        if (n.getNodeType() == n.TEXT_NODE) {
-          b.append(n.getNodeValue());
-        }
+        try {
+        	System.out.println("getFirstChild val = " + n.getFirstChild().getNodeValue());
+        	b.append(n.getFirstChild().getNodeValue());
+        }catch(Exception e) {e.printStackTrace();}
       }
       a[i] = b.toString();
     }

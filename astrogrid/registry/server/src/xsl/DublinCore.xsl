@@ -34,7 +34,10 @@
        end inside the document element. -->
   <xsl:template match="ri:Resource">
     <agr:AstrogridResource>
-      <ri:Resource updated="{$updated}" status="{$status}">
+      <ri:Resource updated="{$updated}" status="{$status}" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+        xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+        xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1">
         
         <!-- Copy the fixed attributes -->
         <xsl:copy-of select="@xsi:type"/>
@@ -71,6 +74,7 @@
         <xsl:if test="$publisherId">
           <xsl:attribute name="ivo-id"><xsl:value-of select="$publisherId"/></xsl:attribute>
         </xsl:if>
+        <xsl:value-of select="$publisherName"/>
       </publisher>
       
       <creator>
@@ -84,10 +88,13 @@
       </creator>
       
       <xsl:copy-of select="contributor"/>
-      
+      <xsl:if test="$date">
       <date><xsl:value-of select="$date"/></date>
+      </xsl:if>
       
+      <xsl:if test="$version">
       <version><xsl:value-of select="$version"/></version>
+      </xsl:if>
       
       <contact>
         <name><xsl:value-of select="$contactName"/></name>
@@ -98,10 +105,10 @@
           <address><xsl:value-of select="$contactAddress"/></address>
         </xsl:if>
         <xsl:if test="$contactEmail">
-          <address><xsl:value-of select="$contactEmail"/></address>
+          <email><xsl:value-of select="$contactEmail"/></email>
         </xsl:if>
         <xsl:if test="$contactTelephone">
-          <address><xsl:value-of select="$contactTelephone"/></address>
+          <telephone><xsl:value-of select="$contactTelephone"/></telephone>
         </xsl:if>
       </contact>
       
