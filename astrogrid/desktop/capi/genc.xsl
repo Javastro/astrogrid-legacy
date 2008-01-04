@@ -33,17 +33,17 @@
       <map>
          <t from="Map" to="ACRKeyValueMap" /><!-- TODO - check if this has things other than strings in it -->
          <t from="List" to="ACRList" /><!-- TODO - check if this has things other than strings in it -->
-         <t from="String" to="JString" fmt="%s" idlType="str.s" idlConv="acridl_StrToSTRING" />
-         <t from="URL" to="URLString" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING" />
-         <t from="Document" to="XMLString" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING"/>
-         <t from="URI" to="IvornOrURI" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING"/>
-         <t from="boolean" to="BOOL" fmt="%d" idlType="i" idlConv="IDL_GettmpInt" />
-         <t from="float" to="double" fmt="%f"  idlType="d"/>
+         <t from="String" to="JString" fmt="%s" idlType="str.s" idlConv="acridl_StrToSTRING" idlDecl="IDL_TYP_STRING" />
+         <t from="URL" to="URLString" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING" idlDecl="IDL_TYP_STRING"/>
+         <t from="Document" to="XMLString" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING" idlDecl="IDL_TYP_STRING"/>
+         <t from="URI" to="IvornOrURI" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING" idlDecl="IDL_TYP_STRING"/>
+         <t from="boolean" to="BOOL" fmt="%d" idlType="i" idlConv="IDL_GettmpInt" idlDecl="IDL_TYP_INT" />
+         <t from="float" to="double" fmt="%f"  idlType="d" idlDecl="IDL_TYP_DOUBLE"/>
          <t from="Calendar" to="ACRDate" /><!-- use the time type from <time.h> -->
          <t from="Date" to="ACRDate" />
-         <t from="double" to="double" fmt="%f"  idlType="d"/>
-         <t from="int" to="int" fmt="%d" idlType="i" idlConv="IDL_GettmpInt"/>
-         <t from="long" to="long" fmt="%f" idlType="i" idlConv="IDL_GettmpInt"/>
+         <t from="double" to="double" fmt="%f"  idlType="d" idlDecl="IDL_TYP_DOUBLE"/>
+         <t from="int" to="int" fmt="%d" idlType="i" idlConv="IDL_GettmpInt" idlDecl="IDL_TYP_INT"/>
+         <t from="long" to="long" fmt="%f" idlType="i" idlConv="IDL_GettmpInt" idlDecl="IDL_TYP_INT"/>
          <t from="Class" to="ACRClass" />
          <t from="byte" to="char" />
       </map>
@@ -211,7 +211,7 @@ functions
          <xsl:call-template name="header" />
          <xsl:text>
 #include "AR.h"
-#include "intf.h"
+#include "arintf.h"
 #include "intfclasses.h"
 
          
@@ -230,7 +230,7 @@ functions
 #ifndef INTFCLASSES_H_
 #define INTFCLASSES_H_
 #include "arcontainers.h"
-#include "intf.h"
+#include "arintf.h"
 using namespace XmlRpc;
 
            </xsl:text>
@@ -402,7 +402,7 @@ printf("structure </xsl:text><xsl:value-of select="concat($classprops/strucname,
 #ifndef TESTINTF_H_
 #define TESTINTF_H_
 
-#include "intf.h"
+#include "arintf.h"
 </xsl:text>
             <xsl:for-each select="$beans">
                 <xsl:variable name="classprops">
@@ -462,8 +462,19 @@ printf("structure </xsl:text><xsl:value-of select="concat($classprops/strucname,
 #include "idlhelper.h"
 
 using namespace std;
- 
+
+// bean definitions
  </xsl:text>
+ <xsl:for-each select="$beans">
+      <xsl:variable name="classprops">
+         <xsl:call-template name="classprops">
+            <xsl:with-param name="b"
+               select="."
+            />
+         </xsl:call-template>
+      </xsl:variable>
+      <xsl:value-of select="concat('static void * s_',$classprops/strucname,';',$nl)" />
+ </xsl:for-each>
  <xsl:message><xsl:copy-of select="$functions"/></xsl:message>     
  <xsl:for-each select="$functions/service/method">
       
@@ -477,6 +488,7 @@ using namespace std;
   <xsl:call-template name="IDLdecl" > <xsl:with-param name="m " select="$functions/service/method[@type='void']"/>  
   </xsl:call-template>
 <xsl:text>
+      { (IDL_SYSRTN_GENERIC) IDL_ar_init, "AR_INIT", 0, 0, 0, 0},
       { (IDL_SYSRTN_GENERIC) NULL, "", 0, 0, 0, 0}
   
 };
@@ -498,6 +510,44 @@ extern "C" {
 //    __declspec(dllexport) int IDL_Load(void)
      int IDL_Load(void)
     {
+</xsl:text>
+
+ <xsl:for-each select="$beans">
+    <xsl:variable name="classprops">
+       <xsl:call-template name="classprops">
+          <xsl:with-param name="b" select="."></xsl:with-param>
+       </xsl:call-template>
+    </xsl:variable>
+    <xsl:variable name="members">
+       <xsl:call-template name="datamemberseq">
+          <xsl:with-param name="t"
+             select="$jel/jelclass[@type=current()/@type]"
+          >
+          </xsl:with-param>
+       </xsl:call-template>
+    </xsl:variable>
+    <xsl:message>
+    members
+    <xsl:copy-of select="$members"></xsl:copy-of></xsl:message>
+    <xsl:value-of select="concat('IDL_STRUCT_TAG_DEF s_tags_',$classprops/strucname,'[] = {',$nl)"/>
+    <xsl:for-each select="$members/member">
+           <xsl:value-of
+       select="concat('         { &quot;',upper-case(@name),'&quot;, 0, (void *)',$typeMap/map/t[@from = current()/@type]/@idlDecl,'},',$nl)"/>
+       
+         
+    </xsl:for-each>
+    <xsl:text>
+           { 0 }
+          };    
+    </xsl:text>
+        <xsl:value-of
+       select="concat('s_',$classprops/strucname,' = IDL_MakeStruct(&quot;',upper-case($classprops/strucname),'&quot;, s_tags_',$classprops/strucname,');',$nl,$nl)"
+    />
+    
+ </xsl:for-each>
+ <xsl:text>    
+    
+    
         return IDL_SysRtnAdd(function_addr, TRUE, IDL_CARRAY_ELTS(function_addr)-1)
             &amp;&amp; IDL_SysRtnAdd(procedure_addr, FALSE, IDL_CARRAY_ELTS(procedure_addr)-1);
     }
@@ -506,8 +556,8 @@ extern "C" {
 
  </xsl:text>
       </xsl:result-document>
-      <xsl:result-document href="idl/acr.dlm">
-<xsl:text>MODULE ACR
+      <xsl:result-document href="idl/acr_idl.dlm">
+<xsl:text>MODULE AR
 DESCRIPTION Access to the Virtual Observatory
 VERSION 0.1
 SOURCE AstroGrid
@@ -527,6 +577,9 @@ FUNCTION </xsl:text>
 <xsl:value-of select="concat(upper-case(@externalName),' ')"/>
 <xsl:value-of select="concat(count(params/param),' ',count(params/param))"/>
 </xsl:for-each>
+<xsl:text>
+PROCEDURE AR_INIT 0 0
+</xsl:text>
       </xsl:result-document>
    </xsl:template>
    <!-- end of main template -->
@@ -857,7 +910,7 @@ struct  </xsl:text>
 <xsl:text>(int argc, IDL_VPTR *argv, char* argk)
 {
 </xsl:text>
-   
+      
       <xsl:if test="$f/@type != 'void'">
          <xsl:call-template name="convert-type">
             <xsl:with-param name="p" select="$f"></xsl:with-param>
@@ -913,8 +966,29 @@ struct  </xsl:text>
                
          </xsl:when>
                <xsl:otherwise>
-                  <xsl:text> idl_retval = 0; //FIXME this is a struct type - do not know how to yet </xsl:text>
- 
+               <xsl:text> IDL_MEMINT offset;
+               </xsl:text>
+               <xsl:value-of select="concat('IDL_MakeTempStructVector(s_',$classprops/strucname,', (IDL_MEMINT)1, &amp;idl_retval, IDL_TRUE);',$nl)"></xsl:value-of>
+               <xsl:variable name="members">
+                  <xsl:call-template name="datamemberseq">
+                     <xsl:with-param name="t" select="$jel/jelclass[@type=$f/@type]"></xsl:with-param>
+                  </xsl:call-template>
+               </xsl:variable>
+               
+               <xsl:for-each select="$members/member">
+                   <xsl:value-of select="concat( 'offset = IDL_StructTagInfoByIndex(s_',$classprops/strucname,', ',position()-1, ', IDL_MSG_LONGJMP, NULL);',$nl)"/>
+                   <xsl:choose>
+                      <xsl:when test="@ctype=('int','double')">
+                         <xsl:value-of select="concat(' *((',@ctype,'*)(idl_retval-&gt;value.s.arr-&gt;data +offset)) = retval.',@name,';',$nl)"/>
+                      </xsl:when>
+                      <xsl:when test="@ctype='JString'">
+                         <xsl:value-of select="concat('IDL_StrStore((IDL_STRING*)(idl_retval-&gt;value.s.arr-&gt;data +offset), (char *)retval.',@name,');',$nl)" />
+                      </xsl:when>
+                      <xsl:otherwise>
+                          <xsl:value-of select="concat('//FIXME data member not transferred  ',@name, ' type=',@ctype,$nl)"></xsl:value-of>
+                      </xsl:otherwise>
+                   </xsl:choose>
+                 </xsl:for-each>
                </xsl:otherwise>
             </xsl:choose>
          </xsl:otherwise>
@@ -1011,6 +1085,7 @@ struct  </xsl:text>
             </xsl:otherwise>
          </xsl:choose>         
          </xsl:attribute>
+         <xsl:copy-of select="@type"  />
          <xsl:attribute name="ctype">
          <xsl:call-template name="convert-type">
             <xsl:with-param name="p" select="." />
