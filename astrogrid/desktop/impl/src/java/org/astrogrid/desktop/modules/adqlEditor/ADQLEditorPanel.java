@@ -306,10 +306,10 @@ public class ADQLEditorPanel
         public ContextMenuAssistant(JPanel p, JMenu contextMenu) {
             this.contextMenu = contextMenu;
             it = new JMenuItem("context-sensitive-example");
-            it.setVisible(false);
+         //   it.setVisible(false); temporarily made invisible for the first beta release.
             subMenu = new JMenu("context-submenu");
             subMenu.add(new JMenuItem("an entry"));
-            subMenu.setVisible(false);
+          //  subMenu.setVisible(false);  temporarily made invisible for the first beta release.
             p.addHierarchyListener(this);
         }
 
