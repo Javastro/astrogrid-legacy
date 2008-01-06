@@ -28,7 +28,7 @@ String encodedIvorn = URLEncoder.encode(ivorn, "UTF-8");
         <ul>
           <% if(!contractVersion.equals("0.1")) { %>
           <li><a href="DublinCore?IVORN=<%=encodedIvorn%>">Edit core information</a></li>
-          <li><a href="ServiceMetadata?IVORN=<%=encodedIvorn%>">Edit service metadata</a></li>
+          <li><a href="ServiceMetadata?IVORN=<%=encodedIvorn%>">Edit service metadata via VOSI(Capabilties and Table Data)</a></li>
           <li><a href="Coverage?IVORN=<%=encodedIvorn%>">Edit coverage</a></li>
           <% } %>
           <li><a href="../admin/editEntry.jsp?IVORN=<%=encodedIvorn%>">Edit XML text</a> (low level)</li>

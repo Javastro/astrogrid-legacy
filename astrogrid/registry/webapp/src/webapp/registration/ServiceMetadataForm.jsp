@@ -29,7 +29,12 @@
 		      <td><%=request.getParameter("IVORN")%>
             <tr>
               <td>URL for getting service capabilities</td>
-              <td><input type="text" name="VOSI" size="48"/></td>
+              <td><input type="text" name="VOSI_Capabilities" size="48"/></td>
+              <td><a href="help/capabilities.html">help</a></td>
+            </tr>
+            <tr>
+              <td>URL for getting table metadata</td>
+              <td><input type="text" name="VOSI_TableData" size="48"/></td>
               <td><a href="help/capabilities.html">help</a></td>
             </tr>
           </table>

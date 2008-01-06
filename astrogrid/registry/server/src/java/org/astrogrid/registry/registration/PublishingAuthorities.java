@@ -58,8 +58,13 @@ public class PublishingAuthorities {
       for (int j = 0; j < c.getLength(); j++) {
         Node n = c.item(j);
         try {
-        	System.out.println("getFirstChild val = " + n.getFirstChild().getNodeValue());
-        	b.append(n.getFirstChild().getNodeValue());
+        	if(n.getNodeType() == Node.TEXT_NODE) {
+        		System.out.println("yes it is a text node");
+        		b.append(n.getNodeValue());
+        	}else if(n.getNodeType() == Node.ELEMENT_NODE) {
+            	System.out.println("getFirstChild val = " + n.getFirstChild().getNodeValue());
+            	b.append(n.getFirstChild().getNodeValue());        		
+        	}
         }catch(Exception e) {e.printStackTrace();}
       }
       a[i] = b.toString();

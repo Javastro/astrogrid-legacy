@@ -37,11 +37,11 @@
         <xsl:copy-of select="facility"/>
         <xsl:copy-of select="rights"/>
         <xsl:copy-of select="coverage"/>
-
-        <!-- Add the capabilities on the end -->
-        <xsl:copy-of select="document($vosi-uri)//capability"/>
         
-        <xsl:copy-of select="table"/>        
+        <xsl:copy-of select="capability"/>
+        <xsl:copy-of select="document($vosi-uri)//table"/>
+
+        
       </ri:Resource>
     </agr:AstrogridResource>
   </xsl:template>
