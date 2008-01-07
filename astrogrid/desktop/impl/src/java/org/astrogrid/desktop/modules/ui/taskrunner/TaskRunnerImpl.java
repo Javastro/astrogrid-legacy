@@ -180,10 +180,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     .copy()
                     .paste()
                     .selectAll()
+                    .submenu(contextMenu) //enable this on show / hide of lower window
                     .separator()
                     .windowOperation(reset)
                     //.componentOperation("Populate from Task",POPULATE,null) // can't attach.
-                    .submenu(contextMenu) //enable this on show / hide of lower window
                     ;
             }
             protected void populateFileMenu(FileMenuBuilder fmb) {
