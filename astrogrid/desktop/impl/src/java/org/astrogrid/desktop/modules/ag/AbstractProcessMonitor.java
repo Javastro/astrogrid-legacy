@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -94,7 +95,11 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	    this.id = id;	    
         try {
             sys = vfs.createVirtualFileSystem("monitor://").getFileSystem();
-            localResultsRoot = vfs.resolveFile("tmp://" + URLEncoder.encode(id.toString()));
+            String munged = StringUtils.replaceChars(id.getSchemeSpecificPart() + "/" + id.getFragment()
+                    ,"\\$+!*'(),;:?=@&{}|[]^~`<>#"
+                    , "/" // replace \ with /, discard all other noise characters.
+            );
+            localResultsRoot = vfs.resolveFile("tmp://" + URLEncoder.encode(munged));
         } catch (FileSystemException x) {
             throw new RuntimeException("Not expected to fail",x);
         }	    

@@ -230,7 +230,7 @@ public  final class VizModel {
 	/** compute a legal and fairly pretty filename from a service id */
 	private String mkFileName(Service s) {
 	    java.net.URI id = s.getId();
-	    String munged = id.getAuthority()  + StringUtils.replace(id.getPath(),"/","_");
+	    String munged = StringUtils.replaceChars(id.getSchemeSpecificPart(),"/:;?=&\\$+!*'()@{}|[]^~<>#`","_"); // convert  / to _, strip : and any other odd symbols
 	    return "/" + URLEncoder.encode(munged);
 	}
 	

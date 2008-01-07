@@ -67,9 +67,8 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 			    if (! (u.getProtocol().equals("file") || u.getProtocol().equals("http") || u.getProtocol().equals("ftp"))) { // pass it to the browser directly.
 			        // download file to temporary location, and then open it
 			        reportProgress("Downloading file to temporary location");
-			        String name = StringUtils.substringBeforeLast(fo.getName().getBaseName(),".");
 			        String ext = StringUtils.substringAfterLast(fo.getName().getBaseName(),".");
-			        File tmpFile = File.createTempFile("view-in-browser-" + name,"." + ext);
+			        File tmpFile = File.createTempFile("view-in-browser","." + ext);
 			        tmpFile.deleteOnExit();
 			        logger.debug(tmpFile);
 			        FileObject tmp = vfs.resolveFile(tmpFile.toURI().toString());
