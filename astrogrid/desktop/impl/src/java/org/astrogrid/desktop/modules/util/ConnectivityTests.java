@@ -92,13 +92,13 @@ public class ConnectivityTests extends TestSuite{
         });
         addTest(new TestCase("Access port 8080") {
             protected void runTest()  throws Throwable{
-                URL u = new URL("http://galahad.star.le.ac.uk:8080/");
+                URL u = new URL("http://rofr.ivoa.net:8080/ ");
                 assertNotNull(u);
                 try {
                     u.openConnection().connect();
                 } catch (IOException x) {
-                    logger.error("unable to connect to port 8080 on galahad",x);
-                  fail("Unable to connect to port 8080 at galahad");
+                    logger.error("unable to connect to http://rofr.ivoa.net:8080/ ",x);
+                  fail("Unable to connect to http://rofr.ivoa.net:8080/ ");
                 }
             }
         });
