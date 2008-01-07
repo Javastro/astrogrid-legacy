@@ -46,10 +46,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/** Streaming implementation of New registry client.
+/** Streaming implementation of registry client for v0.10 
  * @fixme debug adql routines - use new adql translator
- * @future upgrade to registry 1.0
- * @future at the moment, no caching. could introduce caching later - would need to key on query + regID however.
  * @author Noel Winstanley
  * @since Aug 1, 20061:30:54 AM
  */
