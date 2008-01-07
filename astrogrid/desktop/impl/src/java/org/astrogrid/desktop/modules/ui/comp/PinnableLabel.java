@@ -1,6 +1,8 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Insets;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,16 +23,18 @@ public class PinnableLabel extends JToggleButton {
         super(text,UIConstants.PIN_ICON);
         setFont(fnt);
         setBorder(null);
+        setBorderPainted(false);
+        setFocusPainted(false);
+        setContentAreaFilled(false);
+        setMargin(new Insets(0,0,0,0));
         setDisabledIcon(new EmptyIcon());
-        setSelectedIcon(UIConstants.PIN_ICON);
-        setRolloverEnabled(true);
-        setRolloverIcon(UIConstants.PIN_ICON);
+        setSelectedIcon(UIConstants.PIN_ICON); 
+        //setRolloverIcon(UIConstants.PIN_ICON);
         setHorizontalAlignment(SwingConstants.LEFT);
         setHorizontalTextPosition(SwingConstants.LEFT);
-        putClientProperty("is3DEnabled", Boolean.FALSE);
         setFocusable(false);
-        setBorderPainted(false);              
     }
+
     
     // if a param is disabled, make sure it's not still selectd.
     public void setEnabled(boolean b) {

@@ -284,6 +284,8 @@ public final ProcessMonitor getMoitor() {
 			messageLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
 			
 			JButton controls = new JButton(IconHelper.loadIcon("downarrow16.png"));
+			controls.setBorderPainted(false);
+			controls.setContentAreaFilled(false);
 			final JPopupMenu controlsMenu = new JPopupMenu();
 			controlsMenu.add(refresh);
 			controlsMenu.add(transcript);
@@ -317,7 +319,7 @@ public final ProcessMonitor getMoitor() {
 					triggerUpdate();
 					
 			CellConstraints cc = new CellConstraints();
-			FormLayout l = new FormLayout( "20px,fill:60px:grow,d", "p,d,d");
+			FormLayout l = new FormLayout( "20px,fill:60px:grow,20px", "p,d,d");
             PanelBuilder pb = new PanelBuilder(l);
             pb.add(status,cc.xy(1,1));
             pb.add(title,cc.xy(2,1));
