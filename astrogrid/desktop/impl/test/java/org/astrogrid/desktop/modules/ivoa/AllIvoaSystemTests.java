@@ -22,11 +22,7 @@ public class AllIvoaSystemTests {
 		suite.addTestSuite(ConeSystemTest.class);
 
 		//suite.addTestSuite(SkyNodeSystemTest.class);
-
-		suite.addTestSuite(ExternalRegistryBasicsSystemTest.class);
-		suite.addTestSuite(ExternalRegistryKeywordSystemTest.class);
-		suite.addTestSuite(ExternalRegistryADQLSystemTest.class);
-		suite.addTestSuite(ExternalRegistryXQuerySystemTest.class);		
+		suite.addTest(AllRegistrySystemTests.suite());		
 		return new ARTestSetup(suite,true);
 	}
 
