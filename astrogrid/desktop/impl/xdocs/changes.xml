@@ -14,7 +14,15 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.4.beta1" date="unreleased">
+<release version="2008.1.beta1" date="unreleased">
+    <action dev="nw" type="fix" issue="2466">
+    Improved :8080 selftest.
+    </action>
+    <action dev="nw" type="fix" issue="2465">
+        Fixed filename-related bug on windows. 
+    </action>
+</release>
+<release version="2007.4.beta1" date="2007-12-12">
     <action dev="nw" type="fix" issue="2348">
     Astroscope: made popup query failure messages configurable.
     </action>
