@@ -396,7 +396,7 @@
      <dependency>
       <artifactId>plastic</artifactId>
       <groupId>starlink</groupId>
-  s    <version>20060808-unsigned</version>
+      <version>20060808-unsigned</version>
       <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
 		<properties>
 			<uberjar.bundle>false</uberjar.bundle>
