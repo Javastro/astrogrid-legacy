@@ -1,131 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: gtr $</cvs:author>
-    | <cvs:date>$Date: 2005/10/13 16:57:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.24 $</cvs:version>
-    | <cvs:log>
-    |   $Log: project.xml,v $
-    |   Revision 1.24  2005/10/13 16:57:47  gtr
-    |   Upgraded to Axis 1.3.
-    |
-    |   Revision 1.23  2005/09/09 11:39:00  clq2
-    |   Comm_KMB_1097
-    |
-    |   Revision 1.22.74.1  2005/08/09 09:31:45  KevinBenson
-    |   now uses xerces bundled in the webapp.
-    |
-    |   Revision 1.22  2004/12/23 12:47:56  jdt
-    |   A few simplifications to the pom
-    |
-    |   Revision 1.21  2004/11/23 18:40:50  jdt
-    |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
-    |   http://software.astrogrid.org/developerdocs/developmentprocess.html
-    |
-    |   Revision 1.20.8.1  2004/11/12 00:45:52  jdt
-    |   Switched to use fixed version numbers, defined in a properties file
-    |
-    |   Revision 1.20  2004/11/04 18:00:02  jdt
-    |   Restored following fixes to auto-integration
-    |   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
-    |
-    |   Revision 1.18  2004/11/02 21:47:39  jdt
-    |   Merge of Comm_KMB_583
-    |
-    |   Revision 1.17.20.1  2004/10/26 17:23:41  KevinBenson
-    |   Got rid of the <report> tags let the higher level maven base define it
-    |
-    |   Revision 1.17  2004/09/16 23:18:08  dave
-    |   Replaced debug logging in Community.
-    |   Added stream close() to FileStore.
-    |
-    |   Revision 1.16.30.1  2004/09/16 09:58:48  dave
-    |   Replaced debug with commons logging ....
-    |
-    |   Revision 1.16  2004/08/18 19:00:01  dave
-    |   Myspace manager modified to use remote filestore.
-    |   Tested before checkin - integration tests at 91%.
-    |
-    |   Revision 1.15.24.1  2004/07/27 15:51:12  dave
-    |   Changed tabs to spaces
-    |
-    |   Revision 1.15  2004/07/14 13:50:07  dave
-    |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.14  2004/07/07 17:56:33  jdt
-    |   restore clover report since it doesn't make a blind bit of difference.
-    |
-    |   Revision 1.13  2004/07/05 16:27:43  jdt
-    |   see if removing the clover report stops community grinding to a halt.
-    |
-    |   Revision 1.12  2004/07/02 16:16:00  jdt
-    |   Community now extends the maven-base project,
-    |   allowing us to set the currentVersion in one place.
-    |
-    |   Revision 1.11  2004/06/29 22:21:47  dave
-    |   Merged development branch, dave-dev-200406291222, into HEAD
-    |
-    |   Revision 1.11.4.1  2004/07/13 11:50:43  dave
-    |   Tidied up the file headers
-    |
-    | </cvs:log>
-    |
-    +-->
-<project
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ant="jelly:ant"
-    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+<project>
+  
     <!--+
         | Extend the global astrogrid project.xml.
         +-->
     <extend>${basedir}/../../maven-base/project.xml</extend>
 
-    <!--+
-        | The current version of the Maven project descriptor.
-        +-->
+    
     <pomVersion>3</pomVersion>
-    <currentVersion>${astrogrid.community.version}</currentVersion>
-
-    <!--+
-        | The short name of the project group.
-        | This value is used to group all jars for a project in one directory.
-        | TODO - This should come from the top level master project.
     <groupId>org.astrogrid</groupId>
-    <groupId>astrogrid-community</groupId>
-        +-->
-    <groupId>org.astrogrid</groupId>
-
-    <!--+
-        | The current versions of other AstroGrid components.
-        | Guess ... didn't work.
-    <astrogridVersions>
-        <community>SNAPSHOT</community>
-        <myspace>SNAPSHOT</myspace>
-    </astrogridVersions>
-        +-->
-
- 
-    <!--+
-        | Describes the licenses for this project.
-    <licenses>
-    </licenses>
-        +-->
+    <!-- No artifactId element because this prject makes no artifact -->
+    <name>Community Maven resources</name>
+    <currentVersion>2008.0a1</currentVersion>
 
     <!--+
         | The external libraries required to build our components.
         +-->
     <dependencies>
-        <!--+
-            | The Axis webapp war file.
-            +-->
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.3</version>
-            <type>war</type>
-            <url>http://ws.apache.org/axis/index.html</url>
-        </dependency>
         <!--+
             | JUnit library for test tasks.
             +-->
@@ -183,7 +75,14 @@
             </properties>        	
         </dependency>
     	
-    	
+      <!-- Apache Axis, our SOAP implementation. 
+           This is used for access to the tools at compile time.-->
+      <dependency>
+        <groupId>axis</groupId>
+        <type>war</type>
+        <artifactId>axis</artifactId>
+        <version>1.3</version>
+      </dependency>
     </dependencies>
 
 </project>

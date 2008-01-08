@@ -1,36 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/08/04 09:40:10 $</cvs:date>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
-    | <cvs:log>
-    |   $Log: maven.xml,v $
-    |   Revision 1.15  2005/08/04 09:40:10  clq2
-    |   kevin's second batch
-    |
-    |   Revision 1.14.148.1  2005/07/28 13:35:53  KevinBenson
-    |   No longer uses resetDatabaseTables as a web service method it is not allowed anymore.
-    |
-    |   Revision 1.14  2004/07/27 11:57:58  jdt
-    |   removed reference to astrogrid.iteration
-    |
-    |   Revision 1.13  2004/07/14 13:50:07  dave
-    |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.12.12.1  2004/07/13 11:50:43  dave
-    |   Tidied up the file headers
-    |
-    |   Revision 1.12  2004/06/18 13:45:20  dave
-    |   Merged development branch, dave-dev-200406081614, into HEAD
-    |
-    |   Revision 1.11.10.1  2004/06/17 13:38:59  dave
-    |   Tidied up old CVS log entries
-    |
-    | </cvs:log>
-    |
-    +-->
+
 <project
     xmlns:core="jelly:core"
     xmlns:maven="jelly:maven"
