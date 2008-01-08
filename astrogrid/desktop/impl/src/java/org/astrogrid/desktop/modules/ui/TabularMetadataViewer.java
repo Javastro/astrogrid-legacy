@@ -328,23 +328,33 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		
 		public Object getColumnValue(Object arg0, int arg1) {
 		    NumberedColumnBean n = (NumberedColumnBean)arg0;
+            //
+            //JL: Changed to always return something.
+            //    Otherwise the comparator throws a NullPointerException.
 		    switch(arg1) {
 		        case 0:
 		           return n.ix;
 		        case 1:
-		            return n.cb.getName();
+		            return provideEmptyDefault( n.cb.getName() );
 		        case 2:
-		            return n.cb.getDescription();
+		            return provideEmptyDefault( n.cb.getDescription() );
 		        case 3:
-		            return n.cb.getDatatype();
+		            return provideEmptyDefault( n.cb.getDatatype() );
 		        case 4:
-		            return n.cb.getUCD();
+		            return provideEmptyDefault( n.cb.getUCD() );
 		        case 5:
-		            return n.cb.getUnit();
+		            return provideEmptyDefault( n.cb.getUnit() );
 		        default:
-		            return null;
+		            return "" ;
 		    }
 		}
+        
+        private String provideEmptyDefault( String value ) {
+            if( value != null ) {
+                return value ;
+            }
+            return "" ;
+        }
 
         public Class getColumnClass(int column) {
             switch (column) {
@@ -373,6 +383,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		private final EventSelectionModel tableSelection;	
 		
 		public MetadataTable(EventList columns) { // sorted list required by TableComparatorChooser
+            
 		    SortedList sortedColumns = new SortedList(columns,
 		            new Comparator() {
 
@@ -382,9 +393,12 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
                             return a.ix.compareTo(b.ix);
                         }
 		    });
+                       
 			setModel(new EventTableModel(sortedColumns,new MetadataTableFormat()));
 			new TableComparatorChooser(this,sortedColumns,false);
-			tableSelection = new EventSelectionModel(columns);
+//JL bug# 2419 tableSelection = new EventSelectionModel( columns ) ;
+//JL EventSelectionModel requires the sorted list...
+            tableSelection = new EventSelectionModel( sortedColumns ) ;
 			setSelectionModel(tableSelection);
 			tableSelection.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			getColumnModel().getColumn(0).setPreferredWidth(10);

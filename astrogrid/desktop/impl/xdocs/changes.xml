@@ -14,6 +14,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2419">
+    TabularMetadataViewer.
+    Fixed NPE when column value null.
+    Fixed incorrect inclusion of columns after a sort.
+</action>
 <release version="2008.1.beta1" date="unreleased">
     <action dev="nw" type="fix" issue="2466">
     Improved :8080 selftest.
