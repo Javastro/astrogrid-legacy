@@ -1,5 +1,5 @@
 /*
- * $Id: StatusLogger.java,v 1.5 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: StatusLogger.java,v 1.6 2008/01/09 16:57:06 kea Exp $
  */
 
 package org.astrogrid.dataservice.queriers.status;
@@ -79,7 +79,7 @@ public class StatusLogger {
       /*
       String statusUrl = null;
       try {
-         statusUrl = ServletHelper.getUrlStem()+"queryStatus.jsp?ID="+status.getId();
+         statusUrl = ServletHelper.getUrlStem()+"admin/queryStatus.jsp?ID="+status.getId();
    
          log.debug("Storing status page "+statusUrl);
          

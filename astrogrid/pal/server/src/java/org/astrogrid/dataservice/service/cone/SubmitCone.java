@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.12 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: SubmitCone.java,v 1.13 2008/01/09 16:57:06 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -117,7 +117,7 @@ public class SubmitCone extends DefaultServlet {
             // This one is a non-blocking request
             String id = server.submitQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
       
-            URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
+            URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/queryStatus.jsp");
             //indicate status
             response.getWriter().println("Cone Query has been submitted, and assigned ID "+id+"."+
                                           "<a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");

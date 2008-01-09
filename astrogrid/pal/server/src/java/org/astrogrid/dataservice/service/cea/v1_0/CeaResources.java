@@ -264,7 +264,7 @@ public class CeaResources extends VoResourceSupport {
       String appId = getAppID(catalogName);
 
       StringBuffer cap = new StringBuffer();
-      cap.append("  <capability xsi:type=\"cea:CeaCapability\">\n");
+      cap.append("  <capability xsi:type=\"cea:CeaCapability\" standardID=\"ivo://org.astrogrid/std/CEA/v1.0\">\n");
       cap.append("    <description>Access to two applications: general ADQL query, and asynchronous cone-search where relevant/enabled.</description>\n");
       cap.append("    <interface  xsi:type=\"cea:CECInterface\">\n");
       cap.append("      <accessURL use='full'>" + endpoint + 

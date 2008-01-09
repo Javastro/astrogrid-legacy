@@ -96,7 +96,7 @@
          
       if (!isFinished) {
          //automatic refresh
-         URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
+         URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/queryStatus.jsp");
          out.write(ServletHelper.makeRefreshSnippet(3, statusUrl+"?ID="+queryId));
       }
          

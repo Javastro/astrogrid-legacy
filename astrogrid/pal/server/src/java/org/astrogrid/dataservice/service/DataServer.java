@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.6 2007/03/21 18:59:41 kea Exp $
+ * $Id: DataServer.java,v 1.7 2008/01/09 16:57:06 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,10 +7,12 @@
 package org.astrogrid.dataservice.service;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.security.Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
@@ -19,10 +21,16 @@ import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnSpec;
+import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
+
 
 /**
  * Framework for managing a datacenter.
@@ -67,6 +75,10 @@ public class DataServer
       return ConfigFactory.getCommonConfig().getString("datacenter.name","Unnamed AstroGrid Datacenter");
    }
 
+   private static Principal testPrincipal = 
+      new LoginAccount("AvailabilityTest", "localhost");
+   protected static String testCatalogName = null;
+   protected static String testTableName = null;
    
    /**
     * Does all the things that need to be done on startup initialisation (as opposed
@@ -95,6 +107,40 @@ public class DataServer
       querierManager.shutDown();
    }
    
+   /**
+    * Checks that the service is working (i.e. that a query can be 
+    * submitted and run against the specified catalog and tabledatabase).  
+    */
+   public static boolean isAvailable() {
+
+      Querier querier = null;
+      StringWriter sw = new StringWriter(); 
+
+      try {
+         // Initialise these the first time only
+         final String catalogID = 
+            ConfigFactory.getCommonConfig().getString(
+                  "datacenter.self-test.catalog", null);
+         final String tableID = ConfigFactory.getCommonConfig().getString(
+                  "datacenter.self-test.table", null);
+         final String testCatalogName = 
+            TableMetaDocInterpreter.getCatalogNameForID(
+                             catalogID);
+         final String testTableName = TableMetaDocInterpreter.getTableNameForID(
+                             catalogID,tableID);
+         Query query =  SimpleQueryMaker.makeTinyTestQuery(
+              testCatalogName, testTableName, 
+              new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)
+         );
+         querier = Querier.makeQuerier(testPrincipal, query, DataServer.class);
+         querierManager.askQuerier(querier);
+      }
+      catch (Exception ex) {
+         log.error("Service is unavailable: " + ex.getMessage());
+         return false;
+      }
+      return true;
+   }
    
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the stream given

@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.5 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: SimpleQueryMaker.java,v 1.6 2008/01/09 16:57:06 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,6 +38,10 @@ public class SimpleQueryMaker  {
   private static final String SIMPLE_CATALOG_QUERY = 
     "<Select xsi:type=\"selectType\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\">\n  <Restrict xsi:type=\"selectionLimitType\" Top=\"100\"/>\n  <SelectionList xsi:type=\"selectionListType\">\n     <Item xsi:type=\"allSelectionItemType\"/> </SelectionList>\n  <From xsi:type=\"fromType\">\n    <Table xsi:type=\"tableType\" Alias=\"a\" Name=\"INSERT_TABLE\" Archive=\"INSERT_ARCHIVE\"/>\n  </From>\n</Select>";
 
+  private static final String SIMPLE_TINY_CATALOG_QUERY = 
+    "<Select xsi:type=\"selectType\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\">\n  <Restrict xsi:type=\"selectionLimitType\" Top=\"1\"/>\n  <SelectionList xsi:type=\"selectionListType\">\n     <Item xsi:type=\"allSelectionItemType\"/> </SelectionList>\n  <From xsi:type=\"fromType\">\n    <Table xsi:type=\"tableType\" Alias=\"a\" Name=\"INSERT_TABLE\" Archive=\"INSERT_ARCHIVE\"/>\n  </From>\n</Select>";
+
+
    /** Convenience routine to construct a test query returning 100 entries,
     * using the specified table.
     */
@@ -65,6 +69,25 @@ public class SimpleQueryMaker  {
            "Cannot make a test query using a null or empty table name");
       }
       String queryString = SIMPLE_CATALOG_QUERY.replaceAll(
+             "INSERT_ARCHIVE",catalogName);
+      queryString = queryString.replaceAll("INSERT_TABLE",tableName);
+      return new Query(queryString, returns);
+   }
+
+   /** Convenience routine to construct a test query returning 1 entry,
+    * using the specified table and catalog.
+    */
+   public static Query makeTinyTestQuery(String catalogName, String tableName, 
+         ReturnSpec returns) throws QueryException {
+      if ((catalogName == null) || (catalogName.equals(""))) {
+         throw new QueryException(
+           "Cannot make a test query using a null or empty catalog name");
+      }
+      if ((tableName == null) || (tableName.equals(""))) {
+         throw new QueryException(
+           "Cannot make a test query using a null or empty table name");
+      }
+      String queryString = SIMPLE_TINY_CATALOG_QUERY.replaceAll(
              "INSERT_ARCHIVE",catalogName);
       queryString = queryString.replaceAll("INSERT_TABLE",tableName);
       return new Query(queryString, returns);

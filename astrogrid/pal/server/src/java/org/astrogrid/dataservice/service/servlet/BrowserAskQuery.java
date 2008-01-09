@@ -1,5 +1,5 @@
 /*
- * $Id: BrowserAskQuery.java,v 1.5 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: BrowserAskQuery.java,v 1.6 2008/01/09 16:57:06 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -56,7 +56,7 @@ public class BrowserAskQuery extends DefaultServlet {
             else {
                //target given, so ask query, returning status when complete
                String id = server.submitQuery(user, query, request.getRemoteAddr()+" via BrowserAskQuery servlet");
-               response.sendRedirect("queryStatus.jsp?ID="+id);
+               response.sendRedirect("admin/queryStatus.jsp?ID="+id);
             }
          }
       }
