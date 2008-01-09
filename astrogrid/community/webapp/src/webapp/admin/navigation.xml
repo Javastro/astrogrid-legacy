@@ -10,9 +10,12 @@
     <ul>
       <li><a href='../configure.jsp'>Configuration instructions</a></li>
       <li><a href="ResetDB.jsp">Initialize the database</a></li>
-      <li><a href="selfRegisterForm.jsp">Register the community</a></li>
+      <li><a href="RegistrationInstructions.jsp">Register the community</a></li>
       <li><a href="AccountAdmin.jsp">View or change user accounts</a></li>
       <li><a href="CaEnablementForm.jsp">Enable the certificate authority</a></li>
+      <li><a href="../VOSI/capabilities">View service's capabilities</a></li>
+      <li><a href="../VOSI/availability">View service's availability</a></li>
+      <li><a href="../axis/happyaxis.jsp">Test the Apache-Axis installation</a></li>
     </ul>  
   </div>
 </div>
