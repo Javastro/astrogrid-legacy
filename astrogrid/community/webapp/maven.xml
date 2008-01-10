@@ -14,7 +14,7 @@
     <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
     <goal name="astrogrid-deploy-artifact"  prereqs="war:deploy"/>
     <goal name="astrogrid-deploy-snapshot"  prereqs="war:deploy-snapshot"/>
-    <goal name="astrogrid-build-site"       prereqs="site:site"/>
+    <goal name="astrogrid-build-site"       prereqs="site"/>
     <goal name="astrogrid-deploy-site"      prereqs="site:deploy"/>
     
 

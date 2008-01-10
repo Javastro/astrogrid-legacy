@@ -17,6 +17,8 @@
         | This is used when generating JavaDoc titles.
         +-->
     <name>Community Web Application</name>
+    
+    <currentVersion>2008.0a2</currentVersion>
 
     <!--+
         | A short description of the project.
@@ -48,6 +50,22 @@
             scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/webapp
         </developerConnection>
     </repository>
+ 
+    <build>
+      <sourceDirectory>src/java</sourceDirectory>
+      <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+      <unitTest>
+        <includes>
+          <include>**/*Test.java</include>
+        </includes>
+      </unitTest>
+      <resources>
+        <resource> <!-- These are the configuration files used by JDO to find the DB -->
+          <directory>src/config/database</directory>
+          <includes>*.xml *.sql</includes>
+        </resource>  
+      </resources>
+    </build>
 
     <!--+
         | The external libraries required to build our component.
@@ -57,7 +75,7 @@
             | The AstroGrid common components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
             <version>${astrogrid.common.version}</version>
             <type>jar</type>
@@ -70,9 +88,9 @@
             | The Community common components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>2008.0a1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -83,9 +101,9 @@
             | The Community client components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>2008.0a1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -96,9 +114,9 @@
             | The Community server components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>2008.0a1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -109,9 +127,9 @@
             | The Community resolver components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>2008.0a1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -122,7 +140,7 @@
             | The Registry common classes.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
             <version>${astrogrid.registry.version}</version>
             <type>jar</type>
@@ -135,7 +153,7 @@
             | The Registry client components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-client-lite</artifactId>
             <version>${astrogrid.registry.version}</version>
             <type>jar</type>
@@ -391,44 +409,6 @@
       </dependency>
         
     </dependencies>
-
-    <!--+
-        | The build properties for our project.
-        +-->
-    <build>
-        <!--+
-            | The location of our Java source code.
-            +-->
-        <sourceDirectory>src/java</sourceDirectory>
-        <!--+
-            | The location of our JUnit source code.
-            +-->
-        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
-        <!--+
-            | Our JUnit test classes.
-            +-->
-        <unitTest>
-            <!--+
-                | Which tests to include.
-                +-->
-            <includes>
-                <include>**/*Test.java</include>
-            </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/*Test.frog</exclude>
-            </excludes>
-            <!--+
-                | The resources for our tests.
-            <resources>
-                <resource>
-                </resource>
-            </resources>
-                +-->
-        </unitTest>
-    </build>
 
 </project>
 

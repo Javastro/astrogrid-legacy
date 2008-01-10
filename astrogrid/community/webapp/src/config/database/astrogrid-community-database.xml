@@ -1,41 +1,25 @@
 <?xml version="1.0"?>
-<!--+
-    |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/src/config/database/astrogrid-community-database.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
-    | <cvs:log>
-    |   $Log: astrogrid-community-database.xml,v $
-    |   Revision 1.4  2004/07/14 13:50:07  dave
-    |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.3.12.1  2004/07/13 11:50:43  dave
-    |   Tidied up the file headers
-    |
-    |   Revision 1.3  2004/06/18 13:45:20  dave
-    |   Merged development branch, dave-dev-200406081614, into HEAD
-    |
-    |   Revision 1.2.58.1  2004/06/17 13:38:59  dave
-    |   Tidied up old CVS log entries
-    |
-    | </cvs:log>
-    |
-    +-->
+<!--
+This file specifies how Castor JDO connects to the community database.
+Edit this to specify where the DB files are kept.
+-->
 <!DOCTYPE databases PUBLIC
     "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
     "http://castor.exolab.org/jdo-conf.dtd">
-<!--+
-    | Template for our JNDI database configuration.
-    | This refers to datasource defined in the Tomcat config.
-    +-->
+
 <database name="org.astrogrid.community.database" engine="hsql">
-    <!--+
-        | This refers to a javax.sql.DataSource defined in the Tomcat config.
-        +-->
-    <jndi name="java:comp/env/jdbc/org.astrogrid.community.database"/>
-    <!--+
-        | This refers to a local mapping file, in the same directory.
-        +-->
-    <mapping href="astrogrid-community-mapping.xml"/>
+        
+  <!-- This specifies a direct JDBC connection to a HypersonicSQL DB, not using
+       JEE or JNDI. I.e., the connection is managed by the web application
+       without help from the servlet container. Change the value of the 
+       url attribute to specifies where the DB files are kept; change only
+       the part following jdbc:hsqldb: and preceding /org.astrogrid.community. -->
+  <driver class-name="org.hsqldb.jdbcDriver" 
+      url="jdbc:hsqldb:/tmp/community-db/org.astrogrid.community">
+    <param name="user" value="sa" />
+    <param name="password" value="" />
+  </driver>
+  
+  <!-- This refers to a mapping file in the same directory as this file. -->
+  <mapping href="astrogrid-community-mapping.xml"/>
 </database>

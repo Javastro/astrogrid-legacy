@@ -50,20 +50,8 @@
       <subsection name="Installing the DB software">
         <p>
           The DB software is supplied in the WAR which you have just installed.
-          You need to move it to a location where Tomcat can read it.
-        </p>
-        <p>
-          Look in Tomcat's directory <i>webapps</i> and find the directory
-          holding the community web-application. In that directory, find the
-          subdirectory <i>WEB-INF/lib</i>. In there is the DB software: the
-          file <i>hsqldb-v.jar</i> where v stands for the version number.
-          Move this file into Tomcat's directory <i>common/lib/</i>.
-        </p>
-          Now restart Tomcat so that it loads the new JAR. 
-        
-        <p>
-          If you already have in <i>common/lib</i> an HSQLDB jar of a different
-          version, then you must delete it before you restart Tomcat.
+          You don't have to install it manually. (C.f. earlier versions of
+          community where you needed to move a JAR into common/lib.)
         </p>
       </subsection>
       
