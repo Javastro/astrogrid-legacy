@@ -64,10 +64,16 @@
 						<a href="../fingerprint.jsp">Fingerprint</a>
 					</li>
 					<li class="none">
-						<a href="../cec-http?method=returnRegistryEntry">Show registration document</a>
+						<a href="../cec-http?method=returnRegistryEntry">Show old-style registration document</a>
+					</li>
+                                        <li class="none">
+						<a href="../VOSI/capabilities">Show new-style registration document</a>
 					</li>
 					<li class="none">
-						<a href="../cec-http?method=register">Register</a>
+						<a href="RegistrationInstructions.jsp">Register</a>
+					</li>
+                                        <li class="none">
+						<a href="../VOSI/availability">Show service availability</a>
 					</li>
 					<li class="none">
 						<a href="configuration-describe.jsp">Show current configuration</a>

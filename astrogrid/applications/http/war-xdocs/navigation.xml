@@ -23,9 +23,11 @@
   		<item name="Axis test" href="happyaxis.jsp"/>
   		<item name="Installation test" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory"/>
   		<item name="Fingerprint" href="fingerprint.jsp"/>
-  		<item name="Show registration document" href="cec-http?method=returnRegistryEntry"/>
-  		<item name="Register" href="cec-http?method=register"/>
-  		<item name="Show current configuration" href="admin/configuration-describe.jsp"/>
+  		<item name="Old-style registration-document" href="cec-http?method=returnRegistryEntry"/>
+                <item name="New-style registration-document" href="VOSI/capabilities"/>
+  		<item name="Registration instuctions" href="admin/RegistrationInstructions.jsp"/>
+  		<item name="Current configuration" href="admin/configuration-describe.jsp"/>
+                <item name="Service availability" href="VOSI/availability"/>
   		<item name="Environment editor" href="admin/environment-edit.jsp"/>
   		<item name="Reload saved environment" href="admin/environment-apply.jsp"/>
   		<item name="Test run of application" href="chooseapp.jsp"/>

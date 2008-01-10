@@ -5,7 +5,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-commandline</artifactId>
   <name>CEA command-line-application server</name>
-  <currentVersion>2007.2.02</currentVersion>
+  <currentVersion>2008.0a1</currentVersion>
   <shortDescription>CEA server for command-line applications</shortDescription>
   <description>A CEA application-server for running command-line applications. The service provides
     CEA's standard SOAP interface, "CEC".</description>
