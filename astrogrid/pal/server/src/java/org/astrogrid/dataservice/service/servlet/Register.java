@@ -1,5 +1,5 @@
 /*
- * $Id: Register.java,v 1.9 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: Register.java,v 1.10 2008/01/11 15:58:25 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -31,6 +31,12 @@ import org.astrogrid.xml.DomHelper;
  * Calling this servlet sends the registry entry to the configured Registry
  *
  * @author mch
+ * @deprecated To conform with IVOA standards, registration data can no 
+ *   longer be "pushed" to the registry.  Instead, the admin must manually 
+ *   create a skeleton record in the registry (including Dublin Core 
+ *   information, which is no longer managed by the service), and then 
+ *   supply endpoints by which other information (service capabilities 
+ *   etc) can be obtained direct from the service.  
  */
 public class Register extends DefaultServlet {
    

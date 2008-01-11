@@ -1,5 +1,5 @@
 /*
- * $Id: FileResourcePlugin.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: FileResourcePlugin.java,v 1.3 2008/01/11 15:58:24 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,10 @@ import org.astrogrid.cfg.ConfigFactory;
  * Serves a metadata resource from a file on disk.
  * <p>
  * @author M Hill
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
+ *
  */
 
 public class FileResourcePlugin extends UrlResourcePlugin

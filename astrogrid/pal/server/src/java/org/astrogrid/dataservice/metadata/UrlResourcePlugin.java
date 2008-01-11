@@ -1,5 +1,5 @@
 /*
- * $Id: UrlResourcePlugin.java,v 1.6 2005/05/27 16:21:05 clq2 Exp $
+ * $Id: UrlResourcePlugin.java,v 1.7 2008/01/11 15:58:24 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,6 +25,10 @@ import org.xml.sax.SAXException;
  * Serves a metadata resource from a file on disk.
  * <p>
  * @author M Hill
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
+ *
  */
 
 public class UrlResourcePlugin extends ProxyResourceSupport implements VoResourcePlugin {

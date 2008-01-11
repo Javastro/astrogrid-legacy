@@ -15,6 +15,13 @@
    <goal name="astrogrid-build-artifact" prereqs="war:artifact"/>
    <goal name="astrogrid-install-artifact" prereqs="war:install"/>
    
+    <!-- Before building the XML documentation, generate the "about" page. -->
+    <preGoal name="war:war">
+       <echo message="Application: ${pom.name}      Version: ${pom.currentVersion}"
+          file="${maven.war.webapp.dir}/docs/version.txt" 
+          level="error" verbose="true"/>
+    </preGoal>
+
  <!-- packaging of the war file
   need to
    * grab resources from dependent jars (e.g. schema, wsdd, wsdl, etc)

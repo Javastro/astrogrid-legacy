@@ -34,6 +34,10 @@ import org.w3c.dom.Element;
  * @see package documentation
  * <p>
  * @author M Hill
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
+ *
  */
 
 public class VoDescriptionGenerator extends VoDescriptionGeneratorBase {

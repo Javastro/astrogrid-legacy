@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.6 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: CeaResources.java,v 1.7 2008/01/11 15:58:25 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,9 @@ import org.astrogrid.tableserver.metadata.TableInfo;
  * the right stuff from the right bit into the right bit.
  * <p>
  * @author M Hill
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
  */
 
 public class CeaResources extends VoResourceSupport implements VoResourcePlugin {

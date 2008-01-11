@@ -98,6 +98,9 @@ public class VoDescriptionGenerator extends VoDescriptionGeneratorBase {
 
    /**
     * Returns the whole metadata file as a DOM document 
+    * @deprecated  Used with old-style push registration. Not relevant now
+    * that we are using new IVOA registration conventions, and NO LONGER
+    * SUPPORTED.
     */
    public Document getVoDescription() throws IOException {
       Document doc;
@@ -113,8 +116,11 @@ public class VoDescriptionGenerator extends VoDescriptionGeneratorBase {
    /**
     * Produce the DSA v1.0 VOResources, returning an unvalidated string.  
     * (This means we can view the complete VOResources separate from the 
-    * validating process, useful for debugging). */
-
+    * validating process, useful for debugging). 
+    * @deprecated  Used with old-style push registration. Not relevant now
+    * that we are using new IVOA registration conventions, and NO LONGER
+    * SUPPORTED.
+    */
    public String makeVoDescription() throws IOException, MetadataException {
 
       // Check whether v1.0 resources are required
@@ -252,6 +258,11 @@ public class VoDescriptionGenerator extends VoDescriptionGeneratorBase {
       return vod.toString();
    }
 
+   /*
+    * @deprecated  Used with old-style push registration. Not relevant now
+    * that we are using new IVOA registration conventions, and NO LONGER
+    * SUPPORTED.
+    */
    public Document getWrappedResource(String resourceType) throws MetadataException, IOException
    {
       Element element = getResource(resourceType);

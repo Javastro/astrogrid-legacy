@@ -18,6 +18,7 @@ import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.service.cone.v1_0.ConeResources;
 import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
 import org.astrogrid.tableserver.metadata.v1_0.TableResources;
+import org.astrogrid.dataservice.metadata.v1_0.VoDescriptionGenerator;
 
 /**
  * Servlet to inform VOSI responses. This servlet does not generate VOSI
@@ -39,9 +40,10 @@ public class VosiServlet extends HttpServlet {
 
   private String endpoint = "";
 
-  private static String CAPABILITIES_SUFFIX =  "/vosi/capabilities";
-  private static String AVAILABILITY_SUFFIX =  "/vosi/availability";
-  private static String TABLES_SUFFIX = "/vosi/tables";
+  public static final String CAPABILITIES_SUFFIX =  "/vosi/capabilities";
+  public static final String AVAILABILITY_SUFFIX =  "/vosi/availability";
+  public static final String TABLES_SUFFIX = "/vosi/tables";
+  public static final String CEAAPP_SUFFIX = "/vosi/ceaapplication";
   
   /**
    * Initializes the servlet. Records the start time so that service
@@ -72,19 +74,24 @@ public class VosiServlet extends HttpServlet {
     
      Writer writer = response.getWriter();
      String requestUri = request.getRequestURI();
-     if (requestUri.endsWith(CAPABILITIES_SUFFIX)) {
+     if (requestUri.toLowerCase().endsWith(CAPABILITIES_SUFFIX)) {
        response.setContentType("text/xml");
        outputCapabilities(
           getCatalogPrefix(requestUri, CAPABILITIES_SUFFIX), writer);
      }
-     else if (requestUri.endsWith(AVAILABILITY_SUFFIX)) {
+     else if (requestUri.toLowerCase().endsWith(AVAILABILITY_SUFFIX)) {
        response.setContentType("text/xml");
        outputAvailability(writer);
      }
-     else if (requestUri.endsWith(TABLES_SUFFIX)) {
+     else if (requestUri.toLowerCase().endsWith(TABLES_SUFFIX)) {
        response.setContentType("text/xml");
        outputTables(
           getCatalogPrefix(requestUri, TABLES_SUFFIX), writer);
+     }
+     else if (requestUri.toLowerCase().endsWith(CEAAPP_SUFFIX)) {
+       response.setContentType("text/xml");
+       outputCeaAppRegistration(
+          getCatalogPrefix(requestUri, CEAAPP_SUFFIX), writer);
      }
      else {
         // Do what?
@@ -99,6 +106,7 @@ public class VosiServlet extends HttpServlet {
      String capabilitiesUri = endpoint + catalogName + CAPABILITIES_SUFFIX;
      String availabilityUri = endpoint + catalogName + AVAILABILITY_SUFFIX;
      String tablesUri = endpoint + catalogName + TABLES_SUFFIX;
+     String ceaAppUri = endpoint + catalogName + CEAAPP_SUFFIX;
      String schemaUrl = endpoint + "schema/Capabilities.xsd";
      try {
 
@@ -151,7 +159,17 @@ public class VosiServlet extends HttpServlet {
           "   <queryType>GET</queryType>\n" + 
           "   <resultType>application/xml</resultType>\n" + 
           "   </interface>\n" + 
-          "</capability>\n");
+          "</capability>\n" +
+
+          // CEA Application registration capability
+          "<capability standardID=\"ivo://org.astrogrid/std/VOSI/v0.3#ceaApplication\">\n" + 
+          "   <interface xsi:type=\"vs:ParamHTTP\">\n" + 
+          "   <accessURL use=\"full\">" + ceaAppUri + "</accessURL>\n" + 
+          "   <queryType>GET</queryType>\n" + 
+          "   <resultType>application/xml</resultType>\n" + 
+          "   </interface>\n" + 
+          "</capability>\n"
+          );
 
        // End of capabilities
        writer.write("</cap:capabilities>\n");
@@ -229,6 +247,29 @@ public class VosiServlet extends HttpServlet {
            "      urn:astrogrid:schema:TableMetadata " + schemaUrl + "\">\n");
         writer.write(TableResources.getTableDescriptions(catalogID));
         writer.write("</tab:tables>\n");
+     }
+     catch (Exception ex) {
+        throw new ServletException(ex.getMessage());
+     }
+  }
+
+  protected void outputCeaAppRegistration(String catalogName, Writer writer) 
+            throws ServletException 
+  {
+     String schemaUrl = endpoint + "schema/CeaAppDef.xsd";
+     try {
+       writer.write(
+           "<ca:ceaAppDefinition\n" +
+           "   xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v1.0\"\n" +
+           "   xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v1.0\"\n" +
+           "   xmlns:ca=\"urn:astrogrid:schema:CeaApplicationDefinition\"\n" +
+           "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+           "   xsi:schemaLocation=\n" +
+           "     \"http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd\n" +
+           "      http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd\n" +
+           "      urn:astrogrid:schema:CeaApplicationDefinition " + schemaUrl + "\">\n");
+        writer.write(CeaResources.getCeaApplicationDefinition(catalogName));
+        writer.write("</ca:ceaAppDefinition>\n");
      }
      catch (Exception ex) {
         throw new ServletException(ex.getMessage());

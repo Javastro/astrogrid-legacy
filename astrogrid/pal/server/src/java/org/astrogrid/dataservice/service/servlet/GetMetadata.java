@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.8 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: GetMetadata.java,v 1.9 2008/01/11 15:58:25 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -18,6 +18,9 @@ import org.astrogrid.cfg.ConfigFactory;
  * A servlet for returning the generated metadata
  *
  * @author mch
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER 
+ * SUPPORTED.
  */
 public class GetMetadata extends DefaultServlet {
    

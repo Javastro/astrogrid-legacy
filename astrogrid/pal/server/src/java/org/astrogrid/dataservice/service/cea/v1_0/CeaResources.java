@@ -17,7 +17,6 @@ import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.metadata.TableInfo;
 
 
-
 /**
  * Serves the CEA capabilities and application registrations.  
  * @author M Hill, K Andrews
@@ -28,14 +27,44 @@ public class CeaResources extends VoResourceSupport {
    
    /**
     * Returns a CeaServiceType resource element
+    * @deprecated  Used with old-style push registration. Not relevant now
+    * that we are using new IVOA registration conventions, and NO LONGER
+    * SUPPORTED.
+    *
     */
    public static String getCeaAppResource(String catalogName) 
       throws IOException, MetadataException {
 
+      // Set up relationship tag
+      String[] end = new String[1];
+      end[0] = VoResourceSupportBase.makeIvorn(catalogName);
+      // We are allowed "service-for" but not "served-by" in the 
+      // relationship tag, so let's make the best of it with related-to
+      // (which at least allows you to find the server actually supporting
+      // this CEA Application type)
+      String relTag = VoResourceSupportBase.makeRelationshipTag(
+          "related-to", end);
+      String core = VoResourceSupportBase.makeDublinCore(
+            catalogName+"/ceaApplication","Cea Application",relTag);
+      return  (
+         VoResourceSupportBase.openVoResourceElement_1_0("cea:CeaApplication") +
+         core + 
+         getCeaApplicationDefinition(catalogName) + 
+         VoResourceSupportBase.closeVoResourceElement_1_0() + "\n"
+       );
+   }
+
+   /**
+    * Returns just the applicationDefinition section of a CeaApplication 
+    * resource element.
+    */
+   public static String getCeaApplicationDefinition(String catalogName) 
+      throws IOException, MetadataException {
+
       String conableTables="", coneParams="", coneInters="";
       String multiConeParams="", multiConeInters="";
-      String appId = 
-         VoResourceSupportBase.makeIvorn(catalogName+"/ceaApplication");
+      //String appId = 
+       //  VoResourceSupportBase.makeIvorn(catalogName+"/ceaApplication");
 
       String catalogID = 
          TableMetaDocInterpreter.getCatalogIDForName(catalogName);
@@ -183,6 +212,8 @@ public class CeaResources extends VoResourceSupport {
          */
       }
 
+
+      /*
       // Set up relationship tag
       String[] end = new String[1];
       end[0] = VoResourceSupportBase.makeIvorn(catalogName);
@@ -193,10 +224,14 @@ public class CeaResources extends VoResourceSupport {
       String relTag = VoResourceSupportBase.makeRelationshipTag(
           "related-to", end);
 
+      String core = VoResourceSupportBase.makeDublinCore(catalogName+"/ceaApplication","Cea Application",relTag);
+
       String ceaApplication =
          VoResourceSupportBase.openVoResourceElement_1_0("cea:CeaApplication") + 
-         VoResourceSupportBase.makeDublinCore(catalogName+"/ceaApplication","Cea Application",relTag)+
+         core + 
+         */
 
+      return
          // Basic parameters used in the interfaces
          "  <applicationDefinition>\n"+
          "    <parameters>\n"+
@@ -246,9 +281,11 @@ public class CeaResources extends VoResourceSupport {
          coneInters +
          multiConeInters +
          "    </interfaces>\n"+
-         "  </applicationDefinition>\n"+
+         "  </applicationDefinition>\n";
+         /*
          VoResourceSupportBase.closeVoResourceElement_1_0() + "\n";
          return ceaApplication;
+         */
    }
 
    public static String getAppID(String catalogName) throws IOException {

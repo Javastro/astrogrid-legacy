@@ -1,5 +1,5 @@
 /*
- * $Id: DsaDefaultServlet.java,v 1.1 2008/01/09 16:57:06 kea Exp $
+ * $Id: DsaDefaultServlet.java,v 1.2 2008/01/11 15:58:25 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -12,6 +12,7 @@ import javax.servlet.RequestDispatcher;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
+import org.astrogrid.dataservice.service.servlet.VosiServlet;
 import org.astrogrid.query.Query;
 import org.astrogrid.webapp.DefaultServlet;
 
@@ -28,17 +29,20 @@ public class DsaDefaultServlet extends DefaultServlet {
    DataServer server = new DataServer();
    
    public void doGet(HttpServletRequest request,
-                     HttpServletResponse response) throws ServletException, IOException {
+         HttpServletResponse response) throws ServletException, IOException {
 
       RequestDispatcher rd = null;
       String targetUri = request.getRequestURI(); 
-      if(targetUri.endsWith("/vosi/capabilities")) {
+      if(targetUri.endsWith(VosiServlet.CAPABILITIES_SUFFIX)) {
         rd = getServletContext().getNamedDispatcher("VosiServlet");
       } 
-      else if(targetUri.endsWith("/vosi/availability")) {
+      else if(targetUri.endsWith(VosiServlet.AVAILABILITY_SUFFIX)) {
         rd = getServletContext().getNamedDispatcher("VosiServlet");
       }
-      else if(targetUri.endsWith("/vosi/tables")) {
+      else if(targetUri.endsWith(VosiServlet.TABLES_SUFFIX)) {
+        rd = getServletContext().getNamedDispatcher("VosiServlet");
+      }
+      else if(targetUri.endsWith(VosiServlet.CEAAPP_SUFFIX)) {
         rd = getServletContext().getNamedDispatcher("VosiServlet");
       }
       else {

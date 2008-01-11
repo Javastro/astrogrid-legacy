@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourcePlugin.java,v 1.3 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: VoResourcePlugin.java,v 1.4 2008/01/11 15:58:25 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,10 @@ import java.io.IOException;
  * but not v1.0 resources.
  * <p>
  * @author M Hill
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
+ *
  */
 
 public interface VoResourcePlugin

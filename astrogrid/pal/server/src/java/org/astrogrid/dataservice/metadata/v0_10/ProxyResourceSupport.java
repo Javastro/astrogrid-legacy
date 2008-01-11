@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.8 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: ProxyResourceSupport.java,v 1.9 2008/01/11 15:58:25 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,6 +29,10 @@ import org.xml.sax.SAXException;
  *
  * <p>
  * @author M Hill
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
+ *
  */
 
 public class ProxyResourceSupport extends VoResourceSupport {

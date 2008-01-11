@@ -22,6 +22,12 @@
 <div id='bodyColumn'>
 
 <h1>Welcome</h1>
+<div style="background:yellow; padding:5px">
+<p>
+<font color="red"><b>THIS RELEASE OF DSA IS A POINT-RELEASE FOR IN-HOUSE TESTING ONLY!  DO NOT USE ON LIVE DEPLOYMENTS!</b></font>
+</p>
+</div>
+
 <p>
 Welcome to the web interface for this Astrogrid DSA/catalog installation. 
 </p>

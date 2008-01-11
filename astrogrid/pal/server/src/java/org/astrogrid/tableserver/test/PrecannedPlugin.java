@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedPlugin.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: PrecannedPlugin.java,v 1.2 2008/01/11 15:58:25 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,8 @@
 package org.astrogrid.tableserver.test;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.TableResults;
@@ -29,8 +30,21 @@ public class PrecannedPlugin extends DefaultPlugin
 
       querier.setStatus(new QuerierQuerying(querier.getStatus(), query.toString()));
       querier.getStatus().setMessage("Precanned Plugin");
-      Date today = new Date();
-      PrecannedResults results = new PrecannedResults(querier, "Created "+ today.getDate()+"-"+today.getMonth()+"-"+today.getYear()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds());
+      GregorianCalendar calendar = new GregorianCalendar();
+      PrecannedResults results = new PrecannedResults(querier, 
+            "Created "+ 
+            calendar.get(Calendar.DAY_OF_MONTH)+
+            "-"+
+            calendar.get(Calendar.MONTH)+
+            "-"+
+            (calendar.get(Calendar.YEAR) - 1900) +
+            " "+
+            calendar.get(Calendar.HOUR_OF_DAY) +
+            ":"+
+            calendar.get(Calendar.MINUTE) +
+            ":"+
+            calendar.get(Calendar.SECOND)
+            );
       
       results.send(query.getResultsDef(), querier.getUser());
    }

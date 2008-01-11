@@ -86,11 +86,13 @@
     <servlet-class>org.astrogrid.dataservice.service.servlet.GetMetadata</servlet-class>
   </servlet>
 
+  <!--
   <servlet>
     <servlet-name>Register</servlet-name>
     <description>(re)Registers the service (sends the metadata to the configured Registries)</description>
     <servlet-class>org.astrogrid.dataservice.service.servlet.Register</servlet-class>
   </servlet>
+  -->
 
   <servlet>
     <servlet-name>MetaDocGenerator</servlet-name>
@@ -154,10 +156,12 @@
     <url-pattern>/admin/GetLog</url-pattern>
   </servlet-mapping>
   
+  <!--
   <servlet-mapping>
     <servlet-name>Register</servlet-name>
     <url-pattern>/admin/Register</url-pattern>
   </servlet-mapping>
+  -->
 
   <servlet-mapping>
     <servlet-name>GetMetadata</servlet-name>

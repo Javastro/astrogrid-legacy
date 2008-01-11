@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupportBase.java,v 1.3 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: VoResourceSupportBase.java,v 1.4 2008/01/11 15:58:25 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,9 +27,13 @@ import org.xml.sax.SAXException;
 
 /**
  * Helper methods for constructing basic VoResource documents
- * This is a bit of a fudge between v0.10 and v1.0 resourcesn now.
+ * This is a bit of a fudge between v0.10 and v1.0 resources now.
  *
  * @author M Hill, K Andrews
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
+ *
  */
 
 public class VoResourceSupportBase {

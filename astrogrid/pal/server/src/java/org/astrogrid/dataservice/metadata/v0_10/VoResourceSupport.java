@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.19 2007/03/14 16:26:49 kea Exp $
+ * $Id: VoResourceSupport.java,v 1.20 2008/01/11 15:58:25 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,10 @@ import org.astrogrid.dataservice.metadata.VoResourceSupportBase;
  * <p>See package documentation.
  * <p>
  * @author M Hill
+ * @deprecated  Used with old-style push registration. Not relevant now
+ * that we are using new IVOA registration conventions, and NO LONGER
+ * SUPPORTED.
+ *
  */
 
 public class VoResourceSupport extends VoResourceSupportBase {
