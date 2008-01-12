@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.18 2007/09/04 15:15:58 clq2 Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.19 2008/01/12 12:41:42 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,18 +55,27 @@ public class RegistryDelegateFactory {
    }
    
    /**
+    * Method: createQuery
+    * Description: Creates a RegistryService interface for querying
+    * the registry based on a property 'org.astrogrid.registry.query.endpoint'
+    * Note the RegistryService interface will be the default generic interface
+    * and will not contain the added methods in the org.astrogrid.registry.client.query.v1_0.RegistryService
     * 
-    * @return
+    * @return RegistryService interface object connected to query the registry.
     */
    public static synchronized RegistryService createQuery() {
       return createQuery(conf.getUrl(QUERY_URL_PROPERTY,null));
    }
 
    /**
+    * Method: createQuery
+    * Description: Creates a RegistryService interface for querying
+    * the registry from the url endpoint passed in.
+    * Note the RegistryService interface will be the default generic interface
+    * and will not contain the added methods in the org.astrogrid.registry.client.query.v1_0.RegistryService
     * 
-    * @todo check for null endpoint and return illegal argument exception?
-    * @param endPoint
-    * @return
+    * @param endPoint url object to the registry web service endpoint
+    * @return RegistryService interface object connected to query the registry.
     */
    public static synchronized RegistryService createQuery(URL endPoint) {
         logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
@@ -75,6 +84,14 @@ public class RegistryDelegateFactory {
       return new org.astrogrid.registry.client.query.v0_1.QueryRegistry(endPoint);
    } 
    
+   /**
+    * Method: createQueryv1_0
+    * Description: Creates a 1.0 RegistryService interface object for querying 1.0
+    * Resources.  Allowing the ability to query based on some new interface methods plus the
+    * default RegistryService methods as well. Normally astrogrid endpoints end in RegistryQueryv1_0
+    * @param endPoint url end point to a 1.0 web service.
+    * @return RegistryService interface object connected to query the registry.
+    */
    public static synchronized org.astrogrid.registry.client.query.v1_0.RegistryService createQueryv1_0(URL endPoint) {
      logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
                + "'" + endPoint + "'");
@@ -108,36 +125,68 @@ public class RegistryDelegateFactory {
 
    
    /**
+    * Method: createAdmin
+    * Description: Creates a (0.1,0.10) RegistryAdminService interface for updating
+    * the registry based on a property 'org.astrogrid.registry.admin.endpoint'
+    * The Default contract at this moment is 0.1 which is for 0.10 VOResources, this may
+    * change in the near future.
     * 
-    * @return
+    * @return RegistryAdminService interface object connected to query the registry.
     */
    public static synchronized RegistryAdminService createAdmin() {      
       return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null),DEFAULT_CONTRACT_VERSION);      
    }
 
    /**
+    * Method: createAdmin
+    * Description: Creates a (0.1,0.10) RegistryAdminService interface for updating
+    * the registry from the url endpoint passed in.
+    * The Default contract at this moment is 0.1 which is for 0.10 VOResources, this may
+    * change in the near future.
     * 
-    * @todo check for null endpoint and return illegal argument exception?
-    * @param endPoint
-    * @return
+    * @param endPoint url object to the registry web service endpoint
+    * @return RegistryAdminService interface object connected to query the registry.
     */
    public static synchronized RegistryAdminService createAdmin(URL endPoint) {
 	   return createAdmin(endPoint,DEFAULT_CONTRACT_VERSION);
    }
    
+
    /**
+    * Method: createAdmin
+    * Description: Creates a RegistryAdminService interface for updating
+    * the registry based on the contract version passed in and the 
+    * property 'org.astrogrid.registry.admin.endpoint' url that is set.  At the time of this writing
+    * only two contracts are supported: 0.1 which updates the 0.10 VOResource Records and
+    * 1.0 which updates the 1.0 VOResource records.
+    * Note all astrogrid urls should just have the ending 'RegistryAdmin' nothing else the 
+    * contract version will change the url slightly to point to the correct location for that 
+    * VOResource version.
     * 
-    * @return
+    * @param contractVersion The wsdl contract version number.  
+    * Currently 0.1 for updating 0.10 VOResource records and 1.0 for updating 1.0 VOResource Records.
+    * @param endPoint url object to the registry web service endpoint
+    * @return RegistryService interface object connected to query the registry.
     */
    public static synchronized RegistryAdminService createAdmin(String contractVersion) {      
       return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null),contractVersion);      
    }
    
    /**
+    * Method: createAdmin
+    * Description: Creates a RegistryAdminService interface for updating
+    * the registry based on the contract version passed in and the 
+    * url that is set.  At the time of this writing
+    * only two contracts are supported: 0.1 which updates the 0.10 VOResource Records and
+    * 1.0 which updates the 1.0 VOResource records.
+    * Note all astrogrid urls should just have the ending 'RegistryAdmin' nothing else; the 
+    * contract version will change the url slightly to point to the correct location for that 
+    * VOResource version.
     * 
-    * @todo check for null endpoint and return illegal argument exception?
-    * @param endPoint
-    * @return
+    * @param contractVersion The wsdl contract version number.  
+    * Currently 0.1 for updating 0.10 VOResource records and 1.0 for updating 1.0 VOResource Records.
+    * @param endPoint url object to the registry web service endpoint
+    * @return RegistryService interface object connected to query the registry.
     */
    public static synchronized RegistryAdminService createAdmin(URL endPoint, String contractVersion) {
 	  URL contractEndpoint = null;
@@ -160,17 +209,25 @@ public class RegistryDelegateFactory {
    }
    
    /**
-    * 
-    * @return
+    * Method: createOAI
+    * Description: creates an OAIService interface object for access
+    * to the OAI methods and to perform the OAI queries on the registry.  Uses
+    * the property set 'org.astrogrid.registry.oai.query.endpoint' as the endpoint.
+    * @return  OAIService to query the registry OAI.
     */
    public static synchronized OAIService createOAI() {
       return createOAI(conf.getUrl(OAI_URL_PROPERTY,null));      
    }
 
+   
    /**
-    * @todo check for null endpoint and return illegal argument exception?
-    * @param endPoint
-    * @return
+    * Method: createOAI
+    * Description: creates an OAIService interface object for access
+    * to the OAI methods and to perform the OAI queries on the registry.  
+    * 
+    * @param endpoint URL endpoint to the OAI webservice. Normally end with
+    * RegistryHarvest for the 0.10 VOResource records or RegistryHarvest1_0 for the 1.0 VOResource records.
+    * @return  OAIService to query the registry OAI.
     */
    public static synchronized OAIService createOAI(URL endPoint) {
       return new org.astrogrid.registry.client.query.OAIRegistry(endPoint);

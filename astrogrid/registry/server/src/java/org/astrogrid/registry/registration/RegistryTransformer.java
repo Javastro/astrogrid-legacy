@@ -9,6 +9,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
@@ -77,6 +78,16 @@ public class RegistryTransformer {
       throw new ServletException("You must supply a URL for the transform.");
     }
     this.transformationSource = new StreamSource(source.openStream());
+  }
+  
+  /**
+   * Defines the source of data for the transformation.
+   */
+  public void setTransformationSource(Node doc) throws IOException, ServletException {
+    if (doc == null) {
+      throw new ServletException("You must supply a Node for the transform.");
+    }
+    this.transformationSource =  new DOMSource(doc);
   }
   
   /**

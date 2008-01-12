@@ -100,12 +100,15 @@ public class RegistryDOMHelper {
     */
    public static String getAuthorityID(Element doc) {
        NodeList nl = doc.getElementsByTagNameNS("*","identifier" );
-       String val = null;
+       String val = "";
        if(nl.getLength() == 0) {
            return null;
        }     
-       
-       val = nl.item(0).getFirstChild().getNodeValue().trim();      
+       NodeList valNodes = nl.item(0).getChildNodes();
+       for(int i = 0;i < valNodes.getLength();i++) {
+    	   val += valNodes.item(i).getNodeValue();
+       }
+       //val = nl.item(0).getFirstChild().getNodeValue().trim();      
        int index = val.indexOf("/",7);
        if( index != -1 && index > 6) {
                return val.substring(6,index);
@@ -131,10 +134,15 @@ public class RegistryDOMHelper {
     */  
    public static String getResourceKey(Element doc) {
        NodeList nl = doc.getElementsByTagNameNS("*","identifier" );
-       if(nl.getLength() == 0)
+       if(nl.getLength() == 0) {
            return null;
-       String val = null;
-       val = nl.item(0).getFirstChild().getNodeValue().trim();
+       }
+       String val = "";
+       NodeList valNodes = nl.item(0).getChildNodes();
+       for(int i = 0;i < valNodes.getLength();i++) {
+    	   val += valNodes.item(i).getNodeValue();
+       }
+       //val = nl.item(0).getFirstChild().getNodeValue().trim();
        int index = val.indexOf("/",7);
        if(index != -1 && index > 6 &&  val.length() > (index+1)) 
            return val.substring(index+1);

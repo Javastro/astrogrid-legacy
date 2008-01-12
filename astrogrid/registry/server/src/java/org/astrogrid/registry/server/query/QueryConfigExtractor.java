@@ -47,6 +47,18 @@ public class QueryConfigExtractor extends ConfigExtractor {
         return conf.getString("reg.custom.query.registrytypes." + versionNumber).replaceAll("<rootnode>",
                getRootNodeName(versionNumber));
     }
+    
+    /**
+     * Method: queryForVOSI
+     * Description: Query for Resources that have VOSI capability
+     * @param versionNumber - versionNumber of the registry (from vr namespace).
+     * @return String of the query.
+     */
+    public static String queryForVOSI(String versionNumber) {
+    	
+        return conf.getString("reg.custom.query.vosicap." + versionNumber).replaceAll("<rootnode>",
+               getRootNodeName(versionNumber));
+    }    
 
     /**
      * Method: queryForResource

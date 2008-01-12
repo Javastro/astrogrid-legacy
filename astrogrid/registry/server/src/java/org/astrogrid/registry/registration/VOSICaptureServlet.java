@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Guy Rixon
  */
 public class VOSICaptureServlet extends RegistrarServlet {
+	
+	VOSIHarvest vosiHarvest = new VOSIHarvest();
   
   /**
    * Handles the HTTP GET method.
@@ -98,17 +100,10 @@ public class VOSICaptureServlet extends RegistrarServlet {
           transformer.setTransformationParameter("vosi-uri", vosiUri);
           transformer.setTransformationParameter("updated", updated);
           transformer.transform();
-          register(ivorn, transformer.getResultAsDomNode());
-      }
-      if(vosiTableUri != null && vosiTableUri.trim().length() > 0) {
-    	  System.out.println("transforming with getTableData");
-    	  transformUrl = this.getClass().getResource("/xsl/GetTableData.xsl");
-          transformer = new RegistryTransformer(transformUrl);
-          transformer.setTransformationSource(resourceUrl);
-          transformer.setTransformationParameter("vosi-uri", vosiTableUri);
-          transformer.setTransformationParameter("updated", updated);
-          transformer.transform();
-          register(ivorn, transformer.getResultAsDomNode());
+          //register(ivorn, transformer.getResultAsDomNode());
+          register(ivorn,vosiHarvest.harvestCapabilities(transformer.getResultAsDomNode()));
+          
+//          register(ivorn, transformer.getResultAsDomNode());
       }
     } catch (Exception ex) {
       throw new ServletException("Failed to transform a registration.", ex);

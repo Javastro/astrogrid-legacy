@@ -120,6 +120,22 @@ public class RegistryQueryTest extends TestCase {
         System.out.println("done testADQLSearchv1_0_2");        
     }
     
+    /**
+     * Method: testSearchByLike
+     * Description: test to perform an adql query for an identifier known in the registry.
+     * @throws Exception standard junit exception to be thrown.
+    */         
+    public void testADQLSearchv1_0_3() throws Exception {
+    	System.out.println("start testADQLSearchv1_0_2");
+        Document adql = askQueryFromFile("QueryForLike--adql-v1.0-1.0.xml");
+        XMLStreamReader reader = rqsv1_0.Search(adql);
+	    Document doc = STAXUtils.read(builder,reader,true);        
+        assertNotNull(doc);
+        assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
+        System.out.println("done testADQLSearchv1_0_2");        
+    }
+    
+    
 
     /**
      * Method: testKeywordQueryService

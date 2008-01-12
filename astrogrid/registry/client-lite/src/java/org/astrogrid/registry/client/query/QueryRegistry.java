@@ -244,19 +244,29 @@ public abstract class QueryRegistry {
        if(nl.getLength() > 0) {
            currentRoot = (Element)nl.item(0);
            NodeList childNodes = currentRoot.getChildNodes();
+           //System.out.println("child nodes of where length = " + childNodes.getLength());
            for(int i = 0;i < childNodes.getLength();i++) {
-        	   whereElem.appendChild(childNodes.item(0).cloneNode(true));
+        	   whereElem.appendChild(childNodes.item(i).cloneNode(true));
            }
        }//if
+       //System.out.println("whereelem toString = " + DomHelper.ElementToString(whereElem));
        newRoot.appendChild(whereElem);
-       if(searchDoc.getDocumentElement() != null && 
+       //System.out.println("New Root before checking on removal = " + DomHelper.ElementToString(newRoot));
+       //System.out.println("SearchDoc documnt to string = " + DomHelper.DocumentToString(searchDoc));
+       /*if(searchDoc.getDocumentElement() != null && 
           searchDoc.getDocumentElement().getNodeName().indexOf("Where") == -1) {
+        */
+       if(searchDoc.getDocumentElement() != null) {
+    	   System.out.println("removing the documentElement now.");
            searchDoc.removeChild(searchDoc.getDocumentElement());
+           
        } 
+       System.out.println("now append the newroot");
        searchDoc.appendChild(newRoot);
+       System.out.println("SearchDoc2 documnt to string = " + DomHelper.DocumentToString(searchDoc));
+       
        logger.debug("THE ADQL IN SEARCH = " + DomHelper.DocumentToString(searchDoc));
        return searchDoc;
-       
    }
    
    protected Document callService(Document soapBody, String name, String soapActionURI) throws RemoteException, ServiceException, Exception {
@@ -662,7 +672,7 @@ public abstract class QueryRegistry {
    }
    
    
-   protected Document keywordSearchDOM(String keywords, boolean orValue) throws ParserConfigurationException {
+   protected Document keywordSearchDOM(String keywords, boolean orValues) throws ParserConfigurationException {
        DocumentBuilder registryBuilder = null;
        registryBuilder =
           DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -672,7 +682,7 @@ public abstract class QueryRegistry {
        //String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
        //addAttribute(doc.getDocumentElement(),"http://www.w3.org/2000/xmlns/","xmlns:vr",value);
        addChildSoap(doc,"keywords",getSoapBodyNamespaceURI(),keywords);
-       addChildSoap(doc,"orValue",getSoapBodyNamespaceURI(),java.lang.String.valueOf(orValue));
+       addChildSoap(doc,"orValues",getSoapBodyNamespaceURI(),java.lang.String.valueOf(orValues));
        return doc;
        
    }
@@ -699,7 +709,7 @@ public abstract class QueryRegistry {
     * @return XML Document of all the Resources in the registry constrained by the keyword query.
     * @throws RegistryException
     */  
-   public Document keywordSearch(String keywords,boolean orValue) throws RegistryException {    
+   public Document keywordSearch(String keywords,boolean orValues) throws RegistryException {    
        Document doc = null;
        Document resultDoc = null;
        logger.debug("entered keywordSearch");
@@ -708,7 +718,7 @@ public abstract class QueryRegistry {
            if(resultDoc != null) return resultDoc;
            logger.debug("KeywordSearch() not using cache");
            try {
-        	 doc = keywordSearchDOM(keywords, orValue);  
+        	 doc = keywordSearchDOM(keywords, orValues);  
           } catch (ParserConfigurationException pce) {
               logger.error(pce);                   
               throw new RegistryException(pce);
@@ -724,7 +734,7 @@ public abstract class QueryRegistry {
               URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
               if(backupEndpoint != null && !backupEndpoint.equals(this.endPoint)) {
                   RegistryService rs = QueryFallBackDelegate.createFallBackQuery(backupEndpoint,getContractVersion());
-                  resultDoc = rs.keywordSearch(keywords,orValue);
+                  resultDoc = rs.keywordSearch(keywords,orValues);
                   if(useRefCache)
                 	  cache.put(keywords,resultDoc);
                   return resultDoc;

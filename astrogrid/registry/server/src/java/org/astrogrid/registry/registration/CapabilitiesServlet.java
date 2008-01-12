@@ -92,7 +92,11 @@ public class CapabilitiesServlet extends RegistrarServlet {
       transformer.setTransformationParameter("vosi-uri", vosiUri);
       transformer.setTransformationParameter("updated", updated);
       transformer.transform();
-      register(ivorn, transformer.getResultAsDomNode());
+      transformUrl = this.getClass().getResource("/xsl/VOSIFetch.xsl");
+      RegistryTransformer transformer2 = new RegistryTransformer(transformUrl);
+      transformer2.setTransformationSource(resourceUrl);
+      transformer.transform();
+      register(ivorn, transformer2.getResultAsDomNode());
     } catch (Exception ex) {
       throw new ServletException("Failed to transform a registration.", ex);
     }

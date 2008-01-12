@@ -33,7 +33,7 @@
        the coverage element and calls subsidiary templates
        to fill it in. -->
   <xsl:template match="//ri:Resource">
-    <agr:AstrogridResource>
+<!--    <agr:AstrogridResource> -->
       <ri:Resource updated="{$updated}" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
         xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
         xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
@@ -70,7 +70,7 @@
         <xsl:copy-of select="capability"/>
 
       </ri:Resource>
-    </agr:AstrogridResource>
+  <!--  </agr:AstrogridResource> -->
   </xsl:template>
 
   <!-- Writes a waveband element for each band present in the parameters -->

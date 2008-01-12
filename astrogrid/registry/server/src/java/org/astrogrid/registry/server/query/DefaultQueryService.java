@@ -320,7 +320,10 @@ public abstract class DefaultQueryService {
        String identOnly = null;
        try {
            keywords = DomHelper.getNodeTextValue(query,"keywords");
-           orValue = DomHelper.getNodeTextValue(query,"orValue");
+           orValue = DomHelper.getNodeTextValue(query,"orValues");
+           if(orValue == null) {
+        	   orValue = DomHelper.getNodeTextValue(query,"orValue");
+           }
            start = DomHelper.getNodeTextValue(query,"from");
            max = DomHelper.getNodeTextValue(query,"max");
            if(max == null && contractVersion.equals("0.1")) {

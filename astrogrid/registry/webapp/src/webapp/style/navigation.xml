@@ -44,7 +44,8 @@
       <ul>
          <li><a href="<%=request.getContextPath()%>/admin/changeStatus.jsp">1.Resource(s) Status Change</a></li>         
          <li><a href="<%=request.getContextPath()%>/admin/harvestResource.jsp">2.Harvest</a></li>
-         <li><a href="<%=request.getContextPath()%>/admin/getRegistryFromHarvest.jsp">3.Get/Find New Registries</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/harvestVOSI.jsp">3.Harvest VOSI</a></li>         
+         <li><a href="<%=request.getContextPath()%>/admin/getRegistryFromHarvest.jsp">4.Get/Find New Registries</a></li>
        <% if(!contractVersion.equals("0.1")) { %>         
 	         <li><a href="<%=request.getContextPath()%>/admin/newManagedAuthority.jsp">4.Manage New Authority</a></li>
 		<%}%>	         

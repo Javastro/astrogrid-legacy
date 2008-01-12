@@ -32,11 +32,6 @@
               <td><input type="text" name="VOSI_Capabilities" size="48"/></td>
               <td><a href="help/capabilities.html">help</a></td>
             </tr>
-            <tr>
-              <td>URL for getting table metadata</td>
-              <td><input type="text" name="VOSI_TableData" size="48"/></td>
-              <td><a href="help/capabilities.html">help</a></td>
-            </tr>
           </table>
           <p><input type="submit" value="Update the registry entry"/></p>
         </form>

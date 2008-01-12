@@ -56,7 +56,7 @@ public class ResultStreamer extends RegistryXMLStreamDelegate {
 		if(identOnly) {
 			tempIndex = resContent.indexOf(">",resContent.indexOf("identifier"));
 			//ri:VOResources with the defined ri namespace was written out as a parent element.
-			return "<ri:identifier>" + resContent.substring(tempIndex+1,resContent.indexOf("<",tempIndex)) + "</ri:identifier>";
+			return "<ri:identifier xmlns:ri=\"http://www.ivoa.net/xml/RegistryInterface/v1.0\">" + resContent.substring(tempIndex+1,resContent.indexOf("<",tempIndex)) + "</ri:identifier>";
 		}
 		String schemaLocations = null;
         schemaLocations =  "http://www.ivoa.net/xml/RegistryInterface/v1.0 "  + schemaLocationBase + 

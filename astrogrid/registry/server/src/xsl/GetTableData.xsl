@@ -14,7 +14,7 @@
   <!-- Copy all the existing structure and add the capabilities at the
        end inside the document element. -->
   <xsl:template match="ri:Resource">
-    <agr:AstrogridResource>
+    <!-- <agr:AstrogridResource> -->
       <ri:Resource updated="{$updated}" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
         xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
         xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
@@ -43,7 +43,7 @@
 
         
       </ri:Resource>
-    </agr:AstrogridResource>
+    <!-- </agr:AstrogridResource> -->
   </xsl:template>
 
 </xsl:stylesheet>

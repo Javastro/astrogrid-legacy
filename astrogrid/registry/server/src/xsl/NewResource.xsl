@@ -13,7 +13,7 @@
   <xsl:param name="identifier"/>
   
   <xsl:template match="//ri:Resource">
-    <agr:AstrogridResource>
+   <!-- <agr:AstrogridResource> -->
       <ri:Resource 
         xsi:type="{$xsiType}"
         status="inactive"
@@ -40,7 +40,7 @@
           </xsl:choose>
         </xsl:for-each>
       </ri:Resource>
-    </agr:AstrogridResource>
+    <!-- </agr:AstrogridResource> -->
   </xsl:template>
 
 </xsl:stylesheet>

@@ -330,6 +330,22 @@ public class QueryHelper {
         //return resultDoc;       
     }
     
+    /**
+     * Method: GetRegistries
+     * Description: Queries and returns all the Resources that have VOSI capability resources.
+     * Used currently only by jsp page but harvester in the near future.
+     * 
+     * @param versionNumber - String table or collection
+     * @return Resource entries of type Registries.
+     * @see org.astrogrid.registry.server.harvest.RegistryHarvestService
+     */   
+    public ResourceSet getVOSIQuery()  throws SOAPFaultException {
+        String xqlString = QueryConfigExtractor.queryForVOSI(voResourceVersion);
+        return queryRegistry(xqlString);
+        //Document resultDoc = queryRegistry(xqlString);
+        //return resultDoc;       
+    }    
+    
     
     
     

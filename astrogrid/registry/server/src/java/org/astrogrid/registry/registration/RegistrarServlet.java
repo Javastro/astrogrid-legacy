@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.astrogrid.registry.server.admin.IAdmin;
+import org.astrogrid.registry.server.admin.v1_0.RegistryAdminService;
 
 import org.astrogrid.util.DomHelper;
 
@@ -71,8 +72,9 @@ public abstract class RegistrarServlet extends HttpServlet {
       String id2 = id1.replaceAll("[^\\w*]","_") + ".xml";
       
       // Insert the document into the DB.
-      XMLDBRegistry registry = new XMLDBRegistry();
-      registry.storeXMLResource(id2, "astrogridv1_0", resource);
+      //XMLDBRegistry registry = new XMLDBRegistry();
+      //registry.storeXMLResource(id2, "astrogridv1_0", resource);
+      new RegistryAdminService().updateInternal((Document)resource);
       log.info(id2 + " in astrogridv1_0 " + " was replaced with a new version.");
       
     } catch (Exception ex) {
