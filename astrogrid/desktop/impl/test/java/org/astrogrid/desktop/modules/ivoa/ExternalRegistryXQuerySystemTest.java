@@ -37,11 +37,14 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	/**
 	 * id of resource searched for in SINGLE resourtce query.
 	 */
-	private static final String SINGLE_RESOURCE_XQUERY_ID = "ivo://org.astrogrid/Pegase";
+	public static final String SINGLE_RESOURCE_XQUERY_ID = "ivo://nasa.heasarc/ASD";
 	/**
 	 * query that returns a single resource
 	 */
-	private static final String SINGLE_RESOURCE_XQUERY = "//vor:Resource[vr:identifier='" + SINGLE_RESOURCE_XQUERY_ID + "']";
+	
+	private static final String SINGLE_RESOURCE_XQUERY = "//vor:Resource[identifier='" + SINGLE_RESOURCE_XQUERY_ID + "']";
+  //  private static final String SINGLE_RESOURCE_XQUERY = "RootResource/vor:Resource[identifier='" + SINGLE_RESOURCE_XQUERY_ID + "']";
+
 	//KMB 	private static final String SINGLE_RESOURCE_XQUERY = "//RootResource[vr:identifier='" + SINGLE_RESOURCE_XQUERY_ID + "']";
 	
 	/**
@@ -153,7 +156,7 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	
 	/** try an xpath returning a single resouce document within a template. */
 	public void testSingleResourceTemplateXquerySearchXML() throws Exception{
-		Document d = ex.xquerySearchXML(endpoint,"<result>{//vor:Resource[vr:identifier='ivo://org.astrogrid/Pegase']}</result>");
+		Document d = ex.xquerySearchXML(endpoint,"<result>{//vor:Resource[identifier='ivo://nasa.heasarc/ASD']}</result>");
 		XMLAssert.assertXpathEvaluatesTo("result","local-name(/*)",d); // root is a some arbitrary tag
 		// feed throug document parser
 		Resource[] res = ex.buildResources(d);

@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -15,18 +16,21 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.HarvestCapability;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.SearchCapability;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
+import org.astrogrid.desktop.modules.ag.XPathHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.util.DomHelper;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
 /** System tests for Basic parts of the External Registry Component.
- * @implement implement RoR, and Identitiy.
+ * @fixme implement RoR,
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */
@@ -66,7 +70,7 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 		assertNotNull(d);
 		Resource[] res = ex.buildResources(d);
 		assertNotNull(res);
-		assertEquals(3,res.length);
+		assertEquals(4,res.length);
 	}
 	
 	public void testBuildResourcesEmpty() throws Exception {
@@ -87,6 +91,19 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 		assertNotNull(r);
 		assertNotNull(r.getManagedAuthorities());
 		assertTrue(r.getManagedAuthorities().length > 0);
+		//System.err.println("Registry identitiy is " + r.getId());
+		SearchCapability searchCapability = r.findSearchCapability();
+		assertNotNull("search capability not available",searchCapability);
+	//	System.err.println(searchCapability.getExtensionSearchSupport());
+	//	System.err.println(Arrays.asList(searchCapability.getOptionalProtocol()));
+		assertTrue(searchCapability.getMaxRecords() > 0);
+				
+		HarvestCapability harvestCapability = r.findHarvestCapability();
+	//	System.err.println(harvestCapability.getStandardID());
+		assertNotNull("harvest capabiulity not available",harvestCapability);
+		assertTrue(harvestCapability.getMaxRecords() > 0);
+		
+		//assertTrue("expected to be a full registry ",r.isFull());
 	}
 
 	/**
@@ -101,21 +118,18 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 	}
 
 
-	/** @FIXME
-	 * Test method for {@link org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl#getRegistryOfRegistriesEndpoint()}.
-	 */
-//	public void testGetRegistryOfRegistriesEndpoint()  throws Exception{
-//		assertNotNull(ex.getRegistryOfRegistriesEndpoint()); 
-//		// test it's a queryable registry.
-//		Document d = ex.getIdentityXML(ex.getRegistryOfRegistriesEndpoint());
-//		assertNotNull(d);
-//	}
+	public void testGetRegistryOfRegistriesEndpoint()  throws Exception{
+		assertNotNull(ex.getRegistryOfRegistriesEndpoint()); 
+		// test it's a queryable registry.
+		Document d = ex.getIdentityXML(ex.getRegistryOfRegistriesEndpoint());
+		assertNotNull(d);
+	}
 
 	/**
 	 * Test method for {@link org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl#getResource(java.net.URI, java.net.URI)}.
 	 */
 	public void testGetResource()throws Exception {
-		URI id = new URI("ivo://org.astrogrid/Pegase");
+		URI id = new URI("ivo://nasa.heasarc/ASD");
 		Resource r= ex.getResource(endpoint,id);
 		assertNotNull(r);
 		assertEquals(id,r.getId());
@@ -127,7 +141,7 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 	}
 	
 	public void testGetServiceRecord() throws Exception{
-		URI id = new URI("ivo://uk.ac.le.star/filemanager");
+		URI id = new URI("ivo://nasa.heasarc/skyview/2mass");
 		Resource r= ex.getResource(endpoint,id);
 		assertNotNull(r);
 		assertEquals(id,r.getId());		
@@ -149,7 +163,7 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 	 * Test method for {@link org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl#getResourceXML(java.net.URI, java.net.URI)}.
 	 */
 	public void testGetResourceXML() throws Exception {
-		URI id = new URI("ivo://uk.ac.le.star/filemanager");
+        URI id = new URI("ivo://nasa.heasarc/ASD");
 		Document d= ex.getResourceXML(endpoint,id);
 		
 		
@@ -158,15 +172,18 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 		assertEquals(1,arr.length);
 		assertEquals(id,arr[0].getId());
 	}
-	/** will fail until we connect to a 1.0 registry */
-// come back to later.
-//	public void testRegistryReturnsResourceInCorrectNamespaceXML() throws Exception {
-//		URI id = new URI("ivo://uk.ac.le.star/filemanager");
-//		Document d= ex.getResourceXML(endpoint,id);
-//		XMLAssert.assertXpathEvaluatesTo("http://www.ivoa.net/xml/VOResource/v1.0","namespace-uri(/*)",d);
-//
-//	}
-//	
+	
+	// complex this.
+	// according to the wsdl and schemas, we should be getting a Resource element in the vor: namespace
+	// which has _type_ vr:Resource.
+	public void testRegistryReturnsResourceInCorrectNamespaceXML() throws Exception {
+        URI id = new URI("ivo://nasa.heasarc/ASD");
+		Document d= ex.getResourceXML(endpoint,id);
+		DomHelper.DocumentToStream(d,System.out);
+		XMLAssert.assertXpathEvaluatesTo(XPathHelper.VOR_NS,"namespace-uri(/*)",d);
+
+	}
+	
 	public void testGetResourceXMLUnknown() throws Exception {
 		URI id = new URI("ivo://uk.ac.le.star/NonExistentResource");
 		try {

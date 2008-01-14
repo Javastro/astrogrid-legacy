@@ -22,7 +22,7 @@ public class AllRegistrySystemTests {
 		suite.addTestSuite(ExternalRegistryKeywordSystemTest.class);
 		suite.addTestSuite(ExternalRegistryADQLSystemTest.class);
 		suite.addTestSuite(ExternalRegistryXQuerySystemTest.class);		
-		return new ARTestSetup(suite,true);
+		return new ARTestSetup(suite,false);
 	}
 
 }

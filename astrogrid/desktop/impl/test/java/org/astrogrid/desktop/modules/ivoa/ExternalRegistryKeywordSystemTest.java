@@ -18,7 +18,6 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
 /** System tests for Keyword Search part of  External Registry Component.
- * @fixme get registry oddities sorted.
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */
@@ -51,10 +50,9 @@ public class ExternalRegistryKeywordSystemTest extends InARTestCase {
 	 * Test method for {@link org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl#keywordSearch(java.net.URI, java.lang.String, boolean)}.
 	 */
 	public void testKeywordSearch() throws Exception{
-		Resource[] res = ex.keywordSearch(endpoint,"6df",false);
+		Resource[] res = ex.keywordSearch(endpoint,"heao",false);
 		assertNotNull(res);
 		assertTrue(res.length > 0);
-		// wo-hoo! abell returns 301 resources. in no problem.
 	}
 	
 	public void testKeywordSearchNone() throws Exception {
@@ -63,25 +61,32 @@ public class ExternalRegistryKeywordSystemTest extends InARTestCase {
 		assertEquals(0,res.length);
 	}
 	
-	/** test of our registry implementation - test that the 'or values' flag actually does somethinig */
-//FIXME - waiting on a fix from kevin.
-//	public void testKeywordSearchOrValues() throws Exception {
-//		int count =  ex.keywordSearch(endpoint,"6DF",false).length;
-//		assertTrue(count > 0);
-//		int count1 =  ex.keywordSearch(endpoint,"sextractor",false).length;	
-//		assertTrue(count1 > 0);
-//		Resource[] res = ex.keywordSearch(endpoint,"6DF sextractor",true); //OR
-//		assertNotNull(res);
-//		assertEquals(count + count1,res.length);
-//		Resource[] res1 = ex.keywordSearch(endpoint,"6DF sextractor",false);//AND
-//		assertNotNull(res1);		
-//		assertEquals(0,res1.length);
-//	}
+	/** fails - our implementation ignores the 'or' flag */
+	public void testKeywordSearchOrValues() throws Exception {
+		int regCount =  ex.keywordSearch(endpoint,"registry",false).length;
+	//	System.err.println("Matches for 'registry' " + regCount );
+		assertTrue(regCount > 0);
+		int heasCount =  ex.keywordSearch(endpoint,"heasarc",false).length;
+	//	System.err.println("Matches for 'heasarc' " + heasCount);
+		assertTrue(heasCount > 0);
+		Resource[] or = ex.keywordSearch(endpoint,"registry heasarc",true); //OR
+		assertNotNull(or);
+		Resource[] and = ex.keywordSearch(endpoint,"registry heasarc",false);//AND
+		assertNotNull(and);		
+		
+		//System.err.println("Matches for OR 'registry heasarc' " + or.length);
+		//System.err.println("Matches for AND 'registry heasarc' " + and.length);
+		
+		assertTrue(or.length >= regCount);
+		assertTrue(or.length >= heasCount);
+		assertTrue(and.length < or.length);
+		assertTrue(and.length < regCount);
+	}
 	/** test of our registry implementaiton - keyword search should be case insensitive, I beleive */
 	public void testKeywordSearchCaseInsensitive() throws Exception {
-		Resource[] res = ex.keywordSearch(endpoint,"6DF",false);
+		Resource[] res = ex.keywordSearch(endpoint,"registry",false);
 		assertNotNull(res);
-		Resource[] res1 = ex.keywordSearch(endpoint,"6df",false);
+		Resource[] res1 = ex.keywordSearch(endpoint,"REGISTRY",false);
 		assertNotNull(res1);		
 		assertEquals("Registry implementation of keyword search is not case insensitive",
 					res.length,res1.length);
@@ -91,7 +96,7 @@ public class ExternalRegistryKeywordSystemTest extends InARTestCase {
 	 * Test method for {@link org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl#keywordSearchXML(java.net.URI, java.lang.String, boolean, boolean)}.
 	 */
 	public void testKeywordSearchXML() throws Exception{
-		Document doc = ex.keywordSearchXML(endpoint,"6df",false); 
+		Document doc = ex.keywordSearchXML(endpoint,"heao",false); 
 		assertNotNull(doc);
 		XMLAssert.assertXpathEvaluatesTo("VOResources","local-name(/*)",doc); // root is a VOResources
 		XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*/*)",doc); // it contains a resource
