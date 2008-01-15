@@ -1,36 +1,10 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/security/service/SecurityServiceResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: SecurityServiceResolver.java,v $
- *   Revision 1.5  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.4  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.3.28.2  2004/06/17 15:17:30  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.3.28.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver.security.service ;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -53,7 +27,7 @@ import org.astrogrid.registry.RegistryException;
  * A toolkit to resolve an Ivorn identifier into a SecurityServiceResolver delegate.
  *
  */
-public class SecurityServiceResolver
+public class SecurityServiceResolver extends CommunityEndpointResolver
     {
     /**
      * Our debug logger.
@@ -65,30 +39,27 @@ public class SecurityServiceResolver
      * Public constructor, using the default Registry service.
      *
      */
-    public SecurityServiceResolver()
-        {
-        //
-        // Initialise a default resolver.
-        resolver = new CommunityEndpointResolver() ;
-        }
+    public SecurityServiceResolver() {
+      super();
+    }
 
     /**
      * Public constructor, for a specific Registry service.
      * @param registry The endpoint address for our RegistryDelegate.
      *
      */
-    public SecurityServiceResolver(URL registry)
-        {
-        //
-        // Initialise a resolver with the url.
-        resolver = new CommunityEndpointResolver(registry) ;
-        }
-
-    /**
-     * Our endpoint resolver.
-     *
-     */
-    private CommunityEndpointResolver resolver ;
+    public SecurityServiceResolver(URL registry) {
+      super(registry);
+    }
+    
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   *
+   * @param registry The registry delegate.
+   */
+  public SecurityServiceResolver(RegistryService registry) {
+   super(registry);
+  }
 
     /**
      * Resolve an Ivorn identifier into a SecurityServiceDelegate.
@@ -166,7 +137,7 @@ public class SecurityServiceResolver
             log.debug("Resolving endpoint URL.") ;
             //
             // Lookup the endpoint in the registry.
-            URL endpoint = resolver.resolve(parser, SecurityService.class) ;
+            URL endpoint = this.resolve(parser, "ivo://org.astrogrid/std/Community/v1.0#SecurityService");
             log.debug("PASS : Got endpoint url") ;
             log.debug("  URL : " + endpoint) ;
             log.debug("Creating SOAP delegate.") ;

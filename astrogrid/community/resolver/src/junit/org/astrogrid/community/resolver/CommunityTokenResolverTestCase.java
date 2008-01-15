@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/Attic/CommunityTokenResolverTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/15 22:57:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityTokenResolverTestCase.java,v $
+ *   Revision 1.5  2008/01/15 22:57:49  gtr
+ *   community-gtr-2491 is merged
+ *
+ *   Revision 1.4.250.1  2008/01/15 14:32:24  gtr
+ *   I fixed it to be independent of configuration files.
+ *
  *   Revision 1.4  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -60,7 +66,8 @@ public class CommunityTokenResolverTestCase
         if (DEBUG_FLAG) System.out.println("  Ident  : " + ident) ;
         //
         // Create our password resolver.
-        CommunityPasswordResolver resolver = new CommunityPasswordResolver() ;
+        CommunityPasswordResolver resolver = 
+            new CommunityPasswordResolver(new MockRegistry()) ;
         //
         // Ask our resolver to check the password
         SecurityToken token = resolver.checkPassword(
@@ -92,7 +99,8 @@ public class CommunityTokenResolverTestCase
         if (DEBUG_FLAG) System.out.println("  Original : " + original) ;
         //
         // Create our token resolver.
-        CommunityTokenResolver resolver = new CommunityTokenResolver() ;
+        CommunityTokenResolver resolver = 
+            new CommunityTokenResolver(new MockRegistry()) ;
         //
         // Ask our resolver to validate the token
         SecurityToken result = resolver.checkToken(

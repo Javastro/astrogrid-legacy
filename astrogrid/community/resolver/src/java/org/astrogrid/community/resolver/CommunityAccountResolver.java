@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountResolver.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/15 22:57:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolver.java,v $
+ *   Revision 1.8  2008/01/15 22:57:49  gtr
+ *   community-gtr-2491 is merged
+ *
+ *   Revision 1.7.146.2  2008/01/15 22:52:25  gtr
+ *   Altered to suit VOResource 1.0 and the associated registry-delegate.
+ *
+ *   Revision 1.7.146.1  2008/01/15 14:53:42  gtr
+ *   It grew a new constructor.
+ *
  *   Revision 1.7  2004/10/29 15:50:05  jdt
  *   merges from Community_AdminInterface (bug 579)
  *
@@ -39,6 +48,7 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.store.Ivorn ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
@@ -85,6 +95,15 @@ public class CommunityAccountResolver
         resolver = new PolicyManagerResolver(registry) ;
         }
 
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   *
+   * @param registry The registry delegate.
+   */
+  public CommunityAccountResolver(RegistryService registry) {
+    resolver = new PolicyManagerResolver(registry);
+  }
+  
     /**
      * Our PolicyManager resolver.
      *

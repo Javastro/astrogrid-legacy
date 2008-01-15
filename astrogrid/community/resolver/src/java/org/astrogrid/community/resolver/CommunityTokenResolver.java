@@ -1,11 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/Attic/CommunityTokenResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/15 22:57:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityTokenResolver.java,v $
+ *   Revision 1.6  2008/01/15 22:57:49  gtr
+ *   community-gtr-2491 is merged
+ *
+ *   Revision 1.5.168.3  2008/01/15 22:52:25  gtr
+ *   Altered to suit VOResource 1.0 and the associated registry-delegate.
+ *
+ *   Revision 1.5.168.2  2008/01/15 14:53:42  gtr
+ *   It grew a new constructor.
+ *
+ *   Revision 1.5.168.1  2008/01/15 13:38:21  gtr
+ *   I made it a subclass of SecurityServiceResolver. This helps the unit testing.
+ *
  *   Revision 1.5  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -44,13 +56,14 @@ import org.astrogrid.community.common.exception.CommunityServiceException ;
 import org.astrogrid.community.common.exception.CommunitySecurityException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 import org.astrogrid.community.resolver.exception.CommunityResolverException ;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 
 /**
  * A utility to resolve security tokens.
  *
  */
-public class CommunityTokenResolver
-    {
+public class CommunityTokenResolver extends SecurityServiceResolver {
+
     /**
      * Our debug logger.
      *
@@ -61,26 +74,27 @@ public class CommunityTokenResolver
      * Public constructor, using the default Registry service.
      *
      */
-    public CommunityTokenResolver()
-        {
-        resolver = new SecurityServiceResolver() ;
-        }
+    public CommunityTokenResolver() {
+      super();
+    }
 
     /**
      * Public constructor, for a specific Registry service.
      * @param registry The endpoint address for our RegistryDelegate.
      *
      */
-    public CommunityTokenResolver(URL registry)
-        {
-        resolver = new SecurityServiceResolver(registry) ;
-        }
-
-    /**
-     * Our SecurityServiceResolver resolver.
-     *
-     */
-    private SecurityServiceResolver resolver ;
+    public CommunityTokenResolver(URL registry) {
+      super(registry);
+    }
+    
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   *
+   * @param registry The registry delegate.
+   */
+  public CommunityTokenResolver(RegistryService registry) {
+    super(registry);
+  }
 
     /**
      * Validate a SecurityToken.
@@ -122,7 +136,7 @@ public class CommunityTokenResolver
         CommunityIvornParser parser = new CommunityIvornParser(token.getToken()) ;
         //
         // Resolve the ivorn into a SecurityServiceDelegate.
-        SecurityServiceDelegate delegate = resolver.resolve(parser) ;
+        SecurityServiceDelegate delegate = resolve(parser) ;
         //
         // Ask the SecurityServiceDelegate to check the token.
         return delegate.checkToken(
@@ -171,7 +185,7 @@ public class CommunityTokenResolver
         CommunityIvornParser parser = new CommunityIvornParser(token.getToken()) ;
         //
         // Resolve the ivorn into a SecurityServiceDelegate.
-        SecurityServiceDelegate delegate = resolver.resolve(parser) ;
+        SecurityServiceDelegate delegate = resolve(parser) ;
         //
         // Ask the SecurityServiceDelegate to split the token.
         return delegate.splitToken(

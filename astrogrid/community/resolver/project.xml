@@ -1,61 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2006/04/06 17:44:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
-    | <cvs:log>
-    |   $Log: project.xml,v $
-    |   Revision 1.16  2006/04/06 17:44:25  clq2
-    |   wb-gtr-1537.
-    |
-    |   Revision 1.15.28.1  2006/03/02 19:24:28  gtr
-    |   Jars in support of MyProxy are included.
-    |
-    |   Revision 1.15  2005/08/04 09:40:11  clq2
-    |   kevin's second batch
-    |
-    |   Revision 1.14.10.1  2005/07/26 09:42:24  KevinBenson
-    |   added dependency to the jes project for caching in the registry now needs commons-collection
-    |
-    |   Revision 1.14  2005/05/25 16:29:44  clq2
-    |   with doc temp
-    |
-    |   Revision 1.13.48.1  2005/05/23 09:30:04  KevinBenson
-    |   new documentation template for the community to be consistent for all of astrogrid.
-    |
-    |   Revision 1.13  2005/01/07 14:14:25  jdt
-    |   merged from Reg_KMB_787
-    |
-    |   Revision 1.12.2.1  2005/01/05 10:47:46  KevinBenson
-    |   added xdoc descriptions for the community
-    |
-    |   Revision 1.12  2004/11/23 18:40:50  jdt
-    |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
-    |   http://software.astrogrid.org/developerdocs/developmentprocess.html
-    |
-    |   Revision 1.11.78.1  2004/11/12 00:45:53  jdt
-    |   Switched to use fixed version numbers, defined in a properties file
-    |
-    |   Revision 1.11  2004/07/27 13:41:17  dave
-    |   Merged development branch, dave-dev-200407261230, into HEAD
-    |
-    |   Revision 1.10.2.1  2004/07/27 13:27:07  dave
-    |   Added registry entry and resolver to integtation tests
-    |
-    |   Revision 1.10  2004/07/25 08:57:33  KevinBenson
-    |   small change to use the registry-client-lite
-    |
-    |   Revision 1.9  2004/07/14 13:50:07  dave
-    |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.8.4.1  2004/07/05 14:18:56  dave
-    |   Tried to remove the JConfig libraries
-    |
-    | </cvs:log>
-    |
-    +-->
+
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -70,6 +14,8 @@
         | The short name of the project.
         +-->
     <id>astrogrid-community-resolver</id>
+    
+    <currentVersion>2008.0a3</currentVersion>
 
     <!--+
         | The full name of the project.
@@ -123,9 +69,9 @@
             | The AstroGrid common components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${astrogrid.common.version}</version>
+            <version>2007.2.01</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -136,9 +82,9 @@
             | The Community common components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>2008.0a2</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -149,9 +95,9 @@
             | The Community client components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>2008.0a2</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -162,9 +108,9 @@
             | The Registry common classes.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${astrogrid.registry.version}</version>
+            <version>2008.0a3r</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -175,9 +121,9 @@
             | The Registry client components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-client-lite</artifactId>
-            <version>${astrogrid.registry.version}</version>
+            <version>2008.0a3r</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -192,43 +138,40 @@
       		<properties>
         		<jar.fileset>true</jar.fileset>
       		</properties>
-    	</dependency>    	
-
-<!--
-This should not be an explicit dependency.
-We should ise the version packaged with Axis, otherwise we risk breaking Axis.
-        <dependency >
-           <id>wsdl4j</id>
-           <version>1.4</version>
-        </dependency>
--->        
+    	</dependency>
         
-        <!--+
-            | The JXpath library - required for Registry delegate.
-       <dependency>
-            <artifactId>commons-jxpath</artifactId>
-            <groupId>commons-jxpath</groupId>
-            <version>1.1</version>
-            <type>jar</type>
-            <url></url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
+        
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>axis</artifactId>
+          <version>1.3</version>
+          <type>jar</type>
         </dependency>
-            +-->
-        <!--+
-            | The Jakarta Regexp library - required for Registry delegate.
-       <dependency>
-            <artifactId>jakarta-regexp</artifactId>
-            <groupId>jakarta-regexp</groupId>
-            <version>1.3</version>
-            <type>jar</type>
-            <url></url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>axis-jaxrpc</artifactId>
+          <version>1.3</version>
+          <type>jar</type>
         </dependency>
-            +-->
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>axis-saaj</artifactId>
+          <version>1.3</version>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>commons-discovery</artifactId>
+          <version>0.2</version>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>wsdl4j</artifactId>
+          <version>1.5.1</version>
+          <type>jar</type>
+        </dependency>
+        
         <!--+
             | The Castor JDO library.
             +-->
@@ -242,46 +185,17 @@ We should ise the version packaged with Axis, otherwise we risk breaking Axis.
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
-        <!--+
-            | The Castor XML library - required for Registry delegate.
+        
         <dependency>
-            <groupId>castor</groupId>
-            <artifactId>castor-xml</artifactId>
-            <version>0.9.5</version>
-            <jar>castor-0.9.5-xml.jar</jar>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>2008.0a3r</version>
             <type>jar</type>
-            <url>http://www.castor.org/</url>
+            <url>http://www.astrogrid.org/</url>
             <properties>
-                <lib.fileset>true</lib.fileset>
+                <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
-            +-->
-        <!--+
-            | The Xerces library that Castor relies on.
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xerces</artifactId>
-            <version>2.4.0</version>
-            <type>jar</type>
-            <url>http://xml.apache.org/</url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
-        </dependency>
-            +-->
-        <!--+
-            | The XML library that Xerces relies on.
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.0.b2</version>
-            <type>jar</type>
-            <url>http://xml.apache.org/</url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
-        </dependency>
-        	+-->
     	
     	<dependency>
     		<groupId>globus</groupId>
@@ -289,6 +203,8 @@ We should ise the version packaged with Axis, otherwise we risk breaking Axis.
     		<version>1.2</version>
     		<type>jar</type>
     	</dependency>
+        
+
     	
     </dependencies>
 
@@ -315,9 +231,11 @@ We should ise the version packaged with Axis, otherwise we risk breaking Axis.
                 <include>**/*TestCase.java</include>
             </includes>
             <!--+
-                | The resources for our tests.
+                | The resources for our tests. -->
             <resources>
                 <resource>
+                  <directory>src/config</directory>
+                  <includes>registry.properties</includes>
                 </resource>
             </resources>
                 +-->

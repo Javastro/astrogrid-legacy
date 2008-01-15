@@ -1,63 +1,19 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityEndpointResolverTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityEndpointResolverTestCase.java,v $
- *   Revision 1.4  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.3.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver ;
 
-import java.net.URL ;
-
-import junit.framework.TestCase ;
-
-import org.apache.axis.client.Call ;
-
-import org.astrogrid.store.Ivorn ;
-import org.astrogrid.common.ivorn.MockIvorn ;
-
-import org.astrogrid.community.common.policy.manager.PolicyManager ;
-
+import java.net.URL;
+import junit.framework.TestCase;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.community.common.policy.manager.PolicyManager;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
-
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 
 /**
- * Test case for the CommunityEndpointResolver.
+ * JUnit tests for the CommunityEndpointResolver.
  *
  */
-public class CommunityEndpointResolverTestCase
-    extends TestCase
-    {
-    /**
-     * Switch for our debug statements.
-     *
-     */
-    private static boolean DEBUG_FLAG = true ;
-
-    /**
-     * Setup our test.
-     *
-     */
-    public void setUp()
-        throws Exception
-        {
-        //
-        // Initialise the Axis 'local:' URL protocol.
-        Call.initialize() ;
-        }
+public class CommunityEndpointResolverTestCase extends TestCase {
 
     /**
      * Test that we can resolve a local address.
@@ -66,23 +22,27 @@ public class CommunityEndpointResolverTestCase
     public void testResolveLocal()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityEndpointResolverTestCase.testResolveLocal()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("CommunityEndpointResolverTestCase.testResolveLocal()") ;
         //
         // Create our Ivorn.
-        Ivorn ivorn = CommunityAccountIvornFactory.createLocal(
+        Ivorn ivorn = CommunityAccountIvornFactory.createIvorn(
+            "org.astrogrid.new-registry",
             "community",
             "frog"
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        System.out.println("  IVORN to be resolved: " + ivorn) ;
         //
         // Create our resolver.
-        CommunityEndpointResolver resolver = new CommunityEndpointResolver() ;
+        CommunityEndpointResolver resolver = 
+            new CommunityEndpointResolver(new MockRegistry());
         //
         // Ask our resolver for the endpoint.
-        URL found = resolver.resolve(ivorn, PolicyManager.class) ;
-        if (DEBUG_FLAG) System.out.println("  Found : " + found) ;
+        URL found =
+            resolver.resolve(ivorn,
+                             "ivo://org.astrogrid/std/Community/v1.0#PolicyManager");
+        System.out.println("  Found : " + found) ;
         assertNotNull(
             "Null endpoint URL",
             found
@@ -96,28 +56,31 @@ public class CommunityEndpointResolverTestCase
     public void testResolveUnknown()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityEndpointResolverTestCase.testResolveUnknown()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("CommunityEndpointResolverTestCase.testResolveUnknown()") ;
         //
         // Create our Ivorn.
         Ivorn ivorn = CommunityAccountIvornFactory.createIvorn(
             "unknown",
             "frog"
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+       System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
-        CommunityEndpointResolver resolver = new CommunityEndpointResolver() ;
+        CommunityEndpointResolver resolver =
+            new CommunityEndpointResolver(new MockRegistry());
         //
         // Ask our resolver for the endpoint of an unknown community.
         try {
-            URL found = resolver.resolve(ivorn, PolicyManager.class) ;
+            URL found =
+                resolver.resolve(ivorn,
+                                 "ivo://org.astrogrid/std/Community/v1.0#PolicyManager");
             fail("Expected CommunityResolverException") ;
             }
         catch (CommunityResolverException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception : " + ouch) ;
+            System.out.println("Caught expected Exception : " + ouch) ;
             }
         }
 
@@ -128,36 +91,37 @@ public class CommunityEndpointResolverTestCase
     public void testResolveNulls()
         throws Exception
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CommunityEndpointResolverTestCase.testResolveNulls()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("CommunityEndpointResolverTestCase.testResolveNulls()") ;
         //
         // Create our Ivorn.
         Ivorn ivorn = CommunityAccountIvornFactory.createIvorn(
             "unknown",
             "frog"
             ) ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
-        CommunityEndpointResolver resolver = new CommunityEndpointResolver() ;
+        CommunityEndpointResolver resolver = 
+            new CommunityEndpointResolver(new MockRegistry());
         //
         // Check the resolver can handle null params.
         try {
-            URL found = resolver.resolve(((Ivorn)null), null) ;
+            URL found = resolver.resolve(((Ivorn)null), (Class)null) ;
             fail("Expected CommunityResolverException") ;
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception : " + ouch) ;
+            System.out.println("Caught expected Exception : " + ouch) ;
             }
         try {
-            URL found = resolver.resolve(ivorn, null) ;
+            URL found = resolver.resolve(ivorn, (Class)null) ;
             fail("Expected CommunityResolverException") ;
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception : " + ouch) ;
+            System.out.println("Caught expected Exception : " + ouch) ;
             }
         try {
             URL found = resolver.resolve(((Ivorn)null), PolicyManager.class) ;
@@ -165,7 +129,15 @@ public class CommunityEndpointResolverTestCase
             }
         catch (CommunityIdentifierException ouch)
             {
-            if (DEBUG_FLAG) System.out.println("Caught expected Exception : " + ouch) ;
+            System.out.println("Caught expected Exception : " + ouch) ;
+            }
+        try {
+            URL found = resolver.resolve(((Ivorn)null), (String)null) ;
+            fail("Expected CommunityResolverException") ;
+            }
+        catch (CommunityIdentifierException ouch)
+            {
+            System.out.println("Caught expected Exception : " + ouch) ;
             }
         }
-    }
+}

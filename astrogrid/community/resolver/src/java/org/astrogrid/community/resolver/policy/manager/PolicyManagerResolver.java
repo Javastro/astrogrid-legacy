@@ -1,58 +1,10 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/policy/manager/PolicyManagerResolver.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/05/09 15:10:16 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: PolicyManagerResolver.java,v $
- *   Revision 1.12  2005/05/09 15:10:16  clq2
- *   Kevin's commits
- *
- *   Revision 1.11.40.1  2005/04/29 07:53:53  KevinBenson
- *   small changes to use this ResourceData object from the registry instead of this SErviceData which is what it was called before
- *
- *   Revision 1.11  2005/01/07 14:14:25  jdt
- *   merged from Reg_KMB_787
- *
- *   Revision 1.10.12.1  2004/12/11 11:53:16  KevinBenson
- *   modifications to the jsps, also merged in several pieces of the validtion stuff
- *
- *   Revision 1.10  2004/11/04 18:00:02  jdt
- *   Restored following fixes to auto-integration
- *   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
- *
- *   Revision 1.8  2004/11/02 21:47:39  jdt
- *   Merge of Comm_KMB_583
- *
- *   Revision 1.7.20.1  2004/10/26 06:10:39  KevinBenson
- *   sprucing up admin interface and getting it where it grabs communities and accounts from external communities
- *
- *   Revision 1.7  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.6  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.5.36.2  2004/06/17 15:17:30  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.5.36.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver.policy.manager ;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -76,43 +28,38 @@ import org.astrogrid.registry.RegistryException;
  * A toolkit to resolve an Ivorn identifier into a PolicyManagerResolver delegate.
  *
  */
-public class PolicyManagerResolver
-    {
+public class PolicyManagerResolver extends CommunityEndpointResolver {
+    
     /**
-     * Our debug logger.
-     *
+     * A log, connected through commons-logging.
      */
     private static Log log = LogFactory.getLog(PolicyManagerResolver.class);
 
     /**
-     * Public constructor, using the default Registry service.
-     *
+     * Constructs a PolicyManagerResolver using the default Registry service.
      */
-    public PolicyManagerResolver()
-        {
-        //
-        // Initialise a default resolver.
-        resolver = new CommunityEndpointResolver() ;
-        }
+    public PolicyManagerResolver() {
+      super();
+    }
 
     /**
-     * Public constructor, for a specific Registry service.
+     * Constructs a PolicyManagerResolver  a specific Registry service.
+     *
      * @param registry The endpoint address for our RegistryDelegate.
-     *
      */
-    public PolicyManagerResolver(URL registry)
-        {
-        //
-        // Initialise a resolver with the url.
-        resolver = new CommunityEndpointResolver(registry) ;
-        }
+    public PolicyManagerResolver(URL registry) {
+      super(registry);
+    }
 
-    /**
-     * Our endpoint resolver.
-     *
-     */
-    private CommunityEndpointResolver resolver ;
-
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   *
+   * @param registry The registry delegate.
+   */
+  public PolicyManagerResolver(RegistryService registry) {
+   super(registry);
+  }
+  
     /**
      * Resolve an Ivorn identifier into a PolicyManagerDelegate.
      * If the Ivorn matches the MOCK_IVORN, this will return a PolicyManagerMockDelegate.
@@ -147,46 +94,8 @@ public class PolicyManagerResolver
         }
     
     public Ivorn getIvornForService(Ivorn ivorn) throws CommunityIdentifierException {
-        return resolver.getIvornForService(ivorn,PolicyManager.class);
+        return this.getIvornForService(ivorn,PolicyManager.class);
     }
-    
-    /*
-    public URL[] resolve()
-       throws RegistryException, CommunityIdentifierException, CommunityResolverException {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("PolicyManagerResolverImpl.resolve()") ;
-        
-        log.debug("Resolving endpoint URLs.") ;
-        //
-        // Lookup the endpoint in the registry.
-        URL endpoints[] = resolver.resolve() ;
-        PolicyManagerD
-        elegate []pmd = new PolicyManagerDelegate[endpoints.length];
-        
-        log.debug("PASS : Got endpoint urls number = " + endpoints.length) ;
-        for(int i = 0;i < endpoints.length; i++) {
-            log.debug("  URL : " + endpoints[i]) ;
-            log.debug("Creating SOAP delegate.") ;
-            pmd[i] = this.resolve(endpoints[i]);            
-        }
-        //
-        // Return the delegates
-        return pmd;
-    }
-    */
-    
-    
-    public ResourceData[] resolve()
-    throws RegistryException, CommunityIdentifierException, CommunityResolverException {
-     log.debug("") ;
-     log.debug("----\"----") ;
-     log.debug("PolicyManagerResolverImpl.resolve()") ;
-     //
-     // Lookup the endpoint in the registry.
-     return resolver.resolve() ;
-    }
-    
 
     /**
      * Resolve data from a CommunityIvornParser into a PolicyManagerDelegate.
@@ -231,7 +140,7 @@ public class PolicyManagerResolver
             log.debug("Resolving endpoint URL.") ;
             //
             // Lookup the endpoint in the registry.
-            URL endpoint = resolver.resolve(parser, PolicyManager.class) ;
+            URL endpoint = this.resolve(parser, "ivo://org.astrogrid/std/Community/v1.0#PolicyManager") ;
             log.debug("PASS : Got endpoint url") ;
             log.debug("  URL : " + endpoint) ;
             log.debug("Creating SOAP delegate.") ;

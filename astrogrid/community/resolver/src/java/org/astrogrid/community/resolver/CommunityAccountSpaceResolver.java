@@ -1,36 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountSpaceResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityAccountSpaceResolver.java,v $
- *   Revision 1.7  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.6.12.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.6  2004/09/02 17:02:02  dave
- *   Fixed myspace account creation problem.
- *
- *   Revision 1.5.70.2  2004/09/02 14:49:20  dave
- *   Added debug ....
- *
- *   Revision 1.5.70.1  2004/09/02 14:21:42  dave
- *   Added debug ....
- *
- *   Revision 1.5  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.4.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver ;
 
 import org.apache.commons.logging.Log ;
@@ -38,6 +5,7 @@ import org.apache.commons.logging.LogFactory ;
 
 import java.net.URL ;
 import java.net.URISyntaxException ;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 
 import org.astrogrid.store.Ivorn ;
 
@@ -87,6 +55,15 @@ public class CommunityAccountSpaceResolver
         resolver = new CommunityAccountResolver(registry) ;
         }
 
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   *
+   * @param registry The registry delegate.
+   */
+  public CommunityAccountSpaceResolver(RegistryService registry) {
+    resolver = new CommunityAccountResolver(registry);
+  }
+  
     /**
      * Our CommunityAccountResolver resolver.
      *

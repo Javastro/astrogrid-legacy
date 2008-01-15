@@ -1,58 +1,26 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/security/service/SecurityServiceResolverTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: SecurityServiceResolverTestCase.java,v $
- *   Revision 1.4  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.3.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver.security.service ;
 
-import junit.framework.TestCase ;
-
-import org.apache.axis.client.Call ;
-
-import org.astrogrid.store.Ivorn ;
-import org.astrogrid.common.ivorn.MockIvorn ;
-
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
-
-import org.astrogrid.community.client.security.service.SecurityServiceDelegate ;
-import org.astrogrid.community.client.security.service.SecurityServiceMockDelegate ;
-import org.astrogrid.community.client.security.service.SecurityServiceSoapDelegate ;
+import junit.framework.TestCase;
+import org.astrogrid.community.resolver.MockRegistry;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
+import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
+import org.astrogrid.community.client.security.service.SecurityServiceMockDelegate;
+import org.astrogrid.community.client.security.service.SecurityServiceSoapDelegate;
 
 /**
- * Test case for the SecurityServiceResolver.
+ * JUnit tests for the SecurityServiceResolver.
  *
  */
-public class SecurityServiceResolverTestCase
-    extends TestCase
-    {
+public class SecurityServiceResolverTestCase extends TestCase {
+    
     /**
      * Switch for our debug statements.
      *
      */
     private static boolean DEBUG_FLAG = true ;
 
-    /**
-     * Setup our test.
-     * Initialise the Axis 'local:' URL protocol.
-     *
-     */
-    public void setUp()
-        throws Exception
-        {
-        Call.initialize() ;
-        }
+
 
     /**
      * Test that we can resolve a mock delegate.
@@ -73,7 +41,8 @@ public class SecurityServiceResolverTestCase
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
-        SecurityServiceResolver resolver = new SecurityServiceResolver() ;
+        SecurityServiceResolver resolver = 
+            new SecurityServiceResolver(new MockRegistry());
         //
         // Resolve our Ivorn into a delegate.
         SecurityServiceDelegate delegate = resolver.resolve(ivorn) ;
@@ -110,13 +79,16 @@ public class SecurityServiceResolverTestCase
         if (DEBUG_FLAG) System.out.println("SecurityServiceResolverTestCase.testResolveLocal()") ;
         //
         // Create our Ivorn.
-        Ivorn ivorn = CommunityAccountIvornFactory.createLocal(
+        Ivorn ivorn = CommunityAccountIvornFactory.createIvorn(
+            "org.astrogrid.new-registry",
+            "community",
             "frog"
             ) ;
         if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
         //
         // Create our resolver.
-        SecurityServiceResolver resolver = new SecurityServiceResolver() ;
+        SecurityServiceResolver resolver = 
+            new SecurityServiceResolver(new MockRegistry());
         //
         // Resolve our Ivorn into a delegate.
         SecurityServiceDelegate delegate = resolver.resolve(ivorn) ;
@@ -132,12 +104,6 @@ public class SecurityServiceResolverTestCase
             "Wrong delegate type.",
             SecurityServiceSoapDelegate.class,
             delegate.getClass()
-            ) ;
-        //
-        // Check that our service works.
-        assertNotNull(
-            "Null service status",
-            delegate.getServiceStatus()
             ) ;
         }
     }

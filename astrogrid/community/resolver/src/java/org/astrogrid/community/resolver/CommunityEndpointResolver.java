@@ -1,73 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2006/04/06 17:44:25 $</cvs:date>
- * <cvs:version>$Revision: 1.18 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityEndpointResolver.java,v $
- *   Revision 1.18  2006/04/06 17:44:25  clq2
- *   wb-gtr-1537.
- *
- *   Revision 1.17.54.2  2006/03/02 19:25:08  gtr
- *   Various fixes after tests with the workbench. Login in via my Proxy now works.
- *
- *   Revision 1.17.54.1  2006/02/28 14:48:35  gtr
- *   This supports access to cryptographic credentials via MyProxy.
- *
- *   Revision 1.17  2005/05/09 15:10:15  clq2
- *   Kevin's commits
- *
- *   Revision 1.16.24.1  2005/04/29 07:53:53  KevinBenson
- *   small changes to use this ResourceData object from the registry instead of this SErviceData which is what it was called before
- *
- *   Revision 1.16  2005/02/18 19:48:31  clq2
- *   Reg_KMB_913 again merging again.
- *
- *   Revision 1.13.8.1  2005/02/11 16:46:17  KevinBenson
- *   no more context.xml used here.  And made it where communityendpointresolver used a full ivorn.
- *
- *   Revision 1.13  2005/01/07 14:14:25  jdt
- *   merged from Reg_KMB_787
- *
- *   Revision 1.12.12.1  2004/12/11 11:53:16  KevinBenson
- *   modifications to the jsps, also merged in several pieces of the validtion stuff
- *
- *   Revision 1.12  2004/11/04 18:00:02  jdt
- *   Restored following fixes to auto-integration
- *   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
- *
- *   Revision 1.10  2004/11/02 21:47:39  jdt
- *   Merge of Comm_KMB_583
- *
- *   Revision 1.9.20.1  2004/10/26 06:10:39  KevinBenson
- *   sprucing up admin interface and getting it where it grabs communities and accounts from external communities
- *
- *   Revision 1.9  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.8.42.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.8  2004/08/03 13:55:22  KevinBenson
- *   small change to not print out the stacktrace of an exception
- *
- *   Revision 1.7.34.1  2004/08/03 06:55:17  KevinBenson
- *   small change to not print out the exception
- *
- *   Revision 1.7  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.6.32.2  2004/06/17 15:17:30  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.6.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver ;
 
 import org.apache.commons.logging.Log ;
@@ -79,7 +9,7 @@ import java.net.MalformedURLException ;
 
 import org.astrogrid.store.Ivorn ;
 import org.astrogrid.registry.client.RegistryDelegateFactory ;
-import org.astrogrid.registry.client.query.RegistryService ;
+import org.astrogrid.registry.client.query.v1_0.RegistryService ;
 import org.astrogrid.registry.client.query.ResourceData ;
 
 import org.astrogrid.config.Config ;
@@ -94,8 +24,26 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 import org.astrogrid.registry.RegistryException;
 
 /**
- * This is a local wrapper for the RegistryDelegate resolve Ivorns into service endpoints.
+ * This is a local wrapper for the RegistryDelegate resolve Ivorns 
+ * into service endpoints. It will only work with a registry containing
+ * VOResource 1.0; any VOResource 0.10 records in the registry will be
+ * ignored.
  *
+ * The community offers endpoints for several services - MyProxy,
+ * Policymanager and SecurityService are the extant ones. The target service
+ * can be indicated in two ways, as follows.
+ *
+ * Old style: pass to the resolver a Class object identifying the Java interface
+ * of the desired service; this works with registrations based on VOResource
+ * v0.10.
+ *
+ * New style: pass to the resolver, as a string, the standardID value of the
+ * desired service-capability; this works with registrations based on
+ * VOResource v1.0.
+ *
+ * Because the registry delegate searchs VOResource 1.0, it can't search
+ * VOResource 0.10. Therefore, all the methods that accept Class arguments
+ * are henceforth broken and will be removed soon.
  */
 public class CommunityEndpointResolver
     {
@@ -119,7 +67,7 @@ public class CommunityEndpointResolver
         {
         //
         // Initialise our default registry delegate.
-        this.registry = factory.createQuery() ;
+        this.registry = factory.createQueryv1_0() ;
         }
 
     /**
@@ -131,8 +79,29 @@ public class CommunityEndpointResolver
         {
         //
         // Initialise our registry delegate.
-        this.registry = factory.createQuery(registry) ;
+        this.registry = factory.createQueryv1_0(registry) ;
         }
+ 
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   *
+   * @param registry The registry delegate.
+   */
+  public CommunityEndpointResolver(RegistryService registry) {
+    this.registry = registry;
+  }
+  
+  /**
+   * Changes the registry delegate.
+   * Normally, a registry delegate is set when the object is constructed.
+   * This method changes the delegate later. It allows a mock delegate to
+   * be injected for testing.
+   *
+   * @param registry The registry delegate.
+   */
+  public void setRegistry(RegistryService registry) {
+    this.registry = registry;
+  }
 
     /**
      * Our Registry delegate factory.
@@ -154,7 +123,7 @@ public class CommunityEndpointResolver
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityResolverException If the Community is unable to resolve the identifier.
      * @throws RegistryException If the Registry is unable to resolve the identifier.
-     *
+     * @deprecated Doesn't work any more.
      */
     public URL resolve(Ivorn ivorn, Class type)
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
@@ -223,6 +192,7 @@ public class CommunityEndpointResolver
     * @throws CommunityIdentifierException If the identifier is not valid.
     * @throws CommunityResolverException If the Community is unable to resolve the identifier.
     * @throws RegistryException If the Registry is unable to resolve the identifier.
+    * @deprecated Doesn't work any more.
     */
    public URL resolve(CommunityIvornParser parser, Class type)
        throws RegistryException, 
@@ -257,7 +227,7 @@ public class CommunityEndpointResolver
      * @throws CommunityResolverException If the Community is unable to resolve the identifier.
      * @throws RegistryException If the Registry is unable to resolve the identifier.
      * @todo relies on ivorn.getPath()
-     *
+     * @deprecated Doesn't work any more.
      */
     public URI resolveToUri(CommunityIvornParser parser, Class type)
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
@@ -350,6 +320,81 @@ public class CommunityEndpointResolver
             }
         }
     
+  /**
+   * Looks up an endpoint identified by its standardID value.
+   * This requires a v1.0 registry.
+   */
+  public URI resolveToUri(Ivorn ivorn, String standardId)
+      throws CommunityIdentifierException, CommunityResolverException {
+    if (ivorn == null) {
+      throw new CommunityIdentifierException("Can't resolve a null IVORN.");
+    }
+    try {
+      String endpoint = 
+          registry.getEndpointByIdentifier(ivorn.toString(), standardId);
+      return new URI(endpoint);
+    } 
+    catch (RegistryException ex) {
+      throw new CommunityResolverException("Failed to resolve " + ivorn, ex);
+    }
+    catch (java.net.URISyntaxException ex) {
+      throw new CommunityResolverException("Registry gave a malformed endpoint " +
+                                           "for service " + 
+                                           ivorn + 
+                                           ", capability " + 
+                                           standardId);
+    }
+  }
+  
+  /**
+   * Looks up an endpoint identified by its standardID value.
+   * This requires a v1.0 registry.
+   */
+  public URI resolveToUri(CommunityIvornParser parser, String standardId)
+      throws CommunityIdentifierException, CommunityResolverException {
+    Ivorn ivorn = parser.getIvorn();
+    try {
+      String endpoint = 
+          registry.getEndpointByIdentifier(ivorn.toString(), standardId);
+      return new URI(endpoint);
+    } 
+    catch (RegistryException ex) {
+      throw new CommunityResolverException("Failed to resolve " + ivorn, ex);
+    }
+    catch (java.net.URISyntaxException ex) {
+      throw new CommunityResolverException("Registry gave a malformed endpoint " +
+                                           "for service " + 
+                                           ivorn + 
+                                           ", capability " + 
+                                           standardId);
+    }
+  }
+  
+  /**
+   * Looks up an endpoint identified by its standardID value.
+   * This requires a v1.0 registry.
+   */
+  public URL resolve(CommunityIvornParser parser, String standardId)
+      throws CommunityIdentifierException, CommunityResolverException {
+    return resolve(parser.getIvorn(), standardId);
+  }
+  
+  /**
+   * Looks up an endpoint identified by its standardID value.
+   * This requires a v1.0 registry.
+   */
+  public URL resolve(Ivorn ivorn, String standardId)
+      throws CommunityIdentifierException, CommunityResolverException {
+    URI endpoint = resolveToUri(ivorn, standardId);
+    try {
+      return endpoint.toURL();
+    } catch (MalformedURLException ex) {
+      throw new CommunityResolverException(endpoint +
+                                           " is not a valid java.net.URL");
+    }
+  }
+  
+  
     /**
      * Resolve data from a CommunityIvornParser.
      * @param parser A CommunityIvornParser containing the Community identifier.

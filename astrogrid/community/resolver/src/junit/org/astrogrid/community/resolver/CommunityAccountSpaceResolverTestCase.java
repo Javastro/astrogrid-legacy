@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountSpaceResolverTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/15 22:57:49 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTestCase.java,v $
+ *   Revision 1.9  2008/01/15 22:57:49  gtr
+ *   community-gtr-2491 is merged
+ *
+ *   Revision 1.8.138.1  2008/01/15 14:35:06  gtr
+ *   I fixed it to be independent of configuration files.
+ *
  *   Revision 1.8  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -90,7 +96,8 @@ public class CommunityAccountSpaceResolverTestCase
         if (DEBUG_FLAG) System.out.println("  Target : " + target) ;
         //
         // Create our resolver.
-        CommunityAccountSpaceResolver resolver = new CommunityAccountSpaceResolver() ;
+        CommunityAccountSpaceResolver resolver = 
+            new CommunityAccountSpaceResolver(new MockRegistry()) ;
         //
         // Ask our resolver for the home address.
         Ivorn found = resolver.resolve(target) ;
@@ -118,9 +125,7 @@ public class CommunityAccountSpaceResolverTestCase
             "frog"
             );
         if (DEBUG_FLAG) System.out.println("  Target2 : " + target2) ;
-        //
-        // Create our resolver.
-        //CommunityAccountSpaceResolver resolver2 = new CommunityAccountSpaceResolver();
+        //aceResolver();
         //
         // Ask our resolver for the home address.
         Ivorn found2 = resolver.resolve(target2) ;

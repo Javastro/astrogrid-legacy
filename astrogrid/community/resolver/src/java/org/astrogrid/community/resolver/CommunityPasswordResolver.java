@@ -1,42 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityPasswordResolver.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2006/04/06 17:44:25 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityPasswordResolver.java,v $
- *   Revision 1.6  2006/04/06 17:44:25  clq2
- *   wb-gtr-1537.
- *
- *   Revision 1.5.140.3  2006/03/06 17:29:38  gtr
- *   I changed it to return a JAAS subject instead of a CredentialStore.
- *
- *   Revision 1.5.140.2  2006/03/02 19:25:08  gtr
- *   Various fixes after tests with the workbench. Login in via my Proxy now works.
- *
- *   Revision 1.5.140.1  2006/02/28 14:48:35  gtr
- *   This supports access to cryptographic credentials via MyProxy.
- *
- *   Revision 1.5  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.4.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.4  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.3.32.2  2004/06/17 15:17:30  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.3.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver ;
 
 import java.net.URI;
@@ -58,6 +19,7 @@ import org.astrogrid.community.common.exception.CommunityServiceException ;
 import org.astrogrid.community.common.exception.CommunitySecurityException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 import org.astrogrid.community.resolver.exception.CommunityResolverException ;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
 import org.globus.myproxy.MyProxy;
 import org.ietf.jgss.GSSCredential;
@@ -74,30 +36,40 @@ public class CommunityPasswordResolver {
      */
     private static Log log = LogFactory.getLog(CommunityPasswordResolver.class);
 
-    /**
-     * Public constructor, using the default Registry service.
-     *
-     */
-    public CommunityPasswordResolver()
-        {
-        resolver = new SecurityServiceResolver() ;
-        }
+  /**
+    * Public constructor, using the default Registry service.
+    *
+    */
+  public CommunityPasswordResolver() {
+    this.securityResolver = new SecurityServiceResolver();
+    this.myProxyResolver = new CommunityMyProxyResolver();
+  }
 
-    /**
-     * Public constructor, for a specific Registry service.
-     * @param registry The endpoint address for our RegistryDelegate.
-     *
-     */
-    public CommunityPasswordResolver(URL registry)
-        {
-        resolver = new SecurityServiceResolver(registry) ;
-        }
+  /**
+    * Public constructor, for a specific Registry service.
+    * @param registry The endpoint address for our RegistryDelegate.
+    *
+    */
+  public CommunityPasswordResolver(URL registry) {
+    this.securityResolver = new SecurityServiceResolver(registry);
+    this.myProxyResolver  = new CommunityMyProxyResolver(registry);
+  }
 
-    /**
-     * Our SecurityServiceResolver resolver.
-     *
-     */
-    private SecurityServiceResolver resolver ;
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   * 
+   * @param registry The registry delegate.
+   */
+  public CommunityPasswordResolver(RegistryService registry) {
+    this.securityResolver = new SecurityServiceResolver(registry);
+    this.myProxyResolver  = new CommunityMyProxyResolver(registry);
+  }
+  
+  /**
+   * Our SecurityServiceResolver.
+   */
+    private SecurityServiceResolver securityResolver ;
+    private CommunityMyProxyResolver myProxyResolver;
 
     /**
      * Check an Account password.
@@ -131,7 +103,7 @@ public class CommunityPasswordResolver {
         CommunityIvornParser parser = new CommunityIvornParser(account) ;
         //
         // Resolve the ivorn into a SecurityServiceDelegate.
-        SecurityServiceDelegate delegate = resolver.resolve(parser) ;
+        SecurityServiceDelegate delegate = this.securityResolver.resolve(parser);
         //
         // Ask the SecurityServiceDelegate to check the token.
         return delegate.checkPassword(
@@ -176,8 +148,7 @@ public class CommunityPasswordResolver {
     String name = parser.getAccountName();
     
     // Get a delegate for the MyProxy service associated with the account.
-    CommunityMyProxyResolver resolver = new CommunityMyProxyResolver();
-    MyProxy myProxy = resolver.resolve(parser.getIvorn());
+    MyProxy myProxy = this.myProxyResolver.resolve(parser.getIvorn());
     
     // Get credentials from the MyProxy service using jGlobus. The
     // credentials come back as a GSS object which is so generic that

@@ -1,13 +1,14 @@
 package org.astrogrid.community.resolver;
 
 import java.net.URI;
+import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
-import org.astrogrid.community.resolver.CommunityEndpointResolver;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.store.Ivorn;
 import org.globus.myproxy.MyProxy;
 
@@ -30,13 +31,31 @@ import org.globus.myproxy.MyProxy;
  *
  * @author Guy Rixon
  */
-public class CommunityMyProxyResolver {
+public class CommunityMyProxyResolver extends CommunityEndpointResolver {
   
   private static Log log 
       = LogFactory.getLog(CommunityMyProxyResolver.class);
   
   /** Creates a new instance of CommunityMyProxyResolver */
   public CommunityMyProxyResolver() {
+  }
+  
+  /**
+   * Constructs a resolver using a given registry-endpoint.
+   *
+   * @param registry The registry endpoint.
+   */
+  public CommunityMyProxyResolver(URL registry) {
+    super(registry);
+  }
+  
+  /**
+   * Constructs a resolver using a given registry-delegate.
+   *
+   * @param registry The registry delegate.
+   */
+  public CommunityMyProxyResolver(RegistryService registry) {
+    super(registry);
   }
   
   /**
@@ -63,10 +82,9 @@ public class CommunityMyProxyResolver {
         
     // Resolve the IVOID. The MyProxy class-name is used to infer
     // the resource key for the MyProxy service in the registry.
-    CommunityEndpointResolver resolver = new CommunityEndpointResolver();
-    URI endpoint = resolver.resolveToUri(new CommunityIvornParser(ivoid),
-                                         MyProxy.class);
-    // @TODO: consider caching the resolver object.
+    URI endpoint = 
+        resolveToUri(new CommunityIvornParser(ivoid),
+                     "ivo:/org.astrogrid/std/Community/v1.0#MyProxy");
     
     // Extract the service address and port and use them to build the
     // MyProxy delegate.
