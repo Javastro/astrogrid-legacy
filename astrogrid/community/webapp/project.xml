@@ -18,7 +18,7 @@
         +-->
     <name>Community Web Application</name>
     
-    <currentVersion>2008.0a2</currentVersion>
+    <currentVersion>2008.0a3</currentVersion>
 
     <!--+
         | A short description of the project.
@@ -77,7 +77,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${astrogrid.common.version}</version>
+            <version>2007.2.01</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a1</version>
+            <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a1</version>
+            <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>2008.0a1</version>
+            <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -129,7 +129,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>2008.0a1</version>
+            <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -142,7 +142,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>${astrogrid.registry.version}</version>
+            <version>2008.0a3r</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -155,7 +155,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-client-lite</artifactId>
-            <version>${astrogrid.registry.version}</version>
+            <version>2008.0a3r</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -175,7 +175,7 @@
         <dependency>
            <artifactId>astrogrid-utils</artifactId>
            <groupId>org.astrogrid</groupId>
-           <version>${astrogrid.utils.stable}</version>
+           <version>2007.2ut</version>
  		   <properties>
              	<war.bundle>true</war.bundle>
              </properties>
@@ -185,7 +185,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-pal-oldquery</artifactId>
-            <version>${astrogrid.pal.version}</version>
+            <version>2007.2.05pl</version>
             <type>jar</type>
                 <properties>
                     <war.bundle>true</war.bundle>
@@ -196,7 +196,7 @@
        <dependency>
           <artifactId>astrogrid-xml</artifactId>
           <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.xml.stable}</version>
+          <version>2007.2xml</version>
         <properties>
             <war.bundle>true</war.bundle>
         </properties>       	
@@ -205,7 +205,7 @@
        <dependency>
           <artifactId>astrogrid-slinger-api</artifactId>
           <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
+          <version>2007.2sl</version>
         <properties>
             <war.bundle>true</war.bundle>
         </properties>       	
@@ -231,9 +231,9 @@
             | The FileManager client.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filemanager-client</artifactId>
-            <version>${astrogrid.filemanager.version}</version>
+            <version>2007.2.01fm</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -241,9 +241,9 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filemanager-contract</artifactId>
-            <version>${astrogrid.filemanager.version}</version>
+            <version>2007.2.01fm</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -252,9 +252,9 @@
         </dependency>
 
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore-common</artifactId>
-            <version>${astrogrid.filestore.version}</version>
+            <version>2007.2.01fs</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -262,9 +262,9 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore-client</artifactId>
-            <version>${astrogrid.filestore.version}</version>
+            <version>2007.2.01fs</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
