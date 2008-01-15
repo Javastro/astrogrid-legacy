@@ -2,9 +2,9 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/server/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/08/01 08:15:52 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2008/01/15 16:12:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     |
     +-->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -40,9 +40,9 @@
         <!--Temporary dependency until Guy's constracts maven project is up and running-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>${astrogrid.contracts.jar}</artifactId>
-            <version>${astrogrid.contracts.version}</version>
-            <type>jar</type>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <version>${astrogrid.filemanager.frozen.version}</version>
+             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
