@@ -1,45 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/02/18 19:48:31 $</cvs:date>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
-    | <cvs:log>
-    |   $Log: project.xml,v $
-    |   Revision 1.17  2005/02/18 19:48:31  clq2
-    |   Reg_KMB_913 again merging again.
-    |
-    |   Revision 1.14.8.1  2005/02/10 12:59:56  KevinBenson
-    |   getting rid of jconfig stuff.  And moved things into web.xml and get rid of the META-INF/context.xml one.
-    |
-    |   Revision 1.14  2005/01/07 14:14:25  jdt
-    |   merged from Reg_KMB_787
-    |
-    |   Revision 1.13.2.2  2005/01/05 11:23:46  KevinBenson
-    |   small change on the project.xml
-    |
-    |   Revision 1.13.2.1  2005/01/05 10:47:46  KevinBenson
-    |   added xdoc descriptions for the community
-    |
-    |   Revision 1.13  2004/11/23 18:40:50  jdt
-    |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
-    |   http://software.astrogrid.org/developerdocs/developmentprocess.html
-    |
-    |   Revision 1.12.100.1  2004/11/12 00:45:52  jdt
-    |   Switched to use fixed version numbers, defined in a properties file
-    |
-    |   Revision 1.12  2004/07/14 13:50:07  dave
-    |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.11.4.2  2004/07/13 11:50:43  dave
-    |   Tidied up the file headers
-    |
-    |   Revision 1.11.4.1  2004/07/05 14:18:55  dave
-    |   Tried to remove the JConfig libraries
-    | </cvs:log>
-    |
-    +-->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -53,6 +12,8 @@
         | The short name of the project.
         +-->
     <id>astrogrid-community-client</id>
+    
+    <currentVersion>2008.0a3</currentVersion>
 
     <!--+
         | The full name of the project.
@@ -196,9 +157,9 @@
             | The AstroGrid common components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>${astrogrid.common.version}</version>
+            <version>2007.2.01</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -206,24 +167,13 @@
             | The Community common components.
             +-->
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>${pom.currentVersion}</version>
+            <version>2008.0a2</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-
-        <!--+
-            | The JConfig jars.
-
-        <dependency>
-            <groupId>jconfig</groupId>
-            <artifactId>jconfig</artifactId>
-            <version>2.2</version>
-            <type>jar</type>
-            <url>http://www.jconfig.org/</url>
-        </dependency>
-            +-->
+        
     </dependencies>
 
     <!--+
