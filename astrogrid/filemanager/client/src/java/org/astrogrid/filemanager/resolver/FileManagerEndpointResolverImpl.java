@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/resolver/FileManagerEndpointResolverImpl.java,v $</cvs:source>
- * <cvs:author>$Author: nw $</cvs:author>
- * <cvs:date>$Date: 2007/04/04 10:19:12 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: pah $</cvs:author>
+ * <cvs:date>$Date: 2008/01/15 16:11:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerEndpointResolverImpl.java,v $
+ *   Revision 1.6  2008/01/15 16:11:01  pah
+ *   uses v1.0 registry client to look up filemanager endpoint
+ *
  *   Revision 1.5  2007/04/04 10:19:12  nw
  *   loosened up visibility
  *
@@ -52,17 +55,16 @@
  */
 package org.astrogrid.filemanager.resolver;
 
-import org.astrogrid.filemanager.common.ivorn.IvornParser;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.store.Ivorn;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.filemanager.common.ivorn.IvornParser;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
+import org.astrogrid.store.Ivorn;
 
 /**
  * A helper class to resolve an Ivron into a service endpoint. Note, this class
@@ -90,7 +92,7 @@ public class FileManagerEndpointResolverImpl implements FileManagerEndpointResol
      *  
      */
     public FileManagerEndpointResolverImpl() {
-        this.registry = RegistryDelegateFactory.createQuery();
+        this.registry = RegistryDelegateFactory.createQueryv1_0();
     }
 
     /**
@@ -127,7 +129,7 @@ public class FileManagerEndpointResolverImpl implements FileManagerEndpointResol
         // Lookup the service in the registry.
         String endpoint = null;
         try {
-            endpoint = registry.getEndPointByIdentifier(ivorn1);
+            endpoint = registry.getEndpointByIdentifier(ivorn1.toString(),"ivo://org.astrogrid/std/myspace/v1.0#myspace");
         } catch (Throwable ouch2) {
             log.debug("FAIL : Registry lookup failed", ouch2);
             throw new FileManagerResolverException(
