@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  
-    <!--+
-        | Extend the global astrogrid project.xml.
-        +-->
-    <extend>${basedir}/../../maven-base/project.xml</extend>
-
     
     <pomVersion>3</pomVersion>
     <groupId>org.astrogrid</groupId>
     <!-- No artifactId element because this prject makes no artifact -->
     <name>Community Maven resources</name>
-    <currentVersion>2008.0a1</currentVersion>
+    <currentVersion>2008.0a2</currentVersion>
 
     <!--+
         | The external libraries required to build our components.
