@@ -18,7 +18,7 @@
         +-->
     <name>Community Web Application</name>
     
-    <currentVersion>2008.0a3</currentVersion>
+    <currentVersion>2008.0a4</currentVersion>
 
     <!--+
         | A short description of the project.
@@ -233,7 +233,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filemanager-client</artifactId>
-            <version>2007.2.01fm</version>
+            <version>2008.0a1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
