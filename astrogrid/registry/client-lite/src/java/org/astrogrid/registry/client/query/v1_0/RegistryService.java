@@ -169,16 +169,15 @@ public interface RegistryService extends org.astrogrid.registry.client.query.Reg
     */   
    public Document keywordSearch(String keywords, int from, int to, boolean identifiersOnly) throws RegistryException;
    
-   
-   
-   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID, String xsiType) throws RegistryException;
-   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID, String xsiType, String interfaceVersion) throws RegistryException;
 
-   public String getEndpointByIdentifier(String identifier, String capabilityStandardID, String xsiType) throws RegistryException;
-   public String getEndpointByIdentifier(String identifier, String capabilityStandardID, String xsiType, String interfaceVersion) throws RegistryException;
-
-   public String[] getEndpoints(String capabilityStandardID, String xsiType) throws RegistryException;
-   public String[] getEndpoints(String capabilityStandardID, String xsiType, String interfaceVersion) throws RegistryException;
+   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID) throws RegistryException;
    
+   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID, String interfaceVersion) throws RegistryException;
    
+   public String getEndpointByIdentifier(String identifier, String capabilityStandardID) throws RegistryException;
+   
+   public String getEndpointByIdentifier(String identifier, String capabilityStandardID, String interfaceVersion) throws RegistryException;
+   
+   public String[] getEndpoints(String capabilityStandardID) throws RegistryException;
+      
 }

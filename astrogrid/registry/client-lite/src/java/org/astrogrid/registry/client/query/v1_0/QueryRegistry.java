@@ -354,7 +354,7 @@ return <resources>{$idents}</resources>
           return resultDoc;
    }
    
-   public String[] getEndpoints(String capabilityStandardID, String xsiType) throws RegistryException {
+   public String[] getEndpoints(String capabilityStandardID) throws RegistryException {
 	   /*
 	    * declare namespace RootResource = 'http://www.ivoa.net/xml/RegistryInterface/v1.0'; 
 declare namespace xsi = 'http://www.w3.org/2001/XMLSchema-instance'; 
@@ -367,7 +367,7 @@ return <resources>{for $resource in $idents/capability/interface where @version=
 	   
 	   String xquery = getDeclaredNamespacesForXQuery() + 
 	   " let $idents := (//ri:Resource[@status='active') " +
-	   " return <resources>{for $resource in $idents/capability/interface where ../@standardID='" + capabilityStandardID + "' and  contains(../@xsi:type,'" + xsiType + "') return $resource}</resources>";
+	   " return <resources>{for $resource in $idents/capability/interface where ../@standardID='" + capabilityStandardID + "' return $resource}</resources>";
 	   Document doc = xquerySearch(xquery);
 	   NodeList nl = doc.getElementsByTagNameNS("*","accessURL");
 	   String []endpoints = new String[nl.getLength()];
@@ -376,10 +376,13 @@ return <resources>{for $resource in $idents/capability/interface where @version=
 	   }
 	   return endpoints;
    }
-   public String[] getEndpoints(String capabilityStandardID, String xsiType, String interfaceVersion) throws RegistryException {
+   
+   
+  
+   public String[] getEndpoints(String capabilityStandardID, String interfaceVersion) throws RegistryException {
 	   String xquery = getDeclaredNamespacesForXQuery() + 
 	   " let $idents := (//ri:Resource[@status='active') " +
-	   " return <resources>{for $resource in $idents/capability/interface where @version='" + interfaceVersion + "' ../@standardID='" + capabilityStandardID + "' and  contains(../@xsi:type,'" + xsiType + "') return $resource}</resources>";
+	   " return <resources>{for $resource in $idents/capability/interface where @version='" + interfaceVersion + "' ../@standardID='" + capabilityStandardID + "'  return $resource}</resources>";
 	   Document doc = xquerySearch(xquery);
 	   NodeList nl = doc.getElementsByTagNameNS("*","accessURL");
 	   String []endpoints = new String[nl.getLength()];
@@ -389,7 +392,7 @@ return <resources>{for $resource in $idents/capability/interface where @version=
 	   return endpoints;
    }   
    
-   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID, String xsiType) throws RegistryException {
+   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID) throws RegistryException {
 	   /*
 	    * declare namespace RootResource = 'http://www.ivoa.net/xml/RegistryInterface/v1.0'; 
 declare namespace xsi = 'http://www.w3.org/2001/XMLSchema-instance'; 
@@ -402,7 +405,7 @@ return <resources>{for $resource in $idents/capability/interface where @version=
 	   
 	   String xquery = getDeclaredNamespacesForXQuery() + 
 	   " let $idents := (//ri:Resource[@status='active' and identifier='" + identifier + "']) " +
-	   " return <resources>{for $resource in $idents/capability/interface where ../@standardID='" + capabilityStandardID + "' and  contains(../@xsi:type,'" + xsiType + "') return $resource}</resources>";
+	   " return <resources>{for $resource in $idents/capability/interface where ../@standardID='" + capabilityStandardID + "'  return $resource}</resources>";
 	   Document doc = xquerySearch(xquery);
 	   NodeList nl = doc.getElementsByTagNameNS("*","accessURL");
 	   String []endpoints = new String[nl.getLength()];
@@ -411,10 +414,11 @@ return <resources>{for $resource in $idents/capability/interface where @version=
 	   }
 	   return endpoints;
    }
-   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID, String xsiType, String interfaceVersion) throws RegistryException {
+   
+   public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID, String interfaceVersion) throws RegistryException {
 	   String xquery = getDeclaredNamespacesForXQuery() + 
 	   "let $idents := (//ri:Resource[@status='active' and identifier='" + identifier + "']) " +
-	   " return <resources>{for $resource in $idents/capability/interface where  @version='" + interfaceVersion + "' and ../@standardID='" + capabilityStandardID + "' and  contains(../@xsi:type,'" + xsiType + "') return $resource}</resources>";
+	   " return <resources>{for $resource in $idents/capability/interface where  @version='" + interfaceVersion + "' and ../@standardID='" + capabilityStandardID + "'  return $resource}</resources>";
 
 	   Document doc = xquerySearch(xquery);
 	   NodeList nl = doc.getElementsByTagNameNS("*","accessURL");
@@ -425,16 +429,16 @@ return <resources>{for $resource in $idents/capability/interface where @version=
 	   return endpoints;
    }
 
-   public String getEndpointByIdentifier(String identifier, String capabilityStandardID, String xsiType) throws RegistryException {
-	   String []urls =  getEndpointsByIdentifier(identifier, capabilityStandardID, xsiType);
+   public String getEndpointByIdentifier(String identifier, String capabilityStandardID) throws RegistryException {
+	   String []urls =  getEndpointsByIdentifier(identifier, capabilityStandardID);
 	   if(urls.length > 0)
 		   return urls[0];
 	   else
 		   return null;
    }
    
-   public String getEndpointByIdentifier(String identifier, String capabilityStandardID, String xsiType, String interfaceVersion) throws RegistryException {
-	   String []urls = getEndpointsByIdentifier(identifier, capabilityStandardID, xsiType, interfaceVersion);
+   public String getEndpointByIdentifier(String identifier, String capabilityStandardID, String interfaceVersion) throws RegistryException {
+	   String []urls = getEndpointsByIdentifier(identifier, capabilityStandardID, interfaceVersion);
 	   if(urls.length > 0)
 		   return urls[0];
 	   else

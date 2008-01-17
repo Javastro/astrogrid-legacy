@@ -11,6 +11,7 @@
                  java.util.*,
                  java.io.*"
    isThreadSafe="false"
+   pageEncoding="UTF-8"
    contentType="text/xml"                 
    session="false" %>
 <%

@@ -29,6 +29,7 @@
   <xsl:param name="type"/>
   <xsl:param name="contentLevel"/>
   <xsl:param name="relationship"/>
+  <xsl:param name="vosiURL"/>  
   
   <!-- Copy all the existing structure and add the capabilities at the
        end inside the document element. -->
@@ -138,6 +139,21 @@
       <xsl:copy-of select="relationship"/>
       
     </content>
+   	<xsl:choose>
+		<xsl:when test="not($vosiURL)"> 
+			<!-- parameter has not been supplied don't do anything -->
+		</xsl:when>
+		<xsl:otherwise> 
+		  <capability standardID="ivo://org.astrogrid/std/VOSI/v0.3#capabilities">
+	  		<interface xsi:type="vs:ParamHTTP">
+  				<accessURL use="full"><xsl:value-of select="$vosiURL"/></accessURL>
+  				<queryType>GET</queryType>
+  				<resultType>application/xml</resultType>
+			</interface>
+			</capability>
+		</xsl:otherwise>
+	</xsl:choose>
+  
   </xsl:template>
   
   <!-- Copy everything following the Dublin Core -->

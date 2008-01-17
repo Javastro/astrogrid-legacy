@@ -18,12 +18,12 @@
 	<xsl:template match="identifier">
 	  <identifier><xsl:value-of select="." />/ceaApplication</identifier>
     </xsl:template>
-    
+
     <xsl:template match="relationship">
-    	         <relationship>
-	   		<relationshipType>related-to</relationshipType>
-   			<relatedResource><xsl:value-of select="../../identifier" /></relatedResource>
-		</relationship> 
+    	    <relationship>
+	   			<relationshipType>related-to</relationshipType>
+   				<relatedResource><xsl:value-of select="../../identifier" /></relatedResource>
+			</relationship> 
     </xsl:template>
 
     <xsl:template match="capability">

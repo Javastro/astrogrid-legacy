@@ -33,6 +33,16 @@ public class NewIdentifierServlet extends RegistrarServlet {
   static final public String COLLECTION_NAME = "/db/astrogridv1_0";
   
   /**
+   * Handles the HTTP GET method.
+   * The representation of the resource is an XHTML form for editing the
+   * Dublin Core.
+   */
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+  throws ServletException, IOException {
+	  doPost(request,response);
+  }
+  
+  /**
    * Handles the HTTP <code>POST</code> method.
    * Checks identifiers and creates place-holder resources. If any exception is
    * raised in checking or creating, forwards the request to the error-handling
@@ -54,6 +64,9 @@ public class NewIdentifierServlet extends RegistrarServlet {
                       request.getParameter("resourceKey"));
       this.check(ivorn);
       
+      String capURL = request.getParameter("vosiURL");
+      System.out.println("here is the capURL = " + capURL);
+      
       // Generate the creation date in XSD format.
       Instant now = new Instant();
       String created = now.toString();
@@ -67,15 +80,22 @@ public class NewIdentifierServlet extends RegistrarServlet {
       transformer.setTransformationParameter("created",    created);
       transformer.setTransformationParameter("updated",    updated);
       transformer.setTransformationParameter("identifier", ivorn);
+
       transformer.transform();
       
       // Put the results into the registry.
       register(ivorn, transformer.getResultAsDomNode());
       
+      String vosiParam = "";
+      if(capURL != null && capURL.trim().length() > 0) {
+    	 vosiParam = "&vosiURL=" + URLEncoder.encode(capURL.toString(), "UTF-8");
+      }
+      
       // Delegate the success response to the DC editor.
       String uri = this.getContextUri(request) +
                    "/registration/DublinCore?IVORN=" +
-                    URLEncoder.encode(ivorn.toString(), "UTF-8");
+                    URLEncoder.encode(ivorn.toString(), "UTF-8") +
+                    vosiParam;
       response.setHeader("Location", uri);
       response.setStatus(response.SC_SEE_OTHER);
       

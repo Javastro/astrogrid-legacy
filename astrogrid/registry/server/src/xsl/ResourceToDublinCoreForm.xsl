@@ -6,6 +6,8 @@
   
   <xsl:output method="html"/>
   
+  <xsl:param name="vosiURL"/> 
+  
   <xsl:template match="//vr:Resource|//ri:Resource">
     <html>
       <head>
@@ -449,6 +451,16 @@
               </td>
               <td><a href="help/content/contentLevel.html">help</a></td>
             </tr>
+           	<xsl:choose>
+				<xsl:when test="not($vosiURL)"> 
+					<!-- parameter has not been supplied don't do anything -->
+				</xsl:when>
+				<xsl:otherwise> 
+					<input type="hidden" name="vosiURL">
+						<xsl:attribute name="value"><xsl:value-of select="$vosiURL"/></xsl:attribute>
+					</input>
+				</xsl:otherwise>
+			</xsl:choose>
           </table>
           <p>
             <input type="submit" value="Record this information in the registry"/>

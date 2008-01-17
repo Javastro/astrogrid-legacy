@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+
+import org.astrogrid.util.DomHelper;
+
 /**
  * A servlet to update the Dublin Core metadata of an IVOA registry-entry.
  * New values for individual elements are read from the parameters of the
@@ -36,6 +41,7 @@ public class DublinCoreServlet extends RegistrarServlet {
         throw new ServletException("No resource was specified (parameter IVORN is not set)");
       }
       String encodedIvorn = URLEncoder.encode(ivorn, "UTF-8");
+      String vosiURL = request.getParameter("vosiURL");
       
       // Transform the resource and send the result as the HTTP response.
       URL transformUrl = this.getClass().getResource("/xsl/ResourceToDublinCoreForm.xsl");
@@ -45,6 +51,9 @@ public class DublinCoreServlet extends RegistrarServlet {
                                 "/viewResourceEntry.jsp?IVORN=" +
                                 encodedIvorn);
       transformer.setTransformationSource(resourceUrl);
+      if(vosiURL != null && vosiURL.trim().length() > 0) {
+    	  transformer.setTransformationParameter("vosiURL", vosiURL);
+      }
       transformer.transform();
     }
     catch (Exception ex) {
@@ -105,9 +114,18 @@ public class DublinCoreServlet extends RegistrarServlet {
       transformer.setTransformationParameter("referenceURL", request.getParameter("content.referenceURL"));
       transformer.setTransformationParameter("type", request.getParameter("content.type"));
       transformer.setTransformationParameter("contentLevel", request.getParameter("content.contentLevel"));
+      transformer.setTransformationParameter("vosiURL", request.getParameter("vosiURL"));      
       transformer.transform();
       register(ivorn, transformer.getResultAsDomNode());
-      
+
+      if(request.getParameter("vosiURL") != null && request.getParameter("vosiURL").trim().length() > 0) {
+    	  VOSIHarvest vh = new VOSIHarvest();
+    	  Node resFirst = vh.harvestCapabilities(transformer.getResultAsDomNode());
+    	  System.out.println("The resFirst = " + DomHelper.DocumentToString((Document)resFirst));
+    	  Node finalRes = vh.harvestCapabilities(  ((Document)resFirst).getElementsByTagNameNS("*","Resource").item(0)  );
+    	  System.out.println("The finalRes = " + DomHelper.DocumentToString((Document)finalRes));
+    	  register(ivorn, finalRes);
+      }
       // Redirect the browser to a summary view of this resource.
       String redirectUri = this.getContextUri(request) + 
                          "/browse.jsp?IvornPart=" + 

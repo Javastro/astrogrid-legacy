@@ -69,12 +69,6 @@ are available.
    else {
       out.write("This Registry main authorityid <b>"+SimpleConfig.getSingleton().getString("reg.amend.authorityid")+"</b>");
       out.write("<br />Click <a href='viewResourceEntry.jsp?IVORN=" + ivoStr + "'>here</a> to see the main Registry type for this registry and all authority ids managed by this registry.");
-      if("xmldb:exist://".equals(SimpleConfig.getSingleton().getString("xmldb.uri")) &&
-         (SimpleConfig.getSingleton().getString("reg.custom.exist.configuration",null) == null ||
-          SimpleConfig.getSingleton().getString("reg.custom.exist.configuration").trim().length() == 0)) {
-          out.write("<br /><font color='green'>Your registry is in embed/internal mode with the data storage inside your webapp. It is advisable" +
-          " to have the data storage outside your webapp, read the configure page to see how this is done in the documentation area.</font>");
-      }
    }
 %>
 	<br />

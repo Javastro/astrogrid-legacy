@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.19 2008/01/12 12:41:42 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.20 2008/01/17 11:49:29 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -83,6 +83,31 @@ public class RegistryDelegateFactory {
       //return createQuery(endPoint,DEFAULT_CONTRACT_VERSION);
       return new org.astrogrid.registry.client.query.v0_1.QueryRegistry(endPoint);
    } 
+   
+   
+   /**
+    * Method: createQueryv1_0
+    * Description: Creates a RegistryService interface for querying
+    * the registry based on a property 'org.astrogrid.registry.query.endpoint'
+    * Note the RegistryService interface will be the default generic interface
+    * and will not contain the added methods in the org.astrogrid.registry.client.query.v1_0.RegistryService
+    * 
+    * @return RegistryService interface object connected to query the registry.
+    */
+   public static synchronized org.astrogrid.registry.client.query.v1_0.RegistryService createQueryv1_0() {
+	  URL queryCheckURL = conf.getUrl(QUERY_URL_PROPERTY,null);
+	  URL queryURL = queryCheckURL;
+	  if(queryCheckURL.toString().endsWith("RegistryQuery")) {
+		  try {
+			  queryURL =  new URL(queryCheckURL.toString() + "v1_0");
+		  }catch(java.net.MalformedURLException me) {
+			  logger.error(me);
+			  throw new RuntimeException("Error could not construct url " + me.getMessage());
+		  }
+	  }
+	  logger.debug("url endpoing set to " + queryURL.toString());
+      return createQueryv1_0(queryURL);
+   }
    
    /**
     * Method: createQueryv1_0

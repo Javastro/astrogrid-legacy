@@ -10,7 +10,7 @@
   <xsl:param name="xsiType"/>
   <xsl:param name="created"/>
   <xsl:param name="updated"/>
-  <xsl:param name="identifier"/>
+  <xsl:param name="identifier"/> 
   
   <xsl:template match="//ri:Resource">
    <!-- <agr:AstrogridResource> -->

@@ -30,7 +30,7 @@ public final class RestrictFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         
-      String ipFilter = conf.getString("reg.custom.restrict.ipaddresses",filterConfig.getInitParameter("restrictIPAddresses"));
+      String ipFilter = conf.getString("reg.custom.restrict.ipaddresses",null);
       String []ipAddresses = null;
       String remoteAddr = request.getRemoteAddr();
       //String remoteHost = request.getRemoteHost();
