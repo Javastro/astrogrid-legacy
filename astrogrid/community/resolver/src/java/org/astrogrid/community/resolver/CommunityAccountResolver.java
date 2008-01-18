@@ -1,47 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountResolver.java,v $</cvs:source>
- * <cvs:author>$Author: gtr $</cvs:author>
- * <cvs:date>$Date: 2008/01/15 22:57:49 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityAccountResolver.java,v $
- *   Revision 1.8  2008/01/15 22:57:49  gtr
- *   community-gtr-2491 is merged
- *
- *   Revision 1.7.146.2  2008/01/15 22:52:25  gtr
- *   Altered to suit VOResource 1.0 and the associated registry-delegate.
- *
- *   Revision 1.7.146.1  2008/01/15 14:53:42  gtr
- *   It grew a new constructor.
- *
- *   Revision 1.7  2004/10/29 15:50:05  jdt
- *   merges from Community_AdminInterface (bug 579)
- *
- *   Revision 1.6.18.1  2004/10/18 22:10:28  KevinBenson
- *   some bug fixes to the PermissionManager.  Also made it throw some exceptions.
- *   Made  it and GroupManagerImnpl use the Resolver objects to actually get a group(PermissionManageriMnpl)
- *   or account (GroupMember) from the other community.  Changed also for it to grab a ResourceData from the
- *   database to verifity it is in our database.  Add a few of these resolver dependencies as well.
- *   And last but not least fixed the GroupMemberData object to get rid of a few set methods so Castor
- *   will now work correctly in Windows
- *
- *   Revision 1.6  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.5  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.4.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.resolver ;
 
 import org.apache.commons.logging.Log ;
@@ -179,7 +135,7 @@ public class CommunityAccountResolver
             }
         //
         // Resolve the ivorn into a PolicyManagerDelegate.
-        PolicyManagerDelegate delegate = resolver.resolve(parser) ;
+        PolicyManagerDelegate delegate = resolver.resolve(parser.getIvorn()) ;
         //
         // Ask the PolicyManagerDelegate for the AccountData.
         return delegate.getAccount(

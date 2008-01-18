@@ -92,10 +92,6 @@ public class PolicyManagerResolver extends CommunityEndpointResolver {
             new CommunityIvornParser(ivorn)
             ) ;
         }
-    
-    public Ivorn getIvornForService(Ivorn ivorn) throws CommunityIdentifierException {
-        return this.getIvornForService(ivorn,PolicyManager.class);
-    }
 
     /**
      * Resolve data from a CommunityIvornParser into a PolicyManagerDelegate.
@@ -140,7 +136,9 @@ public class PolicyManagerResolver extends CommunityEndpointResolver {
             log.debug("Resolving endpoint URL.") ;
             //
             // Lookup the endpoint in the registry.
-            URL endpoint = this.resolve(parser, "ivo://org.astrogrid/std/Community/v1.0#PolicyManager") ;
+            URL endpoint = 
+                this.resolve(parser.getIvorn(), 
+                             "ivo://org.astrogrid/std/Community/v1.0#PolicyManager") ;
             log.debug("PASS : Got endpoint url") ;
             log.debug("  URL : " + endpoint) ;
             log.debug("Creating SOAP delegate.") ;

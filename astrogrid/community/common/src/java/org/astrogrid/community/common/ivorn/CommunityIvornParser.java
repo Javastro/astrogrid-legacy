@@ -1,36 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/ivorn/CommunityIvornParser.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityIvornParser.java,v $
- *   Revision 1.11  2004/11/22 13:03:04  jdt
- *   Merges from Comm_KMB_585
- *
- *   Revision 1.10.22.1  2004/11/02 11:49:39  KevinBenson
- *   deleted a commented out line
- *
- *   Revision 1.10  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.9.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.9  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.8.18.2  2004/06/17 14:50:01  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.8.18.1  2004/06/17 13:38:58  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.common.ivorn ;
 
 import org.apache.commons.logging.Log ;
@@ -53,7 +20,31 @@ import org.astrogrid.community.common.exception.CommunityServiceException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
 /**
- * A parser for handling Ivorn identifiers.
+ * A parser for an IVO identifier, a.k.a. "IVORN".
+ *
+ * The parser handles standard IVORNs and also some special forms used by
+ * AstroGrid in respect of user accounts and MySpace locations.
+ *
+ * In the first form, the IVORN identifies a user account in a specific
+ * community, e.g. ivo://user@ivo-authority/resource-key. In this form,
+ * ivo://ivo-authority/resource-key must be the IVORN for the community
+ * service where the user is registered and must be resolvable to that
+ * service in the IVO registry. This is a new usage, introduced in the 2008.0
+ * release of AstroGrid software. It serves to identify users in a registry
+ * based on VOResource v1.0.
+ *
+ * In the second form, the IVORN again identifies a user account, with the
+ * encoding ivo://ivo-authority/user. In this form, the IVORN for the
+ * associated community-service is assumed to be ivo://ivo-authority/community
+ * where "community" is a literal; i.e. the resource-key for the service's
+ * registration has a conventional value and there can be at most one
+ * community per IVO authority. This form is deprecated, but is supported
+ * as a fall-back option.
+ *
+ * In either of the two forms above, a URI-fragment is interpreted as a
+ * file-path within MySpace. E.g. ivo://fred.hoyle@uk.ac.cam.ast/IoA#/foo/bar/baz
+ * identifies the file /foo/bar/baz in the account "fred.hoyle" at the community
+ * ivo://uk.ac.cam.ast/IoA.
  *
  */
 public class CommunityIvornParser
@@ -209,10 +200,19 @@ public class CommunityIvornParser
         log.debug("----\"----") ;
         log.debug("CommunityIvornParser.parseCommunityIdent()") ;
         log.debug("  Ivorn     : " + ivorn) ;
-        if (null != uri)
-            {
-            this.community = uri.getHost() ;
-            }
+        if (null != uri) {
+          
+          // Assumes special form one, described in class comment.
+          System.out.println("User = " + uri.getUserInfo());
+          if (uri.getUserInfo() == null) {
+            this.community = uri.getHost() + "/community";
+          }
+          
+          // Assumes special form two, described in class comment.
+          else {
+            this.community = uri.getHost() + uri.getPath();
+          }
+        }
         log.debug("  Community : " + this.community) ;
         }
 
@@ -429,6 +429,7 @@ public class CommunityIvornParser
                         //
                         // Save anything left over as the path.
                         this.path = temp ;
+                        System.out.println("path = '" + this.path + "'");
                         }
                     }
                 //
@@ -506,48 +507,45 @@ public class CommunityIvornParser
         return this.account ;
         }
 
-    /**
-     * Get the Account ident as a string.
-     * This will contain both the community ident and account name, 'community/account' 
-     * @return The Account ident, or null if no match was found.
-     * @todo Should this add 'ivo://' to the ident ?
-     *
-     */
-    public String getAccountIdent()
-        {
-        if ((null != this.getCommunityIdent()) && (null != this.getAccountName()))
-            {
-            return new StringBuffer()
-                .append(this.getCommunityIdent())
-                .append("/")
-                .append(this.getAccountName())
-                .toString() ;
-            }
-        else {
-            return null ;
-            }
-        }
-
-    /**
-     * Get the Account Ivorn.
-     * This will contain both the community ident and account name, 'ivo://community/account' 
-     * @return A new Ivorn, or null if the Community or Account ident are null.
-     *
-     */
-    public Ivorn getAccountIvorn()
-        throws CommunityIdentifierException
-        {
-        if ((null != this.getCommunityIdent()) && (null != this.getAccountName()))
-            {
-            return CommunityAccountIvornFactory.createIvorn(
-                this.getCommunityName(),
-                this.getAccountName()
-                ) ;
-            }
-        else {
-            return null ;
-            }
-        }
+  /**
+   * Get the Account ident as a string.
+   * This will contain both the community ident and account name:
+   * account@community
+   * 
+   * @return The Account ident, or null if no match was found.
+   * @todo Should this add 'ivo://' to the ident ?
+   *
+   */
+  public String getAccountIdent() {
+    if ((null != this.getCommunityIdent()) && (null != this.getAccountName())) {
+      return this.getAccountName() + "@" + this.getCommunityName();
+    }
+    else {
+      return null;
+    }
+  }
+  
+  /**
+   * Get the Account Ivorn.
+   * This will contain both the community ident and account name:
+   * ivo://account@community
+   * 
+   * @return A new Ivorn, or null if the Community or Account ident are null.
+   *
+   */
+  public Ivorn getAccountIvorn() throws CommunityIdentifierException {
+    String accountName = getAccountIdent();
+    if (accountName == null) {
+      return null;
+    }
+    else {
+      try {
+        return new Ivorn("ivo://" + accountName);
+      } catch (URISyntaxException ex) {
+        throw new CommunityIdentifierException("Failed to form an account IVORN", ex);
+      }
+    }
+  }
 
     /**
      * Get the rest of the path, after the Account ident has been removed.
@@ -592,6 +590,7 @@ public class CommunityIvornParser
         // If we have a path.
         if (null != this.path)
             {
+          System.out.println("appending '" + this.path + "'");
             buffer.append("/") ;
             buffer.append(this.path) ;
             }
@@ -611,7 +610,8 @@ public class CommunityIvornParser
             }
         //
         // Return the string, or null if it is empty.
-        return (buffer.length() > 0) ? buffer.toString() : "" ;
+        System.out.println("length = " + buffer.length());
+        return (buffer.length() > 0) ? buffer.toString() : null ;
         }
 
     /**

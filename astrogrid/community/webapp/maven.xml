@@ -1,62 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project
-    xmlns:core="jelly:core"
-    xmlns:ant="jelly:ant"
-    default="astrogrid-install-artifact"
-    >
+<project xmlns:core="jelly:core" default="astrogrid-install-snapshot">
 
+  <goal name="astrogrid-install-artifact" prereqs="war:install"/>
+  <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
+  <goal name="astrogrid-deploy-artifact"  prereqs="war:deploy"/>
+  <goal name="astrogrid-deploy-snapshot"  prereqs="war:deploy-snapshot"/>
+  <goal name="astrogrid-build-site"       prereqs="site"/>
+  <goal name="astrogrid-deploy-site"      prereqs="site:deploy"/>
+  
 
-    <property name="webapp.docs" location="${basedir}/target/webapp-docs" />   
+  <postGoal name="war:webapp">
 
-    <!-- ================ Reactor goals ================ -->
-    <goal name="astrogrid-install-artifact" prereqs="war:install"/>
-    <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
-    <goal name="astrogrid-deploy-artifact"  prereqs="war:deploy"/>
-    <goal name="astrogrid-deploy-snapshot"  prereqs="war:deploy-snapshot"/>
-    <goal name="astrogrid-build-site"       prereqs="site"/>
-    <goal name="astrogrid-deploy-site"      prereqs="site:deploy"/>
-    
+    <property name="webapp.docs" location="${maven.war.webapp.dir}/docs"/>
+    <echo>Generating webapp site into ${webapp.docs}</echo>
+      
+    <!-- Take a copy of the xdoc sources. -->
+    <property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
+    <mkdir dir="${tmp.docs}" />
+    <copy overwrite="false" todir="${tmp.docs}">
+      <fileset dir="${basedir}/xdocs"/>
+    </copy>
 
-    <!-- ================ Component goals ================ -->
+    <!-- Tell Maven where to put it's documents. 
+         The default is not to put them in the web-app. -->
+    <core:set var="maven.docs.dest" value="${webapp.docs}" />
+    <core:set var="maven.docs.src" value="${tmp.docs}" />
+    <core:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+    <core:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+    <core:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+    <core:set var="maven.ui.banner.background" value="#FF0000" />
+    <core:set var="maven.ui.banner.foreground" value="#000000" />
+    <mkdir dir="${webapp.docs}" />
 
-    <!--+
-        | Initialise the webapp files.
-        +-->
-        
-    <preGoal name="war:init">
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Pre-processing for webapp task"/>
-        <attainGoal name="site-webapp"/>
-    </preGoal>
-
-   <goal name="site-webapp"
-           description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
-
-           <echo> generating webapp site into ${webapp.docs}" </echo>
+    <!-- Generate the documents that come from xdocs to HTML pages. -->
+    <attainGoal name="xdoc:generate-from-pom" />     
+    <attainGoal name="xdoc" />
            
-           <property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
-           <mkdir dir="${tmp.docs}" />
-           <copy overwrite="false" todir="${tmp.docs}">
-             <fileset dir="${basedir}/xdocs">
-             </fileset>
-           </copy>
+    <!-- Generate the "about" page. -->
+    <echo>Generating the 'about' file...</echo>
+    <echo message="${pom.name} ${pom.currentVersion}" 
+          file="${maven.war.webapp.dir}/about.txt"/>
+    <echo>...done</echo>
            
-           <core:set var="maven.docs.dest" value="${webapp.docs}" />
-           <core:set var="maven.docs.src" value="${tmp.docs}" />
-           <core:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
-           <core:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
-           <core:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
-           <core:set var="maven.ui.banner.background" value="#FF0000" />
-           <core:set var="maven.ui.banner.foreground" value="#000000" />
-           <mkdir dir="${webapp.docs}" />
-
-           <attainGoal name="xdoc:generate-from-pom" />
-         
-           <attainGoal name="xdoc" />>
-
-   </goal>
-    
+   </postGoal>  
 
 </project>

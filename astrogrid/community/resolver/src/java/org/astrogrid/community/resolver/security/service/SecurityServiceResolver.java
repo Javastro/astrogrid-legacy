@@ -137,7 +137,9 @@ public class SecurityServiceResolver extends CommunityEndpointResolver
             log.debug("Resolving endpoint URL.") ;
             //
             // Lookup the endpoint in the registry.
-            URL endpoint = this.resolve(parser, "ivo://org.astrogrid/std/Community/v1.0#SecurityService");
+            URL endpoint = 
+                this.resolve(parser.getIvorn(), 
+                             "ivo://org.astrogrid/std/Community/v1.0#SecurityService");
             log.debug("PASS : Got endpoint url") ;
             log.debug("  URL : " + endpoint) ;
             log.debug("Creating SOAP delegate.") ;

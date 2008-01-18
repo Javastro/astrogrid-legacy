@@ -59,32 +59,34 @@ public class CommunityMyProxyResolver extends CommunityEndpointResolver {
   }
   
   /**
-   * Resolves an IVOID into a delegate for the associated MyProxy server.
+   * Resolves an IVORN into a delegate for the associated MyProxy server.
+   * The IVORN must identify a community service. It may not be the IVORN
+   * for an account associated with that service.
    *
    * @return The delegate.
    */
-  MyProxy resolve(Ivorn ivoid) 
+  MyProxy resolve(Ivorn ivorn) 
       throws RegistryException, 
              CommunityIdentifierException, 
              CommunityResolverException {
     
-    log.debug("Resolving IVOID "  + 
-              ((null != ivoid) ? ivoid : null) +
+    log.debug("Resolving IVORN "  + 
+              ((null != ivorn) ? ivorn : null) +
               " to an org.globus.myproxy.MyProxy.");
         
     // Reject null IVOIDs here for clarity; we can make a better 
     // error-mesage here than we could in the next layer down.
-    if (null == ivoid) {
+    if (null == ivorn) {
       throw new CommunityIdentifierException(
-          "Can't resolve the given identifier (IVOID) " +
+          "Can't resolve the given identifier " +
           "to an org.globus.myproxy.MyProxy: identifier is null.");
-      }
+    }
         
     // Resolve the IVOID. The MyProxy class-name is used to infer
     // the resource key for the MyProxy service in the registry.
     URI endpoint = 
-        resolveToUri(new CommunityIvornParser(ivoid),
-                     "ivo:/org.astrogrid/std/Community/v1.0#MyProxy");
+        resolveToUri(ivorn,
+                     "ivo://org.astrogrid/std/Community/v1.0#MyProxy");
     
     // Extract the service address and port and use them to build the
     // MyProxy delegate.
@@ -92,7 +94,7 @@ public class CommunityMyProxyResolver extends CommunityEndpointResolver {
     if (myProxyAddress == null) {
       throw new CommunityResolverException(
           "The MyProxy server associated with " +
-          ivoid +
+          ivorn +
           " has been resolved to the URI " +
           endpoint +
           " which seems to have no host address.");

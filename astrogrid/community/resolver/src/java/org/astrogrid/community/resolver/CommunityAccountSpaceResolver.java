@@ -118,7 +118,7 @@ public class CommunityAccountSpaceResolver
      * @throws RegistryException If the Registry is unable to resolve the identifier.
      *
      */
-    protected Ivorn resolve(CommunityIvornParser parser)
+    public Ivorn resolve(CommunityIvornParser parser)
         throws CommunityServiceException,
             CommunityIdentifierException,
             CommunityPolicyException,
@@ -139,7 +139,7 @@ public class CommunityAccountSpaceResolver
             }
         //
         // Resolve the ivorn into an AccountData.
-        AccountData account = resolver.resolve(parser) ;
+        AccountData account = resolver.resolve(parser.getIvorn()) ;
         log.debug("CommunityAccountSpaceResolver.resolve()") ;
         log.debug("Got Account") ;
         log.debug("Account : " + account.getIdent()) ;

@@ -16,9 +16,10 @@ import org.w3c.dom.Document;
  * but patchily. Most of the methods do nothing and return null. Only those
  * known to be used by the community resolvers have a proper implementation.
  *
- * IVORNs with the authority org.astrogrid.local get resolved to the endpoint
- * http://org.astrogrid.local/community-service. Other IVORNs are not
- * recognized by this registry.
+ * The simulated resgistry has two registered communities for which the
+ * service IVORNs are ivo://org.astrogrid.new-registry/community and
+ * ivo://org.astrogrid.new-registry/other-community. Two are needed, since 
+ * we need to test the resolvers' ability to detect specific resource keys.
  *
  * @author Guy Rixon
  */
@@ -124,7 +125,7 @@ public class MockRegistry implements RegistryService {
   }
 
   public String getEndpointByIdentifier(String ivornString, String standardId) throws RegistryException {
-    System.out.println("Simulation look-up of " + ivornString);
+    System.out.println("Simulating look-up of " + ivornString);
     URI ivorn = null;
     try {
       ivorn = new URI(ivornString);
@@ -133,19 +134,25 @@ public class MockRegistry implements RegistryService {
     }
     
     if (ivorn.getAuthority().equals("org.astrogrid.new-registry")) {
-      if (standardId.equals("ivo://org.astrogrid/std/Community/v1.0#PolicyManager")) {
-        return "http://org.astrogrid/community-service/services/PolicyManager";
-      }
-      else if (standardId.equals("ivo://org.astrogrid/std/Community/v1.0#SecurityService")) {
-        return "http://org.astrogrid/community-service/services/SecurityService";
-      }
-      else if (standardId.equals("ivo://org.astrogrid/std/Community/v1.0#MyProxy")) {
-        return "myproxy://org.astrogrid:7512";
+      String resourceKey = ivorn.getPath();
+      if (resourceKey.equals("/community") || resourceKey.equals("/other-community")) {
+        if (standardId.equals("ivo://org.astrogrid/std/Community/v1.0#PolicyManager")) {
+          return "http://org.astrogrid" + resourceKey + "/services/PolicyManager";
+        }
+        else if (standardId.equals("ivo://org.astrogrid/std/Community/v1.0#SecurityService")) {
+          return "http://org.astrogrid" + resourceKey + "/services/SecurityService";
+        }
+        else if (standardId.equals("ivo://org.astrogrid/std/Community/v1.0#MyProxy")) {
+          return "myproxy://org.astrogrid:7512";
+        }
+        else {
+          throw new RegistryException(ivornString + 
+                                      " is known but has no capability for " +
+                                      standardId);
+        }
       }
       else {
-        throw new RegistryException(ivornString + 
-                                    " has no capability for " +
-                                    standardId);
+        throw new RegistryException("'" + ivorn + "' was not found in the registry.");
       }
     }
     else {

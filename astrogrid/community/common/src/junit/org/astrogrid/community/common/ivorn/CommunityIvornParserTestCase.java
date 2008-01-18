@@ -1,27 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/junit/org/astrogrid/community/common/ivorn/CommunityIvornParserTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityIvornParserTestCase.java,v $
- *   Revision 1.7  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.6.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.6  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.5.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.common.ivorn ;
 
 import org.apache.commons.logging.Log ;
@@ -34,6 +10,7 @@ import java.net.MalformedURLException ;
 
 import junit.framework.TestCase ;
 
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Ivorn ;
 
 /**
@@ -56,98 +33,83 @@ public class CommunityIvornParserTestCase
      */
     private String data[][] = 
         {
-/*
- *
-            {
-            "ivo://org.astrogrid.test",
-            "org.astrogrid.test",
-            null,
-            null,
-            null,
-            null,
-            null,
-            "ivo://org.astrogrid.test",
-            null
-            },
- *
- */
             {
             "ivo://org.astrogrid.test/frog",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
             null,
             null,
             null,
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/community",
+            "ivo://frog@org.astrogrid.test/community"
             },
             {
             "ivo://org.astrogrid.test/frog/extra",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
             "extra",
             null,
             "/extra",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/community",
+            "ivo://frog@org.astrogrid.test/community"
             },
             {
             "ivo://org.astrogrid.test/frog#toad",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
             null,
             "toad",
             "#toad",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/community",
+            "ivo://frog@org.astrogrid.test/community"
             },
             {
             "ivo://org.astrogrid.test/frog/extra#toad",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
             "extra",
             "toad",
             "/extra#toad",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/community",
+            "ivo://frog@org.astrogrid.test/community"
             },
             {
             "ivo://org.astrogrid.test/frog/extra#toad/extra",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
             "extra",
             "toad/extra",
             "/extra#toad/extra",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/community",
+            "ivo://frog@org.astrogrid.test/community"
             },
 
             {
             "ivo://org.astrogrid.test#frog",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
             null,
             null,
             null,
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/community",
+            "ivo://frog@org.astrogrid.test/community"
             },
             {
             "ivo://org.astrogrid.test#frog/extra",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
             null,
             "extra",
             "#extra",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/community",
+            "ivo://frog@org.astrogrid.test/community"
             },
 
             {
@@ -159,51 +121,51 @@ public class CommunityIvornParserTestCase
             null,
             null,
             "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://frog@org.astrogrid.test"
             },
             {
             "ivo://frog@org.astrogrid.test/toad",
-            "org.astrogrid.test",
+            "org.astrogrid.test/toad",
             "frog",
             "org.astrogrid.test/frog",
             "toad",
             null,
             "/toad",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/toad",
+            "ivo://frog@org.astrogrid.test/toad"
             },
             {
             "ivo://frog@org.astrogrid.test/toad/extra",
-            "org.astrogrid.test",
+            "org.astrogrid.test/toad/extra",
             "frog",
             "org.astrogrid.test/frog",
             "toad/extra",
             null,
             "/toad/extra",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/toad/extra",
+            "ivo://frog@org.astrogrid.test/toad/extra"
             },
             {
             "ivo://frog@org.astrogrid.test/toad/extra#newt",
-            "org.astrogrid.test",
+            "org.astrogrid.test/toad/extra",
             "frog",
             "org.astrogrid.test/frog",
             "toad/extra",
             "newt",
             "/toad/extra#newt",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/toad/extra",
+            "ivo://frog@org.astrogrid.test/toad/extra"
             },
             {
             "ivo://frog@org.astrogrid.test/toad/extra#newt/extra",
-            "org.astrogrid.test",
+            "org.astrogrid.test/toad/extra",
             "frog",
             "org.astrogrid.test/frog",
             "toad/extra",
             "newt/extra",
             "/toad/extra#newt/extra",
-            "ivo://org.astrogrid.test",
-            "ivo://org.astrogrid.test/frog"
+            "ivo://org.astrogrid.test/toad/extra",
+            "ivo://frog@org.astrogrid.test/toad/extra"
             }
         } ;
 
@@ -213,9 +175,9 @@ public class CommunityIvornParserTestCase
     public void testNullIvorn()
         throws Exception
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParserTestCase.testNullIvorn()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("CommunityIvornParserTestCase.testNullIvorn()") ;
         //
         // Create an IvornResolver.
         CommunityIvornParser parser = new CommunityIvornParser() ;
@@ -243,9 +205,9 @@ public class CommunityIvornParserTestCase
     public void testCommunityIvorn()
         throws Exception
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParserTestCase.testCommunityIvorn()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("CommunityIvornParserTestCase.testCommunityIvorn()") ;
         for (int i = 0 ; i < data.length ; i++)
             { 
             testCommunityIvorn(data[i]) ;
@@ -259,10 +221,10 @@ public class CommunityIvornParserTestCase
     public void testCommunityIvorn(String data[])
         throws Exception
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParserTestCase.testCommunityIvorn()") ;
-        log.debug("  Ivorn : " + data[0]) ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("CommunityIvornParserTestCase.testCommunityIvorn()") ;
+        System.out.println("  Ivorn : " + data[0]) ;
         //
         // Create an Ivorn and IvornResolver.
         CommunityIvornParser parser = new CommunityIvornParser(
@@ -333,6 +295,8 @@ public class CommunityIvornParserTestCase
             ) ;
  *
  */
+        
+ /*
         //
         // Check the account ident.
         assertEquals(
@@ -340,6 +304,8 @@ public class CommunityIvornParserTestCase
             data[8],
             parser.getAccountIdent()
             ) ;
+  */
+        
         //
         // Check the account ivorn.
         assertEquals(
@@ -356,9 +322,14 @@ public class CommunityIvornParserTestCase
     public void testLocalCommunity()
         throws Exception
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("testLocalCommunity") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("testLocalCommunity");
+        
+        SimpleConfig.getSingleton().setProperty(CommunityIvornParser.LOCAL_COMMUNITY_PROPERTY,
+                                                "org.astrogrid.local.community/community");
+        
+        
         //
         // Check a local Ivorn
         assertTrue(

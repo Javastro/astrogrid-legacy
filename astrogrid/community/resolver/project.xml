@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a2</version>
+            <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -107,7 +107,7 @@
         <!--+
             | The Registry common classes.
             +-->
-        <dependency>
+            <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
             <version>2008.0a3r</version>
@@ -183,17 +183,6 @@
             <url>http://www.castor.org/</url>
             <properties>
                 <lib.fileset>true</lib.fileset>
-            </properties>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-registry-common</artifactId>
-            <version>2008.0a3r</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-            <properties>
-                <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
     	

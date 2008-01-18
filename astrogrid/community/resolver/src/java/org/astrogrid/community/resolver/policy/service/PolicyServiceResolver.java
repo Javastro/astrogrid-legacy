@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/policy/service/PolicyServiceResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/18 16:36:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceResolver.java,v $
+ *   Revision 1.5  2008/01/18 16:36:08  gtr
+ *   Branch community-gtr-2502 is merged.
+ *
+ *   Revision 1.4.170.2  2008/01/18 15:50:04  gtr
+ *   I avoid premature and unreliable conversion of account IVORNs.
+ *
+ *   Revision 1.4.170.1  2008/01/17 10:57:26  gtr
+ *   Resolution based on Class is obsolete (it wasn't working anyway in the last alpha-release).
+ *
  *   Revision 1.4  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -166,7 +175,9 @@ public class PolicyServiceResolver
             log.debug("Resolving endpoint URL.") ;
             //
             // Lookup the endpoint in the registry.
-            URL endpoint = resolver.resolve(parser, PolicyService.class) ;
+            URL endpoint = 
+                resolver.resolve(parser.getIvorn(), 
+                                 "ivo://org.astrogrid/std/Community/v1.0#PolicyService");
             log.debug("PASS : Got endpoint url") ;
             log.debug("  URL : " + endpoint) ;
             log.debug("Creating SOAP delegate.") ;

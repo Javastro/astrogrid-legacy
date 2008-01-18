@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountSpaceResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: gtr $</cvs:author>
- * <cvs:date>$Date: 2008/01/15 22:57:49 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2008/01/18 16:36:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTestCase.java,v $
+ *   Revision 1.10  2008/01/18 16:36:08  gtr
+ *   Branch community-gtr-2502 is merged.
+ *
+ *   Revision 1.9.2.1  2008/01/18 09:44:43  gtr
+ *   Altered to work with community-common 2008.0a3.
+ *
  *   Revision 1.9  2008/01/15 22:57:49  gtr
  *   community-gtr-2491 is merged
  *
@@ -115,34 +121,7 @@ public class CommunityAccountSpaceResolverTestCase
             "ivo://org.astrogrid.mock.myspace/toad/public#qwertyuiop.xml",
             found.toString()
             ) ;
-//        }
-    
-        System.out.println("------------------");
-        //
-        // Create our target Ivorn.
-        Ivorn target2 = CommunityAccountIvornFactory.createMock(
-            "community",
-            "frog"
-            );
-        if (DEBUG_FLAG) System.out.println("  Target2 : " + target2) ;
-        //aceResolver();
-        //
-        // Ask our resolver for the home address.
-        Ivorn found2 = resolver.resolve(target2) ;
-        assertNotNull(
-            "Failed to resolve home space",
-            found2
-            ) ;
-        if (DEBUG_FLAG) System.out.println("  Found2 : " + found2) ;
-        
-        if (DEBUG_FLAG) System.out.println("  Found2 toString : " + found2.toString()) ;
-        //
-        // Check that the home space is right.
-        assertEquals(
-            "Wrong ivorn2",
-            "ivo://org.astrogrid.mock.myspace/toad",
-            found2.toString()
-            ) ;
+
         }
     
     }
