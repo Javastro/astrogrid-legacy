@@ -77,7 +77,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a2</version>
+            <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -87,14 +87,14 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filemanager-client</artifactId>
-            <version>2007.2.01fm</version>
+            <version>2008.0a1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filemanager-contract</artifactId>
-            <version>2007.2.01fm</version>
+            <version>2008.0a1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -181,7 +181,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>2008.0a1r</version>
+            <version>2008.0a3r</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -195,7 +195,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-           <version>2008.0a2</version>
+           <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -203,7 +203,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a2</version>
+            <version>2008.0a3</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
