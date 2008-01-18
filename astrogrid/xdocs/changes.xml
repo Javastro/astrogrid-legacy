@@ -7,6 +7,10 @@
     	<release version="(Pending Integration)">
 
           <action dev="kea" type="fix">
+             Branch PAL-KEA-2499.  Updated registration JSP page for
+             new-style registration.
+          </action>
+          <action dev="kea" type="fix">
              Branch PAL-KEA-2442.  Addition of VOSI endpoints etc.  
              POINT-RELEASE FOR TESTING ONLY!
           </action>
