@@ -284,6 +284,7 @@ todo see if we can include other things in the disk image too. -->
     </jar>
 </goal>
 
+
 	<!--  helper goal - unpackage resource zips, so that they can be referenced by the installer builder -->
 	<goal name="unzipResources">
 		<echo>Unzipping dependencies that are marked with 'unzip' in the project.xml</echo>
@@ -828,6 +829,10 @@ todo see if we can include other things in the disk image too. -->
         public *;
         }   
           
+      <!--  xalan - resources -->
+      -keep class org.apache.xml.res.* {
+        public *;
+        }
     <!-- security - can't get to strip successfully. need to find a config for astrogrid-security first.
     cryptix.provider.elgamal.BaseElGamalKeyPairGenerator calls '(cryptix.provider.elgamal.GenericElGamalParameterSet)Class.forName(variable).newInstance()'
  cryptix.asn1.encoding.BaseCoder calls '(cryptix.asn1.encoding.CoderOperations)Class.forName(variable).newInstance()'
