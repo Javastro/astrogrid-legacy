@@ -16,7 +16,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -24,8 +23,6 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.SearchCapability;
-import org.astrogrid.adql.AdqlCompiler;
 import org.astrogrid.desktop.modules.ag.XPathHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
@@ -47,28 +44,25 @@ import org.codehaus.xfire.transport.http.SoapHttpTransport;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/** Streaming implementation of registry client for v1.0
- * @fixme - improve result extraction to avoiod use of //, and fix orphaned namespace attr.
+/** Streaming implementation of registry client for v0.10 
  * @author Noel Winstanley
  * @since Aug 1, 20061:30:54 AM
  */
-public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal {
+public class StreamingExternalRegistryZeroPointTenImpl implements  ExternalRegistryInternal {
 	/**
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory
-			.getLog(StreamingExternalRegistryImpl.class);
+			.getLog(StreamingExternalRegistryZeroPointTenImpl.class);
 
 	public static interface RegistryQuery {
 		public XMLStreamReader KeywordSearch(XMLStreamReader reader);
 		public XMLStreamReader Search (XMLStreamReader reader);
 		public XMLStreamReader XQuerySearch(XMLStreamReader reader);
-        public XMLStreamReader GetResource(XMLStreamReader reader);		
-        public XMLStreamReader GetIdentity(XMLStreamReader reader); 
-        
+		public XMLStreamReader GetResourceByIdentifier(XMLStreamReader reader);
+		public XMLStreamReader loadRegistry(XMLStreamReader reader); // different name in v1.0
 		
 	}
 	
@@ -127,7 +121,6 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		}
 		public void invoke(MessageContext arg0) throws Exception {
 			final AbstractMessage currentMessage = arg0.getCurrentMessage();
-			//System.err.println(currentMessage.toString());
 			List l = (List)currentMessage.getBody();
 			
 			// NOT to sure about this. sometimes errors just seem to do the right thing.
@@ -141,10 +134,8 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		
 		} 
 	}
-	// v0.10
-	//public static final String REG_NS = "http://www.ivoa.net/schemas/services/QueryRegistry/wsdl";
-	// for version 1.0
-	public static final String REG_NS = "http://www.ivoa.net/wsdl/RegistrySearch/v1.0";
+	public static final String REG_NS = "http://www.ivoa.net/schemas/services/QueryRegistry/wsdl";
+	// ffor version 10.public static final String REG_NS = "http://www.ivoa.net/wsdl/RegistrySearch/v1.0";
 
 	static final  DocumentBuilderFactory fac= DocumentBuilderFactory.newInstance();
 
@@ -154,33 +145,35 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	private final Service serv;
 	private final Transport transport;
 	private final URI rorEndpoint;
-
-    private final AdqlInternal adql;
-
-    /** used just to resolve registry identifier to endpoint */
-    private final RegistryInternal sysReg;
 	
-	public StreamingExternalRegistryImpl(RegistryInternal sysReg,AdqlInternal adql) throws URISyntaxException {
-		this.sysReg = sysReg;
-        this.adql = adql;
-        this.osf = new ObjectServiceFactory(new MessageBindingProvider());
+	public StreamingExternalRegistryZeroPointTenImpl(String rorEndpoint) throws URISyntaxException {
+		this.osf = new ObjectServiceFactory(new MessageBindingProvider());
 		this.osf.setStyle("message");
 		this.serv = this.osf.create(RegistryQuery.class, "RegistryQuery","http://www.ivoa.net/wsdl/RegistrySearch",null);
 		this.transport = new SoapHttpTransport();
 		this.inputFactory = XMLInputFactory.newInstance();
-		this.rorEndpoint = null;
+		this.rorEndpoint = new URI(rorEndpoint);
 	}
 	
 	public Resource[] adqlsSearch(URI arg0, String arg1)
 			throws ServiceException, InvalidArgumentException {
-		return adqlxSearch(arg0,adql.s2x(arg1));
+		return adqlxSearch(arg0,s2x(arg1));
 	}
 
 	public Document adqlsSearchXML(URI arg0, String arg1, boolean arg2)
 			throws ServiceException, InvalidArgumentException {
-		return adqlxSearchXML(arg0,adql.s2x(arg1),arg2);
+		return adqlxSearchXML(arg0,s2x(arg1),arg2);
 	}
 	
+	private Document s2x(String adqls) throws ServiceException {
+		try {
+		String adqlString = Sql2Adql.translateToAdql074(adqls);
+		return DomHelper.newDocument(adqlString);
+		} catch (Exception e) {
+			throw new ServiceException("Failed to parse adql/s",e);
+		}
+	}
+
 	public Resource[] adqlxSearch(URI arg0, Document arg1)
 			throws ServiceException, InvalidArgumentException {
 		ResourceArrayBuilder proc = new ResourceArrayBuilder();
@@ -194,39 +187,30 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		adqlxSearchStream(arg0,arg1,arg2,proc);
 		return proc.getDocument();
 	}
-	
-
-	public void adqlxSearchStream(URI endpoint,Document queryDocument,boolean identifiersOnly, StreamProcessor proc) 
+	// getting a npe from this one. need to run tcpmon on it later.
+	public void adqlxSearchStream(URI endpoint,Document q,boolean arg2, StreamProcessor proc) 
 		throws ServiceException, InvalidArgumentException {
 		Client c = createClient(endpoint);
 		c.addInHandler(new StreamProcessorHandler(proc));
 		try {
-	          Document doc = DomHelper.newDocument();
-			Element rootE = doc.createElementNS(REG_NS,"s:Search");
-			doc.appendChild(rootE);
-
-			// find the condition inside the where clause of the adql query, and import it into the query document
-			NodeList nl = queryDocument.getElementsByTagNameNS(XPathHelper.ADQL_NS,"Condition"); 
-			if (nl.getLength() < 1) {
-				throw new InvalidArgumentException("No adql condition provided");
+			Element rootE = q.createElementNS(REG_NS,"s:Search");
+			String versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(q.getDocumentElement());
+			if (versionNumber == null) {
+				versionNumber = "0.10"; //default version number for now.
 			}
-			Node importedCondition = doc.importNode(nl.item(0),true);
-			((Element)importedCondition).setAttributeNS(XPathHelper.XMLNS_NS,"xmlns",XPathHelper.ADQL_NS);
-	        
-			Element where = doc.createElementNS(REG_NS,"s:Where"); // tricky - this where is in the reg search NS, not ADQL.			
-			where.appendChild(importedCondition);
-			rootE.appendChild(where);
-			
-			Element idsOnly = doc.createElementNS(REG_NS,"s:identifiersOnly");
-            idsOnly.appendChild(doc.createTextNode(Boolean.toString( identifiersOnly)));			
-			rootE.appendChild(idsOnly);
-
+			rootE.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr","http://www.ivoa.net.xml/VOResource/v"+ versionNumber);
+			NodeList nl = q.getElementsByTagNameNS("*","Where");
+			if (nl.getLength() < 1) {
+				throw new InvalidArgumentException("No adql where clause provided");
+			}
+			rootE.appendChild(nl.item(0));
+			q.removeChild(q.getDocumentElement());
+			q.appendChild(rootE);
 			XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
-					new DOMSource(doc));
+					new DOMSource(q));
 			c.invoke("Search",new Object[]{inStream});
 		} catch (XFireFault f) {
-		   // f.printStackTrace(System.err);
-			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f,ExceptionFormatter.INNERMOST));
+			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));
 		} catch (Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}
@@ -281,11 +265,11 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		c.addInHandler(new StreamProcessorHandler(proc));
 		try {
 			Document doc = DomHelper.newDocument();
-			Element rootE = doc.createElementNS(REG_NS,"s:GetIdentity");
+			Element rootE = doc.createElementNS(REG_NS,"s:loadRegistry");
 			doc.appendChild(rootE);
 			XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 					new DOMSource(doc));
-			c.invoke("GetIdentity",new Object[]{inStream}); 
+			c.invoke("loadRegistry",new Object[]{inStream}); // think this is non-standard in v0.1 - a kev special.
 		} catch (XFireFault f) {
 			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));
 		} catch (Exception x) {
@@ -335,14 +319,14 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		c.addInHandler(new StreamProcessorHandler(processor));
 		try {
 			Document doc = DomHelper.newDocument();
-			Element rootE = doc.createElementNS(REG_NS,"s:GetResource"); 
+			Element rootE = doc.createElementNS(REG_NS,"s:GetResourceByIdentifier"); 
 			doc.appendChild(rootE);
 			Element kw = doc.createElementNS(REG_NS,"s:identifier"); 
 			rootE.appendChild(kw);
 			kw.appendChild(doc.createTextNode(ivorn.toString()));		
 			XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 					new DOMSource(doc));
-			c.invoke("GetResource",new Object[]{inStream});
+			c.invoke("GetResourceByIdentifier",new Object[]{inStream});
 		} catch (XFireFault f) {
 			if (f.getMessage().toLowerCase().indexOf("not found") != -1) {
 				throw new NotFoundException(ivorn.toString());
@@ -410,9 +394,9 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 				Document doc = DomHelper.newDocument();
 				Element rootE = doc.createElementNS(REG_NS,"s:XQuerySearch");
 				doc.appendChild(rootE);
-				Element xq = doc.createElementNS(REG_NS,"s:xquery"); 
+				Element xq = doc.createElementNS(REG_NS,"s:XQuery"); // for v10, is 'xquery'
 				rootE.appendChild(xq);
-				xq.appendChild(doc.createTextNode(prependProlog(xquery)));
+				xq.appendChild(doc.createTextNode(prependNamespaces(xquery)));
 				XMLStreamReader inStream = this.inputFactory.createXMLStreamReader(
 						new DOMSource(doc));
 				c.invoke("XQuerySearch",new Object[]{inStream});
@@ -424,37 +408,19 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 			}	
 }
 
-	private Client createClient(URI endpoint) throws ServiceException {
-	    if (endpoint.getScheme().equals("ivo")) {
-	        // resolve endpoint first.
-	        try {
-	        Resource res = sysReg.getResource(endpoint);
-	        
-	        if (! (res instanceof RegistryService)) {
-	            throw new ServiceException(endpoint + " is not a registry service");
-	        }
-	        SearchCapability searchCapability = ((RegistryService)res).findSearchCapability();
-	        // assume that the capability has at least one interface, and this contains at least one access url.
-	        if (searchCapability == null || searchCapability.getInterfaces().length == 0 || searchCapability.getInterfaces()[0].getAccessUrls().length == 0) {
-	            throw new ServiceException(endpoint + " provides no search endpoint");
-	        }
-	        endpoint = searchCapability.getInterfaces()[0].getAccessUrls()[0].getValueURI();
-	        } catch (NotFoundException e) {
-	            throw new ServiceException(endpoint + " is not a known registry service");
-	        }
-	    } 
-		return new Client(this.transport,this.serv,endpoint.toString());		
+	private Client createClient(URI endpoint) {
+		//@future resolve ivo:type uris to urls using RoR
+		return new Client(this.transport,this.serv,endpoint.toString());
 	}
-    protected String prependProlog(String xquery) {
+    protected String prependNamespaces(String xquery) {
         String[][] ns = XPathHelper.listDefaultNamespaces();
-        StrBuilder sb = new StrBuilder();
-
+        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < ns.length; i++) {
             sb.append("declare namespace ")
                 .append(ns[i][0])
                 .append(" = '")
                 .append(ns[i][1])
-                .appendln("';");
+                .append("';\n");
         }
         sb.append(xquery);
         return(sb.toString());

@@ -1,0 +1,50 @@
+
+<vor:Resource created="2007-06-26T14:11:40" status="active" updated="2007-06-26T14:11:40" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v1.0" xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 RegistryInterface-v1.0.xsd http://www.ivoa.net/xml/VOResource/v1.0                               VOResource-v1.0.xsd                               http://www.ivoa.net/xml/VODataService/v1.0                               VODataService-v1.0.xsd                               http://www.ivoa.net/xml/ConeSearch/v1.0                               ConeSearch-v1.0.xsd                               http://www.ivoa.net/xml/STC/stc-v1.30.xsd                               stc-v1.30.xsd                               http://www.w3.org/1999/xlink xlink.xsd" xsi:type="vs:CatalogService">
+        <title>Thomas great Cone Search</title>
+        <shortName>Thomas CS</shortName>
+        <identifier>ivo://mssl.ucl.ac.uk/saada/conesearch/thomasboch</identifier>
+        <curation>
+            <publisher ivo-id="ivo://org.astrogrid.demo">
+         DCA workshop advisors
+      </publisher>
+            <creator>
+                <name>Thomas Boch</name>
+                <logo/>
+            </creator>
+            <date role="created">2007-06-26</date>
+            <contact>
+                <name>Thomas</name>
+                <email>foo@astro</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>Galaxies</subject>
+            <description>A cone search service used for the Hands-On Session</description>
+            <referenceURL/>
+            <type>Archive</type>
+        </content>
+        <capability standardID="ivo://ivoa.net/std/ConeSearch" xsi:type="cs:ConeSearch">
+            <interface role="std" xsi:type="vs:ParamHTTP">
+                <accessURL use="base">
+             http://131.176.165.61:8080/CATS//conesearch?collection=[masupercollec(RC3Entry)]&amp;
+          </accessURL>
+            </interface>
+            <maxSR>1</maxSR>
+            <maxRecords>50</maxRecords>
+            <verbosity>false</verbosity>
+            <testQuery>
+                <ra>80.895</ra>
+                <dec>-69.756</dec>
+                <sr>0.5</sr>
+            </testQuery>
+        </capability>
+        <coverage>
+            <stc:STCResourceProfile xmlns="http://www.ivoa.net/xml/STC/stc-v1.30.xsd">
+                <AstroCoordSystem id="__UTC-FK5-TOPO" xlink:href="ivo://STClib/CoordSys#UTC-FK5-TOPO" xlink:type="simple"/>
+                <AstroCoordArea coord_system_id="__UTC-FK5-TOPO">
+                    <AllSky/>
+                </AstroCoordArea>
+            </stc:STCResourceProfile>
+            <waveband>Radio</waveband>
+        </coverage>
+    </vor:Resource>

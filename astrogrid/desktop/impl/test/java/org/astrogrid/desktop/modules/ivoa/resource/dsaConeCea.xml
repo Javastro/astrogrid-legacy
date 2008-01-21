@@ -1,0 +1,138 @@
+
+<ri:Resource created="2007-07-30T11:45:23" status="active" updated="2007-07-30T11:45:23" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v1.0" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vs:CatalogService">
+        <title>MYSQL TEST DSA</title>
+        <identifier>ivo://mssl.ucl.ac.uk_full/mysql-first-5-0</identifier>
+        <curation>
+            <publisher>Kona Andrews,ROE</publisher>
+            <creator>
+                <name>Dunno</name>
+                <logo>http://www2.astrogrid.org/Members/admin/frontpagepics/cassiopeiaxray_s.jpg</logo>
+            </creator>
+            <contact>
+                <name>Kona Andrews</name>
+                <email>kea@roe.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>MYSQL TEST DSA</subject>
+            <description>Installation of FIRST object catalogue, primarily intended for testing.</description>
+            <referenceURL>http://www2.astrogrid.org</referenceURL>
+            <type>Catalog</type>
+        </content>
+        <capability standardID="ivo://ivoa.net/std/ConeSearch" xsi:type="cs:ConeSearch">
+            <description>Cone search on Catalog CatName_first, table TabName_catalogue</description>
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="base">http://srif112.roe.ac.uk/mysql-first/SubmitCone?DSACAT=CatName_first&amp;DSATAB=TabName_catalogue&amp;</accessURL>
+            </interface>
+            <maxSR>10.0</maxSR>
+            <maxRecords>999999999</maxRecords>
+            <verbosity>false</verbosity>
+            <testQuery>
+                <ra>96.0</ra>
+                <dec>5.0</dec>
+                <sr>0.001</sr>
+            </testQuery>
+        </capability>
+        <capability xsi:type="cea:CeaCapability">
+            <description>Access to two applications: general ADQL query, and asynchronous cone-search where relevant/enabled.</description>
+            <interface xsi:type="cea:CECInterface">
+                <accessURL use="full">http://srif112.roe.ac.uk/mysql-first/services/CommonExecutionConnectorService</accessURL>
+            </interface>
+            <managedApplications>
+                <ApplicationReference>ivo://agtest.roe.ac.uk/mysql-first-5-0first/ceaApplication</ApplicationReference>
+            </managedApplications>
+        </capability>
+        <table>
+            <name>TabName_catalogue</name>
+            <description/>
+            <column>
+                <name>ColName_POS_EQ_RA</name>
+                <description>Right ascension</description>
+                <unit>deg</unit>
+                <ucd>POS_EQ_RA_MAIN</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_POS_EQ_DEC</name>
+                <description>Declination</description>
+                <unit>deg</unit>
+                <ucd>POS_EQ_DEC_MAIN</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_CODE_QUALITY</name>
+                <description>Quality flag; non-null =&gt; possible artefact from sidelobes</description>
+                <ucd>CODE_QUALITY</ucd>
+                <dataType arraysize="1">char</dataType>
+            </column>
+            <column>
+                <name>ColName_PHOT_FLUX_PEAK</name>
+                <description>Peak flux-density of object</description>
+                <unit>mJy</unit>
+                <ucd>PHOT_FLUX_RADIO_1.4G</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_PHOT_FLUX_INT</name>
+                <description>Integrated flux-density of object</description>
+                <unit>mJy</unit>
+                <ucd>PHOT_FLUX_RADIO_1.4G</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_PHOT_FLUX_ERROR</name>
+                <description>Uncertainty in flux-density of object</description>
+                <unit>mJy</unit>
+                <ucd>ERROR</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_EXTENSION_FWHM_MAJ</name>
+                <description>Extent of major axis of object, FWHM (after beam deconvolution).</description>
+                <unit>arcsec</unit>
+                <ucd>EXTENSION_FWHM_MAJ</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_EXTENSION_FWHM_MIN</name>
+                <description>Extent of minor axis of object, FWHM (after beam deconvolution).</description>
+                <unit>arcsec</unit>
+                <ucd>EXTENSION_FWHM_MIN</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_POS_POSANG</name>
+                <description>Position angle of major axis of source (after beam deconvolution).</description>
+                <unit>deg</unit>
+                <ucd>POS_POSANG</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_EXTENSION_FWHM_MAJ_FIT</name>
+                <description>Extent of major axis of object, FWHM (before beam deconvolution).</description>
+                <unit>arcsec</unit>
+                <ucd>EXTENSION_FWHM_MAJ</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_EXTENSION_FWHM_MIN_FIT</name>
+                <description>Extent of minor axis of object, FWHM (before beam deconvolution).</description>
+                <unit>arcsec</unit>
+                <ucd>EXTENSION_FWHM_MIN</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_POS_POSANG_FIT</name>
+                <description>Position angle of major axis of source (before beam deconvolution).</description>
+                <unit>deg</unit>
+                <ucd>POS_POSANG</ucd>
+                <dataType>double</dataType>
+            </column>
+            <column>
+                <name>ColName_ID_FIELD</name>
+                <description>Name of field in which the object was observed.</description>
+                <ucd>ID_FIELD</ucd>
+                <dataType arraysize="*">char</dataType>
+            </column>
+        </table>
+    </ri:Resource>

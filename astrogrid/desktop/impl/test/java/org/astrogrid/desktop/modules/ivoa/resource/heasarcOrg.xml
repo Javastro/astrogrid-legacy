@@ -1,0 +1,21 @@
+
+<ri:Resource created="2007-05-21T00:00:00" status="active" updated="2007-05-21T00:00:00" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0 http://www.ivoa.net/xml/VOResource/v1.0" xsi:type="vr:Organisation">
+        <title>Astrophysics Science Division</title>
+        <identifier>ivo://nasa.heasarc/ASD</identifier>
+        <curation>
+            <publisher ivo-id="ivo://nasa.heasarc/registry">NASA/GSFC HEASARC</publisher>
+            <date>2005-01-01</date>
+            <contact>
+                <name>Thomas A. McGlynn</name>
+                <email>request@athena.gsfc.nasa.gov</email>
+            </contact>
+        </curation>
+        <content>
+            <subject/>
+            <description>The Astrophysics Science Division (ASD) performs scientific research in X-ray, 
+               Gamma-ray, Cosmic Ray and gravitational Wavel astronomy.</description>
+            <referenceURL>http://lhea.gsfc.nasa.gov</referenceURL>
+            <type>Organisation</type>
+        </content>
+        <facility>HEASARC</facility>
+    </ri:Resource>

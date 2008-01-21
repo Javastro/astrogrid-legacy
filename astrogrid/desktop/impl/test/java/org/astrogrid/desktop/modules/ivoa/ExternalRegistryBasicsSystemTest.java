@@ -30,7 +30,6 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
 /** System tests for Basic parts of the External Registry Component.
- * @fixme implement RoR,
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */
@@ -43,20 +42,22 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 		ACR reg = getACR();
 		ex =(ExternalRegistry) reg.getService(ExternalRegistry.class);
 		assertNotNull(ex);
-		Registry internal = (Registry)reg.getService(Registry.class);
-		endpoint = internal.getSystemRegistryEndpoint();
+		internal = (Registry)reg.getService(Registry.class);
+        endpoint = internal.getSystemRegistryEndpoint();
 		assertNotNull(endpoint);
 	}
 	
 
 	protected ExternalRegistry ex;
 	protected URI endpoint;
+    private Registry internal;
 	
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		ex = null;
 		endpoint = null;
+		internal = null;
 	}
 
 	/**
@@ -119,10 +120,7 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 
 
 	public void testGetRegistryOfRegistriesEndpoint()  throws Exception{
-		assertNotNull(ex.getRegistryOfRegistriesEndpoint()); 
-		// test it's a queryable registry.
-		Document d = ex.getIdentityXML(ex.getRegistryOfRegistriesEndpoint());
-		assertNotNull(d);
+		assertNull(ex.getRegistryOfRegistriesEndpoint()); 
 	}
 
 	/**
@@ -138,6 +136,22 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 		Resource r1= ex.getResource(endpoint,id);	
 		assertNotSame(r,r1); // no caching or aliasing happening.
 		assertEquals(r,r1);
+	}
+	
+	/** specify registry to query by URI, rather than URL
+	 * use the 'internal' registry as the one to query.
+	 * @throws Exception
+	 */
+	public void testGetResourceExternalRegistryByURI() throws Exception {
+	    // first find the id of the registry we're calling...
+	    RegistryService identity = internal.getIdentity();
+	    URI regID = identity.findSearchCapability().getInterfaces()[0].getAccessUrls()[0].getValueURI();
+	    assertNotNull(regID);
+
+	       URI id = new URI("ivo://nasa.heasarc/ASD");
+	        Resource r= ex.getResource(regID,id);
+	        assertNotNull(r);
+	        assertEquals(id,r.getId());
 	}
 	
 	public void testGetServiceRecord() throws Exception{

@@ -1,0 +1,39 @@
+
+<ri:Resource created="2006-11-21T11:07:24" status="active" updated="2006-11-21T11:07:24" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" xmlns:str="urn:astrogrid:schema:StoreResources:v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0                               VOResource-v1.0.xsd                               http://www.ivoa.net/xml/VODataService/v1.0                               VODataService-v1.0.xsd                               http://www.ivoa.net/xml/STC/stc-v1.30.xsd                               stc-v1.30.xsd                               http://www.w3.org/1999/xlink xlink.xsd" xsi:type="vs:DataCollection">
+        <title>NCSA BIMA Data Archive</title>
+        <shortName>BIMA</shortName>
+        <identifier>ivo://org.astrogrid.regtest/bima</identifier>
+        <curation>
+            <publisher ivo-id="ivo://rai.ncsa/RAI">
+         NCSA Radio Astronomy Imaging
+      </publisher>
+            <creator>
+                <name>Dr. Richard Crutcher</name>
+                <logo>http://rai.ncsa.uiuc.edu/rai.jpg</logo>
+            </creator>
+            <contributor>Randal Sharpe</contributor>
+            <contributor>Dr. Raymond Plante</contributor>
+            <contributor>Dr. Dave Merhinger</contributor>
+            <date role="created">1993-01-01</date>
+            <contact>
+                <name>BIMA Archivist</name>
+                <email>bimadata@ncsa.uiuc.edu</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>radio astronomy</subject>
+            <subject>data repositories</subject>
+            <subject>digital libraries</subject>
+            <description>The BIMA Data Archive provides access to all raw visibility and 
+         derived products from the Berkeley-Illinois-Maryland Association
+         Millimeter Array Telescope.</description>
+            <referenceURL>http://bimaarch.ncsa.uiuc.edu/</referenceURL>
+            <type>Archive</type>
+            <contentLevel>University</contentLevel>
+            <contentLevel>Research</contentLevel>
+        </content>
+        <facility>Berkeley-Illinois-Maryland Association Millimeter Array Telescope (BIMA)</facility>
+        <rights>proprietary</rights>
+        <format isMIMEType="false">tarred Miriad visibililty datasets</format>
+        <format isMIMEType="true">image/fits</format>
+    </ri:Resource>

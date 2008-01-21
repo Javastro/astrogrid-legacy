@@ -1,0 +1,42 @@
+
+<ri:Resource created="2006-11-21T11:07:24" status="active" updated="2006-11-21T11:07:24" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:str="urn:astrogrid:schema:StoreResources:v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0                               VOResource-v1.0.xsd" xsi:type="vr:Service">
+        <title>NCSA Astronomy Digital Image Library Search Page</title>
+        <shortName>ADIL</shortName>
+        <identifier>ivo://org.astrogrid.regtest/QueryPage.html</identifier>
+        <curation>
+            <publisher ivo-id="ivo://adil.ncsa/adil">
+         NCSA Astronomy Digital Image Library (ADIL)
+      </publisher>
+            <creator>
+                <name>Dr. Raymond Plante</name>
+                <logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</logo>
+            </creator>
+            <date role="created">1994-09-01</date>
+            <contact>
+                <name>ADIL Librarian</name>
+                <email>adil@ncsa.uiuc.edu</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>data repositories</subject>
+            <subject>digital libraries</subject>
+            <description>This Web page allows users to interactively search the contents
+         of the ADIL.</description>
+            <referenceURL>http://adil.ncsa.uiuc.edu/</referenceURL>
+            <type>Archive</type>
+            <contentLevel>University</contentLevel>
+            <contentLevel>Research</contentLevel>
+            <contentLevel>Community College</contentLevel>
+            <relationship>
+                <relationshipType>service-for</relationshipType>
+                <relatedResource ivo-id="ivo://adil.ncsa/adil">
+            NCSA Astronomy Digital Image Library
+         </relatedResource>
+            </relationship>
+        </content>
+        <capability>
+            <interface xsi:type="vr:WebBrowser">
+                <accessURL>http://adil.ncsa.uiuc.edu/QueryPage.html</accessURL>
+            </interface>
+        </capability>
+    </ri:Resource>

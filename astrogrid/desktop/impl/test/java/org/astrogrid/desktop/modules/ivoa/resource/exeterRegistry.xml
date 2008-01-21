@@ -1,0 +1,38 @@
+
+<ri:Resource created="2007-07-09T13:37:56" status="active" updated="2007-07-09T13:37:56" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vg:Registry">
+        <title>Registry</title>
+        <identifier>ivo://uk.ac.ex.astro/org.astrogrid.registry.RegistryService</identifier>
+        <curation>
+            <publisher>Exeter Astrophysics</publisher>
+            <contact>
+                <name>Alasdair Allan</name>
+                <email>aa@astro.ex.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>registry</subject>
+            <description>Exeter Registry</description>
+            <referenceURL>http://registry.astro.ex.ac.uk:8080/registry</referenceURL>
+            <type>Registry</type>
+        </content>
+        <capability standardID="ivo://ivoa.net/std/Registry" xsi:type="vg:Harvest">
+            <interface role="std" xsi:type="vg:OAIHTTP">
+                <accessURL>http://registry.astro.ex.ac.uk:8080/registry/OAIHandlerv1_0</accessURL>
+            </interface>
+            <interface role="std" xsi:type="vg:OAISOAP">
+                <accessURL>http://registry.astro.ex.ac.uk:8080/registry/services/RegistryHarvestv1_0</accessURL>
+            </interface>
+            <maxRecords>200</maxRecords>
+        </capability>
+        <capability standardID="ivo://ivoa.net/std/Registry" xsi:type="vg:Search">
+            <interface role="std" xsi:type="vr:WebService">
+                <accessURL>http://registry.astro.ex.ac.uk:8080/registry/services/RegistryQueryv1_0</accessURL>
+            </interface>
+            <maxRecords>200</maxRecords>
+            <extensionSearchSupport>full</extensionSearchSupport>
+            <optionalProtocol>XQuery</optionalProtocol>
+        </capability>
+        <full>false</full>
+        <managedAuthority>uk.ac.ex.astro</managedAuthority>
+        <managedAuthority>uk.org.estar</managedAuthority>
+    </ri:Resource>

@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.26 2007/08/30 23:46:47 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.27 2008/01/21 09:53:58 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -493,6 +493,7 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
    
 
     //@todo return service info for other kinds of server.
+    //@fixme work out correct prefix for cea namespace.
 	public Service[] listServersProviding(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
 		CeaApplication c = getCeaApplication(arg0);
 		if (c instanceof Service) { // it's already a service - this is a 'fake' cea application on a different protocol.
@@ -619,6 +620,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.27  2008/01/21 09:53:58  nw
+Incomplete - task 134: Upgrade to reg v1.0
+
 Revision 1.26  2007/08/30 23:46:47  nw
 Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
 replaced uses of myspace by uses of vfs where sensible

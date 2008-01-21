@@ -1,0 +1,19 @@
+
+<ri:Resource created="2007-07-04T19:10:52" status="active" updated="2007-07-04T19:10:52" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vr:Organisation">
+        <title>Exeter Astrophysics</title>
+        <identifier>ivo://uk.ac.ex.astro/organisation</identifier>
+        <curation>
+            <publisher>Exeter Astrophysics</publisher>
+            <contact>
+                <name>Alasdair Allan</name>
+                <email>aa@astro.ex.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>Organisation</subject>
+            <description>Exeter Astrophysics</description>
+            <referenceURL>http://www.astro.ex.ac.uk/</referenceURL>
+            <type>Organisation</type>
+        </content>
+        <facility>Exeter Astrophysics Group</facility>
+    </ri:Resource>

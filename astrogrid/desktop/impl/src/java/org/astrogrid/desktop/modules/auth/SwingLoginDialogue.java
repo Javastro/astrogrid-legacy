@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.10 2007/11/30 08:33:40 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.11 2008/01/21 09:53:58 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,7 +82,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	        
             protected Object construct() throws Exception {
                 return reg.xquerySearch(
-                "for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and vr:identifier &= '*PolicyManager'] order by $r/vr:identifier return $r");
+                "for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and identifier &= '*PolicyManager'] order by $r/identifier return $r");
             }
             protected void doFinished(Object result) {
                 Resource[] knownCommunities = (Resource[])result;
@@ -291,6 +291,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.11  2008/01/21 09:53:58  nw
+Incomplete - task 134: Upgrade to reg v1.0
+
 Revision 1.10  2007/11/30 08:33:40  nw
 changes to how uidialogues register in the window list.
 

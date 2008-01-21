@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agr:AstrogridResource xmlns:agr="urn:astrogrid:schema:RegistryStoreResource:v1">
+  <ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" created="2007-08-01T00:00:00" status="active" updated="2007-08-01T00:00:00" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0 http://www.ivoa.net/xml/VOResource/v1.0  http://www.ivoa.net/xml/VODataService/v1.0 http://www.ivoa.net/xml/VODataService/v1.0  http://www.ivoa.net/xml/ConeSearch/v1.0 http://www.ivoa.net/xml/ConeSearch/v1.0 " xsi:type="vs:CatalogService">
+    <title>HEAO 1 A-1 X-Ray Source Catalog</title>
+    <shortName>A1</shortName>
+    <identifier>ivo://nasa.heasarc/a1</identifier>
+    <curation>
+      <publisher ivo-id="ivo://nasa.heasarc/registry">NASA/GSFC HEASARC</publisher>
+      <creator>
+        <name>Wood et al.</name>
+      </creator>
+      <contributor/>
+      <date>2007-08-01</date>
+      <contact>
+        <name>Michael Preciado</name>
+        <email>preciado@milkyway.gsfc.nasa.gov</email>
+      </contact>
+    </curation>
+    <content>
+      <subject>Survey Source</subject>
+      <description>The HEAO 1 A-1 X-Ray Source Catalog contains information about X-ray sources
+detected with the NRL Large Area Sky Survey Experiment (also referred to as the
+A-1 Experiment) flown aboard the HEAO-1 satellite.  The catalog represents
+results from the first six months of data from HEAO-1, during which time a scan
+of the entire sky was completed.  Positions and intensities for 842 sources are
+listed, with a limiting flux of 250 nanoJanskies (nJy) at 5 keV, or about
+0.25 Uhuru flux units (UFU).  The catalog is more than 90% complete at a flux
+level equivalent to 1.5 microJanskies (uJy) at 5 keV, for a Crab-like spectrum.
+
+
+The A-1 catalog has been cross-referenced with published literature.
+Identifications based on coincidence in position have been proposed for some of
+the sources for which previous work has established no firm identification.
+Half of the sources remained unidentified at the time of catalog publication
+(1984).  The A3 database contains a list of 654 optical objects identified
+with A-1 error boxes.</description>
+      <source format="">1984ApJS...56..507W</source>
+      <referenceURL>http://heasarc.gsfc.nasa.gov/W3Browse/heao1/a1.html</referenceURL>
+      <type>Catalog</type>
+      <contentLevel>Research</contentLevel>
+      <relationship>
+        <relationshipType>service-for</relationshipType>
+        <relatedResource ivo-id="ivo://nasa.heasarc/eud">NASA/GSFC Exploration of the Universe Division</relatedResource>
+      </relationship>
+    </content>
+    <capability standardID="ivo://ivoa.net/std/ConeSearch" xsi:type="cs:ConeSearch">
+      <interface role="std" xsi:type="vs:ParamHTTP">
+        <accessURL use="base">
+        http://heasarc.gsfc.nasa.gov/cgi-bin/vo/cone/coneGet.pl?table=a1&amp;
+          </accessURL>
+        <queryType>GET</queryType>
+        <resultType>text/xml</resultType>
+      </interface>
+      <maxSR>180</maxSR>
+      <maxRecords>99999</maxRecords>
+      <verbosity>false</verbosity>
+      <testQuery>
+        <ra>355.187220068264992</ra>
+        <dec>-86.132864346081405</dec>
+        <sr>1</sr>
+      </testQuery>
+    </capability>
+    <coverage>
+      <stc:STCResourceProfile xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd">
+        <stc:AstroCoordSystem id="_a1_UTC-ICRS-TOPO" xlink:href="ivo://STClib/CoordSys#UTC-ICRS-TOPO" xlink:type="simple"/>
+        <stc:AstroCoords coord_system_id="_a1_UTC-ICRS-TOPO">
+          <stc:Position1D>
+<!-- Coverage.RegionOfRegard -->
+            <stc:Size pos_unit="deg">1</stc:Size>
+          </stc:Position1D>
+        </stc:AstroCoords>
+        <stc:AstroCoordArea coord_system_id="_a1_UTC-ICRS-TOPO">
+          <stc:AllSky/>
+        </stc:AstroCoordArea>
+      </stc:STCResourceProfile>
+      <waveband>X-ray</waveband>
+    </coverage>
+  </ri:Resource>
+</agr:AstrogridResource>

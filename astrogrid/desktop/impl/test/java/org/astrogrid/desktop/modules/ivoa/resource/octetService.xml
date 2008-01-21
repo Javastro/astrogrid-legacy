@@ -1,0 +1,36 @@
+
+<ri:Resource created="2006-07-06T20:41:27" status="active" updated="2007-04-11T08:52:38" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vr:Service">
+        <title>Octet: CVO Observation Catalog Exploration Tool</title>
+        <shortName>Octet</shortName>
+        <identifier>ivo://cadc.nrc.ca/cvo/octet</identifier>
+        <curation>
+            <publisher ivo-id="ivo://cadc.nrc.ca/org">
+         Canadian Astronomy Data Centre
+      </publisher>
+            <creator>
+                <name/>
+                <logo>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/images/cvo.png</logo>
+            </creator>
+            <contact>
+                <name>Patrick Dowler</name>
+                <address>5071 West Saanich Rd, Victoria, BC, Canada, V9E 2E7</address>
+                <email>patrick.dowler@nrc-cnrc.gc.ca</email>
+            </contact>
+        </curation>
+        <content>
+            <subject/>
+            <description>Octet is a rich client application for exploring the content of the CVO Observation Catalog. The CVO Observation Catalog contains content from selected CADC imaging archives (CFHT, JCMT, and HST) and external data services which cover other parts of the spectrum.
+
+Octet is written in Java and deployed via Java Webstart and has been tested on Linux, Mac OS X, and Windows 2000/XP.</description>
+            <referenceURL>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvoProto/</referenceURL>
+            <type>Other</type>
+            <contentLevel>Research</contentLevel>
+            <relationship>
+                <relationshipType>service-for</relationshipType>
+                <relatedResource ivo-id="ivo://cadc.nrc.ca/cvo">
+            Canadian Virtual Observatory
+         </relatedResource>
+            </relationship>
+        </content>
+        <capability/>
+    </ri:Resource>

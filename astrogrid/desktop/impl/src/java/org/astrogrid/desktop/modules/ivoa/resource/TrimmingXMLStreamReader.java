@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
+import java.util.regex.Pattern;
+
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -12,7 +14,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.lang.StringUtils;
 
 /** XMLStream reader which delegates to an underlying implementation,
- * and trims to null all the data accesses.
+ * and trims to null all the data accesses - and normalizes space within the elements while we're at it.
+
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 22, 200710:27:12 AM
  */
@@ -49,11 +52,23 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
     }
 
     public String getAttributeValue(int arg0) {
-        return StringUtils.trimToNull(this.orig.getAttributeValue(arg0));
+      
+        return trimAndCollapse(this.orig.getAttributeValue(arg0));
     }
 
-    public String getAttributeValue(String arg0, String arg1) {
-        return StringUtils.trimToNull(this.orig.getAttributeValue(arg0, arg1));
+    private final String trimAndCollapse(String s) {
+        if (s == null) {
+            return null;
+        }
+        String s1 = StringUtils.trimToNull(s);
+        if (s1 == null) {
+            return null;
+        }
+        return s1.replaceAll("\\b\\s{2,}\\b", " ") ; // collapse adjacent whitespace
+    }
+    
+    public String getAttributeValue(String arg0, String arg1) {        
+                return trimAndCollapse(this.orig.getAttributeValue(arg0, arg1));
     }
 
     public String getCharacterEncodingScheme() {
@@ -61,7 +76,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
     }
 
     public String getElementText() throws XMLStreamException {
-        return StringUtils.trimToNull(this.orig.getElementText());
+        return trimAndCollapse(this.orig.getElementText());        
     }
 
     public String getEncoding() {
@@ -125,7 +140,7 @@ public final class TrimmingXMLStreamReader implements XMLStreamReader {
     }
 
     public String getText() {
-        return StringUtils.trimToNull(this.orig.getText());
+        return trimAndCollapse(this.orig.getText());
     }
 
     public char[] getTextCharacters() {

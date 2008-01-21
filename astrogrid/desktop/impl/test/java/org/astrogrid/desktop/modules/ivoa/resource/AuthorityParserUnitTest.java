@@ -24,56 +24,55 @@ public class AuthorityParserUnitTest extends AbstractTestForParser{
 
 	
 	public void testAuthority1() throws Exception {
-		ResourceStreamParser p = parse("authority1.xml");
+		ResourceStreamParser p = parse("heasarcAuthority.xml");
 		Resource r =assertOnlyOne(p);
 		validateResource(r);	
 		checkResource(r
-				, "ivo://adil.ncsa"
-				, "ADIL"
-				, "ADIL Naming Authority"
+				, "ivo://nasa.heasarc/authority" // was"ivo://adil.ncsa"
+				, null
+				, "The High Energy Astrophysics Science Archive Research Center"
 				, "Authority");
 		checkCuration(r.getCuration()
 				, new Contact[] {
 			new Contact() {{
-				setName(new ResourceName() {{setValue("Dr. Raymond Plante");}});
-				setEmail("rai@ncsa.uiuc.edu");
+				setName(new ResourceName() {{setValue("Thomas A. McGlynn");}});
+				setEmail("request@athena.gsfc.nasa.gov");
 			}}
 		}
-		, new Creator[] {
-			new Creator() {{
-				setLogoURI(new URI("http://rai.ncsa.uiuc.edu/images/RAILogo.jpg"));
-				setName(new ResourceName() {{setValue("Dr. Raymond Plante");}});
-			}}
+		, new Creator[] {}
+		, new ResourceName[] {}
+		, new Date[] { new Date() {{
+		       setValue("2004-10-11");
+		}}
 		}
-		, new ResourceName[] {
-			new ResourceName() {{setValue("Raymond Plante");}}
-		}
-		, new Date[] {	}
 		, new ResourceName() {{
-			setValue("NCSA Radio Astronomy Imaging");
-			setId(new URI("ivo://rai.ncsa/RAI"));
+			setValue("NASA/GSFC HEASARC");
+			setId(new URI("ivo://nasa.heasarc/registry"));
 			}}
 		, null);
 		
 		checkContent(r.getContent()
-				, new String[] {"radio astronomy","data repositories","digital libraries","grid-based processing"}
-		, new String[] { "organisation"} // nb, note lower casing here.
-		,new String[] {"university","research"}
+				, new String[] {}
+		, new String[] {} 
+		,new String[] {}
 		, new Relationship[] {}); 
 		Authority a = validateAuthority(r);
-		assertNull(a.getManagingOrg());
+        ResourceName org = a.getManagingOrg();
+        assertNotNull(org);
+        assertEquals("NASA/GSFC HEASARC",org.getValue());
+        assertEquals(URI.create("ivo://nasa.heasarc/registry"),org.getId());
 		WebTester tester = basicResourceRendererTests(a);		
 		tester.assertTextPresent("Authority");		
 	}
 	
 	public void testAuthority2() throws Exception {
-		ResourceStreamParser p = parse("authority2.xml");
+		ResourceStreamParser p = parse("msslAuthority.xml");
 		Resource r =assertOnlyOne(p);
 		validateResource(r);	
 		checkResource(r
-				, "ivo://apl.ucl.ac.uk"
+				, "ivo://mssl.ucl.ac.uk_full"
 				, null
-				, "Community Authority"
+				, "MSSL Full Registry"
 				, "Authority");
 		checkCuration(r.getCuration()
 				, new Contact[] {
@@ -86,93 +85,25 @@ public class AuthorityParserUnitTest extends AbstractTestForParser{
 		, new ResourceName[] {	}
 		, new Date[] {	}
 		, new ResourceName() {{
-			setValue("Community Publisher");
+			setValue("MSSL");
 			}}
 		, null);
 		
 		checkContent(r.getContent()
-				, new String[] {"the community authority for astrogrid.org"}
-		, new String[] { "archive"}
+				, new String[] {"authority"}
+		, new String[] { }
 		,new String[] {}
 		, new Relationship[] {});
 		Authority a = validateAuthority(r);
-		assertNull(a.getManagingOrg());	
+		ResourceName org = a.getManagingOrg();
+		assertNotNull(org);
+		assertNull(org.getValue());
+		assertEquals(URI.create("ivo://mssl.ucl.ac.uk_full/organisation"),org.getId());
 		
 		WebTester tester = basicResourceRendererTests(a);
 		tester.assertTextPresent("Authority");		
 		
 	}
-		
-	
-	public void testAuthority3() throws Exception {
-		ResourceStreamParser p = parse("authority3.xml");
-		Resource r =assertOnlyOne(p);
-		validateResource(r);	
-		checkResource(r
-				, "ivo://archive.stsci.edu"
-				, "STScI ARC"
-				, "Space Telescope Science Institute Archive"
-				, "Authority");
-		
-		checkCuration(r.getCuration()
-				, new Contact[] {		}
-		, new Creator[] {	new Creator() } // hmm should empty records be included? - garbage in, garbage out, I guess
-		, new ResourceName[] { new ResourceName()}
-		, new Date[] {	}
-		, new ResourceName() {{
-			setValue("Space Telescope Science Institute");
-			}}
-		, null);
-		
-			
-		checkContent(r.getContent()
-				, new String[] {"hubble space telescope","hst archive"}
-		, new String[] {} // nb, note lower casing here.
-		,new String[] {"general"}
-		, new Relationship[] {}); 
-		Authority a = validateAuthority(r);
-		assertNull(a.getManagingOrg());
-		
-		WebTester tester = basicResourceRendererTests(a);
-		tester.assertTextPresent("Authority");
-	}
-	
-	public void testAuthority4() throws Exception {
-		ResourceStreamParser p = parse("authority4.xml");
-		Resource r =assertOnlyOne(p);
-		validateResource(r);	
-		checkResource(r
-				, "ivo://esavo"
-				, "ESAVO Authority"
-				, "ESAVO Authority"
-				, "Authority");
-		checkCuration(r.getCuration()
-				, new Contact[] {}
-		, new Creator[] {
-			new Creator() {{
-				setLogoURI(new URI("http://esavo.esac.esa.int/img/logo.gif"));
-				setName(new ResourceName() {{setValue("ESAVO");}});
-			}}
-		}
-		, new ResourceName[] {}
-		, new Date[] {	}
-		, new ResourceName() {{
-			setValue("ESAVO");
-			}}
-		, null);
-		
-		checkContent(r.getContent()
-				, new String[] {}
-		, new String[] {} // nb, note lower casing here.
-		,new String[] {}
-		, new Relationship[] {});
-		Authority a = validateAuthority(r);
-		assertNotNull(a.getManagingOrg());
-		assertEquals(new ResourceName() {{setValue("ESAVO-TEST");}},a.getManagingOrg());
-		
-		WebTester tester = basicResourceRendererTests(a);
-		tester.assertTextPresent("Authority");
-		tester.assertTextPresent(a.getManagingOrg().getValue()); 	}
 	
 	/** check this resource is an authority, and return it as such */
 	private Authority validateAuthority(Resource r) {

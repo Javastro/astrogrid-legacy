@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.8 2007/06/18 16:27:15 nw Exp $
+/*$Id: XPathHelper.java,v 1.9 2008/01/21 09:53:58 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,11 +27,15 @@ import org.w3c.dom.Element;
 public class XPathHelper {
     /** namespace for xml schema instance */
     public static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
-    /** namespace for the registry inteface v0.1 */
-    public final static String VOR_NS = "http://www.ivoa.net/xml/RegistryInterface/v0.1";
+    /** namespace for xmlns */
+    public static final String XMLNS_NS = "http://www.w3.org/2000/xmlns/";
+    /** namespace for the registry inteface v1.0 */
+    public final static String VOR_NS = "http://www.ivoa.net/xml/RegistryInterface/v1.0";
     
-    /** namespace for voresource v0.10 */
-    public final static String VR_NS = "http://www.ivoa.net/xml/VOResource/v0.10";
+    /** namespace for voresource v1.0 */
+    public final static String VR_NS = "http://www.ivoa.net/xml/VOResource/v1.0";
+    
+    //@fixme check whether cea and tdb namespaces need to be updated too.
     /** namespace for common execution arcitecture base */
     public final static String CEAB_NS = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
     /** namespace for CEA Service */
@@ -40,13 +44,15 @@ public class XPathHelper {
     public final static String CEAPD_NS = "http://www.astrogrid.org/schema/AGParameterDefinition/v1"; 
     /** namespace for tabular database  v0.3*/
     public final static String TDB_NS = "urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3";
-    /** namespace for VODataService v0.5*/
-    public final static String VODS_NS = "http://www.ivoa.net/xml/VODataService/v0.5";
-    /** namespace for cone search v0.3 */
-    public final static String CS_NS = "http://www.ivoa.net/xml/ConeSearch/v0.3"; 
-    /** namespace for siap v0.7 */
-    public final static String SIA_NS = "http://www.ivoa.net/xml/SIA/v0.7";
+    /** namespace for VODataService v1.0 */
+    public final static String VODS_NS = "http://www.ivoa.net/xml/VODataService/v1.0";
+    /** namespace for cone search v1.0 */
+    public final static String CS_NS = "http://www.ivoa.net/xml/ConeSearch/v1.0"; 
+    /** namespace for siap v1.0 */
+    public final static String SIA_NS = "http://www.ivoa.net/xml/SIA/v1.0";
 
+    /** namespace for adql v1.0 */
+    public final static String ADQL_NS = "http://www.ivoa.net/xml/ADQL/v1.0";
 
     // list of all namespace names andurls.
     private static String[][] namespaces  = new String[][] {
@@ -104,6 +110,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.9  2008/01/21 09:53:58  nw
+Incomplete - task 134: Upgrade to reg v1.0
+
 Revision 1.8  2007/06/18 16:27:15  nw
 javadoc
 

@@ -54,5 +54,21 @@ public class AdqlUnitTest extends TestCase {
 		assertNotNull(string);
 		assertTrue(string.indexOf("Select") != -1);
 	}
+	
+    public void tests2xs() throws Exception {
+        String s = adql.s2xs("select * from tab t where t.identifier = '3'" );
+        assertNotNull(s);
+    }
+
+    public void tests2x() throws Exception {
+        Document d  = adql.s2x("select * from tab t where t.identifier = '3'" );
+        assertNotNull(d);
+    }
+	
+    // just check we can do a registry-like query without throwing.
+    public void testRegistryAdql() throws Exception {
+       String s= adql.s2xs("select * from registry r where r.identifier = 'ivo://foo.bar.choo'");
+       System.err.println(s);
+    }
 
 }

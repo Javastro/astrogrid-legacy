@@ -20,24 +20,25 @@ public class BasicRegistrySRQLVisitor implements Builder{
 	private static final Log logger = LogFactory
 			.getLog(BasicRegistrySRQLVisitor.class);
 	/** list of elements searched by default */
-	private static  final String[] defaultTarget = new String[]{"$r/vr:title","$r/vr:identifier","$r/vr:shortName","$r/vr:content/vr:subject","$r/vr:content/vr:description"};
+	private static  final String[] defaultTarget = new String[]{"$r/title","$r/identifier","$r/shortName","$r/content/subject","$r/content/description"};
 	/** a map of other alternate targets */
 	private static Map targets = new HashMap();
 	static {
-		targets.put("shortname", new String[] {"$r/vr:shortName"});
-		targets.put("title",new String[] {"$r/vr:title"});
-		targets.put("name",new String[] {"$r/vr:shortName","$r/vr:title"});
-		targets.put("id",new String[] {"$r/vr:identifier"});
-		targets.put("subject",new String[]{"$r/vr:content/vr:subject"}); 
-		targets.put("source",new String[]{"$r/vr:content/vr:source"});
-		targets.put("description", new String[] {"$r/vr:content/vr:description"});
+		targets.put("shortname", new String[] {"$r/shortName"});
+		targets.put("title",new String[] {"$r/title"});
+		targets.put("name",new String[] {"$r/shortName","$r/title"});
+		targets.put("id",new String[] {"$r/identifier"});
+		targets.put("subject",new String[]{"$r/content/subject"}); 
+		targets.put("source",new String[]{"$r/content/source"});
+		targets.put("description", new String[] {"$r/content/description"});
 		targets.put("default", defaultTarget);
 		targets.put("any", new String[] {"$r//*"}); //@todo add attributes too - can't get //@* to work with latest XQuery.
 		targets.put("all", new String[] {"$r//*"}); //@todo add attributes too?
-		//targets.put("publisher", new String[] {"$r/vr:curation/vr:publisher","$r/vr:curation/vr:publisher/@ivo-id"});
-		targets.put("curation",new String[] {"$r/vr:curation//*"});
-		targets.put("type", new String[] {"@xsi:type","$r/vr:content/vr:type"});
-		targets.put("level", new String[] {"$r/vr:content/vr:contentLevel"});
+		//targets.put("publisher", new String[] {"$r/curation/publisher","$r/curation/publisher/@ivo-id"});
+		targets.put("curation",new String[] {"$r/curation//*"});
+		targets.put("type", new String[] {"@xsi:type","$r/content/type"});
+		targets.put("level", new String[] {"$r/content/contentLevel"});
+		//@fixme are these in no namespace now too??
 		targets.put("waveband",new String[] {"$r/vods:coverage/vods:spectral/vods:waveband"}); 
 		targets.put("col",//new String[]{"$r//vods:column/vods:name"}); // '//' doesn't seem to work in this context.
 				 new String[]{"$r/vods:table/vods:column/vods:name", "$r/tdb:db/tdb:table/vods:column/vods:name"});

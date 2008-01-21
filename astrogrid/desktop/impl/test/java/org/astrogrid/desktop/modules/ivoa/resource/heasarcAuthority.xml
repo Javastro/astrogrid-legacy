@@ -1,0 +1,21 @@
+
+<ri:Resource created="2007-05-21T00:00:00" status="active" updated="2007-05-21T00:00:00" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0 http://www.ivoa.net/xml/VOResource/v1.0                                    http://www.ivoa.net/xml/VORegistry/v1.0 http://www.ivoa.net/xml/VORegistry/v1.0" xsi:type="vg:Authority">
+        <title>The High Energy Astrophysics Science Archive Research Center</title>
+        <identifier>ivo://nasa.heasarc/authority</identifier>
+        <curation>
+            <publisher ivo-id="ivo://nasa.heasarc/registry">NASA/GSFC HEASARC</publisher>
+            <date>2004-10-11</date>
+            <contact>
+                <name>Thomas A. McGlynn</name>
+                <email>request@athena.gsfc.nasa.gov</email>
+            </contact>
+        </curation>
+        <content>
+            <subject/>
+            <description>This authority ID will be used to identify resources related
+      to the High Energy Astrophysics Science Archive Research Center at 
+      NASA/GSFC.</description>
+            <referenceURL>http://heasarc.gsfc.nasa.gov</referenceURL>
+        </content>
+        <managingOrg ivo-id="ivo://nasa.heasarc/registry">NASA/GSFC HEASARC</managingOrg>
+    </ri:Resource>

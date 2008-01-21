@@ -38,6 +38,7 @@ import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.Source;
+import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
 import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
@@ -47,6 +48,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactoryI
 import org.astrogrid.desktop.modules.ui.voexplorer.google.SystemFilter;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /** class containing static methods to render resources to html.
  * Improvments and tweaks based on resourceFormatter - in a separate class so it's easy to switch back
@@ -152,14 +154,20 @@ public final class PrettierResourceFormatter {
                 sb.appendTitledResourceName("Footprint&nbsp;Service",coverage.getFootprint());
                 sb.appendTitledSequence("Waveband&nbsp;Coverage",coverage.getWavebands());
 
-                Document doc = coverage.getStcResourceProfile();
-                if (doc != null) {
-                    String stcDoc = DomHelper.DocumentToString(doc);
-                    String escaped = StringEscapeUtils.escapeXml(stcDoc);
+                StcResourceProfile stc = coverage.getStcResourceProfile();
+                if (stc != null) {
                     sb.appendLabel("Spatial&nbsp;Coverage");
-                    sb.append("<pre>")
-                        .append(escaped)
-                        .append("</pre>");
+                    if (stc.isAllSky()) {
+                        sb.append("All-Sky");
+                    } else {
+                        //@fixme - add button to display coverage..
+//                       sb.as
+//                    String stcDoc = DomHelper.PrettyDocumentToStream(stc.getStcNode());
+//                    String escaped = StringEscapeUtils.escapeXml(stcDoc);
+//                    sb.append("<pre>")
+//                        .append(escaped)
+//                        .append("</pre>");
+                    }
                     sb.br();
                 }
            }
@@ -458,7 +466,7 @@ public final class PrettierResourceFormatter {
 	                        ? StringUtils.substringAfterLast( type,":")
 	                                : type;
 	                        String capType = c.getType();
-	                        String capTypeUnprefixed = capType.indexOf(":") != -1 
+	                        String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
 	                        ? StringUtils.substringAfterLast( capType,":")
 	                                : capType;
 	                        if (capabilities.length == 1 && "SimpleTimeAccess".equals(unprefixed)) {

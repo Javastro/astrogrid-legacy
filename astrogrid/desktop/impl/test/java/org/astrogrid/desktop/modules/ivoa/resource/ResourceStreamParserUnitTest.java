@@ -18,7 +18,7 @@ public class ResourceStreamParserUnitTest extends AbstractTestForParser{
 
 	/** expect remove to not be implemented */
 	public void testRemove() throws Exception{
-		InputStream is = this.getClass().getResourceAsStream("pegase.xml");
+		InputStream is = this.getClass().getResourceAsStream("frass.xml");
 		assertNotNull(is);
 		XMLStreamReader in = fac.createXMLStreamReader(is);
 		ResourceStreamParser p = new ResourceStreamParser(in);
@@ -35,7 +35,7 @@ public class ResourceStreamParserUnitTest extends AbstractTestForParser{
 	
 	/** expect next to throw when it's empty */
 	public void testNextEmpty() throws Exception{
-		InputStream is = this.getClass().getResourceAsStream("pegase.xml");
+		InputStream is = this.getClass().getResourceAsStream("frass.xml");
 		assertNotNull(is);
 		XMLStreamReader in = fac.createXMLStreamReader(is);
 		ResourceStreamParser p = new ResourceStreamParser(in);
@@ -52,7 +52,7 @@ public class ResourceStreamParserUnitTest extends AbstractTestForParser{
 	}
 	/** test parsing of a resource nested within other xml */
 	public void testNestedResource() throws Exception {
-		InputStream is = this.getClass().getResourceAsStream("pegase-nested.xml");
+		InputStream is = this.getClass().getResourceAsStream("frass-nested.xml");
 		assertNotNull(is);
 		XMLStreamReader in = fac.createXMLStreamReader(is);
 		ResourceStreamParser p = new ResourceStreamParser(in);
@@ -61,7 +61,7 @@ public class ResourceStreamParserUnitTest extends AbstractTestForParser{
 		assertNotNull(o);
 		assertTrue(o instanceof Resource);
 		Resource r = (Resource)o;
-		ResourceParserUnitTest.checkResource(r, "ivo://org.astrogrid/Pegase", "Pegase", "Pegase App", "CeaApplicationType");
+		ResourceParserUnitTest.checkResource(r, "ivo://nasa.heasarc/skyview/rass", "RASS", "ROSAT All-Sky X-ray Survey 1.5 keV", "CatalogService");
 		assertFalse(p.hasNext());		
 	}
 	/** test parsing of a document containig not resources (but other xml) */
@@ -88,7 +88,7 @@ public class ResourceStreamParserUnitTest extends AbstractTestForParser{
 			Resource r = (Resource)o;
 			assertNotNull(r);
 		} 
-		assertEquals(3,count);
+		assertEquals(4,count);
 		assertFalse(p.hasNext());		
 	}
 
@@ -101,7 +101,7 @@ public class ResourceStreamParserUnitTest extends AbstractTestForParser{
 		Resource[] arr =(Resource[]) IteratorUtils.toArray(p,Resource.class);
 //sanity check
 		assertNotNull(arr);
-		assertEquals(3,arr.length);
+		assertEquals(4,arr.length);
 		assertTrue(Proxy.isProxyClass(arr[0].getClass()));
 //equals;
 		assertEquals(arr[0],arr[0]);

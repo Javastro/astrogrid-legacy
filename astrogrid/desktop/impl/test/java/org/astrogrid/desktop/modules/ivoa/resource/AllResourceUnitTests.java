@@ -15,21 +15,23 @@ public class AllResourceUnitTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
 				"Unit test for resource parser and renderer");
-		suite.addTestSuite(ResourceStreamParserUnitTest.class); //written
-		suite.addTestSuite(ResourceParserUnitTest.class); // written
-		suite.addTestSuite(AuthorityParserUnitTest.class); // written
-		suite.addTestSuite(OrganisationParserUnitTest.class); // written.
-
-		suite.addTestSuite(DataCollectionParserUnitTest.class); // written. phew.
-
-		suite.addTestSuite(ServiceParserUnitTest.class); //written.
-		suite.addTestSuite(ConeParserUnitTest.class); // will do, still more to fill in.
+		suite.addTestSuite(ResourceStreamParserUnitTest.class); 
+		suite.addTestSuite(ResourceParserUnitTest.class);
+		suite.addTestSuite(AuthorityParserUnitTest.class); 
+		suite.addTestSuite(OrganisationParserUnitTest.class); 	
+		suite.addTestSuite(DataCollectionParserUnitTest.class);  		
+		suite.addTestSuite(ServiceParserUnitTest.class); 
+		suite.addTestSuite(ConeParserUnitTest.class); 
 		suite.addTestSuite(SiapParserUnitTest.class);
-		suite.addTestSuite(SpectrumServiceParserUnitTest.class); // leave for now
-		suite.addTestSuite(TimeServiceParserUnitTest.class); // leave for now
-		suite.addTestSuite(CeaParserUnitTest.class);  // ok for now.
-		suite.addTestSuite(DataServiceParserUnitTest.class);
 		suite.addTestSuite(RegistryServiceParserUnitTest.class);
+		// done down to here.
+		
+		suite.addTestSuite(SpectrumServiceParserUnitTest.class); 
+		suite.addTestSuite(TimeServiceParserUnitTest.class); 
+		suite.addTestSuite(CeaParserUnitTest.class); 
+		suite.addTestSuite(DataServiceParserUnitTest.class);
+		// catalog service.. - i.e. vizier.
+		// and the other kind - whatever it's called.
 		return suite;
 	}
 

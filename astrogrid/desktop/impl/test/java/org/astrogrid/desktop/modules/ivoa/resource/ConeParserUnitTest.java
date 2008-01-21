@@ -7,500 +7,413 @@ import java.net.URI;
 
 import net.sourceforge.jwebunit.WebTester;
 
+import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Contact;
+import org.astrogrid.acr.ivoa.resource.Coverage;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.DataService;
 import org.astrogrid.acr.ivoa.resource.Date;
+import org.astrogrid.acr.ivoa.resource.InputParam;
 import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
+import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SimpleDataType;
+import org.astrogrid.acr.ivoa.resource.Source;
+import org.astrogrid.acr.ivoa.resource.TableDataType;
+import org.astrogrid.acr.ivoa.resource.ConeCapability.Query;
 
 /** test parsing of cone services.
- * @todo find way of adding coverage into the parsed datastructure.
+ * 
+ * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 20, 20079:21:02 PM
  */
 public class ConeParserUnitTest extends AbstractTestForParser{
 
 	public void testConeService1() throws Exception {
-
-		ResourceStreamParser p = parse("cone1.xml");
+		ResourceStreamParser p = parse("adilCone.xml");
 		Resource r =assertOnlyOne(p);
 		validateResource(r);	
 		checkResource(r
-				, "ivo://cadc.nrc.ca/cs/cnoc1Cat"
-				, "CNOC1"
-				, "Canadian Network for Observational Cosmology"
-				, "ConeSearch");
+				, "ivo://org.astrogrid.regtest/vocone"
+				, "ADIL"
+				, "NCSA Astronomy Digital Image Library Cone Search"
+				, "CatalogService");
 		checkCuration(r.getCuration()
 				, new Contact[] {
 			new Contact() {{
-				setName(new ResourceName() {{setValue("David Schade");}});
-				setEmail("David.Schade@nrc.ca");
+				setName(new ResourceName() {{setValue("ADIL Librarian");}});
+				setEmail("adil@ncsa.uiuc.edu");
 			}}
 		}
 		, new Creator[] {
 			new Creator() {{
 				setName(new ResourceName() {{
-					setValue("Yee et al.");
+					setValue("Dr. Raymond Plante");
 				}});
+				setLogoURI(new URI("http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif"));
 			}}	
 		}
-		, new ResourceName[] { new ResourceName() {{ setValue("CADC");}}		}
-		, new Date[] {}
+		, new ResourceName[] {		}
+		, new Date[] {
+		    new Date() {{
+		        setRole("created");
+		        setValue("2002-01-01");
+		    }}
+		}
 		, new ResourceName() {{
-			setValue("Canadian Astronomy Data Centre");
-			setId(new URI("ivo://cadc.nrc.ca/org"));
+			setValue("NCSA Astronomy Digital Image Library (ADIL)");
+			setId(new URI("ivo://adil.ncsa/adil"));
 			}}
 		, null);
 		
 		checkContent(r.getContent()
-				, new String[] {"galaxies","clusters of galaxies","redshifts"}
-		, new String[] { "catalog"} // nb, note lower casing here.
-		,new String[] {"research"}
-		, new Relationship[] {}); 
+				, new String[] {"data repositories","digital libraries"}
+		, new String[] { "archive"} 
+		,new String[] {"university","research","community college"}
+		, new Relationship[] {
+		    new Relationship() {{
+		        setRelationshipType("service-for");
+		        setRelatedResources(new ResourceName[]{
+		                new ResourceName() {{
+		                    setValue("NCSA Astronomy Digital Image Library");
+		                    setId(new URI("ivo://adil.ncsa/adil"));
+		                }}
+		        });
+		    }}
+		    
+		}); 
 		// services.
 		Service s = validateService(r);
 		assertEmpty(s.getRights());
 		assertEquals(1,s.getCapabilities().length);
-		// little bit uncomforatblae about this still.
+		
+		assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
+		CatalogService catS =(CatalogService)s;
+		assertEmpty(catS.getFacilities());
+		assertEmpty(catS.getInstruments());
+		assertEmpty(catS.getTables());
+		Coverage coverage = catS.getCoverage();
+		checkCoverage(coverage,null,false,false,new String[0]);
+		
 		Capability cap = s.getCapabilities()[0];
-		assertNull(cap.getDescription());
-		assertEquals("vs:ParamHTTP",cap.getType()); //@todo should this be some kind of cone thing
-		assertNull(cap.getStandardID());
-		assertEquals(1,cap.getInterfaces().length);
-		
-		Interface i = cap.getInterfaces()[0];
-		assertEquals("access URL",new AccessURL[] {
-					new AccessURL() {{
-			setUse("base");
-			setValueURI(new URI("http://cadcwww.hia.nrc.ca/cadcbin/cadcConeSearch.pl?CAT=CNOC1"));
-		}}
-			},i.getAccessUrls());
-		assertNull(i.getRole());
-		assertEquals("vs:ParamHTTP",i.getType());
-		assertNull(i.getVersion());
-		assertEmpty(i.getSecurityMethods());
-		
-		assertTrue(r instanceof DataService); // has coverage, a facility and instrument
-		DataService ds = (DataService)r;
-		assertNotNull(ds.getCoverage());
-		// @todo test the resul of the data service stuff here.
+		checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1);
 		
 		assertTrue(cap instanceof ConeCapability);
 		assertSame(cap,((ConeService)s).findConeCapability());
+		Query q = new Query();
+		q.setRa(102.2);
+		q.setDec(28.5);
+		q.setSr(0.5);
+		checkConeCapability(cap,5000,10,false,q);
 		
-		ConeCapability cc = (ConeCapability)cap;
-		assertEquals(1.0,cc.getMaxSR(),0.1);
-		assertEquals(1000,cc.getMaxRecords());
-		assertTrue(cc.isVerbosity());
-		assertNull(cc.getTestQuery());
-
-
+		Interface i = cap.getInterfaces()[0];
+		checkInterface(i,"std","vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
+		        new AccessURL() {{
+		            setUse("base");
+		            setValueURI(new URI("http://adil.ncsa.uiuc.edu/vocone?survey=f&"));
+		        }}
+		});
+		assertTrue("expected a paramhttp interface",i instanceof ParamHttpInterface);
+		ParamHttpInterface phi = (ParamHttpInterface)i;
+		assertNotNull("params must not be null",phi.getParams());
+		assertEquals(0,phi.getParams().length);
+		assertNull(phi.getQueryType());
+		assertNull(phi.getResultType());
+	
 		WebTester wt = basicResourceRendererTests(s);
 		wt.assertTextPresent("Cone");
-		wt.assertTextPresent("cadcwww");		
+		wt.assertTextPresent("5000");		
 	}
 	
-	public void testConeService2() throws Exception {
-		ResourceStreamParser p = parse("cone2.xml");
-		Resource r =assertOnlyOne(p);
-		validateResource(r);	
-		checkResource(r
-				, "ivo://uk.ac.cam.ast/first-dsa-test/cone"
-				, null
-				, "FIRST object catalogue"
-				, "ConeSearch");
-		checkCuration(r.getCuration()
-				, new Contact[] {
-			new Contact() {{
-				setName(new ResourceName() );
-			}}
-		}
-		, new Creator[] {
-			new Creator() {{
-				setLogoURI(new URI("http://ag03.ast.cam.ac.uk:8080/first-dsa//logo.gif"));
-				setName(new ResourceName() {{
-					setValue("(should really be dataset creator's name!)");
-				}});
-			}}	
-		}
-		, new ResourceName[] {	}
-		, new Date[] {}
-		, new ResourceName() 
-		, null);
-		
-		checkContent(r.getContent()
-				, new String[] {}
-		, new String[] { "catalog"} // nb, note lower casing here.
-		,new String[] {}
-		, new Relationship[] {}); 
-		// services.
-		Service s = validateService(r);
-		assertEmpty(s.getRights());
-		assertEquals(1,s.getCapabilities().length);
-		// little bit uncomforatblae about this still.
-		Capability cap = s.getCapabilities()[0];
-		assertNull(cap.getDescription());
-		assertEquals("vs:ParamHTTP",cap.getType()); //@todo should this be some kind of cone thing
-		assertNull(cap.getStandardID());
-		assertEquals(1,cap.getInterfaces().length);
-		
-		Interface i = cap.getInterfaces()[0];
-		assertEquals("access URL",new AccessURL[] {
-					new AccessURL() {{
-			setUse("base");
-			setValueURI(new URI("http://ag03.ast.cam.ac.uk:8080/first-dsa/SubmitCone?"));
-		}}
-			},i.getAccessUrls());
-		assertNull(i.getRole());
-		assertEquals("vs:ParamHTTP",i.getType());
-		assertNull(i.getVersion());
-		assertEmpty(i.getSecurityMethods());
+	   public void testConeService2() throws Exception {
+	        ResourceStreamParser p = parse("dsaConeCea.xml");
+	        Resource r =assertOnlyOne(p);
+	        validateResource(r);    
+	        checkResource(r
+	                , "ivo://mssl.ucl.ac.uk_full/mysql-first-5-0"
+	                , null
+	                , "MYSQL TEST DSA"
+	                , "CatalogService");
+	        checkCuration(r.getCuration()
+	                , new Contact[] {
+	            new Contact() {{
+	                setName(new ResourceName() {{setValue("Kona Andrews");}});
+	                setEmail("kea@roe.ac.uk");
+	            }}
+	        }
+	        , new Creator[] {
+	            new Creator() {{
+	                setName(new ResourceName() {{
+	                    setValue("Dunno");
+	                }});
+	                setLogoURI(new URI("http://www2.astrogrid.org/Members/admin/frontpagepics/cassiopeiaxray_s.jpg"));
+	            }}  
+	        }
+	        , new ResourceName[] {      }
+	        , new Date[] {
+	        }
+	        , new ResourceName() {{
+	            setValue("Kona Andrews,ROE");
+	            }}
+	        , null);
+	        
+	        checkContent(r.getContent()
+	                , new String[] {"mysql test dsa"}
+	        , new String[] { "catalog"} 
+	        ,new String[] {}
+	        , new Relationship[] {
+	        }); 
+	        // services.
+	        Service s = validateService(r);
+	        assertEmpty(s.getRights());
+	        assertEquals(2,s.getCapabilities().length);	        
+	        
+	        assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
+	        CatalogService catS =(CatalogService)s;
+	        assertEmpty(catS.getFacilities());
+	        assertEmpty(catS.getInstruments());
+	        Coverage coverage = catS.getCoverage();
+	        checkCoverage(coverage,null,false,false,new String[0]);
+	        TableBean[] tables = catS.getTables();
+	        assertNotNull(tables);
+	        assertEquals(1,tables.length);
+	        assertEquals("TabName_catalogue",tables[0].getName());
+	        assertNull(tables[0].getDescription());
+	        assertEquals(13,tables[0].getColumns().length);
 
-		assertFalse(r instanceof DataService); 
-		
-		assertTrue(cap instanceof ConeCapability);
-		assertSame(cap,((ConeService)s).findConeCapability());
-		
-		ConeCapability cc = (ConeCapability)cap;
-		assertEquals(180.0,cc.getMaxSR(),0.1);
-		assertEquals(50000,cc.getMaxRecords());
-		assertFalse(cc.isVerbosity());
-		assertNull(cc.getTestQuery());
+	        ColumnBean columnBean = tables[0].getColumns()[12];
+	        assertNotNull(columnBean);
+	        // noticed that this one has a datatype..
+	        assertEquals("ColName_ID_FIELD",columnBean.getName());
+	        assertNotNull(columnBean.getColumnDataType());
+	        TableDataType dataType = columnBean.getColumnDataType();
+	        assertEquals("datatype not provided","*",dataType.getArraysize());
+	        assertEquals("char",dataType.getType());
+	        
+	        Capability cap = s.getCapabilities()[0];
+	        checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1
+	                ,"Cone search on Catalog CatName_first, table TabName_catalogue"
+	        );
+	        
+	        assertTrue(cap instanceof ConeCapability);
+	        assertSame(cap,((ConeService)s).findConeCapability());
+	        Query q = new Query();
+	        q.setRa(96.0);
+	        q.setDec(5.0);
+	        q.setSr(0.001);
+	        checkConeCapability(cap,999999999,10,false,q);
+	        
+	        Interface i = cap.getInterfaces()[0];
+	        checkInterface(i,null,"vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
+	                new AccessURL() {{
+	                    setUse("base");
+	                    setValueURI(new URI("http://srif112.roe.ac.uk/mysql-first/SubmitCone?DSACAT=CatName_first&DSATAB=TabName_catalogue&"));
+	                }}
+	        });
+	    
+	        WebTester wt = basicResourceRendererTests(s);
+	        wt.assertTextPresent("Cone");
+	        wt.assertTextPresent("999999999");       
+	    }
 
+	   public void testConeService3() throws Exception {
+	        ResourceStreamParser p = parse("heasarcCone.xml");
+	        Resource r =assertOnlyOne(p);
+	        validateResource(r);    
+	        checkResource(r
+	                , "ivo://nasa.heasarc/a1"
+	                , "A1"
+	                , "HEAO 1 A-1 X-Ray Source Catalog"
+	                , "CatalogService");
+	        checkCuration(r.getCuration()
+	                , new Contact[] {
+	            new Contact() {{
+	                setName(new ResourceName() {{setValue("Michael Preciado");}});
+	                setEmail("preciado@milkyway.gsfc.nasa.gov");
+	            }}
+	        }
+	        , new Creator[] {
+	            new Creator() {{
+	                setName(new ResourceName() {{
+	                    setValue("Wood et al.");
+	                }});
+	            }}  
+	        }
+	        , new ResourceName[] {   
+	            new ResourceName()
+	        }
+	        , new Date[] {
+	            new Date() {{
+	                setValue("2007-08-01");
+	            }}
+	        }
+	        , new ResourceName() {{
+	            setValue("NASA/GSFC HEASARC");
+	            setId(new URI("ivo://nasa.heasarc/registry"));
+	            }}
+	        , null);
+	        
+	        checkContent(r.getContent()
+	                , new String[] {"survey source"}
+	        , new String[] { "catalog"} 
+	        ,new String[] {"research"}
+	        , new Relationship[] {
+	            new Relationship() {{
+	                setRelationshipType("service-for");
+	                setRelatedResources(new ResourceName[]{
+	                        new ResourceName() {{
+	                            setValue("NASA/GSFC Exploration of the Universe Division");
+	                            setId(new URI("ivo://nasa.heasarc/eud"));
+	                        }}
+	                });
+	            }}
+	            
+	        }); 
+	        Source source = r.getContent().getSource();
+	        assertNotNull(source);
+	        assertNull(source.getFormat());
+	        assertEquals("1984ApJS...56..507W",source.getValue());
+	        // services.
+	        Service s = validateService(r);
+	        assertEmpty(s.getRights());
+	        assertEquals(1,s.getCapabilities().length);
+	        
+	        assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
+	        CatalogService catS =(CatalogService)s;
+	        assertEmpty(catS.getFacilities());
+	        assertEmpty(catS.getInstruments());
+	        assertEmpty(catS.getTables());
+	        Coverage coverage = catS.getCoverage();
+	        checkCoverage(coverage,null,true,true,new String[]{"x-ray"});
+	        
+	        Capability cap = s.getCapabilities()[0];
+	        checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1);
+	        
+	        assertTrue(cap instanceof ConeCapability);
+	        assertSame(cap,((ConeService)s).findConeCapability());
+	        Query q = new Query();
+	        q.setRa(355.187220068264992);
+	        q.setDec(-86.132864346081405);
+	        q.setSr(1);
+	        checkConeCapability(cap,99999,180,false,q);
+	        
+	        Interface i = cap.getInterfaces()[0];
+	        checkInterface(i,"std","vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
+	                new AccessURL() {{
+	                    setUse("base");
+	                    setValueURI(new URI("http://heasarc.gsfc.nasa.gov/cgi-bin/vo/cone/coneGet.pl?table=a1&"));
+	                }}
+	        });
+	        assertTrue("expected a paramhttp interface",i instanceof ParamHttpInterface);
+	        ParamHttpInterface phi = (ParamHttpInterface)i;
+	        assertNotNull("params must not be null",phi.getParams());
+	        assertEquals(0,phi.getParams().length);
+	        assertEquals("get",phi.getQueryType());
+	        assertEquals("text/xml",phi.getResultType());
+	    
+	        WebTester wt = basicResourceRendererTests(s);
+	        wt.assertTextPresent("Cone");
+	        wt.assertTextPresent("99999");       
+	        wt.assertTextPresent("All-Sky");
+	    }
+	      public void testConeService4() throws Exception {
+	            ResourceStreamParser p = parse("usnobCone.xml");
+	            Resource r =assertOnlyOne(p);
+	            validateResource(r);    
+	            checkResource(r
+	                    , "ivo://roe.ac.uk/DSA_USNOB/cone"
+	                    ,null
+	                    , "USNO-B"
+	                    , "CatalogService");
+	            checkCuration(r.getCuration()
+	                    , new Contact[] {
+	                new Contact() {{
+	                    setName(new ResourceName() {{setValue("Martin Hill");}});
+	                    setEmail("mch@roe.ac.uk");
+	                }}
+	            }
+	            , new Creator[] {
+	            }
+	            , new ResourceName[] {  
+	            }
+	            , new Date[] {
+	            }
+	            , new ResourceName() {{
+	                setValue("Royal Observatory Edinburgh");
+	                }}
+	            , null);
+	            
+	            checkContent(r.getContent()
+	                    , new String[] {}
+	            , new String[] {"catalog" } 
+	            ,new String[] {}
+	            , new Relationship[] {
+	            }); 
 
-		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("Cone");
-		wt.assertTextPresent("ast.cam");		
-	}
-	
-	public void testConeService3() throws Exception {
-		ResourceStreamParser p = parse("cone3.xml");
-		Resource r =assertOnlyOne(p);
-		validateResource(r);	
-		checkResource(r
-				, "ivo://fs.usno/cat/usnob"
-				, "USNO-B1"
-				, "USNO-B1 Catalogue"
-				, "ConeSearch");
-		checkCuration(r.getCuration()
-				, new Contact[] {
-			new Contact() {{
-				setName(new ResourceName() {{setValue("S. Levine");}});
-				setEmail("mailto:sel@nofs.navy.mil");
-			}}
-		}
-		, new Creator[] {
-			new Creator() {{
-				setName(new ResourceName() {{
-					setValue("Monet, D. G., et al.");
-				}});
-			}}	
-		}
-		, new ResourceName[] {	}
-		, new Date[] { new Date() {{setValue("2005-03-29"); }}}
-		, new ResourceName() {{
-			setValue("United States Naval Observatory, Flagstaff Station");
-			setId(new URI("ivo://fs.usno/org"));
-			}}
-		, null);
-		
-		checkContent(r.getContent()
-				, new String[] {"astrometric catalogue","optical astronomy", "finding charts","photographic images"}
-		, new String[] { "catalog","basicdata","photographic"} // nb, note lower casing here.
-		,new String[] {"secondary education","community college","university","research","amateur"}
-		, new Relationship[] {}); 
-		// services.
-		Service s = validateService(r);
-		assertEmpty(s.getRights());
-		assertEquals(1,s.getCapabilities().length);
-		// little bit uncomforatblae about this still.
-		Capability cap = s.getCapabilities()[0];
-		assertNull(cap.getDescription());
-		assertEquals("vs:ParamHTTP",cap.getType()); //@todo should this be some kind of cone thing
-		assertNull(cap.getStandardID());
-		assertEquals(1,cap.getInterfaces().length);
-		
-		Interface i = cap.getInterfaces()[0];
-		assertEquals("access URL",new AccessURL[] {
-					new AccessURL() {{
-				setUse("base");
-				setValueURI(new URI("http://www.nofs.navy.mil/cgi-bin/vo_cone.cgi?CAT=USNO-B1&"));
-				}}	
-			},i.getAccessUrls());
-		assertNull(i.getRole());
-		assertEquals("vs:ParamHTTP",i.getType());
-		assertNull(i.getVersion());
-		assertEmpty(i.getSecurityMethods());
-		// this interface also has qtype and resultType
-		
-		assertTrue(cap instanceof ConeCapability);
-		assertSame(cap,((ConeService)s).findConeCapability());
-		
-		ConeCapability cc = (ConeCapability)cap;
-		assertEquals(1.0,cc.getMaxSR(),0.1);
-		assertEquals(100000,cc.getMaxRecords());
-		assertTrue(cc.isVerbosity());
-		assertNull(cc.getTestQuery());
-
-		// this entry also has a coverage block.
-		assertTrue(r instanceof DataService); // has coverage,
-		DataService ds = (DataService)r;
-		assertNotNull(ds.getCoverage());
-		// @todo test the resul of the data service stuff here.
-			
-
-		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("nofs.navy");		
-	}
-	
-	
-	public void testConeService4() throws Exception {
-		ResourceStreamParser p = parse("cone4.xml");
-		Resource r =assertOnlyOne(p);
-		validateResource(r);	
-		//@todo fill in resource, curation and content checking.
-		/*
-		checkResource(r
-				, "ivo://fs.usno/cat/usnob"
-				, "USNO-B1"
-				, "USNO-B1 Catalogue"
-				, "ConeSearch");
-		checkCuration(r.getCuration()
-				, new Contact[] {
-			new Contact() {{
-				setName(new ResourceName() {{setValue("S. Levine");}});
-				setEmail("mailto:sel@nofs.navy.mil");
-			}}
-		}
-		, new Creator[] {
-			new Creator() {{
-				setName(new ResourceName() {{
-					setValue("Monet, D. G., et al.");
-				}});
-			}}	
-		}
-		, new ResourceName[] {	}
-		, new Date[] { new Date() {{setValue("2005-03-29"); }}}
-		, new ResourceName() {{
-			setValue("United States Naval Observatory, Flagstaff Station");
-			setId(new URI("ivo://fs.usno/org"));
-			}}
-		, null);
-		
-		checkContent(r.getContent()
-				, new String[] {"astrometric catalogue","optical astronomy", "finding charts","photographic images"}
-		, new String[] { "catalog","basicdata","photographic"} // nb, note lower casing here.
-		,new String[] {"secondary education","community college","university","research","amateur"}
-		, new Relationship[] {});
-		*/ 
-		// services.
-		Service s = validateService(r);
-		assertEmpty(s.getRights());
-		assertEquals(1,s.getCapabilities().length);
-		// little bit uncomforatblae about this still.
-		Capability cap = s.getCapabilities()[0];
-		assertNull(cap.getDescription());
-		assertEquals("vs:ParamHTTP",cap.getType()); //@todo should this be some kind of cone thing
-		assertNull(cap.getStandardID());
-		assertEquals(1,cap.getInterfaces().length);
-		
-		Interface i = cap.getInterfaces()[0];
-		assertEquals("access URL",new AccessURL[] {
-					new AccessURL() {{
-				setUse("base");
-				setValueURI(new URI("http://nedwww.ipac.caltech.edu/cgi-bin/nph-NEDobjsearch?search_type=Near+Position+Search&of=xml_main&"));
-				}}	
-			},i.getAccessUrls());
-		assertNull(i.getRole());
-		assertEquals("vs:ParamHTTP",i.getType());
-		assertNull(i.getVersion());
-		assertEmpty(i.getSecurityMethods());
-		// this interface also has qtype and resultType
-		
-		assertTrue(cap instanceof ConeCapability);
-		assertSame(cap,((ConeService)s).findConeCapability());
-		
-		ConeCapability cc = (ConeCapability)cap;
-		assertEquals(5.0,cc.getMaxSR(),0.1);
-		assertEquals(3000,cc.getMaxRecords());
-		assertFalse(cc.isVerbosity());
-		assertNull(cc.getTestQuery());
-
-		// this entry also has a coverage block.
-		assertTrue(r instanceof DataService); // has coverage,
-		DataService ds = (DataService)r;
-		assertNotNull(ds.getCoverage());
-		// @todo test the resul of the data service stuff here.
-			
-
-		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("ipac.caltech");		
-	}
-
-	public void testConeService5() throws Exception {
-		ResourceStreamParser p = parse("cone5.xml");
-		Resource r =assertOnlyOne(p);
-		validateResource(r);	
-		//@todo fill in resource, curation and content checking.
-		/*
-		checkResource(r
-				, "ivo://fs.usno/cat/usnob"
-				, "USNO-B1"
-				, "USNO-B1 Catalogue"
-				, "ConeSearch");
-		checkCuration(r.getCuration()
-				, new Contact[] {
-			new Contact() {{
-				setName(new ResourceName() {{setValue("S. Levine");}});
-				setEmail("mailto:sel@nofs.navy.mil");
-			}}
-		}
-		, new Creator[] {
-			new Creator() {{
-				setName(new ResourceName() {{
-					setValue("Monet, D. G., et al.");
-				}});
-			}}	
-		}
-		, new ResourceName[] {	}
-		, new Date[] { new Date() {{setValue("2005-03-29"); }}}
-		, new ResourceName() {{
-			setValue("United States Naval Observatory, Flagstaff Station");
-			setId(new URI("ivo://fs.usno/org"));
-			}}
-		, null);
-		
-		checkContent(r.getContent()
-				, new String[] {"astrometric catalogue","optical astronomy", "finding charts","photographic images"}
-		, new String[] { "catalog","basicdata","photographic"} // nb, note lower casing here.
-		,new String[] {"secondary education","community college","university","research","amateur"}
-		, new Relationship[] {});
-		*/ 
-		// services.
-		Service s = validateService(r);
-		assertEmpty(s.getRights());
-		assertEquals(1,s.getCapabilities().length);
-		// little bit uncomforatblae about this still.
-		Capability cap = s.getCapabilities()[0];
-		assertNull(cap.getDescription());
-		assertEquals("q2:ParamHTTP",cap.getType()); //@todo should this be some kind of cone thing
-		assertNull(cap.getStandardID());
-		assertEquals(1,cap.getInterfaces().length);
-		
-		Interface i = cap.getInterfaces()[0];
-		assertEquals("access URL",new AccessURL[] {
-					new AccessURL() {{
-				setValueURI(new URI("http://casjobs.sdss.org/vo/dr4cone/sdssConeSearch.asmx/ConeSearch?"));
-				}}	
-			},i.getAccessUrls());
-		assertNull(i.getRole());
-		assertEquals("q2:ParamHTTP",i.getType());
-		assertNull(i.getVersion());
-		assertEmpty(i.getSecurityMethods());
-		
-		assertFalse(r instanceof DataService);
-			
-		assertTrue(cap instanceof ConeCapability);
-		assertSame(cap,((ConeService)s).findConeCapability());
-		
-		ConeCapability cc = (ConeCapability)cap;
-		assertEquals(1.0,cc.getMaxSR(),0.1);
-		assertEquals(5000,cc.getMaxRecords());
-		assertFalse(cc.isVerbosity());
-		assertNull(cc.getTestQuery());
-
-
-		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("casjobs.sdss");	
-//FIXME		wt.assertTextPresent("5000"); //@todo get this output.
-	}
-	
-	public void testConeService6() throws Exception {
-		ResourceStreamParser p = parse("cone6.xml");
-		Resource r =assertOnlyOne(p);
-		validateResource(r);	
-		//@todo fill in resource, curation and content checking.
-		/*
-		checkResource(r
-				, "ivo://fs.usno/cat/usnob"
-				, "USNO-B1"
-				, "USNO-B1 Catalogue"
-				, "ConeSearch");
-		checkCuration(r.getCuration()
-				, new Contact[] {
-			new Contact() {{
-				setName(new ResourceName() {{setValue("S. Levine");}});
-				setEmail("mailto:sel@nofs.navy.mil");
-			}}
-		}
-		, new Creator[] {
-			new Creator() {{
-				setName(new ResourceName() {{
-					setValue("Monet, D. G., et al.");
-				}});
-			}}	
-		}
-		, new ResourceName[] {	}
-		, new Date[] { new Date() {{setValue("2005-03-29"); }}}
-		, new ResourceName() {{
-			setValue("United States Naval Observatory, Flagstaff Station");
-			setId(new URI("ivo://fs.usno/org"));
-			}}
-		, null);
-		
-		checkContent(r.getContent()
-				, new String[] {"astrometric catalogue","optical astronomy", "finding charts","photographic images"}
-		, new String[] { "catalog","basicdata","photographic"} // nb, note lower casing here.
-		,new String[] {"secondary education","community college","university","research","amateur"}
-		, new Relationship[] {});
-		*/ 
-		// services.
-		Service s = validateService(r);
-		assertEmpty(s.getRights());
-		assertEquals(1,s.getCapabilities().length);
-		// little bit uncomforatblae about this still.
-		Capability cap = s.getCapabilities()[0];
-		assertNull(cap.getDescription());
-		assertEquals("q2:ParamHTTP",cap.getType()); //@todo should this be some kind of cone thing
-		assertNull(cap.getStandardID());
-		assertEquals(1,cap.getInterfaces().length);
-		
-		Interface i = cap.getInterfaces()[0];
-		assertEquals("access URL",new AccessURL[] {
-					new AccessURL() {{
-				setValueURI(new URI("http://archive.stsci.edu/euve/search.php?"));
-				}}	
-			},i.getAccessUrls());
-		assertNull(i.getRole());
-		assertEquals("q2:ParamHTTP",i.getType());
-		assertNull(i.getVersion());
-		assertEmpty(i.getSecurityMethods());
-		// this interface also has qtype and resultType
-		
-		assertFalse(r instanceof DataService);
-		
-		assertTrue(cap instanceof ConeCapability);
-		assertSame(cap,((ConeService)s).findConeCapability());
-		
-		ConeCapability cc = (ConeCapability)cap;
-		assertEquals(180.0,cc.getMaxSR(),0.1);
-		assertEquals(100,cc.getMaxRecords());
-		assertFalse(cc.isVerbosity());
-		assertNull(cc.getTestQuery());
-
-		// this entry also has a coverage block.
-
-		WebTester wt = basicResourceRendererTests(s);
-	//FIXME	wt.assertTextPresent("180.0"); //@todo output this.
-		wt.assertTextPresent("archive.stsci");
-	}
-
+	            // services.
+	            Service s = validateService(r);
+	            assertEmpty(s.getRights());
+	            assertEquals(1,s.getCapabilities().length);
+	            
+	            assertTrue(" not an instanceof catalog service",  s instanceof CatalogService);
+	            CatalogService catS =(CatalogService)s;
+	            assertEmpty(catS.getFacilities());
+	            assertEmpty(catS.getInstruments());
+	            assertEmpty(catS.getTables());
+	            Coverage coverage = catS.getCoverage();
+	            checkCoverage(coverage,null,false,false,new String[]{});
+	            
+	            Capability cap = s.getCapabilities()[0];
+	            checkCapability(cap,"ivo://ivoa.net/std/ConeSearch","ConeSearch",1);
+	            
+	            assertTrue(cap instanceof ConeCapability);
+	            assertSame(cap,((ConeService)s).findConeCapability());
+	            Query q = new Query();
+	            q.setRa(120);
+	            q.setDec(20);
+	            q.setSr(0.5);
+	            checkConeCapability(cap,2000,180,false,q);
+	            
+	            Interface i = cap.getInterfaces()[0];
+	            checkInterface(i,"std","vs:ParamHTTP",null,new SecurityMethod[0],new AccessURL[]{
+	                    new AccessURL() {{
+	                        setUse("base");
+	                        setValueURI(new URI("http://adil.ncsa.uiuc.edu/vocone?survey=f"));
+	                    }}
+	            });
+	            assertTrue("expected a paramhttp interface",i instanceof ParamHttpInterface);
+	            ParamHttpInterface phi = (ParamHttpInterface)i;
+	            assertNotNull("params must not be null",phi.getParams());
+	            assertEquals("get",phi.getQueryType());
+	            assertEquals("text/xml+votable",phi.getResultType());
+	            assertEquals(3,phi.getParams().length);
+	            
+	            InputParam par = phi.getParams()[2];
+	            SimpleDataType dataType = par.getDataType();
+	            assertNotNull(par);
+	            assertNotNull(dataType);
+	            assertNull(dataType.getArraysize());
+	            assertEquals("real",dataType.getType());
+	            
+	            assertEquals("The search cone radius",par.getDescription());
+	            assertEquals("SR",par.getName());
+	            assertEquals("POS_ANG_DIST_REL",par.getUcd());
+	            assertEquals("degrees",par.getUnit());
+	            assertNull(par.getUse());
+	        
+	            WebTester wt = basicResourceRendererTests(s);
+	            wt.assertTextPresent("Cone");
+	            wt.assertTextPresent("2000");       
+	        }
 }

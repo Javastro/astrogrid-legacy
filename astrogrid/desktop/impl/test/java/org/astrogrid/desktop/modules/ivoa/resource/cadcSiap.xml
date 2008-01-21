@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agr:AstrogridResource xmlns:agr="urn:astrogrid:schema:RegistryStoreResource:v1">
+  <ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" created="2005-04-20T21:51:38" status="active" updated="2007-04-11T08:52:38" xsi:type="vs:CatalogService">
+    <title>CADC/JCMT Image Search</title>
+    <shortName>CADC/JCMT</shortName>
+    <identifier>ivo://cadc.nrc.ca/siap/jcmt</identifier>
+    <curation>
+      <publisher ivo-id="ivo://cadc.nrc.ca/org">
+         Canadian Astronomy Data Centre
+      </publisher>
+      <creator>
+        <name/>
+        <logo>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/images/cvo.png</logo>
+      </creator>
+      <contact>
+        <name>Patrick Dowler</name>
+        <address>5071 West Saanich Rd, Victoria, BC, Canada, V9E 2E7</address>
+        <email>patrick.dowler@nrc-cnrc.gc.ca</email>
+      </contact>
+    </curation>
+    <content>
+      <subject/>
+      <description>Image search and retrieval of JCMT images. The collection e currently contains SCUBA products at 450 and 850um.</description>
+      <referenceURL>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/siap/</referenceURL>
+      <type>Archive</type>
+      <contentLevel>Research</contentLevel>
+      <relationship>
+        <relationshipType>service-for</relationshipType>
+        <relatedResource ivo-id="ivo://cadc.nrc.ca/archive/jcmt">
+            James Clerk Maxwell Telescope Archive at CADC
+         </relatedResource>
+      </relationship>
+    </content>
+    <capability standardID="ivo://ivoa.net/std/SIA" xsi:type="sia:SimpleImageAccess">
+      <interface role="std" xsi:type="vs:ParamHTTP">
+        <accessURL use="base">http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/ivoa/JCMT/siapQuery?</accessURL>
+        <queryType>GET</queryType>
+        <resultType>application/xml+votable</resultType>
+      </interface>
+      <imageServiceType>Pointed</imageServiceType>
+      <maxQueryRegionSize>
+        <long>45</long>
+        <lat>45</lat>
+      </maxQueryRegionSize>
+      <maxImageExtent>
+        <long>45</long>
+        <lat>45</lat>
+      </maxImageExtent>
+      <maxImageSize>
+        <long>324000</long>
+        <lat>324000</lat>
+      </maxImageSize>
+      <maxFileSize>500000</maxFileSize>
+      <maxRecords>0</maxRecords>
+      <testQuery>
+        <pos>
+          <long>120</long>
+          <lat>20</lat>
+        </pos>
+        <size>
+          <long>1</long>
+          <lat>1</lat>
+        </size>
+      </testQuery>
+    </capability>
+    <coverage>
+      <stc:STCResourceProfile xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd">
+        <stc:AstroCoordSystem id="cadc.nrc.ca_siap_jcmt_UTC-ICRS-TOPO" xlink:href="ivo://STClib/CoordSys#UTC-ICRS-TOPO" xlink:type="simple"/>
+        <stc:AstroCoordArea coord_system_id="cadc.nrc.ca_siap_jcmt_UTC-ICRS-TOPO">
+          <stc:AllSky/>
+        </stc:AstroCoordArea>
+      </stc:STCResourceProfile>
+      <waveband>Millimeter</waveband>
+    </coverage>
+  </ri:Resource>
+</agr:AstrogridResource>

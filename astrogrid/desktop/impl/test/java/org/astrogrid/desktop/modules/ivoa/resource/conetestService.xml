@@ -1,0 +1,44 @@
+
+<ri:Resource created="2006-11-21T11:07:24" status="active" updated="2006-11-21T11:07:24" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:str="urn:astrogrid:schema:StoreResources:v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0                               VOResource-v1.0.xsd" xsi:type="vr:Service">
+        <validationLevel validatedBy="ivo://nvo.ncsa/registry"> 1 </validationLevel>
+        <title>Cone Search Validation Service</title>
+        <shortName>CSValidater</shortName>
+        <identifier>ivo://org.astrogrid.regtest/validater/ConeSearch</identifier>
+        <curation>
+            <publisher ivo-id="ivo://nvo.ncsa/NVO">
+         The NVO Project at NCSA
+      </publisher>
+            <creator>
+                <name>Dr. Raymond Plante</name>
+            </creator>
+            <date role="created">  1994-09-01  </date>
+            <contact>
+                <name>Ray Plante</name>
+                <email>rplante@ncsa.uiuc.edu</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>services</subject>
+            <subject>standards</subject>
+            <description>This service will send test queries to a Cone Search service
+         and examine the results for compliance with the Cone Search
+         standard.  It is a helpful tool for Cone Search service 
+         implementers.</description>
+            <referenceURL>http://nvo.ncsa.uiuc.edu/VO/services/csvalidate.html</referenceURL>
+            <type>Other</type>
+        </content>
+        <capability>
+            <description>The validater can be accessed either as a SOAP web service (which 
+         returns results only as XML) or as an interactive browser-based 
+         service (which can return results in either XML or HTML).</description>
+            <interface xsi:type="vr:WebService">
+                <accessURL>http://nvo.ncsa.uiuc.edu:8081/validate/ConeSearchValidater</accessURL>
+
+          <!-- this is only needed if ?wsdl doesn't work for this service -->
+                <wsdlURL>http://nvo.ncsa.uiuc.edu/VO/services/ConeSearchValidater.wsdl</wsdlURL>
+            </interface>
+            <interface xsi:type="vr:WebBrowser">
+                <accessURL>http://nvo.ncsa.uiuc.edu/VO/services/csvalidate.html</accessURL>
+            </interface>
+        </capability>
+    </ri:Resource>

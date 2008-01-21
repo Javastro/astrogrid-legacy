@@ -18,9 +18,12 @@ import net.sourceforge.jwebunit.TestContext;
 import net.sourceforge.jwebunit.WebTester;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Content;
+import org.astrogrid.acr.ivoa.resource.Coverage;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.Date;
@@ -28,8 +31,13 @@ import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
+import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.Validation;
+import org.astrogrid.acr.ivoa.resource.ConeCapability.Query;
+import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
+import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
 
 /** abstract base class for parser tests.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -84,6 +92,12 @@ public class AbstractTestForParser extends TestCase {
 
 	/** assert two arrays are equal */
 	public static void assertEquals(String msg,Object[] expected, Object[] actual) {
+	    if (expected == null) {
+	        assertNull(actual);
+	        return;
+	    } else {
+	        assertNotNull(actual);
+	    }
 		assertEquals("array sizes differ",expected.length,actual.length);
 		assertTrue(msg + ": " + ArrayUtils.toString(expected) + ", " + ArrayUtils.toString(actual)
 				,Arrays.equals(expected, actual));
@@ -127,8 +141,7 @@ public class AbstractTestForParser extends TestCase {
 	
 	/** check basics of validation are correct */
 	public static void validateValidationLevel(Validation[] vs) {
-		// does nothing at present. waiting for 1.0 registry 
-		assertEmpty(vs);
+		assertNotNull(vs);
 	}
 
 	/** checks the basics of a curation are in place.
@@ -162,14 +175,102 @@ public class AbstractTestForParser extends TestCase {
 	
 	public static void validateCapability(Capability c) {
 		assertNotNull("capability is null",c);
-	//@FIXME put this back in afterwards	validateValidationLevel(c.getValidationLevel());
+	//@later put this back in afterwards	validateValidationLevel(c.getValidationLevel());
 		Interface[] is = c.getInterfaces();
 		assertNotNull("intefaces is null",is);
 		for (int i = 0 ; i < is.length; i++) {
 			validateInterface(is[i]);
 		}
 	}
+	/** check the basics of a capabilitiy - expects description to be null */
+	public static void checkCapability(Capability c, String standardID, String type, int ifaceCount) {
+	    assertEquals("capability - standardId",standardID,c.getStandardID().toString());
+	    assertTrue("capability - type",c.getType().indexOf(type) != -1);
+	    assertEquals("capabiltiy - iface count",ifaceCount,c.getInterfaces().length);
+	    assertNull("description is non-null",c.getDescription());
+	}
 	
+	   /** check the basics of a capabilitiy  */
+    public static void checkCapability(Capability c, String standardID, String type, int ifaceCount,String desc) {
+        assertEquals("capability - standardId",standardID,c.getStandardID().toString());
+        assertTrue("capability - type",c.getType().indexOf(type) != -1);
+        assertEquals("capabiltiy - iface count",ifaceCount,c.getInterfaces().length);
+        assertEquals("capability - description",desc,c.getDescription());
+    }
+	
+	
+	/** checks a capability to be a cone 
+	 * @param records 
+	 * @param sr 
+	 * @param verbose 
+	 * @param query */
+	public static void checkConeCapability(Capability c, int records, float sr, boolean verbose, Query query) {
+	    assertTrue("not of type ConeCapability",c instanceof ConeCapability);
+	    ConeCapability cap = (ConeCapability)c;
+	    assertEquals(records,cap.getMaxRecords());
+	    assertEquals(sr,cap.getMaxSR(),0.001);
+	    assertEquals(verbose,cap.isVerbosity());
+	    assertEquals(query,cap.getTestQuery());
+	}
+	
+	   public static void checkSiapCapability(Capability c, String type, int maxFileSize, SkySize maxImageExtent, ImageSize maxImageSize, SkySize maxQueryReg, int maxRec, SiapCapability.Query query) {
+	        assertTrue("not of type SiapCapability",c instanceof SiapCapability);
+	       SiapCapability cap = (SiapCapability)c;
+	       assertEquals(type,cap.getImageServiceType());
+	       assertEquals(maxFileSize,cap.getMaxFileSize());
+	       
+	       assertEquals(maxImageExtent,cap.getMaxImageExtent());   
+	      assertEquals(maxImageSize,cap.getMaxImageSize());
+           assertEquals(maxQueryReg,cap.getMaxQueryRegionSize());
+           assertEquals(maxRec,cap.getMaxRecords());
+	       assertEquals(query,cap.getTestQuery());
+	    }
+	/** checks a coverage 
+	 * @param footprint 
+	 * @param hasSTC 
+	 * @param wbands */
+	public static void checkCoverage(Coverage c, ResourceName footprint, boolean hasSTC, boolean allSky,String[] wbands) {
+	    assertNotNull("null coverage",c);
+	    assertEquals("coverage - footprint",footprint,c.getFootprint());
+	    assertEquals("coverage - stc",hasSTC,c.getStcResourceProfile() != null) ;	 
+	    if (hasSTC) {
+	        assertNotNull(c.getStcResourceProfile().getStcDocument());
+	        assertEquals("stc - all sky",allSky,c.getStcResourceProfile().isAllSky());
+	    }
+	    assertEquals("coverage - wavebands",wbands,c.getWavebands());
+	}
+	/**
+	 * check an interface
+	 * @param i
+	 * @param role 
+	 * @param type 
+	 * @param version 
+	 * @param sec 
+	 * @param accURL 
+	 */
+	public static void checkInterface(Interface i, String role, String type, String version, SecurityMethod[] sec, AccessURL[] accURL) {
+	    assertNotNull("null interface",i);
+	    if (role != null) {
+	        assertNotNull(i.getRole());
+	    }
+	    assertEquals("interface - role",role,i.getRole());
+	    if (type != null) {
+	        assertNotNull(i.getType());
+	    }
+	    assertEquals("interface - type",type,i.getType());
+	    if (version != null) {
+	        assertNotNull(i.getVersion());
+	    }
+	    assertEquals("interface - version",version,i.getVersion());
+	    if (sec != null) {
+	        assertNotNull(i.getSecurityMethods());
+	    }
+	    assertEquals("interface - security",sec,i.getSecurityMethods());
+	    if (accURL != null) {
+	        assertNotNull(i.getAccessUrls());
+	    }
+	    assertEquals("interface - accessURL",accURL,i.getAccessUrls());
+	}
 	/**
 	 * @param interface1
 	 */
@@ -232,7 +333,8 @@ public class AbstractTestForParser extends TestCase {
 	 * assertions about the result
 	 *  */
 	public static WebTester createWebTester(Resource r) throws Exception {
-		String s = ResourceFormatter.renderResourceAsHTML(r);
+		//String s = ResourceFormatter.renderResourceAsHTML(r);
+	    String s= PrettierResourceFormatter.renderResourceAsHTML(r);
 		assertNotNull(s);
 		File f = File.createTempFile("resourceFormatterUnitTest", ".html");
 		assertNotNull(f);

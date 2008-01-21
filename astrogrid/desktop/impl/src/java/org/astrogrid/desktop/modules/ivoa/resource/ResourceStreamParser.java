@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -25,12 +28,12 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
+import org.astrogrid.acr.ivoa.resource.Application;
 import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Catalog;
@@ -49,8 +52,11 @@ import org.astrogrid.acr.ivoa.resource.Format;
 import org.astrogrid.acr.ivoa.resource.Handler;
 import org.astrogrid.acr.ivoa.resource.HarvestCapability;
 import org.astrogrid.acr.ivoa.resource.HasCoverage;
+import org.astrogrid.acr.ivoa.resource.InputParam;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Organisation;
+import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
+import org.astrogrid.acr.ivoa.resource.RegistryCapability;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -60,9 +66,23 @@ import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.acr.ivoa.resource.SimpleDataType;
 import org.astrogrid.acr.ivoa.resource.Source;
-import org.astrogrid.acr.ivoa.resource.TabularDB;
+import org.astrogrid.acr.ivoa.resource.SsapCapability;
+import org.astrogrid.acr.ivoa.resource.StandardSTC;
+import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
+import org.astrogrid.acr.ivoa.resource.TableDataType;
+import org.astrogrid.acr.ivoa.resource.TableService;
 import org.astrogrid.acr.ivoa.resource.Validation;
+import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
+import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
+import org.astrogrid.acr.ivoa.resource.SiapCapability.Query;
+import org.astrogrid.acr.ivoa.resource.SiapCapability.SkyPos;
+import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
+import org.astrogrid.util.DomHelper;
+import org.codehaus.xfire.util.STAXUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /** Streaming parser of vo resource objects.
  * 
@@ -124,6 +144,7 @@ public final class ResourceStreamParser implements Iterator {
 	public ResourceStreamParser(XMLStreamReader in,boolean addProtocolKnowledge) {
 		this.in = new TrimmingXMLStreamReader(in);
 		this.addProtocolKnowledge = addProtocolKnowledge;
+        domBuilderFactory = DocumentBuilderFactory.newInstance();
 	}
 	protected final boolean addProtocolKnowledge;
 	protected final XMLStreamReader in;
@@ -147,6 +168,7 @@ public final class ResourceStreamParser implements Iterator {
 	}
 	/** unsupported */
 	public final void remove() {
+	   
 		throw new UnsupportedOperationException("remove not supported");
 	}
 	
@@ -154,6 +176,7 @@ public final class ResourceStreamParser implements Iterator {
 	// custom 'Empty' object - means 'no objects found'
 	//- to differentiate between 'null' which means 'not parsed yet'
 	protected static  final Object EMPTY_RESOURCE = new Object();
+    private DocumentBuilderFactory domBuilderFactory;
 
 	/** parse the next object on the stream
 	 * 
@@ -179,33 +202,50 @@ public final class ResourceStreamParser implements Iterator {
 		m.put("getType",xsiType);
 		// add interfaces for the type this registry entry claims to be.
 		if (xsiType != null) {
-		    if (StringUtils.contains(xsiType,"ConeSearch")
-					//|| StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
-						) {
-				ifaces.add(ConeService.class);
-
-			} else if (StringUtils.contains(xsiType,"Authority")) {
+			if (StringUtils.contains(xsiType,"Authority")) {
 				ifaces.add(Authority.class);
+			
 			} else if (StringUtils.contains(xsiType,"Organisation")) {
 				ifaces.add(Organisation.class);                               
-			} else if (StringUtils.contains(xsiType,"DataCollection")) {
+			
+			} else if (StringUtils.contains(xsiType,"DataCollection")) { 
 				ifaces.add(DataCollection.class);
 				m.put("getCoverage",new Coverage());// coverage cannot be null.
-			} else if (StringUtils.contains(xsiType,"TabularSkyService")) {
-				ifaces.add(Service.class);
-				ifaces.add(CatalogService.class);
-				ifaces.add(DataService.class);
-				m.put("getCoverage",new Coverage());					// coverage cannot be null.
-			} else if (StringUtils.contains(xsiType,"SkyService")){
-				ifaces.add(Service.class);
-				ifaces.add(DataService.class);
-				m.put("getCoverage",new Coverage());		// coverage cannot be null.	
-			} else if (StringUtils.contains(xsiType,"Registry")) {
-			    ifaces.add(RegistryService.class);
+			
+			} else if (StringUtils.contains(xsiType,"CatalogService")) {
+			    ifaces.add(CatalogService.class);
+			    ifaces.add(DataService.class);
 			    ifaces.add(Service.class);
+                m.put("getCoverage",new Coverage());// coverage cannot be null.			    
+			
+			} else if (StringUtils.contains(xsiType,"DataService")) {
+			    ifaces.add(DataService.class);
+			    ifaces.add(Service.class);
+                m.put("getCoverage",new Coverage());// coverage cannot be null.			    
+			
+			} else if (StringUtils.contains(xsiType,"TableService")) {
+			    ifaces.add(Service.class);
+			    ifaces.add(TableService.class);
+
+			} else if (StringUtils.contains(xsiType,"Registry")) { 
+			    ifaces.add(RegistryService.class);
+                ifaces.add(Service.class);
+                m.put("isFull",Boolean.FALSE);
+                
 			} else if (StringUtils.contains(xsiType,"Service")) {
                 ifaces.add(Service.class);
+			
+			} else if (StringUtils.contains(xsiType,"CeaApplication")) { 
+			    ifaces.add(CeaApplication.class);
+			    ifaces.add(Application.class);
+			    
+			} else if (StringUtils.contains(xsiType,"Application")) {
+			    ifaces.add(Application.class);
+			    
+			} else if (StringUtils.contains(xsiType,"StandardsSTC")) {
+			    ifaces.add(StandardSTC.class);
 			}
+			//@later - add applications and standards.
 		}
 	
 		final List validations = new ArrayList();
@@ -223,7 +263,7 @@ public final class ResourceStreamParser implements Iterator {
 		final List managedAuthorities = new ArrayList();
 		
 		// case for each top-level element.
-		// if onlyu java had a decent switch statement...
+		// if only java had a decent switch statement...
 		for (in.next(); ! (in.isEndElement() && in.getLocalName().equals("Resource")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 				try {
@@ -256,48 +296,43 @@ public final class ResourceStreamParser implements Iterator {
 				        rights.add(right.toLowerCase());
 				    }
 					// service interface
-				//} else if (elementName.equals("capability")) {//v1.0 - disabled for now..
-				//	capabilities.add(parseCapability());
-					//ifaces.add(Service.class); // it's a service
-				} else if (elementName.equals("interface")) { //v0.10 legacy stuff.
-					String type = in.getAttributeValue(null,"type");
-				//	if (StringUtils.contains(type,"ParamHTTP")){
-						if (StringUtils.contains(xsiType,"ConeSearch")){
-						        /* todo - need to check what effect commenting this out has.
-								|| (StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
-										&& m.get("getId").toString().indexOf("CDS") != -1) ) {
-						    */
-								final ConeCapability coneCapability = parseV10ConeSearch();
-							capabilities.add(coneCapability);
-							m.put("findConeCapability",coneCapability);
-							ifaces.add(ConeService.class);
-							if (addProtocolKnowledge) {
-								ifaces.add(CeaApplication.class);
-								m.put("getParameters", ConeProtocolKnowledge.parameters);
-								m.put("getInterfaces",ConeProtocolKnowledge.ifaces);		
-							}
-						} else if (StringUtils.contains(xsiType,"SimpleImageAccess")) {
-							final SiapCapability siapCapability = parseV10Siap();
-							capabilities.add(siapCapability);
-							m.put("findSiapCapability",siapCapability);
-							ifaces.add(SiapService.class);
-							if (addProtocolKnowledge) {
-								ifaces.add(CeaApplication.class);
-								m.put("getParameters", SiapProtocolKnowledge.parameters);
-								m.put("getInterfaces",SiapProtocolKnowledge.ifaces);		
-							}
-						} else if (StringUtils.contains(xsiType,"CeaServiceType")) {
-							CeaServerCapability ceaCapability = parseV10CeaServer();
-							capabilities.add(ceaCapability);
-							m.put("findCeaServerCapability",ceaCapability);
-							ifaces.add(CeaService.class);
-						} else {
-							capabilities.add(parseV10InterfaceAsCapability());
-						}
-				//	} else {
-				//		capabilities.add(parseV10InterfaceAsCapability());						
-				//	}
-					ifaces.add(Service.class); // it's a service too.
+				} else if (elementName.equals("capability")) {
+					final Capability cap = parseCapability();					
+                    capabilities.add(cap);
+                    // adjust ifaces based on what we've learned.
+                    if (cap instanceof ConeCapability) {
+                        ifaces.add(ConeService.class);
+                        m.put("findConeCapability",cap);
+                        if (addProtocolKnowledge) {
+                            ifaces.add(CeaApplication.class);
+                            m.put("getParameters", ConeProtocolKnowledge.parameters);
+                            m.put("getInterfaces",ConeProtocolKnowledge.ifaces);        
+                        }                        
+                    }
+                    if (cap instanceof SiapCapability) {
+                        ifaces.add(SiapService.class);
+                        m.put("findSiapCapability",cap);
+                        if (addProtocolKnowledge) {
+                            ifaces.add(CeaApplication.class);
+                            m.put("getParameters", SiapProtocolKnowledge.parameters);
+                            m.put("getInterfaces",SiapProtocolKnowledge.ifaces);        
+                        }                        
+                    }
+                    if (cap instanceof CeaServerCapability) {
+                        ifaces.add(CeaService.class);
+                        m.put("findCeaServerCapability",cap);
+                    }    
+                    if (cap instanceof SearchCapability) {
+                        ifaces.add(RegistryService.class);
+                        m.put("findSearchCapability",cap);                        
+                    }
+                    if (cap instanceof HarvestCapability) {
+                        ifaces.add(RegistryService.class);
+                        m.put("findHarvestCapability",cap); 
+                    }
+                    //@todo add similar for ssap and stap too.
+					ifaces.add(Service.class); // it's a service
+
 				} else if (elementName.equals("ManagedApplications")) {//v0.10 cea sever legacy stuff.
 					URI[] managedApps = parseManagedApplications();
 					for (Iterator i = capabilities.iterator(); i.hasNext(); ) {
@@ -309,24 +344,24 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("ApplicationDefinition")) { //v0.10 cea application
 					parseV10CeaApplication(m);
 					ifaces.add(CeaApplication.class);
-				} else if (elementName.equals("capability")) {//v0.10 capablity - used for cone search, sia, etc.
-					parseV10Capability(m);
 				} else if (elementName.equals("coverage")) { // coverage info - used in various ifaces.
 					ifaces.add(HasCoverage.class);	
 					Coverage c = parseCoverage();
 					m.put("getCoverage",c);
 				} else if (elementName.equals("format")) { // used in datacollection. anywhere else?
 					formats.add(parseFormat());
-				} else if (elementName.equals("db")) { // v0.10 database / catalog descripiont.
-					Catalog cat = parseV10TabularDatabase();
-					catalogues.add(cat);
-					ifaces.add(DataCollection.class);
-					m.put("getDatabase",cat); // support legacy interface
-					ifaces.add(TabularDB.class);
-				} else if (elementName.equals("table")) { // TabularSkyService
+
+				} else if (elementName.equals("catalog")) {
+				    Catalog cat = parseCatalog();
+				    catalogues.add(cat);
+				    //does this indicate any interfaces - don't think so.
+				    
+				} else if (elementName.equals("table")) { 
 					tables.add( parseTable());
 				} else if (elementName.equals("managedAuthority")) { // Registry
 				    managedAuthorities.add(in.getElementText());
+				} else if (elementName.equals("full") && ifaces.contains(RegistryService.class)) {
+	                m.put("isFull",Boolean.valueOf(in.getElementText()));
 				} else {
 					logger.debug("Unknown element" + elementName);
 				}
@@ -342,6 +377,7 @@ public final class ResourceStreamParser implements Iterator {
 			m.put("getCapabilities",capabilities.toArray(new Capability[capabilities.size()]));
 			
 			// special duck-typing rules for services.
+			//@todo review thiese later.
 			if (m.containsKey("getCoverage") || facilities.size() > 0 || instruments.size() > 0) {
 				ifaces.add(DataService.class);
 			}
@@ -372,10 +408,7 @@ public final class ResourceStreamParser implements Iterator {
 			m.put("getCatalogues",catalogues.toArray(new Catalog[catalogues.size()]));
 		}
 		if (ifaces.contains(RegistryService.class)) {
-		    m.put("getManagedAuthorities",managedAuthorities.toArray(new String[managedAuthorities.size()]));
-            m.put("findHarvestCapability",null); // not fully provided. 
-            m.put("findSearchCapability",null); // not provided in current schema.
-            m.put("isFull",Boolean.TRUE); // not provided.		  
+		    m.put("getManagedAuthorities",managedAuthorities.toArray(new String[managedAuthorities.size()]));	  
 		}
 		Object o =  Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), (Class[])ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
 		logger.debug("Returning");
@@ -392,68 +425,327 @@ public final class ResourceStreamParser implements Iterator {
 		}
 	}
 
+	
+	
+	/** capability parsing - v1.0 verison.
+     * registry porttion is correct.
+     */
+    protected Capability parseCapability() { 
+        final String xsiType = in.getAttributeValue(XSI_NS,"type");
+        URI standardID = null;
+        try {
+            String attributeValue = in.getAttributeValue(null,"standardID");
+            if (attributeValue != null) {
+                standardID = new URI(attributeValue);
+            }
+        } catch (URISyntaxException e) {
+            logger.debug("invalid standard identifier",e);
+        }        
+        final Capability c;
+        
+        if (StringUtils.contains(xsiType,"Harvest") 
+                && RegistryCapability.CAPABILITY_ID.equals(standardID)) {
+            c = new HarvestCapability();
+        } else if (StringUtils.contains(xsiType,"ConeSearch")
+                || ConeCapability.CAPABILITY_ID.equals(standardID)) {
+            c = new ConeCapability();            
+        } else if (StringUtils.contains(xsiType,"Search")
+                && RegistryCapability.CAPABILITY_ID.equals(standardID)) {
+            c = new SearchCapability();
+        } else if (StringUtils.contains(xsiType,"CeaCapability")
+                || CeaServerCapability.CAPABILITY_ID.equals(standardID)) {
+            c = new CeaServerCapability();
+        } else if (StringUtils.contains(xsiType,"SimpleImageAccess")
+                || SiapCapability.CAPABILITY_ID.equals(standardID)) {
+            c = new SiapCapability();
+        } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess")
+                || SsapCapability.CAPABILITY_ID.equals(standardID)) {
+            c = new SsapCapability();
+        } else {
+            c = new Capability();
+        }
+        final List interfaces = new ArrayList();
+        final List validations = new ArrayList();
+        final List optionalProtols = new ArrayList();
+        c.setType(xsiType);
+        c.setStandardID(standardID);
+        //@todo add rules for ssap types into this cludge.
+        try {
+        for (in.next(); !( in.isEndElement() && in.getLocalName().equals("capability")); in.next()){
+            if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                try {
+                final String elementName = in.getLocalName();
+                if (elementName.equals("description")) {
+                        c.setDescription(in.getElementText());
+                } else if (elementName.equals("interface")) {
+                    interfaces.add(parseInterface());
+                } else  if (elementName.equals("validationLevel")) {                    
+                    validations.add(parseValidationLevel());
+                } else if (elementName.equals("maxRecords")) { // extension type.
+                    try {
+                        int v= Integer.parseInt(in.getElementText());
+                        if (c instanceof HarvestCapability) {
+                            ((HarvestCapability)c).setMaxRecords(v);
+                        }
+                        if (c instanceof SearchCapability) {
+                            ((SearchCapability)c).setMaxRecords(v);
+                        }
+                        if (c instanceof ConeCapability) {
+                            ((ConeCapability)c).setMaxRecords(v);
+                        }
+                        if (c instanceof SiapCapability) {
+                            ((SiapCapability)c).setMaxRecords(v);
+                        }
+                    } catch (NumberFormatException e) {
+                        logger.debug("capability - maxRecords",e);
+                    } 
+                } else if (elementName.equals("optionalProtocol")  && c instanceof SearchCapability) {
+                    optionalProtols.add(in.getElementText());
+                } else if (elementName.equals("extensionSearchSupport") && c instanceof SearchCapability){
+                    ((SearchCapability)c).setExtensionSearchSupport(in.getElementText());
+                } else if (elementName.equals("verbosity") && c instanceof ConeCapability) {
+                        ConeCapability cap = (ConeCapability)c;
+                            try {
+                                cap.setVerbosity(Boolean.valueOf(in.getElementText()).booleanValue());
+                            } catch (RuntimeException e) { // oh well
+                        }                       
+                } else if (elementName.equals("maxSR") && c instanceof ConeCapability) {
+                    ConeCapability cap = (ConeCapability)c;
+                        try {
+                            cap.setMaxSR(Float.valueOf(in.getElementText()).floatValue());
+                        } catch (RuntimeException e) { // oh well
+                    }
+                } else if (elementName.equals("testQuery") ) {
+                    if (c instanceof ConeCapability) {
+                        ((ConeCapability)c).setTestQuery(parseConeQuery());
+                    } else if (c instanceof SiapCapability) {
+                        ((SiapCapability)c).setTestQuery(parseSiapQuery());
+                    }
+                 // siap stuff.. luckily none of the names clash with cone.
+                } else if (elementName.equals("imageServiceType") && c instanceof SiapCapability) {
+                    SiapCapability cap = (SiapCapability)c;
+                        cap.setImageServiceType(StringUtils.lowerCase(in.getElementText()));
+                } else if (elementName.equals("maxQueryRegionSize")  && c instanceof SiapCapability) {
+                    ((SiapCapability)c).setMaxQueryRegionSize(parseSkySize("maxQueryRegionSize"));
+                } else if (elementName.equals("maxImageExtent")  && c instanceof SiapCapability) {
+                    ((SiapCapability)c).setMaxImageExtent(parseSkySize("maxImageExtent"));
+                } else if (elementName.equals("maxImageSize")  && c instanceof SiapCapability) {
+                    ((SiapCapability)c).setMaxImageSize(parseImageSize());  
+                } else if (elementName.equals("maxFileSize")  && c instanceof SiapCapability) {
+                    try {
+                        ((SiapCapability)c).setMaxFileSize(Integer.parseInt(in.getElementText()));
+                    } catch (RuntimeException e) {
+                    }
+                } else if (elementName.equals("maxRecords")  && c instanceof SiapCapability) {
+                    try {
+                        ((SiapCapability)c).setMaxRecords(Integer.parseInt(in.getElementText()));
+                    } catch (RuntimeException e) {
+                    }                    
+                } else {
+                    // this design won't scale, but will do for now.
+                    logger.debug("Unknown element" + elementName);
+                }
+                } catch (XMLStreamException e) {
+                    logger.debug("Capability");
+                }
+            }
+        }
+        } catch (XMLStreamException x) {
+            logger.debug("Capability - XMLStreamException",x);
+        }
+        c.setValidationLevel((Validation[])validations.toArray(new Validation[validations.size()]));
+        c.setInterfaces((Interface[])interfaces.toArray(new Interface[interfaces.size()]));
+        if (c instanceof SearchCapability) {
+            SearchCapability s = (SearchCapability)c;
+            s.setOptionalProtocol((String[])optionalProtols.toArray(new String[optionalProtols.size()]));
+        }
+        return c;
+    }
+    
 
-
-	/** hacky way of adding on the bits of missing capability info for cone and siap. v0.10 capability.
-	 * will be better to do in 1.0 - can remove this method then
-	 * 
-	 * only works because thwse capability bits occur after the interfaces.
-	 * @param m
-	 */
-	private void parseV10Capability(HashMap m) {
-		try {
-			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("capability")); in.next()){
-				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
-					try {
-					final String elementName = in.getLocalName();
-					if (elementName.equals("verbosity")) {
-							ConeCapability cap = (ConeCapability)m.get("findConeCapability");
-							if (cap != null) {
-								try {
-									cap.setVerbosity(Boolean.valueOf(in.getElementText()).booleanValue());
-								} catch (RuntimeException e) { // oh well
-							}
-							}
-					} else if (elementName.equals("maxSR")) {
-						ConeCapability cap = (ConeCapability)m.get("findConeCapability");
-						if (cap != null) {
-							try {
-								cap.setMaxSR(Float.valueOf(in.getElementText()).floatValue());
-							} catch (RuntimeException e) { // oh well
-						}
-						}
-					} else if (elementName.equals("maxRecords")) {
-						ConeCapability cap = (ConeCapability)m.get("findConeCapability");
-						if (cap != null) {
-							try {
-								cap.setMaxRecords(Integer.valueOf(in.getElementText()).intValue());
-							} catch (RuntimeException e) { // oh well
-						}
-						}
-						// siap stuff.. luckily none of the names clash with cone.
-					} else if (elementName.equals("imageServiceType")) {
-					    SiapCapability cap = (SiapCapability)m.get("findSiapCapability");
-					    if (cap != null) {
-					        cap.setImageServiceType(in.getElementText());
-					    }
-					    //@todo there's some more to add here - but not needed.
-//					} else if (elementName.equals("maxQueryRegionSize")) {
-					} else {
-						logger.debug("Unknown element" + elementName);
-					}
-					} catch (XMLStreamException e) {
-						logger.debug("Content ",e);
-					}							
-				}
-			}
-		} catch (XMLStreamException x) {
-			logger.debug("Coverage - XMLStreamException",x);
-		} // end Curation;		
-	}
+    /** parse a sky size type - may have different enclosing tag
+     * @param string 
+     * @return
+     */
+    private SkySize parseSkySize(String tagname) {
+        final SkySize ss = new SkySize();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals(tagname)); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if(elementName.equals("long")) {
+                            try {
+                                ss.setLong(Float.parseFloat(in.getElementText()));
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("lat")) {
+                        try {
+                            ss.setLat(Float.parseFloat(in.getElementText()));
+                        } catch (RuntimeException e) {                           // oh well
+                        }                                        
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }
+                    } catch (XMLStreamException e) {
+                        logger.debug("skysize ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("skysize - XMLStreamException",x);
+        } // end
+        return ss;       
+    }
+    /**
+     * @return
+     */
+    private Query parseSiapQuery() {
+        final Query q= new Query();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("testQuery")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if (elementName.equals("pos")) {
+                        q.setPos(parseSkyPos());                   
+                    } else if(elementName.equals("size")) {
+                        q.setSize(parseSkySize("size"));                        
+                    } else if(elementName.equals("verb")) {
+                            try {
+                                q.setVerb(Integer.valueOf(in.getElementText()).intValue());
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("extras")) {
+                        q.setExtras(in.getElementText());
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }
+                    } catch (XMLStreamException e) {
+                        logger.debug("Cone Capability.TestQuery ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("Cone Capability.TestQuery - XMLStreamException",x);
+        } // end
+        return q;       
+    }
+    /**
+     * @return
+     */
+    private SkyPos parseSkyPos() {
+        final SkyPos ss = new SkyPos();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("pos")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if(elementName.equals("long")) {
+                            try {
+                                ss.setLong(Float.parseFloat(in.getElementText()));
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("lat")) {
+                        try {
+                            ss.setLat(Float.parseFloat(in.getElementText()));
+                        } catch (RuntimeException e) {                           // oh well
+                        }                                        
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }
+                    } catch (XMLStreamException e) {
+                        logger.debug("skypos ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("skypos - XMLStreamException",x);
+        } // end
+        return ss; 
+    }
+    /**
+     * @return
+     */
+    private ImageSize parseImageSize() {
+        final ImageSize ss = new ImageSize();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("maxImageSize")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if(elementName.equals("long")) {
+                            try {
+                                ss.setLong(Integer.parseInt(in.getElementText()));
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("lat")) {
+                        try {
+                            ss.setLat(Integer.parseInt(in.getElementText()));
+                        } catch (RuntimeException e) {                           // oh well
+                        }                                        
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }
+                    } catch (XMLStreamException e) {
+                        logger.debug("skypos ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("skypos - XMLStreamException",x);
+        } // end
+        return ss; 
+    }
+    protected ConeCapability.Query parseConeQuery() {
+        final ConeCapability.Query q= new ConeCapability.Query();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("testQuery")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if (elementName.equals("ra")) {
+                       try {
+                           q.setRa(Double.valueOf(in.getElementText()).doubleValue());
+                       } catch (RuntimeException e) {                           // oh well
+                       }
+                    } else if(elementName.equals("dec")) {
+                            try {
+                                q.setDec(Double.valueOf(in.getElementText()).doubleValue());
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("sr")) {
+                            try {
+                                q.setSr(Double.valueOf(in.getElementText()).doubleValue());
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("verb")) {
+                            try {
+                                q.setVerb(Integer.valueOf(in.getElementText()).intValue());
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("catalog")) {
+                        q.setCatalog(in.getElementText());
+                    } else if(elementName.equals("extras")) {
+                        q.setExtras(in.getElementText());
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }
+                    } catch (XMLStreamException e) {
+                        logger.debug("Cone Capability.TestQuery ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("Cone Capability.TestQuery - XMLStreamException",x);
+        } // end
+        return q;
+    }
+    
+	
 	protected Coverage parseCoverage() {
 		final Coverage c = new Coverage();
 		final List wavebands = new ArrayList();
-		//@todo add some kind of parsing for regions. ugh.
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("coverage")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -466,12 +758,22 @@ public final class ResourceStreamParser implements Iterator {
 					    }
 					} else if (elementName.equals("footprint")) {
 						c.setFootprint(parseResourceName());
+					} else if (elementName.equals("STCResourceProfile")) {
+                        DocumentBuilder builder = domBuilderFactory.newDocumentBuilder();
+                        Document document = STAXUtils.read(builder,in,true);
+					    StcResourceProfile stc = new StcResourceProfile();
+					    stc.setStcDocument(document);
+					    NodeList els = document.getElementsByTagNameNS("*","AllSky");
+					    stc.setAllSky(els.getLength() > 0);
+					    c.setStcResourceProfile(stc);
 					} else {
 						logger.debug("Unknown element" + elementName);
 					}
 					} catch (XMLStreamException e) {
 						logger.debug("Content ",e);
-					}							
+					} catch (ParserConfigurationException x) {
+                        logger.error("ParserConfigurationException",x);
+                    }							
 				}
 			}
 		} catch (XMLStreamException x) {
@@ -748,44 +1050,7 @@ public final class ResourceStreamParser implements Iterator {
 	
 	///--------------------- Parsing of Service subtype
 	
-	// legacy stuff.
-	/**
-	 * parse up anold interfaces as a new capability.
-	 */
-	protected Capability parseV10InterfaceAsCapability() {
-		final Capability c = new Capability();
-		parseOldInterfaceAsCapability(c);
-		return c;
-	}
-	/** helper method - given a capability, will set the interfaces to a single child.
-	 * @param c
-	 */
-	private void parseOldInterfaceAsCapability(final Capability c) {
-		final String xsiType = in.getAttributeValue(XSI_NS,"type");
-		c.setType(xsiType);		
-		c.setInterfaces(new Interface[]{
-				parseInterface()
-		});
-	}
 
-	
-	/** create a new capability from an old siap inteface. no further parsing done for other metadata - not needed at the moment.
-	 * will add further parsing when we use the new registry version
-	 * @return
-	 */
-	private SiapCapability parseV10Siap() {
-		SiapCapability c = new SiapCapability();
-		parseOldInterfaceAsCapability(c);
-		// add in.
-		return c;
-	}
-	/** see comment for ciap capability */
-	private CeaServerCapability parseV10CeaServer() {
-		CeaServerCapability c = new CeaServerCapability();
-		parseOldInterfaceAsCapability(c);
-		// add in.
-		return c;
-	}
 	/** parses the managed applications (top level in resoucer) for later additionb to a cea server capability */
 	private URI[] parseManagedApplications() {
 		List result = new ArrayList();
@@ -818,24 +1083,18 @@ public final class ResourceStreamParser implements Iterator {
 			}		
 			return (URI[])result.toArray(new URI[result.size()]);
 	}
-	/** see comment for ciap capability */
-	private ConeCapability parseV10ConeSearch() {
-		ConeCapability c= new ConeCapability();
-		parseOldInterfaceAsCapability(c);
-		// add in
-		return c;
-	}
+
 	
 
 	/**
 	 * @return
 	 */
-	private DatabaseBean parseV10TabularDatabase() {
+	private Catalog parseCatalog() {
 		Catalog c = new Catalog();
 		
 		final List tables = new ArrayList();
 		try {
-		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("db")); in.next()){
+		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("catalog")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 				try {
 				final String elementName = in.getLocalName();
@@ -857,15 +1116,14 @@ public final class ResourceStreamParser implements Iterator {
 			logger.debug("db - XMLStreamException",x);
 		}
 		c.setTables((TableBean[])tables.toArray(new TableBean[tables.size()]));
-		//return c;	
-		// convert to the legacy type.
-		return new DatabaseBean(c.getName(),c.getDescription(),c.getTables());
+		return c;	
 	}
 	
 	private TableBean parseTable() {
 		String name = null;
 		String description = null;
 		final List columns = new ArrayList();
+		String role = in.getAttributeValue(null,"role");
 		try {
 		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("table")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -890,6 +1148,7 @@ public final class ResourceStreamParser implements Iterator {
 		}
 		return new TableBean(name,description,
 				(ColumnBean[])columns.toArray(new ColumnBean[columns.size()])
+				,role
 						);
 	}
 	
@@ -897,8 +1156,9 @@ public final class ResourceStreamParser implements Iterator {
 		String name = null;
 		String description = null;
 		String ucd = null;
-		String datatype = null;
 		String unit = null;
+		TableDataType datatype = null;
+		boolean std = Boolean.valueOf(in.getAttributeValue(null,"std")).booleanValue();
 		try {
 		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("column")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -910,8 +1170,10 @@ public final class ResourceStreamParser implements Iterator {
 					description = in.getElementText();
 				} else 	if (elementName.equals("ucd")) {	
 					ucd = in.getElementText();
-				} else 	if (elementName.equalsIgnoreCase("datatype")) {	
-					datatype = in.getElementText();
+				} else 	if (elementName.equalsIgnoreCase("dataType")) {	
+				    datatype = new TableDataType();
+				    datatype.setArraysize(in.getAttributeValue(null,"arraysize"));
+					datatype.setType(in.getElementText());
 				} else 	if (elementName.equals("unit")) {	
 					unit = in.getElementText();					
 				} else {
@@ -925,7 +1187,8 @@ public final class ResourceStreamParser implements Iterator {
 		} catch (XMLStreamException x) {
 			logger.debug("table - XMLStreamException",x);
 		}
-		return new ColumnBean(name,description,ucd,datatype,unit);
+		return new ColumnBean(name,description,ucd,datatype,unit
+		        ,std);
 	}
 	/** parses a legacy cea app desc. takes the result map as a parameter, 
 	 * as this method needs to return 2 results - parameters and interfaces.
@@ -1046,90 +1309,35 @@ public final class ResourceStreamParser implements Iterator {
 	}
 
 	
-	// v1.0 stuff.
-	/** capability parsing - v1.0 verison.
-	 */
-	protected Capability parseCapability() {
-		final String xsiType = in.getAttributeValue(XSI_NS,"type");
-		final Capability c;
-		if (StringUtils.contains(xsiType,"Harvest")) {
-			c = new HarvestCapability();
-		} else if (StringUtils.contains(xsiType,"Search")) {
-			c = new SearchCapability();
-		} else if (StringUtils.contains(xsiType,"CeaInterface")) {
-			c = new CeaServerCapability();
-		} else {
-			c = new Capability();
-		}
-		final List interfaces = new ArrayList();
-		final List validations = new ArrayList();
-		final List optionalProtols = new ArrayList();
-		c.setType(xsiType);
-		try {
-			String attributeValue = in.getAttributeValue(null,"standardID");
-			if (attributeValue != null) {
-				c.setStandardID(new URI(attributeValue));
-			}
-		} catch (URISyntaxException e) {
-			logger.debug("invalid standard identifier",e);
-		}
-		try {
-		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("capability")); in.next()){
-			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
-				try {
-				final String elementName = in.getLocalName();
-				if (elementName.equals("description")) {
-						c.setDescription(in.getElementText());
-				} else if (elementName.equals("interface")) {
-					interfaces.add(parseInterface());
-				} else 	if (elementName.equals("validationLevel")) {					
-					validations.add(parseValidationLevel());
-				} else if (elementName.equals("maxRecords")) { // extension type.
-					try {
-						int v= Integer.parseInt(in.getElementText());
-						if (c instanceof HarvestCapability) {
-							((HarvestCapability)c).setMaxRecords(v);
-						}
-						if (c instanceof SearchCapability) {
-							((SearchCapability)c).setMaxRecords(v);
-						}
-					} catch (NumberFormatException e) {
-						logger.debug("capability - maxRecords",e);
-					} 
-				} else if (elementName.equals("optionalProtocol")  && c instanceof SearchCapability) {
-					optionalProtols.add(in.getElementText());
-				} else if (elementName.equals("extensionSearchSupport") && c instanceof SearchCapability){
-					((SearchCapability)c).setExtensionSearchSupport(in.getElementText());
-				} else {
-					//@todo - cea managed applications, siap capability, cone capability. this design won't scale, but will do for now.
-					logger.debug("Unknown element" + elementName);
-				}
-				} catch (XMLStreamException e) {
-					logger.debug("Capability");
-				}
-			}
-		}
-		} catch (XMLStreamException x) {
-			logger.debug("Capability - XMLStreamException",x);
-		}
-		c.setValidationLevel((Validation[])validations.toArray(new Validation[validations.size()]));
-		c.setInterfaces((Interface[])interfaces.toArray(new Interface[interfaces.size()]));
-		if (c instanceof SearchCapability) {
-			SearchCapability s = (SearchCapability)c;
-			s.setOptionalProtocol((String[])optionalProtols.toArray(new String[optionalProtols.size()]));
-		}
-		return c;
-	}
+	
 
 	
 	protected Interface parseInterface() {
-		final Interface iface = new Interface();
+	    final String type = in.getAttributeValue(XSI_NS,"type");
+		final Interface iface;
 		final List urls = new ArrayList();
 		final List security = new ArrayList();
-
+		final List wsdlURLs;	
+		final List params;
+		if (StringUtils.contains(type,"ParamHTTP")) {
+		    iface = new ParamHttpInterface();
+		    wsdlURLs = null;
+		    params = new ArrayList();
+		} else if (StringUtils.contains(type,"WebService") 
+		        || StringUtils.contains(type,"OAISOAP") // special case for registry.
+		        ) {
+		    iface = new WebServiceInterface();
+		    wsdlURLs = new ArrayList();
+		    params = null;
+		} else {
+		    iface = new Interface();
+		    wsdlURLs = null;
+		    params = null;
+		}
 		iface.setVersion(in.getAttributeValue(null,"version"));
 		iface.setRole(in.getAttributeValue(null,"role"));
-		iface.setType(in.getAttributeValue(XSI_NS,"type"));
+		iface.setType(type);
+		
 		try {
 		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("interface")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1138,6 +1346,21 @@ public final class ResourceStreamParser implements Iterator {
 					urls.add(parseAccessURL());
 				} else 	if (elementName.equals("securityMethod")) {	
 					security.add(parseSecurityMethod());
+				} else if (elementName.equals("wsdlURL") && iface instanceof WebServiceInterface) {
+			        try {
+			            final String element = in.getElementText();
+			            if (element != null) {
+			                wsdlURLs.add(new URI(element));
+			            }
+			        } catch (Exception e) {
+			            logger.debug("invalid wsdl URL",e);
+			        }	
+				} else if (elementName.equals("queryType") && iface instanceof ParamHttpInterface) {
+				    ((ParamHttpInterface)iface).setQueryType(StringUtils.lowerCase(in.getElementText()));
+				} else if (elementName.equals("resultType") && iface instanceof ParamHttpInterface) {
+				    ((ParamHttpInterface)iface).setResultType(in.getElementText());
+				} else if (elementName.equals("param") && iface instanceof ParamHttpInterface) {
+				    params.add(parseInputParam());
 				} else {
 					logger.debug("Unknown element" + elementName);
 				}			
@@ -1148,10 +1371,53 @@ public final class ResourceStreamParser implements Iterator {
 		}
 		iface.setAccessUrls((AccessURL[])urls.toArray(new AccessURL[urls.size()]));
 		iface.setSecurityMethods((SecurityMethod[])security.toArray(new SecurityMethod[security.size()]));
+		if (iface instanceof WebServiceInterface) {
+		    ((WebServiceInterface)iface).setWsdlURLs((URI[])wsdlURLs.toArray(new URI[wsdlURLs.size()]));
+		} else if (iface instanceof ParamHttpInterface) {
+		    ((ParamHttpInterface)iface).setParams((InputParam[])params.toArray(new InputParam[params.size()]));
+		}
 		return iface;
 	}
 	
-	protected AccessURL parseAccessURL() {
+	/**
+     * @return
+     */
+    private InputParam parseInputParam() {
+        InputParam ip = new InputParam();
+        ip.setStandard( Boolean.valueOf(in.getAttributeValue(null,"std")).booleanValue());
+        ip.setUse(in.getAttributeValue(null,"use"));
+        try {
+        for (in.next(); !( in.isEndElement() && in.getLocalName().equals("param")); in.next()){
+            if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                final String elementName = in.getLocalName();
+                try {
+                if (elementName.equals("name")) {
+                    ip.setName(in.getElementText());
+                } else  if (elementName.equals("description")) {    
+                    ip.setDescription(in.getElementText());
+                } else  if (elementName.equals("ucd")) {    
+                    ip.setUcd(in.getElementText());
+                } else  if (elementName.equalsIgnoreCase("dataType")) { 
+                    SimpleDataType datatype = new SimpleDataType();
+                    datatype.setArraysize(in.getAttributeValue(null,"arraysize"));
+                    datatype.setType(in.getElementText());
+                    ip.setDataType(datatype);
+                } else  if (elementName.equals("unit")) {   
+                    ip.setUnit(in.getElementText());                 
+                } else {
+                    logger.debug("Unknown element" + elementName);
+                }
+                } catch (XMLStreamException e) {
+                    logger.debug("param - XMLStreamException",e);
+                }               
+            }
+        }
+        } catch (XMLStreamException x) {
+            logger.debug("table - XMLStreamException",x);
+        }
+        return ip;
+    }
+    protected AccessURL parseAccessURL() {
 		final AccessURL url = new AccessURL();
 		url.setUse(in.getAttributeValue(null,"use"));
 		try {
