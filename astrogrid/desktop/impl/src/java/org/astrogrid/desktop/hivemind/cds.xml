@@ -41,10 +41,15 @@ SESAME
 	</implementation>
 	
 	<contribution configuration-id="framework.preferences">
-		<preference name="cds.sesame.endpoint"  advanced="true"
+		<preference name="cds.sesame.endpoint"  advanced="false"
 			default-value="http://cdsws.u-strasbg.fr/axis/services/Sesame">
 				<ui-name>Sesame endpoint</ui-name>
 				<description>http url of the sesame name resolver service</description>
+                <!-- 
+                <alternative></alternative>
+                <alternative></alternative>
+                <alternative></alternative>
+                 -->
 				<units>url</units>
 			</preference>
 	</contribution>
