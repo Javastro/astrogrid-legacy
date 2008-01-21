@@ -19,7 +19,13 @@
 
   <capability standardID="ivo://org.astrogrid/std/Community/v1.0#PolicyManager">
     <interface xsi:type="vr:WebService">
-      <accessURL use="full"><%=base%>/services/CommonExecutionConnectorService</accessURL>
+      <accessURL use="full"><%=base%>/services/PolicyManager</accessURL>
+    </interface>
+  </capability>
+  
+  <capability standardID="ivo://org.astrogrid/std/Community/v1.0#SecurityService">
+    <interface xsi:type="vr:WebService">
+      <accessURL use="full"><%=base%>/services/SecurityService</accessURL>
     </interface>
   </capability>
 
