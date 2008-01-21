@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.7 2007/03/08 17:46:56 nw Exp $
+/*$Id: ColumnBean.java,v 1.8 2008/01/21 09:47:26 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,123 +12,113 @@ package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
 
+import org.astrogrid.acr.ivoa.resource.BaseParam;
+import org.astrogrid.acr.ivoa.resource.TableDataType;
+
 /** describes a single column in a tabular database.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  * @since 1.2
- * @todo may need to model shape, as well as type, at this level.
  */
-public class ColumnBean implements Serializable{
+public class ColumnBean extends BaseParam implements Serializable{
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8307167670049520934L;
 
     /** Construct a new ColumnInformation
-     * 
+     *@deprecated 
      */
     public ColumnBean(String name,String description,String ucd, String datatype,String unit) {
         super();
-        this.name = name;
-        this.description = description;
-        this.UCD = ucd;
-        this.datatype = datatype;
-        this.unit = unit;
+        setName(name);
+        setDescription(description);
+        setUcd(ucd);
+        if (datatype != null) {
+            
+            this.tableDataType = new TableDataType();
+            this.tableDataType.setType(datatype);
+        } else {
+            this.tableDataType = null;
+        }
+        setUnit(unit);
+        this.std = false;
                 
     }
+    public ColumnBean(String name,String description,String ucd, TableDataType datatype,String unit,boolean std) {
+        super();
+        setName(name);
+        setDescription(description);
+        setUcd(ucd);
+        this.tableDataType = datatype;
+        setUnit(unit);
+        this.std = std;
+                
+    }    
     
-    static final long serialVersionUID = -2671716048567347051L;
-    protected final String name;
-    protected final String description;
-    protected final String UCD;
-    protected final String datatype;
-    protected final String unit;
+    protected final boolean std;
 
-    /**
-     * the type of this column     
-     */
-    public String getDatatype() {
-        return this.datatype;
-    }
-/**
- * human-readable description of this column
- */
-    public String getDescription() {
-        return this.description;
-    }
-    /** name of this column */
-    public String getName() {
-        return this.name;
-    }
-    /** Universal column descriptor for this column */
+    protected final TableDataType tableDataType;
+    
+    /** Universal column descriptor for this column
+     * @deprecated - use `{@link #getUcd()} */
     public String getUCD() {
-        return this.UCD;
+        return super.getUcd();
     }
-    /** description of theunits of this column */
-    public String getUnit() {
-        return this.unit;
+
+    /**                     If true, the meaning and use of this parameter is
+                     reserved and defined by a standard model.  If false, 
+                     it represents a database-specific parameter 
+                     that effectively extends beyond the standard.  If
+                     not provided, then the value is unknown.*/
+    public final boolean isStd() {
+        return this.std;
+    }
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((this.tableDataType == null) ? 0 : this.tableDataType.hashCode());
+        result = prime * result + (this.std ? 1231 : 1237);
+        return result;
+    }
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final ColumnBean other = (ColumnBean) obj;
+        if (this.tableDataType == null) {
+            if (other.tableDataType != null)
+                return false;
+        } else if (!this.tableDataType.equals(other.tableDataType))
+            return false;
+        if (this.std != other.std)
+            return false;
+        return true;
+    }
+    public final TableDataType getColumnDataType() {
+        return this.tableDataType;
     }
     
-    public String toString() {
-        StringBuffer sb = new StringBuffer("ColumnBean[");
-        sb.append("name: ");
-        sb.append(name);
-        sb.append(" description: ");
-        sb.append(description);
-        sb.append(" UCD: ");
-        sb.append(UCD);
-        sb.append(" datatype: ");
-        sb.append(datatype);
-        sb.append(" unit: ");
-        sb.append(unit);
-        sb.append("]");
-        return sb.toString();
+    /** @deprecated use {@link #getColumnDataType} */
+    public final String getDatatype() {
+        if (tableDataType == null) {
+            return null;
+        } 
+        return tableDataType.getType();
     }
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((this.UCD == null) ? 0 : this.UCD.hashCode());
-		result = PRIME * result + ((this.datatype == null) ? 0 : this.datatype.hashCode());
-		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
-		result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
-		result = PRIME * result + ((this.unit == null) ? 0 : this.unit.hashCode());
-		return result;
-	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final ColumnBean other = (ColumnBean) obj;
-		if (this.UCD == null) {
-			if (other.UCD != null)
-				return false;
-		} else if (!this.UCD.equals(other.UCD))
-			return false;
-		if (this.datatype == null) {
-			if (other.datatype != null)
-				return false;
-		} else if (!this.datatype.equals(other.datatype))
-			return false;
-		if (this.description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!this.description.equals(other.description))
-			return false;
-		if (this.name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!this.name.equals(other.name))
-			return false;
-		if (this.unit == null) {
-			if (other.unit != null)
-				return false;
-		} else if (!this.unit.equals(other.unit))
-			return false;
-		return true;
-	}
+	
 }
 
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.8  2008/01/21 09:47:26  nw
+Incomplete - task 134: Upgrade to reg v1.0
+
 Revision 1.7  2007/03/08 17:46:56  nw
 removed deprecated interfaces.
 

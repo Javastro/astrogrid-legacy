@@ -15,10 +15,18 @@ import org.astrogrid.acr.ivoa.resource.Capability;
  * @since Aug 5, 200610:01:00 PM
  */
 public class CeaServerCapability extends Capability {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1690230691899100320L;
+    public CeaServerCapability() {
+        setStandardID(CAPABILITY_ID);
+    }
+    /** standard identifier for this capability */
+    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.std/CEA");
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5589486949203679478L;
 
 	private static int hashCode(Object[] array) {
 		final int PRIME = 31;

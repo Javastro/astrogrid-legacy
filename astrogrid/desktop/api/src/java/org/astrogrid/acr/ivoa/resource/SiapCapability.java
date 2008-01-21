@@ -4,17 +4,19 @@
 package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
+import java.net.URI;
 
 /** Descripiton of the Capabilities of a Simple Image Access Service.
  * @author Noel Winstanley
  * @since Aug 5, 20069:57:07 PM
  */
 public class SiapCapability extends Capability {
+    public SiapCapability() {
+        setStandardID(CAPABILITY_ID);
+    }
+    /** standard identifier for this capability */
+    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/SIA");
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1086101358715118591L;
 	
 	public static class SkySize implements Serializable {
 		/**
@@ -60,7 +62,7 @@ public class SiapCapability extends Capability {
 				return true;
 			if (obj == null)
 				return false;
-			if (! (obj instanceof SiapCapability))
+			if (! (obj instanceof SkySize))
 				return false;
 			final SkySize other = (SkySize) obj;
 			if (Float.floatToIntBits(this._lat) != Float.floatToIntBits(other._lat))
@@ -117,7 +119,7 @@ public class SiapCapability extends Capability {
                 return true;
             if (obj == null)
                 return false;
-            if (! (obj instanceof SiapCapability))
+            if (! (obj instanceof ImageSize))
                 return false;
             final ImageSize other = (ImageSize) obj;
             if (this._lat != other._lat)
@@ -172,7 +174,7 @@ public class SiapCapability extends Capability {
                 return true;
             if (obj == null)
                 return false;
-            if (! (obj instanceof SiapCapability))
+            if (! (obj instanceof SkyPos))
                 return false;
             final SkyPos other = (SkyPos) obj;
             if (Double.doubleToLongBits(this._lat) != Double.doubleToLongBits(other._lat))

@@ -1,4 +1,4 @@
-/*$Id: TableBean.java,v 1.6 2007/03/08 17:46:56 nw Exp $
+/*$Id: TableBean.java,v 1.7 2008/01/21 09:47:26 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,12 +19,13 @@ import java.util.Arrays;
  */
 public class TableBean implements Serializable {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -1832939805430971943L;
 
-	private static int hashCode(Object[] array) {
+	/**
+     * 
+     */
+    private static final long serialVersionUID = -7541183831696468598L;
+
+    private static int hashCode(Object[] array) {
 		final int PRIME = 31;
 		if (array == null)
 			return 0;
@@ -75,7 +76,7 @@ public class TableBean implements Serializable {
         this.name = name;
         this.description = description;
         this.columns  = columns;
-        this.role = "";
+        this.role = null;
     }
     public TableBean(String name,String description, ColumnBean[] columns, String role) {
         super();
@@ -122,12 +123,21 @@ public class TableBean implements Serializable {
 			buffer.append("]");
 			return buffer.toString();
 		}
+		/**               a name for the role this table plays.  Recognized
+               values include "out", indicating this table is output 
+               from a query.*/
+    public final String getRole() {
+        return this.role;
+    }
     
 }
 
 
 /* 
 $Log: TableBean.java,v $
+Revision 1.7  2008/01/21 09:47:26  nw
+Incomplete - task 134: Upgrade to reg v1.0
+
 Revision 1.6  2007/03/08 17:46:56  nw
 removed deprecated interfaces.
 

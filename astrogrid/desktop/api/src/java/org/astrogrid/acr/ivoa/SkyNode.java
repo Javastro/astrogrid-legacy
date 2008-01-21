@@ -1,4 +1,4 @@
-/*$Id: SkyNode.java,v 1.6 2007/03/08 17:48:06 nw Exp $
+/*$Id: SkyNode.java,v 1.7 2008/01/21 09:47:26 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2006
  * @since 2006.03
  * @service ivoa.skyNode
+ * @deprecated skyNode is unsupported and this interface unimplemented
  *
  */
 
@@ -163,6 +164,9 @@ public interface SkyNode {
 
 /* 
 $Log: SkyNode.java,v $
+Revision 1.7  2008/01/21 09:47:26  nw
+Incomplete - task 134: Upgrade to reg v1.0
+
 Revision 1.6  2007/03/08 17:48:06  nw
 tidied.
 

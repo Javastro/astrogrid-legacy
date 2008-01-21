@@ -9,6 +9,8 @@ import org.astrogrid.acr.astrogrid.TableBean;
             having some coverage of the sky, time, and/or frequency.
            
            Previously Named TabularSkyService
+           @see TableService
+           
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 20, 20075:00:10 PM
  */

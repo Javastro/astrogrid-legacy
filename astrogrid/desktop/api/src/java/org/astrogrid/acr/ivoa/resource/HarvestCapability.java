@@ -3,15 +3,21 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
+import java.net.URI;
+
 /** Capability of registries that can be harvested.
  * @author Noel Winstanley
  * @since Aug 5, 200610:22:56 PM
  */
-public class HarvestCapability extends Capability {
+public class HarvestCapability extends RegistryCapability {
+
 	/**
+     * 
+     */
+    private static final long serialVersionUID = 5596947048291053986L;
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5596947048291053986L;
 	private int maxRecords;
 
 	/** maximum number of records that this service will supply to a harvest request */

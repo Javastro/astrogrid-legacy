@@ -4,6 +4,7 @@
 package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
+import java.net.URI;
 
 /** Describes the capabilities of a cone search service.
  * @bean
@@ -11,11 +12,19 @@ import java.io.Serializable;
  * @since Aug 5, 20069:52:40 PM
  */
 public class ConeCapability extends Capability {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5142255759957380546L;
 
+    public ConeCapability() {
+        setStandardID(CAPABILITY_ID);
+    }
+    /** standard identifier for this capability */
+    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/ConeSearch");
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -847196329844235362L;
 	/**
 	 * 
 	 */

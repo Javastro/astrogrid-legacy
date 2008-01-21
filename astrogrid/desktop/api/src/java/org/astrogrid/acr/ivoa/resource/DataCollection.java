@@ -21,6 +21,9 @@ public interface DataCollection extends Resource, HasCoverage {//should this ext
 	
 	/** list of the formats this data is available in */
 	public Format[] getFormats();
+	/** Extent of the content of the resource over space, time, 
+                     and frequency. */
+	public Coverage getCoverage();
 	/** the description of the catalogues in this collection */
 	public Catalog[] getCatalogues();
 	

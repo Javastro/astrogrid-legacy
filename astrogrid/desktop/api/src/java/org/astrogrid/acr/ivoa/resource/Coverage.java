@@ -33,9 +33,10 @@ public class Coverage implements Serializable {
 	}
 	private String[] wavebands = new String[0];
 	private ResourceName footprint;
-	private Document stcResourceProfile;
+	private StcResourceProfile stcResourceProfile;
 	/**  a reference to a footprint service for retrieving 
-                  precise and up-to-date description of coverage.   */
+                  precise and up-to-date description of coverage. 
+                    */
 	public ResourceName getFootprint() {
 		return this.footprint;
 	}
@@ -50,14 +51,15 @@ public class Coverage implements Serializable {
 	 * it's up to the client to parse and consume this, if they can.
 	 *
 	 */
-	public Document getStcResourceProfile() {
+	public StcResourceProfile getStcResourceProfile() {
 		return this.stcResourceProfile;
 	}
-	public void setStcResourceProfile(Document stcResourceProfile) {
+	public void setStcResourceProfile(StcResourceProfile stcResourceProfile) {
 		this.stcResourceProfile = stcResourceProfile;
 	}
 	/** list the named spectral regions of the electro-magnetic spectrum 
-                  that the resource's spectral coverage overlaps with. */
+                  that the resource's spectral coverage overlaps with.
+                  @return 'radio','millimeter','infrared','optical','uv','euv','x-ray','gamma-ray' */
 	public String[] getWavebands() {
 		return this.wavebands;
 	}

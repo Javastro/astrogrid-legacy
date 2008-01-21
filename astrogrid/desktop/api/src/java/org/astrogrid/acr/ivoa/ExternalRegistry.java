@@ -19,11 +19,8 @@ import org.w3c.dom.Document;
  * datastructures that contain the parsed information of the registry entries.s
  * 
  * The first parameter to each query method is the endpoint URL of the registry service to connect to.
- * Such endpoints either need to be already known, or can be located using the RegistryOfRegistries.
- * 
- * In future, these functions will also accept the IVORN name of a registry - which 
- * will then be resolved using the RegistryOfRegistries before processing the query.
- * However, the RegistryOfRegistries isn't available yet.
+ these functions will also accept the IVORN name of a registry - which 
+ * will then be resolved using the System Registry  before processing the query.
  *
  *These functions are useful when you want to access records in a registry
  * other than the 'system configured' registry,
@@ -211,8 +208,8 @@ public interface ExternalRegistry {
 	Resource[] buildResources(Document doc)  throws ServiceException;
 
 	/** returns the service endpoint of the standard IVOA registry of registries
-	 * this registry can be used to query for other registry services 
-	 * @return
+	 * @deprecated registry of registries does not provide a search interface
+	 * @return always null
 	 */
 	URI getRegistryOfRegistriesEndpoint();
 

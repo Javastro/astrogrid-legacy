@@ -1,4 +1,4 @@
-/*$Id: SkyNodeColumnBean.java,v 1.3 2007/01/24 14:04:45 nw Exp $
+/*$Id: SkyNodeColumnBean.java,v 1.4 2008/01/21 09:47:26 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.acr.ivoa;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 /** extension of column bean for sky node services, which provide further metadata
  * @since 1.9
+ * @deprecated
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
@@ -49,33 +50,16 @@ public class SkyNodeColumnBean extends ColumnBean {
         return this.rank;
     }
     
-    public String toString() {
-        StringBuffer sb = new StringBuffer("SkyNodeColumnBean[");
-        sb.append("name: ");
-        sb.append(name);
-        sb.append(" description: ");
-        sb.append(description);
-        sb.append(" UCD: ");
-        sb.append(UCD);
-        sb.append(" datatype: ");
-        sb.append(datatype);
-        sb.append(" unit: ");
-        sb.append(unit);
-        sb.append(" precision: ");
-        sb.append(precision);
-        sb.append(" byteSize: ");
-        sb.append(byteSize);
-        sb.append(" rank: ");
-        sb.append(rank);
-        sb.append("]");
-        return sb.toString();
-    }
+
 
 }
 
 
 /* 
 $Log: SkyNodeColumnBean.java,v $
+Revision 1.4  2008/01/21 09:47:26  nw
+Incomplete - task 134: Upgrade to reg v1.0
+
 Revision 1.3  2007/01/24 14:04:45  nw
 updated my email address
 

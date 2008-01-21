@@ -9,12 +9,15 @@ import java.util.Arrays;
  * @author Noel Winstanley
  * @since Aug 5, 200610:20:50 PM
  */
-public class SearchCapability extends Capability {
+public class SearchCapability extends RegistryCapability {
 	
 	/**
+     * 
+     */
+    private static final long serialVersionUID = -6972269072498293663L;
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -6972269072498293663L;
 	private static int hashCode(Object[] array) {
 		final int PRIME = 31;
 		if (array == null)
