@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.14 2007/12/04 17:31:39 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.15 2008/01/22 11:35:46 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,7 +133,9 @@ public class InstallationPropertiesCheck extends TestCase {
       */
 
       // Check registry and other compulsory settings
-      if (!checkSet("org.astrogrid.registry.admin.endpoint", accum)) { bad = bad+1; }
+      // OLD publishing endpoint
+      if (!checkUnset("org.astrogrid.registry.admin.endpoint", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.publishing.registry", accum)) { bad = bad+1; }
       if (!checkSet("org.astrogrid.registry.query.endpoint", accum)) { bad = bad+1; }
       if (!checkSet("org.astrogrid.registry.query.altendpoint", accum)) { bad = bad+1; }
       if (!checkSet("cea.component.manager.class", accum)) { bad = bad+1; }
@@ -163,6 +165,13 @@ public class InstallationPropertiesCheck extends TestCase {
       }
       if (bad > 0) {
         allOK = false;
+      }
+      // Final test to make sure that publishing reg doesn't include an 
+      // old-style endpoint
+
+      if (hasPubRegSuffixPresent()) {
+         accumString = accumString + "<br/>\nProperty 'datacenter.publishing.registry' must be set to the base URL of the registry, and not include the old-style 'services/RegistryUpdate' suffix.";
+         allOK = false;
       }
       assertTrue("SOME PROPERTIES ARE NOT CORRECT!<br/>\n" + accumString,allOK);
    }
@@ -237,5 +246,27 @@ public class InstallationPropertiesCheck extends TestCase {
           "<br/>\nProperty '" + name + "' is no longer in use, please remove it from your configuration."); 
         return false;
       }
+   }
+
+   /**
+    * Checks that the publishing registry endpoint doesn't include
+    * the old-style registration endpoint suffix - it's no longer needed. 
+    */
+   protected boolean hasPubRegSuffixPresent() {
+      String pubReg;
+      try {
+         pubReg = ConfigFactory.getCommonConfig().getString(
+               "datacenter.publishing.registry");
+      } 
+      catch (PropertyNotFoundException e) {
+        pubReg = "";
+      }
+      int index = pubReg.lastIndexOf("services/RegistryUpdate");
+      int length = pubReg.length();
+      if ((index >= 0) && (pubReg.length() == (index + 23))) {
+         // We have the unwanted suffix
+         return true;
+      }
+      return false;
    }
 }

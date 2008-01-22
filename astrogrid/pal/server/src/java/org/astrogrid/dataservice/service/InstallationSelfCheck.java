@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.12 2007/12/04 17:31:39 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.13 2008/01/22 11:35:46 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,12 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
+import java.util.HashMap;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
+import org.astrogrid.registry.client.query.v1_0.RegistryService;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.dataservice.api.nvocone.NvoConeSearcher;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.QuerierPlugin;
@@ -48,9 +51,6 @@ import org.astrogrid.contracts.SchemaMap;
  // Just used in testCone debugging
 import java.io.InputStreamReader;
 import org.astrogrid.io.Piper;
-/*
-*/
-
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -64,14 +64,6 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
    
    private Principal testPrincipal = new LoginAccount("SelfTest", "localhost");
    
-   /** Checks we can create the various interfaces */
-   /*
-    *  Not supporting either of these interfaces now
-   public void testInstantiateServer() throws IOException {
-      new AxisDataService_v06();
-      new SkyNodeService();
-   }
-   */
 
    /** Checks the characteristics of the plugin */
    public void testPluginDefinition() throws Exception {
@@ -249,12 +241,6 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
      }
    }
 
-   /** Would check the CEA Interface, but the CEA stuff is very clever and so
-    completely obscure for all practical purposes  *
-   public void testCea() throws IOException {
-      new DatacenterApplication();
-   }
-    */
 
    /**
     * Checks Metadoc file is valid
@@ -265,33 +251,60 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       TableMetaDocInterpreter.initialize();
    }
 
-   /**
-    * Checks VOResource metadata is OK.
-    * NB This test will not pick up empty metadata 
+   /** Test to ensure that the specified publishing registry can publish 
+    * registrations with the specified authority ID.
     */
-   public void testMetadata_v0_10() throws IOException, SAXException, ParserConfigurationException {
-      initConfig();
-      Document doc = 
-         VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
-      String rootElement = doc.getDocumentElement().getLocalName();
-      if(rootElement == null) {
-         rootElement = doc.getDocumentElement().getNodeName();
+
+   /* KONA TOFIX ADD TESTS FOR VOSI ENDPOINTS */
+   public void testAuthorityIdAgainstReg() 
+               throws MetadataException, IOException 
+   {
+      String authorityID = "";
+      try {
+        authorityID=  ConfigFactory.getCommonConfig().getString(
+              "datacenter.authorityId");
       }
-      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
+      catch (PropertyNotFoundException pnfe) {
+         //Shouldn't get here if self-tests ok
+         throw new IOException(
+               "Configuration error: Property datacenter.authorityId" +
+               " is not set, please set it!"); 
+      }
+      String registryURL = "";
+      try {
+          registryURL =  ConfigFactory.getCommonConfig().getString("datacenter.publishing.registry");
+      }
+      catch (PropertyNotFoundException pnfe) {
+         //Shouldn't get here if property self-tests ok
+         throw new IOException("Configuration error: Property 'datacenter.publishing.registry is not set, please set it!"); 
+      }
+      if (!registryURL.endsWith("/")) {
+         registryURL = registryURL + "/";
+      }
+      //We need to check that the publishing registry recognises our
+      //authority ID. 
+      //First, construct publishing registry's query url
+      String queryRegUrl = registryURL+"services/RegistryQueryv1_0";
+      //Get authority ID
+      HashMap hm = null;
+      try {
+        RegistryService rs = RegistryDelegateFactory.createQueryv1_0(
+              new java.net.URL(queryRegUrl));
+        hm = rs.managedAuthorities();
+      }      
+      catch (Exception e) {
+         // Do something
+      }
+      // Check for authority ID
+      if (!hm.containsKey(authorityID)) {
+         throw new IOException("The authority ID " + 
+            authorityID  + 
+            " is not currently managed by the registry at " +
+            registryURL +
+            ".  This means you cannot your DSA on that registry.  If this a new authority ID, you will need to configure the specified registry to manage it. Please consult your registry administrator for further advice.");
+      }
    }
 
-   // TOFIX ENABLE LATER WHEN V1.0 RESOURCES ARE ACTIVE
-   /*
-   public void testMetadata_v1_0() throws IOException, SAXException, ParserConfigurationException {
-      Document doc =
-         VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
-      String rootElement = doc.getDocumentElement().getLocalName();
-      if(rootElement == null) {
-         rootElement = doc.getDocumentElement().getNodeName();
-      }
-      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
-   }
-   */
    
    /** For running standalone, so it can be used from an IDE for quick tests against services 
     * @TOFIX Put some kind of runtime test here? */
@@ -308,8 +321,44 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
 
 
 
-   /* ---------------------------------------------------------------------*/
+
+   /* =====================================================================*/
    /* LEGACY TESTS BELOW HERE, NO LONGER USED */
+   /* =====================================================================*/
+
+   /**
+    * Checks VOResource metadata is OK.
+    * NB This test will not pick up empty metadata 
+    * V0.10 NOT USED ANYMORE
+    */
+   /*
+   public void testMetadata_v0_10() throws IOException, SAXException, ParserConfigurationException {
+      initConfig();
+      Document doc = 
+         VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
+      String rootElement = doc.getDocumentElement().getLocalName();
+      if(rootElement == null) {
+         rootElement = doc.getDocumentElement().getNodeName();
+      }
+      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
+   }
+   */
+   /** Checks we can create the various interfaces */
+   /*
+    *  Not supporting either of these interfaces now
+   public void testInstantiateServer() throws IOException {
+      new AxisDataService_v06();
+      new SkyNodeService();
+   }
+   */
+
+
+   /** Would check the CEA Interface, but the CEA stuff is very clever and so
+    completely obscure for all practical purposes  *
+   public void testCea() throws IOException {
+      new DatacenterApplication();
+   }
+    */
 
    /** Checks that we can submit ADQL through the AxisDataService, again an internal check */
    /*

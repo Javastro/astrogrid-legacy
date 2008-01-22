@@ -268,3 +268,13 @@ div.redback {
 div.yellowback {
    background: #FFFFCC;
 }
+
+table.bordertable {
+  border: 1px solid #666;
+  background: #EEE;
+}
+
+table.bordertable td {
+   border: 1px solid #666;
+   padding:5px;
+}
