@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a3</version>
+            <version>2008.0a4</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a2</version>
+            <version>2008.0a4</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
