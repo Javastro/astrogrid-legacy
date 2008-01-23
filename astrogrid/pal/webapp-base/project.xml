@@ -151,7 +151,7 @@
        <dependency>
             <artifactId>astrogrid-filemanager-contract</artifactId>
             <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.filemanager.version}</version>
+         <version>${astrogrid.filemanager.frozen.version}</version>
       <properties>         <war.bundle>true</war.bundle>      </properties>
        </dependency>
        <dependency>
@@ -450,7 +450,7 @@
     <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
     <dependency>
       <id>servletapi</id>
-      <version>2.3</version>
+      <version>2.4</version>
     </dependency>
 
     <!-- xerces xml functionality (for compiling against - no need for 

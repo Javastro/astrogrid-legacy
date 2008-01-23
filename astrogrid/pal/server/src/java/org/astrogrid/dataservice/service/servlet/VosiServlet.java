@@ -74,27 +74,31 @@ public class VosiServlet extends HttpServlet {
     
      Writer writer = response.getWriter();
      String requestUri = request.getRequestURI();
+
+     // Note that setting character encoding here doesn't seem to work -
+     // (also) need to do it in the DsaDefaultServlet that hands off to
+     // this servlet.
+     //response.setContentType("text/xml; charset=UTF-8");
+     response.setContentType("text/xml");
+     response.setCharacterEncoding("UTF-8");
+
      if (requestUri.toLowerCase().endsWith(CAPABILITIES_SUFFIX)) {
-       response.setContentType("text/xml");
        outputCapabilities(
           getCatalogPrefix(requestUri, CAPABILITIES_SUFFIX), writer);
      }
      else if (requestUri.toLowerCase().endsWith(AVAILABILITY_SUFFIX)) {
-       response.setContentType("text/xml");
        outputAvailability(writer);
      }
      else if (requestUri.toLowerCase().endsWith(TABLES_SUFFIX)) {
-       response.setContentType("text/xml");
        outputTables(
           getCatalogPrefix(requestUri, TABLES_SUFFIX), writer);
      }
      else if (requestUri.toLowerCase().endsWith(CEAAPP_SUFFIX)) {
-       response.setContentType("text/xml");
        outputCeaAppRegistration(
           getCatalogPrefix(requestUri, CEAAPP_SUFFIX), writer);
      }
      else {
-        // Do what?
+        throw new ServletException("Programming error: unrecognised endpoint '"+requestUri+"' should not have been referred to this VOSI servlet");
      }
   }
 

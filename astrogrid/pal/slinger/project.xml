@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.6 2007/12/04 17:31:39 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.7 2008/01/23 14:54:18 kea Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -57,7 +57,7 @@
        <dependency>
             <artifactId>astrogrid-filemanager-contract</artifactId>
             <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.filemanager.version}</version>
+         <version>${astrogrid.filemanager.frozen.version}</version>
        </dependency>
 
        <!--
@@ -157,7 +157,7 @@
        <!-- servlet support for HttpServletResponse targets -->
        <dependency>
           <id>servletapi</id>
-          <version>2.3</version>
+          <version>2.4</version>
        </dependency>
 
     	<!-- axis, and the jars it relies upon -->

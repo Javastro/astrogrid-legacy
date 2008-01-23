@@ -1,5 +1,5 @@
 /*
- * $Id: Fingerprint.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: Fingerprint.java,v 1.2 2008/01/23 14:54:18 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,8 @@ package org.astrogrid.webapp;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import javax.servlet.jsp.JspWriter;
+//import javax.servlet.jsp.JspWriter;
+import java.io.PrintWriter;
 
 /**
  * Methods used by JSPs to show details of the sites configuration
@@ -128,27 +129,27 @@ public class Fingerprint
     }
 
     /** print out the jar versions for a directory */
-    public void listDirectory(String title, JspWriter out,String dir, String comment) throws IOException {
+    public void listDirectory(String title, PrintWriter out,String dir, String comment) throws IOException {
         listVersions(title, out,scanDir(dir), comment);
     }
 
     /** print out the jar versions for a directory-like system property */
-    public void listDirProperty(String title, JspWriter out,String key, String comment) throws IOException {
+    public void listDirProperty(String title, PrintWriter out,String key, String comment) throws IOException {
         listVersions(title, out,scanDir(System.getProperty(key)), comment);
     }
 
     /** print out the jar versions for a classpath-like system property */
-    public void listClasspathProperty(String title, JspWriter out,String key, String comment) throws IOException {
+    public void listClasspathProperty(String title, PrintWriter out,String key, String comment) throws IOException {
         listVersions(title, out,scanClasspath(System.getProperty(key)), comment);
     }
 
     /** print out the jar versions for a 'java.ext.dirs'-like system property */
-    public void listDirpathProperty(String title, JspWriter out,String key, String comment) throws IOException {
+    public void listDirpathProperty(String title, PrintWriter out,String key, String comment) throws IOException {
         listVersions(title, out,scanDirpath(System.getProperty(key)), comment);
     }
 
     /** print out the jar versions for a given list of files */
-    public void listVersions(String title, JspWriter out,File[] jars, String comment) throws IOException {
+    public void listVersions(String title, PrintWriter out,File[] jars, String comment) throws IOException {
         out.print("<h2>");
         out.print(title);
         out.println("</h2>");

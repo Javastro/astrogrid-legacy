@@ -1,5 +1,5 @@
 /*
- * $Id: DsaDefaultServlet.java,v 1.2 2008/01/11 15:58:25 kea Exp $
+ * $Id: DsaDefaultServlet.java,v 1.3 2008/01/23 14:54:18 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -33,18 +33,19 @@ public class DsaDefaultServlet extends DefaultServlet {
 
       RequestDispatcher rd = null;
       String targetUri = request.getRequestURI(); 
-      if(targetUri.endsWith(VosiServlet.CAPABILITIES_SUFFIX)) {
+      if (
+        (targetUri.endsWith(VosiServlet.CAPABILITIES_SUFFIX)) ||
+        (targetUri.endsWith(VosiServlet.AVAILABILITY_SUFFIX)) ||
+        (targetUri.endsWith(VosiServlet.TABLES_SUFFIX)) ||
+        (targetUri.endsWith(VosiServlet.CEAAPP_SUFFIX))
+      ) {
+        // Note: Annoyingly, if the character encoding is set in the
+        // VosiServlet, it seems to have no effect (bug/feature in the 
+        // servlet implementation?) - we need to set the encoding to 
+        // UTF-8 in *this* servlet before handing off to VOSI.
+        response.setCharacterEncoding("UTF-8");
         rd = getServletContext().getNamedDispatcher("VosiServlet");
       } 
-      else if(targetUri.endsWith(VosiServlet.AVAILABILITY_SUFFIX)) {
-        rd = getServletContext().getNamedDispatcher("VosiServlet");
-      }
-      else if(targetUri.endsWith(VosiServlet.TABLES_SUFFIX)) {
-        rd = getServletContext().getNamedDispatcher("VosiServlet");
-      }
-      else if(targetUri.endsWith(VosiServlet.CEAAPP_SUFFIX)) {
-        rd = getServletContext().getNamedDispatcher("VosiServlet");
-      }
       else {
         rd = getServletContext().getNamedDispatcher("default");
       }

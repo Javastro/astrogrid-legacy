@@ -109,7 +109,7 @@ public class MetadataHelper {
          // Fourth column: refresh service metadata (force reg. pull)
          if (isRegistered) {
             String formUrl = regRoot + 
-               "admin/harvestVosi.jsp?doharvest=true"+
+               "admin/harvestVOSI.jsp?doharvest=true"+
                "&ident="+ivorn;
             table = table + "<td><a target='regwin' href='"+formUrl+"'>Force refresh</a></td>";
          }
