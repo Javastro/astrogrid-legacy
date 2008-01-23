@@ -15,7 +15,11 @@
     <servlet-class>org.astrogrid.community.vosi.VosiServlet</servlet-class>
   </servlet>
     
-  <servlet-mapping>
+    <servlet>
+        <servlet-name>PasswordChangeServlet</servlet-name>
+        <servlet-class>org.astrogrid.community.webapp.PasswordChangeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
   </servlet-mapping>
@@ -35,7 +39,11 @@
     <url-pattern>/VOSI/availability</url-pattern>
   </servlet-mapping>
 
-  <mime-mapping>
+    <servlet-mapping>
+        <servlet-name>PasswordChangeServlet</servlet-name>
+        <url-pattern>/password</url-pattern>
+    </servlet-mapping>
+    <mime-mapping>
     <extension>wsdl</extension>
      <mime-type>text/xml</mime-type>
   </mime-mapping>

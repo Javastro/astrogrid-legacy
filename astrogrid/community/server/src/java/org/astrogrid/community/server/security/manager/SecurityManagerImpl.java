@@ -1,45 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/manager/Attic/SecurityManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: gtr $</cvs:author>
- * <cvs:date>$Date: 2008/01/08 18:43:41 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: SecurityManagerImpl.java,v $
- *   Revision 1.12  2008/01/08 18:43:41  gtr
- *   Putting this back again because CVS threw it away last time.
- *
- *   Revision 1.10  2006/08/16 09:44:17  clq2
- *   gtr_community_1722
- *
- *   Revision 1.9.114.1  2006/08/13 17:05:40  gtr
- *   This was changed as part of the big update to introduce a certificate authority.
- *
- *   Revision 1.9  2005/01/07 14:14:25  jdt
- *   merged from Reg_KMB_787
- *
- *   Revision 1.8.34.1  2004/12/16 11:38:23  KevinBenson
- *   fixed a small bug on the jsp on editing passwords
- *
- *   Revision 1.8  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.7.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.7  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.6.32.2  2004/06/17 15:24:31  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.6.32.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.server.security.manager ;
 
 import org.apache.commons.logging.Log ;
@@ -156,17 +114,13 @@ public class SecurityManagerImpl
             //
             // Begin a new database transaction.
             database.begin();
-            //
-            // Try loading the Account from the database.
-// Do we need this ?
-            //AccountData check = (AccountData) database.load(AccountData.class, ident.getAccountIdent()) ;
-            //log.debug("  PASS : found account") ;
-            //
+            
             // Try loading the PasswordData.
-            log.debug("Loading PasswordData with JDO identity " + ident.getAccountIdent());
-            PasswordData data = null ;
+            String primaryKey = primaryKey(ident);
+            System.out.println("Loading PasswordData with JDO identity " + primaryKey);
+            PasswordData data = null;
             try {
-                data = (PasswordData) database.load(PasswordData.class, ident.getAccountIdent()) ;
+                data = (PasswordData) database.load(PasswordData.class, primaryKey);
                 }
             //
             // Don't worry if it isn't there.
@@ -195,7 +149,7 @@ public class SecurityManagerImpl
                 log.debug("  PASS : missing password") ;
                 //
                 // Try to create a new PasswordData in the database.
-                data = new PasswordData(ident.getAccountIdent(), password) ;
+                data = new PasswordData(primaryKey, password) ;
                 database.create(data) ;
                 log.debug("  PASS : created password") ;
                 log.debug("    Account  : " + data.getAccount()) ;
@@ -237,4 +191,17 @@ public class SecurityManagerImpl
             }
         return result ;
         }
-    }
+    
+  /**
+   * Derives from the account IVORN the primary key for the DB tables.
+   * This key is an old form of account IVORN in which the account name
+   * is the whole of the resource key.
+   */
+  protected String primaryKey(CommunityIvornParser parser) {
+    return "ivo://" + 
+           parser.getIvorn().toUri().getHost() +
+           "/" +
+           parser.getAccountName();
+  }
+    
+}

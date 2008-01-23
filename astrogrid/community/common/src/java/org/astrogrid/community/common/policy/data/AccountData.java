@@ -1,35 +1,14 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/AccountData.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: AccountData.java,v $
- *   Revision 1.11  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.10.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.10  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.9.36.1  2004/06/17 13:38:58  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- *
- */
 package org.astrogrid.community.common.policy.data ;
 
 /**
- * A data object to represent an Account.
- * @todo Refactor this into AccountData and AccountDetails.
- * @todo Refactor this to inherit from CommunityBase (common code for equals and ident handling).
- *
+ * A user account. The fields of this class map directly to columns in the
+ * accounts table of the community database. Therefore, the set of fields
+ * cannot be changed without breaking the database. 
+ * 
+ * It is a tragic, crippling mistake that this structure be exposed here,
+ * in the common code, where it is locked into the web services and their
+ * clients. It should have been local to the server library and a different
+ * class used in the service interface to reduce the coupling.
  */
 public class AccountData
     {
@@ -73,20 +52,11 @@ public class AccountData
 
     /**
      * Access to the Account identifier.
-     * This will fail the the identifier is already set - you can't change the identifier of an existing Account.
-     * No syntax checking is applied to the value.
      * @param value The Account identifier.
-     * @todo Refactor to use Ivorns.
-     * @todo Move this to a common data object base class
-     *
      */
-    public void setIdent(String value)
-        {
-        if (null == this.ident)
-            {
-            this.ident = value ;
-            }
-        }
+    public void setIdent(String value) {
+      this.ident = value ;
+    }
 
     /**
      * The Account display name.

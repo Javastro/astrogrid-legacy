@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns:core="jelly:core" default="astrogrid-install-snapshot">
+<project xmlns:core="jelly:core" default="astrogrid-install-artifact">
 
   <goal name="astrogrid-install-artifact" prereqs="war:install"/>
   <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>

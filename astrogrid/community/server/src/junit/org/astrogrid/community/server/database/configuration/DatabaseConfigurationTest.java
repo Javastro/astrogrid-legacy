@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/database/configuration/DatabaseConfigurationTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/23 15:24:12 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseConfigurationTest.java,v $
+ *   Revision 1.6  2008/01/23 15:24:12  gtr
+ *   Branch community-gtr-2512 is merged.
+ *
+ *   Revision 1.5.176.1  2008/01/22 16:10:12  gtr
+ *   I corrected the tests of the DB's health-check.
+ *
  *   Revision 1.5  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -212,12 +218,21 @@ public class DatabaseConfigurationTest
         // Create a new database configuration.
         DatabaseConfiguration config = new DatabaseConfiguration("test-database-001") ;
         assertNotNull("Null configuration", config) ;
-        //
-        // Try checking the database tables.
+
+        // Initially, there should be no tables.
+        assertFalse(
+            "Check database data returned true",
+            config.checkDatabaseTables()
+            );
+        
+        // Create the schema in the database.
+        config.resetDatabaseTables();
+        
+        // Now we should see the tables.
         assertTrue(
             "Check database data returned false",
             config.checkDatabaseTables()
-            ) ;
+            );
         }
 
     /**

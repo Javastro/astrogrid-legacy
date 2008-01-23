@@ -1,11 +1,20 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/service/Attic/CommunityServiceTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/manager/CommunityServiceTest.java,v $</cvs:source>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/23 15:24:12 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityServiceTest.java,v $
+ *   Revision 1.2  2008/01/23 15:24:12  gtr
+ *   Branch community-gtr-2512 is merged.
+ *
+ *   Revision 1.1.2.2  2008/01/22 15:59:33  gtr
+ *   I added an empty test to keep JUnit happy (it doesn't like a TestCase as a superclass with no test methods).
+ *
+ *   Revision 1.1.2.1  2008/01/22 15:41:30  gtr
+ *   CommunityServiceTest moved into org,astrogrid.server.policy.manager.
+ *
  *   Revision 1.5  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -22,7 +31,7 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.community.server.service ;
+package org.astrogrid.community.server.policy.manager ;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -191,4 +200,10 @@ public class CommunityServiceTest
         log.debug("  Database name : " + status.getDatabaseName()) ;
         }
      */
+    
+    
+  public void testDummy() throws Exception {
+    // JUnit whinges if it finds no tests in a TestCase; this keeps it quiet.
+  }
+    
     }

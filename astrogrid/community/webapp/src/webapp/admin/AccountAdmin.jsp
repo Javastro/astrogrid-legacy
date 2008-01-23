@@ -25,23 +25,24 @@ String removeAccount = request.getParameter("RemoveAccount");
 String addAccount = request.getParameter("AddAccount");
 String editAccount = request.getParameter("EditAccount");
 String currentCommunity = Ivorn.SCHEME + "://" + CommunityIvornParser.getLocalIdent();
-//String defaultMyspaceIVO = SimpleConfig.getSingleton().getString("org.astrogrid.community.default.vospace","");
 String info = "";
 String ident = null;
 AccountData changeAccount = null;
 boolean passwordSet = false;
 String passwordTemp = null;
+String loginName = null;
+String accountIvorn = null;
+
 if(removeAccount != null && removeAccount.trim().length() > 0) {
-   ident = request.getParameter("userLoginName");
-   ident = ident.trim();
-   CommunityIvornParser parser = new CommunityIvornParser(ident);
-   String loginName = parser.getAccountName();
-   ami.delAccount(ident);
-   MyProxyBean myProxy = new MyProxyBean();
-   myProxy.setUserLoginName(loginName);
-   info = "Account was deleted for id = " + ident +". " +
-          myProxy.getDeleteCredentialsResult();
-}else if(addAccount != null && addAccount.trim().length() > 0) {
+   accountIvorn = request.getParameter("userLoginName").trim();
+   ami.delAccount(accountIvorn);
+   //MyProxyBean myProxy = new MyProxyBean();
+   //myProxy.setUserLoginName("foo");
+   //info = "Account was deleted for id = " + accountIvorn +". " +
+   //       myProxy.getDeleteCredentialsResult();
+}
+
+else if(addAccount != null && addAccount.trim().length() > 0) {
    ident = request.getParameter("userLoginName");
    passwordTemp = request.getParameter("userPassword");
    if(ident == null || ident.trim().length() <= 0 ||
@@ -55,14 +56,15 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
       if(homespace != null && homespace.trim().length() <= 0) {
       	homespace = null;
       }
-      changeAccount = new AccountData(currentCommunity + "/" + ident);
+      accountIvorn = "ivo://" + ident + "@" + CommunityIvornParser.getLocalIdent();
+      changeAccount = new AccountData(accountIvorn);
       changeAccount.setEmailAddress(request.getParameter("email"));     
       changeAccount.setDisplayName(request.getParameter("userCommonName"));
       changeAccount.setDescription(request.getParameter("description"));
       changeAccount.setHomeSpace(homespace);    
       ami.addAccount(changeAccount);
       info = "Account was added for id = " + ident;
-      passwordSet = smi.setPassword(currentCommunity + "/" + ident,passwordTemp.trim());
+      passwordSet = smi.setPassword(accountIvorn, passwordTemp.trim());
       if(passwordSet) {
          info += " And password set. ";
       }else {
@@ -70,9 +72,8 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
       }
    }
 }else if(editAccount != null && editAccount.trim().length() > 0) {
-   ident = request.getParameter("userLoginName");
-   ident = ident.trim();      
-   changeAccount = new AccountData(ident);
+   accountIvorn = request.getParameter("userLoginName").trim();
+   changeAccount = new AccountData(accountIvorn);
    changeAccount.setEmailAddress(request.getParameter("email"));
    changeAccount.setDisplayName(request.getParameter("userCommonName"));
    changeAccount.setDescription(request.getParameter("description"));
@@ -81,7 +82,7 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
    info = "Account was updated for id = " + ident;
    passwordTemp = request.getParameter("userPassword");
    if(passwordTemp != null && passwordTemp.trim().length() > 0) {
-      passwordSet = smi.setPassword(ident,passwordTemp.trim());
+      passwordSet = smi.setPassword(accountIvorn,passwordTemp.trim());
       if(passwordSet) {
          info += " And password set. ";
       }else {
@@ -214,12 +215,11 @@ else
          if(accounts != null && accounts.length > 0)
          for(int i = 0;i < accounts.length;i++) {
             ad = (AccountData)accounts[i];
-            String userLoginName = ad.getIdent().substring((currentCommunity.length()+1));
       %>
          <tr>
             <form method="get">
                <td>
-                  <%=userLoginName%>
+                  <%=ad.getIdent()%>
                </td>
                <td>
                   <input type="text" name="userCommonName" value="<%=ad.getDisplayName()%>" />
@@ -252,7 +252,7 @@ else
             </form>
             <form method="post" action="UserInitiationResult.jsp">
               <td>
-                <input type="hidden" name="userLoginName" value="<%=userLoginName%>"/>
+                <input type="hidden" name="userLoginName" value="<%=ad.getIdent()%>"/>
                 <input type="submit" name="GenerateCredentialsSubmit" value="Issue ID certificate"/>
               </td>
             </form>

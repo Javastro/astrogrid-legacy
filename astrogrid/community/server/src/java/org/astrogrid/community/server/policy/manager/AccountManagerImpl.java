@@ -1,66 +1,6 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/05/25 16:29:41 $</cvs:date>
- * <cvs:version>$Revision: 1.24 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: AccountManagerImpl.java,v $
- *   Revision 1.24  2005/05/25 16:29:41  clq2
- *   with doc temp
- *
- *   Revision 1.23.24.1  2005/05/23 09:30:05  KevinBenson
- *   new documentation template for the community to be consistent for all of astrogrid.
- *
- *   Revision 1.23  2005/03/18 22:59:23  clq2
- *   dave-dev-200503150513
- *
- *   Revision 1.22.20.1  2005/03/17 04:47:34  dave
- *   Updated AccountManager to use FileManager for registering home space.
- *
- *   Revision 1.22  2005/01/07 14:14:25  jdt
- *   merged from Reg_KMB_787
- *
- *   Revision 1.21.4.1  2004/12/13 21:25:03  KevinBenson
- *   added a small default null for default vospace
- *
- *   Revision 1.21  2004/11/22 13:03:04  jdt
- *   Merges from Comm_KMB_585
- *
- *   Revision 1.20.22.1  2004/11/08 22:08:21  KevinBenson
- *   added groupmember and permissionmanager tests.  Changed the install.xml to use eperate file names
- *   instead of the same filename
- *
- *   Revision 1.20  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.19.12.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.19  2004/09/02 17:02:02  dave
- *   Fixed myspace account creation problem.
- *
- *   Revision 1.18.70.2  2004/09/02 16:22:11  dave
- *   Fixed create myspace account ....
- *
- *   Revision 1.18.70.1  2004/09/02 15:48:48  dave
- *   Moved commit to after allocate space ....
- *
- *   Revision 1.18  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.17.10.2  2004/06/17 15:24:31  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.17.10.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.server.policy.manager ;
 
+import java.net.URI;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
@@ -217,36 +157,33 @@ public class AccountManagerImpl
      * @todo Verify that the finally gets executed, even if a new Exception is thrown.
      *
      */
-    public AccountData addAccount(AccountData account)
-        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("AccountManagerImpl.addAccount()") ;
-        log.debug("  Account : " + ((null != account) ? account.getIdent() : null)) ;
-        //
-        // Check for null account.
-        if (null == account)
-            {
-            throw new CommunityIdentifierException(
-                "Null account"
-                ) ;
-            }
-        //
-        // Get the Account ident.
-        CommunityIvornParser ident = new CommunityIvornParser(
-            account.getIdent()
-            ) ;
-        //
-        // If the account is local.
-        if (ident.isLocal())
-            {
-			//
-			// Get the string ident.
-			String string = ident.getAccountIdent() ;
-			//
-			// Set the Account ident.
-			account.setIdent(string) ;
+    public AccountData addAccount(AccountData externalAccount)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException {
+      
+        if (null == externalAccount) {
+            throw new CommunityIdentifierException("Null account");
+        }
+        
+        // The given account will probably have the wrong name, and
+        // the AccountData class is too broken to fix it in situ.
+        // Therefore, make a new account object in which the name is the
+        // required primary key for the DB.
+        /*
+        CommunityIvornParser parser = 
+            new CommunityIvornParser(externalAccount.getIdent());
+        String string = primaryKey(parser);
+        AccountData account = new AccountData(string);
+        account.setDescription(externalAccount.getDescription());
+        account.setDisplayName(externalAccount.getDisplayName());
+        account.setEmailAddress(externalAccount.getEmailAddress());
+        account.setHomeSpace(externalAccount.getHomeSpace());
+        System.out.println("Primary key is " + string);
+	account.setIdent(string) ;
+         */
+        AccountData account = internalAccount(externalAccount);
+        System.out.println("Recorded account is named " + account.getIdent());
+        String string = account.getIdent();
+        
             //
             // Create the corresponding Group object.
             GroupData group = new GroupData() ;
@@ -271,108 +208,47 @@ public class AccountManagerImpl
             // Try performing our transaction.
             Database database = null ;
             try {
-                //
-                // Open our database connection.
                 database = this.getDatabase() ;
-                //
-                // Begin a new database transaction.
                 database.begin();
-                //
-                // Try creating the account in the database.
-				log.debug("Creating community account") ;
                 database.create(account);
-				log.debug("Ok - Created community account") ;
-
-// * Problems reported with group membership when running on windows.
-                //
-                // Try creating the group in the database.
                 database.create(group);
-                //
-                // Try adding the account to the groups.
                 database.create(groupmember);
-/*                
-// TODO BUG
-// Not sure why this one fails the tests.
-// Something about invalid primary key.
-//                        database.create(guestmember);
- *
- */
-                //
-                // Try creating the home space for the Account.
                 try {
-					log.debug("Creating myspace account") ;
-                    allocateSpace(account) ;
-					log.debug("Ok - Created myspace account") ;
-					log.debug("Home : " + account.getHomeSpace()) ;
-                    }
-                catch (Exception ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(
-                        ouch,
-                        "AccountManagerImpl.addAccount.allocateSpace()"
-                        ) ;
-                    }
-                //
-                // Commit the transaction.
-                database.commit() ;
+                  allocateSpace(account) ;
+                  log.debug("Home : " + account.getHomeSpace()) ;
                 }
+                catch (Exception ouch){
+                  logException(ouch,
+                              "AccountManagerImpl.addAccount.allocateSpace()");
+                }
+                database.commit() ;
+            }
             //
             // If we already have an object with that ident.
-            catch (DuplicateIdentityException ouch)
-                {
-                //
-                // Cancel the database transaction.
+            catch (DuplicateIdentityException ouch) {
                 rollbackTransaction(database) ;
-                //
-                // Throw a new Exception.
                 throw new CommunityPolicyException(
                     "Duplicate Account identifier",
-                    ident.toString()
+                    account.getIdent()
                     ) ;
-                }
-            //
-            // If anything else went bang.
-            catch (Exception ouch)
-                {
-                //
-                // Log the exception.
+            }
+            catch (Exception ouch) {
                 logException(
                     ouch,
                     "AccountManagerImpl.addAccount()"
                     ) ;
-                //
-                // Cancel the database transaction.
                 rollbackTransaction(database) ;
-                //
-                // Throw a new Exception.
                 throw new CommunityServiceException(
                     "Database transaction failed",
-                    ident.toString(),
+                    account.getIdent(),
                     ouch
                     ) ;
-                }
-            //
-            // Close our database connection.
-            finally
-                {
-                closeConnection(database) ;
-                }
-            //
-            // Return the new Account details.
-            return account ;
             }
-        //
-        // If the ident is not local.
-        else {
-            //
-            // Throw a new Exception.
-            throw new CommunityPolicyException(
-                "Account is not local",
-                ident.toString()
-                ) ;
+            finally {
+              closeConnection(database) ;
             }
+            
+            return externalAccount(account);
         }
 
     /**
@@ -419,18 +295,15 @@ public class AccountManagerImpl
                 "Null identifier"
                 ) ;
             }
-        //
-        // If the ident is local.
-        if (ident.isLocal())
-            {
-            //
+        
             // Try finding the Account.
             Database    database = null ;
             AccountData account  = null ;
             try {
-				//
-				// Get the string ident.
-				String string = ident.getAccountIdent() ;
+                // Find the primary key for this account in the DB tables.
+                String string = primaryKey(ident);
+                System.out.println("getAccount(): looking for " + string);
+                
                 //
                 // Open our database connection.
                 database = this.getDatabase() ;
@@ -487,18 +360,7 @@ public class AccountManagerImpl
                 }
             //
             // Return the Account details.
-            return account ;
-            }
-        //
-        // If the ident is not local.
-        else {
-            //
-            // Throw a new Exception.
-            throw new CommunityPolicyException(
-                "Account is not local",
-                ident.toString()
-                ) ;
-            }
+            return externalAccount(account);
         }
 
     /**
@@ -511,112 +373,63 @@ public class AccountManagerImpl
      * @todo Verify that the finally gets executed, even if a new Exception is thrown.
      *
      */
-    public AccountData setAccount(AccountData account)
-        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("AccountManagerImpl.setAccount()") ;
-        log.debug("  Account : " + ((null != account) ? account.getIdent() : null)) ;
-        //
-        // Check for null account.
-        if (null == account)
-            {
-            throw new CommunityIdentifierException(
-                "Null account"
-                ) ;
-            }
-        //
-        // Get the Account ident.
-        CommunityIvornParser ident = new CommunityIvornParser(
-            account.getIdent()
-            ) ;
-        //
-        // If the ident is local.
-        if (ident.isLocal())
-            {
-            //
-            // Try update the database.
-            Database database = null ;
-            try {
-				//
-				// Get the string ident.
-				String string = ident.getAccountIdent() ;
-                //
-                // Open our database connection.
-                database = this.getDatabase() ;
-                //
-                // Begin a new database transaction.
-                database.begin();
-                //
-                // Load the Account from the database.
-                AccountData data = (AccountData) database.load(AccountData.class, string) ;
-                //
-                // Update the account data.
-                data.setHomeSpace(account.getHomeSpace()) ;
-                data.setDisplayName(account.getDisplayName()) ;
-                data.setDescription(account.getDescription()) ;
-                data.setEmailAddress(account.getEmailAddress()) ;
-                //
-                // Commit the transaction.
-                database.commit() ;
-                }
-            //
-            // If we couldn't find the object.
-            catch (ObjectNotFoundException ouch)
-                {
-                //
-                // Cancel the database transaction.
-                rollbackTransaction(database) ;
-                //
-                // Throw a new Exception.
-                throw new CommunityPolicyException(
-                    "Account not found",
-                    ident.toString()
-                    ) ;
-                }
-            //
-            // If anything else went bang.
-            catch (Exception ouch)
-                {
-                //
-                // Log the exception.
-                logException(
-                    ouch,
-                    "AccountManagerImpl.setAccount()"
-                    ) ;
-                //
-                // Cancel the database transaction.
-                rollbackTransaction(database) ;
-                //
-                // Throw a new Exception.
-                throw new CommunityServiceException(
+    public AccountData setAccount(AccountData externalAccount)
+        throws CommunityServiceException, 
+               CommunityIdentifierException, 
+               CommunityPolicyException {
+      
+      if (null == externalAccount) {
+        throw new CommunityIdentifierException("Null account");
+      }
+        
+      // Convert to internal form so that the primary key is right.
+      AccountData account = internalAccount(externalAccount);
+        
+      Database database = null ;
+      try {
+        // Open our database connection.
+        database = this.getDatabase();
+          
+        // Begin a new database transaction.
+        database.begin();
+          
+        // Load the Account from the database.
+        // We don't actually need to use these data, but we have to get the
+        // record in a position to commit.
+        AccountData data = (AccountData) database.load(AccountData.class, account.getIdent());
+
+        // Transcribe the information.
+        data.setHomeSpace(account.getHomeSpace());
+        data.setDisplayName(account.getDisplayName());
+        data.setDescription(account.getDescription());
+        data.setEmailAddress(account.getEmailAddress());
+
+        // Commit the transaction, thereby updating the record.
+        database.commit() ;
+      }
+      
+      catch (ObjectNotFoundException ouch) {
+        rollbackTransaction(database);
+        throw new CommunityPolicyException("Account not found ",
+                                           externalAccount.getIdent());
+      }
+      
+      catch (Exception ouch) {
+        logException(ouch,"AccountManagerImpl.setAccount()");
+        rollbackTransaction(database);
+        throw new CommunityServiceException(
                     "Database transaction failed",
-                    ident.toString(),
+                    externalAccount.getIdent(),
                     ouch
-                    ) ;
-                }
-            //
-            // Close our database connection.
-            finally
-                {
-                closeConnection(database) ;
-                }
-            //
-            // Return the Account details.
-            return account ;
-            }
-        //
-        // If the ident is not local.
-        else {
-            //
-            // Throw a new Exception.
-            throw new CommunityPolicyException(
-                "Account is not local",
-                ident.toString()
-                ) ;
-            }
-        }
+                    );
+      }
+      
+      finally {
+        closeConnection(database) ;
+      }
+      
+      return externalAccount ;
+    }
 
     /**
      * Delete an Account.
@@ -668,18 +481,14 @@ public class AccountManagerImpl
 	    // @todo Refactor this.
 	    AccountData account  = null ;
 
-        //
-        // If the ident is local.
-        if (ident.isLocal())
-            {
-            log.debug("  PASS : ident is local") ;
             //
             // Try update the database.
             Database    database = null ;
             try {
-				//
-				// Get the string ident.
-				String string = ident.getAccountIdent() ;
+              
+                // Find the primary key for this account in the DB tables.
+                String string = primaryKey(ident);
+                System.out.println("Looking for " + string);
                 //
                 // Open our database connection.
                 database = this.getDatabase() ;
@@ -822,18 +631,7 @@ public class AccountManagerImpl
                 }
             //
             // Return the original Account details.
-            return account ;
-            }
-        //
-        // If the ident is not local.
-        else {
-            //
-            // Throw a new Exception.
-            throw new CommunityPolicyException(
-                "Account is not local",
-                ident.toString()
-                ) ;
-            }
+            return externalAccount(account);
         }
 
     /**
@@ -870,18 +668,18 @@ public class AccountManagerImpl
             //
             // Transfer our results to a vector.
             Collection collection = new Vector() ;
-            while (results.hasMore())
-                {
-                collection.add(
-                    (AccountData)results.next()
-                    ) ;
-                }
+            while (results.hasMore()) {
+              AccountData account =  (AccountData)results.next();
+              collection.add(externalAccount(account));
+            }
+            
             //
             // Convert it into an array.
             array = collection.toArray() ;
             //
             // Commit the transaction.
             database.commit() ;
+            
             }
         //
         // If anything went bang.
@@ -1054,4 +852,60 @@ public class AccountManagerImpl
                 ) ;
             }
         }
-    }
+    
+  /**
+   * Derives from the account IVORN the primary key for the DB tables.
+   * This key is an old form of account IVORN in which the account name
+   * is the whole of the resource key.
+   */
+  protected String primaryKey(CommunityIvornParser parser) {
+    return "ivo://" + 
+           parser.getIvorn().toUri().getHost() +
+           "/" +
+           parser.getAccountName();
+  }
+  
+  /**
+   * Derives the account IVORN from the primary key of the DB.
+   */
+  protected String accountIvorn(String primaryKey) throws CommunityIdentifierException {
+    CommunityIvornParser parser = new CommunityIvornParser(primaryKey);
+    return parser.getAccountIvorn().toString();
+  }
+  
+  /**
+   * Derives the internal form of the account from the external form.
+   * The internal form has a different encoding of the identity.
+   */
+  protected AccountData internalAccount(AccountData externalAccount) 
+      throws CommunityIdentifierException {
+    System.out.println("External account is named " + externalAccount.getIdent());
+    CommunityIvornParser parser = 
+        new CommunityIvornParser(externalAccount.getIdent());
+    AccountData internalAccount = new AccountData(primaryKey(parser));
+    internalAccount.setDescription(externalAccount.getDescription());
+    internalAccount.setDisplayName(externalAccount.getDisplayName());
+    internalAccount.setEmailAddress(externalAccount.getEmailAddress());
+    internalAccount.setHomeSpace(externalAccount.getHomeSpace());
+    System.out.println("Internal account is named " + internalAccount.getIdent());
+    return internalAccount;
+  }
+  
+  /**
+   * Derives the external form of the account from the internal form.
+   * The internal form has a different encoding of the identity.
+   */
+  protected AccountData externalAccount(AccountData internalAccount) 
+      throws CommunityIdentifierException {
+    System.out.println("Internal account is named " + internalAccount.getIdent());
+    CommunityIvornParser parser = 
+        new CommunityIvornParser(internalAccount.getIdent());
+    AccountData externalAccount = new AccountData(parser.getAccountIvorn().toString());
+    externalAccount.setDescription(internalAccount.getDescription());
+    externalAccount.setDisplayName(internalAccount.getDisplayName());
+    externalAccount.setEmailAddress(internalAccount.getEmailAddress());
+    externalAccount.setHomeSpace(internalAccount.getHomeSpace());
+    System.out.println("External account is named " + externalAccount.getIdent());
+    return externalAccount;
+  } 
+}

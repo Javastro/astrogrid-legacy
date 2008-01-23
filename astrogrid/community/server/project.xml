@@ -14,7 +14,7 @@
         +-->
     <id>astrogrid-community-server</id>
     
-    <currentVersion>2008.0a3</currentVersion>
+    <currentVersion>2008.0a4</currentVersion>
     
     <!--+
         | The full name of the project.
@@ -209,7 +209,38 @@
             <properties>
                 <jar.fileset>true</jar.fileset>
             </properties>
-        </dependency>      
+        </dependency>
+        
+                <dependency>
+          <groupId>axis</groupId>
+          <artifactId>axis</artifactId>
+          <version>1.3</version>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>axis-jaxrpc</artifactId>
+          <version>1.3</version>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>axis-saaj</artifactId>
+          <version>1.3</version>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>commons-discovery</artifactId>
+          <version>0.2</version>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>axis</groupId>
+          <artifactId>wsdl4j</artifactId>
+          <version>1.5.1</version>
+          <type>jar</type>
+        </dependency>
          
     </dependencies>
 

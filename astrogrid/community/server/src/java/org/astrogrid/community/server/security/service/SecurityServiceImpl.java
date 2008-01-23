@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/18 17:14:55 $</cvs:date>
- * <cvs:version>$Revision: 1.15 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/23 15:24:12 $</cvs:date>
+ * <cvs:version>$Revision: 1.16 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImpl.java,v $
+ *   Revision 1.16  2008/01/23 15:24:12  gtr
+ *   Branch community-gtr-2512 is merged.
+ *
+ *   Revision 1.15.122.2  2008/01/23 13:26:46  gtr
+ *   no message
+ *
+ *   Revision 1.15.122.1  2008/01/22 15:25:08  gtr
+ *   I deprecated the checkToken() method.
+ *
  *   Revision 1.15  2005/02/18 17:14:55  jdt
  *   merge with community_pah_910
  *
@@ -180,9 +189,12 @@ public class SecurityServiceImpl
             //
             // Begin a new database transaction.
             database.begin();
+            
+            String primaryKey = primaryKey(ident);
+            System.out.println("Looking for the password for " + primaryKey);
             //
             // Try to load a matching PasswordData.
-            PasswordData match = (PasswordData) database.load(PasswordData.class, ident.getAccountIdent()) ;
+            PasswordData match = (PasswordData) database.load(PasswordData.class, primaryKey) ;
             log.debug("  PASS : Got password data") ;
             log.debug("    Account  : " + match.getAccount()) ;
             log.debug("    Password : " + match.getPassword()) ;
@@ -280,7 +292,7 @@ public class SecurityServiceImpl
      * @throws CommunityIdentifierException If the token is invalid.
      * @todo Refactor to call split and unpack ?
      * @todo Check Token is local.
-     *
+     * @deprecated Don't use tokens.
      */
     public SecurityToken checkToken(SecurityToken original)
         throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
@@ -556,4 +568,17 @@ public class SecurityServiceImpl
         // Return the new token.
         return vector.toArray() ;
         }
-    }
+
+  /**
+   * Derives from the account IVORN the primary key for the DB tables.
+   * This key is an old form of account IVORN in which the account name
+   * is the whole of the resource key.
+   */
+  protected String primaryKey(CommunityIvornParser parser) {
+    return "ivo://" + 
+           parser.getIvorn().toUri().getHost() +
+           "/" +
+           parser.getAccountName();
+  }
+
+}

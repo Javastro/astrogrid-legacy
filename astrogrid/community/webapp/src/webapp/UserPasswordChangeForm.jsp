@@ -12,7 +12,7 @@
 <%@ include file="navigation.xml" %>
 <div id="bodyColumn">
 <h1>Changing your community password</h1>
-<form action="UserPasswordChangeResult.jsp" method="post">
+<form action="password" method="post">
   <table>
     <tr>
       <td>Your log-in name</td>
@@ -20,11 +20,11 @@
     </tr>
     <tr>
       <td>Your current password</td>
-      <td><input type="password" name="userOldPassword"/>
+      <td><input type="password" name="oldPassword"/>
     </tr>
     <tr>
       <td>Your new password (at least seven characters long)</td>
-      <td><input type="password" name="userNewPassword"/>
+      <td><input type="password" name="newPassword"/>
     </tr>
     <tr>
       <td><input type="submit" value="Change password"/>
