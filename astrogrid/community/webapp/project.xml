@@ -2,36 +2,12 @@
 
 <project>
 
-    <!--+
-        | Extend the common project descriptor.
-        +-->
     <extend>../maven/project.xml</extend>
 
-    <!--+
-        | The short name of the project.
-        +-->
     <id>astrogrid-community</id>
-
-    <!--+
-        | The full name of the project.
-        | This is used when generating JavaDoc titles.
-        +-->
     <name>Community Web Application</name>
-    
-    <currentVersion>2008.0a7</currentVersion>
-
-    <!--+
-        | A short description of the project.
-        | The short description should be limited to a single line.
-        +-->
-    <shortDescription>
-        Community webapp Area
-    </shortDescription>
-
-    <!--+
-        | A detailed description of the project.
-        | This is used to generate the front page of the projects web site. 
-        +-->
+    <currentVersion>2008.0a8</currentVersion>
+    <shortDescription>Community web application</shortDescription>
     <description>
         <![CDATA[
          Community is a Astrogrid component to manage accounts, groups, members, and currently not used externally but also resources and permissions.  See the
@@ -90,7 +66,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a4</version>
+            <version>2008.0a5</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -103,7 +79,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a4</version>
+            <version>2008.0a5</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -116,7 +92,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>2008.0a4</version>
+            <version>2008.0a5</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -129,7 +105,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>2008.0a4</version>
+            <version>2008.0a5</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
