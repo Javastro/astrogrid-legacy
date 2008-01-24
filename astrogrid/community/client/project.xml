@@ -2,41 +2,16 @@
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
-    <!--+
-        | Extend the common project descriptor.
-        +-->
-    <extend>../maven/project.xml</extend>
-
-    <!--+
-        | The short name of the project.
-        +-->
-    <id>astrogrid-community-client</id>
     
-    <currentVersion>2008.0a4</currentVersion>
-
-    <!--+
-        | The full name of the project.
-        +-->
+    <extend>../maven/project.xml</extend>
+    
+    <id>astrogrid-community-client</id>
+    <currentVersion>2008.0a5</currentVersion>
     <name>Community client</name>
-
-    <!--+
-        | The Java package name of the project.
-        +-->
     <package>org.astrogrid.community.client</package>
-
-    <!--+
-        | A short description of the project.
-        | The short description should be limited to a single line.
-        +-->
     <shortDescription>
         Community Client for interaction with the Community Web Services
     </shortDescription>
-
-    <!--+
-        | A detailed description of the project.
-        | This is used to generate the front page of the projects web site. 
-        +-->
     <description>
         <![CDATA[
     		<p>
@@ -169,7 +144,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a4</version>
+            <version>2008.0a5</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
