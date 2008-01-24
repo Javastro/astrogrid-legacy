@@ -313,8 +313,30 @@ public class CommunityIvornParserTestCase
             data[8],
             ((null != parser.getAccountIvorn()) ? parser.getAccountIvorn().toString() : null)
             ) ;
+        
+        // Check the user name (the community service depends on this
+        // being right in order to find accounts in its DB).
+        assertEquals(
+            "User name not equal",
+            data[2],
+            parser.getAccountName()
+            );
         }
 
+    /**
+     * Tests an account IVORN with the local-commmunity configuration.
+     */
+    public void testLocalAccount() throws Exception {
+      SimpleConfig.getSingleton().setProperty(CommunityIvornParser.LOCAL_COMMUNITY_PROPERTY,
+                                              "org.astrogrid.local.community/community");
+        
+      Ivorn ivorn = new Ivorn("ivo://frog@org.astrogrid.local.community/community#/fu/bar/baz");
+      CommunityIvornParser sut = new CommunityIvornParser(ivorn);
+      assertEquals("frog", sut.getAccountName());
+      assertEquals("org.astrogrid.local.community/community", sut.getCommunityName());
+      assertEquals("/fu/bar/baz", sut.getFragment());
+    }
+    
     /**
      * Test a local Ivorn.
      *
@@ -341,5 +363,23 @@ public class CommunityIvornParserTestCase
                 ).isLocal()
             ) ;
         }
-    }
+
+  /**
+   * Tests the parsing when the input is an IVORN string without the ivo://
+   * prefix. Sadly, this form seems to be normal input to the PolicyManager
+   * web-service.
+   */
+  public void testHeadless() throws Exception {
+    System.out.println("testHeadless()");
+    SimpleConfig.getSingleton().setProperty(CommunityIvornParser.LOCAL_COMMUNITY_PROPERTY,
+                                            "org.astrogrid.local.community/community");
+        
+    String ident = "frog@org.astrogrid.local.community/community#/fu/bar/baz";
+    CommunityIvornParser sut = new CommunityIvornParser(ident);
+    assertEquals("frog", sut.getAccountName());
+    assertEquals("org.astrogrid.local.community/community", sut.getCommunityName());
+    assertEquals("/fu/bar/baz", sut.getFragment());
+  }
+
+}
 

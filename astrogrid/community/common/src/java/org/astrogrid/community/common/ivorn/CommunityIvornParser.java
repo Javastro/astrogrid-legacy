@@ -77,15 +77,11 @@ public class CommunityIvornParser
      * Public constructor for a specific identifier.
      * @param ident A vaild identifier.
      * @throws CommunityIdentifierException If the identifier is not valid.
-     *
      */
-    public CommunityIvornParser(String ident)
-        throws CommunityIdentifierException
-        {
-        this.setIvorn(
-            parse(ident)
-            ) ;
-        }
+    public CommunityIvornParser(String ident) 
+        throws CommunityIdentifierException {
+      this.setIvorn(parse(ident));
+    }
 
     /**
      * Our target Ivorn.
@@ -627,31 +623,37 @@ public class CommunityIvornParser
         }
 
     /**
-     * Convert a string identifier into an Ivorn.
+     * Converts a string identifier into an Ivorn.
+     * Normally, the identifier is just the string form of the IVORN,
+     * e.g. ivo://frog@org.astrogrid.etc/community. Occassionally, the
+     * scheme is omitted from the URI, e.g.
+     * frog@org.astrogrid.etc/community. This latter form is supported but
+     * deprecated.
+     *
      * @param ident The identifier.
      * @return a new Ivorn containing the identifier.
      * @throws CommunityIdentifierException If the identifier is invalid.
-     *
      */
     protected static Ivorn parse(String ident)
-        throws CommunityIdentifierException
-        {
-        if (null == ident)
-            {
-            throw new CommunityIdentifierException(
-                "Null identifier"
-                ) ;
-            }
-        try {
-            return new Ivorn(ident) ;
-            }
-        catch (URISyntaxException ouch)
-            {
-            throw new CommunityIdentifierException(
-                ouch
-                ) ;
-            }
+        throws CommunityIdentifierException {
+      System.out.println("static parse() was called");
+      if (null == ident) {
+        throw new CommunityIdentifierException("Null identifier");
+      }
+      System.out.println(ident);
+      try {
+        if (ident.startsWith("ivo://")) {
+          return new Ivorn(ident) ;
         }
+        else {
+          // Add the scheme prefix since the Ivorn class fails if it is missing.
+          return new Ivorn("ivo://" + ident);
+        }
+      }
+      catch (URISyntaxException ouch) {
+        throw new CommunityIdentifierException(ouch);
+      }
+    }
 
     /**
      * The property name for our local Community identifier.
@@ -717,6 +719,14 @@ public class CommunityIvornParser
             ) ;
         }
 
+  /**
+   * Reveals the file-path inside MySpace.
+   * This is worked out from the fragment of the IVORN.
+   */
+  public String getMySpacePath() {
+    return getFragment();
+  }
+  
     /**
      * Convert the parser to a String.
      *

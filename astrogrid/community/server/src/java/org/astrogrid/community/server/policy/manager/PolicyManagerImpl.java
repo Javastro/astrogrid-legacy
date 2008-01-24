@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/01/24 16:56:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.15  2008/01/24 16:56:43  gtr
+ *   branch community-gtr-2521 is merged
+ *
+ *   Revision 1.14.150.1  2008/01/24 16:31:13  gtr
+ *   2008.0a5.
+ *
  *   Revision 1.14  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -198,6 +204,7 @@ public class PolicyManagerImpl
     public AccountData getAccount(String ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
+        System.out.println("PolicyManager.getAccount() was asked for " + ident);
         return accountManager.getAccount(ident) ;
         }
 

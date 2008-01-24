@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/junit/org/astrogrid/community/resolver/CommunityAccountSpaceResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: gtr $</cvs:author>
- * <cvs:date>$Date: 2008/01/18 16:36:08 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2008/01/24 16:56:43 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolverTestCase.java,v $
+ *   Revision 1.11  2008/01/24 16:56:43  gtr
+ *   branch community-gtr-2521 is merged
+ *
+ *   Revision 1.10.4.1  2008/01/24 15:51:42  gtr
+ *   Fixed.
+ *
  *   Revision 1.10  2008/01/18 16:36:08  gtr
  *   Branch community-gtr-2502 is merged.
  *
@@ -97,7 +103,7 @@ public class CommunityAccountSpaceResolverTestCase
         // Create our target Ivorn.
         Ivorn target = CommunityAccountIvornFactory.createMock(
             "community",
-            "frog/public#qwertyuiop.xml"
+            "frog#qwertyuiop.xml"
             ) ;
         if (DEBUG_FLAG) System.out.println("  Target : " + target) ;
         //
@@ -118,7 +124,7 @@ public class CommunityAccountSpaceResolverTestCase
         // Check that the home space is right.
         assertEquals(
             "Wrong ivorn",
-            "ivo://org.astrogrid.mock.myspace/toad/public#qwertyuiop.xml",
+            "ivo://org.astrogrid.mock.myspace/toad#qwertyuiop.xml",
             found.toString()
             ) ;
 

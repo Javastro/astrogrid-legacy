@@ -215,7 +215,7 @@ public class AccountManagerImpl
                 database.create(groupmember);
                 try {
                   allocateSpace(account) ;
-                  log.debug("Home : " + account.getHomeSpace()) ;
+                  System.out.println("Home : " + account.getHomeSpace()) ;
                 }
                 catch (Exception ouch){
                   logException(ouch,
@@ -263,6 +263,7 @@ public class AccountManagerImpl
     public AccountData getAccount(String ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
+        System.out.println("PolicyManager.getAccount(String) was asked for " + ident);
         return this.getAccount(
             new CommunityIvornParser(
                 ident
@@ -283,10 +284,10 @@ public class AccountManagerImpl
     public AccountData getAccount(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("AccountManagerImpl.getAccount()") ;
-        log.debug("  Ident : " + ident) ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("AccountManagerImpl.getAccount()") ;
+        System.out.println("  Ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -464,10 +465,10 @@ public class AccountManagerImpl
     protected AccountData delAccount(CommunityIvornParser ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("AccountManagerImpl.delAccount()") ;
-        log.debug("  ident : " + ident) ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("AccountManagerImpl.delAccount()") ;
+        System.out.println("  ident : " + ident) ;
         //
         // Check for null ident.
         if (null == ident)
@@ -502,7 +503,7 @@ public class AccountManagerImpl
                 // If we found the Account.
                 if (null != account)
                     {
-                    log.debug("  PASS : found account") ;
+                    System.out.println("  PASS : found account") ;
                     //
                     // Find the group for this account (if it exists).
                     OQLQuery groupQuery = database.getOQLQuery(
@@ -516,10 +517,10 @@ public class AccountManagerImpl
                     QueryResults groups = groupQuery.execute();
                     if (null != groups)
                         {
-                        log.debug("  PASS : found groups") ;
+                        System.out.println("  PASS : found groups") ;
                         }
                     else {
-                        log.debug("  FAIL : null groups") ;
+                        System.out.println("  FAIL : null groups") ;
                         }
                     //
                     // Find all of the group memberships for this account.
@@ -534,10 +535,10 @@ public class AccountManagerImpl
                     QueryResults members = memberQuery.execute();
                     if (null != members)
                         {
-                        log.debug("  PASS : found members") ;
+                        System.out.println("  PASS : found members") ;
                         }
                     else {
-                        log.debug("  FAIL : null members") ;
+                        System.out.println("  FAIL : null members") ;
                         }
                     //
                     // Load all the permissions for this group.
@@ -552,41 +553,41 @@ public class AccountManagerImpl
                     QueryResults permissions = permissionQuery.execute();
                     if (null != permissions)
                         {
-                        log.debug("  PASS : found permissions") ;
+                        System.out.println("  PASS : found permissions") ;
                         }
                     else {
-                        log.debug("  FAIL : null permissions") ;
+                        System.out.println("  FAIL : null permissions") ;
                         }
                     //
                     // Delete the permissions.
                     while (permissions.hasMore())
                         {
-                        log.debug("  STEP : deleting permission") ;
+                        System.out.println("  STEP : deleting permission") ;
                         database.remove(permissions.next()) ;
                         }
                     //
                     // Delete the group memberships.
                     while (members.hasMore())
                         {
-                        log.debug("  STEP : deleting membership") ;
+                        System.out.println("  STEP : deleting membership") ;
                         database.remove(members.next()) ;
                         }
                     //
                     // Delete the Group.
                     while (groups.hasMore())
                         {
-                        log.debug("  STEP : deleting group") ;
+                        System.out.println("  STEP : deleting group") ;
                         database.remove(groups.next()) ;
                         }
                     //
                     // Delete the Account.
                     database.remove(account) ;
                     }
-                log.debug("  PASS : finished deleting") ;
+                System.out.println("  PASS : finished deleting") ;
                 //
                 // Commit the transaction.
                 database.commit() ;
-                log.debug("  PASS : done commit") ;
+                System.out.println("  PASS : done commit") ;
                 }
             //
             // If we couldn't find the object.
@@ -643,9 +644,9 @@ public class AccountManagerImpl
      */
     public Object[] getLocalAccounts()
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("AccountManagerImpl.getLocalAccounts()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("AccountManagerImpl.getLocalAccounts()") ;
         //
         // Try to query the database.
         Object[] array    = null ;
@@ -716,10 +717,10 @@ public class AccountManagerImpl
     protected void allocateSpace(AccountData account)
         throws CommunityServiceException, CommunityIdentifierException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("AccountManagerImpl.allocateSpace()") ;
-        log.debug("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("AccountManagerImpl.allocateSpace()") ;
+        System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
         //
         // Check for null account.
         if (null == account)
@@ -750,17 +751,17 @@ public class AccountManagerImpl
                 try {
                     //
                     // Create the FileManager resolver.
-                    log.debug("  Creating FileManager.NodeDelegateResolver") ;
+                    System.out.println("  Creating FileManager.NodeDelegateResolver") ;
                     NodeDelegateResolver resolver = new NodeDelegateResolverImpl(
                         null
                         );                    
                     //
                     // Try to resolve the ivorn into a delegate.
-                    log.debug("  Resolving FileManager ivorn : " + ivorn.toString()) ;
+                    System.out.println("  Resolving FileManager ivorn : " + ivorn.toString()) ;
                     NodeDelegate delegate = resolver.resolve(ivorn);                    
                     //
                     // Ask the degagate to create a new account.
-                    log.debug("  Creating account home") ;
+                    System.out.println("  Creating account home") ;
                     FileManagerNode node = delegate.addAccount(
                         new AccountIdent(
                             account.getIdent()
@@ -772,10 +773,10 @@ public class AccountManagerImpl
                     //
                     // Extract the node ivorn.
                     NodeIvorn home = meta.getNodeIvorn();
-                    log.debug("  New account home : " + home.toString()) ;
+                    System.out.println("  New account home : " + home.toString()) ;
                     //
                     // Update the Account data
-                    log.debug("  Updating account details") ;
+                    System.out.println("  Updating account details") ;
                     account.setHomeSpace(
                         home.toString()
                         ) ;
@@ -811,9 +812,9 @@ public class AccountManagerImpl
     public Ivorn getDefaultVoSpace()
         throws CommunityServiceException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("AccountManagerImpl.getDefaultVoSpace()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("AccountManagerImpl.getDefaultVoSpace()") ;
         //
         // Get the default identifier from our config.
         String string = null ;
@@ -826,7 +827,7 @@ public class AccountManagerImpl
                 "Default VoSpace not configured"
                 ) ;
             }
-        log.debug("    Default VoSpace : " + string) ;
+        System.out.println("    Default VoSpace : " + string) ;
         //
         // If we found the default identifier.
         if (null != string)

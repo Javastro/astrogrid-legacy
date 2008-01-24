@@ -154,14 +154,16 @@ public class CommunityAccountSpaceResolver
             log.debug("PASS : Got Account home.") ;
             log.debug("Building new Ivorn based on Account home") ;
             log.debug("  Home : " + home) ;
-            log.debug("  Path : " + parser.getRemainder()) ;
+            log.debug("  Path : " + parser.getMySpacePath()) ;
+            
+            // Make the URI that points to the location in MySpace.
+            // This is the strong form of the concrete IVORN.
+            String uri = getConcreteUri(home, parser.getMySpacePath());
             //
             // Create a new Ivorn from the home address.
             try {
-                return new Ivorn(
-                    (home + parser.getRemainder())
-                    ) ;
-                }
+                return new Ivorn(uri);
+            }
             catch (URISyntaxException ouch)
                 {
                 throw new CommunityIdentifierException(
@@ -179,4 +181,43 @@ public class CommunityAccountSpaceResolver
                 ) ;
             }
         }
+
+  /**
+   * Generates a URI from the URI of a home space and a path within that
+   * space. Due the tragically sloppy use of IVORNs throughout astrogrid
+   * we don't have a blind clue what form these bits will be in. We just have
+   * to probe the actual sysntax and glue them together as best we can.
+   */
+  private String getConcreteUri(String home, String path) {
+    
+    // If the home-space URI ends with a fragment separator
+    // then we can put the path straight on the end.
+    if (home.endsWith("#")) {
+      return home + path;
+    }
+    
+    // If there is no fragment separator, then we have to add one, and the
+    // path follows it directly.
+    else if (home.indexOf('#') == -1) {
+      return home + "#" + path;
+    }
+    
+    // If there is a fragment ending in a path separator, then add the
+    // given path to that.
+    else if (home.endsWith("/")) {
+      return home + path;
+    }
+    
+    // The fragment doesn't end in a path separator but the given path
+    // does, so just join them.
+    else if (path.startsWith("/")) {
+      return home + path;
+    }
+    
+    // Otherwise, we have an existing fragment that does not end in a
+    // path separator, so we have to add our own separator first.
+    else {
+      return home + "/" + path;
+    }
+  }
     }

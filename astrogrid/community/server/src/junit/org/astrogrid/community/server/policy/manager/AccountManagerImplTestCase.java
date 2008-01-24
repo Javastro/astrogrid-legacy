@@ -18,6 +18,7 @@ import org.astrogrid.community.common.policy.manager.AccountManagerTest ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfigurationFactory ;
 import org.astrogrid.community.server.database.configuration.TestDatabaseConfigurationFactory ;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Ivorn;
 
 /**
@@ -248,6 +249,9 @@ public class AccountManagerImplTestCase extends TestCase {
         System.out.println("") ;
         System.out.println("----\"----") ;
         System.out.println("AccountManagerTest:testGetValid()") ;
+        
+        SimpleConfig.getSingleton().setProperty(CommunityIvornParser.LOCAL_COMMUNITY_PROPERTY,
+                                                "org.astrogrid.local.community/community");
         
         AccountManagerImpl sut = new AccountManagerImpl(this.config);
         
@@ -594,6 +598,23 @@ public class AccountManagerImplTestCase extends TestCase {
     assertNotNull(accountOut);
     
     System.out.println("testRoundTrip: in: " + accountIn.getIdent() + " out: " + accountOut.getIdent());
+    
+    assertEquals(accountIn.getIdent(), accountOut.getIdent());
+  }
+  
+  public void testRoundTripHeadless() throws Exception {
+    System.out.println("Begin testRoundTrip()");
+    
+    AccountManagerImpl sut = new AccountManagerImpl(this.config);
+    
+    AccountData accountIn = new AccountData("ivo://frog@org.astrogrid.regtest/community");
+    sut.addAccount(accountIn);
+    
+    // The stupid, broken client sends the IVORN without the scheme when getting accounts.
+    AccountData accountOut = sut.getAccount("frog@org.astrogrid.regtest/community");
+    assertNotNull(accountOut);
+    
+    System.out.println("testRoundTripHeadless: in: " + accountIn.getIdent() + " out: " + accountOut.getIdent());
     
     assertEquals(accountIn.getIdent(), accountOut.getIdent());
   }

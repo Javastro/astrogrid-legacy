@@ -15,7 +15,7 @@
         +-->
     <id>astrogrid-community-resolver</id>
     
-    <currentVersion>2008.0a4</currentVersion>
+    <currentVersion>2008.0a5</currentVersion>
 
     <!--+
         | The full name of the project.
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a4</version>
+            <version>2008.0a5</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
