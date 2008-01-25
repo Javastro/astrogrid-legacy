@@ -246,7 +246,7 @@
     <dependency>
       <artifactId>astrogrid-filemanager-contract</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.filemanager.version}</version>
+      <version>${astrogrid.filemanager.frozen.version}</version>
       <properties>
         <dist.bundle>true</dist.bundle>
         <strip>true</strip>        
