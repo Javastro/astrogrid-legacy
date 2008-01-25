@@ -97,7 +97,18 @@ public class CommunityEndpointResolver {
       
       String endpoint = 
           registry.getEndpointByIdentifier(community.toString(), standardId);
-      return new URI(endpoint);
+      if (endpoint == null) {
+        throw new CommunityResolverException(
+            "No endpoint was found for " +
+            standardId +
+            " in " +
+            community +
+            " in the registry."
+        );
+      }
+      else {
+        return new URI(endpoint);
+      }
     } 
     catch (RegistryException ex) {
       throw new CommunityResolverException("Failed to resolve " + account, ex);
@@ -131,12 +142,22 @@ public class CommunityEndpointResolver {
    * If a null IVORN is passed, an NPE will be thrown.
    */
   private URI resolveServiceToUri(Ivorn ivorn, String standardId)
-    throws CommunityResolverException {
-        try {
-      
+      throws CommunityResolverException {
+    try {  
       String endpoint = 
           registry.getEndpointByIdentifier(ivorn.toString(), standardId);
-      return new URI(endpoint);
+      if (endpoint == null) {
+        throw new CommunityResolverException(
+            "No endpoint was found for " +
+            standardId +
+            " in " +
+            ivorn +
+            " in the registry."
+        );
+      }
+      else {
+        return new URI(endpoint);
+      }
     } 
     catch (RegistryException ex) {
       throw new CommunityResolverException("Failed to resolve " + ivorn, ex);

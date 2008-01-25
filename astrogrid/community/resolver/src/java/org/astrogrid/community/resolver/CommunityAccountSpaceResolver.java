@@ -190,9 +190,17 @@ public class CommunityAccountSpaceResolver
    */
   private String getConcreteUri(String home, String path) {
     
+    if (home == null) {
+      return null;
+    }
+    
+    else if (path == null) {
+      return home;
+    }
+    
     // If the home-space URI ends with a fragment separator
     // then we can put the path straight on the end.
-    if (home.endsWith("#")) {
+    else if (home.endsWith("#")) {
       return home + path;
     }
     

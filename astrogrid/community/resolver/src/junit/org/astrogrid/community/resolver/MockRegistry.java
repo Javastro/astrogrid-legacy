@@ -146,17 +146,20 @@ public class MockRegistry implements RegistryService {
           return "myproxy://org.astrogrid:7512";
         }
         else {
-          throw new RegistryException(ivornString + 
-                                      " is known but has no capability for " +
-                                      standardId);
+          return null;
+          //throw new RegistryException(ivornString + 
+          //                            " is known but has no capability for " +
+          //                            standardId);
         }
       }
       else {
-        throw new RegistryException("'" + ivorn + "' was not found in the registry.");
+        return null;
+        //throw new RegistryException("'" + ivorn + "' was not found in the registry.");
       }
     }
     else {
-      throw new RegistryException("'" + ivorn + "' was not found in the registry.");
+      return null;
+      //throw new RegistryException("'" + ivorn + "' was not found in the registry.");
     }
   }
 

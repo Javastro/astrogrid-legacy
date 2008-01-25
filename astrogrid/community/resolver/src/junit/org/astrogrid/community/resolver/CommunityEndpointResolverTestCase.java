@@ -60,41 +60,28 @@ public class CommunityEndpointResolverTestCase extends TestCase {
     assertNotNull("Null endpoint URL", found);
   }
 
-
-    /**
-     * Test that we can handle an unknown params.
-     *
-     */
-    public void testResolveUnknown()
-        throws Exception
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("CommunityEndpointResolverTestCase.testResolveUnknown()") ;
-        //
-        // Create our Ivorn.
-        Ivorn ivorn = CommunityAccountIvornFactory.createIvorn(
-            "unknown",
-            "frog"
-            ) ;
-       System.out.println("  Ivorn : " + ivorn) ;
-        //
-        // Create our resolver.
-        CommunityEndpointResolver resolver =
-            new CommunityEndpointResolver(new MockRegistry());
-        //
-        // Ask our resolver for the endpoint of an unknown community.
-        try {
-            URL found =
-                resolver.resolve(ivorn,
-                                 "ivo://org.astrogrid/std/Community/v1.0#PolicyManager");
-            fail("Expected CommunityResolverException") ;
-            }
-        catch (CommunityResolverException ouch)
-            {
-            System.out.println("Caught expected Exception : " + ouch) ;
-            }
-        }
+  /**
+   * Tests the resolution of an unregistered resource.
+   * This is particularly important because the registry delegate
+   * returns a null endpoint which must be trapped - see BZ2521.
+   */
+  public void testResolveUnknown() throws Exception {
+    System.out.println("CommunityEndpointResolverTestCase.testResolveUnknown()");
+    
+    Ivorn ivorn = new Ivorn("ivo://nix.nada.not-there/bogus");
+    System.out.println("IVORN to be resolved: " + ivorn);
+    
+    CommunityEndpointResolver resolver =
+        new CommunityEndpointResolver(new MockRegistry());
+    
+    try {
+      resolver.resolve(ivorn, "ivo://org.astrogrid/std/Community/v1.0#PolicyManager");
+      fail("Expected CommunityResolverException") ;
+    }
+    catch (CommunityResolverException ouch) {
+      System.out.println("Caught expected Exception : " + ouch);
+    }
+  }
 
     /**
      * Test that we can handle null params.
