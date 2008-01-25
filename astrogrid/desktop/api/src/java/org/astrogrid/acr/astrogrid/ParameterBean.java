@@ -1,4 +1,4 @@
-/*$Id: ParameterBean.java,v 1.6 2008/01/21 09:47:26 nw Exp $
+/*$Id: ParameterBean.java,v 1.7 2008/01/25 07:33:24 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,11 @@ public class ParameterBean extends BaseParam{
      */
     private static final long serialVersionUID = 2983698574593000414L;
 
-
+/**
+ * 
+ */
+public ParameterBean() {
+}
     /** Construct a new ParameterInformation
      * @param name
      * @param id
@@ -202,6 +206,9 @@ public class ParameterBean extends BaseParam{
 
 /* 
 $Log: ParameterBean.java,v $
+Revision 1.7  2008/01/25 07:33:24  nw
+final api changes for reg1.0 upgrade
+
 Revision 1.6  2008/01/21 09:47:26  nw
 Incomplete - task 134: Upgrade to reg v1.0
 
