@@ -6,7 +6,7 @@
     <extend>../maven/project.xml</extend>
     
     <id>astrogrid-community-client</id>
-    <currentVersion>2008.0a5</currentVersion>
+    <currentVersion>2008.0a6</currentVersion>
     <name>Community client</name>
     <package>org.astrogrid.community.client</package>
     <shortDescription>
