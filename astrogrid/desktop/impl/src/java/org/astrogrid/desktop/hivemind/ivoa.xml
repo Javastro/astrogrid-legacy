@@ -99,7 +99,7 @@
 			default-value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQueryv1_0">
 				<ui-name>Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
-				<alternative>http://msslxt.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
+				<alternative>http://msslxt.mssl.ucl.ac.uk:8080/astrogrid-regtest-1_0/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</alternative>
 				<units>url</units>
@@ -109,7 +109,7 @@
 			default-value="http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0" >
 				<ui-name>Fallback Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
-				<alternative>http://msslxt.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
+				<alternative>http://msslxt.mssl.ucl.ac.uk:8080/astrogrid-regtest-1_0/services/RegistryQueryv1_0</alternative>
 				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQueryv1_0</alternative>				
 				<units>url</units>

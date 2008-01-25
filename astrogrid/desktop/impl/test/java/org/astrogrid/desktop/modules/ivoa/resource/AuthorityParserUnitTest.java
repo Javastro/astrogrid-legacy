@@ -62,7 +62,8 @@ public class AuthorityParserUnitTest extends AbstractTestForParser{
         assertEquals("NASA/GSFC HEASARC",org.getValue());
         assertEquals(URI.create("ivo://nasa.heasarc/registry"),org.getId());
 		WebTester tester = basicResourceRendererTests(a);		
-		tester.assertTextPresent("Authority");		
+		tester.assertTextPresent("Authority");	
+	      tester.assertTextPresent(a.getManagingOrg().getValue());
 	}
 	
 	public void testAuthority2() throws Exception {
@@ -102,6 +103,7 @@ public class AuthorityParserUnitTest extends AbstractTestForParser{
 		
 		WebTester tester = basicResourceRendererTests(a);
 		tester.assertTextPresent("Authority");		
+
 		
 	}
 	

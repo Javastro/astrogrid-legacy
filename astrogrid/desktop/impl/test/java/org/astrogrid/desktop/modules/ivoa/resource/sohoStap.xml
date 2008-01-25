@@ -1,0 +1,27 @@
+<ri:Resource created="2008-01-20T23:25:27" status="active" updated="2008-01-20T23:25:27" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:stap="urn:astrogrid:schema:vo-resource-types:STAP:v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vr:Service">
+        <title>SOHO MDI (Michelson Doppler Imager) solar dataset</title>
+        <shortName>VSO-MDI</shortName>
+        <identifier>ivo://org.astrogrid.regtest/stap/vso/mdi</identifier>
+        <curation>
+            <publisher>VSO</publisher>
+            <creator>
+                <name>VSO</name>
+            </creator>
+            <contact>
+                <name>Kevin Benson</name>
+                <email>kmb@mssl.ucl.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>solar eit</subject>
+            <description>Service that interacts with VSO solar mdi archive based on the STAP spec.</description>
+            <referenceURL>http://esavo02.esac.esa.int:8080/cielossaToolKit/cielossa.jsp</referenceURL>
+        </content>
+        <capability standardID="ivo://org.astrogrid/std/STAP/v1.0" xsi:type="stap:SimpleTimeAccess">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="full">http://msslxv.mssl.ucl.ac.uk:8080/solarsearch/SolarSearch?service=vso&amp;version=1.0&amp;PROVIDER=SDAC&amp;INSTRUMENT_ID=MDI&amp;</accessURL>
+            </interface>
+            <supportPositioning>false</supportPositioning>
+            <supportedFormats>FITS</supportedFormats>
+        </capability>
+    </ri:Resource>

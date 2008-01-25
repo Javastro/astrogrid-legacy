@@ -19,6 +19,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 
@@ -97,8 +98,9 @@ public class SiapSystemTest extends InARTestCase {
 	}
 	
 	private void checkSiapResource(Resource r) {
-		//@todo refine this later..
 		assertTrue(r instanceof Service);
+		assertTrue(r instanceof SiapService);
+		assertNotNull(((SiapService)r).findSiapCapability());
 	}	
 
 }

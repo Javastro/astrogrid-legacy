@@ -135,7 +135,7 @@ public class ServiceParserUnitTest extends AbstractTestForParser {
 		
 		WebTester wt = basicResourceRendererTests(s);
 		wt.assertTextPresent("Service");
-		wt.assertTextPresent("uiuc");
+		wt.assertTextPresent(i.getAccessUrls()[0].getValueURI().toString());
 	}
 
 	public void testService2() throws Exception {
@@ -214,23 +214,23 @@ public class ServiceParserUnitTest extends AbstractTestForParser {
 		assertEquals(1,wi.getWsdlURLs().length);
 		assertEquals(new URI("http://nvo.ncsa.uiuc.edu/VO/services/ConeSearchValidater.wsdl"),wi.getWsdlURLs()[0]);
 					
-        i = cap.getInterfaces()[1];
-        validateInterface(i);       
+        Interface i1 = cap.getInterfaces()[1];
+        validateInterface(i1);       
         assertEquals("access URL",new AccessURL[] {
                     new AccessURL() {{
             setValueURI(new URI("http://nvo.ncsa.uiuc.edu/VO/services/csvalidate.html"));
         }}
-            },i.getAccessUrls());
-        assertNull(i.getRole());
-        assertEmpty(i.getSecurityMethods());
-        assertEquals("vr:WebBrowser",i.getType());
-        assertNull(i.getVersion());		
+            },i1.getAccessUrls());
+        assertNull(i1.getRole());
+        assertEmpty(i1.getSecurityMethods());
+        assertEquals("vr:WebBrowser",i1.getType());
+        assertNull(i1.getVersion());		
 		
 		WebTester wt = basicResourceRendererTests(s);
 		wt.assertTextPresent("Service");
-		//@todo add some more validation of the formatted output.
-		//wt.assertTextPresent("Web Service");
-       // wt.assertTextPresent("Web Browser");		
+		wt.assertTextPresent(cap.getDescription());
+		wt.assertTextPresent(i.getAccessUrls()[0].getValueURI().toString());
+		wt.assertTextPresent(wi.getWsdlURLs()[0].toString()); // wsdl urls.
 	}
 	
 	// interesting becfause it's a service with _no_ capabilities.
@@ -291,6 +291,30 @@ public class ServiceParserUnitTest extends AbstractTestForParser {
         WebTester wt = basicResourceRendererTests(s);
         wt.assertTextPresent("Service");
         wt.assertTextPresent("cadc");
+    }
+	
+
+    public void testService4() throws Exception {
+        ResourceStreamParser p = parse("vospaceService.xml");
+        Resource r =assertOnlyOne(p);
+        validateResource(r);    
+        checkResource(r
+                , "ivo://org.astrogrid.regtest/vospace-service"
+                , null
+                , "VOSpace/MYSpace test service"
+                , "Service");
+      
+        
+        Service s = validateService(r);
+        assertEmpty(s.getRights());
+        assertEquals("no capabillities",3,s.getCapabilities().length);
+        Capability cap = s.getCapabilities()[0];
+        // ust want to verify that my parser works with URI fragments - nothing else novel in this resource.
+        assertEquals("ivo://org.astrogrid/std/myspace/v1.0#myspace",cap.getStandardID().toString());
+
+        assertEquals(1,cap.getInterfaces().length);
+        
+
     }
 
 

@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.13 2007/06/18 17:02:24 nw Exp $
+/*$Id: SiapImpl.java,v 1.14 2008/01/25 07:53:25 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,10 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapCapability;
+import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.xml.sax.SAXException;
 
@@ -85,14 +89,18 @@ public class SiapImpl extends DALImpl implements Siap {
     }
 
 	public String getRegistryAdqlQuery() {
-        return "Select * from Registry where " +
-        " @xsi:type like '%SimpleImageAccess'  " ;
+        return "Select * from Registry r where " +
+        " r.capability/@xsi:type like '%SimpleImageAccess'  " 
+        +" or r.capability/@standardID = '" + SiapCapability.CAPABILITY_ID + "' ";
 //@issue        " and ( not (@status = 'inactive' or @status='deleted') )";
 	}
 
 	public String getRegistryXQuery() {
-		return "//vor:Resource[@xsi:type &= '*SimpleImageAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
-	//KMB 	return "//RootResource[matches(@xsi:type,'SimpleImageAccess') and  ( @status = 'active')]";
+		return "//vor:Resource[(" +
+		"(capability/@xsi:type &= '*SimpleImageAccess')"
+		+ " or "
+		+ "(capability/@standardID = '" + SiapCapability.CAPABILITY_ID + "' )"
+		+") and ( not ( @status = 'inactive' or @status='deleted'))]";
 	
 	}
 	
@@ -114,11 +122,40 @@ public class SiapImpl extends DALImpl implements Siap {
 		}
 	}
 
+	protected URL findAccessURL(Service s) throws InvalidArgumentException {
+	    if (!(s instanceof SiapService)) {
+	        throw new InvalidArgumentException(s.getId() + " does not provide a SIAP capability");
+	    }
+	    SiapCapability cap = ((SiapService)s).findSiapCapability();
+	    Interface[] interfaces = cap.getInterfaces();
+	    Interface std = null;
+	    switch (interfaces.length) {
+	        case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's siap capability");
+	        case 1:
+	            std = interfaces[0];
+	        default:    
+	            for (int i = 0; i < interfaces.length; i++) {
+	                Interface cand = interfaces[i];
+	                if ("std".equals(cand.getRole())) {
+	                    std = cand;
+	                }
+	                // none marked as std - just choose the first.
+	                if (std == null) {
+	                    std = interfaces[0];
+	                }
+	            }
+	    }                            
+	    return std.getAccessUrls()[0].getValue();            
+	}
 }
+
 
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.14  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.13  2007/06/18 17:02:24  nw
 javadoc fixes.
 

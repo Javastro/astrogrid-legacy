@@ -61,6 +61,7 @@ public class OrganisationParserUnitTest extends AbstractTestForParser{
 		
 		WebTester wt = basicResourceRendererTests(o);
 		wt.assertTextPresent("Organisation");
+		wt.assertTextPresent(facilities[0].getValue());
 	}
 	
 

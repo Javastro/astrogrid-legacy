@@ -7,6 +7,8 @@ import java.net.URI;
 
 import javax.xml.stream.XMLInputFactory;
 
+import net.sourceforge.jwebunit.WebTester;
+
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
@@ -89,7 +91,14 @@ public class RegistryServiceParserUnitTest extends AbstractTestForParser {
                     }}
             });            
             assertTrue("shoudl be a webservice interface",i instanceof WebServiceInterface);
-                        
+             
+            WebTester wt = basicResourceRendererTests(s);
+            wt.assertTextPresent("Registry");
+            wt.assertTextPresent(reg.getManagedAuthorities()[0]);
+            wt.assertTextPresent(reg.getManagedAuthorities()[1]);
+            wt.assertTextPresent("" + hCap.getMaxRecords());
+            wt.assertTextPresent(sCap.getExtensionSearchSupport());
+            wt.assertTextPresent(sCap.getOptionalProtocol()[0]);
         }
         
 
@@ -162,6 +171,14 @@ public class RegistryServiceParserUnitTest extends AbstractTestForParser {
                     }}
             });            
             assertTrue("shoudl be a webservice interface",i instanceof WebServiceInterface);
-                                     
+
+            WebTester wt = basicResourceRendererTests(s);
+            wt.assertTextPresent("Registry");
+            wt.assertTextPresent(reg.getManagedAuthorities()[0]);
+            wt.assertTextPresent(reg.getManagedAuthorities()[1]);
+            wt.assertTextPresent("" + hCap.getMaxRecords());
+            wt.assertTextPresent(sCap.getExtensionSearchSupport());
+            wt.assertTextPresent("1.0"); // versions
+            wt.assertTextPresent("0.8"); // versions.
         }
 }

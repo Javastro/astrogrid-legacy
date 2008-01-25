@@ -27,7 +27,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		targets.put("shortname", new String[] {"$r/shortName"});
 		targets.put("title",new String[] {"$r/title"});
 		targets.put("name",new String[] {"$r/shortName","$r/title"});
-		targets.put("id",new String[] {"$r/identifier"});
+		targets.put("id",new String[] {"$r/identifier¤"});
 		targets.put("subject",new String[]{"$r/content/subject"}); 
 		targets.put("source",new String[]{"$r/content/source"});
 		targets.put("description", new String[] {"$r/content/description"});
@@ -36,15 +36,19 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		targets.put("all", new String[] {"$r//*"}); //@todo add attributes too?
 		//targets.put("publisher", new String[] {"$r/curation/publisher","$r/curation/publisher/@ivo-id"});
 		targets.put("curation",new String[] {"$r/curation//*"});
-		targets.put("type", new String[] {"@xsi:type","$r/content/type"});
+		targets.put("type", new String[] {
+		        "@xsi:type"
+		        ,"$r/content/type"
+		        ,"$r/capability/@xsi:type"
+		        }); 
 		targets.put("level", new String[] {"$r/content/contentLevel"});
-		//@fixme are these in no namespace now too??
-		targets.put("waveband",new String[] {"$r/vods:coverage/vods:spectral/vods:waveband"}); 
-		targets.put("col",//new String[]{"$r//vods:column/vods:name"}); // '//' doesn't seem to work in this context.
-				 new String[]{"$r/vods:table/vods:column/vods:name", "$r/tdb:db/tdb:table/vods:column/vods:name"});
-		targets.put("ucd",//new String[]{"$r//*:column/*:ucd"});
-				// likewise, search for both"$r/vods:table/vods:column/vods:ucd"});
-		 new String[]{"$r/vods:table/vods:column/vods:ucd", "$r/tdb:db/tdb:table/vods:column/vods:ucd"});		
+		targets.put("waveband",new String[] {"$r/coverage/waveband"}); 
+		targets.put("col",     new String[]{
+                "$r/catalog/table/column/name",
+                "$r/table/column/name"});    
+		targets.put("ucd",		 new String[]{
+		        "$r/catalog/table/column/ucd",
+		        "$r/table/column/ucd"});		
 		//
 	}	
    

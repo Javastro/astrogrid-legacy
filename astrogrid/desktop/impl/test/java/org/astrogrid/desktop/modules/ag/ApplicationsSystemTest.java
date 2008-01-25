@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.9 2007/04/18 15:47:10 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.10 2008/01/25 07:53:25 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
@@ -92,7 +93,7 @@ public class ApplicationsSystemTest extends InARTestCase {
 
 	
 	private void checkCeaResource(Resource r) {
-		//@todo refine this later..
+		assertTrue("Not an instanceof of cea",r instanceof CeaApplication);
 	}	
    
 
@@ -208,6 +209,9 @@ public class ApplicationsSystemTest extends InARTestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.10  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.9  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

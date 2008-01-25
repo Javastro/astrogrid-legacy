@@ -21,6 +21,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
 import org.easymock.AbstractMatcher;
@@ -386,6 +387,10 @@ public static class TestDAL extends DALImpl {
 	public String getRegistryXQuery() {
 		throw new NotImplementedException("not implemntet");
 	}
+
+    protected URL findAccessURL(Service s) throws InvalidArgumentException {
+        return null;
+    }
 
 	
 }

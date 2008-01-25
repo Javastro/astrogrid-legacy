@@ -45,8 +45,8 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 	public void testExternalRegistry() throws Exception {
 		Object r = assertServiceExists(ExternalRegistry.class, "ivoa.externalRegistry");
 		
-		// call a method - triggers invocation.
-		assertNotNull(((ExternalRegistry)r).getRegistryOfRegistriesEndpoint());
+		// call a method - triggers invocation - nothing that can be called however without going to a service.
+
 	}
 	
 	public void testRegistry() throws Exception {

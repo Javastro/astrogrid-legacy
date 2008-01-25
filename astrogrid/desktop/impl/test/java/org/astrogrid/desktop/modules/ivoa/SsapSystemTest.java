@@ -19,6 +19,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 
@@ -91,7 +92,8 @@ public class SsapSystemTest extends InARTestCase {
 	
 	
 	private void checkSsapResource(Resource r) {
-		//@todo refine this later..
 		assertTrue(r instanceof Service);
+		assertTrue("not an instanceof of ssap service",r instanceof SsapService);
+		assertNotNull("ssap capability is null",((SsapService)r).findSsapCapability());
 	}	
 }

@@ -71,7 +71,7 @@ public class AbstractTestForParser extends TestCase {
 	}
 	/** verify that there's only one resource iin the parser , and return it */
 	public static Resource assertOnlyOne(ResourceStreamParser p) {
-		assertTrue(p.hasNext());
+		assertTrue("no resources",p.hasNext());
 		Object o = p.next();
 		assertNotNull(o);
 		assertTrue(o instanceof Resource);
@@ -93,10 +93,10 @@ public class AbstractTestForParser extends TestCase {
 	/** assert two arrays are equal */
 	public static void assertEquals(String msg,Object[] expected, Object[] actual) {
 	    if (expected == null) {
-	        assertNull(actual);
+	        assertNull("actuall is not null",actual);
 	        return;
 	    } else {
-	        assertNotNull(actual);
+	        assertNotNull("actual is null",actual);
 	    }
 		assertEquals("array sizes differ",expected.length,actual.length);
 		assertTrue(msg + ": " + ArrayUtils.toString(expected) + ", " + ArrayUtils.toString(actual)
@@ -184,7 +184,11 @@ public class AbstractTestForParser extends TestCase {
 	}
 	/** check the basics of a capabilitiy - expects description to be null */
 	public static void checkCapability(Capability c, String standardID, String type, int ifaceCount) {
-	    assertEquals("capability - standardId",standardID,c.getStandardID().toString());
+	    if (standardID == null) {
+	        assertNull("expected null standardID",c.getStandardID());
+	    } else {
+	        assertEquals("capability - standardId",standardID,c.getStandardID().toString());
+	    }
 	    assertTrue("capability - type",c.getType().indexOf(type) != -1);
 	    assertEquals("capabiltiy - iface count",ifaceCount,c.getInterfaces().length);
 	    assertNull("description is non-null",c.getDescription());
@@ -192,7 +196,11 @@ public class AbstractTestForParser extends TestCase {
 	
 	   /** check the basics of a capabilitiy  */
     public static void checkCapability(Capability c, String standardID, String type, int ifaceCount,String desc) {
-        assertEquals("capability - standardId",standardID,c.getStandardID().toString());
+        if (standardID == null) {
+            assertNull("expected null standardID",c.getStandardID());
+        } else {
+            assertEquals("capability - standardId",standardID,c.getStandardID().toString());
+        }
         assertTrue("capability - type",c.getType().indexOf(type) != -1);
         assertEquals("capabiltiy - iface count",ifaceCount,c.getInterfaces().length);
         assertEquals("capability - description",desc,c.getDescription());

@@ -1,0 +1,33 @@
+
+<ri:Resource created="2006-08-01T00:00:00" status="active" updated="2008-01-15T10:28:18" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:ssa="http://www.ivoa.net/xml/SSA/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vr:Service">
+        <title>CIELO-AGN XMM-Newton/RGS spectra</title>
+        <shortName>CIELO SSAP</shortName>
+        <identifier>ivo://esavo/cielossa</identifier>
+        <curation>
+            <publisher>European Space Agency</publisher>
+            <creator>
+                <name>European Space Agency</name>
+                <logo>http://esavo.esac.esa.int/img/logo.gif</logo>
+            </creator>
+            <contact>
+                <name>Dr. Raymond Plante</name>
+                <email>adil@ncsa.uiuc.edu</email>
+            </contact>
+        </curation>
+        <content>
+            <subject/>
+            <description>NOT PROVIDED</description>
+            <referenceURL>http://esavo02.esac.esa.int:8080/cielossaToolKit/cielossa.jsp</referenceURL>
+        </content>
+        <capability standardID="ivo://ivoa.net/std/SSA" xsi:type="ssa:SimpleSpectralAccess">
+            <interface xsi:type="vr:WebBrowser">
+                <accessURL use="base">http://esavo02.esac.esa.int:8080/cielossaToolKit/cielossa.jsp</accessURL>
+            </interface>
+            <complianceLevel>full</complianceLevel>
+            <dataSource>pointed</dataSource>
+            <creationType>cutout</creationType>
+            <maxSearchRadius>1.1</maxSearchRadius>
+            <maxRecords>2000</maxRecords>
+            <defaultMaxRecords>100</defaultMaxRecords>
+        </capability>
+    </ri:Resource>

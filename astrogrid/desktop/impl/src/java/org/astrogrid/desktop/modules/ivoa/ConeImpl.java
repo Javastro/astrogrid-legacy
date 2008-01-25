@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.8 2007/10/22 11:59:40 nw Exp $
+/*$Id: ConeImpl.java,v 1.9 2008/01/25 07:53:25 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
+import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -32,7 +33,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  *
  */
-public class ConeImpl extends DALImpl implements Cone {
+public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Cone {
 
     /** Construct a new ConeImpl
      * 
@@ -69,44 +70,40 @@ public class ConeImpl extends DALImpl implements Cone {
         return endpoint;
       
     }
-    
-    // overridden to find the right kind of capability.
-    protected final URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
-    	 
-        if (arg0.getScheme().equals("http")) {
-            try {
-                return arg0.toURL();
-            } catch (MalformedURLException e) {
-                throw new InvalidArgumentException(e);
-            }
-        } else if (arg0.getScheme().equals("ivo")) {
-                try {
-                    Resource r=  reg.getResource(arg0);
-                    // hope for now we've only got one service capability.
-                    if (! (r instanceof Service)) {
-                    	throw new InvalidArgumentException(arg0 + " is not a known type of service");
+
+    protected final URL findAccessURL(Service s) throws InvalidArgumentException {
+        if (s instanceof ConeService) {
+            ConeCapability cap = ((ConeService)s).findConeCapability();
+            Interface[] interfaces = cap.getInterfaces();
+            Interface std = null;
+            switch (interfaces.length) {
+                case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's cone capability");
+                case 1:
+                    std = interfaces[0];
+                default:    
+                    for (int i = 0; i < interfaces.length; i++) {
+                        Interface cand = interfaces[i];
+                        if ("std".equals(cand.getRole())) {
+                            std = cand;
+                        }
+                        // none marked as std - just choose the first.
+                        if (std == null) {
+                            std = interfaces[0];
+                        }
                     }
-                    Service s = (Service)r;
-                    if (s instanceof ConeService) {
-                    	ConeCapability cap = ((ConeService)s).findConeCapability();
-                    	return cap.getInterfaces()[0].getAccessUrls()[0].getValue();
-                    } else { // find an interface of ParamHttp
-                    	Capability[] caps = s.getCapabilities();
-                    	for (int i = 0; i < caps.length; i++) {
-                    		if (caps[i].getType().indexOf("ParamHTTP") != -1) {
-                    			return caps[i].getInterfaces()[0].getAccessUrls()[0].getValue();
-                    		}
-                    	}
-                    	
-                    	throw new InvalidArgumentException(arg0 + " does not provide an access URL");
-                    	
-                    }
-                } catch (ServiceException e) {
-                    throw new NotFoundException(e);
-                }
-        } else {
-            throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
-        }    	
+            }                            
+            return std.getAccessUrls()[0].getValue();
+        } else { // find an interface of ParamHttp? worth it? depends on CDS.
+//          Capability[] caps = s.getCapabilities(); // need to be searching interfaces now..
+//          for (int i = 0; i < caps.length; i++) {
+//          if (caps[i].getType().indexOf("ParamHTTP") != -1) {
+//          return caps[i].getInterfaces()[0].getAccessUrls()[0].getValue();
+//          }
+//          }
+
+            throw new InvalidArgumentException(s.getId() + " does not provide a Cone Search capability");
+
+        }  	
     }
 
 
@@ -118,38 +115,32 @@ public class ConeImpl extends DALImpl implements Cone {
     }
 
 	public String getRegistryAdqlQuery() {
-		 return "Select * from Registry where ( " +
-	        " @xsi:type like '%ConeSearch'  " +
+		 return "Select * from Registry r where ( " +
+	        "r.capability/@xsi:type like '%ConeSearch'  " +
+	        " or r.capability/@standardID = '" + ConeCapability.CAPABILITY_ID + "'"
 	 /*       " or ( @xsi:type like '%TabularSkyService' " + 
 			" and vr:identifier like 'ivo://CDS/%' " + 
 			" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
-	    */    " )  ";
+	    */   + " )  ";
 	        //@issue and (not ( @status = 'inactive' or @status='deleted') )";
 	}
-	
-	public String getRegistryXQuery() {
-		return "//vor:Resource[" +
-				"(" +
-				"@xsi:type &= '*ConeSearch' " +
-			//ised in astroscope - not good.	" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" + 
-				") " +
-				"and ( not ( @status = 'inactive' or @status='deleted'))]";
-			/* KMB suggested improvement
-		return "//RootResource[" +
-		"(" +
-		"matches(@xsi:type,'ConeSearch') " +
-		// @future - find out how to add CDS in.
-		//" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" + 
-		") " +
-		"and ( @status = 'active')]";
-*/
-	}
-
+	   public String getRegistryXQuery() {
+	        return "//vor:Resource[(" +
+	                "(capability/@xsi:type &= '*ConeSearch') " 
+	                + " or " 
+	                +"(capability/@standardID = '" + ConeCapability.CAPABILITY_ID + "')"
+	                // @future - find out how to add CDS in.
+	                //" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" +                
+	                + ") and ( not ( @status = 'inactive' or @status='deleted'))]";
+	    }
 }
 
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.9  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.8  2007/10/22 11:59:40  nw
 RESOLVED - bug 2372: VOScope cone search with +ve declination fails
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2372

@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.10 2007/04/18 15:47:05 nw Exp $
+/*$Id: SsapImpl.java,v 1.11 2008/01/25 07:53:25 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,25 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.net.URI;
+import java.net.URL;
+
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapCapability;
+import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.acr.ivoa.resource.SsapCapability;
+import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /** implementation of a component that does ssap queries.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
- * @future - at moment inherits most of functionality from the siap impl. need to watch when specs diverge.
  */
-public class SsapImpl extends SiapImpl implements Ssap {
+public class SsapImpl extends DALImpl implements Ssap {
 
     /** Construct a new SsapImpl
      * @param reg
@@ -32,20 +42,75 @@ public class SsapImpl extends SiapImpl implements Ssap {
      * @see org.astrogrid.acr.ivoa.Ssap#getRegistryQuery()
      */
     public String getRegistryAdqlQuery() {
-        return "Select * from Registry where " +
-        " @xsi:type like '%SimpleSpectrumAccess'  " ;
-        //@issue       " and (not (@status = 'inactive' or @status='deleted') )";
+        return "Select * from Registry r where ( " +
+        " r.capability/@xsi:type like '%SimpleSpectralAccess'  " 
+        +" or r.capability/@standardID = '" + SsapCapability.CAPABILITY_ID + "' )";
+//@issue        " and ( not (@status = 'inactive' or @status='deleted') )";
     }
     public String getRegistryQuery() {
     	return getRegistryAdqlQuery();
     }
     
     public String getRegistryXQuery() {
-		return "//vor:Resource[@xsi:type &= '*SimpleSpectrumAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
-    	//KMB 	return "//RootResource[matches(@xsi:type,'SimpleSpectrumAccess') and ( @status = 'active')]";
-  
+		return "//vor:Resource[("
+		+ "(capability/@xsi:type &= '*SimpleSpectralAccess')"
+		+ " or " 
+		+ " (capability/@standardID = '" + SsapCapability.CAPABILITY_ID +"' )"
+		+ " ) and ( not ( @status = 'inactive' or @status='deleted'))]";
     }
 
+    protected URL findAccessURL(Service s) throws InvalidArgumentException {
+        if (!(s instanceof SsapService)) {
+            throw new InvalidArgumentException(s.getId() + " does not provide a SSAP capability");
+        }
+        SsapCapability cap = ((SsapService)s).findSsapCapability();
+        Interface[] interfaces = cap.getInterfaces();
+        Interface std = null;
+        switch (interfaces.length) {
+            case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's ssap capability");
+            case 1:
+                std = interfaces[0];
+            default:    
+                for (int i = 0; i < interfaces.length; i++) {
+                    Interface cand = interfaces[i];
+                    if ("std".equals(cand.getRole())) {
+                        std = cand;
+                    }
+                    // none marked as std - just choose the first.
+                    if (std == null) {
+                        std = interfaces[0];
+                    }
+                }
+        }                            
+        return std.getAccessUrls()[0].getValue();   
+    }
+
+    /**
+     * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
+     */
+    public URL constructQuery(URI service, double ra, double dec, double size)
+            throws InvalidArgumentException, NotFoundException {
+        return addOption(
+                addOption(
+                        resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
+                    ,"SIZE",Double.toString(size));
+    }
+
+    /**
+     * @see org.astrogrid.acr.ivoa.Siap#constructQueryS(java.net.URI, double, double, double, double)
+     */
+    public URL constructQueryS(URI service, double ra, double dec, double ra_size, double dec_size)
+            throws InvalidArgumentException, NotFoundException {        
+        if (ra_size == dec_size) {
+            return constructQuery(service,ra,dec,ra_size);
+        } else {
+            String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
+            return addOption(
+                    addOption(
+                            resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
+                        ,"SIZE",sizeStr);
+        }
+    }
   
     
 }
@@ -53,6 +118,9 @@ public class SsapImpl extends SiapImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.11  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.10  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

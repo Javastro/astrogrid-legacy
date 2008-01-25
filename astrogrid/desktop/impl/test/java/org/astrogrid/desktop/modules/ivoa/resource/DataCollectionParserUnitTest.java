@@ -109,8 +109,9 @@ public class DataCollectionParserUnitTest extends AbstractTestForParser{
 		assertEquals(new String[] {"proprietary"},c.getRights());
 		
 		WebTester wt = basicResourceRendererTests(c);
-		wt.assertTextPresent("fits");
-		wt.assertTextPresent("proprietary");
+		wt.assertTextPresent(c.getFacilities()[0].getValue());
+		wt.assertTextPresent(c.getFormats()[0].getValue());
+		wt.assertTextPresent(c.getRights()[0]);
 		
 	}
 	
@@ -209,8 +210,11 @@ public class DataCollectionParserUnitTest extends AbstractTestForParser{
 		
 
 		WebTester wt = basicResourceRendererTests(c);
-		wt.assertTextPresent("votable");
-		//wt.assertTextPresent("64m");
+		wt.assertTextPresent(c.getRights()[0]);		
+		wt.assertTextPresent(c.getFormats()[0].getValue());
+        wt.assertTextPresent(c.getFormats()[1].getValue());        
+        wt.assertTextPresent(c.getCoverage().getWavebands()[0]);
+        
 		
 	}
 	
@@ -269,7 +273,7 @@ public class DataCollectionParserUnitTest extends AbstractTestForParser{
 
         
         WebTester wt = basicResourceRendererTests(c);
-        wt.assertTextPresent("radio");
+        wt.assertTextPresent(c.getCoverage().getWavebands()[0]);
         
     }
     

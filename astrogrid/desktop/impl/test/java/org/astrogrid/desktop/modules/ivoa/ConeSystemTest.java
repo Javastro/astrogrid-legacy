@@ -121,8 +121,9 @@ public class ConeSystemTest extends InARTestCase {
 
 	
 	private void checkConeResource(Resource r) {
-		//@todo refine this later..
+
 		assertTrue(r instanceof ConeService);
+		assertNotNull(((ConeService)r).findConeCapability());
 	}	
 	
 

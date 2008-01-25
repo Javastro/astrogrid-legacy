@@ -1,0 +1,100 @@
+
+<rs:Resource created="2008-01-14T22:12:16" status="active" updated="2008-01-14T22:12:16" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.0" xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v1.0" xmlns:ri_old="http://www.ivoa.net/xml/RegistryInterface/v0.1" xmlns:rs="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplication">
+        <title>AG Cross Matcher</title>
+        <shortName>AG Cross Matcher</shortName>
+        <identifier>ivo://org.astrogrid/CrossMatcher</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>not set</description>
+            <referenceURL>http://www.astrogrid.org/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition>
+            <parameters>
+                <parameterDefinition id="matches" type="VOTable">
+                    <name>Match VOTable</name>
+                    <description>The VOTable file containing the sources to match</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue/>
+                </parameterDefinition>
+                <parameterDefinition id="output" type="text">
+                    <name>output type</name>
+                    <description>This can be one of HTML VOTable of Ascii, with the default being VOTable</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue>VOTable</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="merged_output" type="VOTable">
+                    <name>Resulting VOTable</name>
+                    <description>The VOTable file containing result of the match</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue/>
+                </parameterDefinition>
+                <parameterDefinition id="maxMatches" type="integer">
+                    <name>maximum number of matches per target</name>
+                    <description>maximum number of matches per target</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue/>
+                </parameterDefinition>
+                <parameterDefinition id="targets" type="VOTable">
+                    <name>Target votable</name>
+                    <description>The VOTable file containing the target sources</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue/>
+                </parameterDefinition>
+                <parameterDefinition id="matchRadius" type="real">
+                    <name>Match Radius</name>
+                    <description>??</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue/>
+                </parameterDefinition>
+                <parameterDefinition id="radMax" type="real">
+                    <name>Maximum search radius</name>
+                    <description>??</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="full">
+                    <input>
+                        <pref maxOccurs="1" minOccurs="1" ref="targets"/>
+                        <pref maxOccurs="0" minOccurs="1" ref="matches"/>
+                        <pref maxOccurs="1" minOccurs="0" ref="matchRadius"/>
+                        <pref maxOccurs="1" minOccurs="0" ref="radMax"/>
+                    </input>
+                    <output>
+                        <pref maxOccurs="1" minOccurs="1" ref="merged_output"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref maxOccurs="1" minOccurs="1" ref="targets"/>
+                        <pref maxOccurs="0" minOccurs="1" ref="matches"/>
+                    </input>
+                    <output>
+                        <pref maxOccurs="1" minOccurs="1" ref="merged_output"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        </applicationDefinition>
+    </rs:Resource>

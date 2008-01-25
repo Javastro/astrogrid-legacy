@@ -2,7 +2,7 @@
 	<document>
 	<!-- see http://maven.apache.org/reference/plugins/changes/index.html 
 	     
-	     action - type="add|fix|remove|upXdate"
+	     action - type="add|fix|remove|update"
 	     	     - issue="bug-id"
 	     -->
 	<properties>
@@ -14,12 +14,17 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="c1eng-snapshot-2" date="2008-01-15">
+    <action dev="nw" type="update">
+        Upgraded registry client and parser to registry v1.0
+        </action>
 <action dev="jl" type="fix" issue="2419">
     TabularMetadataViewer.
     Fixed NPE when column value null.
     Fixed incorrect inclusion of columns after a sort.
-</action>
-<release version="2008.1.beta1" date="unreleased">
+</action>        
+</release>
+<release version="c1eng-snapshot-1" date="2008-01-15">
     <action dev="nw" type="fix" issue="2466">
     Improved :8080 selftest.
     </action>

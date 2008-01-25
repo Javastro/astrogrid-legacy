@@ -1,0 +1,133 @@
+
+<ri:Resource created="2007-12-11T16:42:43" status="active" updated="2007-12-11T16:42:43" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v1.0" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplication">
+        <title>GLIMPSE (Galactic Legacy Infrared Mid-Plane Survey Extraordinaire): Cea Application</title>
+        <identifier>ivo://wfau.roe.ac.uk/glimpse-dsa/wsa/ceaApplication</identifier>
+        <curation>
+            <publisher>WFAU, Institute for Astronomy, University of Edinburgh</publisher>
+            <creator>
+                <name>NASA/SSC/IRAC/Univeristy of Wisconsin-Madison</name>
+                <logo>http://watten.roe.ac.uk/wfau.gif</logo>
+            </creator>
+            <contact>
+                <name>Mark Holliman</name>
+                <email>msh@roe.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>GLIMPSE (Galactic Legacy Infrared Mid-Plane Survey Extraordinaire): Cea Application</subject>
+            <description>The GLIMPSE (Galactic Legacy Infrared Mid-Plane Survey Extraordinaire) Archive is an implementation of the GLIMPSE Highly Reliable Catalogue (GLMC, Intermediate revision; dated 9th April 2005) and the GLIMPSE More Complete Archive (GLMA, Intermediate revision; dated 9th April 2005). This implementation uses the same default values as specified by GLIMPSE.</description>
+            <referenceURL>http://www.astro.wisc.edu/sirtf/</referenceURL>
+            <type>Catalog</type>
+            <relationship>
+                <relationshipType>related-to</relationshipType>
+                <relatedResource>ivo://wfau.roe.ac.uk/glimpse-dsa/wsa</relatedResource>
+            </relationship>
+        </content>
+        <applicationDefinition>
+            <parameters>
+                <parameterDefinition id="Query" type="ADQL">
+                    <name>Query</name>
+                    <description>Astronomy Data Query Language that defines the search criteria</description>
+                </parameterDefinition>
+                <parameterDefinition id="Result" type="text">
+                    <name>Result</name>
+                    <description>Query results</description>
+                </parameterDefinition>
+                <parameterDefinition id="Format" type="text">
+                    <name>Format</name>
+                    <description>Return format for the results.</description>
+                    <defaultValue>VOTABLE</defaultValue>
+                    <optionList>
+                        <optionVal>VOTABLE</optionVal>
+                        <optionVal>VOTABLE-BINARY</optionVal>
+                        <optionVal>COMMA-SEPARATED</optionVal>
+                        <optionVal>HTML</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="CatTable" type="text">
+                    <name>Table</name>
+                    <description>Which table should be conesearched</description>
+                    <optionList>
+                        <optionVal>wsa.glimpse_hrc_inter</optionVal>
+                        <optionVal>wsa.glimpse_mca_inter</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="RA" type="RA">
+                    <name>RA</name>
+                    <description>Right-Ascension of cone search centre</description>
+                    <unit>deg</unit>
+                    <ucd>POS_RA_MAIN</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="DEC" type="Dec">
+                    <name>DEC</name>
+                    <description>Declination of cone search centre</description>
+                    <unit>deg</unit>
+                    <ucd>POS_DEC_MAIN</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="Radius" type="real">
+                    <name>Radius</name>
+                    <description>Radius of cone search area</description>
+                    <unit>deg</unit>
+                    <ucd>PHYS_SIZE_RADIUS</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="RA_Column_Name" type="text">
+                    <name>RA column name</name>
+                    <description>Name for input Right-Ascension column (or expression): column data in degrees</description>
+                    <unit>deg</unit>
+                </parameterDefinition>
+                <parameterDefinition id="Dec_Column_Name" type="text">
+                    <name>DEC column name</name>
+                    <description>Name for input Declination column (or expression): column data in degrees</description>
+                </parameterDefinition>
+                <parameterDefinition id="Find_Mode" type="text">
+                    <name>Find Mode</name>
+                    <description>Find mode for matches: BEST or ALL</description>
+                    <defaultValue>ALL</defaultValue>
+                    <optionList>
+                        <optionVal>BEST</optionVal>
+                        <optionVal>ALL</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="Input_VOTable" type="text">
+                    <name>Input VOTable</name>
+                    <description>Input VOTable, containing Right Ascension and Declination columns, for matching against</description>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="ADQL">
+                    <input>
+                        <pref ref="Query"/>
+                        <pref ref="Format"/>
+                    </input>
+                    <output>
+                        <pref ref="Result"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="ConeSearch">
+                    <input>
+                        <pref ref="CatTable"/>
+                        <pref ref="RA"/>
+                        <pref ref="DEC"/>
+                        <pref ref="Radius"/>
+                        <pref ref="Format"/>
+                    </input>
+                    <output>
+                        <pref ref="Result"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="MultiCone">
+                    <input>
+                        <pref ref="CatTable"/>
+                        <pref ref="Input_VOTable"/>
+                        <pref ref="RA_Column_Name"/>
+                        <pref ref="Dec_Column_Name"/>
+                        <pref ref="Radius"/>
+                        <pref ref="Find_Mode"/>
+                    </input>
+                    <output>
+                        <pref ref="Result"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        </applicationDefinition>
+    </ri:Resource>

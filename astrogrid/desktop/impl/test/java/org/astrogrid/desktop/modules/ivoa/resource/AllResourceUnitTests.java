@@ -24,14 +24,9 @@ public class AllResourceUnitTests {
 		suite.addTestSuite(ConeParserUnitTest.class); 
 		suite.addTestSuite(SiapParserUnitTest.class);
 		suite.addTestSuite(RegistryServiceParserUnitTest.class);
-		// done down to here.
-		
-		suite.addTestSuite(SpectrumServiceParserUnitTest.class); 
-		suite.addTestSuite(TimeServiceParserUnitTest.class); 
+		suite.addTestSuite(TimeServiceParserUnitTest.class);  // needs more samples.		
+		suite.addTestSuite(SpectrumServiceParserUnitTest.class);  // needs more samples.
 		suite.addTestSuite(CeaParserUnitTest.class); 
-		suite.addTestSuite(DataServiceParserUnitTest.class);
-		// catalog service.. - i.e. vizier.
-		// and the other kind - whatever it's called.
 		return suite;
 	}
 

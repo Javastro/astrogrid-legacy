@@ -69,7 +69,10 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.ivoa.resource.SimpleDataType;
 import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
+import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.acr.ivoa.resource.StandardSTC;
+import org.astrogrid.acr.ivoa.resource.StapCapability;
+import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
 import org.astrogrid.acr.ivoa.resource.TableDataType;
 import org.astrogrid.acr.ivoa.resource.TableService;
@@ -79,45 +82,49 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.Query;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkyPos;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.acr.ivoa.resource.SsapCapability.BandParam;
+import org.astrogrid.acr.ivoa.resource.SsapCapability.PosParam;
+import org.astrogrid.acr.ivoa.resource.SsapCapability.TimeParam;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 /** Streaming parser of vo resource objects.
- * 
+ * <p/>
  * implements the iterator interface to return parsed objects - which will be instances of {@link Resource}
- * 
+ * <p/>
  * the code structure here is quite procedural and in-line. It would be possible to structure
  * it using more OO principles, but this is a tight inner loop - vital to voexplorer appearing
  * responsive, so effort has been made to remove unneeded inefficiency (without over-optimising)
- * 
+ * Hence there's no use of strategy patterns or inheritance - both of which would make the code more modular.
+ * Here be dragons, treat with care.
+ * <p/>
  * The parser uses some nifty voodoo. As registry documents aren't very well typed,
  * and all kinds of fields are optional, plus other kinds of fields can be provided on a whim,
  * I've implemented a kind of 'duck-typing' - i.e. if a resource provides all the information for 
  * a particular schema type, even if it doesn't declare that it is that type in 'xsi:type', it becomes that 
  * type.
- * 
+ * <p/>
  * Obviously, to do this required multiple inheritance, which is only possible with 
  * interfaces in Java - so each registry schema is represented by an interface, which 
  * defines access methods for the components of the schema. 
- * 
+ * <p/>
  *  And as the number of java classes required to implement all possible
  * combinations of registry schema quickly becomes unmanageable, I use a dynamic
  * object-creaction technique instead. The parsed content of the registry entry is 
  * stuffed into a single map, with keys matching method names. So the 'content' object
- * is stoed under a key called 'getContent'. This allows any arbitrary elements, from other
+ * is stored under a key called 'getContent'. This allows any arbitrary elements, from other
  * schemata to be added (mixed-in if you like) during the parse.
- * 
+ * <p/>
  * Also during the parse, a list of the schema-types that this resource implements is built up.
- * This includes the xsi:types and capabilitirs it declares, plus other things deduced from duck-typing.
+ * This includes the xsi:types and capabilities it declares, plus other things deduced from duck-typing.
  * This list is implemented as a list of interfaces. At the end of the parse, java.lang.reflect code
  * is called to generate a proxy object which implements all the interfaces in the list, whose methods
  * are implemented by querying the internal map.
- * 
- * Result - a resource object, which may implement additional interfaces - this can be worked with
+ * <p/>
+ * The result is a resource object, which may implement additional interfaces - this can be worked with
  * using instanceof, etc, and to the client, it's not apparent that this is an object rolled-on-the-fly.
- * 
+ * <p/>
  * It also serializes, and transports via xmlrpc / rmi just as a normal bean would be expected to do.
  * 
  * @author Noel Winstanley
@@ -144,7 +151,6 @@ public final class ResourceStreamParser implements Iterator {
 	public ResourceStreamParser(XMLStreamReader in,boolean addProtocolKnowledge) {
 		this.in = new TrimmingXMLStreamReader(in);
 		this.addProtocolKnowledge = addProtocolKnowledge;
-        domBuilderFactory = DocumentBuilderFactory.newInstance();
 	}
 	protected final boolean addProtocolKnowledge;
 	protected final XMLStreamReader in;
@@ -176,7 +182,7 @@ public final class ResourceStreamParser implements Iterator {
 	// custom 'Empty' object - means 'no objects found'
 	//- to differentiate between 'null' which means 'not parsed yet'
 	protected static  final Object EMPTY_RESOURCE = new Object();
-    private DocumentBuilderFactory domBuilderFactory;
+    static final DocumentBuilderFactory domBuilderFactory = DocumentBuilderFactory.newInstance();
 
 	/** parse the next object on the stream
 	 * 
@@ -245,23 +251,24 @@ public final class ResourceStreamParser implements Iterator {
 			} else if (StringUtils.contains(xsiType,"StandardsSTC")) {
 			    ifaces.add(StandardSTC.class);
 			}
-			//@later - add applications and standards.
 		}
 	
-		final List validations = new ArrayList();
-		final List rights = new ArrayList();
-		final List capabilities = new ArrayList();
+		final List validations = new ArrayList(1);
+		final List rights = new ArrayList(1);
+		final List capabilities = new ArrayList(3);
+		//the following could be lazily initialized.. might save some space / object creation..
 		// used in organization, and data collection
-		final List facilities = new ArrayList();
-		final List instruments = new ArrayList();
+		final List facilities = new ArrayList(1);
+		final List instruments = new ArrayList(1);
 		// used in data collection
-		final List catalogues = new ArrayList();
-		final List formats = new ArrayList();
+		final List catalogues = new ArrayList(1);
+		final List formats = new ArrayList(2);
 		// used in catalogue service.
-		final List tables = new ArrayList();
+		final List tables = new ArrayList(4);
 		// used in registry service
-		final List managedAuthorities = new ArrayList();
-		
+		final List managedAuthorities = new ArrayList(2);
+		// used in appllications
+		final List voStandards = new ArrayList(1);
 		// case for each top-level element.
 		// if only java had a decent switch statement...
 		for (in.next(); ! (in.isEndElement() && in.getLocalName().equals("Resource")); in.next()){
@@ -308,8 +315,7 @@ public final class ResourceStreamParser implements Iterator {
                             m.put("getParameters", ConeProtocolKnowledge.parameters);
                             m.put("getInterfaces",ConeProtocolKnowledge.ifaces);        
                         }                        
-                    }
-                    if (cap instanceof SiapCapability) {
+                    } else if (cap instanceof SiapCapability) {
                         ifaces.add(SiapService.class);
                         m.put("findSiapCapability",cap);
                         if (addProtocolKnowledge) {
@@ -317,45 +323,45 @@ public final class ResourceStreamParser implements Iterator {
                             m.put("getParameters", SiapProtocolKnowledge.parameters);
                             m.put("getInterfaces",SiapProtocolKnowledge.ifaces);        
                         }                        
-                    }
-                    if (cap instanceof CeaServerCapability) {
+                    } else  if (cap instanceof CeaServerCapability) {
                         ifaces.add(CeaService.class);
                         m.put("findCeaServerCapability",cap);
-                    }    
-                    if (cap instanceof SearchCapability) {
+                    } else   if (cap instanceof SearchCapability) {
                         ifaces.add(RegistryService.class);
                         m.put("findSearchCapability",cap);                        
-                    }
-                    if (cap instanceof HarvestCapability) {
+                    } else    if (cap instanceof HarvestCapability) {
                         ifaces.add(RegistryService.class);
                         m.put("findHarvestCapability",cap); 
+                    } else     if (cap instanceof StapCapability) {
+                        ifaces.add(StapService.class);
+                        m.put("findStapCapability",cap);
+                    } else if (cap instanceof SsapCapability) {
+                        ifaces.add(SsapService.class);
+                        m.put("findSsapCapability",cap);
                     }
-                    //@todo add similar for ssap and stap too.
 					ifaces.add(Service.class); // it's a service
-
-				} else if (elementName.equals("ManagedApplications")) {//v0.10 cea sever legacy stuff.
-					URI[] managedApps = parseManagedApplications();
-					for (Iterator i = capabilities.iterator(); i.hasNext(); ) {
-						Object o = i.next();
-						if (o instanceof CeaServerCapability) {
-							((CeaServerCapability)o).setManagedApplications(managedApps);
-						}
-					}
-				} else if (elementName.equals("ApplicationDefinition")) { //v0.10 cea application
-					parseV10CeaApplication(m);
-					ifaces.add(CeaApplication.class);
+		// application
+				} else if (elementName.equals("voStandard")) {
+				    try {
+				        voStandards.add(new URI(in.getElementText()));
+				        ifaces.add(Application.class);
+				    } catch (URISyntaxException e) {
+				        logger.debug("voStandard",e);
+				    }
+	// cea application
+				} else if (elementName.equals("applicationDefinition")) { 
+					parseCeaApplication(m);
+					ifaces.add(CeaApplication.class);				
 				} else if (elementName.equals("coverage")) { // coverage info - used in various ifaces.
 					ifaces.add(HasCoverage.class);	
 					Coverage c = parseCoverage();
 					m.put("getCoverage",c);
 				} else if (elementName.equals("format")) { // used in datacollection. anywhere else?
 					formats.add(parseFormat());
-
 				} else if (elementName.equals("catalog")) {
 				    Catalog cat = parseCatalog();
 				    catalogues.add(cat);
-				    //does this indicate any interfaces - don't think so.
-				    
+				    //does this indicate any interfaces - don't think so.				    
 				} else if (elementName.equals("table")) { 
 					tables.add( parseTable());
 				} else if (elementName.equals("managedAuthority")) { // Registry
@@ -372,7 +378,9 @@ public final class ResourceStreamParser implements Iterator {
 		} // end Resource.
 		
 		
-		// duck-typing.
+		
+		// add in repeated slements.
+		m.put("getValidationLevel",validations.toArray(new Validation[validations.size()]));
 		if (ifaces.contains(Service.class)) {// if xsi or data thinks this is a service, add in those fields
 			m.put("getCapabilities",capabilities.toArray(new Capability[capabilities.size()]));
 			
@@ -387,28 +395,29 @@ public final class ResourceStreamParser implements Iterator {
 				ifaces.add(DataService.class);
 			}
 		}
-		// add in repeated slements.
-
-		m.put("getValidationLevel",validations.toArray(new Validation[validations.size()]));
 		if (ifaces.contains(Service.class) || ifaces.contains(DataCollection.class)) {// if xsi or data thinks this is a service, add in those fields
 			m.put("getRights",rights.toArray(new String[rights.size()]));
-		}
-		
-		if (ifaces.contains(Organisation.class) || ifaces.contains(DataCollection.class) || ifaces.contains(DataService.class)) {// add in required elements for this.
+		}		
+		if (ifaces.contains(Organisation.class) 
+		        || ifaces.contains(DataCollection.class) 
+		        || ifaces.contains(DataService.class)
+		        || ifaces.contains(TableService.class)) {
 			m.put("getFacilities",facilities.toArray(new ResourceName[facilities.size()]));
 			m.put("getInstruments",instruments.toArray(new ResourceName[instruments.size()]));
 		}
 		
-		if (ifaces.contains(CatalogService.class)) {
+		if (ifaces.contains(CatalogService.class) || ifaces.contains(TableService.class)) {
 			m.put("getTables",tables.toArray(new TableBean[tables.size()]));
-		}
-		
+		}		
 		if (ifaces.contains(DataCollection.class)) {
 			m.put("getFormats",formats.toArray(new Format[formats.size()]));
 			m.put("getCatalogues",catalogues.toArray(new Catalog[catalogues.size()]));
 		}
 		if (ifaces.contains(RegistryService.class)) {
 		    m.put("getManagedAuthorities",managedAuthorities.toArray(new String[managedAuthorities.size()]));	  
+		}
+		if (ifaces.contains(Application.class)) {
+		    m.put("getApplicationCapabilities",voStandards.toArray(new URI[voStandards.size()]));
 		}
 		Object o =  Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), (Class[])ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
 		logger.debug("Returning");
@@ -442,6 +451,14 @@ public final class ResourceStreamParser implements Iterator {
             logger.debug("invalid standard identifier",e);
         }        
         final Capability c;
+        final List interfaces = new ArrayList(2);
+        final List validations = new ArrayList(1);
+        List optionalProtols = null;
+        List stapFormats = null;
+        List ssapDataSource = null;
+        List ssapCreationType = null;
+        List ssapSupportedFrame = null;
+        List ssapSupports = null;
         
         if (StringUtils.contains(xsiType,"Harvest") 
                 && RegistryCapability.CAPABILITY_ID.equals(standardID)) {
@@ -452,24 +469,29 @@ public final class ResourceStreamParser implements Iterator {
         } else if (StringUtils.contains(xsiType,"Search")
                 && RegistryCapability.CAPABILITY_ID.equals(standardID)) {
             c = new SearchCapability();
+            optionalProtols = new ArrayList(1);            
         } else if (StringUtils.contains(xsiType,"CeaCapability")
                 || CeaServerCapability.CAPABILITY_ID.equals(standardID)) {
             c = new CeaServerCapability();
         } else if (StringUtils.contains(xsiType,"SimpleImageAccess")
                 || SiapCapability.CAPABILITY_ID.equals(standardID)) {
-            c = new SiapCapability();
-        } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess")
+            c = new SiapCapability();            
+        } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess") 
                 || SsapCapability.CAPABILITY_ID.equals(standardID)) {
             c = new SsapCapability();
+            ssapDataSource = new ArrayList(3);
+            ssapCreationType = new ArrayList(3);
+            ssapSupportedFrame = new ArrayList(3);
+            ssapSupports = new ArrayList(3);            
+        } else if (StringUtils.contains(xsiType,"SimpleTimeAccess")
+                || StapCapability.CAPABILITY_ID.equals(standardID)) {
+            c = new StapCapability();
+            stapFormats = new ArrayList(3);
         } else {
             c = new Capability();
         }
-        final List interfaces = new ArrayList();
-        final List validations = new ArrayList();
-        final List optionalProtols = new ArrayList();
         c.setType(xsiType);
         c.setStandardID(standardID);
-        //@todo add rules for ssap types into this cludge.
         try {
         for (in.next(); !( in.isEndElement() && in.getLocalName().equals("capability")); in.next()){
             if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -481,28 +503,53 @@ public final class ResourceStreamParser implements Iterator {
                     interfaces.add(parseInterface());
                 } else  if (elementName.equals("validationLevel")) {                    
                     validations.add(parseValidationLevel());
-                } else if (elementName.equals("maxRecords")) { // extension type.
+      // elements that occur in different types                    
+                } else if (elementName.equals("maxRecords")) { 
                     try {
                         int v= Integer.parseInt(in.getElementText());
                         if (c instanceof HarvestCapability) {
                             ((HarvestCapability)c).setMaxRecords(v);
-                        }
-                        if (c instanceof SearchCapability) {
+                        } else  if (c instanceof SearchCapability) {
                             ((SearchCapability)c).setMaxRecords(v);
-                        }
-                        if (c instanceof ConeCapability) {
+                        } else  if (c instanceof ConeCapability) {
                             ((ConeCapability)c).setMaxRecords(v);
-                        }
-                        if (c instanceof SiapCapability) {
+                        } else  if (c instanceof SiapCapability) {
                             ((SiapCapability)c).setMaxRecords(v);
+                        } else  if (c instanceof SsapCapability) {
+                            ((SsapCapability)c).setMaxRecords(v);
+                        } else if (c instanceof StapCapability) {
+                            ((StapCapability)c).setMaxRecords(v);
                         }
                     } catch (NumberFormatException e) {
                         logger.debug("capability - maxRecords",e);
-                    } 
+                    }
+                } else if (elementName.equals("maxFileSize")) {
+                    try {
+                        int v = Integer.parseInt(in.getElementText());
+                        if (c instanceof SiapCapability) {
+                            ((SiapCapability)c).setMaxFileSize(v);
+                        } else if (c instanceof SsapCapability) {
+                            ((SsapCapability)c).setMaxFileSize(v);
+                        }
+                    } catch (NumberFormatException e) {
+                        logger.debug("capability - maxFileSize",e);
+                    }            
+                } else if (elementName.equals("testQuery") ) {
+                    if (c instanceof ConeCapability) {
+                        ((ConeCapability)c).setTestQuery(parseConeQuery());
+                    } else if (c instanceof SiapCapability) {
+                        ((SiapCapability)c).setTestQuery(parseSiapQuery());
+                    } else if (c instanceof StapCapability) {
+                     ((StapCapability)c).setTestQuery(parseStapQuery());
+                    } else if (c instanceof SsapCapability) {
+                        ((SsapCapability)c).setTestQuery(parseSsapQuery());
+                    }
+     // registry specific
                 } else if (elementName.equals("optionalProtocol")  && c instanceof SearchCapability) {
                     optionalProtols.add(in.getElementText());
                 } else if (elementName.equals("extensionSearchSupport") && c instanceof SearchCapability){
                     ((SearchCapability)c).setExtensionSearchSupport(in.getElementText());
+      // cone specific
                 } else if (elementName.equals("verbosity") && c instanceof ConeCapability) {
                         ConeCapability cap = (ConeCapability)c;
                             try {
@@ -515,13 +562,11 @@ public final class ResourceStreamParser implements Iterator {
                             cap.setMaxSR(Float.valueOf(in.getElementText()).floatValue());
                         } catch (RuntimeException e) { // oh well
                     }
-                } else if (elementName.equals("testQuery") ) {
-                    if (c instanceof ConeCapability) {
-                        ((ConeCapability)c).setTestQuery(parseConeQuery());
-                    } else if (c instanceof SiapCapability) {
-                        ((SiapCapability)c).setTestQuery(parseSiapQuery());
-                    }
-                 // siap stuff.. luckily none of the names clash with cone.
+        // cea server specific
+                } else if (elementName.equals("managedApplications") && c instanceof CeaServerCapability) {
+                    URI[] applications = parseManagedApplications();
+                    ((CeaServerCapability)c).setManagedApplications(applications);
+       //siap specific                    
                 } else if (elementName.equals("imageServiceType") && c instanceof SiapCapability) {
                     SiapCapability cap = (SiapCapability)c;
                         cap.setImageServiceType(StringUtils.lowerCase(in.getElementText()));
@@ -531,16 +576,45 @@ public final class ResourceStreamParser implements Iterator {
                     ((SiapCapability)c).setMaxImageExtent(parseSkySize("maxImageExtent"));
                 } else if (elementName.equals("maxImageSize")  && c instanceof SiapCapability) {
                     ((SiapCapability)c).setMaxImageSize(parseImageSize());  
-                } else if (elementName.equals("maxFileSize")  && c instanceof SiapCapability) {
+          // stap specific
+                } else if (elementName.equals("supportPositioning") && c instanceof StapCapability) {
+                    ((StapCapability)c).setSupportPositioning(Boolean.valueOf(in.getElementText()).booleanValue());
+                } else if (elementName.equals("supportedFormats") && c instanceof StapCapability) {
+                    stapFormats.add(StringUtils.lowerCase(in.getElementText()));
+        // ssap specific
+                } else if (elementName.equals("complianceLevel") && c instanceof SsapCapability) {
+                    ((SsapCapability)c).setComplianceLevel(in.getElementText());
+                } else if (elementName.equals("dataSource") && c instanceof SsapCapability) {
+                    ssapDataSource.add(in.getElementText());
+                } else if (elementName.equals("creationType") && c instanceof SsapCapability) {
+                    ssapCreationType.add(in.getElementText());
+                } else if (elementName.equals("maxSearchRadius") && c instanceof SsapCapability) {
                     try {
-                        ((SiapCapability)c).setMaxFileSize(Integer.parseInt(in.getElementText()));
-                    } catch (RuntimeException e) {
+                        ((SsapCapability)c).setMaxSearchRadius(Double.parseDouble(in.getElementText()));
+                    } catch (NumberFormatException e) {
+                        logger.debug("capability - maxSearchRadius",e);
                     }
-                } else if (elementName.equals("maxRecords")  && c instanceof SiapCapability) {
+                } else if (elementName.equals("defaultMaxRecords") && c instanceof SsapCapability) {
                     try {
-                        ((SiapCapability)c).setMaxRecords(Integer.parseInt(in.getElementText()));
-                    } catch (RuntimeException e) {
+                        ((SsapCapability)c).setDefaultMaxRecords(Integer.parseInt(in.getElementText()));
+                    } catch (NumberFormatException e) {
+                        logger.debug("capability - defaultMaxRecords",e);
                     }                    
+                } else if (elementName.equals("maxAperture") && c instanceof SsapCapability) {
+                    try {
+                        ((SsapCapability)c).setMaxAperture(Double.parseDouble(in.getElementText()));
+                    } catch (NumberFormatException e) {
+                        logger.debug("capability - maxAperture",e);
+                    }                    
+                } else if (elementName.equals("supportedFrame") && c instanceof SsapCapability) {
+                        try {
+                            ssapSupportedFrame.add(new URI(in.getElementText()));
+                        } catch (URISyntaxException x) {
+                            logger.debug("URISyntaxException",x);                            
+                        }                                       
+                } else if (elementName.equals("supports") && c instanceof SsapCapability) {
+                    ssapSupports.add(in.getElementText());
+      // fallback                
                 } else {
                     // this design won't scale, but will do for now.
                     logger.debug("Unknown element" + elementName);
@@ -553,11 +627,21 @@ public final class ResourceStreamParser implements Iterator {
         } catch (XMLStreamException x) {
             logger.debug("Capability - XMLStreamException",x);
         }
+        // store array-values elements.
         c.setValidationLevel((Validation[])validations.toArray(new Validation[validations.size()]));
         c.setInterfaces((Interface[])interfaces.toArray(new Interface[interfaces.size()]));
         if (c instanceof SearchCapability) {
             SearchCapability s = (SearchCapability)c;
             s.setOptionalProtocol((String[])optionalProtols.toArray(new String[optionalProtols.size()]));
+        } else if (c instanceof StapCapability) {
+            StapCapability s = (StapCapability)c;
+            s.setSupportedFormats((String[])stapFormats.toArray(new String[stapFormats.size()]));
+        } else if (c instanceof SsapCapability) {
+            SsapCapability s = (SsapCapability)c;
+            s.setDataSources((String[])ssapDataSource.toArray(new String[ssapDataSource.size()]));
+            s.setCreationTypes((String[])ssapCreationType.toArray(new String[ssapCreationType.size()]));
+            s.setSupportedFrames((URI[])ssapSupportedFrame.toArray(new URI[ssapSupportedFrame.size()]));
+            s.setSupports((String[])ssapSupports.toArray(new String[ssapSupports.size()]));
         }
         return c;
     }
@@ -622,14 +706,177 @@ public final class ResourceStreamParser implements Iterator {
                         logger.debug("Unknown element" + elementName);
                     }
                     } catch (XMLStreamException e) {
-                        logger.debug("Cone Capability.TestQuery ",e);
+                        logger.debug("Siap Capability.TestQuery ",e);
                     }                           
                 }
             }
         } catch (XMLStreamException x) {
-            logger.debug("Cone Capability.TestQuery - XMLStreamException",x);
+            logger.debug("Siap Capability.TestQuery - XMLStreamException",x);
         } // end
         return q;       
+    }
+    
+    private StapCapability.Query parseStapQuery() {
+        final StapCapability.Query q= new StapCapability.Query();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("testQuery")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if (elementName.equals("pos")) {
+                        q.setPos(parseSkyPos());                   
+                    } else if(elementName.equals("size")) {
+                        q.setSize(parseSkySize("size"));                        
+                    } else if(elementName.equals("START")) {
+                                q.setStart(in.getElementText());
+                    } else if(elementName.equals("END")) {
+                        q.setEnd(in.getElementText());
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }
+                    } catch (XMLStreamException e) {
+                        logger.debug("Stap Capability.TestQuery ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("Siap Capability.TestQuery - XMLStreamException",x);
+        } // end
+        return q;       
+    }
+    
+    private SsapCapability.Query parseSsapQuery() {
+        SsapCapability.Query q = new SsapCapability.Query();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("testQuery")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if (elementName.equals("pos")) {
+                        q.setPos(parsePosParam());                   
+                    } else if(elementName.equals("size")) {
+                        try {
+                            q.setSize(Double.parseDouble(in.getElementText()));
+                        } catch (NumberFormatException e) {
+                            logger.debug("ssap query - size",e);
+                        }  
+                    } else if (elementName.equals("band")) {
+                        q.setBand(parseBandParam());
+                    } else if (elementName.equals("time")) {      
+                        q.setTime(parseTimeParam());
+                    } else if(elementName.equals("extras")) {
+                        q.setExtras(in.getElementText());
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }
+                    } catch (XMLStreamException e) {
+                        logger.debug("Ssap Capability.TestQuery ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("Ssap Capability.TestQuery - XMLStreamException",x);
+        } // end        
+        return q;
+    }
+    /**
+     * @return
+     */
+    private TimeParam parseTimeParam() {
+        TimeParam tp = new TimeParam();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("time")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if (elementName.equals("earliest")) {
+                        tp.setEarliest(in.getElementText());
+                    } else if (elementName.equals("latest")) {
+                            tp.setLatest(in.getElementText());                        
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }                    
+                    } catch (XMLStreamException e) {
+                        logger.debug("TimeParam ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("TimeParam - XMLStreamException",x);
+        } // end
+        return tp;
+    }
+    /** part of a ssap test query
+     * @return
+     */
+    private BandParam parseBandParam() {
+        BandParam bp = new BandParam();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("band")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if(elementName.equals("min")) {
+                            try {
+                                bp.setMin(Double.parseDouble(in.getElementText()));
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("max")) {
+                        try {
+                            bp.setMax(Double.parseDouble(in.getElementText()));
+                        } catch (RuntimeException e) {                           // oh well
+                        }
+                    } else if (elementName.equals("restFrame")) {
+                        bp.setRestFrame(in.getElementText());
+                    } else if (elementName.equals("name")) {
+                        bp.setName(in.getElementText());
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }                    
+                    } catch (XMLStreamException e) {
+                        logger.debug("bandParam ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("bandParam - XMLStreamException",x);
+        } // end
+        return bp;
+    }
+    /** part of a ssap test query
+     * @return
+     */
+    private PosParam parsePosParam() {
+        PosParam pp = new PosParam();
+        try {
+            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("pos")); in.next()){
+                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+                    try {
+                    final String elementName = in.getLocalName();
+                    if(elementName.equals("long")) {
+                            try {
+                                pp.setLong(Double.parseDouble(in.getElementText()));
+                            } catch (RuntimeException e) {                           // oh well
+                            }                        
+                    } else if(elementName.equals("lat")) {
+                        try {
+                            pp.setLat(Double.parseDouble(in.getElementText()));
+                        } catch (RuntimeException e) {                           // oh well
+                        }
+                    } else if (elementName.equals("refframe")) {
+                        pp.setRefframe(in.getElementText());
+                    } else {
+                        logger.debug("Unknown element" + elementName);
+                    }                    
+                    } catch (XMLStreamException e) {
+                        logger.debug("posParam ",e);
+                    }                           
+                }
+            }
+        } catch (XMLStreamException x) {
+            logger.debug("posParam - XMLStreamException",x);
+        } // end
+        return pp;
     }
     /**
      * @return
@@ -745,7 +992,7 @@ public final class ResourceStreamParser implements Iterator {
 	
 	protected Coverage parseCoverage() {
 		final Coverage c = new Coverage();
-		final List wavebands = new ArrayList();
+		final List wavebands = new ArrayList(4);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("coverage")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -758,8 +1005,11 @@ public final class ResourceStreamParser implements Iterator {
 					    }
 					} else if (elementName.equals("footprint")) {
 						c.setFootprint(parseResourceName());
-					} else if (elementName.equals("STCResourceProfile")) {
-                        DocumentBuilder builder = domBuilderFactory.newDocumentBuilder();
+					} else if (elementName.equals("STCResourceProfile")) {					  
+					    DocumentBuilder builder;
+					    synchronized(domBuilderFactory) {
+					        builder = domBuilderFactory.newDocumentBuilder();
+					    }
                         Document document = STAXUtils.read(builder,in,true);
 					    StcResourceProfile stc = new StcResourceProfile();
 					    stc.setStcDocument(document);
@@ -785,10 +1035,10 @@ public final class ResourceStreamParser implements Iterator {
 	
 	protected Content parseContent() {
 		final Content c = new Content();
-		final List subject = new ArrayList();
-		final List type = new ArrayList();
-		final List contentLevel = new ArrayList();
-		final List relationship = new ArrayList();
+		final List subject = new ArrayList(4);
+		final List type = new ArrayList(4);
+		final List contentLevel = new ArrayList(4);
+		final List relationship = new ArrayList(2);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("content")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -855,7 +1105,7 @@ public final class ResourceStreamParser implements Iterator {
 	
 	protected Relationship parseRelationship() {
 		final Relationship rel = new Relationship();
-		final List resource = new ArrayList();
+		final List resource = new ArrayList(2);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("relationship")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -883,10 +1133,10 @@ public final class ResourceStreamParser implements Iterator {
 
 	protected Curation parseCuration() {
 		final Curation c = new Curation();
-		final List creator = new ArrayList();
-		final List contributor = new ArrayList();
-		final List contact = new ArrayList();
-		final List date = new ArrayList();
+		final List creator = new ArrayList(2);
+		final List contributor = new ArrayList(2);
+		final List contact = new ArrayList(2);
+		final List date = new ArrayList(2);
 		try {
 			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("curation")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1051,16 +1301,14 @@ public final class ResourceStreamParser implements Iterator {
 	///--------------------- Parsing of Service subtype
 	
 
-	/** parses the managed applications (top level in resoucer) for later additionb to a cea server capability */
 	private URI[] parseManagedApplications() {
-		List result = new ArrayList();
+		List result = new ArrayList(4);
 		try {
-			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("ManagedApplications")); in.next()){
+			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("managedApplications")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 					try {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("ApplicationReference")) {
-						
 						String s = (in.getElementText());
 						if (s != null) {
 						try {
@@ -1092,7 +1340,7 @@ public final class ResourceStreamParser implements Iterator {
 	private Catalog parseCatalog() {
 		Catalog c = new Catalog();
 		
-		final List tables = new ArrayList();
+		final List tables = new ArrayList(2);
 		try {
 		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("catalog")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
@@ -1122,7 +1370,7 @@ public final class ResourceStreamParser implements Iterator {
 	private TableBean parseTable() {
 		String name = null;
 		String description = null;
-		final List columns = new ArrayList();
+		final List columns = new ArrayList(10);
 		String role = in.getAttributeValue(null,"role");
 		try {
 		for (in.next(); !( in.isEndElement() && in.getLocalName().equals("table")); in.next()){
@@ -1190,22 +1438,21 @@ public final class ResourceStreamParser implements Iterator {
 		return new ColumnBean(name,description,ucd,datatype,unit
 		        ,std);
 	}
-	/** parses a legacy cea app desc. takes the result map as a parameter, 
-	 * as this method needs to return 2 results - parameters and interfaces.
-	 * @param m
-	 */
-	private void parseV10CeaApplication(Map m) {
-		List params = new ArrayList();
-		List ifaces = new ArrayList();
+
+	private void parseCeaApplication(Map m) {
+		List params = new ArrayList(10);
+		List ifaces = new ArrayList(3);
 		try {
-			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("ApplicationDefinition")); in.next()){
+			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("applicationDefinition")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 					final String elementName = in.getLocalName();
-					if (elementName.equals("ParameterDefinition")) {
-						params.add(parseParameter());
-					} else 	if (elementName.equals("Interface")) {	
-						ifaces.add(parseCeaInterface());	
-					} else if (elementName.equals("Interfaces") || elementName.equals("Parameters")) {
+					if (elementName.equals("parameterDefinition")) {
+						params.add(parseCeaParameter());
+					} else 	if (elementName.equals("interfaceDefinition")) {	
+						ifaces.add(parseCeaInterface());
+					} else if (elementName.equals("applicationType")) {
+					    m.put("getApplicationKind",StringUtils.lowerCase(in.getElementText()));
+					} else if (elementName.equals("interfaces") || elementName.equals("parameters")) {
 						// ignore.
 					} else {
 						logger.debug("Unknown element" + elementName);
@@ -1213,39 +1460,45 @@ public final class ResourceStreamParser implements Iterator {
 				}
 			}
 			} catch (XMLStreamException x) {
-				logger.debug("v10 cea app - XMLStreamException",x);
+				logger.debug("cea app - XMLStreamException",x);
 			}	
 			m.put("getParameters", params.toArray(new ParameterBean[params.size()]));
 			m.put("getInterfaces", ifaces.toArray(new InterfaceBean[ifaces.size()]));
 	}
 	
-	private ParameterBean parseParameter() {
-		String name = in.getAttributeValue(null,"name");
-		String uiName = null;
-		String description = null;
-		String ucd = null;
-		String defaultValue = null;
-		String units = null;
-		String type = in.getAttributeValue(null,"type");
-		String subtype = in.getAttributeValue(null,"subtype");
-		List options = new ArrayList();
+	private ParameterBean parseCeaParameter() {
+	    ParameterBean pb = new ParameterBean();
+	    pb.setId(in.getAttributeValue(null,"id"));
+	    pb.setType(in.getAttributeValue(null,"type"));
+	    String arrSz = in.getAttributeValue(null,"array");
+	    if (arrSz != null) {
+	        pb.setArraysize(arrSz);
+	    }
+		List options = new ArrayList(3);
+		List defValues = new ArrayList(1);
 		try {
-			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("ParameterDefinition")); in.next()){
+			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("parameterDefinition")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 					final String elementName = in.getLocalName();
 					try {
-					if (elementName.equals("UI_Name")) {
-						uiName = in.getElementText();
-					} else 	if (elementName.equals("UI_Description")) {	
-						description = in.getElementText();
-					} else 	if (elementName.equals("UCD")) {	
-						ucd = in.getElementText();
-					} else 	if (elementName.equals("DefaultValue")) {	
-						defaultValue = in.getElementText();
-					} else 	if (elementName.equals("Units")) {	
-						units = in.getElementText();	
-					} else if (elementName.equals("OptionVal")) {
+					if (elementName.equals("name")) {
+					    pb.setName(in.getElementText());
+					} else 	if (elementName.equals("description")) {
+					    pb.setDescription(in.getElementText());
+					} else 	if (elementName.equals("unit")) {	
+					    pb.setUnit(in.getElementText());
+					} else 	if (elementName.equals("ucd")) {
+					    pb.setUcd(in.getElementText());
+					} else if (elementName.equals("UType")) {
+					    pb.setUType(in.getElementText());
+					} else if (elementName.equals("mimeType")) {
+					    pb.setMimeType(in.getElementText());					
+					} else 	if (elementName.equals("defaultValue")) {
+					    defValues.add(in.getElementText());
+					} else if (elementName.equals("optionVal")) {
 						options.add(in.getElementText());
+					} else if (elementName.equals("optionList")) {
+					    // ignored.
 					} else {
 						logger.debug("Unknown element" + elementName);
 					}
@@ -1256,19 +1509,22 @@ public final class ResourceStreamParser implements Iterator {
 			}
 			} catch (XMLStreamException x) {
 				logger.debug("parameterBean - XMLStreamException",x);
-			}		
-			return new ParameterBean (name,uiName, description, ucd,defaultValue, units, type, subtype
-					, options.size() == 0 ? null : (String[])options.toArray(new String[options.size()])
-							);
+			}			
+			pb.setDefaultValues((String[])defValues.toArray(new String[defValues.size()]));
+			if (options.size() != 0) {
+			    pb.setOptions((String[])options.toArray(new String[options.size()]));
+			}
+			return pb;
 	}
 	
 	private InterfaceBean parseCeaInterface() {
 		boolean inInput = true;
-		List inputs = new ArrayList();
-		List outputs = new ArrayList();
-		String name = in.getAttributeValue(null,"name");
+		List inputs = new ArrayList(8);
+		List outputs = new ArrayList(4);
+		String name = in.getAttributeValue(null,"id");
+		String description = null;
 		try {
-			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("Interface")); in.next()){
+			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("interfaceDefinition")); in.next()){
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 					final String elementName = in.getLocalName();
 					try {
@@ -1276,10 +1532,12 @@ public final class ResourceStreamParser implements Iterator {
 						inInput = true;
 					} else 	if (elementName.equals("output")) {	
 						inInput = false;
+					} else if (elementName.equals("description")) {
+					    description = in.getElementText();
 					} else if (elementName.equals("pref")) {
-						final String maxString = in.getAttributeValue(null,"maxoccurs");
+						final String maxString = in.getAttributeValue(null,"maxOccurs");
 						int max =  maxString == null ? 1 : Integer.parseInt(maxString);
-						final String minString = in.getAttributeValue(null,"minoccurs");
+						final String minString = in.getAttributeValue(null,"minOccurs");
 						int min =  minString == null ? 1 : Integer.parseInt(minString);
 						String ref =  in.getAttributeValue(null,"ref");
 						
@@ -1301,7 +1559,7 @@ public final class ResourceStreamParser implements Iterator {
 			} catch (XMLStreamException x) {
 				logger.debug("table - XMLStreamException",x);
 			}		
-			return new InterfaceBean (name
+			return new InterfaceBean (name, description
 					, (ParameterReferenceBean[])inputs.toArray(new ParameterReferenceBean[inputs.size()])
 					, (ParameterReferenceBean[])outputs.toArray(new ParameterReferenceBean[outputs.size()])
 
@@ -1315,24 +1573,20 @@ public final class ResourceStreamParser implements Iterator {
 	protected Interface parseInterface() {
 	    final String type = in.getAttributeValue(XSI_NS,"type");
 		final Interface iface;
-		final List urls = new ArrayList();
-		final List security = new ArrayList();
-		final List wsdlURLs;	
-		final List params;
+		final List urls = new ArrayList(2);
+		final List security = new ArrayList(2);
+		List wsdlURLs = null;
+		List params = null;
 		if (StringUtils.contains(type,"ParamHTTP")) {
 		    iface = new ParamHttpInterface();
-		    wsdlURLs = null;
-		    params = new ArrayList();
+		    params = new ArrayList(4);
 		} else if (StringUtils.contains(type,"WebService") 
 		        || StringUtils.contains(type,"OAISOAP") // special case for registry.
 		        ) {
 		    iface = new WebServiceInterface();
-		    wsdlURLs = new ArrayList();
-		    params = null;
+		    wsdlURLs = new ArrayList(1);
 		} else {
 		    iface = new Interface();
-		    wsdlURLs = null;
-		    params = null;
 		}
 		iface.setVersion(in.getAttributeValue(null,"version"));
 		iface.setRole(in.getAttributeValue(null,"role"));

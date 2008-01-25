@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,7 +52,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /** Streaming implementation of registry client for v1.0
- * @fixme - improve result extraction to avoiod use of //, and fix orphaned namespace attr.
  * @author Noel Winstanley
  * @since Aug 1, 20061:30:54 AM
  */
@@ -72,20 +72,60 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		
 	}
 	
-	/** processor that creates a dom document */
+	/** processor that builds a DOM document
+	 * optionally may cut-out a subdocument from the response, or
+	 * may create a document fro the entire response. */
 	public static class DocumentBuilderStreamProcessor implements StreamProcessor {
 		protected Document doc;
+        private final boolean cutoutSingleResource;
+        /** access the constructed document */
 		public Document getDocument() {
 			return this.doc;
 		}
+		private static final QName RESOURCE = new QName(XPathHelper.VOR_NS,"Resource");
 		public void process(XMLStreamReader r) throws Exception {
-			DocumentBuilder builder;
+		    if (cutoutSingleResource) {
+		        // scan until we find the resource element.
+		        for (; r.hasNext(); r.next()) {
+		            if (r.isStartElement() && RESOURCE.equals(r.getName())) {
+		                    constructDOM(r);
+		                    // done- no need to look at the tail.
+		                    return;
+		                }		            
+		            }		       
+		    } else {
+		        // make a dom from the whole lot.
+		        constructDOM(r);
+		    }
+		}
+        /**
+         * @param r
+         * @throws ParserConfigurationException
+         * @throws XMLStreamException
+         */
+        private void constructDOM(XMLStreamReader r)
+                throws ParserConfigurationException, XMLStreamException {
+            DocumentBuilder builder;
 			synchronized (fac) {
 				builder = fac.newDocumentBuilder();
 			}
-		 this.doc = STAXUtils.read(builder,r,false);
-		 
-		}
+		 this.doc = STAXUtils.read(builder,r,true);
+        }
+		/**
+         * construct a non-cutting out document builder.
+         */
+        public DocumentBuilderStreamProcessor() {
+            this(false);
+        }
+        /**
+         * @param b if true, find the first vor:Resource and use this as the document root element.
+         * else create a document root from the entire stream. 
+         */
+        public DocumentBuilderStreamProcessor(boolean cutoutSingleResource) {
+            this.cutoutSingleResource = cutoutSingleResource;
+            
+        }
+        
 	}
 	
 
@@ -257,23 +297,28 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	}
 
 	public Document getIdentityXML(URI endpoint) throws ServiceException {
-		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
+		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor(true);
 		getIdentityStream(endpoint,proc);
-		Document doc =  proc.getDocument();
-		NodeList resultList = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"Resource");
-		if (resultList.getLength() != 1) {
-			throw new ServiceException("No identity document returned");			
+		Document doc = proc.getDocument();
+		if (doc == null) {
+		    throw new ServiceException("No identity document returned");
 		}
-		//@todo do this cutting out as part of the stream processor.
-		Element el = (Element)resultList.item(0);
-		Document result;
-		try {
-			result = DomHelper.newDocument();
-			result.appendChild(result.importNode(el,true));
-			return result;
-		} catch (ParserConfigurationException x) {
-			throw new ServiceException(x);
-		}
+		return doc;
+		
+//		 this cutting out is now done as part of the stream processor.
+//		NodeList resultList = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"Resource");
+//		if (resultList.getLength() != 1) {
+//			throw new ServiceException("No identity document returned");			
+//		}
+//		Element el = (Element)resultList.item(0);
+//		Document result;
+//		try {
+//			result = DomHelper.newDocument();
+//			result.appendChild(result.importNode(el,true));
+//			return result;
+//		} catch (ParserConfigurationException x) {
+//			throw new ServiceException(x);
+//		}
 	}
 
 	public void getIdentityStream(URI endpoint,StreamProcessor proc) throws ServiceException {
@@ -310,23 +355,27 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 
 	public Document getResourceXML(URI endpoint, URI ivorn)
 			throws NotFoundException, ServiceException {
-		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor();
+		DocumentBuilderStreamProcessor proc = new DocumentBuilderStreamProcessor(true);
 		getResourceStream(endpoint,ivorn,proc);
 		Document doc =  proc.getDocument();
-		NodeList resultList = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"Resource");
-		if (resultList.getLength() != 1) {
-			throw new NotFoundException(ivorn.toString());
+		if (doc == null) {
+		    throw new NotFoundException(ivorn.toString());
 		}
-		//@todo do this cutting out as part of the stream processor.
-		Element el = (Element)resultList.item(0);
-		Document result;
-		try {
-			result = DomHelper.newDocument();
-			result.appendChild(result.importNode(el,true));
-			return result;
-		} catch (ParserConfigurationException x) {
-			throw new ServiceException(x);
-		}
+		return doc;
+//		this cutting out is now done as part of the stream processor.
+//		NodeList resultList = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"Resource");
+//		if (resultList.getLength() != 1) {
+//			throw new NotFoundException(ivorn.toString());
+//		}
+//		Element el = (Element)resultList.item(0);
+//		Document result;
+//		try {
+//			result = DomHelper.newDocument();
+//			result.appendChild(result.importNode(el,true));
+//			return result;
+//		} catch (ParserConfigurationException x) {
+//			throw new ServiceException(x);
+//		}
 	}
 	
 
@@ -448,7 +497,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
     protected String prependProlog(String xquery) {
         String[][] ns = XPathHelper.listDefaultNamespaces();
         StrBuilder sb = new StrBuilder();
-
+ 
         for (int i = 0; i < ns.length; i++) {
             sb.append("declare namespace ")
                 .append(ns[i][0])

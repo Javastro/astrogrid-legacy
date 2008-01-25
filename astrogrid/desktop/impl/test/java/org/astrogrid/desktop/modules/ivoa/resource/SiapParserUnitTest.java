@@ -104,7 +104,6 @@ public class SiapParserUnitTest extends AbstractTestForParser {
         assertEmpty(catS.getFacilities());
         assertEmpty(catS.getInstruments());
         assertEmpty(catS.getTables());
-
         
         Capability cap = s.getCapabilities()[0];
         checkCapability(cap,"ivo://ivoa.net/std/SIA","SimpleImageAccess",1);
@@ -172,9 +171,15 @@ public class SiapParserUnitTest extends AbstractTestForParser {
         Coverage coverage = catS.getCoverage();
         checkCoverage(coverage,null,true,true,new String[]{"x-ray"});
         
+        SiapCapability scap = (SiapCapability)cap;
         WebTester wt = basicResourceRendererTests(s);
         wt.assertTextPresent("Image");
-        wt.assertTextPresent("5000");       
+        wt.assertTextPresent(scap.getImageServiceType());
+        wt.assertTextPresent("" + scap.getMaxFileSize());
+        wt.assertTextPresent("" + scap.getMaxRecords());
+        wt.assertTextPresent("" + queryRegion.getLat());
+        wt.assertTextPresent("" + imageSize.getLat());
+        wt.assertTextPresent("" + imageExtent.getLong());
     }
     
     public void testSiapService2() throws Exception {
@@ -295,9 +300,17 @@ public class SiapParserUnitTest extends AbstractTestForParser {
         Coverage coverage = catS.getCoverage();
         checkCoverage(coverage,null,true,true,new String[]{"millimeter"});
         
+        SiapCapability scap = (SiapCapability)cap;
         WebTester wt = basicResourceRendererTests(s);
         wt.assertTextPresent("Image");
-        wt.assertTextPresent("500000");       
+        wt.assertTextPresent(scap.getImageServiceType());
+        wt.assertTextPresent("" + scap.getMaxFileSize());
+        wt.assertTextPresent("" + scap.getMaxRecords());
+        wt.assertTextPresent("" + queryRegion.getLat());
+        wt.assertTextPresent("" + imageSize.getLat());
+        wt.assertTextPresent("" + imageExtent.getLong());
+        wt.assertTextPresent(phi.getQueryType());
+        wt.assertTextPresent(phi.getResultType());        
     }
 
 }

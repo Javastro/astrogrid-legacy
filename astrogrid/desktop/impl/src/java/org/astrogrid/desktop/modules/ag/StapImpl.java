@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.10 2007/10/23 09:26:00 nw Exp $
+/*$Id: StapImpl.java,v 1.11 2008/01/25 07:53:25 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,9 +21,15 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.ConeCapability;
+import org.astrogrid.acr.ivoa.resource.ConeService;
+import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.StapCapability;
+import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 
-/** Implementaiton of a component that does siap queries.
+/** Implementaiton of a component that does stap queries.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  * @modified Noel Winstanley changed from using Calendar to using Date.
  *
@@ -122,26 +128,60 @@ public class StapImpl extends DALImpl implements Stap {
 
  
 	public String getRegistryAdqlQuery() {
-        return "Select * from Registry where " +
-        " @xsi:type like '%SimpleTimeAccess'  " +
-        " and @status = 'active'";
+        return "Select * from Registry r where ( " +
+        " r.capability/@xsi:type like '%SimpleTimeAccess'  " +
+        " or r.capability/@standardID = '" + StapCapability.CAPABILITY_ID + "' " +
+        ") and @status = 'active'";
 	}
 
 	public String getRegistryXQuery() {
-		return "//vor:Resource[@xsi:type &= '*SimpleTimeAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
-//KMB 	return "//RootResource[matches(@xsi:type,'SimpleTimeAccess') and ( @status = 'active')]";
-
+		return "//vor:Resource[("
+	+"(capability/@xsi:type &= '*SimpleTimeAccess')"
+	+ " or "
+	+ " (capability/@standardID = '" + StapCapability.CAPABILITY_ID + "')"
+	+ ") and ( not ( @status = 'inactive' or @status='deleted'))]";
 	}
 
 	public String getRegistryQuery() {
 		throw new NotImplementedException("not avalable in stap");
 	}
 
+    protected URL findAccessURL(Service s) throws InvalidArgumentException {
+        if (s instanceof StapService) {
+            StapCapability cap = ((StapService)s).findStapCapability();
+            Interface[] interfaces = cap.getInterfaces();
+            Interface std = null;
+            switch (interfaces.length) {
+                case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's stap capability");
+                case 1:
+                    std = interfaces[0];
+                default:    
+                    for (int i = 0; i < interfaces.length; i++) {
+                        Interface cand = interfaces[i];
+                        if ("std".equals(cand.getRole())) {
+                            std = cand;
+                        }
+                        // none marked as std - just choose the first.
+                        if (std == null) {
+                            std = interfaces[0];
+                        }
+                    }
+            }                            
+            return std.getAccessUrls()[0].getValue();
+        } else {
+            throw new InvalidArgumentException(s.getId() + " does not provide a STAP capability");
+
+        }   
+    }
+
 }
 
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.11  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.10  2007/10/23 09:26:00  nw
 RESOLVED - bug 2189: How to query stap services
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2189

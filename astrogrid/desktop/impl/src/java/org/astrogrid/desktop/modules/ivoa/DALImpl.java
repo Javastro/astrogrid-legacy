@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.17 2007/12/12 13:54:15 nw Exp $
+/*$Id: DALImpl.java,v 1.18 2008/01/25 07:53:25 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,6 @@ import uk.ac.starlink.votable.TableHandler;
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
- *@todo move to new registry
  */
 public abstract class DALImpl implements Dal{
     /**
@@ -105,16 +104,36 @@ public abstract class DALImpl implements Dal{
                     	throw new InvalidArgumentException(arg0 + " is not a known type of service");
                     }
                     Service s = (Service)r;
-                    if (s.getCapabilities().length == 0 || s.getCapabilities()[0].getInterfaces().length == 0 || s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0){
-                    	throw new InvalidArgumentException(arg0 + " does not provide an access URL");
-                    }
-                    return s.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
+                    URL u = findAccessURL(s);
+                    return u != null ? u : findFirstAccessURL(s);
                 } catch (ServiceException e) {
                     throw new NotFoundException(e);
                 }
         } else {
             throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
         }    	
+    }
+    
+    /** abstract method - subclasses should implement to find the corrent accessURL
+     * in a given service.
+     * @param s
+     * @return
+     */
+    protected abstract URL findAccessURL(Service s) throws InvalidArgumentException ;
+
+    /** Helper function - find the first url in the first interface in the first capability.
+     * used as last resort - subtypes should provide their own mechanism to search for a url. 
+     * @param arg0
+     * @param s
+     * @return
+     * @throws InvalidArgumentException
+     */
+    protected URL findFirstAccessURL( Service s)
+            throws InvalidArgumentException {
+        if (s.getCapabilities().length == 0 || s.getCapabilities()[0].getInterfaces().length == 0 || s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0){
+        	throw new InvalidArgumentException(s.getId() + " does not provide an access URL");
+        }
+        return s.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
     }
     
     /** Adds an option - safely handling case of nulls, options that already occur, urls ending with ? or &
@@ -456,6 +475,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.18  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.17  2007/12/12 13:54:15  nw
 astroscope upgrade, and minor changes for first beta release
 

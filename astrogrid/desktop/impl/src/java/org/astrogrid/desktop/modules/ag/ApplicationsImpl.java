@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.27 2008/01/21 09:53:58 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.28 2008/01/25 07:53:25 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.CeaServerCapability;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
@@ -113,13 +114,12 @@ public class ApplicationsImpl implements ApplicationsInternal {
    
 	public String getRegistryAdqlQuery() {
 	     return "Select * from Registry where " +
-	     " (@xsi:type like '%CeaApplicationType' or " +
-	     " @xsi:type like '%CeaHttpApplicationType')" ; //+
+	     " (@xsi:type like '%CeaApplicationType')" ; //+
 	     //@issue" and ( not( @status = 'inactive' or @status = 'deleted') )";
 	}
 	
 	public String getRegistryXQuery() {
-		return "//vor:Resource[(@xsi:type &= '*CeaApplicationType' or @xsi:type &= '*CeaHttpApplicationType')" +
+		return "//vor:Resource[(@xsi:type &= '*CeaApplication')" +
 				" and ( not ( @status = 'inactive' or @status='deleted'))]";
 /* KMB
 		return "//RootResource[(matches(@xsi:type,'.*:CeaApplicationType') or matches(@xsi:type,'.*:CeaHttpApplicationType'))" +
@@ -172,7 +172,9 @@ public class ApplicationsImpl implements ApplicationsInternal {
     
     
   public String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
-	  return getInfoFor(getCeaApplication(applicationName));
+	  final CeaApplication app = getCeaApplication(applicationName);
+	  
+    return getInfoFor(app);
   }
   
 
@@ -493,7 +495,6 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
    
 
     //@todo return service info for other kinds of server.
-    //@fixme work out correct prefix for cea namespace.
 	public Service[] listServersProviding(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
 		CeaApplication c = getCeaApplication(arg0);
 		if (c instanceof Service) { // it's already a service - this is a 'fake' cea application on a different protocol.
@@ -501,9 +502,10 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 		}
 			
 		Resource[] res =  nuReg.xquerySearch("//vor:Resource[not (@status='inactive' or @status='deleted') " +
-		//KMB 	Resource[] res =  nuReg.xquerySearch("//RootResource[@status='active' " +
 	
-				"and cea:ManagedApplications/cea:ApplicationReference='"+ arg0 +"']");
+				"and capability[@xsi:type &= 'CeaCapability' or @standardID='"
+		        + CeaServerCapability.CAPABILITY_ID
+		        +"']/managedApplications/ApplicationReference='"+ arg0 +"']");
 		List result = new ArrayList();
 		// check ttypes.
 		for (int i = 0; i < res.length; i++) {
@@ -620,6 +622,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.28  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.27  2008/01/21 09:53:58  nw
 Incomplete - task 134: Upgrade to reg v1.0
 

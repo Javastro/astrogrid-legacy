@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.24 2007/12/12 13:54:15 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.25 2008/01/25 07:53:25 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -864,7 +864,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		StringBuffer sb = new StringBuffer("for $r in //vor:Resource[not (@status = 'inactive' or @status= 'deleted')]\nwhere (");
 		for (Iterator i = l.iterator(); i.hasNext();) {
 			URI id = (URI) i.next();
-			sb.append("$r/vr:identifier = '").append(id.toString()).append("'"); // @todo - am doing straight match here, not 'like' - hope it ignores whitespace - need to test this.
+			sb.append("$r/identifier = '").append(id.toString()).append("'"); // @todo - am doing straight match here, not 'like' - hope it ignores whitespace - need to test this.
 			if (i.hasNext()) {
 				sb.append(" or ");
 			}
@@ -957,6 +957,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.25  2008/01/25 07:53:25  nw
+Complete - task 134: Upgrade to reg v1.0
+
 Revision 1.24  2007/12/12 13:54:15  nw
 astroscope upgrade, and minor changes for first beta release
 

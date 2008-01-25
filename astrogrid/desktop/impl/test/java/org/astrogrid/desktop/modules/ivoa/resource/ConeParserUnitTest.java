@@ -133,7 +133,9 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	
 		WebTester wt = basicResourceRendererTests(s);
 		wt.assertTextPresent("Cone");
-		wt.assertTextPresent("5000");		
+		wt.assertTextPresent("5000");
+		wt.assertTextPresent(i.getAccessUrls()[0].getUse());
+		wt.assertTextPresent(i.getAccessUrls()[0].getValueURI().toString());
 	}
 	
 	   public void testConeService2() throws Exception {
@@ -224,7 +226,9 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	    
 	        WebTester wt = basicResourceRendererTests(s);
 	        wt.assertTextPresent("Cone");
+	        wt.assertTextPresent(cap.getDescription());
 	        wt.assertTextPresent("999999999");       
+	        wt.assertTextPresent("10");
 	    }
 
 	   public void testConeService3() throws Exception {
@@ -325,6 +329,9 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	        WebTester wt = basicResourceRendererTests(s);
 	        wt.assertTextPresent("Cone");
 	        wt.assertTextPresent("99999");       
+	        wt.assertTextPresent("180");
+	        wt.assertTextPresent(phi.getQueryType());
+	        wt.assertTextPresent(phi.getResultType());
 	        wt.assertTextPresent("All-Sky");
 	    }
 	      public void testConeService4() throws Exception {
@@ -414,6 +421,14 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 	        
 	            WebTester wt = basicResourceRendererTests(s);
 	            wt.assertTextPresent("Cone");
-	            wt.assertTextPresent("2000");       
+	            wt.assertTextPresent("2000");  
+	            wt.assertTextPresent("180");
+	            wt.assertTextPresent(phi.getQueryType());
+	            wt.assertTextPresent(phi.getResultType());	     
+	            wt.assertTextPresent(par.getDescription());
+	            wt.assertTextPresent(par.getName());
+	            wt.assertTextPresent(par.getUcd());
+	            wt.assertTextPresent(par.getUnit());
+	            wt.assertTextPresent(dataType.getType());
 	        }
 }
