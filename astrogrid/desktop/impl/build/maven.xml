@@ -61,7 +61,7 @@ common definitions and hooks used by the impl projects.
     	
 <!--  all the libs are now in maven.dist.bin.assembly.dir -here we list all the other things we're going to do with them-->
 <postGoal name="dist:build-bin">
-<echo>Built the distribution - now strip, sign and package it</echo>
+<echo>Built the distribution - now strip and bundle it</echo>
 <!--  strip surplus classes -->
 	<attainGoal name="jar-strip" />
 <!--  package as a jar file -->
@@ -71,7 +71,8 @@ common definitions and hooks used by the impl projects.
     .-->	
 	<!-- smoke-test -->
 	<attainGoal name="smoke-test" />
-<!--  package as an osx app -->
+<!--  package as an osx app 
+dont' do any packaging at the moment
 	<j:set var="tmpVar" value="${os.name}" />
 	<j:choose>
 	   <j:when test="${tmpVar == 'Mac OS X'}">
@@ -81,15 +82,16 @@ common definitions and hooks used by the impl projects.
 		<echo>Not running on OSX - can't build mac bundle</echo>
 	</j:otherwise>	
 	</j:choose>
-	<!-- package as an installer - not any more
+	 package as an installer - not any more
 	<attainGoal name="installer" />		
-     -->
+     
 	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
-	<!--  package as a webstart app - not any more.
+	  package as a webstart app - not any more.
 		<attainGoal name="webstart" />
-     -->
+     
 	</j:if>
 	<attainGoal name="generate-artifact-index" />
+-->
 </postGoal>
 
 
