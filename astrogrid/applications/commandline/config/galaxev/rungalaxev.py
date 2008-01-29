@@ -146,6 +146,7 @@ mycsp = open(cspshell, 'w')
 os.chmod(cspshell, 0777)
 print >> mycsp, '#!/bin/csh \n'
 print >> mycsp, 'setenv bc03 "'+galaxevdir+'src/"' 
+print >> mycsp, 'setenv FILTERS $bc03/FILTERBIN.RES'
 
 print >> mycsp, galaxevdir +'src/csp_galaxev.sh <<EOF'
 
@@ -222,6 +223,7 @@ mygpl = open(gplshell, 'w')
 os.chmod(gplshell, 0777)
 print >> mygpl, '#!/bin/csh'
 print >> mygpl, 'setenv bc03 "'+galaxevdir+'src/"' 
+print >> mygpl, 'setenv FILTERS $bc03/FILTERBIN.RES'
 
 print >> mygpl, galaxevdir +'src/galaxevpl <<EOF'
 
@@ -260,6 +262,7 @@ if (inhash['COSMO_EVO'] == 'Y'):
     os.chmod(cmevshell, 0777)
     print >> mycmev, '#!/bin/csh \n'
     print >> mycmev, 'setenv bc03 "'+galaxevdir+'src/"' 
+    print >> mycmev, 'setenv FILTERS $bc03/FILTERBIN.RES'
 
     print >> mycmev, galaxevdir +'src/cm_evolution.sh <<EOF'
     print >> mycmev,  str(inhash['H0']) + ',' + str(inhash['Omega']) + ',' + str(inhash['Omega_lambda'])
