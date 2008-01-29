@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.20 2008/01/17 11:49:29 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.21 2008/01/29 10:52:45 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */

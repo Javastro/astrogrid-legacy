@@ -399,7 +399,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-pal-query</artifactId>
-            <version>${astrogrid.pal.version}</version>
+            <version>2007.2.05pl</version>
             <type>jar</type>
         </dependency>    	
     	

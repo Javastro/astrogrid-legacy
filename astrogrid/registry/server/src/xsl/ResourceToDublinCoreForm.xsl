@@ -31,20 +31,20 @@
               <td><strong>Resource status</strong></td>
               <td>
                 <select name="status">
+					<xsl:choose>
+                    <xsl:when test="@status='active'">
+                      <option selected="yes">active</option>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <option>active</option>
+                    </xsl:otherwise>
+                  </xsl:choose>                
                   <xsl:choose>
                     <xsl:when test="@status='inactive'">
                       <option selected="yes">inactive</option>
                     </xsl:when>
                     <xsl:otherwise>
                       <option>inactive</option>
-                    </xsl:otherwise>
-                  </xsl:choose>
-                  <xsl:choose>
-                    <xsl:when test="@status='active'">
-                      <option selected="yes">active</option>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <option>active</option>
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
@@ -153,7 +153,7 @@
               <td><strong>Email address of contact person</strong></td>
               <td>
                 <input type="text" size="48" name="curation.contact.email">
-                  <xsl:attribute name="value"><xsl:value-of select="curation/contact.html"/></xsl:attribute>
+                  <xsl:attribute name="value"><xsl:value-of select="curation/contact/email"/></xsl:attribute>
                 </input>
               </td>
               <td><a href="help/curation/contact.html">help</a></td>
@@ -189,7 +189,7 @@
               <td>Source of the resource content</td>
               <td>
                 <input type="text" size="48" name="content.source">
-                  <xsl:attribute name="value"><xsl:value-of select="content.source"/></xsl:attribute>
+                  <xsl:attribute name="value"><xsl:value-of select="content/source"/></xsl:attribute>
                 </input>
               </td>
               <td><a href="help/content/source.html">help</a></td>
@@ -198,7 +198,7 @@
               <td><strong>URL for web page describing this resource</strong></td>
               <td>
                 <input type="text" size="48" name="content.referenceURL">
-                  <xsl:attribute name="value"><xsl:value-of select="content.referenceURL"/></xsl:attribute>
+                  <xsl:attribute name="value"><xsl:value-of select="content/referenceURL"/></xsl:attribute>
                 </input>
               </td>
               <td><a href="help/content/referenceURL.html">help</a></td>
@@ -272,7 +272,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@content/type='Transformation'">
+                    <xsl:when test="content/type='Transformation'">
                       <option selected="yes">Transformation</option>
                     </xsl:when>
                     <xsl:otherwise>

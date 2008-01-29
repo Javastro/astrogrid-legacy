@@ -37,7 +37,9 @@
     <!-- <agr:AstrogridResource> -->
       <ri:Resource updated="{$updated}" status="{$status}" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
         xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+        xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
         xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+        xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1" 
         xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1">
         
         <!-- Copy the fixed attributes -->

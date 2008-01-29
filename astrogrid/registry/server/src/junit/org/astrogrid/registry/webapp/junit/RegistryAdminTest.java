@@ -86,6 +86,7 @@ public class RegistryAdminTest extends TestCase {
     public void testUpdateMultipleRecordsv1_0() throws Exception {
         Document doc = askQueryFromFile("Multiple_ResourceRecordsv1_0.xml");
         Document resultDoc = rasv1_0.updateInternal(doc);
+        System.out.println("here is resultDoc in multUpdatev1_0 = " + DomHelper.DocumentToString(resultDoc));
         assertTrue(!resultDoc.getDocumentElement().hasChildNodes());
         assertEquals(resultDoc.getDocumentElement().getLocalName(),"UpdateResponse");        
     }  

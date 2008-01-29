@@ -16,7 +16,7 @@
    <!-- <agr:AstrogridResource> -->
       <ri:Resource 
         xsi:type="{$xsiType}"
-        status="inactive"
+        status="active"
         created="{$created}"
         updated="{$updated}"
         xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"

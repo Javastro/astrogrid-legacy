@@ -5,7 +5,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   	xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
-        xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1">
+    xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1">
 	
 	<xsl:param name="ceaURL"/>
 	
@@ -29,7 +29,7 @@
     <xsl:template match="capability">
     </xsl:template>
     
-    <xsl:template match="table">
+     <xsl:template match="capability[not(following::capability)]">
        <xsl:copy-of select="document($ceaURL)//cost"/>
        <xsl:copy-of select="document($ceaURL)//licence"/>
        <xsl:copy-of select="document($ceaURL)//openSource"/>
@@ -39,6 +39,23 @@
        <xsl:copy-of select="document($ceaURL)//sourceCodeURL"/>
        <xsl:copy-of select="document($ceaURL)//applicationDefinition"/>
     </xsl:template>
+    
+    <xsl:template match="table">
+    
+    </xsl:template>
+
+<!--
+    <xsl:template match="table[not(following::table)]">
+       <xsl:copy-of select="document($ceaURL)//cost"/>
+       <xsl:copy-of select="document($ceaURL)//licence"/>
+       <xsl:copy-of select="document($ceaURL)//openSource"/>
+       <xsl:copy-of select="document($ceaURL)//dataFormat"/>
+       <xsl:copy-of select="document($ceaURL)//voStandard"/>
+       <xsl:copy-of select="document($ceaURL)//sourceLanguage"/>
+       <xsl:copy-of select="document($ceaURL)//sourceCodeURL"/>
+       <xsl:copy-of select="document($ceaURL)//applicationDefinition"/>
+    </xsl:template>
+-->
 
     <xsl:template match="@*|node()">
         <xsl:copy>
