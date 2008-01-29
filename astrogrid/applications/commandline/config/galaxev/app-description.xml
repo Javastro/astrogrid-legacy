@@ -6,10 +6,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1
 	                http://software.astrogrid.org/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd">
-  <!-- The application name is its IVO-ID.
-       The org.astrogrid.localhost part is the authority ID;
-       and sleep is the resource key. -->
-  <Application name="org.astrogrid/Galaxev" version="2003">
+   <Application name="org.astrogrid/Galaxev" version="2003">
     <ceab:Parameters>
       <ceai:CmdLineParameterDefn xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
         name="IMF" type="text" fileRef="false" switchType="keyword" commandSwitch="IMF">
@@ -715,7 +712,7 @@ SDSS filters as function of galaxy Age</agpd:UI_Description>
             <agpd:UI_Name>Other Magnitudes</agpd:UI_Name>
             <agpd:UI_Description>mags and colours with more filter sets</agpd:UI_Description>
          </CmdLineParameterDefn>
-         <CmdLineParameterDefn name="SPECTRA" type="binary" fileRef="true" localFileName="GalaxevOut_ages">
+         <CmdLineParameterDefn name="SPECTRA" type="binary" fileRef="true" localFileName="GalaxevOut.161">
             <agpd:UI_Name>Spectra at Ages</agpd:UI_Name>
             <agpd:UI_Description> Spectra (lambda
 &amp; fluxes at chosen ages).</agpd:UI_Description>
@@ -724,6 +721,11 @@ SDSS filters as function of galaxy Age</agpd:UI_Description>
             <agpd:UI_Name>Magnitudes Filter 1</agpd:UI_Name>
             <agpd:UI_Description> Magnitude
 redshift evolution in FILTER1</agpd:UI_Description>
+         </CmdLineParameterDefn>
+         <CmdLineParameterDefn name="MAGZF2" type="binary" fileRef="true" localFileName="GalaxevOut.magnitude_FILTER2">
+            <agpd:UI_Name>Magnitudes Filter 2</agpd:UI_Name>
+            <agpd:UI_Description> Magnitude
+redshift evolution in FILTER2</agpd:UI_Description>
          </CmdLineParameterDefn>
       
     </ceab:Parameters>
@@ -772,8 +774,8 @@ redshift evolution in FILTER1</agpd:UI_Description>
                     <pref ref="ABMAG" minoccurs="0"/>
                     <pref ref="VEGAMAGS" minoccurs="0"/>
                     <pref ref="OTHERMAGS" minoccurs="0"/>
-                    <pref ref="SPECTRA" minoccurs="0"/>
                     <pref ref="MAGZF1" minoccurs="0"/>
+                    <pref ref="SPECTRA" minoccurs="0"/>
         </output>
       </Interface>
     </Interfaces>
