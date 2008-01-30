@@ -134,7 +134,6 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		WebTester wt = basicResourceRendererTests(s);
 		wt.assertTextPresent("Cone");
 		wt.assertTextPresent("5000");
-		wt.assertTextPresent(i.getAccessUrls()[0].getUse());
 		wt.assertTextPresent(i.getAccessUrls()[0].getValueURI().toString());
 	}
 	

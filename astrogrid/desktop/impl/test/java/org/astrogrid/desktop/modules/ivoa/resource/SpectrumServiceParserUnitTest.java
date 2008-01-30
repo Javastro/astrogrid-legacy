@@ -67,7 +67,7 @@ public class SpectrumServiceParserUnitTest extends AbstractTestForParser {
                 }}
         });
         WebTester wt = basicResourceRendererTests(s);
-        wt.assertTextPresent("Time");
+        wt.assertTextPresent("Spectr");
         wt.assertTextPresent(scap.getComplianceLevel());
         wt.assertTextPresent(scap.getCreationTypes()[0]);
         wt.assertTextPresent(scap.getDataSources()[0]);

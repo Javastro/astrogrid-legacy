@@ -14,7 +14,16 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="c1eng-snapshot-2" date="2008-01-15">
+<release version="2008.1.beta2" date="2008-01-30">
+    <action dev="nw" type="fix" issue="2520">
+    URLs now visible in voexplorer resource display
+    </action>
+    <action dev="nw" due-to="silvia">
+    Corrected labelling of STAP services
+    </action>
+    <action dev="nw" issue="2526">
+        Pointed help at beta site
+        </action>
     <action dev="nw" type="update">
         Upgraded registry client and parser to registry v1.0
         </action>
@@ -23,8 +32,6 @@
     Fixed NPE when column value null.
     Fixed incorrect inclusion of columns after a sort.
 </action>        
-</release>
-<release version="c1eng-snapshot-1" date="2008-01-15">
     <action dev="nw" type="fix" issue="2466">
     Improved :8080 selftest.
     </action>

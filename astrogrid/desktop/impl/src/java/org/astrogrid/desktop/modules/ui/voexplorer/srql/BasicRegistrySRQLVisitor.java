@@ -27,7 +27,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		targets.put("shortname", new String[] {"$r/shortName"});
 		targets.put("title",new String[] {"$r/title"});
 		targets.put("name",new String[] {"$r/shortName","$r/title"});
-		targets.put("id",new String[] {"$r/identifier¤"});
+		targets.put("id",new String[] {"$r/identifier"});
 		targets.put("subject",new String[]{"$r/content/subject"}); 
 		targets.put("source",new String[]{"$r/content/source"});
 		targets.put("description", new String[] {"$r/content/description"});
@@ -40,6 +40,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		        "@xsi:type"
 		        ,"$r/content/type"
 		        ,"$r/capability/@xsi:type"
+		        ,"$r/capability/@standardID"
 		        }); 
 		targets.put("level", new String[] {"$r/content/contentLevel"});
 		targets.put("waveband",new String[] {"$r/coverage/waveband"}); 

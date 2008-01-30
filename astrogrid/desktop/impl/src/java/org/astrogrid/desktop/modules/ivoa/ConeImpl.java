@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.9 2008/01/25 07:53:25 nw Exp $
+/*$Id: ConeImpl.java,v 1.10 2008/01/30 08:38:37 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /**
@@ -117,7 +118,7 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 	public String getRegistryAdqlQuery() {
 		 return "Select * from Registry r where ( " +
 	        "r.capability/@xsi:type like '%ConeSearch'  " +
-	        " or r.capability/@standardID = '" + ConeCapability.CAPABILITY_ID + "'"
+	        " or r.capability/@standardID = '" + StandardIds.CONE_SEARCH_1_0 + "'"
 	 /*       " or ( @xsi:type like '%TabularSkyService' " + 
 			" and vr:identifier like 'ivo://CDS/%' " + 
 			" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
@@ -128,7 +129,7 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 	        return "//vor:Resource[(" +
 	                "(capability/@xsi:type &= '*ConeSearch') " 
 	                + " or " 
-	                +"(capability/@standardID = '" + ConeCapability.CAPABILITY_ID + "')"
+	                +"(capability/@standardID = '" + StandardIds.CONE_SEARCH_1_0 + "')"
 	                // @future - find out how to add CDS in.
 	                //" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" +                
 	                + ") and ( not ( @status = 'inactive' or @status='deleted'))]";
@@ -138,6 +139,13 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.10  2008/01/30 08:38:37  nw
+Incomplete - task 313: Digest registry upgrade.
+
+RESOLVED - bug 2526: voexdesktop help needs to point to beta.astrogrid.org
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2526
+Incomplete - task 314: get login working again.
+
 Revision 1.9  2008/01/25 07:53:25  nw
 Complete - task 134: Upgrade to reg v1.0
 

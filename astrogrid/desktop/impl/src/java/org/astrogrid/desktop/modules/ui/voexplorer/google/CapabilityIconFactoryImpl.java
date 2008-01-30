@@ -21,6 +21,8 @@ import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.acr.ivoa.resource.SsapService;
+import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
@@ -80,7 +82,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 	
 	private static final String[] TOOL_TIP_FRAGMENTS = new String[] {
 		 "Catalog cone search service"
-		,"Time Series access service (STAP)"
+		,"Time range access service (STAP)"
 		,"Spectrum access service (SSAP)"
 		,"Image access service (SIAP)"
 		,"Downloadable Table"
@@ -107,8 +109,8 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		// Carefule - order of tests here must match with order of icons in constructor.
 		if (r instanceof Service) {
 		caps.set(ix++,r instanceof ConeService || ConeProtocol.isConeSearchableCdsCatalog(r));
-		caps.set(ix++,r.getType().indexOf("SimpleTimeAccess") != -1);
-		caps.set(ix++,r.getType().indexOf("Spectrum") != -1);		
+		caps.set(ix++,r instanceof StapService);
+		caps.set(ix++,r instanceof SsapService);	
 		caps.set(ix++,r instanceof SiapService);
 		caps.set(ix++,ConeProtocol.isCdsCatalog(r));
 		caps.set(ix++,r instanceof CeaService || r instanceof RegistryService|| SystemFilter.isBoringServiceTitle(r) || SystemFilter.isBoringRelationship(r));

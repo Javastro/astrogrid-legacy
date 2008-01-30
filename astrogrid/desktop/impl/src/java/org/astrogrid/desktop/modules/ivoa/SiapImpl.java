@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.14 2008/01/25 07:53:25 nw Exp $
+/*$Id: SiapImpl.java,v 1.15 2008/01/30 08:38:37 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.xml.sax.SAXException;
 
@@ -91,7 +92,7 @@ public class SiapImpl extends DALImpl implements Siap {
 	public String getRegistryAdqlQuery() {
         return "Select * from Registry r where " +
         " r.capability/@xsi:type like '%SimpleImageAccess'  " 
-        +" or r.capability/@standardID = '" + SiapCapability.CAPABILITY_ID + "' ";
+        +" or r.capability/@standardID = '" + StandardIds.SIAP_1_0 + "' ";
 //@issue        " and ( not (@status = 'inactive' or @status='deleted') )";
 	}
 
@@ -99,7 +100,7 @@ public class SiapImpl extends DALImpl implements Siap {
 		return "//vor:Resource[(" +
 		"(capability/@xsi:type &= '*SimpleImageAccess')"
 		+ " or "
-		+ "(capability/@standardID = '" + SiapCapability.CAPABILITY_ID + "' )"
+		+ "(capability/@standardID = '" + StandardIds.SIAP_1_0 + "' )"
 		+") and ( not ( @status = 'inactive' or @status='deleted'))]";
 	
 	}
@@ -153,6 +154,13 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.15  2008/01/30 08:38:37  nw
+Incomplete - task 313: Digest registry upgrade.
+
+RESOLVED - bug 2526: voexdesktop help needs to point to beta.astrogrid.org
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2526
+Incomplete - task 314: get login working again.
+
 Revision 1.14  2008/01/25 07:53:25  nw
 Complete - task 134: Upgrade to reg v1.0
 

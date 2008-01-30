@@ -77,7 +77,9 @@ public class LoginFactory {
 
     public static UserInformation mkUserInfo(String community, String username, String password) throws URISyntaxException {
         return new UserInformation(
-                new URI(new UserIvorn(community,username,"").toString())
+            new URI(new UserIvorn(community,username,"").toString())
+                //@todo should I use the new form of user here - unsure what else this affects yet.
+             //   new URI("ivo://" + username + "@" + community)
                 ,username
                 ,password
                 ,community

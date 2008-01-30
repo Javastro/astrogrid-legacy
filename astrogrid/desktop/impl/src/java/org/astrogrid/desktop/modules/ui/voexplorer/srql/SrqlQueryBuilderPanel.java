@@ -336,28 +336,30 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		// I've not put in the whole list of types - andy doesn't want them all.
 		// this is a mix of stuff in subject/type and @xsi:type - shortest distinct prefixes.
 		, new DescribedEnumerationTemplate("Type","type"){{
-			setTooltip("Search in 'Resource Type' and 'Content - Type'");			
+			setTooltip("Search in 'Resource Type', 'Content - Type' and 'Capability - Type'");			
 		}
 		protected void populate(List vals) {
 			vals.add(new DescribedValue("Archive",""));
-			vals.add(new DescribedValue("Catalog",""));
+			vals.add(new DescribedValue("Catalog","")); // includes catalog service.
 			vals.add(new DescribedValue("Survey",""));
 			vals.add(new DescribedValue("Simulation",""));
 			vals.add(new DescribedValue("BasicData",""));
 			vals.add(new DescribedValue("Cone","Catalog cone search service"));
 			vals.add(new DescribedValue("Image","Image access service (SIAP)"));
-			vals.add(new DescribedValue("Spectrum","Spectrum access service (SSAP)"));
-			vals.add(new DescribedValue("Time","Time Series access service (STAP)"));
+			vals.add(new DescribedValue("Spectral","Spectrum access service (SSAP)"));
+			vals.add(new DescribedValue("Time","Time range access service (STAP)"));
 			vals.add(new DescribedValue("CeaApplication","Offline application (CEA)"));
+			//@todo describe these.
+			vals.add(new DescribedValue("DataCollection",""));
+			vals.add(new DescribedValue("DataService",""));
+			vals.add(new DescribedValue("TableService",""));
+			vals.add(new DescribedValue("CatalogService",""));
 			vals.add(new DescribedValue("Registry",""));
-			vals.add(new DescribedValue("Service","Other services"));	
+			//vals.add(new DescribedValue("Service","Other services"));	
 			vals.add(new DescribedValue("Authority",""));
 			vals.add(new DescribedValue("Organisation",""));
-			vals.add(new DescribedValue("DataCollection",""));
 		}}
-		//@future - replace these with capabilities -
-		//   @future capability - tricky. - don't know how to do this yet. - mix of capability and capabilitty type.
-		// will come out with registry 1.0
+
 		// @future also to add - validation-level 
 		// @future add date-based querying.
 		

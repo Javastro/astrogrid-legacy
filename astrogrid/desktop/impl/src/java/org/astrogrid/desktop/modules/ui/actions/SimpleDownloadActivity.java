@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
@@ -19,6 +20,7 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.provider.local.LocalFileSystem;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
+import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -101,6 +103,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         }
         URI saveDir = chooser.getSelectedFile().toURI();
      */
+        //@fixme - generate nicer file names 
 		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, files)).start();
 		
 	}
@@ -108,11 +111,15 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 	public static URI findDownloadLinkForCDSResource(CatalogService r) {
 	    Capability[] caps = r.getCapabilities();
 	    for (int i = 0; i < caps.length; i++) {
-            if (caps[i].getType().indexOf("ParamHTTP") != -1) {
-                org.astrogrid.acr.ivoa.resource.Interface[] ifaces = caps[i].getInterfaces();
+	        Interface[] interfaces = caps[i].getInterfaces();
+	        for (int j = 0; j < interfaces.length; j++) {
+                Interface iface = interfaces[j];
+                
+            if (StringUtils.contains(iface.getType(),"ParamHTTP")) {
                 // assume a single inteface
-                return ifaces[0].getAccessUrls()[0].getValueURI();
+                return iface.getAccessUrls()[0].getValueURI();
             }
+	        }
         }
 	    return null;
 	}

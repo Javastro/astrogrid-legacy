@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Capability;
@@ -51,7 +52,7 @@ public WebInterfaceActivity(BrowserControl browser) {
 		}
 		Capability[] capabilities = ((Service)r).getCapabilities();
 		for (int i = 0; i < capabilities.length; i++) {
-			if (capabilities[i].getType().indexOf("WebBrowser") != -1) {
+			if (StringUtils.contains(capabilities[i].getType(),"WebBrowser")) {
 				return true;
 			}
 		}

@@ -85,6 +85,7 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
 import org.astrogrid.acr.ivoa.resource.SsapCapability.BandParam;
 import org.astrogrid.acr.ivoa.resource.SsapCapability.PosParam;
 import org.astrogrid.acr.ivoa.resource.SsapCapability.TimeParam;
+import org.astrogrid.contracts.StandardIds;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -441,15 +442,7 @@ public final class ResourceStreamParser implements Iterator {
      */
     protected Capability parseCapability() { 
         final String xsiType = in.getAttributeValue(XSI_NS,"type");
-        URI standardID = null;
-        try {
-            String attributeValue = in.getAttributeValue(null,"standardID");
-            if (attributeValue != null) {
-                standardID = new URI(attributeValue);
-            }
-        } catch (URISyntaxException e) {
-            logger.debug("invalid standard identifier",e);
-        }        
+        String standardID =  in.getAttributeValue(null,"standardID");     
         final Capability c;
         final List interfaces = new ArrayList(2);
         final List validations = new ArrayList(1);
@@ -460,38 +453,44 @@ public final class ResourceStreamParser implements Iterator {
         List ssapSupportedFrame = null;
         List ssapSupports = null;
         
-        if (StringUtils.contains(xsiType,"Harvest") 
-                && RegistryCapability.CAPABILITY_ID.equals(standardID)) {
+        if (StringUtils.contains(xsiType,"Harvest")  //@todo replace with one from contacts, when defined
+                && RegistryCapability.CAPABILITY_ID.toString().equals(standardID)) {
             c = new HarvestCapability();
         } else if (StringUtils.contains(xsiType,"ConeSearch")
-                || ConeCapability.CAPABILITY_ID.equals(standardID)) {
+                || StandardIds.CONE_SEARCH_1_0.equals(standardID)) {
             c = new ConeCapability();            
-        } else if (StringUtils.contains(xsiType,"Search")
-                && RegistryCapability.CAPABILITY_ID.equals(standardID)) {
+        } else if (StringUtils.contains(xsiType,"Search") //@todo replace with one from contracts, when defined
+                && RegistryCapability.CAPABILITY_ID.toString().equals(standardID)) {
             c = new SearchCapability();
             optionalProtols = new ArrayList(1);            
         } else if (StringUtils.contains(xsiType,"CeaCapability")
-                || CeaServerCapability.CAPABILITY_ID.equals(standardID)) {
+                || StandardIds.CEA_1_0.equals(standardID)) {
             c = new CeaServerCapability();
         } else if (StringUtils.contains(xsiType,"SimpleImageAccess")
-                || SiapCapability.CAPABILITY_ID.equals(standardID)) {
+                || StandardIds.SIAP_1_0.equals(standardID)) {
             c = new SiapCapability();            
-        } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess") 
-                || SsapCapability.CAPABILITY_ID.equals(standardID)) {
+        } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess") // @todo replace wit contracts 
+                || SsapCapability.CAPABILITY_ID.toString().equals(standardID)) {
             c = new SsapCapability();
             ssapDataSource = new ArrayList(3);
             ssapCreationType = new ArrayList(3);
             ssapSupportedFrame = new ArrayList(3);
             ssapSupports = new ArrayList(3);            
-        } else if (StringUtils.contains(xsiType,"SimpleTimeAccess")
-                || StapCapability.CAPABILITY_ID.equals(standardID)) {
+        } else if (StringUtils.contains(xsiType,"SimpleTimeAccess") //@todo replace with contracts
+                || StapCapability.CAPABILITY_ID.toString().equals(standardID)) {
             c = new StapCapability();
             stapFormats = new ArrayList(3);
         } else {
             c = new Capability();
         }
         c.setType(xsiType);
-        c.setStandardID(standardID);
+        if (standardID != null) {
+            try {
+                c.setStandardID(new URI(standardID));
+            }catch (URISyntaxException e) {
+                logger.warn("StandardID is not a valid URI",e);
+            }
+        }
         try {
         for (in.next(); !( in.isEndElement() && in.getLocalName().equals("capability")); in.next()){
             if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.

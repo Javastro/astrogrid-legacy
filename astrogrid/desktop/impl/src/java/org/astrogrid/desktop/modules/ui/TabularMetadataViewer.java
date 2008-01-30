@@ -33,6 +33,7 @@ import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.TableDataType;
 import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.ui.comp.TextAreaRenderer;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
@@ -110,6 +111,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 				TableBean tb = (TableBean)element;
 				baseList.add(tb.getName());
 				baseList.add(tb.getDescription());
+				if (tb.getRole() != null) {
+				    baseList.add(tb.getRole());
+				}
+				                           
 			}
 		}
 		, new Format() {
@@ -117,7 +122,13 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 					FieldPosition pos) {
 				TableBean tb = (TableBean)obj;
 				if (tb != null) {
-					toAppendTo.append(tb.getName() == null ? "" : tb.getName());
+					toAppendTo.append(tb.getName() == null ? "" : tb.getName() );
+					if (tb.getRole() != null) {
+					    
+					toAppendTo.append(" (")
+					    .append(tb.getRole())
+					    .append(")");
+					}
 				} 
 				return toAppendTo;
 			}
@@ -141,6 +152,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 				    sb.clear();
 				    sb.append(tb.getName())
 				        .append(" : ");
+				    if (tb.getRole() != null) {
+				        sb.append(tb.getRole());
+				        sb.append(" : ");
+				    }
 				    if (tb.getDescription() != null) {
 				        sb.appendFixedWidthPadRight(tb.getDescription(),50,' ');
 				    }
@@ -179,9 +194,12 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 
 		public void getFilterStrings(List baseList, Object element) {
 			NumberedColumnBean n = (NumberedColumnBean) element;
-			ColumnBean cb = n.cb;
-			if (cb.getDatatype() != null) {
-				baseList.add(cb.getDatatype());
+			ColumnBean cb = n.cb;			
+			if (cb.getColumnDataType() != null) {
+			    String t = cb.getColumnDataType().getType();
+			    if (t != null) {
+			        baseList.add(t);
+			    }
 			}
 			if (cb.getDescription() != null) {
 				baseList.add(cb.getDescription());
@@ -190,8 +208,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 				
 				baseList.add(cb.getName());
 			}
-			if (cb.getUCD() != null) {
-				baseList.add(cb.getUCD());
+			if (cb.getUcd() != null) {
+				baseList.add(cb.getUcd());
 			}
 			if (cb.getUnit() != null) {
 				baseList.add(cb.getUnit());
@@ -339,9 +357,17 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		        case 2:
 		            return provideEmptyDefault( n.cb.getDescription() );
 		        case 3:
-		            return provideEmptyDefault( n.cb.getDatatype() );
+		            TableDataType type = n.cb.getColumnDataType();
+		            if (type == null) {
+		                return "";
+		            } 
+		            if (type.getArraysize() != null && ! type.getArraysize().equals("1")) {
+                        return  type.getType() + " " + type.getArraysize();		                
+		            } else {
+		                return provideEmptyDefault( type.getType());
+		            }
 		        case 4:
-		            return provideEmptyDefault( n.cb.getUCD() );
+		            return provideEmptyDefault( n.cb.getUcd() );
 		        case 5:
 		            return provideEmptyDefault( n.cb.getUnit() );
 		        default:

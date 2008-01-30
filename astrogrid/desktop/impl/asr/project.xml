@@ -361,6 +361,18 @@
       </properties>
     </dependency>
 
+<!--  AG Contracts - now needed
+    - however, it's huge - 250K. would like to strip this more ruthlessly.
+ -->
+    <dependency>
+        <artifactId>astrogrid-contracts</artifactId>
+        <groupId>org.astrogrid</groupId>
+        <version>${astrogrid.contracts.version}</version>
+        <properties>
+            <dist.bundle>true</dist.bundle>
+            <strip>true</strip>
+            </properties>           
+    </dependency>
 <!-- 3rd party libs-->
 <dependency> 
      <!-- jaxp will be native for java 1.5. Until then this is required -->

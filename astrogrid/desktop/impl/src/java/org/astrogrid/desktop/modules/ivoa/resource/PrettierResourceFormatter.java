@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -28,8 +29,10 @@ import org.astrogrid.acr.ivoa.resource.Date;
 import org.astrogrid.acr.ivoa.resource.Format;
 import org.astrogrid.acr.ivoa.resource.HarvestCapability;
 import org.astrogrid.acr.ivoa.resource.HasCoverage;
+import org.astrogrid.acr.ivoa.resource.InputParam;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Organisation;
+import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -37,9 +40,15 @@ import org.astrogrid.acr.ivoa.resource.SearchCapability;
 import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
+import org.astrogrid.acr.ivoa.resource.SimpleDataType;
 import org.astrogrid.acr.ivoa.resource.Source;
+import org.astrogrid.acr.ivoa.resource.SsapCapability;
+import org.astrogrid.acr.ivoa.resource.StapCapability;
+import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
 import org.astrogrid.acr.ivoa.resource.Validation;
+import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
+import org.astrogrid.acr.ivoa.resource.ConeCapability.Query;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
@@ -87,6 +96,30 @@ public final class PrettierResourceFormatter {
 		final Validation[] validationLevel = r.getValidationLevel();
         formatValidation(sb, validationLevel);
 		sb.hr();
+		
+        
+		// content
+		        final Content content = r.getContent();
+		        formatContent(sb, content);     
+
+		     // type-specific that apply to more than one type.
+		        // coverage
+		        if (r instanceof HasCoverage) {
+		            formatCoverage(sb, ((HasCoverage)r).getCoverage());
+		        }                           
+		        if (r instanceof DataService) {   
+		            DataService ds = (DataService)r;
+		            sb.appendTitledResourceNames("Facilities",ds.getFacilities())
+		            .appendTitledResourceNames("Instruments",ds.getInstruments());                   
+		        }        
+		        // table metadata
+		        if (CapabilityIconFactoryImpl.hasTabularMetadata(r)) {
+		            sb.append("<object classid='")
+		                .append(ShowMetadataButton.class.getName())
+		                .append("'>");
+		            sb.br();
+		        }
+		        
 // type-specific headlines
 		if (r instanceof Authority) {
 		    sb.append("<img src='classpath:/org/astrogrid/desktop/icons/authority16.png'>&nbsp;This resource describes an <b>Authority</b>");
@@ -103,7 +136,8 @@ public final class PrettierResourceFormatter {
         }		
 
 		if (r instanceof DataCollection) {
-			DataCollection d = (DataCollection)r;					
+			DataCollection d = (DataCollection)r;			
+			//@todo should I have an icon for data collection?
 			sb.append("This resource describes a <b>Data&nbsp;Collection</b>");
 			sb.br();
 			sb.appendTitledResourceNames("Facilities",d.getFacilities())	;	
@@ -132,7 +166,6 @@ public final class PrettierResourceFormatter {
 
         if (r instanceof Service) {
             Service s = (Service)r;
-            //@todo work out a suitable service title here 
             if (r instanceof RegistryService) {
                 sb.append("<img src='classpath:/org/astrogrid/desktop/icons/server16.png'>&nbsp;This resource describes a <b>Registry&nbsp;Service</b>");
                 sb.br();
@@ -140,50 +173,13 @@ public final class PrettierResourceFormatter {
                 sb.appendLabel("Full&nbsp;Registry?");
                 sb.append(rs.isFull() ? "true" : "false");
                 sb.br();
+                //@todo hyperlink these managed auths.
                 sb.appendTitledSequence("Managed&nbsp;Authorities",rs.getManagedAuthorities());
             }
             // cone service, siap service - nothing additional - covered in the formatService call
             formatServiceCapabilities(sb, s);
         }
         
-// type-specific that apply to more than one type.
-        // coverage
-        if (r instanceof HasCoverage) {
-            final Coverage coverage = ((HasCoverage)r).getCoverage();
-            if (coverage != null) {
-                sb.appendTitledResourceName("Footprint&nbsp;Service",coverage.getFootprint());
-                sb.appendTitledSequence("Waveband&nbsp;Coverage",coverage.getWavebands());
-
-                StcResourceProfile stc = coverage.getStcResourceProfile();
-                if (stc != null) {
-                    sb.appendLabel("Spatial&nbsp;Coverage");
-                    if (stc.isAllSky()) {
-                        sb.append("All-Sky");
-                    } else {
-                        //@fixme - add button to display coverage..
-//                       sb.as
-//                    String stcDoc = DomHelper.PrettyDocumentToStream(stc.getStcNode());
-//                    String escaped = StringEscapeUtils.escapeXml(stcDoc);
-//                    sb.append("<pre>")
-//                        .append(escaped)
-//                        .append("</pre>");
-                    }
-                    sb.br();
-                }
-           }
-        }                           
-        if (r instanceof DataService) {   
-            DataService ds = (DataService)r;
-            sb.appendTitledResourceNames("Facilities",ds.getFacilities())
-            .appendTitledResourceNames("Instruments",ds.getInstruments());                   
-        }        
-        // table metadata
-        if (CapabilityIconFactoryImpl.hasTabularMetadata(r)) {
-            sb.append("<object classid='")
-                .append(ShowMetadataButton.class.getName())
-                .append("'>");
-            sb.br();
-        }
 
 // append cea at the end.
         if (r instanceof CeaApplication) {
@@ -205,10 +201,7 @@ public final class PrettierResourceFormatter {
             }
             sb.br();
         }
-        
-// content
-        final Content content = r.getContent();
-        formatContent(sb, content);        
+   
         
 // curation
 		final Curation curation = r.getCuration();
@@ -227,11 +220,48 @@ public final class PrettierResourceFormatter {
 
     /**
      * @param sb
+     * @param coverage
+     */
+    private static void formatCoverage(HtmlBuilder sb, final Coverage coverage) {
+        if (coverage != null) {
+            sb.appendTitledResourceName("Footprint&nbsp;Service",coverage.getFootprint());
+            sb.appendTitledSequence("Waveband&nbsp;Coverage",coverage.getWavebands());
+
+            StcResourceProfile stc = coverage.getStcResourceProfile();
+            if (stc != null) {
+                sb.appendLabel("Spatial&nbsp;Coverage");
+                if (stc.isAllSky()) {
+                    sb.append("All-Sky");
+                } else {
+                    sb.append("Partial Sky");
+                }
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                DomHelper.PrettyDocumentToStream(stc.getStcDocument(),bos);
+                sb.br();
+                sb.append("<object classid='")
+                .append(ShowCoverageButton.class.getName())
+                .append("'>")
+                .append("<param name='doc' value='")
+                .append(bos.toString())
+                .append("' >")
+                .append("</object>")
+                ;
+                sb.br();
+            }
+         }
+    }
+
+
+
+
+    /**
+     * @param sb
      * @param accessURL
      */
     private static void formatAccessURL(HtmlBuilder sb, AccessURL accessURL) {
-            sb.appendURI(accessURL.getUse() != null ? accessURL.getUse() : "link" ,accessURL.getValueURI());
-  
+          //  sb.appendURI(accessURL.getUse() != null ? accessURL.getUse() : "link" ,accessURL.getValueURI());
+        //bz 2520 - make accessURls accessible.
+        sb.appendURI(accessURL.getValueURI().toString(),accessURL.getValueURI());
     }
 
 
@@ -282,7 +312,7 @@ public final class PrettierResourceFormatter {
 		typeMapper.put("SimpleSpectrumAccess","Spectrum access service (SSAP)");
 		typeMapper.put("CeaApplicationType","Remote application (CEA)");
 		typeMapper.put("CeaHttpApplicationType", "Remote application (CEA)");
-		typeMapper.put("SimpleTimeAccess","Time Series access service (SSAP)");
+		typeMapper.put("SimpleTimeAccess","Time range access service (STAP)");
 	//	typeMapper.put("
 	}
 	
@@ -374,7 +404,6 @@ public final class PrettierResourceFormatter {
 	            sb.p();
 	        }
 	        Capability c = capabilities[capabilitiesIndex];
-
 	        // display capability-specific info.
 	        if (c instanceof CeaServerCapability) {
 	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/server16.png'>&nbsp;This resource describes a <b>Remote&nbsp;Application&nbsp;(CEA)&nbsp;Service</b>");
@@ -382,7 +411,7 @@ public final class PrettierResourceFormatter {
 	            sb.appendTitledURIs("Provided&nbsp;Tasks",(((CeaServerCapability)c).getManagedApplications()));
 	        } else
 	            if (c instanceof HarvestCapability) {
-	                sb.append("<b>Harvest&nbsp;Interface</b>");
+	                sb.append("<b>Harvest&nbsp;Capability</b>");
 	                sb.br();
 	                sb.appendLabel("Maximum&nbsp;Records&nbsp;Harvested");
 	                sb.append(((HarvestCapability)c).getMaxRecords());
@@ -390,7 +419,7 @@ public final class PrettierResourceFormatter {
 	            } else 
 	                if (c instanceof SearchCapability) {
 	                    SearchCapability sc = (SearchCapability)c;
-	                    sb.append("<b>Search&nbsp;Interface</b>");
+	                    sb.append("<b>Search&nbsp;Capability</b>");
 	                    sb.br();
 	                    if (sc.getMaxRecords() > 0) {
 	                        sb.appendLabel("Maximum&nbsp;Records&nbsp;Returned");
@@ -400,7 +429,7 @@ public final class PrettierResourceFormatter {
 	                    sb.appendLabel("Extension&nbsp;Search&nbsp;Support");
 	                    sb.append(sc.getExtensionSearchSupport() );
 	                    sb.append("&nbsp; ");
-	                    sb.appendTitledSequence("Additional&nbsp;Protocols",sc.getOptionalProtocol());
+	                    sb.appendTitledSequenceNoBR("Additional&nbsp;Protocols",sc.getOptionalProtocol());
 	                    sb.br();
 	                } else  
 	                    if (c instanceof ConeCapability) {
@@ -420,6 +449,7 @@ public final class PrettierResourceFormatter {
 	                            sb.append(cc.getMaxRecords());
 	                            sb.br();
 	                        }
+	                        //@todo output test queries
 	                    } else if (c instanceof SiapCapability) {
 	                        SiapCapability cc = (SiapCapability)c;
 	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/siap16.png'>&nbsp;This resource describes a <b>Image&nbsp;Access&nbsp;Service&nbsp;(SIAP)</b>");
@@ -433,7 +463,9 @@ public final class PrettierResourceFormatter {
 	                        if (cc.getMaxRecords() > 0) {
 	                            sb.appendLabel("Maximum&nbsp;Results&nbsp;Returned");
 	                            sb.append(cc.getMaxRecords());
-	                        }
+                                sb.append("&nbsp; ");	                            
+	                        }	   
+	                        sb.br();
 	                        SkySize sz = cc.getMaxImageExtent();
 	                        if (sz != null) {
 	                            sb.appendLabel("Maximum&nbsp;Image&nbsp;Extent");
@@ -452,53 +484,93 @@ public final class PrettierResourceFormatter {
 	                            sb.append(sz.getLat()).append(",").append(sz.getLong());
 	                            sb.append("&nbsp; ");
 	                        }
+                            //@todo output test queries	                        
 	                        sb.br();
-	                    } else if (s instanceof RegistryService) {
-	                        // if we're a registry service, and this interface is not marked as 'search' or 'harvest'
-	                        // just display as-is without titles.
-	                        // work around for v0.10
-	                    }	else {
-	                        // non-specialzed interface type - need to do some more investigation.
-	                        // biut hacky - will be better by reg v1.0
-	                        // if first interface - look at resource type..
-	                        String type = s.getType(); // resoource type
-	                        String unprefixed = type.indexOf(":") != -1 
-	                        ? StringUtils.substringAfterLast( type,":")
-	                                : type;
+	                    } else if (c instanceof StapCapability) {
+	                        StapCapability sc = (StapCapability)c;
+	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/latest16.png'>&nbsp;This resource describes a <b>Time&nbsp;Series&nbsp;Access&nbsp;Service&nbsp(STAP)</b>");
+	                        sb.br();
+	                        if (sc.getMaxRecords() > 0) {
+	                            sb.appendLabel("Max&nbsp;Records");
+	                            sb.append(sc.getMaxRecords());
+	                            sb.append("&nbsp; ");
+	                        }
+	                        sb.appendLabel("Positioning&nbsp;Supported");
+	                        sb.append(sc.isSupportPositioning());
+	                        sb.append("&nbsp; ");
+	                        sb.appendTitledSequence("Supported&nbsp;Formats",sc.getSupportedFormats());
+	                        //@todo test query.
+	                    } else if (c instanceof SsapCapability) {
+	                        SsapCapability sc = (SsapCapability)c;
+	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;Access&nbsp;Service&nbsp;(SSAP)</b>");
+	                        sb.br();
+	                        sb.appendTitledObjectNoBR("Compliance",sc.getComplianceLevel());
+	                        sb.appendTitledSequenceNoBR("Creation&nbsp;Types",sc.getCreationTypes());
+	                        sb.appendTitledSequenceNoBR("Data&nbsp;Sources",sc.getDataSources());
+	                        sb.br();
+	                        if (sc.getMaxRecords() > 0) {
+	                            sb.appendLabel("Max&nbsp;Records");
+	                            sb.append(sc.getMaxRecords());
+	                            sb.append("&nbsp; ");
+	                        }
+	                        if (sc.getDefaultMaxRecords() > 0) {
+	                            sb.appendLabel("Default&nbsp;Max&nbsp;Records");
+	                            sb.append(sc.getDefaultMaxRecords());
+	                            sb.append("&nbsp; ");
+	                        }
+	                        if (sc.getMaxFileSize() > 0) {
+	                            sb.appendLabel("Max&nbsp;Filesize");
+	                            sb.append(sc.getMaxFileSize());
+                                sb.append("&nbsp; ");
+	                        }
+                            sb.br();
+                            if (sc.getMaxAperture() > 0.0) {
+                                sb.appendLabel("Max&nbsp;Aperture");
+                                sb.append(sc.getMaxAperture());
+                                sb.append("&nbsp; ");
+                            }
+                            if (sc.getMaxSearchRadius() > 0.0) {
+                                sb.appendLabel("Max&nbsp;Search&nbsp;Radius");
+                                sb.append(sc.getMaxSearchRadius());
+                            }
+                            sb.br();                            
+                            sb.appendTitledURIs("Supported&nbsp);Frames",sc.getSupportedFrames());
+                            sb.appendTitledSequence("Supports",sc.getSupports());
+                            sb.append("&nbsp; ");                            
+	                    }	else { // take a guess.
 	                        String capType = c.getType();
 	                        String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
 	                        ? StringUtils.substringAfterLast( capType,":")
 	                                : capType;
-	                        if (capabilities.length == 1 && "SimpleTimeAccess".equals(unprefixed)) {
-	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/latest16.png'>&nbsp;This resource describes a <b>Time&nbsp;Series&nbsp;Access&nbsp;Service&nbsp(STAP)</b>");
-	                        } else if (capabilities.length == 1 && "SimpleSpectrumAccess".equals(unprefixed)) {
-	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;Access&nbsp;Service&nbsp;(SSAP)</b>");
-	                        } else if (capabilities.length == 1 && SystemFilter.isBoringServiceTitle(s) || SystemFilter.isBoringRelationship(s)) {
-	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/service16.png'>&nbsp;This resource describes a <b>Technical&nbsp;System&nbsp;Service</b>");
-	                        } else if ("WebBrowser".equals(capTypeUnprefixed)) {
+	                        //@todo put this back in.
+	                      //  if (capabilities.length == 1 && SystemFilter.isBoringServiceTitle(s) || SystemFilter.isBoringRelationship(s)) {
+	                        //    sb.append("<img src='classpath:/org/astrogrid/desktop/icons/service16.png'>&nbsp;This resource describes a <b>Technical&nbsp;System&nbsp;Service</b>");
+	                        //} else 
+	                            if ("WebBrowser".equals(capTypeUnprefixed)) {
 	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/browser16.png'>&nbsp;This resource describes a <b>Web&nbsp;Interface</b>");
+	                            sb.br();
 	                        } else if (ConeProtocol.isConeSearchableCdsCatalog(s)){ // detects vizier interfaces that aren't web-browser
-	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");	                            	                           
+	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");
+	                            sb.br();
 	                        } else {
-	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/unknown_thing16.png'>&nbsp;This resource descibes an <b>Unspecified&nbsp;Service</b>");
+	                            sb.append("This resource descibes an <b>Service</b>");
+	                            sb.br();   
+	                            sb.appendTitledObject("Type",capTypeUnprefixed);
+	                            sb.appendTitledObject("StandardID",c.getStandardID());
 	                        }
-	                        sb.br();
+	                       
 	                    }
 	        // validation, and description.
 	        formatValidation(sb,c.getValidationLevel());
-	        if (c.getDescription() != null) {
+	        if (StringUtils.isNotEmpty(c.getDescription())) {
 	            sb.append(c.getDescription());
 	            sb.br();
 	        }
 
 	        // examine the interfaces..
-	        for (int j = 0 ; j < c.getInterfaces().length; j++) {
-	            if (j > 0) {
-	                sb.p();
-	            }
+	        for (int j = 0 ; j < c.getInterfaces().length; j++) {	            
 	            Interface iface = c.getInterfaces()[j];
-	            // not helpful in v0.10 schema	
-	            //	sb.appendTitledObject("Type",iface.getType());
+	            	sb.appendTitledObjectNoBR("Interface Type",formatInterfaceType(iface));
 	            sb.appendTitledObjectNoBR("Role",iface.getRole());
 	            sb.appendTitledObjectNoBR("Version",iface.getVersion());
 	            final SecurityMethod[] securityMethods = iface.getSecurityMethods();
@@ -526,6 +598,64 @@ public final class PrettierResourceFormatter {
 	                    formatAccessURL(sb,accessUrls[k]);					
 	                }
 	            }
+	            if (iface instanceof WebServiceInterface) {
+	                WebServiceInterface wInterface = (WebServiceInterface)iface;
+	                final URI[] wsdlURLs = wInterface.getWsdlURLs();
+                    if (wsdlURLs.length > 0) {
+                        sb.br();
+                        sb.appendLabel("WSDL");
+                        for (int w = 0; w < wsdlURLs.length; w++) {
+                            if (w > 0) {
+                                sb.append(", ");
+                            }
+                            sb.appendURI(wsdlURLs[w]);
+                        }
+                    } 
+	            }  else if (iface instanceof ParamHttpInterface) {
+	                ParamHttpInterface phi = (ParamHttpInterface)iface;
+	                sb.br();
+	                sb.appendTitledObjectNoBR("Query&nbsp;Type",phi.getQueryType());
+	                sb.appendTitledObject("Result&nbsp;Type",phi.getResultType());
+	                InputParam[] params = phi.getParams();
+	                if (params != null && params.length > 0) {
+	                    sb.append("<table><tr><th>Parameter</th><th>Description</th><th>Type</th><th>Use</th></tr>");
+	                    for (int i = 0; i < params.length; i++) {
+	                        InputParam inputParam = params[i];
+	                        sb.append("<tr><td>");
+	                        sb.append(inputParam.getName());
+	                        sb.append("</td><td>");
+	                        sb.append(inputParam.getDescription());
+	                        sb.append("</td><td>");
+	                        if (inputParam.getUcd() != null) {
+	                            sb.append(inputParam.getUcd());
+	                            sb.append("&nbsp; ");
+	                        }
+	                        if (inputParam.getUnit() != null) {
+                                sb.append(inputParam.getUnit());
+                                sb.append("&nbsp; ");	                            
+	                        }
+	                        if (inputParam.getDataType() != null) {
+	                            SimpleDataType dataType = inputParam.getDataType();
+	                            sb.append(dataType.getType());
+	                            if (dataType.getArraysize() != null && !  dataType.getArraysize().equals("1")){
+	                                sb.append("&nbsp; ");
+	                                sb.append(dataType.getArraysize());
+	                            }
+	                        }
+	                        sb.append("</td><td>");
+	                        if (inputParam.isStandard()) {
+	                            sb.append("standard");
+	                            sb.append("&nbsp; ");
+	                        }
+	                        if (inputParam.getUse() != null) {
+	                            sb.append(inputParam.getUse());
+	                        }
+	                        sb.append("</td></tr>");
+	                    }
+	                    sb.append("</table>");
+	                }
+
+	            }
 	            sb.br();
 	        }			
 
@@ -533,7 +663,36 @@ public final class PrettierResourceFormatter {
 	}
 
 	
-	/** complete.
+	/** create a readable description for a type of 
+     * @param iface
+     * @return
+     */
+    private static String formatInterfaceType(Interface iface) {
+        if (iface instanceof WebServiceInterface) {
+            return "Web Service";
+        } else if (iface instanceof ParamHttpInterface) {
+            return "Http Query";
+        }
+        
+        String type = iface.getType();
+        if (StringUtils.contains(type,"WebBrowser"))  {
+               return "Web Form";
+        } else if (StringUtils.contains(type,"OAIHTTP")) {
+            return "OAI HTTP";
+        } else if (StringUtils.contains(type,"OAISOAP")) {
+            return "OAI SOAP";
+        } else if (StringUtils.contains(type,":")) {
+            return StringUtils.substringAfter(type,":");
+        } else {
+            return type;
+        }
+            
+    }
+
+
+
+
+    /** complete.
 	 * @param sb
 	 * @param content
 	 */
@@ -585,7 +744,7 @@ public final class PrettierResourceFormatter {
 		        }
 		        Relationship rel = rels[i];
 		        sb.append(rel.getRelationshipType());
-		        sb.append("&nbsp;");
+		        sb.append("&nbsp; ");
 		        for (int j = 0; j < rel.getRelatedResources().length; j++) {
 		            if (j > 0) {
 		                sb.append(", ");

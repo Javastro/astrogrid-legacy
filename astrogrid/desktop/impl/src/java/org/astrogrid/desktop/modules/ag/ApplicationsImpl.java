@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.28 2008/01/25 07:53:25 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.29 2008/01/30 08:38:38 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,6 +50,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ivoa.AdqlInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
@@ -504,7 +505,7 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 		Resource[] res =  nuReg.xquerySearch("//vor:Resource[not (@status='inactive' or @status='deleted') " +
 	
 				"and capability[@xsi:type &= 'CeaCapability' or @standardID='"
-		        + CeaServerCapability.CAPABILITY_ID
+		        + StandardIds.CEA_1_0
 		        +"']/managedApplications/ApplicationReference='"+ arg0 +"']");
 		List result = new ArrayList();
 		// check ttypes.
@@ -622,6 +623,13 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.29  2008/01/30 08:38:38  nw
+Incomplete - task 313: Digest registry upgrade.
+
+RESOLVED - bug 2526: voexdesktop help needs to point to beta.astrogrid.org
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2526
+Incomplete - task 314: get login working again.
+
 Revision 1.28  2008/01/25 07:53:25  nw
 Complete - task 134: Upgrade to reg v1.0
 

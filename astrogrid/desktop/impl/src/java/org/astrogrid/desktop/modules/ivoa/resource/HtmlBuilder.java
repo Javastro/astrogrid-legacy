@@ -147,10 +147,16 @@ public class HtmlBuilder extends StrBuilder {
 	    if (name == null) {
 	        return this;
 	    }
-		if (name.getId() != null) {
-			append("<a class='res' href='").append(name.getId()).append("'>");
+	    String url = null;
+	    if (name.getId() != null) {
+	        url = name.getId().toString();
+	    } else if (StringUtils.contains(name.getValue(),"://")) {
+	        url = name.getValue(); // work=around for common misuse of resource structure.
+	    }
+		if (url != null) {
+			append("<a class='res' href='").append(url).append("'>");
 			String v = name.getValue();
-			append(v == null? name.getId().toString() : v);
+			append(v == null? url : v);
 			append("</a>");
 		} else {
 			append(name.getValue());

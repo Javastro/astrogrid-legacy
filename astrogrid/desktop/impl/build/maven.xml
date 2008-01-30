@@ -7,12 +7,14 @@ common definitions and hooks used by the impl projects.
 
 <!--  hooks -->
 	
-	<!--  record version infromation. -->
+	<!-- record version infromation.-->
 	<postGoal name="java:jar-resources">
 		<attainGoal name="record-version" />
 	</postGoal>
-
   <goal name="record-version">
+        <tstamp />
+        <j:set var="maven.jar.manifest.attribute.BuildDate" value="${DSTAMP}_${TSTAMP}" />
+        <j:invokeStatic className="java.net.InetAddress" method="getLocalHost" var="maven.jar.manifest.attribute.BuildLocation" />
 	<j:set var="versionFile" value="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/version.xml" />
 	<echo>Writing Version Information out to ${versionFile}...</echo>	
 	<echo file="${versionFile}">
@@ -971,10 +973,10 @@ todo see if we can include other things in the disk image too. -->
             name="junit"
             classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
           />  
-         <echo>signing test classes - so they can be run with the signed app jar</echo>
          <j:set var="testJar" value="${maven.build.dir}/${maven.final.name}-tests.jar" />
          <jar destfile="${testJar}" basedir="${maven.test.dest}" />
           <!-- not required any more 
+         <echo>signing test classes - so they can be run with the signed app jar</echo>
          <signjar jar="${testJar}" 
          	alias="${astrogrid.signature.alias}" storepass="${astrogrid.signature.storepass}" 
          	lazy="true"/>

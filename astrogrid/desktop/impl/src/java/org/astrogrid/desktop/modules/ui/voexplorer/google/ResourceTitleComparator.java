@@ -15,6 +15,12 @@ public final class ResourceTitleComparator implements Comparator {
 	public int compare(Object arg0, Object arg1) {
 		Resource a = (Resource)arg0;
 		Resource b = (Resource)arg1;
+		if (a == null || a.getTitle() == null) {
+		    return -1;
+		} 
+		if (b == null || b.getTitle() == null) {
+		    return 1;
+		}
 		return a.getTitle().compareTo(b.getTitle());
 	}
 }

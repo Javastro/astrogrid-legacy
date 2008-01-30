@@ -18,6 +18,7 @@ import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.contracts.StandardIds;
 
 /** unit tests for cea application and server resources.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -245,7 +246,7 @@ public class CeaParserUnitTest extends AbstractTestForParser {
         
         CeaServerCapability cap = cs.findCeaServerCapability();
         assertNotNull(cap);                
-        checkCapability(cap,null,"CeaCapability",1,
+        checkCapability(cap,StandardIds.CEA_1_0,"CeaCapability",1,
                 "Access to two applications: general ADQL query, and asynchronous cone-search where relevant/enabled."); // this example doesn't provide a standardID.
         assertEquals(new URI[]{new URI("ivo://agtest.roe.ac.uk/mysql-first-5-0first/ceaApplication")},cap.getManagedApplications());
         Interface i = cap.getInterfaces()[0];
@@ -282,7 +283,7 @@ public class CeaParserUnitTest extends AbstractTestForParser {
         
         CeaServerCapability cap = cs.findCeaServerCapability();
         assertNotNull(cap);                
-        checkCapability(cap,CeaServerCapability.CAPABILITY_ID.toString(),"CeaCapability",1); 
+        checkCapability(cap,StandardIds.CEA_1_0,"CeaCapability",1); 
         URI[] uris = cap.getManagedApplications();
         assertEquals(14,uris.length);        
         assertEquals(new URI("ivo://mssl.ucl.ac.uk/WDCDataGet"),uris[5]);

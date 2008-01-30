@@ -598,26 +598,26 @@ ACTIONS
 	<!--  help links -->
 		<contribution configuration-id="system.helpmap">
 		<item id="voexplorer.intro" url="http://wiki.astrogrid.org/pub/Astrogrid/VOExpDesignMeeting/registry-intro.pdf" />
-		<item id="userInterface.voexplorer" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Overview" />
-		<item id="voexplorer.hierarchies" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Folders"/>
+		<item id="userInterface.voexplorer" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="voexplorer.hierarchies" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc"/>
 
-		<item id="voexplorer.actions" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Actions"/>
-		<item id="resourceActions.invoke" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Invoke_Actions" />
-		<item id="resourceActions.info" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Info_Actions" />
-		<item id="resourceActions.seeAlso" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#See_Also_Actions" />
-		<item id="resourceActions.metadata" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Metadata_Actions" />
+		<item id="voexplorer.actions" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceActions.invoke"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceActions.info"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceActions.seeAlso"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceActions.metadata"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
 		
-		<item id="resourceTask.astroscope" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Astroscope" />
-		<item id="resourceTask.buildQuery" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#BuildQuery" />
-		<item id="resourceTask.cea" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Invoke_Task"/>
-		<item id="resourceTask.cone" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Catalogue_Search"/>
-		<item id="resourceTask.script" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Generate_Script" />
-		<item id="resourceTask.siap" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Image_Search" />		
-		<item id="resourceTask.ssap" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Spectrum_Search"/>		
-		<item id="resourceTask.web" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Open_Web_Interface"/>		
+		<item id="resourceTask.astroscope"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceTask.buildQuery"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceTask.cea"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceTask.cone"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceTask.script"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceTask.siap"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceTask.ssap" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resourceTask.web" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
 		
-		<item id="resouceFolders" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Registry_View"/>
-		<item id="resouceFolders.buttons" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Buttons" />
+		<item id="resouceFolders"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
+		<item id="resouceFolders.buttons" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
 	</contribution>	
 
 

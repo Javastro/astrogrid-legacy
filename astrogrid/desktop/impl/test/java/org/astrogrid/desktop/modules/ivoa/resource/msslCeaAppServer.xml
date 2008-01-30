@@ -21,7 +21,7 @@
             <referenceURL>http://www.astrogrid.org/maven/docs/head/applications/</referenceURL>
             <type>Other</type>
         </content>
-        <capability standardID="ivo://ivoa.std/CEA" xsi:type="cea:CeaCapability">
+        <capability standardID="ivo://org.astrogrid/std/CEA/v1.0" xsi:type="cea:CeaCapability">
             <interface role="std" version="1.0" xsi:type="cea:CECInterface">
                 <accessURL>http://msslxv.mssl.ucl.ac.uk:8080/astrogrid-cea-MSSL/services/CommonExecutionConnectorService</accessURL>
             </interface>
