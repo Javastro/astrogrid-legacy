@@ -15,6 +15,10 @@
 	</head>
 <body>
 <release version="2008.1.beta2" date="2008-01-30">
+    <action dev="mbt" type="fix">
+    Changed user pref org.astrogrid.registry.query.{,alt}endpoint to 
+                      org.astrogrid.registry.query.{,alt}endpoint_v1.0
+    </action>
     <action dev="nw" type="fix" issue="2520">
     URLs now visible in voexplorer resource display
     </action>

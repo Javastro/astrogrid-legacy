@@ -44,8 +44,8 @@
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.StreamingRegistryImpl" >
 				<service>externalRegistry</service>
-               <object>preference:org.astrogrid.registry.query.endpoint</object>
-               <object>preference:org.astrogrid.registry.query.altendpoint</object>
+               <object>preference:org.astrogrid.registry.query.endpoint_v1.0</object>
+               <object>preference:org.astrogrid.registry.query.altendpoint_v1.0</object>
 				<object>cache:resources</object>
 				<object>cache:documents</object>
 				<object>cache:bulk</object>				
@@ -94,7 +94,7 @@
 	</implementation>	
 	
 		<contribution configuration-id="framework.preferences">
-		<preference name="org.astrogrid.registry.query.endpoint" 
+		<preference name="org.astrogrid.registry.query.endpoint_v1.0" 
 			advanced="false" requires-restart="true" propagate-to-config="true"
 			default-value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQueryv1_0">
 				<ui-name>Registry endpoint</ui-name>
@@ -104,7 +104,7 @@
 				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</alternative>
 				<units>url</units>
 		</preference>
-		<preference name="org.astrogrid.registry.query.altendpoint"
+		<preference name="org.astrogrid.registry.query.altendpoint_v1.0"
 			advanced="false" requires-restart="true" propagate-to-config="true"		
 			default-value="http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0" >
 				<ui-name>Fallback Registry endpoint</ui-name>
