@@ -48,7 +48,7 @@ public class CdsModuleIntegrationTest extends InARTestCase {
 	
 	public void testSesame() throws Exception {
 		Sesame ses = (Sesame) assertServiceExists(Sesame.class, "cds.sesame");
-		//@fixme once CDS sort this out. ses.resolve("m32");
+		ses.resolve("m32");
 		
 	}
 	
