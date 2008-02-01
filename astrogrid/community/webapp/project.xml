@@ -6,7 +6,7 @@
 
     <id>astrogrid-community</id>
     <name>Community Web Application</name>
-    <currentVersion>2008.0a8</currentVersion>
+    <currentVersion>2008.0a9</currentVersion>
     <shortDescription>Community web application</shortDescription>
     <description>
         <![CDATA[
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a5</version>
+            <version>2008.0a6</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a5</version>
+            <version>2008.0a6</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>2008.0a5</version>
+            <version>2008.0a7</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>2008.0a5</version>
+            <version>2008.0a6</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
