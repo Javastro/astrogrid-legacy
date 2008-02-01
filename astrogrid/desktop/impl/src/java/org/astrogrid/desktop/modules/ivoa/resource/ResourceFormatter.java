@@ -45,6 +45,7 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.Source;
 
 /** class containing static methods to render resources to html.
+ * @future Obsolete - code uses new PrettierResourceFormatter now. Remove this class at some point
  * @author Noel Winstanley
  * @since Aug 5, 20062:53:23 AM
  */
@@ -53,7 +54,7 @@ public final class ResourceFormatter {
 	public static String renderResourceAsHTML(Resource r) {
 		HtmlBuilder sb = new HtmlBuilder();
 		
-		sb.append("<body><basefont face='Arial,Helvetica,sans-serif'>");//@todo get fonts to work.
+		sb.append("<body><basefont face='Arial,Helvetica,sans-serif'>");
 		sb.h2(r.getTitle());
 		sb.append("<i>");
 		if (r.getShortName() != null ) {
