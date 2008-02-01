@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.25 2007/10/08 08:34:31 nw Exp $
+/*$Id: VospaceImpl.java,v 1.26 2008/02/01 07:53:02 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -889,7 +889,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 	public Service[] listStores() throws ServiceException {
 		return new Service[]{};
-		//@FIXME implement
+		//@FIXME implement in reg 1.0
 		/*
 	      ResourceData[] arr;
 	      try {
@@ -915,6 +915,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.26  2008/02/01 07:53:02  nw
+documentation fix
+
 Revision 1.25  2007/10/08 08:34:31  nw
 added piping to in future allow client to write results direct to vfs cache.
 
