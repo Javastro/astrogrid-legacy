@@ -116,7 +116,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
                 Interface iface = interfaces[j];
                 
             if (StringUtils.contains(iface.getType(),"ParamHTTP")) {
-                // assume a single inteface
+                // assume a single accessURL
                 return iface.getAccessUrls()[0].getValueURI();
             }
 	        }
