@@ -39,7 +39,7 @@ public class Upgrade implements Runnable {
 			vomon.setValue(vomon.getDefaultValue());
 		}
 		if (upgradedVersion == null || upgradedVersion.compareTo("2007.3.0") < 0) { // corrects bugs in 2007.3. alphas
-				//@todo add in resourceList upgrade.
+				//was going to add in a resourceList upgrade here, but too far in the past - shan't bother now.
 		}
 		// finaly, record that we've upgraded.
 		conf.setKey(UPGRADED_VERSION,currentVersion);
