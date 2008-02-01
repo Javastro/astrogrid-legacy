@@ -46,7 +46,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/** Streaming implementation of registry client for v0.10 
+/** Streaming implementation of registry client for v0.10
+ * @future Obsolete - only kept around for comparison - rest of platform has moved too much to make this functional. Remove at some point. 
  * @author Noel Winstanley
  * @since Aug 1, 20061:30:54 AM
  */
