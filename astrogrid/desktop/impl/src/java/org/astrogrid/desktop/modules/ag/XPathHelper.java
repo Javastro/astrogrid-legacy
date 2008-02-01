@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.9 2008/01/21 09:53:58 nw Exp $
+/*$Id: XPathHelper.java,v 1.10 2008/02/01 07:55:51 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,15 +35,15 @@ public class XPathHelper {
     /** namespace for voresource v1.0 */
     public final static String VR_NS = "http://www.ivoa.net/xml/VOResource/v1.0";
     
-    //@fixme check whether cea and tdb namespaces need to be updated too.
-    /** namespace for common execution arcitecture base */
-    public final static String CEAB_NS = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
-    /** namespace for CEA Service */
-    public final static String CEA_NS = "http://www.ivoa.net/xml/CEAService/v0.2";
-    /** namespace for CEA Parameters */
-    public final static String CEAPD_NS = "http://www.astrogrid.org/schema/AGParameterDefinition/v1"; 
-    /** namespace for tabular database  v0.3*/
-    public final static String TDB_NS = "urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3";
+// not required / obsolete.    
+//    /** namespace for common execution arcitecture base */
+//    public final static String CEAB_NS = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
+//    /** namespace for CEA Service */
+//    public final static String CEA_NS = "http://www.ivoa.net/xml/CEAService/v0.2";
+//    /** namespace for CEA Parameters */
+//    public final static String CEAPD_NS = "http://www.astrogrid.org/schema/AGParameterDefinition/v1"; 
+//    /** namespace for tabular database  v0.3*/
+//    public final static String TDB_NS = "urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3";
     /** namespace for VODataService v1.0 */
     public final static String VODS_NS = "http://www.ivoa.net/xml/VODataService/v1.0";
     /** namespace for cone search v1.0 */
@@ -59,10 +59,10 @@ public class XPathHelper {
             new String[] {"xsi",XSI_NS}
             ,new String[]{"vr",VR_NS}
             ,new String[]{"vor",VOR_NS}    
-            ,new String[]{"ceab",CEAB_NS}
-            ,new String[]{"cea",CEA_NS}
-            ,new String[]{"ceapd",CEAPD_NS}
-            ,new String[]{"tdb",TDB_NS}
+//            ,new String[]{"ceab",CEAB_NS}
+//            ,new String[]{"cea",CEA_NS}
+//            ,new String[]{"ceapd",CEAPD_NS}
+//            ,new String[]{"tdb",TDB_NS}
             ,new String[]{"vods",VODS_NS}
             ,new String[]{"cs",CS_NS}
             ,new String[]{"sia",SIA_NS}
@@ -74,30 +74,31 @@ public class XPathHelper {
         super();
     }
 
-    /** Create a namespace node for use in xpath. comes pre-initialized with the common registry namespaces - vr, vor, etc.
-     * <p>
-     * default namespace is the vr one.
-     * @return a namespace node
-     * @throws FactoryConfigurationError
-     * @throws ParserConfigurationException
-     * @throws DOMException
-     */
-    public  static Element createNamespaceNode() throws FactoryConfigurationError, ParserConfigurationException, DOMException {
-        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-        fac.setNamespaceAware(true);
-        DocumentBuilder builder = fac.newDocumentBuilder();
-        DOMImplementation impl = builder.getDOMImplementation();        
-       Document namespaceHolder = impl.createDocument(VOR_NS, "f:namespaceMapping",null);
-    
-       // Document namespaceHolder = DomHelper.newDocument();
-        Element namespaceNode = namespaceHolder.getDocumentElement();
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns",VR_NS);
-        for (int i = 0; i < namespaces.length; i++) {
-            namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:" + namespaces[i][0],namespaces[i][1]);
-        }
-
-        return namespaceNode;
-    }
+//    /** Create a namespace node for use in xpath. comes pre-initialized with the common registry namespaces - vr, vor, etc.
+//     * <p>
+//     * default namespace is the vr one.
+//     * @return a namespace node
+//     * @throws FactoryConfigurationError
+//     * @throws ParserConfigurationException
+//     * @throws DOMException
+//     */
+    // unused
+//    public  static Element createNamespaceNode() throws FactoryConfigurationError, ParserConfigurationException, DOMException {
+//        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+//        fac.setNamespaceAware(true);
+//        DocumentBuilder builder = fac.newDocumentBuilder();
+//        DOMImplementation impl = builder.getDOMImplementation();        
+//       Document namespaceHolder = impl.createDocument(VOR_NS, "f:namespaceMapping",null);
+//    
+//       // Document namespaceHolder = DomHelper.newDocument();
+//        Element namespaceNode = namespaceHolder.getDocumentElement();
+//        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns",VR_NS);
+//        for (int i = 0; i < namespaces.length; i++) {
+//            namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:" + namespaces[i][0],namespaces[i][1]);
+//        }
+//
+//        return namespaceNode;
+//    }
 
     public static String[][] listDefaultNamespaces() {
         return namespaces;
@@ -110,6 +111,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.10  2008/02/01 07:55:51  nw
+commented out obsolebits
+
 Revision 1.9  2008/01/21 09:53:58  nw
 Incomplete - task 134: Upgrade to reg v1.0
 
