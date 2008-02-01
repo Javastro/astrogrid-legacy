@@ -52,10 +52,15 @@ public WebInterfaceActivity(BrowserControl browser) {
 		}
 		Capability[] capabilities = ((Service)r).getCapabilities();
 		for (int i = 0; i < capabilities.length; i++) {
-			if (StringUtils.contains(capabilities[i].getType(),"WebBrowser")) {
-				return true;
-			}
-		}
+            Capability capability = capabilities[i];
+            Interface[] interfaces = capability.getInterfaces();
+            for (int j = 0; j < interfaces.length; j++) {
+                Interface iface = interfaces[j];
+                if (StringUtils.contains(iface.getType(),"WebBrowser")) {
+                    return true;
+                }
+            }
+        }
 		return false;
 	}
 	
@@ -68,16 +73,20 @@ public void actionPerformed(ActionEvent e) {
 	Resource r = (Resource)l.get(0);
 	// now find right interface.
 	Capability[] capabilities = ((Service)r).getCapabilities();
-	for (int i = 0; i < capabilities.length; i++) {
-		if (capabilities[i].getType().indexOf("WebBrowser") != -1) {
-			Interface[] interfaces = capabilities[i].getInterfaces();
-			// assume a single interface.
-			try {
-			browser.openURL(interfaces[0].getAccessUrls()[0].getValue());
-			} catch (Exception ex) {
-			    uiParent.get().showTransientError("Failed to show web interface",ExceptionFormatter.formatException(ex));
-			}
-		}
-	}	
+    for (int i = 0; i < capabilities.length; i++) {
+        Capability capability = capabilities[i];
+        Interface[] interfaces = capability.getInterfaces();
+        for (int j = 0; j < interfaces.length; j++) {
+            Interface iface = interfaces[j];
+            if (iface.getAccessUrls().length > 0 && StringUtils.contains(iface.getType(),"WebBrowser")) {
+                try {
+                    browser.openURL(iface.getAccessUrls()[0].getValue());
+                } catch (Exception ex) {
+                    uiParent.get().showTransientError("Failed to show web interface",ExceptionFormatter.formatException(ex));
+                }               
+            }
+        }
+    }	
+	
 }
 }
