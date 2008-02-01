@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.11 2007/12/12 13:54:12 nw Exp $
+/*$Id: StapProtocol.java,v 1.12 2008/02/01 07:34:06 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -66,7 +67,7 @@ public class StapProtocol extends TemporalDalProtocol {
 		List result = new ArrayList();
 		for (Iterator i = resourceList.iterator(); i.hasNext();) {
 			Resource r = (Resource) i.next();
-			if (r instanceof Service && r.getType().indexOf("Time") != -1) {//@todo sort this.
+			if (r instanceof StapService) {
 				result.add(r);
 			}
 		}
@@ -78,6 +79,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.12  2008/02/01 07:34:06  nw
+altered to use new SsapService and StapService registry types
+
 Revision 1.11  2007/12/12 13:54:12  nw
 astroscope upgrade, and minor changes for first beta release
 

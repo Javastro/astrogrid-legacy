@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.9 2007/12/12 13:54:12 nw Exp $
+/*$Id: SsapProtocol.java,v 1.10 2008/02/01 07:34:06 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -47,7 +48,7 @@ public class SsapProtocol extends SpatialDalProtocol {
 		List result = new ArrayList();
 		for (Iterator i = resourceList.iterator(); i.hasNext();) {
 			Resource r = (Resource) i.next();
-			if (r instanceof Service && r.getType().indexOf("Spectrum") != -1) { // @todo add real type here.
+			if (r instanceof SsapService) {
 				result.add(r);
 			}
 		}
@@ -59,6 +60,9 @@ public class SsapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.10  2008/02/01 07:34:06  nw
+altered to use new SsapService and StapService registry types
+
 Revision 1.9  2007/12/12 13:54:12  nw
 astroscope upgrade, and minor changes for first beta release
 

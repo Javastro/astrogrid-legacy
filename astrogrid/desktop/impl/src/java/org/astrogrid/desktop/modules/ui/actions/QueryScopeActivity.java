@@ -13,6 +13,8 @@ import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.acr.ivoa.resource.SsapService;
+import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.AstroScopeInternal;
@@ -48,11 +50,9 @@ private final AstroScopeInternal ai;
 		boolean b =  r instanceof SiapService 
 				|| r instanceof ConeService
 				|| ConeProtocol.isConeSearchableCdsCatalog(r)
-				|| r instanceof Service && 
-					(
-						r.getType().indexOf("Spectrum") != -1
-						|| r.getType().indexOf("SimpleTimeAccess") != -1 
-					)
+				|| r instanceof SsapService
+				|| r instanceof StapService
+			
 					;
 		return b;
 	}
