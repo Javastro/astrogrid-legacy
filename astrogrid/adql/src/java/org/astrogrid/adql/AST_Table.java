@@ -11,6 +11,7 @@ import org.astrogrid.adql.v1_0.beans.TableType;
 public class AST_Table extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_Table.class ) ;
+    private TableType table ;
 
     public AST_Table(AdqlStoX p, int id) {
         super(p, id);
@@ -37,22 +38,25 @@ public class AST_Table extends SimpleNode {
                 // We have a table, maybe with schema and maybe with alias...
                 // Complicated possibly by error recovery providing non-standard
                 // number of children! ...
-                TableType tt = (TableType)ftt.changeType( TableType.type ) ;
+               
+                table = (TableType)ftt.changeType( TableType.type ) ;
+                parser.compiler.addTableReference( this ) ;
                 for( int i=0; i<childCount; i++ ) {
                     if( children[i] instanceof AST_SchemaName ) {
-                        tt.setArchive( (String)children[0].getGeneratedObject() ) ;
+                        table.setArchive( (String)children[0].getGeneratedObject() ) ;
                     }
                     else if( children[i] instanceof AST_TableName ) {
-                        tt.setName( (String)children[i].getGeneratedObject() ) ;
+                        table.setName( (String)children[i].getGeneratedObject() ) ;
                     }
                     else if( children[i] instanceof AST_CorrelationName ) {
-                        tt.setAlias( (String)children[i].getGeneratedObject() ) ;
+                        table.setAlias( (String)children[i].getGeneratedObject() ) ;
                     }
                     else {
                         log.warn( "Unrecognized table naming structure." ) ;
                     }                   
                 }
-                setGeneratedObject( tt ) ;
+                
+                setGeneratedObject( table ) ;
             } 
             super.buildXmlTree( (XmlObject)this.generatedObject ) ;
         }
@@ -60,6 +64,13 @@ public class AST_Table extends SimpleNode {
             if( log.isTraceEnabled() ) exitTrace( log, "AST_Table.buildXmlTree()" ) ; 
         }
 
+    }
+
+    /**
+     * @return the table
+     */
+    public TableType getTable() {
+        return table;
     }
 
 }

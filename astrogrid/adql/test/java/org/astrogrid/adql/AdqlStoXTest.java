@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.14 2007/06/06 18:21:05 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.15 2008/02/04 17:47:30 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -82,6 +82,8 @@ public class AdqlStoXTest extends XMLTestCase {
 		}
 		locateFilesForTest() ;
 	}
+    public void testOf_v10_6dfExplicitThreeWayJoin() throws Exception { execTest() ; }
+    public void testOf_v10_6dfExplicitThreeWayJoinWithBrackets() throws Exception { execTest() ; }
     public void testOf_v10_BADdelimitedIdentifier() throws Exception { execTest() ; }
     public void testOf_v10_BADduplicatedAliases() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyFrom() throws Exception { execTest() ; }
@@ -104,8 +106,10 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_complexSelect01() throws Exception { execTest() ; }
     public void testOf_v10_coneSearch01() throws Exception { execTest() ; }
     public void testOf_v10_coneSearch02() throws Exception { execTest() ; }
+    public void testOf_v10_decAsNonReservedWord() throws Exception { execTest() ; }
     public void testOf_v10_delimitedIdentifier() throws Exception { execTest() ; }
-    public void testOf_v10_fullOuterJoinWithJoinCondition() throws Exception { execTest() ; }
+// JBL. 30/01/2008. Full outer joins pulled for the moment. Cannot be supported easily in MySQL
+//    public void testOf_v10_fullOuterJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_groupByOneColumn() throws Exception { execTest() ; }
     public void testOf_v10_innerJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_inPredicateWithConstantStringList() throws Exception { execTest() ; }
@@ -113,7 +117,8 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_leftOuterJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_likeWithoutBracket() throws Exception { execTest() ; }
     public void testOf_v10_likeWithBracket() throws Exception { execTest() ; }
-    public void testOf_v10_MAFullOuterJoinWithJoinCondition() throws Exception { execTest() ; }
+//  JBL. 30/01/2008. Full outer joins pulled for the moment. Cannot be supported easily in MySQL
+//    public void testOf_v10_MAFullOuterJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_MAInnerJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_MALeftOuterJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_MAThreeWayJoin() throws Exception { execTest() ; }
@@ -518,6 +523,7 @@ public class AdqlStoXTest extends XMLTestCase {
     private AdqlCompiler getCompiler( File file ) throws FileNotFoundException {
         if( sCompiler == null ) {
             sCompiler = new AdqlCompiler( new FileReader( file ) ) ;
+            sCompiler.setSemanticProcessing( true ) ;
         }
         else {
             sCompiler.ReInit( new FileReader( file ) ) ;
@@ -528,6 +534,7 @@ public class AdqlStoXTest extends XMLTestCase {
     private AdqlCompiler getCompiler( StringReader source ) {
         if (sCompiler == null) {
             sCompiler = new AdqlCompiler(source);
+            sCompiler.setSemanticProcessing( true ) ;
         }
         else {
             sCompiler.ReInit(source);
@@ -692,9 +699,21 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.14  2007/06/06 18:21:05  jl99
- * Merge of branch adql-jl-2135
+ * Revision 1.15  2008/02/04 17:47:30  jl99
+ * Merge of branch adql-jl-2504
  *
+/* Revision 1.14.2.3  2008/02/01 09:56:52  jl99
+/* Removed 2 tests for full outer join syntax.
+/*
+/* Revision 1.14.2.2  2008/01/29 15:32:29  jl99
+/* Added two tests to make sure we errored n-way explicit joins with n > 2
+/*
+/* Revision 1.14.2.1  2008/01/25 16:31:46  jl99
+/* Strictly for testing and/or DSA, allowing what semantic testing exists within the parser to be turned off or on.
+/*
+/* Revision 1.14  2007/06/06 18:21:05  jl99
+/* Merge of branch adql-jl-2135
+/*
 /* Revision 1.13.2.36  2007/06/06 15:03:18  jl99
 /* Commented out two errant unit tests
 /* These are in the area of UserDefinedFunction.

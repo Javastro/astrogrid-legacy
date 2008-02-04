@@ -10,86 +10,16 @@ import org.apache.xmlbeans.XmlObject ;
 public class AST_ColumnReference extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_ColumnReference.class ) ;
+    private ColumnReferenceType columnReference ;
     
     public AST_ColumnReference(AdqlStoX p, int id) {
         super(p, id);
     }
 
-//    public Object generateObject() {   
-//        if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnReference.generateObject()" ) ; 
-//        ColumnReferenceType crt = ColumnReferenceType.Factory.newInstance() ;
-//        this.generatedObject = crt ;
-//        
-//        int childCount = jjtGetNumChildren() ;
-//               
-////        if( log.isDebugEnabled() ) {
-////            StringBuffer buffer = new StringBuffer() ;
-////            buffer
-////                .append( "childCount: " )
-////                .append( childCount ) ;       
-////            for( int i=0; i<childCount; i++ ) {
-////                buffer
-////                    .append( "\nChild image " )
-////                    .append( i )
-////                    .append( ": " )
-////                    .append( (String)children[i].getGeneratedObject() ) ;
-////            }
-////            log.debug( buffer.toString() ) ;
-////        }
-//        
-//        if( childCount > 2 ) {
-//            crt.setArchive( (String)children[0].generateObject() ) ;
-//            crt.setTable( (String)children[1].generateObject() ) ;
-//            crt.setName( (String)children[2].generateObject() ) ;  
-//        }
-//        else {
-//            crt.setTable( (String)children[0].generateObject() ) ;
-//            crt.setName( (String)children[1].generateObject() ) ;  
-//        }
-//                            
-//        super.generateObject() ;
-//        if( log.isTraceEnabled() ) exitTrace( log, "AST_ColumnReference.generateObject()" ) ; 
-//        return this.generatedObject ;
-//    }
-    
-    public void jjtClose() {   
-//        if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnReference.jjtClose()" ) ; 
-//        ColumnReferenceType crt = ColumnReferenceType.Factory.newInstance() ;
-//        
-//        int childCount = jjtGetNumChildren() ;
-//               
-//        if( log.isDebugEnabled() ) {
-//            StringBuffer buffer = new StringBuffer() ;
-//            buffer
-//                .append( "childCount: " )
-//                .append( childCount ) ;       
-//            for( int i=0; i<childCount; i++ ) {
-//                buffer
-//                    .append( "\nChild image " )
-//                    .append( i )
-//                    .append( ": " )
-//                    .append( (String)children[i].getGeneratedObject() ) ;
-//            }
-//            log.debug( buffer.toString() ) ;
-//        }
-//        
-//        if( childCount > 2 ) {
-//            crt.setArchive( (String)children[0].getGeneratedObject() ) ;
-//            crt.setTable( (String)children[1].getGeneratedObject() ) ;
-//            crt.setName( (String)children[2].getGeneratedObject() ) ;  
-//        }
-//        else {
-//            crt.setTable( (String)children[0].getGeneratedObject() ) ;
-//            crt.setName( (String)children[1].getGeneratedObject() ) ;  
-//        }
-//                            
-//        setGeneratedObject( crt ) ;
-//        if( log.isTraceEnabled() ) exitTrace( log, "AST_ColumnReference.jjtClose()" ) ; 
-    }
-
     public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnReference.buildXmlTree()" ) ; 
-      ColumnReferenceType crt = (ColumnReferenceType)xo.changeType( ColumnReferenceType.type ) ;
+      columnReference = (ColumnReferenceType)xo.changeType( ColumnReferenceType.type ) ;
+      parser.compiler.addColumnReference( this ) ;
       
       int childCount = jjtGetNumChildren() ;
              
@@ -109,18 +39,25 @@ public class AST_ColumnReference extends SimpleNode {
       }
       
       if( childCount > 2 ) {
-          crt.setArchive( (String)children[0].getGeneratedObject() ) ;
-          crt.setTable( (String)children[1].getGeneratedObject() ) ;
-          crt.setName( (String)children[2].getGeneratedObject() ) ;  
+          columnReference.setArchive( (String)children[0].getGeneratedObject() ) ;
+          columnReference.setTable( (String)children[1].getGeneratedObject() ) ;
+          columnReference.setName( (String)children[2].getGeneratedObject() ) ;  
       }
       else {
-          crt.setTable( (String)children[0].getGeneratedObject() ) ;
-          crt.setName( (String)children[1].getGeneratedObject() ) ;  
+          columnReference.setTable( (String)children[0].getGeneratedObject() ) ;
+          columnReference.setName( (String)children[1].getGeneratedObject() ) ;  
       }
                           
-      setGeneratedObject( crt ) ;
+      setGeneratedObject( columnReference ) ;
       super.buildXmlTree(xo) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_ColumnReference.buildXmlTree()" ) ; 
   }
+
+    /**
+     * @return the column
+     */
+    public ColumnReferenceType getColumnReference() {
+        return columnReference;
+    }
 
 }

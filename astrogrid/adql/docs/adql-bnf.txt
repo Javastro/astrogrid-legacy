@@ -7,7 +7,7 @@ Data Query Language. The elements are arranged in alphabetical
 order. ADQL is based upon a subset of SQL92 with extensions for
 astronomical usage.
 
-The definition represents the equivalent ADQL/s version of ADQL/x v1.01a
+The definition represents the equivalent ADQL/s version of ADQL/x v1.0a2
 as supported by Astrogrid. This is an evolving document.
 
 The select statement is found under <query_specification>
@@ -95,13 +95,10 @@ The select statement is found under <query_specification>
     | <boolean_term> AND <boolean_factor>
 
   <boolean_test> ::= <boolean_primary>
-  !! There is no accommodation for <truth_value>
 
   <character_factor> ::= <character_primary>
-  !! There is no accommodation for <collate_clause>
 
   <character_primary> ::= <value_expression_primary>
-  !! There is no accommodation for <string_value_function>
 
   <character_representation> ::=
   !! At present this is one ASCII character (but not a single quote).
@@ -109,10 +106,8 @@ The select statement is found under <query_specification>
   <character_string_literal> ::=
      <quote> [ <character_representation>... ] <quote>
      [ { <quote> [ <character_representation>... ] <quote> }... ]
-  !! There is no accommodation for <character_set_specification>
 
   <character_value_expression> ::= <character_factor>
-  !! There is no accommodation for <concatenation>
 
  <colon> ::= :
 
@@ -136,7 +131,6 @@ The select statement is found under <query_specification>
 
   <comparison_predicate> ::=
       <value_expression> <comp_op> <value_expression>
-  !! There is no accommodation for <row_value_constructor>
 
  <correlation_name> ::= <identifier>
 
@@ -168,18 +162,10 @@ The select statement is found under <query_specification>
      [ { <comma> <table_reference> }... ]
 
   <general_literal> ::= <character_string_literal>
-  !! There is no accommodation for <national_character_string_literal>,
-     <bit_string_literal>, <hex_string_literal>, <datetime_literal>
-     and <interval_literal>
 
   <general_set_function> ::=
      <set_function_type>
          <left_paren> <value_expression> <right_paren>
-  !! There is no accommodation for <set_quantifier>
-
-  <general_value_specification> ::= <variable_specification>
-  !! There is no accommodation for <parameter_specification>, <dynamic_parameter_specification>,
-     USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
 
  <greater_than_operator> ::= >
 
@@ -188,7 +174,6 @@ The select statement is found under <query_specification>
   <group_by_clause> ::= GROUP BY <grouping_column_reference_list>
 
   <grouping_column_reference> ::= <column_reference> 
-  !! There is no accommodation for <collate_clause>
 
   <grouping_column_reference_list> ::=
       <grouping_column_reference> [ { <comma> <grouping_column_reference> }... ]
@@ -196,7 +181,6 @@ The select statement is found under <query_specification>
  <having_clause> ::= HAVING <search_condition>	
 
   <identifier> ::= <actual_identifier>
-  !! There is no accommodation for <character_set_specification> 
 
   <in_predicate> ::=
       <value_expression> [ NOT ] IN <in_predicate_value>
@@ -206,29 +190,21 @@ The select statement is found under <query_specification>
 
   <in_value_list> ::=
       <in_value_list_constant> { <comma> <in_value_list_constant> }...
-  !! There is no accommodation for <value_expression>
 
   <in_value_list_constant> ::=
 	       [ <plus_sign> | <minus_sign> ] <exact_numeric_literal>
 	    |  <character_string_literal> 
 
   <join_condition> ::= ON <comparison_predicate>
-  !! There is no accommodation for <search_condition>
 
-  <join_specification> ::= <join_condition>
-  !! There is no accommodation for <named_columns_join>	
+  <join_specification> ::= <join_condition>	
 
   <join_type> ::=
      INNER
    | <outer_join_type> [ OUTER ]
-  !! There is no accommodatin for UNION
 
   <joined_table> ::=
       <qualified_join>
-    | <left_paren> <joined_table> <right_paren>
-  !! <cross_join> has been removed. The reason is the Adql/x schema has
-     a mandatory join condition which is inapplicable to cross joins.
-     Probably wise in any case. 
 
  <left_brace> ::= {
 
@@ -242,7 +218,6 @@ The select statement is found under <query_specification>
 
   <like_predicate> ::=
       <match_value> [ NOT ] LIKE <pattern>
-  !! There is no accommodation for <escape_character>
 
  <mantissa> ::= <exact_numeric_literal>
 
@@ -264,7 +239,6 @@ The select statement is found under <query_specification>
 	  | RAND <left_paren> [ <numeric_value_expression> ] <right_paren> 
 	  | ROUND <left_paren> <numeric_value_expression> <right_paren> 
 	  | TRUNCATE <left_paren> <numeric_value_expression> <right_paren> 
-  !! ADQL specific.
 
  <minus_sign> ::= -
 
@@ -284,17 +258,14 @@ The select statement is found under <query_specification>
     | <numeric_value_expression> <minus_sign> <term>
 
   <numeric_value_function> ::= <trig_function> | <math_function>	
-  !! There is no accommodation for <position_expression>,
-     <extract_expression> or <length_expression>
 
   <order_by_clause> ::= ORDER BY <sort_specification_list>
 
  <ordering_specification> ::= ASC | DESC
 
- <outer_join_type> ::= LEFT | RIGHT | FULL
+ <outer_join_type> ::= LEFT | RIGHT 
 
   <pattern> ::= <character_string_literal>
-  !! SQL92 uses <character_value_expression>
 
  <percent> ::= %
 
@@ -307,18 +278,12 @@ The select statement is found under <query_specification>
    | <between_predicate>
    | <in_predicate>
    | <like_predicate>
-  !! Yet to be supported:
-     <null_predicate>, <quantified_comparison_predicate>,
-     <exists_predicate>, <unique_predicate>,
-     <match_predicate>, <overlaps_predicate>,
-     <region_predicate> 
 
   <qualified_join> ::=
-      <table_reference> [ NATURAL ] [ <join_type> ] JOIN
-      <table_reference> [ <join_specification> ]
+      <simple_table_reference> [ <join_type> ] JOIN
+      <simple_table_reference> [ <join_specification> ]
 
   <qualifier> ::= <table_name> 
-  !! SQL92 also has <correlation_name>
 
   <query_specification> ::=
       SELECT [ <set_quantifier> ] [ <set_limit> ] <select_list> <table_expression>
@@ -353,7 +318,7 @@ The select statement is found under <query_specification>
    | CURRENT
    | CURRENT_DATE | CURRENT_TIME
    | CURRENT_TIMESTAMP | CURRENT_USER | CURSOR
-   | DATE | DAY | DEALLOCATE | DEC
+   | DATE | DAY | DEALLOCATE 
    | DECIMAL | DECLARE | DEFAULT | DEFERRABLE
    | DEFERRED | DELETE | DESC | DESCRIBE | DESCRIPTOR
    | DIAGNOSTICS
@@ -416,7 +381,6 @@ The select statement is found under <query_specification>
  <right_paren> ::= )
 
     <schema_name> ::= <identifier>
-    !!SQL92 has <schema name> ::= [ <catalog name> <period> ] <unqualified schema name>
 
   <search_condition> ::=
       <boolean_term>
@@ -428,7 +392,6 @@ The select statement is found under <query_specification>
 
   <select_sublist> ::=
       <derived_column>
-  !! SQL92 also has <qualifier> <period> <asterisk>
 
  <semicolon> ::= ;
 
@@ -439,7 +402,6 @@ The select statement is found under <query_specification>
  <set_function_type> ::= AVG | MAX | MIN | SUM | COUNT
 
   <set_limit> ::= TOP <unsigned_integer>
-  !! SQL92 has no equivalent construct
 
  <set_quantifier> ::= DISTINCT | ALL
 
@@ -461,15 +423,15 @@ The select statement is found under <query_specification>
       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O
     | P | Q | R | S | T | U | V | W | X | Y | Z
 
+  <simple_table_reference> ::=
+      [ <schema_name> <period> ] <table_name> [ [ AS ] <correlation_name> ] 
+
  <solidus> ::= /
 
   <sort_key> ::= <value_expression>
-  !! This is different from SQL92 which uses
-     <column_name> | <unsigned_integer>
 
   <sort_specification> ::=
-      <sort_key> [ <ordering_specification> ]
-  !! There is no accommodation for <collate_clause>
+      <sort_key> [ <ordering_specification> ]e>
 
   <sort_specification_list> ::=
       <sort_specification> [ { <comma> <sort_specification> }... ]
@@ -479,7 +441,6 @@ The select statement is found under <query_specification>
 
   <string_value_expression> ::=
       <character_value_expression>
-  !! SQL92 also supports <bit_value_expression>
 
   <table_expression> ::=
       <from_clause>
@@ -487,19 +448,16 @@ The select statement is found under <query_specification>
       [ <group_by_clause> ]
       [ <having_clause> ]
       [ <order_by_clause> ]
- !! ADQL adds <order_by_clause>
 
   <table_name> ::=
       <identifier>
 
   <table_reference> ::=
-      [ <schema_name> <period> ] <table_name> [ [ AS ] <correlation_name> ] 
+      <simple_table_reference>
     | <joined_table> 
-  !! SQL92 also supports <derived_table> and <derived_column_list>
 
   <table_subquery> ::= 
       <left_paren> <query_specification> <right_paren>
-  !! SQL92 uses <subquery>
 
   <term> ::=
       <factor>
@@ -514,8 +472,7 @@ The select statement is found under <query_specification>
     | COS <left_paren> <numeric_value_expression> <right_paren>
     | COT <left_paren> <numeric_value_expression> <right_paren>
     | SIN <left_paren> <numeric_value_expression> <right_paren>
-    | TAN <left_paren> <numeric_value_expression> <right_paren>
-  !! Specific to ADQL
+    | TAN <left_paren> <numeric_value_expression> <right_paren>L
 
  <underscore> ::= _
 
@@ -530,24 +487,16 @@ The select statement is found under <query_specification>
 
   <unsigned_value_specification> ::=
       <unsigned_literal>
-    | <general_value_specification>
 
   <value_expression> ::=
 	    <numeric_value_expression>
     | <string_value_expression>
-  !! SQL92 also supports <datetime_value_expression>
-     and <interval_value_expression>
 
   <value_expression_primary> ::=
       <unsigned_value_specification>
     | <column_reference>
     | <set_function_specification>
     | <left_paren> <value_expression> <right_paren>
-  !! There is no accommodation for <scalar_subquery>,
-     <case_expression> or <cast_specification>
-
- <variable_specification> ::=
-  !! Yet to be worked out.
 
  <vertical_bar> ::= |
 

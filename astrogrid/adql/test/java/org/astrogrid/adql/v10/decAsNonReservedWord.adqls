@@ -1,0 +1,2 @@
+SELECT TOP 100 * FROM twomass_psc as o WHERE (o.ra > 56.25) AND (o.ra < 57.25) AND
+(o.dec > 23.6167) and (o.dec < 24.6167) and (o.j_m - o.k_m) < 1.0

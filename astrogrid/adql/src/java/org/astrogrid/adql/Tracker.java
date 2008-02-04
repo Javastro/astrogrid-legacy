@@ -1,4 +1,4 @@
-/*$Id: Tracker.java,v 1.3 2007/06/06 18:19:27 jl99 Exp $
+/*$Id: Tracker.java,v 1.4 2008/02/04 17:47:29 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -184,13 +184,77 @@ public class Tracker {
             this.message = message;
         }
         
+        /**
+         * Returns a short message, which is understood to be the message upto
+         * the first end-of-line character.
+         * 
+         * @return  The shortened message
+         */
         public String getShortMessage() {
             String m = getMessage() ;
-            int i = m.indexOf( '\n' ) ;
+            int i = m.indexOf( '\n' ) ;                 
             if( i == -1 ) {
                 return m ;
             }
             return m.substring( 0, i ) ;  
+        }
+        
+        /**
+         * Returns the message description, which is understood to be the message upto
+         * either:
+         * <ul><li>the beginning of a textual position if one exists, or 
+         *     <li>the first end-of-line character
+         * 
+         * @return  A message description.
+         */
+        public String getDescription() {
+            String m = getMessage() ;
+            int i = m.indexOf( "at line" );
+            if( i == -1 ) {
+                i = m.indexOf( '\n' ) ;                
+            }    
+            if( i == -1 ) {
+                return m ;
+            }
+
+            String description = m.substring( 0, i ).trim() ;
+            //
+            // Example of sparse EOF message...
+            
+            // Encountered "<EOF>" at line 2, column 9.
+            // Was expecting:
+            //    "from" ...
+            if( description.equals( "Encountered \"<EOF>\"") ) {
+                i = m.indexOf( "Was expecting:" ) ;
+                if( i != -1 ) {
+                    description = m.substring( i ) ;
+                }
+            }
+            else if( description.endsWith( "<EOF>\"" ) ) {
+                i = description.indexOf( "<EOF>\"" ) ; 
+                description = description.substring( 0, i ) + '"' ;
+            }
+            return description ;
+        }
+        
+        /**
+         * Returns the textual position of where an error occurred, 
+         * if indeed the textual position has been recorded. 
+         * For example, "at line 0 column 21"
+         * 
+         * @return  A textual position or the empty string.
+         */
+        public String getTextualPosition() {
+            String m = getMessage() ;
+            int i = m.indexOf( "at line" );
+            if( i == -1 ) {
+                return "" ;              
+            }  
+            int j = m.indexOf( i, '\n' ) ;                 
+            if( j == -1 ) {
+                return m.substring( 0, j ) ;  
+            }           
+            return m.substring( i, j ) ;  
         }
 
         public Part[] getPosition() {
@@ -457,6 +521,20 @@ public class Tracker {
 
 /*
 $Log: Tracker.java,v $
+Revision 1.4  2008/02/04 17:47:29  jl99
+Merge of branch adql-jl-2504
+
+Revision 1.3.2.3  2008/02/01 09:54:12  jl99
+Some changes to returning message description.
+An attempt to make messages containing <EOF> more cosmetic.
+
+Revision 1.3.2.2  2008/01/29 14:16:35  jl99
+Small bunch of methods added to return different parts of an error,
+eg: description, textual position etc
+
+Revision 1.3.2.1  2008/01/25 15:49:43  jl99
+Method Error.getShortMessage() removes line and column references
+
 Revision 1.3  2007/06/06 18:19:27  jl99
 Merge of branch adql-jl-2135
 

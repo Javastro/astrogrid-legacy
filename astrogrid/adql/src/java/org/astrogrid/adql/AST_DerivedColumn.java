@@ -13,71 +13,29 @@ import org.apache.commons.logging.LogFactory ;
 public class AST_DerivedColumn extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_DerivedColumn.class ) ;
-
+    
+    private AliasSelectionItemType aliasSelectionItem ;
+    
     public AST_DerivedColumn(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-//        int childCount = jjtGetNumChildren() ;
-//        if( childCount == 2 ) {
-//            Object child = null ;
-//            AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
-//            for( int i=0; i<childCount; i++ ) {
-//                child = children[i].getGeneratedObject() ;
-//                if( child instanceof String ) {
-//                    asiType.setAs( (String)child ) ;
-//                }
-//                else {
-//                    asiType.setExpression( (ScalarExpressionType)child ) ;
-//                    children[i].exchangeGeneratedObject(asiType.getExpression()) ;
-//                }
-//            }  
-//            setGeneratedObject( asiType ) ;
-//        }
-//        else if( childCount > 0 ){
-//            setGeneratedObject( children[0].getGeneratedObject() ) ;
-//        }
-    }
-    
-//    public Object generateObject() {
-//        int childCount = jjtGetNumChildren() ;
-//        if( childCount == 2 ) {
-//            Object child = null ;
-//            AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
-//            for( int i=0; i<childCount; i++ ) {
-//                child = children[i].generateObject() ;
-//                if( child instanceof String ) {
-//                    asiType.setAs( (String)child ) ;
-//                }
-//                else {
-//                    asiType.setExpression( (ScalarExpressionType)child ) ;
-//                }
-//            }  
-//            this.generatedObject = asiType ;
-//        }
-//        else if( childCount > 0 ){
-//            this.generatedObject = children[0].getGeneratedObject() ;
-//        }
-//        return super.generateObject() ;
-//    }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_DerivedColumn.buildXmlTree()" ) ; 
         SelectionItemType sit = (SelectionItemType)xo ;
         int childCount = jjtGetNumChildren() ;
         if( childCount == 2 ) {
-            AliasSelectionItemType asiType = (AliasSelectionItemType)sit.changeType( AliasSelectionItemType.type ) ;
-            this.generatedObject = asiType ;
+            aliasSelectionItem = (AliasSelectionItemType)sit.changeType( AliasSelectionItemType.type ) ;
+            this.generatedObject = aliasSelectionItem ;
+            parser.compiler.addAliasSelection( this ) ;
             for( int i=0; i<childCount; i++ ) {
                 if( children[i] instanceof AST_ColumnName ) {
-                    asiType.setAs( (String)children[i].getGeneratedObject() ) ;
+                    aliasSelectionItem.setAs( (String)children[i].getGeneratedObject() ) ;
                 }
                 else if( children[i] instanceof AST_ValueExpression ) {
-                    children[i].buildXmlTree( asiType.addNewExpression() ) ;
+                    children[i].buildXmlTree( aliasSelectionItem.addNewExpression() ) ;
                 }
             }  
-            this.generatedObject = asiType ;
         }
         else if( childCount > 0 ){
             children[0].buildXmlTree( sit ) ;
@@ -86,6 +44,10 @@ public class AST_DerivedColumn extends SimpleNode {
         super.buildXmlTree(xo) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_DerivedColumn.buildXmlTree()" ) ; 
         
+    }
+    
+    AliasSelectionItemType getAliasSelection() {
+        return aliasSelectionItem ;
     }
 
 }

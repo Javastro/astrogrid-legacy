@@ -1,0 +1,12 @@
+-- JBL Note: We are not currently supporting n-way explicit joins where n > 2
+-- This example tries a 3-way join using brackets.
+
+-- Joining 3 tables using the targetid parameter. 
+-- In this example the TARGET, SPECTRA and TWOMASS tables are joined with parameters extracted from each table.
+SELECT target.TARGETNAME, target.BMAG, target.RMAG,  
+target.BMAG-target.RMAG AS colour, spectra.Z, twomass.K 
+FROM target INNER JOIN ( spectra  INNER JOIN 
+twomass ON target.TARGETID = twomass.TARGETID ) 
+ON target.TARGETID = spectra.TARGETID 
+WHERE (target.BMAG - target.RMAG > 1.2)  
+AND (spectra.QUALITY >= 3) AND (twomass.K > 12) ;

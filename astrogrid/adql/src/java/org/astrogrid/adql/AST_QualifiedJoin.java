@@ -3,8 +3,6 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.JoinTableType;
-import org.astrogrid.adql.v1_0.beans.FromTableType;
-import org.astrogrid.adql.v1_0.beans.ComparisonPredType;
 import org.astrogrid.adql.v1_0.beans.JointTableQualifierType;
 import org.astrogrid.adql.v1_0.beans.ArrayOfFromTableType;
 import org.apache.xmlbeans.XmlObject; 
@@ -24,12 +22,8 @@ public class AST_QualifiedJoin extends SimpleNode {
         JoinTableType jtType = (JoinTableType)xo.changeType( JoinTableType.type ) ;         
         jtType.xsetQualifier( (JointTableQualifierType)children[1].getGeneratedObject() ) ;
         ArrayOfFromTableType tableArray = jtType.addNewTables() ;
-        FromTableType[] fttArray = new FromTableType[2] ;
         children[0].buildXmlTree( tableArray.addNewFromTableType() ) ;
-        children[2].buildXmlTree( tableArray.addNewFromTableType() ) ;
-        fttArray[0] = (FromTableType)children[0].getGeneratedObject() ;
-        fttArray[1] = (FromTableType)children[2].getGeneratedObject() ;          
-        tableArray.setFromTableTypeArray( fttArray ) ;      
+        children[2].buildXmlTree( tableArray.addNewFromTableType() ) ;   
         if( jjtGetNumChildren() == 4 ) {
             children[3].buildXmlTree( jtType.addNewCondition() ) ;
         }

@@ -1,0 +1,5 @@
+04/02/2008 Jeff Lusted:
+These style sheets are a copy of the DSA style sheets used to transform ADQL/x into variant SQL.
+Our aim was eventually to have them closetted with the ADQL parser rather than the DSA, 
+so this is their first time they have appeared under a new parent. 
+The parser does not use them so far. They are here for the record and for experimentation.

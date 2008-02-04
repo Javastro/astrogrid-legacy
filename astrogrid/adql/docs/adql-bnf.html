@@ -1,9 +1,9 @@
-<html><head><title>BNF for ADQL v1.01a</title></head><body><pre>This file contains a BNF definition of ADQL, the Astronomical
+<html><head><title>BNF for ADQL v1.0a2</title></head><body><pre>This file contains a BNF definition of ADQL, the Astronomical
 Data Query Language. The elements are arranged in alphabetical
 order. ADQL is based upon a subset of SQL92 with extensions for
 astronomical usage.
 
-The definition represents the equivalent ADQL/s version of ADQL/x v1.01a
+The definition represents the equivalent ADQL/s version of ADQL/x v1.0a2
 as supported by Astrogrid. This is an evolving document.
 
 The select statement is found at <a href="#query_specification">&lt;query_specification&gt;</a>
@@ -92,13 +92,10 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
     | &lt;<a href="#boolean_term">boolean_term</a>&gt; AND &lt;<a href="#boolean_factor">boolean_factor</a>&gt;
 
   <a name="boolean_test">&lt;boolean_test&gt;</a> ::= &lt;<a href="#boolean_primary">boolean_primary</a>&gt;
-  !! There is no accommodation for &lt;truth_value&gt;
 
   <a name="character_factor">&lt;character_factor&gt;</a> ::= &lt;<a href="#character_primary">character_primary</a>&gt;
-  !! There is no accommodation for &lt;collate_clause&gt;
 
   <a name="character_primary">&lt;character_primary&gt;</a> ::= &lt;<a href="#value_expression_primary">value_expression_primary</a>&gt;
-  !! There is no accommodation for &lt;string_value_function&gt;
 
   <a name="character_representation">&lt;character_representation&gt;</a> ::=
   !! At present this is one ASCII character (but not a single quote).
@@ -106,10 +103,8 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
   <a name="character_string_literal">&lt;character_string_literal&gt;</a> ::=
      &lt;<a href="#quote">quote</a>&gt; [ &lt;<a href="#character_representation">character_representation</a>&gt;... ] &lt;<a href="#quote">quote</a>&gt;
      [ { &lt;<a href="#quote">quote</a>&gt; [ &lt;<a href="#character_representation">character_representation</a>&gt;... ] &lt;<a href="#quote">quote</a>&gt; }... ]
-  !! There is no accommodation for &lt;character_set_specification&gt;
 
   <a name="character_value_expression">&lt;character_value_expression&gt;</a> ::= &lt;<a href="#character_factor">character_factor</a>&gt;
-  !! There is no accommodation for &lt;concatenation&gt;
 
  <a name="colon">&lt;colon&gt;</a> ::= :
 
@@ -133,7 +128,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 
   <a name="comparison_predicate">&lt;comparison_predicate&gt;</a> ::=
       &lt;<a href="#value_expression">value_expression</a>&gt; &lt;<a href="#comp_op">comp_op</a>&gt; &lt;<a href="#value_expression">value_expression</a>&gt;
-  !! There is no accommodation for &lt;row_value_constructor&gt;
 
  <a name="correlation_name">&lt;correlation_name&gt;</a> ::= &lt;<a href="#identifier">identifier</a>&gt;
 
@@ -165,18 +159,10 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
      [ { &lt;<a href="#comma">comma</a>&gt; &lt;<a href="#table_reference">table_reference</a>&gt; }... ]
 
   <a name="general_literal">&lt;general_literal&gt;</a> ::= &lt;<a href="#character_string_literal">character_string_literal</a>&gt;
-  !! There is no accommodation for &lt;national_character_string_literal&gt;,
-     &lt;bit_string_literal&gt;, &lt;hex_string_literal&gt;, &lt;datetime_literal&gt;
-     and &lt;interval_literal&gt;
 
   <a name="general_set_function">&lt;general_set_function&gt;</a> ::=
      &lt;<a href="#set_function_type">set_function_type</a>&gt;
          &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#value_expression">value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
-  !! There is no accommodation for &lt;set_quantifier&gt;
-
-  <a name="general_value_specification">&lt;general_value_specification&gt;</a> ::= &lt;<a href="#variable_specification">variable_specification</a>&gt;
-  !! There is no accommodation for &lt;parameter_specification&gt;, &lt;dynamic_parameter_specification&gt;,
-     USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
 
  <a name="greater_than_operator">&lt;greater_than_operator&gt;</a> ::= &gt;
 
@@ -185,7 +171,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
   <a name="group_by_clause">&lt;group_by_clause&gt;</a> ::= GROUP BY &lt;<a href="#grouping_column_reference_list">grouping_column_reference_list</a>&gt;
 
   <a name="grouping_column_reference">&lt;grouping_column_reference&gt;</a> ::= &lt;<a href="#column_reference">column_reference</a>&gt; 
-  !! There is no accommodation for &lt;collate_clause&gt;
 
   <a name="grouping_column_reference_list">&lt;grouping_column_reference_list&gt;</a> ::=
       &lt;<a href="#grouping_column_reference">grouping_column_reference</a>&gt; [ { &lt;<a href="#comma">comma</a>&gt; &lt;<a href="#grouping_column_reference">grouping_column_reference</a>&gt; }... ]
@@ -193,7 +178,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
  <a name="having_clause">&lt;having_clause&gt;</a> ::= HAVING &lt;<a href="#search_condition">search_condition</a>&gt;	
 
   <a name="identifier">&lt;identifier&gt;</a> ::= &lt;<a href="#actual_identifier">actual_identifier</a>&gt;
-  !! There is no accommodation for &lt;character_set_specification&gt; 
 
   <a name="in_predicate">&lt;in_predicate&gt;</a> ::=
       &lt;<a href="#value_expression">value_expression</a>&gt; [ NOT ] IN &lt;<a href="#in_predicate_value">in_predicate_value</a>&gt;
@@ -203,29 +187,21 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 
   <a name="in_value_list">&lt;in_value_list&gt;</a> ::=
       &lt;<a href="#in_value_list_constant">in_value_list_constant</a>&gt; { &lt;<a href="#comma">comma</a>&gt; &lt;<a href="#in_value_list_constant">in_value_list_constant</a>&gt; }...
-  !! There is no accommodation for &lt;value_expression&gt;
 
   <a name="in_value_list_constant">&lt;in_value_list_constant&gt;</a> ::=
 	       [ &lt;<a href="#plus_sign">plus_sign</a>&gt; | &lt;<a href="#minus_sign">minus_sign</a>&gt; ] &lt;<a href="#exact_numeric_literal">exact_numeric_literal</a>&gt;
 	    |  &lt;<a href="#character_string_literal">character_string_literal</a>&gt; 
 
   <a name="join_condition">&lt;join_condition&gt;</a> ::= ON &lt;<a href="#comparison_predicate">comparison_predicate</a>&gt;
-  !! There is no accommodation for &lt;search_condition&gt;
 
-  <a name="join_specification">&lt;join_specification&gt;</a> ::= &lt;<a href="#join_condition">join_condition</a>&gt;
-  !! There is no accommodation for &lt;named_columns_join&gt;	
+  <a name="join_specification">&lt;join_specification&gt;</a> ::= &lt;<a href="#join_condition">join_condition</a>&gt;	
 
   <a name="join_type">&lt;join_type&gt;</a> ::=
      INNER
    | &lt;<a href="#outer_join_type">outer_join_type</a>&gt; [ OUTER ]
-  !! There is no accommodatin for UNION
 
   <a name="joined_table">&lt;joined_table&gt;</a> ::=
       &lt;<a href="#qualified_join">qualified_join</a>&gt;
-    | &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#joined_table">joined_table</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
-  !! &lt;cross_join&gt; has been removed. The reason is the Adql/x schema has
-     a mandatory join condition which is inapplicable to cross joins.
-     Probably wise in any case. 
 
  <a name="left_brace">&lt;left_brace&gt;</a> ::= {
 
@@ -239,7 +215,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 
   <a name="like_predicate">&lt;like_predicate&gt;</a> ::=
       &lt;<a href="#match_value">match_value</a>&gt; [ NOT ] LIKE &lt;<a href="#pattern">pattern</a>&gt;
-  !! There is no accommodation for &lt;escape_character&gt;
 
  <a name="mantissa">&lt;mantissa&gt;</a> ::= &lt;<a href="#exact_numeric_literal">exact_numeric_literal</a>&gt;
 
@@ -261,7 +236,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 	  | RAND &lt;<a href="#left_paren">left_paren</a>&gt; [ &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; ] &lt;<a href="#right_paren">right_paren</a>&gt; 
 	  | ROUND &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt; 
 	  | TRUNCATE &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt; 
-  !! ADQL specific.
 
  <a name="minus_sign">&lt;minus_sign&gt;</a> ::= -
 
@@ -281,17 +255,14 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
     | &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#minus_sign">minus_sign</a>&gt; &lt;<a href="#term">term</a>&gt;
 
   <a name="numeric_value_function">&lt;numeric_value_function&gt;</a> ::= &lt;<a href="#trig_function">trig_function</a>&gt; | &lt;<a href="#math_function">math_function</a>&gt;	
-  !! There is no accommodation for &lt;position_expression&gt;,
-     &lt;extract_expression&gt; or &lt;length_expression&gt;
 
   <a name="order_by_clause">&lt;order_by_clause&gt;</a> ::= ORDER BY &lt;<a href="#sort_specification_list">sort_specification_list</a>&gt;
 
  <a name="ordering_specification">&lt;ordering_specification&gt;</a> ::= ASC | DESC
 
- <a name="outer_join_type">&lt;outer_join_type&gt;</a> ::= LEFT | RIGHT | FULL
+ <a name="outer_join_type">&lt;outer_join_type&gt;</a> ::= LEFT | RIGHT 
 
   <a name="pattern">&lt;pattern&gt;</a> ::= &lt;<a href="#character_string_literal">character_string_literal</a>&gt;
-  !! SQL92 uses &lt;character_value_expression&gt;
 
  <a name="percent">&lt;percent&gt;</a> ::= %
 
@@ -304,18 +275,12 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
    | &lt;<a href="#between_predicate">between_predicate</a>&gt;
    | &lt;<a href="#in_predicate">in_predicate</a>&gt;
    | &lt;<a href="#like_predicate">like_predicate</a>&gt;
-  !! Yet to be supported:
-     &lt;null_predicate&gt;, &lt;quantified_comparison_predicate&gt;,
-     &lt;exists_predicate&gt;, &lt;unique_predicate&gt;,
-     &lt;match_predicate&gt;, &lt;overlaps_predicate&gt;,
-     &lt;region_predicate&gt; 
 
   <a name="qualified_join">&lt;qualified_join&gt;</a> ::=
-      &lt;<a href="#table_reference">table_reference</a>&gt; [ NATURAL ] [ &lt;<a href="#join_type">join_type</a>&gt; ] JOIN
-      &lt;<a href="#table_reference">table_reference</a>&gt; [ &lt;<a href="#join_specification">join_specification</a>&gt; ]
+      &lt;<a href="#simple_table_reference">simple_table_reference</a>&gt; [ &lt;<a href="#join_type">join_type</a>&gt; ] JOIN
+      &lt;<a href="#simple_table_reference">simple_table_reference</a>&gt; [ &lt;<a href="#join_specification">join_specification</a>&gt; ]
 
   <a name="qualifier">&lt;qualifier&gt;</a> ::= &lt;<a href="#table_name">table_name</a>&gt; 
-  !! SQL92 also has &lt;correlation_name&gt;
 
   <a name="query_specification">&lt;query_specification&gt;</a> ::=
       SELECT [ &lt;<a href="#set_quantifier">set_quantifier</a>&gt; ] [ &lt;<a href="#set_limit">set_limit</a>&gt; ] &lt;<a href="#select_list">select_list</a>&gt; &lt;<a href="#table_expression">table_expression</a>&gt;
@@ -350,7 +315,7 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
    | CURRENT
    | CURRENT_DATE | CURRENT_TIME
    | CURRENT_TIMESTAMP | CURRENT_USER | CURSOR
-   | DATE | DAY | DEALLOCATE | DEC
+   | DATE | DAY | DEALLOCATE 
    | DECIMAL | DECLARE | DEFAULT | DEFERRABLE
    | DEFERRED | DELETE | DESC | DESCRIBE | DESCRIPTOR
    | DIAGNOSTICS
@@ -413,7 +378,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
  <a name="right_paren">&lt;right_paren&gt;</a> ::= )
 
     <a name="schema_name">&lt;schema_name&gt;</a> ::= &lt;<a href="#identifier">identifier</a>&gt;
-    !!SQL92 has &lt;schema name&gt; ::= [ &lt;catalog name&gt; &lt;period&gt; ] &lt;unqualified schema name&gt;
 
   <a name="search_condition">&lt;search_condition&gt;</a> ::=
       &lt;<a href="#boolean_term">boolean_term</a>&gt;
@@ -425,7 +389,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 
   <a name="select_sublist">&lt;select_sublist&gt;</a> ::=
       &lt;<a href="#derived_column">derived_column</a>&gt;
-  !! SQL92 also has &lt;qualifier&gt; &lt;period&gt; &lt;asterisk&gt;
 
  <a name="semicolon">&lt;semicolon&gt;</a> ::= ;
 
@@ -436,7 +399,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
  <a name="set_function_type">&lt;set_function_type&gt;</a> ::= AVG | MAX | MIN | SUM | COUNT
 
   <a name="set_limit">&lt;set_limit&gt;</a> ::= TOP &lt;<a href="#unsigned_integer">unsigned_integer</a>&gt;
-  !! SQL92 has no equivalent construct
 
  <a name="set_quantifier">&lt;set_quantifier&gt;</a> ::= DISTINCT | ALL
 
@@ -458,15 +420,15 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O
     | P | Q | R | S | T | U | V | W | X | Y | Z
 
+  <a name="simple_table_reference">&lt;simple_table_reference&gt;</a> ::=
+      [ &lt;<a href="#schema_name">schema_name</a>&gt; &lt;<a href="#period">period</a>&gt; ] &lt;<a href="#table_name">table_name</a>&gt; [ [ AS ] &lt;<a href="#correlation_name">correlation_name</a>&gt; ] 
+
  <a name="solidus">&lt;solidus&gt;</a> ::= /
 
   <a name="sort_key">&lt;sort_key&gt;</a> ::= &lt;<a href="#value_expression">value_expression</a>&gt;
-  !! This is different from SQL92 which uses
-     &lt;column_name&gt; | &lt;unsigned_integer&gt;
 
   <a name="sort_specification">&lt;sort_specification&gt;</a> ::=
-      &lt;<a href="#sort_key">sort_key</a>&gt; [ &lt;<a href="#ordering_specification">ordering_specification</a>&gt; ]
-  !! There is no accommodation for &lt;collate_clause&gt;
+      &lt;<a href="#sort_key">sort_key</a>&gt; [ &lt;<a href="#ordering_specification">ordering_specification</a>&gt; ]e&gt;
 
   <a name="sort_specification_list">&lt;sort_specification_list&gt;</a> ::=
       &lt;<a href="#sort_specification">sort_specification</a>&gt; [ { &lt;<a href="#comma">comma</a>&gt; &lt;<a href="#sort_specification">sort_specification</a>&gt; }... ]
@@ -476,7 +438,6 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 
   <a name="string_value_expression">&lt;string_value_expression&gt;</a> ::=
       &lt;<a href="#character_value_expression">character_value_expression</a>&gt;
-  !! SQL92 also supports &lt;bit_value_expression&gt;
 
   <a name="table_expression">&lt;table_expression&gt;</a> ::=
       &lt;<a href="#from_clause">from_clause</a>&gt;
@@ -484,19 +445,16 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
       [ &lt;<a href="#group_by_clause">group_by_clause</a>&gt; ]
       [ &lt;<a href="#having_clause">having_clause</a>&gt; ]
       [ &lt;<a href="#order_by_clause">order_by_clause</a>&gt; ]
- !! ADQL adds &lt;order_by_clause&gt;
 
   <a name="table_name">&lt;table_name&gt;</a> ::=
       &lt;<a href="#identifier">identifier</a>&gt;
 
   <a name="table_reference">&lt;table_reference&gt;</a> ::=
-      [ &lt;<a href="#schema_name">schema_name</a>&gt; &lt;<a href="#period">period</a>&gt; ] &lt;<a href="#table_name">table_name</a>&gt; [ [ AS ] &lt;<a href="#correlation_name">correlation_name</a>&gt; ] 
+      &lt;<a href="#simple_table_reference">simple_table_reference</a>&gt;
     | &lt;<a href="#joined_table">joined_table</a>&gt; 
-  !! SQL92 also supports &lt;derived_table&gt; and &lt;derived_column_list&gt;
 
   <a name="table_subquery">&lt;table_subquery&gt;</a> ::= 
       &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#query_specification">query_specification</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
-  !! SQL92 uses &lt;subquery&gt;
 
   <a name="term">&lt;term&gt;</a> ::=
       &lt;<a href="#factor">factor</a>&gt;
@@ -511,8 +469,7 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
     | COS &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
     | COT &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
     | SIN &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
-    | TAN &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
-  !! Specific to ADQL
+    | TAN &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;L
 
  <a name="underscore">&lt;underscore&gt;</a> ::= _
 
@@ -527,24 +484,16 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 
   <a name="unsigned_value_specification">&lt;unsigned_value_specification&gt;</a> ::=
       &lt;<a href="#unsigned_literal">unsigned_literal</a>&gt;
-    | &lt;<a href="#general_value_specification">general_value_specification</a>&gt;
 
   <a name="value_expression">&lt;value_expression&gt;</a> ::=
 	    &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt;
     | &lt;<a href="#string_value_expression">string_value_expression</a>&gt;
-  !! SQL92 also supports &lt;datetime_value_expression&gt;
-     and &lt;interval_value_expression&gt;
 
   <a name="value_expression_primary">&lt;value_expression_primary&gt;</a> ::=
       &lt;<a href="#unsigned_value_specification">unsigned_value_specification</a>&gt;
     | &lt;<a href="#column_reference">column_reference</a>&gt;
     | &lt;<a href="#set_function_specification">set_function_specification</a>&gt;
     | &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#value_expression">value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt;
-  !! There is no accommodation for &lt;scalar_subquery&gt;,
-     &lt;case_expression&gt; or &lt;cast_specification&gt;
-
- <a name="variable_specification">&lt;variable_specification&gt;</a> ::=
-  !! Yet to be worked out.
 
  <a name="vertical_bar">&lt;vertical_bar&gt;</a> ::= |
 

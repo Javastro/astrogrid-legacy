@@ -1,4 +1,37 @@
-/*$Id: AdqlStoX.jjt,v 1.36 2007/06/17 15:17:20 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.37 2008/02/04 17:47:30 jl99 Exp $*/
+
+// 
+// High-level JavaDoc comments are present in this file.
+// There is little point in placing any here. 
+// At this point they are ignored by the JavaCC processors. 
+//
+// Jeff Lusted   
+//
+   
+options {
+  JDK_VERSION="1.4";
+  STATIC=false;
+  MULTI=true;
+  VISITOR=false;
+  NODE_USES_PARSER=true;
+  NODE_DEFAULT_VOID=true;
+  NODE_PREFIX="AST_";
+  IGNORE_CASE=true;
+  NODE_SCOPE_HOOK=true ;
+}
+
+PARSER_BEGIN(AdqlStoX)
+package org.astrogrid.adql ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+import java.util.HashSet ;
+import java.util.ArrayList ;
+import java.util.List ;
+import org.astrogrid.adql.v1_0.beans.* ;
+import org.astrogrid.stc.region.v1_10.beans.* ;
+import org.astrogrid.stc.coords.v1_10.beans.* ;
+
 /**
  * AdqlStoX JavaCC file          
  *
@@ -61,30 +94,6 @@
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Sep 2006
  */
- 
-options {
-  JDK_VERSION="1.4";
-  STATIC=false;
-  MULTI=true;
-  VISITOR=false;
-  NODE_USES_PARSER=true;
-  NODE_DEFAULT_VOID=true;
-  NODE_PREFIX="AST_";
-  IGNORE_CASE=true;
-  NODE_SCOPE_HOOK=true ;
-}
-
-PARSER_BEGIN(AdqlStoX)
-package org.astrogrid.adql ;
-
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-import java.util.HashSet ;
-import java.util.ArrayList ;
-import java.util.List ;
-import org.astrogrid.adql.v1_0.beans.* ;
-import org.astrogrid.stc.region.v1_10.beans.* ;
-import org.astrogrid.stc.coords.v1_10.beans.* ;
 
 public class AdqlStoX {
 	
@@ -242,7 +251,7 @@ TOKEN : // <SQL_embedded_language_character>
  *   | CURRENT
  *   | CURRENT_DATE | CURRENT_TIME
  *   | CURRENT_TIMESTAMP | CURRENT_USER | CURSOR
- *   | DATE | DAY | DEALLOCATE | DEC
+ *   | DATE | DAY | DEALLOCATE 
  *   | DECIMAL | DECLARE | DEFAULT | DEFERRABLE
  *   | DEFERRED | DELETE | DESC | DESCRIBE | DESCRIPTOR
  *   | DIAGNOSTICS
@@ -357,7 +366,8 @@ TOKEN : // <reserved_word>
 | < DATE : "date" >
 | < DAY : "day" >
 | < DEALLOCATE : "deallocate" >
-| < DEC : "dec" >
+//#2504 DEC removed as an SQL reserved word
+// | < DEC : "dec" >
 | < DECIMAL : "decimal" >
 | < DECLARE : "declare" >
 | < SQL_DEFAULT : "default" >
@@ -925,7 +935,6 @@ void boolean_factor_S() #BooleanFactor :
  *
  * bnf-start
  *  <boolean_test> ::= <boolean_primary>
- *  !! There is no accommodation for <truth_value>
  * bnf-end
  *
  */
@@ -951,7 +960,6 @@ void boolean_test_A() :
  * bnf-start
  *  <like_predicate> ::=
  *      <match_value> [ NOT ] LIKE <pattern>
- *  !! There is no accommodation for <escape_character>
  * bnf-end
  *
  */
@@ -985,7 +993,6 @@ void castSpecification_S() : {}
  *
  * bnf-start
  *  <character_factor> ::= <character_primary>
- *  !! There is no accommodation for <collate_clause>
  * bnf-end
  *
  */
@@ -1001,7 +1008,6 @@ void character_factor_A() : {}
  *
  * bnf-start
  *  <character_primary> ::= <value_expression_primary>
- *  !! There is no accommodation for <string_value_function>
  * bnf-end
  *
  */
@@ -1023,7 +1029,6 @@ void character_primary_A() : {}
  *  <character_string_literal> ::=
  *     <quote> [ <character_representation>... ] <quote>
  *     [ { <quote> [ <character_representation>... ] <quote> }... ]
- *  !! There is no accommodation for <character_set_specification>
  * bnf-end
  *
  * bnf-start
@@ -1057,7 +1062,6 @@ void ASCIIStringLiteralPart() #ASCIIStringLiteralPart : {}
  *
  * bnf-start
  *  <character_value_expression> ::= <character_factor>
- *  !! There is no accommodation for <concatenation>
  * bnf-end
  *
  */
@@ -1147,8 +1151,6 @@ void column_reference_A() #ColumnReference : {	if( log.isTraceEnabled() ) ente
  *    | <column_reference>
  *    | <set_function_specification>
  *    | <left_paren> <value_expression> <right_paren>
- *  !! There is no accommodation for <scalar_subquery>,
- *     <case_expression> or <cast_specification>
  * bnf-end
  *
  */
@@ -1247,7 +1249,6 @@ void comp_op_S() #Comparison :
  * bnf-start
  *  <comparison_predicate> ::=
  *      <value_expression> <comp_op> <value_expression>
- *  !! There is no accommodation for <row_value_constructor>
  * bnf-end
  *
  */
@@ -1535,9 +1536,6 @@ void from_clause_S() #From :
  *
  * bnf-start
  *  <general_literal> ::= <character_string_literal>
- *  !! There is no accommodation for <national_character_string_literal>,
- *     <bit_string_literal>, <hex_string_literal>, <datetime_literal>
- *     and <interval_literal>
  * bnf-end
  *
  */
@@ -1561,7 +1559,6 @@ void general_literal_A() : {}
  *  <general_set_function> ::=
  *     <set_function_type>
  *         <left_paren> <value_expression> <right_paren>
-    !! There is no accommodation for <set_quantifier>
  * bnf-end
  *
  * bnf-single <set_function_type> ::= AVG | MAX | MIN | SUM | COUNT
@@ -1587,11 +1584,11 @@ void general_set_function_A() #GeneralSetFunction :
 /**
  * general_value_specification_A
  *
- * bnf-start
- *  <general_value_specification> ::= <variable_specification>
- *  !! There is no accommodation for <parameter_specification>, <dynamic_parameter_specification>,
-       USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
- * bnf-end
+ * -bnf-start
+ * - <general_value_specification> ::= <variable_specification>
+ * - !! There is no accommodation for <parameter_specification>, <dynamic_parameter_specification>,
+   -    USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
+ * -bnf-end
  *
  */
 ScalarExpressionType general_value_specification_A() : 
@@ -1666,7 +1663,6 @@ void grouping_column_reference_list_S() #GroupingColumnReferenceList :
  *
  * bnf-start
  *  <grouping_column_reference> ::= <column_reference> 
- *  !! There is no accommodation for <collate_clause>
  * bnf-end
  *
  */
@@ -1710,7 +1706,6 @@ void having_clause_S() #Having :
  *
  * bnf-start
  *  <identifier> ::= <actual_identifier>
- *  !! There is no accommodation for <character_set_specification> 
  * bnf-end
  *
  */
@@ -1858,7 +1853,6 @@ void interval_value_expression_S() : {}
  * bnf-start
  *  <in_value_list> ::=
  *      <in_value_list_constant> { <comma> <in_value_list_constant> }...
- *  !! There is no accommodation for <value_expression>
  * bnf-end
  *
  */
@@ -1904,13 +1898,11 @@ void in_value_list_constant_A() #InValueListConstant :
  * join_specification_A
  *
  * bnf-start
- *  <join_specification> ::= <join_condition>
- *  !! There is no accommodation for <named_columns_join>	
+ *  <join_specification> ::= <join_condition>	
  * bnf-end
  *
  * bnf-start
  *  <join_condition> ::= ON <comparison_predicate>
- *  !! There is no accommodation for <search_condition>
  * bnf-end
  *
  */
@@ -1943,10 +1935,6 @@ void join_specification_A() : {}
  * bnf-start
  *  <joined_table> ::=
  *      <qualified_join>
- *    | <left_paren> <joined_table> <right_paren>
- *  !! <cross_join> has been removed. The reason is the Adql/x schema has
- *     a mandatory join condition which is inapplicable to cross joins.
- *     Probably wise in any case. 
  * bnf-end
  *
  */
@@ -1963,10 +1951,10 @@ void joined_table_S() :
 	(
 // 
 //		LOOKAHEAD(4)//		cross_join_S()//		|
-		LOOKAHEAD(4)
+//		LOOKAHEAD(4)
 		qualified_join_S()
-		|
-		( <LEFT_PAREN> joined_table_S() <RIGHT_PAREN> )
+// JBL. 29/01/2008 Commented out to disable n-way explicit joins with brackets.
+//		|//		( <LEFT_PAREN> joined_table_S() <RIGHT_PAREN> )
 	)
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "joined_table_S()" ) ;
@@ -1980,10 +1968,9 @@ void joined_table_S() :
  *  <join_type> ::=
  *     INNER
  *   | <outer_join_type> [ OUTER ]
- *  !! There is no accommodatin for UNION
  * bnf-end
  *
- * bnf-single <outer_join_type> ::= LEFT | RIGHT | FULL
+ * bnf-single <outer_join_type> ::= LEFT | RIGHT 
  *
  */
 void join_type_A() #JoinType : {}
@@ -1998,7 +1985,9 @@ void join_type_A() #JoinType : {}
 		(
 		   <INNER>
 	       | 
-	       ( ( <LEFT> | <RIGHT> | <FULL> ) [ <OUTER> ] )
+// JBL. 30/01/2008 FULL removed. Cannot currently support it in MySQL
+//	       ( ( <LEFT> | <RIGHT> | <FULL> ) [ <OUTER> ] )
+	       ( ( <LEFT> | <RIGHT> ) [ <OUTER> ] )
 // JL. Adql does not appear to support UNION
 //	       | 
 //	       <UNION>
@@ -2054,7 +2043,6 @@ void match_predicate_S() : {}
  *	  | RAND <left_paren> [ <numeric_value_expression> ] <right_paren> 
  *	  | ROUND <left_paren> <numeric_value_expression> <right_paren> 
  *	  | TRUNCATE <left_paren> <numeric_value_expression> <right_paren> 
- *  !! ADQL specific.
  * bnf-end
  *
  */
@@ -2236,8 +2224,6 @@ void numeric_value_expression_S() #NumericValueExpression :
  *
  * bnf-start
  *  <numeric_value_function> ::= <trig_function> | <math_function>	
- *  !! There is no accommodation for <position_expression>,
- *     <extract_expression> or <length_expression>
  * bnf-end
  *
  */
@@ -2354,14 +2340,11 @@ void sort_specification_list() #SortSpecificationList :
  *
  * bnf-start
  *  <sort_specification> ::=
- *      <sort_key> [ <ordering_specification> ]
- *  !! There is no accommodation for <collate_clause>
+ *      <sort_key> [ <ordering_specification> ]e>
  * bnf-end
  *
  * bnf-start
  *  <sort_key> ::= <value_expression>
- *  !! This is different from SQL92 which uses
- *     <column_name> | <unsigned_integer>
  * bnf-end 
  *
  * bnf-single <ordering_specification> ::= ASC | DESC
@@ -2406,7 +2389,6 @@ void overlaps_predicate_S() : {}
  *
  * bnf-start
  *  <pattern> ::= <character_string_literal>
- *  !! SQL92 uses <character_value_expression>
  * bnf-end
  *
  */
@@ -2432,11 +2414,6 @@ void pattern_A() :
  *   | <between_predicate>
  *   | <in_predicate>
  *   | <like_predicate>
- *  !! Yet to be supported:
- *     <null_predicate>, <quantified_comparison_predicate>,
- *     <exists_predicate>, <unique_predicate>,
- *     <match_predicate>, <overlaps_predicate>,
- *     <region_predicate> 
  * bnf-end
  *
  */
@@ -2511,9 +2488,11 @@ void predicate_A() :
  *
  * bnf-start
  *  <qualified_join> ::=
- *      <table_reference> [ NATURAL ] [ <join_type> ] JOIN
- *      <table_reference> [ <join_specification> ]
+ *      <simple_table_reference> [ <join_type> ] JOIN
+ *      <simple_table_reference> [ <join_specification> ]
  * bnf-end
+ *
+ * 
  *
  */
 void qualified_join_S() #QualifiedJoin : 
@@ -2528,10 +2507,11 @@ void qualified_join_S() #QualifiedJoin :
 	
 	(
 		tableReferenceBarJoinedTable() 
-		[ <NATURAL> ] 
+// JBL: 29/01/2008 Natural cannot be supported in current XML schema
+//		[ <NATURAL> ] 
 		join_type_A() 
 		<JOIN> 
-		table_reference_A() 
+		tableReferenceBarJoinedTable() 
 		[ LOOKAHEAD(3) join_specification_A() ]
 	)
 	{
@@ -2594,7 +2574,6 @@ void qualified_name_A() #QualifiedName :
  *
  * bnf-start
  *    <schema_name> ::= <identifier>
- *    !!SQL92 has <schema name> ::= [ <catalog name> <period> ] <unqualified schema name>
  * bnf-end
  *
  */
@@ -2617,7 +2596,6 @@ void schema_name_A() #SchemaName :
  *
  * bnf-start
  *  <qualifier> ::= <table_name> 
- *  !! SQL92 also has <correlation_name>
  * bnf-end
  *
  */
@@ -2653,7 +2631,6 @@ void qualifier_A() :
  *      [ <group_by_clause> ]
  *      [ <having_clause> ]
  *      [ <order_by_clause> ]
- * !! ADQL adds <order_by_clause>
  * bnf-end 
  *
  */
@@ -3167,7 +3144,6 @@ void allSelectionItem() #AllSelectionItem :
  * bnf-start
  *  <select_sublist> ::=
  *      <derived_column>
- *  !! SQL92 also has <qualifier> <period> <asterisk>
  * bnf-end
  *
  */
@@ -3261,7 +3237,6 @@ void set_function_specification_part_fragment() #SetFunctionSpecificationPartFra
  *
  * bnf-start
  *  <set_limit> ::= TOP <unsigned_integer>
- *  !! SQL92 has no equivalent construct
  * bnf-end
  *
  */
@@ -3339,7 +3314,6 @@ void start_field_S() : {}
  * bnf-start
  *  <string_value_expression> ::=
  *      <character_value_expression>
- *  !! SQL92 also supports <bit_value_expression>
  * bnf-end
  *
  */
@@ -3576,9 +3550,8 @@ void table_name_A() #TableName :
  *
  * bnf-start
  *  <table_reference> ::=
- *      [ <schema_name> <period> ] <table_name> [ [ AS ] <correlation_name> ] 
+ *      <simple_table_reference>
  *    | <joined_table> 
- *  !! SQL92 also supports <derived_table> and <derived_column_list>
  * bnf-end
  *
  */
@@ -3625,7 +3598,15 @@ void table_reference_A() #Table :
 	} 
 }
 
-// Adaptation of <table_reference>
+/** 
+ * simple_table_reference_A
+ *
+ * bnf-start
+ *  <simple_table_reference> ::=
+ *      [ <schema_name> <period> ] <table_name> [ [ AS ] <correlation_name> ] 
+ * bnf-end
+ *
+ */
 void tableReferenceBarJoinedTable() #TableReferenceBarJoinedTable : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "tableReferenceBarJoinedTable()" ) ;
@@ -3645,7 +3626,6 @@ SearchType table_subquery_S() : {	SearchType st = null ;}{	//S:	// <table_
  * bnf-start
  *  <table_subquery> ::= 
  *      <left_paren> <query_specification> <right_paren>
- *  !! SQL92 uses <subquery>
  * bnf-end
  *
  */
@@ -3768,8 +3748,7 @@ void time_zone_S() : {}
  *    | COS <left_paren> <numeric_value_expression> <right_paren>
  *    | COT <left_paren> <numeric_value_expression> <right_paren>
  *    | SIN <left_paren> <numeric_value_expression> <right_paren>
- *    | TAN <left_paren> <numeric_value_expression> <right_paren>
- *  !! Specific to ADQL
+ *    | TAN <left_paren> <numeric_value_expression> <right_paren>L
  * bnf-end
  *
  */
@@ -3885,11 +3864,10 @@ void approximate_numeric_literal_S() #ApproximateNumericLiteral : {}
  * bnf-start
  *  <unsigned_value_specification> ::=
  *      <unsigned_literal>
- *    | <general_value_specification>
  * bnf-end
  *
  */
-void unsigned_value_specification_S() : {}
+void unsigned_value_specification_S() : {} 
 {
 	//S:
 	// <unsigned_value_specification> ::=
@@ -3907,8 +3885,6 @@ void unsigned_value_specification_S() : {}
  *  <value_expression> ::=
  *	    <numeric_value_expression>
  *    | <string_value_expression>
- *  !! SQL92 also supports <datetime_value_expression>
- *     and <interval_value_expression>
  * bnf-end
  *
  */
@@ -3950,10 +3926,10 @@ void value_expression_A() #ValueExpression :
 /**
  * variable_specification_A
  *
- * bnf-start
- * <variable_specification> ::=
- *  !! Yet to be worked out.
- * bnf-end
+ * -bnf-start
+ * -<variable_specification> ::=
+ *  -!! Yet to be worked out.
+ * -bnf-end
  *
  */
 ScalarExpressionType variable_specification_A() : 
@@ -3999,6 +3975,24 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.37  2008/02/04 17:47:30  jl99
+Merge of branch adql-jl-2504
+
+Revision 1.36.2.4  2008/02/01 09:50:09  jl99
+Updates to the explicit join syntax
+
+Revision 1.36.2.3  2008/01/29 15:30:02  jl99
+Minor touches to table reference. Added <simple table reference>
+
+Revision 1.36.2.2  2008/01/29 14:12:09  jl99
+Parentheses allowing joined tables within joined tables removed.
+This disallows n-way explicit joins using brackets,
+which we will have difficulty supporting with the current XML structure.
+It DOES still allow 2-way explicit joins.
+
+Revision 1.36.2.1  2008/01/17 13:15:12  jl99
+Dec removed from SQL reserved word list.
+
 Revision 1.36  2007/06/17 15:17:20  jl99
 AdqlStoX.jtt alone...
 Minor correction to definitions that hide aliases H and M (upper or lower case).

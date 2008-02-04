@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.9 2007/06/06 18:20:19 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.10 2008/02/04 17:47:30 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -57,7 +57,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "order. ADQL is based upon a subset of SQL92 with extensions for\n" +
         "astronomical usage.\n" +
         "\n" +
-        "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
+        "The definition represents the equivalent ADQL/s version of ADQL/x v1.0a2\n" +
         "as supported by Astrogrid. This is an evolving document.\n\n" +
         "The select statement is found under <query_specification>\n\n" ;
      
@@ -67,7 +67,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     private static final String HTML_HEADINGS =
         "<html>" +
         "<head>" +
-        "<title>BNF for ADQL v1.01a</title>" +
+        "<title>BNF for ADQL v1.0a2</title>" +
         "</head>" +
         "<body>" +
         "<pre>" +
@@ -76,7 +76,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "order. ADQL is based upon a subset of SQL92 with extensions for\n" +
         "astronomical usage.\n" +
         "\n" +
-        "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
+        "The definition represents the equivalent ADQL/s version of ADQL/x v1.0a2\n" +
         "as supported by Astrogrid. This is an evolving document.\n\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
         "See <a href=\"http://savage.net.au/SQL/sql-92.bnf.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
@@ -676,6 +676,12 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.10  2008/02/04 17:47:30  jl99
+Merge of branch adql-jl-2504
+
+Revision 1.9.2.1  2008/01/29 15:32:57  jl99
+Updated header comments.
+
 Revision 1.9  2007/06/06 18:20:19  jl99
 Merge of branch adql-jl-2135
 
