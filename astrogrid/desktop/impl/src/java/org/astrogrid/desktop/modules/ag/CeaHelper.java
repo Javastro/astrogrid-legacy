@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.9 2008/02/05 13:59:12 kea Exp $
+/*$Id: CeaHelper.java,v 1.10 2008/02/05 16:36:22 gtr Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.desktop.modules.ag;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
@@ -25,11 +27,21 @@ import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.contracts.StandardIds;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
+import org.astrogrid.community.common.exception.CommunityPolicyException;
+import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
@@ -42,6 +54,8 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Oct-2005
  */
 public class CeaHelper {
+  
+    public static final Log log = LogFactory.getLog(CeaHelper.class);
 
     /** Construct a new RemoteCeaHelper
      * 
@@ -173,7 +187,8 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
     public boolean isLocal(URI executionId) {
         return executionId.getScheme().equals("local");
     }
-    
+
+        
     /** parse a document into a tool, performing any necessary adjustments */
 	public Tool parseTool(Document doc) throws InvalidArgumentException{
 		try {
@@ -184,6 +199,7 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 		if (tool.getName().startsWith("ivo://")) {
 			tool.setName(tool.getName().substring(6));
 		}
+                makeMySpaceIvornsConcrete(tool);
 		return tool;
     	} catch (MarshalException e) {
     		throw new InvalidArgumentException(e);
@@ -192,47 +208,64 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
     	}
 	}
 
+  /**
+   * Converts identifiers for MySpace locations to the concrete form.
+   * Abstract form is the account IVORN with the MySpace path added
+   * as a URI fragment. Concrete form is the IVORN of the services hosting
+   * the space with the MySpace path added as a URI fragment.
+   */
+  protected void makeMySpaceIvornsConcrete(Tool tool) throws InvalidArgumentException {
+    try {
+      Input input = tool.getInput();
+      for (int i = 0; i < input.getParameterCount(); i++) {
+        ParameterValue p = input.getParameter(i);
+        makeMySpaceIvornsConcrete(p);
+      }
+      
+      Output output = tool.getOutput();
+      for (int i = 0; i < output.getParameterCount(); i++) {
+        ParameterValue p = output.getParameter(i);
+        makeMySpaceIvornsConcrete(p);
+      }
+    } catch (Exception ex) {
+      throw new InvalidArgumentException("Failed to resolve a reference to MySpace", ex);
+    }
+  }
+  
+  /**
+   * Makes the IVORN of an indirect parameter concrete.
+   * If the given parameter is indirect, its value may be
+   * an IVORN denoting a location in MySpace. If so, then
+   * the IVORN may be either concrete (based on the IVORN
+   * for the service hosting the space) or abstract (based
+   * on the name of the account owning the space. This method
+   * detects indirect parameters with IVORN values and changes
+   * the values to be concrete IVORNs; this involves a transaction
+   * with registry and one with the community service.
+   *
+   * @throws URISyntaxException If the indirect-parameter value is not a valid URI.
+   * @throws CommunityServiceException If the community service fails to satisfy an information request.
+   * @throws CommunityIdentifierException If the parameter value is in scheme ivo:// but is invalid.
+   * @throws CommunityResolverException If the client-side resolver-library cannot parse the IVORN.
+   * @throws RegistryException If the community indicated in the IVORN cannnot be found in the registry.
+   */
+  protected void makeMySpaceIvornsConcrete(ParameterValue p) 
+      throws URISyntaxException, 
+             CommunityServiceException, 
+             CommunityIdentifierException, 
+             CommunityPolicyException, 
+             CommunityResolverException, 
+             RegistryException {
+    CommunityAccountSpaceResolver resolver = new CommunityAccountSpaceResolver();
+    if (p.getIndirect()) {
+      String value = p.getValue();
+      if (value != null && value.startsWith("ivo://")) {
+        Ivorn ivorn1 = new Ivorn(value);
+        Ivorn ivorn2 = resolver.resolve(ivorn1);
+        p.setValue(ivorn2.toString());
+        log.info(ivorn1 + " was resolved to " + ivorn2);
+      }
+    }
+  }
+  
 }
-
-
-/* 
-$Log: CeaHelper.java,v $
-Revision 1.9  2008/02/05 13:59:12  kea
-Tweaked by KEA so it can correctly find cea service endpoints from
-registered capabilities for a particular cea server.  Does not currently
-attempt to do load-balancing etc, just takes the first appropriate endpoint.
-Tested from Task Runner and python script.
-
-Revision 1.8  2007/07/26 18:21:45  nw
-merged mark's and noel's branches
-
-Revision 1.7.2.1  2007/07/26 13:40:29  nw
-Complete - task 96: get authenticated access working
-
-Revision 1.7  2007/07/13 23:14:54  nw
-Complete - task 1: task runner
-
-Complete - task 54: Rewrite remoteprocess framework
-
-Revision 1.6  2007/06/18 16:25:34  nw
-javadoc
-
-Revision 1.5  2007/01/29 11:11:35  nw
-updated contact details.
-
-Revision 1.4  2006/08/15 10:15:59  nw
-migrated from old to new registry models.
-
-Revision 1.3  2006/06/15 09:45:04  nw
-improvements coming from unit testing
-
-Revision 1.2  2006/04/18 23:25:44  nw
-merged asr development.
-
-Revision 1.1.42.1  2006/04/14 02:45:01  nw
-finished code.extruded plastic hub.
-
-Revision 1.1  2005/11/01 09:19:46  nw
-messsaging for applicaitons.
- 
-*/
