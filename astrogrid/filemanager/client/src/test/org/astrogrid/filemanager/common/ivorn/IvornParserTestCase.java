@@ -1,10 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/test/org/astrogrid/filemanager/common/ivorn/IvornParserTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: pah $</cvs:author>
+ * <cvs:date>$Date: 2008/02/05 11:38:00 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: IvornParserTestCase.java,v $
+ *   Revision 1.3  2008/02/05 11:38:00  pah
+ *   RESOLVED - bug 2545: Problem with IVORN resolution
+ *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2545
+ *
  *   Revision 1.2  2005/03/11 13:37:06  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -37,6 +41,8 @@
  */
 package org.astrogrid.filemanager.common.ivorn;
 
+import java.net.URISyntaxException;
+
 import org.astrogrid.store.Ivorn;
 
 import junit.framework.TestCase;
@@ -63,6 +69,11 @@ public class IvornParserTestCase extends TestCase {
     public void testParseIvorn() throws Exception {
         assertNotNull(new IvornParser(new Ivorn(
                 "ivo://org.astro.test/path#fragment")));
+    }
+    
+    
+    public void testParseNewIvorn() throws URISyntaxException {
+	new IvornParser(new Ivorn("ivo://KonaAndrews@org.astrogrid.regtest/community#/test_folder/new_file0.vot"));
     }
 
     /**

@@ -1,4 +1,4 @@
-/*$Id: TokenSource.java,v 1.2 2005/03/11 13:37:06 clq2 Exp $
+/*$Id: TokenSource.java,v 1.3 2008/02/05 11:37:59 pah Exp $
  * Created on 10-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.filemanager.client;
 
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.security.data.SecurityToken;
-import org.astrogrid.community.resolver.CommunityTokenResolver;
 import org.astrogrid.registry.RegistryException;
 
 import org.apache.commons.logging.Log;
@@ -31,39 +30,31 @@ class TokenSource {
     /** Construct a new TokenSource
      * 
      */
-    public TokenSource(SecurityToken token,CommunityTokenResolver resolver) {
+    public TokenSource(SecurityToken token) {
         if (token == null) {
             throw new IllegalArgumentException("cannot start with a null token");
         } 
         this.token = token;
-        this.tokenResolver = resolver;
-    }
+   }
     
     /**
      * Our current security token.
      *  
      */
     private SecurityToken token;
-    final CommunityTokenResolver tokenResolver ;    
-
     /**
      * Split our security token to create a new one.
      * 
      * @return A new security token.
      * @throws RegistryException
      * @throws CommunityException
-     *  
+     *  @deprecated this is now a no-op since the {@link org.astrogrid.community.resolver.CommunityTokenResolver} has gone - not sure that it ever served a useful purpose anyway
      */
     public SecurityToken nextToken() throws CommunityException,  RegistryException {
       logger.debug("  Token : " + token.toString());
                 // Split our current token.              
-                Object[] array = tokenResolver.splitToken(this.token, 2);
-                //
-                // Keep one.
-                this.token = (SecurityToken) array[0];
-                //
                 // Return the other.
-                return (SecurityToken) array[1];
+                return token;
     }
 
 
@@ -74,8 +65,6 @@ class TokenSource {
         buffer.append(logger);
         buffer.append(" token: ");
         buffer.append(token);
-        buffer.append(" tokenResolver: ");
-        buffer.append(tokenResolver);
         buffer.append("]");
         return buffer.toString();
     }
@@ -84,6 +73,10 @@ class TokenSource {
 
 /* 
 $Log: TokenSource.java,v $
+Revision 1.3  2008/02/05 11:37:59  pah
+RESOLVED - bug 2545: Problem with IVORN resolution
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2545
+
 Revision 1.2  2005/03/11 13:37:06  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 

@@ -1,10 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientFactory.java,v $</cvs:source>
- * <cvs:author>$Author: nw $</cvs:author>
- * <cvs:date>$Date: 2007/04/05 00:03:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: pah $</cvs:author>
+ * <cvs:date>$Date: 2008/02/05 11:38:00 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientFactory.java,v $
+ *   Revision 1.6  2008/02/05 11:38:00  pah
+ *   RESOLVED - bug 2545: Problem with IVORN resolution
+ *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2545
+ *
  *   Revision 1.5  2007/04/05 00:03:08  nw
  *   added a constructor to make it possible to specify which implementation of the community resolver to use.
  *
@@ -55,7 +59,6 @@ import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 import org.astrogrid.community.resolver.CommunityPasswordResolver;
-import org.astrogrid.community.resolver.CommunityTokenResolver;
 import org.astrogrid.filemanager.common.BundlePreferences;
 import org.astrogrid.filemanager.resolver.NodeDelegateResolver;
 import org.astrogrid.filemanager.resolver.NodeDelegateResolverImpl;
@@ -101,7 +104,6 @@ public class FileManagerClientFactory {
     public FileManagerClientFactory(URL registryEndpoint, NodeDelegateResolver resolver) {
         //
         // Create our resolvers.
-        tokenResolver = new CommunityTokenResolver(registryEndpoint);
         loginResolver = new CommunityPasswordResolver(registryEndpoint);
         accountResolver = new CommunityAccountSpaceResolver(registryEndpoint);
         this.managerResolver = resolver;
@@ -119,16 +121,9 @@ public class FileManagerClientFactory {
         this.managerResolver = resolver;
         //
         // Create our resolvers.
-        tokenResolver = new CommunityTokenResolver();
         loginResolver = new CommunityPasswordResolver();
         this.accountResolver = accountResolver;
     }
-
-    /**
-     * Our Community token resolver.
-     *  
-     */
-    private final CommunityTokenResolver tokenResolver;
 
     /**
      * Our Community password resolver.
@@ -190,8 +185,7 @@ public class FileManagerClientFactory {
      */
     public FileManagerClient login(SecurityToken token) throws CommunityException,RegistryException, URISyntaxException{
 
-            token = tokenResolver.checkToken(token);
-
+ 
         return new FileManagerClientImpl(this, token);
 
     }
@@ -220,15 +214,10 @@ public class FileManagerClientFactory {
         return this.accountResolver;
     }
 
-    protected CommunityTokenResolver getTokenResolver() {
-        return this.tokenResolver;
-    }
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[FileManagerClientFactory:");
         buffer.append(" tokenResolver: ");
-        buffer.append(tokenResolver);
-        buffer.append(" loginResolver: ");
         buffer.append(loginResolver);
         buffer.append(" managerResolver: ");
         buffer.append(managerResolver);

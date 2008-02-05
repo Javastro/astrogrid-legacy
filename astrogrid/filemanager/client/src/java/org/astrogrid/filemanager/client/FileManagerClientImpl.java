@@ -1,10 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientImpl.java,v $</cvs:source>
- * <cvs:author>$Author: nw $</cvs:author>
- * <cvs:date>$Date: 2007/04/05 00:03:55 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: pah $</cvs:author>
+ * <cvs:date>$Date: 2008/02/05 11:37:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientImpl.java,v $
+ *   Revision 1.6  2008/02/05 11:37:59  pah
+ *   RESOLVED - bug 2545: Problem with IVORN resolution
+ *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2545
+ *
  *   Revision 1.5  2007/04/05 00:03:55  nw
  *   if resolving fails, cache this exception as a result too - saves expensive re-accessing of services each time.
  *
@@ -113,7 +117,7 @@ class FileManagerClientImpl implements FileManagerClient {
             this.homeIvorn = new Ivorn(token.getAccount());
             log.info("Creating FileManagerClient with token " + token);
         this.resolvers = factory;
-        this.tokenSource = new TokenSource(token, factory.getTokenResolver());
+        this.tokenSource = new TokenSource(token);
 
     }
 
@@ -226,7 +230,7 @@ class FileManagerClientImpl implements FileManagerClient {
                     parser.getAccountIvorn()); 
             log.debug("Resolves home to " + home);
 
-            String remainder = parser.getRemainder();
+            String remainder = parser.getMySpacePath();
             if (remainder != null && remainder.startsWith("#")) { // another little work-around - drop leading #
                 log.info("work-around - dropping leading #");
                 remainder = remainder.substring(1);
