@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.8 2007/07/26 18:21:45 nw Exp $
+/*$Id: CeaHelper.java,v 1.9 2008/02/05 13:59:12 kea Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,10 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.AccessURL;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
@@ -65,25 +69,55 @@ public class CeaHelper {
     
     
 
-/** create a delegate to connect tot he server described in a resource information
+/** create a delegate to connect to the server described in a resource information
  * delegate will be authenticated if the user is logged in.
  * @throws CEADelegateException 
  * @throws IllegalArgumentException if resource information does not prodvdide an access url */
     public CommonExecutionConnectorClient createCEADelegate(CeaService server) throws CEADelegateException {
-		if (server == null 
-				|| server.getCapabilities().length == 0 
-				|| server.getCapabilities()[0].getInterfaces().length == 0
-				|| server.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0) { //@todo need to check this still works in reg v1.0
-    		throw new IllegalArgumentException("invalid resource information: " + server);
+		if (server == null || server.getCapabilities().length == 0) { 
+    		throw new IllegalArgumentException("Error: invalid resource information, couldn't find any service capabilities: " + server);
     	}
-		final URL endpoint = server.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
-        CommonExecutionConnectorClient del = DelegateFactory.createDelegate(endpoint.toString());
-        if (community.isLoggedIn() && hasDigitalSignatureCredentials()) {
-            SecurityGuard guard = this.community.getSecurityGuard();
-            del.setCredentials(guard);
-        }
-        return del;
-     }
+      URL endpoint = null;
+      Capability[] caps = server.getCapabilities();   
+      for (int i = 0; i < caps.length; i++) {
+         URI standardID = caps[i].getStandardID(); 
+         if (StandardIds.CEA_1_0.equals(standardID.toString())) {
+            // We've found a CEA capability
+            Interface[] ints = caps[i].getInterfaces();
+            if (ints.length == 0) {
+               throw new IllegalArgumentException("Error: invalid resource information, no service interfaces for CEA capability: " + server);
+            }
+            for (int j = 0; j < ints.length; j++) {
+               // Got some interfaces - let's use the first available 
+               // access URL 
+               // @todo What about proper round-robin/load-balanced use 
+               // of access endpoints?
+               AccessURL[] urls = ints[j].getAccessUrls();
+               // Just ignore interfaces with no access urls, for now
+               // @todo - is this the best thing to do?
+               if (urls.length > 0) {
+                  endpoint = urls[0].getValue();
+                  break;   // Can stop inner loop on URLs now
+               }
+            }
+            // Inner break out to here
+            if (endpoint != null) {
+               break;   // Can stop outer loop on interfaces now
+            }
+         }
+      }
+      // If we get here with no endpoint set, the registrations are invalid
+      if (endpoint == null) {
+         throw new IllegalArgumentException("Error: Couldn't find CEA service endpoint for server in resource information: " + server);
+      }
+      // Now go ahead and make the delegate for the endpoint
+      CommonExecutionConnectorClient del = DelegateFactory.createDelegate(endpoint.toString());
+      if (community.isLoggedIn() && hasDigitalSignatureCredentials()) {
+          SecurityGuard guard = this.community.getSecurityGuard();
+          del.setCredentials(guard);
+      }
+      return del;
+   }
     
     /** create a delegate to connect to a server descried in an exec Id 
      * @throws URISyntaxException
@@ -163,6 +197,12 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.9  2008/02/05 13:59:12  kea
+Tweaked by KEA so it can correctly find cea service endpoints from
+registered capabilities for a particular cea server.  Does not currently
+attempt to do load-balancing etc, just takes the first appropriate endpoint.
+Tested from Task Runner and python script.
+
 Revision 1.8  2007/07/26 18:21:45  nw
 merged mark's and noel's branches
 
