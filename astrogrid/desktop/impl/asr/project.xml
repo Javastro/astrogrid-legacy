@@ -657,7 +657,7 @@
 	<dependency>
 		<groupId>xfire</groupId>
 		<artifactId>xfire-core</artifactId>
-		<version>1.2.2</version> <!--  todo - upgrade to 1.2.4 -->
+		<version>1.2.6</version>
 		<properties>
 			<dist.bundle>true</dist.bundle>
 			<strip>true</strip>
