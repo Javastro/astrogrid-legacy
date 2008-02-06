@@ -1007,6 +1007,7 @@ public class ResourceTree extends JTree {
                     for (int i = 0; i < ids.length; i++) {
                         list.getResourceSet().add(ids[i]);
                     }
+                    clearSelection();
                     model.nodeStructureChanged(targetNode);
                     setSelectionPath(new TreePath(targetNode.getPath()));
                     return true;
