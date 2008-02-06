@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -134,7 +135,9 @@ public class StreamingRegistryImpl implements RegistryInternal {
 		this.resourceCache  = resource;
 		this.documentCache = document;
 		this.bulkCache =bulk;
-		
+
+        checkEndpointPref(endpoint, "main");
+        checkEndpointPref(fallbackEndpoint, "fallback");
 	}
 
 	public void xquerySearchSave(String xquery, File saveLocation) throws InvalidArgumentException, ServiceException {
@@ -371,18 +374,30 @@ public class StreamingRegistryImpl implements RegistryInternal {
 			}				
 		}
 
-		/** self tests that the registry is working */
-        public Test getSelftest() {
-            TestSuite ts = new TestSuite("Registry tests");
-            ts.addTest(new RegistryTest("Main registry service", reg, endpoint));
-            ts.addTest(new RegistryTest("Fallback registry service", reg, fallbackEndpoint));
-            ts.addTest(new TestCase("Registry caches") {
-                protected void runTest() throws Throwable {
-                    assertEquals("Problem with the bulk cache", Status.STATUS_ALIVE,bulkCache.getStatus());
-                    assertEquals("Problem with the document cache",Status.STATUS_ALIVE,documentCache.getStatus());
-                    assertEquals("Problem with the resource cache",Status.STATUS_ALIVE,resourceCache.getStatus());                    
-                }
-            });
-            return ts;
+    /**
+     * Checks whether the given endpoint preference is one of the given
+     * alternatives and warns if not.  It's possible that some other action
+     * (popup? automatic silent reselection?) would be more appropriate here.
+     */
+    private void checkEndpointPref(Preference endpoint, String regLabel) {
+        String value = endpoint.getValue();
+        if (!Arrays.asList(endpoint.getAlternatives()).contains(value)) {
+            logger.warn("Non-recommened " + regLabel + " registry endpoint: " + value);
         }
+    }
+
+	/** self tests that the registry is working */
+    public Test getSelftest() {
+        TestSuite ts = new TestSuite("Registry tests");
+        ts.addTest(new RegistryTest("Main registry service", reg, endpoint));
+        ts.addTest(new RegistryTest("Fallback registry service", reg, fallbackEndpoint));
+        ts.addTest(new TestCase("Registry caches") {
+            protected void runTest() throws Throwable {
+                assertEquals("Problem with the bulk cache", Status.STATUS_ALIVE,bulkCache.getStatus());
+                assertEquals("Problem with the document cache",Status.STATUS_ALIVE,documentCache.getStatus());
+                assertEquals("Problem with the resource cache",Status.STATUS_ALIVE,resourceCache.getStatus());                    
+            }
+        });
+        return ts;
+    }
 }
