@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.13 2007/12/04 17:31:39 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.14 2008/02/06 14:10:41 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,9 @@ import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.AxisDataServer;
 import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.service.Queues;
+import org.astrogrid.dataservice.service.TokenQueue;
+import org.astrogrid.dataservice.service.multicone.DirectConeSearcher;
 import org.astrogrid.dataservice.service.multicone.DsaConeSearcher;
 import org.astrogrid.dataservice.service.multicone.DsaQuerySequenceFactory;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
@@ -68,8 +71,10 @@ import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableWriter;
 import uk.ac.starlink.votable.VOTableWriter;
 import uk.ac.starlink.votable.DataFormat;
+import uk.ac.starlink.table.JoinFixAction;
 import uk.ac.starlink.task.TaskException;
-import uk.ac.starlink.ttools.cone.SkyConeMatch2Producer;
+import uk.ac.starlink.ttools.cone.ConeMatcher;
+import uk.ac.starlink.ttools.cone.ConeSearcher;
 import uk.ac.starlink.ttools.task.TableProducer;
 import uk.ac.starlink.util.DataSource;
 import uk.ac.starlink.table.OnceRowPipe;
@@ -477,16 +482,28 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             }
          };
 
-         TableProducer outProd =
-             new SkyConeMatch2Producer(
-                   new DsaConeSearcher(catalogName, tableName, 
-                                       acc, "CEA multicone application"), 
-                   inProd, new DsaQuerySequenceFactory(raCol, decCol, radius),
-                   bestOnly, "*");
+         // Get a suitable ConeSearcher object.  There are several possible
+         // implementations.  Currently a DirectConeSearcher is used, which 
+         // uses a direct JDBC connection to the database, bypassing the 
+         // expensive repeated ADQL translation layer.  To provide throttling,
+         // we block waiting for a free slot in the global AsyncConnectionQueue
+         // before proceeding.
+         final ConeSearcher coneSearcher;
+         boolean direct = true;
+         if (direct) {
+             TokenQueue.Token token = Queues.getAsyncConnectionQueue().waitForToken();  // may block if server is busy
+             coneSearcher = DirectConeSearcher
+                           .createConeSearcher(token, catalogName, tableName, bestOnly);
+         }
+         else {
+             coneSearcher = new DsaConeSearcher(catalogName, tableName, acc, "CEA multicone application");
+         }
+         TableProducer matcher = new ConeMatcher(
+             coneSearcher, inProd, new DsaQuerySequenceFactory(raCol, decCol, radius), bestOnly);
 
          // Obtains the output table object.
          StarTable outTable;
-         outTable = outProd.getTable();
+         outTable = matcher.getTable();
          //
          // Serializes the output table to the TargetIdentifier output stream
          StarTableWriter outputHandler =
@@ -657,6 +674,21 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.14  2008/02/06 14:10:41  clq2
+ pal-mbt-multicone2 merged
+
+ Revision 1.13.4.4  2008/01/29 14:06:47  mbt
+ Use a direct JDBC connection for efficiency
+
+ Revision 1.13.4.3  2008/01/25 13:29:41  mbt
+ Name and slight functionality change from SkyConeMh2Producer to ConeMatcher
+
+ Revision 1.13.4.2  2008/01/23 14:44:27  mbt
+ SkyConeMatch2Producer constructor changed again
+
+ Revision 1.13.4.1  2008/01/15 15:50:20  mbt
+ SkyConeMatch2Producer constructor signature changed
+
  Revision 1.13  2007/12/04 17:31:39  clq2
  PAL_KEA_2378
 

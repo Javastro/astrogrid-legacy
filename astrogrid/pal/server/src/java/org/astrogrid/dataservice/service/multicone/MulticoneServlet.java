@@ -19,9 +19,14 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.ConfigReader;
+import org.astrogrid.dataservice.service.Queues;
+import org.astrogrid.dataservice.service.TokenQueue;
 import org.astrogrid.dataservice.service.ServletHelper;
+import uk.ac.starlink.table.JoinFixAction;
 import uk.ac.starlink.table.OnceRowPipe;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableFactory;
@@ -30,7 +35,8 @@ import uk.ac.starlink.table.StarTableWriter;
 import uk.ac.starlink.table.TableBuilder;
 import uk.ac.starlink.table.TableFormatException;
 import uk.ac.starlink.task.TaskException;
-import uk.ac.starlink.ttools.cone.SkyConeMatch2Producer;
+import uk.ac.starlink.ttools.cone.ConeMatcher;
+import uk.ac.starlink.ttools.cone.ConeSearcher;
 import uk.ac.starlink.ttools.task.TableProducer;
 import uk.ac.starlink.votable.DataFormat;
 import uk.ac.starlink.votable.VOTableBuilder;
@@ -103,6 +109,12 @@ public class MulticoneServlet extends HttpServlet {
     public static final String FORMAT_PARAM = "Format";
 
     /**
+     * Request parameter for determining multicone implementation.
+     * May be "ADQL" or "DIRECT".  Defaults to "DIRECT".
+     */
+    public static final String IMPL_PARAM = "IMPL";
+
+    /**
      * Handler for interpreting input tables.  Currently only VOTable input
      * is supported, though it would be possible to support different
      * streamable formats by using the declared MIME type of the request.
@@ -110,6 +122,10 @@ public class MulticoneServlet extends HttpServlet {
     private final TableBuilder inputHandler = new VOTableBuilder();
 
     private final StarTableOutput sto = new StarTableOutput();
+
+    private static final double MAX_RADIUS = getMaxRadius();
+
+    private static final Log log = LogFactory.getLog(MulticoneServlet.class);
 
     /**
      * Called for an HTTP POST.  The input VOTable is the body of the request.
@@ -129,23 +145,19 @@ public class MulticoneServlet extends HttpServlet {
                                        "in the config file");
         }
 
-        // Get the parameters of the request.
+        // Get the parameters object from the request.
         final RequestParams params =
             request.getContentType().startsWith("multipart/form-data")
                 ? getMultipartParams(request)
                 : getPostTableParams(request);
 
-        // Construct a searcher object.
+        // Extract parameter values.
         HttpServletRequest eReq = new ExtrasRequest(request, params);
         String catalogName = ServletHelper.getCatalogName(eReq);
         String tableName = ServletHelper.getTableName(eReq);
         Principal user = ServletHelper.getUser(request);
         String source = request.getRemoteHost() + " (" + request.getRemoteAddr()
                       + ") via MultiCone servlet";
-        DsaConeSearcher searcher =
-            new DsaConeSearcher(catalogName, tableName, user, source);
-
-        // Extract other parameters from the request.
         TableProducer inProd = params.getTableProducer();
         String raCol = params.getParameter(RA_COL_PARAM);
         String decCol = params.getParameter(DEC_COL_PARAM);
@@ -160,6 +172,11 @@ public class MulticoneServlet extends HttpServlet {
         catch (NumberFormatException e) {
             throw new ServletException(SR_PARAM + " value \"" + srString +
                                        "\" is not a number");
+        }
+        if (sr > MAX_RADIUS) {
+            throw new ServletException(SR_PARAM + " value " + sr +
+                                       " greater than allowed maximum " + 
+                                       MAX_RADIUS);
         }
         String findMode = params.getParameter(FIND_MODE_PARAM);
         boolean bestOnly;
@@ -177,22 +194,50 @@ public class MulticoneServlet extends HttpServlet {
                                        FIND_MODE_PARAM +
                                        " (should be BEST or ALL)");
         }
+        boolean direct;
+        String impl = params.getParameter(IMPL_PARAM);
+        if (impl == null) {
+            direct = true;
+        }
+        else if (impl.equalsIgnoreCase("DIRECT")) {
+            direct = true;
+        }
+        else if (impl.equalsIgnoreCase("ADQL")) {
+            direct = false;
+        }
+        else {
+             throw new ServletException("Unknown value of parameter " +
+                                        IMPL_PARAM +
+                                        " (should be ADQL or DIRECT)");
+        }
+
+        // Construct a cone searcher object.
+        ConeSearcher searcher;
+        if (direct) {
+            TokenQueue.Token token =
+                Queues.getSyncToken(Queues.getSyncConnectionQueue());
+            searcher = DirectConeSearcher
+                .createConeSearcher(token, catalogName, tableName, bestOnly);
+        }
+        else {
+            searcher = new DsaConeSearcher(catalogName, tableName, user,
+                                           source);
+        }
 
         // Prepare the object which will do the work.
-        SkyConeMatch2Producer outProd = 
-            new SkyConeMatch2Producer(searcher, inProd,
-                                      new DsaQuerySequenceFactory(raCol, decCol,
-                                                                  sr),
-                                      bestOnly, "*");
+        ConeMatcher matcher =
+            new ConeMatcher(searcher, inProd,
+                            new DsaQuerySequenceFactory(raCol, decCol, sr),
+                            bestOnly);
 
         // It's OK to stream on output since we will be outputting a VOTable,
         // which can be done in a single pass.
-        outProd.setStreamOutput(true);
+        matcher.setStreamOutput(true);
 
         // Obtains the output table object.
         StarTable outTable;
         try {
-            outTable = outProd.getTable();
+            outTable = matcher.getTable();
         }
         catch (TaskException e) {
             throw new ServletException(e.getMessage(), e);
@@ -322,6 +367,45 @@ public class MulticoneServlet extends HttpServlet {
                                        " parameter supplied");
         }
         return new RequestParams(tableIn, othersMap);
+    }
+
+    /**
+     * Returns the maximum radius permitted for a cone search.
+     * This value is obtained from the DSA properties (via ConfigFactory).
+     * The return value is guaranteed in the range (0,180].
+     *
+     * @return   maximum permitted cone search radius, in the range 0<max<=180
+     */
+    private static double getMaxRadius() {
+        final String LIMIT_KEY = "conesearch.radius.limit";
+        final double MAX_LIMIT = 180.0;
+        String maxRadStr =
+            ConfigFactory.getCommonConfig().getString(LIMIT_KEY);
+        if (maxRadStr == null || maxRadStr.trim().length() == 0) {
+            return MAX_LIMIT;
+        }
+        else {
+            double maxRad;
+            try {
+                maxRad = Double.parseDouble(maxRadStr);
+                if (maxRad == 0) {
+                    return MAX_LIMIT;
+                }
+                else if (maxRad > 0 && maxRad <= 180) {
+                    return maxRad;
+                }
+                else {
+                    log.warn("Invalid value \"" + maxRad + "\" for " +
+                             LIMIT_KEY);
+                    return MAX_LIMIT;
+                }
+            }
+            catch (NumberFormatException e) {
+                log.warn("Non-numeric value \"" + maxRadStr + "\" for " +
+                         LIMIT_KEY);
+                return 180.0;
+            }
+        }
     }
 
     /**

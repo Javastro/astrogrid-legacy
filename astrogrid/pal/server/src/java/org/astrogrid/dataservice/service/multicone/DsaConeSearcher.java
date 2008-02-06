@@ -118,4 +118,7 @@ public class DsaConeSearcher implements ConeSearcher {
         // Return the query result as a streamed StarTable object.
         return rowStore.waitForStarTable();
     }
+
+    public void close() {
+    }
 }

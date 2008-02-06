@@ -8,18 +8,21 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.service.TokenQueue;
+import org.astrogrid.dataservice.service.multicone.DirectConeSearcher;
 import org.astrogrid.dataservice.service.multicone.DsaConeSearcher;
 import org.astrogrid.dataservice.service.multicone.DsaQuerySequenceFactory;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.JoinFixAction;
 import uk.ac.starlink.table.RowListStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.Tables;
+import uk.ac.starlink.ttools.cone.ConeMatcher;
 import uk.ac.starlink.ttools.cone.ConeSearcher;
 import uk.ac.starlink.ttools.cone.QuerySequenceFactory;
-import uk.ac.starlink.ttools.cone.SkyConeMatch2Producer;
 import uk.ac.starlink.ttools.task.TableProducer;
 
 public class MulticoneTest extends TestCase {
@@ -44,11 +47,31 @@ public class MulticoneTest extends TestCase {
               catalogID);
         String tableName = TableMetaDocInterpreter.getTableNameForID(
               catalogID,tableID);
-        Principal user = new LoginAccount("UnitTester", "test.org");
 
-        ConeSearcher cs =
-            new DsaConeSearcher(catalogName, tableName, user,
-                                getClass().getName());
+        // Test ADQL-type cone.
+        Principal user = new LoginAccount("UnitTester", "test.org");
+        doMulticone(new DsaConeSearcher(catalogName, tableName, user, getClass().getName()));
+
+        // Test direct JDBC-type cone.
+        TokenQueue tq = new TokenQueue(1);
+        assertEquals(0, tq.getActiveCount());
+        TokenQueue.Token token = tq.getToken();
+        assertEquals(1, tq.getActiveCount());
+        assertNotNull(token);
+        
+        // I can't get this to work, because I can't get the table name
+        // for the SELECT statement right.  I think this must be to do with
+        // some detail of HSQLDB that I don't understand.  
+        // The DirectConeSearcher has been shown to work by testing by hand
+        // using MySQL and SQL Server though.  - mbt
+        // doMulticone(DirectConeSearcher.createConeSearcher(token, catalogName, tableName, false));
+
+        assertEquals(1, tq.getActiveCount());
+        token.release();
+        assertEquals(0, tq.getActiveCount());
+    }
+
+    private void doMulticone(ConeSearcher cs) throws Exception {
 
         // This one uses table column names.
         QuerySequenceFactory qsf = new DsaQuerySequenceFactory("RA", "Dec", 3.);
@@ -81,11 +104,11 @@ public class MulticoneTest extends TestCase {
         {
             StarTable multi1 = doMulti(cs, qsf, in, true);
             assertEquals(nInRow * 1, multi1.getRowCount());
-            assertEquals(nInCol + nConeCol, multi1.getColumnCount());
+            assertEquals(nInCol + nConeCol + 1, multi1.getColumnCount());
 
             multi1 = doMulti(cs, qsf1, in, true);
             assertEquals(nInRow * 1, multi1.getRowCount());
-            assertEquals(nInCol + nConeCol, multi1.getColumnCount());
+            assertEquals(nInCol + nConeCol + 1, multi1.getColumnCount());
 
             try {
                 multi1 = doMulti(cs, qsfBad, in, true);
@@ -101,7 +124,7 @@ public class MulticoneTest extends TestCase {
 
             // there are three extra stars in this sample
             assertEquals(nInRow * 9 + 3, multi2.getRowCount());
-            assertEquals(nInCol + nConeCol, multi2.getColumnCount());
+            assertEquals(nInCol + nConeCol + 1, multi2.getColumnCount());
         }
 
     }
@@ -110,15 +133,13 @@ public class MulticoneTest extends TestCase {
                                      QuerySequenceFactory qsf,
                                      final StarTable in,
                                      boolean bestOnly) throws Exception {
-        return Tables.randomTable(
-            new SkyConeMatch2Producer(cs,
-                                      new TableProducer() {
-                                          public StarTable getTable() {
-                                              return in;
-                                          }
-                                      }, qsf, bestOnly, "*")
-           .getTable()
-        );
+        TableProducer inProd = new TableProducer() {
+            public StarTable getTable() {
+                return in;
+            }
+        };
+        return Tables.randomTable(new ConeMatcher(cs, inProd, qsf, bestOnly)
+                                 .getTable());
     }
 
     private static StarTable createTestTable() {
