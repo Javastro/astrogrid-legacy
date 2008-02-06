@@ -56,6 +56,58 @@ public class StreamingRegistryImpl implements RegistryInternal {
 			STAXUtils.copy(r,this.os);
 		}
 	}
+
+    /** Self test for registry. */
+    private static class RegistryTest extends TestCase implements RegistryInternal.StreamProcessor {
+        private final ExternalRegistryInternal reg;
+        private final Preference endpoint;
+        RegistryTest(String name, ExternalRegistryInternal reg, Preference endpoint) {
+            super(name);
+            this.reg = reg;
+            this.endpoint = endpoint;
+        }
+        protected void runTest() {
+            URI endpointUri;
+            try {
+                endpointUri = new URI(endpoint.getValue());
+            } catch (URISyntaxException x) {
+                logger.error("Misconfigured registry endpoint",x);
+                fail("Misconfigured  registry endpoint");
+                endpointUri = null;  // keep compiler happy
+            }
+            try {
+                endpointUri.toURL().openConnection().connect();
+            } catch (MalformedURLException x) {
+                logger.error("Misconfigured registry endpoint",x);
+                fail("Misconfigured registry endpoint");
+            } catch (IOException x) {
+                logger.error("Failed to connect to registry service",x);
+                fail("Failed to connect to registry service");
+            }
+            try {
+                RegistryService serv = reg.getIdentity(endpointUri);
+                assertNotNull("No registry identity returned",serv);
+            } catch (ServiceException x) {
+                fail("Failed to get registry identity");
+            }
+            try {
+                Document doc = reg.xquerySearchXML(endpointUri, QuerySizerImpl.constructSizingQuery(QuerySizerImpl.ALL_QUERY));
+                assertNotNull("No response returned from xquery",doc);
+                // in a normal junit test, it'd be more sensible to use XMLAssert for the following.
+                // however, this isn't bundled with the final app - so just vanilla junit.
+                String docString = DomHelper.DocumentToString(doc);
+                assertTrue("xquery didn't return expected response",StringUtils.contains(docString,"<size>"));
+            } catch (ServiceException x) {
+                logger.error("Failed to xquery registry",x);
+                fail("Failed to xquery registry");
+            }
+            // could test 'getResource' here too - but I think this is enough.
+        }
+        public void process(XMLStreamReader r) {
+        }
+    }
+
+
 	/**
 	 * Logger for this class
 	 */
@@ -322,73 +374,8 @@ public class StreamingRegistryImpl implements RegistryInternal {
 		/** self tests that the registry is working */
         public Test getSelftest() {
             TestSuite ts = new TestSuite("Registry tests");
-            ts.addTest(new TestCase("Main registry service") {
-                protected void runTest() {
-                    try {
-                        URI r = getSystemRegistryEndpoint();
-                        r.toURL().openConnection().connect();
-                    } catch (ServiceException x) {
-                        logger.error("Misconfigured registry endpoint",x);
-                        fail("Misconfigured registry endpoint");
-                    } catch (MalformedURLException x) {
-                        logger.error("Misconfigured registry endpoint",x);                        
-                        fail("Misconfigured registry endpoint");
-                    } catch (IOException x) {
-                        logger.error("failed to connect to registry service",x);
-                        fail("Failed to connect to registry service");
-                    }
-                    try {
-                        RegistryService serv = reg.getIdentity(getSystemRegistryEndpoint());
-                        assertNotNull("No registry identity returned",serv);
-                    } catch (ServiceException x) {
-                        fail("Failed to get registry identity");
-                    }
-                   try {
-                    Document doc = reg.xquerySearchXML(getSystemRegistryEndpoint(),QuerySizerImpl.constructSizingQuery(QuerySizerImpl.ALL_QUERY));
-                    assertNotNull("No response returned from xquery",doc);
-                    // in a normal junit test, it'd be more sensible to use XMLAssert for the following.
-                    // however, this isn't bundled with the final app - so just vanilla junit.
-                    String docString = DomHelper.DocumentToString(doc);
-                    assertTrue("xquery didn't return expected response",StringUtils.contains(docString,"<size>"));
-                } catch (ServiceException x) {
-                    logger.error("Failed to xquery registry",x);
-                    fail("Failed to xquery registry");
-                }
-                // could test 'getResource' here too - but I think this is enough.
-                }
-            });
-            ts.addTest(new TestCase("Fallback registry service") {
-                protected void runTest() {
-                    try {
-                        URI r = getFallbackSystemRegistryEndpoint();
-                        r.toURL().openConnection().connect();
-                    } catch (ServiceException x) {
-                        logger.error("Misconfigured registry endpoint",x);
-                        fail("Misconfigured  registry endpoint");
-                    } catch (MalformedURLException x) {
-                        logger.error("Misconfigured registry endpoint",x);
-                        fail("Misconfigured registry endpoint");
-                    } catch (IOException x) {
-                        logger.error("Failed to connect to registry service",x);
-                        fail("Failed to connect to registry service");
-                    }
-                    try {
-                        RegistryService serv = reg.getIdentity(getFallbackSystemRegistryEndpoint());
-                        assertNotNull("No registry identity returned",serv);
-                    } catch (ServiceException x) {
-                        fail("Failed to get registry identity");
-                    }  
-                    try {
-                        Document doc = reg.xquerySearchXML(getSystemRegistryEndpoint(),QuerySizerImpl.constructSizingQuery(QuerySizerImpl.ALL_QUERY));
-                        assertNotNull("No response returned from xquery",doc);
-                        String docString = DomHelper.DocumentToString(doc);
-                        assertTrue("xquery didn't return expected response",StringUtils.contains(docString,"<size>"));                        
-                    } catch (ServiceException x) {
-                        logger.error("Failed to xquery registry",x);
-                        fail("Failed to xquery registry");
-                    }                   
-                }
-            });      
+            ts.addTest(new RegistryTest("Main registry service", reg, endpoint));
+            ts.addTest(new RegistryTest("Fallback registry service", reg, fallbackEndpoint));
             ts.addTest(new TestCase("Registry caches") {
                 protected void runTest() throws Throwable {
                     assertEquals("Problem with the bulk cache", Status.STATUS_ALIVE,bulkCache.getStatus());
@@ -398,10 +385,4 @@ public class StreamingRegistryImpl implements RegistryInternal {
             });
             return ts;
         }
-
-
-
-
-
-		
 }
