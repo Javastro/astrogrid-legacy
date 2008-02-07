@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.18 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.19 2008/02/07 17:27:45 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -447,12 +447,23 @@ public class TableMetaDocInterpreter
       String raCol = getConeRAColumnByName(catalogName, tableName);
       Element colNode = getColumnElementByName(catalogName, tableName, raCol);
       String units = getValueOf(colNode,"Units");
-      if ( !"deg".equals(units) && !"rad".equals(units) ) {
+      /*
+      if ( 
+            !"deg".equals(units) && !"rad".equals(units) &&
+            !"degrees".equals(units) && !"radians".equals(units) 
+      ) {
          //Shouldn't get here, has been prechecked at load time
          throw new MetadataException("Column '" + raCol + "' in table '" + 
                tableName + "' in catalog '" + catalogName + 
                "' does not have expected units of 'deg' or 'rad' - " +
                "found '" +units+"' instead.'");
+      }
+      */
+      if ("degrees".equals(units)) {
+         return "deg";
+      }   
+      else if ("radians".equals(units)) {
+         return "rad";
       }
       return units;
    }
@@ -1084,7 +1095,10 @@ public class TableMetaDocInterpreter
                            "' must have Units with value \"deg\" or \"rad\"");
                      }
                      unitsRA = unitsRA.toLowerCase().trim();
-                     if ( !unitsRA.equals("deg") && !unitsRA.equals("rad") ) {
+                     if ( 
+                       !unitsRA.equals("deg") && !unitsRA.equals("rad") &&
+                       !unitsRA.equals("degrees") && !unitsRA.equals("radians") 
+                     ) {
                         throw new MetadataException(
                           "Resource metadoc file is invalid: "+
                            "Conesearch RA column '" + colName +
@@ -1102,7 +1116,10 @@ public class TableMetaDocInterpreter
                            "' must have Units of \"deg\" or \"rad\"");
                      }
                      unitsDec = unitsDec.toLowerCase().trim();
-                     if ( !unitsDec.equals("deg") && !unitsDec.equals("rad") ) {
+                     if ( 
+                       !unitsDec.equals("deg") && !unitsDec.equals("rad") &&
+                       !unitsDec.equals("degrees") && !unitsDec.equals("radians") 
+                     ) {
                         throw new MetadataException(
                           "Resource metadoc file is invalid: "+
                            "Conesearch Dec column '" + colName +

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.2 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.3 2008/02/07 17:27:45 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,13 +52,9 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
         // names etc so no need to check them for null here
         for (int i = 0 ; i < catalogNames.length; i++) {
            String catalogName = catalogNames[i];
-           String catNamePrefix = "";
-           if (catalogNames.length > 1) {
-              //More than one catalog, need a cat-specific prefix
-              catNamePrefix = catalogName+"/";
-           }
-           String appIvorn = "";
-           appIvorn = 
+           //Insert cat-specific prefix
+           String catNamePrefix = catalogName+"/";
+           String appIvorn = 
                 VoResourceSupportBase.makeIvorn(catNamePrefix+"ceaApplication");
 
            // Strip off any leading ivo://
@@ -82,6 +78,12 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
 
 /*
 $Log: DatacenterApplicationDescriptionLibrary.java,v $
+Revision 1.3  2008/02/07 17:27:45  clq2
+PAL_KEA_2518
+
+Revision 1.2.14.1  2008/02/07 16:36:15  kea
+Further fixes for 1.0 support, and also MBT's changes merged into my branch.
+
 Revision 1.2  2007/09/07 09:30:51  clq2
 PAL_KEA_2235
 

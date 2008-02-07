@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsQueryValidator.java,v 1.7 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: RdbmsQueryValidator.java,v 1.8 2008/02/07 17:27:45 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -56,8 +56,12 @@ public class RdbmsQueryValidator
          for (int i = 0; i < tableRefs.length; i++) {
             String tableName = tableRefs[i];
             String catalogName = parentRefs[i];
-
-           try {
+            // Strip any catalog prefix off table name, just in case
+            int dotIndex = tableName.lastIndexOf(".");
+            if (dotIndex > 0) {
+               tableName = tableName.substring(dotIndex+1);
+            }
+            try {
                //If we have a catalog name, validate directly
                if ((catalogName != null) && (!"".equals(catalogName))) {
                   if (TableMetaDocInterpreter.getTableInfoByName(

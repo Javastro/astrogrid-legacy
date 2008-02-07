@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.14 2007/12/04 17:31:40 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.15 2008/02/07 17:27:45 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -109,7 +109,7 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty(TableMetaDocInterpreter.TABLE_METADOC_URL_KEY, url.toString());
 
       //configure which resources to produce
-      ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v0_10","enabled");
+     // ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v0_10","disabled");  NO LONGER NEEDED
       ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v1_0","enabled");
       // AUTH ID PLUGIN CURRENTLY NOT PROVIDED!
       //ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.authID","false");

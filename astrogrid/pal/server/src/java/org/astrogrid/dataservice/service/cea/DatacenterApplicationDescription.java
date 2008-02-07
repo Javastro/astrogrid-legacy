@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.8 2007/12/04 17:31:39 clq2 Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.9 2008/02/07 17:27:45 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,9 +34,9 @@ import org.astrogrid.workflow.beans.v1.Tool;
  */
 public class DatacenterApplicationDescription extends AbstractApplicationDescription {
     /** name of the cone search interface */
-    public static final String CONE_IFACE = "cone";
+    public static final String CONE_IFACE = "ConeSearch";
     /** name of the adql search interface */
-    public static final String ADQL_IFACE = "adql";
+    public static final String ADQL_IFACE = "ADQL";
     /** name of the 'ra' parameter */
     public static final String RA = "RA";
     /** name of the 'dec' parameter */
@@ -57,7 +57,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     /* These additional parameters are for the "Multicone" 
      * simple crossmatch service */
     /** name of the simple crossmatch search interface */
-    public static final String MULTICONE_IFACE = "multicone";
+    public static final String MULTICONE_IFACE = "MultiCone";
     /** Where the VOTable with rows to be matched is located */
     public static final String INPUT_VOTABLE = "Input_VOTable";
     /** name of the column (or expression) giving Right Ascension in degrees */
@@ -229,6 +229,12 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.9  2008/02/07 17:27:45  clq2
+PAL_KEA_2518
+
+Revision 1.8.8.1  2008/02/07 16:36:15  kea
+Further fixes for 1.0 support, and also MBT's changes merged into my branch.
+
 Revision 1.8  2007/12/04 17:31:39  clq2
 PAL_KEA_2378
 

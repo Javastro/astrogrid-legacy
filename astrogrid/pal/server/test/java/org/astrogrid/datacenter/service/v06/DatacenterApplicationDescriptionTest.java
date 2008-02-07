@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.7 2007/10/17 09:58:20 clq2 Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.8 2008/02/07 17:27:45 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,13 +67,13 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
             ApplicationInterface iface = ifaces[i];
             // minimum for all interfaces.
             assertNotNull(iface.getName());
-            if ("multicone".equals(iface.getName())) {
+            if (DatacenterApplicationDescription.MULTICONE_IFACE.equals(iface.getName())) {
                assertNotNull(iface.getInputParameter(DatacenterApplicationDescription.INPUT_VOTABLE)); 
             } 
-            else if ("cone".equals(iface.getName())) {
+            else if (DatacenterApplicationDescription.CONE_IFACE.equals(iface.getName())) {
                assertNotNull(iface.getInputParameter(DatacenterApplicationDescription.RA)); 
             }
-            else if ("adql".equals(iface.getName())) {
+            else if (DatacenterApplicationDescription.ADQL_IFACE.equals(iface.getName())) {
                assertNotNull(iface.getInputParameter(DatacenterApplicationDescription.QUERY)); 
             }
             assertNotNull(iface.getOutputParameter(DatacenterApplicationDescription.RESULT)); // all need a result.
@@ -84,6 +84,12 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /*
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.8  2008/02/07 17:27:45  clq2
+PAL_KEA_2518
+
+Revision 1.7.12.1  2008/02/07 16:36:16  kea
+Further fixes for 1.0 support, and also MBT's changes merged into my branch.
+
 Revision 1.7  2007/10/17 09:58:20  clq2
 PAL_KEA-2314
 

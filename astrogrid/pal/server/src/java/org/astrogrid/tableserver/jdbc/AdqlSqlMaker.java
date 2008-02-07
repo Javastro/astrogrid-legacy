@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.6 2007/12/04 17:31:39 clq2 Exp $
+/*$Id: AdqlSqlMaker.java,v 1.7 2008/02/07 17:27:45 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -340,6 +340,11 @@ public class AdqlSqlMaker implements SqlMaker {
          for (int i = 0; i < numTables; i++) {
             TableType tableType = (TableType)(from.getTableArray(i));
             String tableName = tableType.getName(); 
+            // Strip any catalog prefix off table name, just in case
+            int dotIndex = tableName.lastIndexOf(".");
+            if (dotIndex > 0) {
+               tableName = tableName.substring(dotIndex+1);
+            }
             // Check for catalog name prefix - may be null
             String catalogName = XmlBeanUtilities.getParentCatalog(tableType);
             String tableAlias = XmlBeanUtilities.getTableAlias(

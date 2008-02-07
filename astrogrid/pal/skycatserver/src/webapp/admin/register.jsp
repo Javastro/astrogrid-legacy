@@ -26,8 +26,6 @@
 
 <div id='bodyColumn'>
 
-<body>
-
   <h1>Registering <%= DataServer.getDatacenterName() %></h1>
 
   <p>

@@ -99,7 +99,7 @@
       <dependency>
           <artifactId>astrogrid-filemanager-contract</artifactId>
           <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.filemanager.version}</version>
+          <version>${astrogrid.filemanager.frozen.version}</version>
       </dependency>
 
       <dependency>
@@ -305,8 +305,9 @@
 
     <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
     <dependency>
-      <id>servletapi</id>
-      <version>2.3</version>
+       <artifactId>servletapi</artifactId>
+       <groupId>servletapi</groupId>
+       <version>2.4</version>
     </dependency>
 
     <!--

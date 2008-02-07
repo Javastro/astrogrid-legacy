@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.15 2008/01/22 11:35:46 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.16 2008/02/07 17:27:45 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -117,11 +117,9 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkUnset("datacenter.resource.plugin.3", accum)) { bad = bad+1; }
 
       // Check resource version settings
-      if (!checkSet("datacenter.resource.register.v0_10", accum)) { 
+      // v0.10 stuff is no longer in use
+      if (!checkUnset("datacenter.resource.register.v0_10", accum)) { 
          bad = bad+1; 
-      }
-      else {
-         if (!checkValue("datacenter.resource.register.v0_10", "enabled", "Property 'datacenter.resource.register.v0_10' MUST be enabled for now", accum)) { bad = bad+1; }
       }
       if (!checkSet("datacenter.resource.register.v1_0", accum)) { 
          bad = bad+1;

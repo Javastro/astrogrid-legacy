@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
@@ -15,6 +16,7 @@ import org.astrogrid.dataservice.metadata.VoResourceSupportBase;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.metadata.TableInfo;
+import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescription;
 
 
 /**
@@ -141,7 +143,8 @@ public class CeaResources extends VoResourceSupport {
 
 
             coneInters=
-                  "      <interfaceDefinition id='ConeSearch'>\n"+
+                  "      <interfaceDefinition id='"+
+                           DatacenterApplicationDescription.CONE_IFACE+"'>\n"+
                   "        <input>\n"+
                   "          <pref ref='CatTable'/>\n"+
                   "          <pref ref='RA'/>\n"+
@@ -193,7 +196,8 @@ public class CeaResources extends VoResourceSupport {
                      "      </parameterDefinition>\n";
 
                multiConeInters=
-                     "      <interfaceDefinition id='MultiCone'>\n"+
+                     "      <interfaceDefinition id='"+
+                           DatacenterApplicationDescription.MULTICONE_IFACE+"'>\n"+
                      "        <input>\n"+
                      "          <pref ref='CatTable'/>\n"+
                      "          <pref ref='Input_VOTable'/>\n"+
@@ -268,7 +272,8 @@ public class CeaResources extends VoResourceSupport {
             
          // Interfaces available
          "    <interfaces>\n"+
-         "      <interfaceDefinition id='ADQL'>\n"+
+         "      <interfaceDefinition id='"+
+                DatacenterApplicationDescription.ADQL_IFACE+"'>\n"+
          "        <input>\n"+
          "          <pref ref='Query'/>\n"+
          "          <pref ref='Format'/>\n"+
@@ -301,7 +306,8 @@ public class CeaResources extends VoResourceSupport {
       String appId = getAppID(catalogName);
 
       StringBuffer cap = new StringBuffer();
-      cap.append("  <capability xsi:type=\"cea:CeaCapability\" standardID=\"ivo://org.astrogrid/std/CEA/v1.0\">\n");
+      cap.append("  <capability xsi:type=\"cea:CeaCapability\" standardID=\"" +
+            StandardIds.CEA_1_0 + "\">\n");
       cap.append("    <description>Access to two applications: general ADQL query, and asynchronous cone-search where relevant/enabled.</description>\n");
       cap.append("    <interface  xsi:type=\"cea:CECInterface\">\n");
       cap.append("      <accessURL use='full'>" + endpoint + 

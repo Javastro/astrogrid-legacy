@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.14 2008/02/06 14:10:41 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.15 2008/02/07 17:27:45 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,9 @@ import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
+
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+import org.astrogrid.store.Ivorn;
 
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
@@ -257,9 +260,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             }
          }
          if (resultTarget.getIndirect()==true) {
-            //special botch for converting ivo:// to homespace:// etc
-            String targetUri = transformTarget(resultTarget.getValue());
-            return URISourceTargetMaker.makeSourceTarget(targetUri);
+            return URISourceTargetMaker.makeSourceTarget(resultTarget.getValue());
          } else {
             //direct-to-cea target, so results must get written to a string 
             //to be inserted into the parametervalue when complete.  
@@ -549,6 +550,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * form of an account (ie ivo://community/individual) and if so, checks to see
     * if the Registry can resolve it.  If it is of the right form, and the registry
     * cannot resolve it, turns it into a homespacename
+    * KONA Jan 2008 NOTE - This seems to work with latest VOExplorer for 
+    * input parameter urls, but worth checking again later
     */
    protected String transformTarget(String targetUri) throws IllegalArgumentException, URISyntaxException {
       
@@ -674,6 +677,12 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.15  2008/02/07 17:27:45  clq2
+ PAL_KEA_2518
+
+ Revision 1.13.8.1  2008/02/07 16:36:15  kea
+ Further fixes for 1.0 support, and also MBT's changes merged into my branch.
+
  Revision 1.14  2008/02/06 14:10:41  clq2
  pal-mbt-multicone2 merged
 

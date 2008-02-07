@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.metadata.queryable.SearchField;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
@@ -64,6 +65,11 @@ public class DirectConeSearcher {
     /**
      * Does the work for constructing a new cone searcher, throwing various
      * checked exceptions.
+     * KEA comments:  The catalogName and tableName coming in here are 
+     * "published names" (what appears in the registry) rather than "IDs"
+     * (what appears in the database).  We need to translate the names to
+     * their respective IDs to produce an sql query that the database will
+     * understand.
      *
      * @param  token        token reserving place in resource allocation queue;
      *                      will be released on ConeSearcher close
@@ -77,16 +83,25 @@ public class DirectConeSearcher {
                 String tableName, boolean bestOnly)
             throws ServletException, SQLException,
                    MetadataException, DatabaseAccessException {
-        Connection connection =
-            JdbcConnections.makeFromConfig().createConnection();
+        Connection connection = 
+               JdbcConnections.makeFromConfig().createConnection();
+        String catalogID = TableMetaDocInterpreter.getCatalogIDForName(
+              catalogName); 
+        String tableID = TableMetaDocInterpreter.getTableIDForName(
+              catalogName,tableName); 
         String fullTableName =
-            getQualifiedTableName(connection, catalogName, tableName);
-        String raCol = TableMetaDocInterpreter
+            getQualifiedTableName(connection, catalogID, tableID);
+        String raColName = TableMetaDocInterpreter
                       .getConeRAColumnByName(catalogName, tableName);
-        String decCol = TableMetaDocInterpreter
+        String decColName = TableMetaDocInterpreter
                        .getConeDecColumnByName(catalogName, tableName);
         String unitName = TableMetaDocInterpreter
                          .getConeUnitsByName(catalogName, tableName);
+        String raCol = TableMetaDocInterpreter.getColumnIDForName(
+              catalogName, tableName, raColName);
+        String decCol = TableMetaDocInterpreter.getColumnIDForName(
+              catalogName, tableName, decColName);
+
         AngleUnits units;
         if ("deg".equals(unitName)) {
             units = AngleUnits.DEGREES;
@@ -206,6 +221,19 @@ public class DirectConeSearcher {
             return tableName;
         }
         else {
+           try {
+               String plugin = ConfigFactory.getCommonConfig().getString(
+                  "datacenter.querier.plugin");
+               if (plugin.equals(
+                      "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+                  // No catalog names in HSQLDB - only one DB allowed
+                  return tableName;
+               }
+            }
+            catch (Exception e) {
+               // Don't worry if this property isn't found, go on and
+               // try to get separator from the connection metadata 
+            }
             return catalogName
                  + connection.getMetaData().getCatalogSeparator()
                  + tableName;

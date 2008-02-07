@@ -64,7 +64,10 @@ public class MulticoneTest extends TestCase {
         // some detail of HSQLDB that I don't understand.  
         // The DirectConeSearcher has been shown to work by testing by hand
         // using MySQL and SQL Server though.  - mbt
-        // doMulticone(DirectConeSearcher.createConeSearcher(token, catalogName, tableName, false));
+        // KONA Comment:  Select now OK, but getting "Connection is closed"
+        // error from HSQLDB (after some queries apparently run) - not sure
+        // why right now.  TOFIX later.
+        //doMulticone(DirectConeSearcher.createConeSearcher(token, catalogName, tableName, false));
 
         assertEquals(1, tq.getActiveCount());
         token.release();

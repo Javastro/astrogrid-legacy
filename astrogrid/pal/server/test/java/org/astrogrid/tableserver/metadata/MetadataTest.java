@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.5 2007/09/07 09:30:52 clq2 Exp $
+/*$Id: MetadataTest.java,v 1.6 2008/02/07 17:27:45 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,6 +111,8 @@ public class MetadataTest extends TestCase {
       assertTrue(TableMetaDocInterpreter.isValid());
    }
    
+   /*
+    // NO LONGER NEEDED
    public void testServer_v0_10() throws Exception {
       Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
       //debug
@@ -124,6 +126,7 @@ public class MetadataTest extends TestCase {
       
       DomHelper.newDocument(s);
    }
+   */
 
    public void testServer_v1_0() throws Exception {
       /*

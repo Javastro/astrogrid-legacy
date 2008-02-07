@@ -1,5 +1,5 @@
 /*
- * $Id: URISourceTargetMaker.java,v 1.2 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: URISourceTargetMaker.java,v 1.3 2008/02/07 17:27:44 clq2 Exp $
  */
 package org.astrogrid.slinger.sourcetargets;
 
@@ -17,6 +17,9 @@ import java.net.MalformedURLException;
 public class URISourceTargetMaker {
    
    public static SourceTargetIdentifier makeSourceTarget(String uri) throws URISyntaxException, MalformedURLException {
+      if (HomespaceName.isMyspaceIvorn(uri)) {
+         return new MyspaceSourceTarget(uri);
+      }
       if (HomespaceName.isHomespaceName(uri)) {
          return new HomespaceSourceTarget(uri);
       }

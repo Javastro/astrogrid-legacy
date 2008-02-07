@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.11 2007/10/17 09:58:20 clq2 Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.12 2008/02/07 17:27:45 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -114,7 +114,7 @@ public class DatacenterApplicationTest extends TestCase {
    
    /** populates the tool object - as a direct call */
    protected void populateTool(Tool tool) {
-      tool.setInterface("adql");
+      tool.setInterface(DatacenterApplicationDescription.ADQL_IFACE);
       Input input = new Input();
       Output output = new Output();
       tool.setInput(input);
@@ -310,6 +310,12 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.12  2008/02/07 17:27:45  clq2
+ PAL_KEA_2518
+
+ Revision 1.11.12.1  2008/02/07 16:36:16  kea
+ Further fixes for 1.0 support, and also MBT's changes merged into my branch.
+
  Revision 1.11  2007/10/17 09:58:20  clq2
  PAL_KEA-2314
 

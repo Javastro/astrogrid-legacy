@@ -19,6 +19,8 @@ import org.astrogrid.io.mime.MimeFileExts;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+
 
 /** There is one of these per connection. Note that the property ivo-account
  * should be set to account:name@community before connecting.  No idea how
@@ -98,7 +100,29 @@ public class FileManagerConnection extends URLConnection {
          throw Slinger.newIOException(e+" resolving output stream to "+id, e);
       }
       catch (URISyntaxException e) {
-         throw Slinger.newIOException(e+" resolving output stream to "+id, e);
+         // The FileManager delegate currently fails to resolve abstract
+         // ivorns into concrete ones properly (in some cases anyway),
+         // leading to a URISyntaxException.
+         // If we get one, try resolving the abstract ivorn ourselves
+         // and have another go.
+         try {
+            FileManagerNode node = null;
+            CommunityAccountSpaceResolver resolver =
+                     new CommunityAccountSpaceResolver();
+            Ivorn concrete = resolver.resolve(id);
+            //if the file doesn't exist, we need to make it
+            if (delegate.exists(concrete) == null) {
+               node = delegate.createFile(concrete);
+            }
+            else {
+               node = delegate.node(concrete);
+            }
+            return new FMCompleterStream(node, node.writeContent());
+         }
+         catch (Exception e2) {
+            // Now we really give up
+            throw Slinger.newIOException(e2+" resolving output stream to "+id, e2);
+         }
       }
       /**/
    }

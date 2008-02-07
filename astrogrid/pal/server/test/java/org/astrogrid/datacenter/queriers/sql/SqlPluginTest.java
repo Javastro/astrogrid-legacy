@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.10 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: SqlPluginTest.java,v 1.11 2008/02/07 17:27:45 clq2 Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -194,6 +194,8 @@ public class SqlPluginTest extends TestCase {
       
    }
    
+   /*
+    // NO LONGER NEEDED
    public void testDescriptionMaker_v0_10() throws Exception {
       setUp();
       
@@ -208,6 +210,7 @@ public class SqlPluginTest extends TestCase {
       assertEquals("Should be four tables (plates, stars, galaxies, stars2) in metadata", 4, numTables);
       
    }
+   */
    public void testDescriptionMaker_v1_0() throws Exception {
       setUp();
       

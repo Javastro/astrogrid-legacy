@@ -20,6 +20,7 @@ import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.dataservice.service.servlet.VosiServlet;
 
 /**
  * Useful functions for providing metadata-related support to JSPs etc.
@@ -35,6 +36,70 @@ public class MetadataHelper {
    protected static String errorMessage = 
       "Your configuration is incorrect!  Please run the DSA self-tests for more information.";
 
+   /** Produces an HTML table containing links for viewing the XML
+    * produced by the various VOSI-style endpoints
+    */
+   public static String getVosiEndpointsTable() throws MetadataException
+   {
+      String table = 
+         "<br/><table class=\"bordertable\">\n"+
+         "<tr><td><b>Catalog name</b></td>"+
+         "<td><b>View Availability</b></td>"+
+         "<td><b>View Capabilites</b></td>"+
+         "<td><b>View Tables</b></td>"+
+         "<td><b>View CEA Application</b></td>";
+      boolean gotErrors = false;
+      String[] catalogNames = new String[0];
+      catalogNames =
+           TableMetaDocInterpreter.getCatalogNames();
+      if (catalogNames.length == 0) {
+         // Shouldn't get here
+         throw new MetadataException("No catalogs are defined!"); 
+      }
+      // Get the required properties
+      String serverRoot = ConfigFactory.getCommonConfig().getString(
+             "datacenter.url");
+      if ((serverRoot == null) || ("".equals(serverRoot))) {
+         throw new MetadataException(errorMessage);
+      }
+      if (!serverRoot.endsWith("/")) {
+         serverRoot = serverRoot + "/";
+      }
+      for (int i = 0; i < catalogNames.length; i++) {
+
+         String catalogName = catalogNames[i];
+
+         // First column: catalog name 
+         table = table + "<tr>\n" + "<td><b>"+catalogName+"</b></td>";
+
+         // Second column: Availability
+         String formUrl = serverRoot + catalogName + 
+            VosiServlet.AVAILABILITY_SUFFIX;
+         table = table + "<td><a href='"+formUrl+"'>View Availability</a></td>";
+
+         // Third column: Capabilities
+         formUrl = serverRoot + catalogName + 
+            VosiServlet.CAPABILITIES_SUFFIX;
+         table = table + "<td><a href='"+formUrl+"'>View Capabilities</a></td>";
+
+         // Fourth column: Tables
+         formUrl = serverRoot + catalogName + 
+            VosiServlet.TABLES_SUFFIX;
+         table = table + "<td><a href='"+formUrl+"'>View Tables</a></td>";
+
+         // Fifth column: CEA App
+         formUrl = serverRoot + catalogName + 
+            VosiServlet.CEAAPP_SUFFIX;
+         table = table + "<td><a href='"+formUrl+"'>View CEA Application</a></td>";
+         table = table + "</tr>\n";
+      }
+      table = table + "</table><br/>\n";
+      return table;
+   }
+
+   /** Produces an HTML table containing links for registering the wrapped 
+    * catalogs and/or editing and refreshing the registrations.
+    */
    public static String getRegisterUpdateTable() throws MetadataException 
    {
       String table = 

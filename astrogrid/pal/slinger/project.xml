@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.7 2008/01/23 14:54:18 kea Exp $ -->
+<!-- $Id: project.xml,v 1.8 2008/02/07 17:27:45 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -124,8 +124,6 @@
         </dependency>
        -->
 
-       <!--
-        REMOVED BY KEA 06/09/06
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
@@ -133,7 +131,6 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-        -->
 
        <!--
         REMOVED BY KEA 06/09/06

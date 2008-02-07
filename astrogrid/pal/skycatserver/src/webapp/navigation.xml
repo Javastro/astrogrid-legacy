@@ -26,22 +26,16 @@
       <ul>
          <li><a href="<%=pathPrefix%>/admin/GenerateMetaDoc">Generate template metadoc</a></li>
          <li><a href="<%=pathPrefix%>/viewMetadata.jsp">View metadata table</a></li>
-         <!--
-         <li>View service resources (XML):<br/>
-            &nbsp;&nbsp;- <a href='<%=pathPrefix%>/GetMetadata?Version=v0_10'>Capabilities</a><br/>
-            &nbsp;&nbsp;- <a href='<%=pathPrefix%>/GetMetadata?Version=v1_0'>Tabular metadata
-            &nbsp;&nbsp;- <a href='<%=pathPrefix%>/GetMetadata?Version=v1_0'>Availability
-         </li>
-         -->
+         <li><a href="<%=pathPrefix%>/admin/resources.jsp">View XML resources</a></li>
        <%
            // Optionally enable registration (DISABLED when SampleStarsPlugin in use)
            String querierPlugin = ConfigFactory.getCommonConfig().getString(
                    "datacenter.querier.plugin");
            if ( (querierPlugin != null) && (!querierPlugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) ) {
-           out.write("<li><a href=\""+pathPrefix+"/admin/register.jsp\">Register this DSA/catalog</a></li>");
+           out.write("<li><a href=\""+pathPrefix+"/admin/register.jsp\">Manage registrations</a></li>");
            }
            else {
-             out.write("<li><font color=\"#999999\">Register this DSA/catalog</font></li>");
+           out.write("<li><font color=\"#999999\">Register/Manage registrations</font></li>");
            }
        %>
        <li><a href="<%=pathPrefix%>/admin/serverStatus.jsp">View server status</a></li>

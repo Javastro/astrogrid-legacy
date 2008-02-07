@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.2 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: HomespaceName.java,v 1.3 2008/02/07 17:27:45 clq2 Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -79,14 +79,20 @@ public class HomespaceName
       setPath(aPath);
    }
 
-   /** Returns the homespace name from the given IVORN form used by most astrogrid applications */
+   /** Returns the homespace name from the given IVORN form used by most astrogrid applications 
+    * KONA Jan 2008 Note:  Myspace destination ivorns currently have the form:
+    * ivo://org.astrogrid.regtest/community/KonaAndrews#test_folder/new_file0.vot
+    * NOTE:  Don't think this stuff is actively in use now.
+    */
    public static HomespaceName fromIvorn(String ivorn) {
       int hashIdx = ivorn.indexOf("#");
       String key = ivorn.substring(0,hashIdx).substring(6);
-      int slashIdx = key.indexOf("/");
+      //int slashIdx = key.indexOf("/");  // MIGHT BE MORE THAN ONE NOW!
+      int slashIdx = key.lastIndexOf("/");
 
       String ind = key.substring(slashIdx+1); //individual
       String com = key.substring(0,slashIdx); //community
+      //return new HomespaceName(ind+"@"+com+"#", ivorn.substring(hashIdx+1));
       return new HomespaceName(ind+"@"+com, ivorn.substring(hashIdx+1));
    }
 
@@ -160,10 +166,23 @@ public class HomespaceName
       return aString.toLowerCase().startsWith(SCHEME+":");
    }
 
+   /** Returns true if the given string is likely to be a myspace Ivorn - 
+    * ie if it * starts with 'ivo'
+    */
+   public static boolean isMyspaceIvorn(String aString) {
+      return aString.toLowerCase().startsWith("ivo:");
+   }
+
 }
 
 /*
 $Log: HomespaceName.java,v $
+Revision 1.3  2008/02/07 17:27:45  clq2
+PAL_KEA_2518
+
+Revision 1.2.34.1  2008/02/07 16:36:16  kea
+Further fixes for 1.0 support, and also MBT's changes merged into my branch.
+
 Revision 1.2  2006/09/26 15:34:42  clq2
 SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
 

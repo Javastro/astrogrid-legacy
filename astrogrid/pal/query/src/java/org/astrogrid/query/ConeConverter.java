@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.7 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: ConeConverter.java,v 1.8 2008/02/07 17:27:45 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,7 +68,10 @@ public class ConeConverter  {
         throw new QueryException(
             "Column units may not be empty, must be one of 'deg' or 'rad'");
       }
-      if (!"deg".equals(colUnits) && !"rad".equals(colUnits)) {
+      if (
+            !"deg".equals(colUnits) && !"rad".equals(colUnits) &&
+            !"degrees".equals(colUnits) && !"radians".equals(colUnits)
+      ) {
         throw new QueryException(
             "Column units must be one of 'deg' or 'rad'");
       }
@@ -116,10 +119,10 @@ public class ConeConverter  {
             "DSA local property 'db.trigfuncs.in.radians' is not set, " +
             "please check your configuration");
       }
-      if (colUnits.equals("deg")) {
+      if ( colUnits.equals("deg") || colUnits.equals("degrees") ) {
          colsInDegs = true;
       }
-      else if (colUnits.equals("rad")) {
+      else if ( colUnits.equals("rad") || colUnits.equals("radians") ) {
          colsInDegs = false;
       }
       else {
@@ -486,23 +489,6 @@ public class ConeConverter  {
  *
  * NOTE THAT mysql (and other DBMSs presumably) EXPECT TRIG FUNCTION
  * ARGUMENTS IN RADIANS, NOT DEGREES!! 
- *
- * DEC BOX:
- * (cat.DEC <= dec + rad)  and (cat.DEC >= dec-rad) 
- *
- * RA BOX 1: (normal case )
- * (cat.RA <= MIN(ra + rad,360) and (cat.RA >= MAX(0,ra-rad) 
- *
- * OR
- * RA BOX 2: (right straddle)
- //* (cat.RA >= (ra -rad + 360) and (cat.RA <= MIN(ra+rad,360))) 
- * (cat.RA >= (ra -rad + 360) and (cat.RA <= MAX(ra+rad,360))) 
- *
- * OR
- * RA BOX 3: (left straddle)
- * //(cat.RA <= MAX(ra+rad-360,0) and (cat.RA >= ra-rad) 
- * //(cat.RA <= MIN(ra+rad-360,0) and (cat.RA >= ra-rad) 
- * (cat.RA <= (ra+rad-360) and (cat.RA >= MIN(ra-rad,0) 
  *
   // THESE ARE EXAMPLES FROM THE OLD DSA
 SELECT *

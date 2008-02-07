@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.11 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.12 2008/02/07 17:27:45 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -120,12 +120,15 @@ public class SampleStarsPluginTest extends TestCase {
    }
    
    /** Tests the served data plugin */
+   /*
+    // NO LONGER NEEDED
    public void testMetadataServer_v0_10() throws Exception {
       Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
       
       //debug
       DomHelper.DocumentToStream(metadata, System.out);
    }
+   */
 
    /** Tests the served data plugin */
    public void testMetadataServer_v1_0() throws Exception {

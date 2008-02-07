@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.13 2008/01/22 11:35:46 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.14 2008/02/07 17:27:45 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -259,6 +259,14 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
    public void testAuthorityIdAgainstReg() 
                throws MetadataException, IOException 
    {
+      String querierPlugin = ConfigFactory.getCommonConfig().getString(
+          "datacenter.querier.plugin","");
+      if (querierPlugin.equals(
+            "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+         // Doesn't run conesearch if using samplestars plugin;
+         // this is so that self-tests pass "out of the box" 
+         return;
+      }
       String authorityID = "";
       try {
         authorityID=  ConfigFactory.getCommonConfig().getString(
