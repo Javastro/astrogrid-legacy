@@ -282,10 +282,9 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				fac.buildFormRow(builder, p);
 			}
 			thisPanelInputComponents.addAll(fac.inputComponentList);
-			
-			this.inputComponents.addAll(thisPanelInputComponents);
 			this.componentsOnlyVisibleWhenAdvanced.addAll(fac.allComponentList);
 		}
+		this.inputComponents.addAll(thisPanelInputComponents);
 		// create a 'restore defaults' and 'apply' button bar.
 		JPanel buttonPanel = makePanelButtons(thisPanelInputComponents) ;
 		JPanel formPanel = builder.getPanel();
