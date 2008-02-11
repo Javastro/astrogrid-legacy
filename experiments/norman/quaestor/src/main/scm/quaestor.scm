@@ -32,12 +32,15 @@
          string-index)
 
 (define (ident)
-  (define-java-class <sisc.util.version>)
+  (define-java-classes
+    <sisc.util.version>
+    (<SDB> |com.hp.hpl.jena.sdb.SDB|))
   (define-generic-java-field-accessor :version |VERSION|)
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
+    (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.44 $ $Date: 2007/09/20 10:39:10 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.45 $ $Date: 2008/02/11 11:13:56 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
