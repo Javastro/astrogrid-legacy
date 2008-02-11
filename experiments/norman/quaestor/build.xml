@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.35 2007/09/20 10:39:10 norman Exp $
+     $Id: build.xml,v 1.36 2008/02/11 11:13:00 norman Exp $
 -->
 
 
@@ -548,6 +548,7 @@
        password="${manager.password}"
            path="${app.path}"
        localWar="file://${build.war}"/>
+    <echo>Quaestor deployed to ${quaestor.url}</echo>
 
   </target>
 
@@ -812,6 +813,7 @@
          username="${manager.username}"
          password="${manager.password}"
              path="${app.path}"/>
+    <echo>Quaestor undeployed from ${quaestor.url}</echo>
 
   </target>
 
