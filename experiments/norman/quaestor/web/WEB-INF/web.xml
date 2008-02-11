@@ -56,7 +56,7 @@
     <servlet-class>org.eurovotech.quaestor.CodeManager</servlet-class>
     <init-param>
       <param-name>status</param-name>
-      <param-value>disabled</param-value> <!-- must be enabled/disabled -->
+      <param-value>enabled</param-value> <!-- must be enabled/disabled -->
     </init-param>
   </servlet>
 
@@ -76,6 +76,14 @@
     <servlet-name>quaestor</servlet-name>
     <!-- this must match the quaestor servlet parameters, above -->
     <url-pattern>/pickup/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <!-- This doesn't actually do anything, but is picked up by the
+     !   fallback handler, which displays the call
+     !-->
+    <servlet-name>quaestor</servlet-name>
+    <url-pattern>/debug/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
