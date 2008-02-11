@@ -1,0 +1,11 @@
+* Things to do
+
+** Get REPL working again
+
+Somehow, typing (ident) or (chatter) at the Quaestor REPL no longer
+works, as they're not defined.  This certainly used to work, but as of
+2007-11-22 it's not any more.  I've tried playing with
+SchemeWrapper.evalInputStream, both versions, adding the
+DynamicEnvironment in the one-arg one, and trying to eval CHATTER
+immediately after the initialisation using scheme-wrapper-support.scm,
+but nothing obvious works.
