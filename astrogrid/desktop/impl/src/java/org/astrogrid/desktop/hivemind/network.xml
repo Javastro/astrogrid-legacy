@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<module id="network" version="1.0.0" package="org.astrogrid.acr.system">
+
+  <contribution configuration-id="framework.preferences">
+
+<!--
+======================
+HTTP Proxy Settings
+-->
+    <!-- Note that the HTTP proxy settings would need some revision to work
+     !   well with Java WebStart (i.e. to pick up proxy settings from the
+     !   WebStart environment). -->
+    <!-- long blank default-value so that the dialogue box is not too short. -->
+    <preference name="network.proxyHost"
+                default-value="                                               "
+                requires-restart="true">
+      <ui-name>HTTP Proxy Host</ui-name>
+      <description>Hostname for a proxy server used for all HTTP connections
+      </description>
+    </preference>
+
+    <preference name="network.proxyPort"
+                default-value="80"
+                requires-restart="true">
+      <ui-name>HTTP Proxy port number</ui-name>
+      <description>Port number of proxy server used for all HTTP connections
+                   (only relevant if Proxy Host is specified)
+      </description>
+      <units>number</units>
+    </preference>
+
+<!--
+======================
+Other Network Settings
+-->
+    <!-- No proven need for these advanced properties so far, but they may
+     !   come in useful. -->
+    <preference name="network.preferIPv4Stack"
+                default-value="false"
+                advanced="true"
+                requires-restart="true">
+      <ui-name>Prefer IPv4 Stack</ui-name>
+      <description>Value of java.net.preferIPv4Stack system property
+      </description>
+      <units>boolean</units>
+    </preference>
+ 
+    <preference name="network.preferIPv6Addresses"
+                default-value="false"
+                advanced="true"
+                requires-restart="true">
+      <ui-name>Prefer IPv6 Addresses</ui-name>
+      <description>Value of java.net.preferIPv6Addresses system property
+      </description>
+      <units>boolean</units>
+    </preference>
+  </contribution>
+
+<!--
+================================
+NETWORK CONFIGURATION
+-->
+  <service-point id="netConfig" visibility="private" interface="java.lang.Runnable"/>
+  <implementation service-id="netConfig">
+    <invoke-factory model="primitive">
+      <construct class="org.astrogrid.desktop.modules.system.NetworkConfigurator">
+        <object>preference:network.proxyHost</object>
+        <object>preference:network.proxyPort</object>
+        <object>preference:network.preferIPv4Stack</object>
+        <object>preference:network.preferIPv6Addresses</object>
+      </construct>
+    </invoke-factory>
+  </implementation>
+
+  <contribution configuration-id="hivemind.Startup">
+    <startup object="service:netConfig"/>
+  </contribution>
+
+</module>

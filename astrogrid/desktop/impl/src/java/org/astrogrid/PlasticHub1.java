@@ -31,5 +31,6 @@ public class PlasticHub1 {
 		System.setProperty("system.scheduler.disabled","true");
 		l.addModuleByName("plastic");
     	l.addModuleByName("system");
+        l.addModuleByName("network");
 	}
 }

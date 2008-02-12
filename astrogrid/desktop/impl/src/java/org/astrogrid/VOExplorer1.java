@@ -46,6 +46,7 @@ public class VOExplorer1 {
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
         l.addModuleByName("util");    	
+        l.addModuleByName("network");
 	}
 
 }

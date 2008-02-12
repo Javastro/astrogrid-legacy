@@ -52,6 +52,7 @@ public class HeadlessAstroRuntime {
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
         l.addModuleByName("util");
+        l.addModuleByName("network");
 	}
 
 }
