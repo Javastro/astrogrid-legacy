@@ -1,4 +1,4 @@
-/*$Id: ExecutionMessage.java,v 1.6 2007/01/24 14:04:44 nw Exp $
+/*$Id: ExecutionMessage.java,v 1.7 2008/02/12 17:35:24 pah Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.util.Date;
 /** A single message returned by a remote process - e.g.
  * a workflow job or remote application
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
+ * @bean
  */
 public class ExecutionMessage implements Serializable{
 
@@ -127,6 +128,9 @@ public class ExecutionMessage implements Serializable{
 
 /* 
 $Log: ExecutionMessage.java,v $
+Revision 1.7  2008/02/12 17:35:24  pah
+added bean annotation
+
 Revision 1.6  2007/01/24 14:04:44  nw
 updated my email address
 

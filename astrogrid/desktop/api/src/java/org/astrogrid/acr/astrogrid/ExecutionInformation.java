@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.8 2007/11/12 13:36:28 pah Exp $
+/*$Id: ExecutionInformation.java,v 1.9 2008/02/12 17:35:24 pah Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import java.util.Date;
  * <tt>getId()</tt> will return the execution identifier - either a job urn (for workfows) or an execution ivorn (for cea and other remote appilications).
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
   * @xmlrpc returned as a struct, with keys corresponding to bean names
+  * @bean
  *
  */
 public class ExecutionInformation extends AbstractInformation {
@@ -144,6 +145,9 @@ public class ExecutionInformation extends AbstractInformation {
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.9  2008/02/12 17:35:24  pah
+added bean annotation
+
 Revision 1.8  2007/11/12 13:36:28  pah
 change parameter name to structure
 
