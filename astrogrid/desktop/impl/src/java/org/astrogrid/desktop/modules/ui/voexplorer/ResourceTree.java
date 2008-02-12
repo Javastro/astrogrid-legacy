@@ -226,6 +226,24 @@ public class ResourceTree extends JTree {
         setShowsRootHandles(false);
         setExpandsSelectedPaths(true);
 
+        // Ensure top-level node is expanded to start with.  I'm not sure why, 
+        // but this only works if it's submitted here for later execution rather
+        // than being done directly.
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                expandRow(0);
+
+                // If there is only one child (presumably the canned Examples
+                // node) then expand this as well.  Although anomalous, it
+                // means that users seeing this component for the first time
+                // will get a list of resources they can click on rather than
+                // just a single folder which it's less obvious what to do with.
+                if (model.getChildCount(model.getRoot()) == 1) {
+                    expandRow(1);
+                }
+            }
+        });
+
         setCellRenderer(RESOURCE_RENDERER);
         // Set up a popup menu.
         addSmart = new TreeAction("New Smart List",
