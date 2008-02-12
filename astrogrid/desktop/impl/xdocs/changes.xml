@@ -42,6 +42,9 @@
     New network preferences configuration panel enables configuration of
     HTTP proxy and other network system preferences.
     </action>
+    <action dev="mbt" type="fix" issue="2430">
+    Make sure resources tree is expanded when first viewed.
+    </action>
 </release>
 <release version="2007.4.beta1" date="2007-12-12">
     <action dev="nw" type="fix" issue="2348">
