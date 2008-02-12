@@ -1,4 +1,4 @@
-/*$Id: ExecutionTest.java,v 1.2 2007/09/28 18:03:36 clq2 Exp $
+/*$Id: ExecutionTest.java,v 1.3 2008/02/12 12:10:56 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,19 +14,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
+
 import junit.framework.TestCase;
+
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader;
-import org.astrogrid.applications.component.AbstractComponentManagerTestCase;
-import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.picocontainer.PicoContainer;
 
 /** 
  * JUnit test for execution of a job. This exercises

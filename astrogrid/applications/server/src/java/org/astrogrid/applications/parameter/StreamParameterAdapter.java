@@ -1,5 +1,5 @@
 /*
- * $Id: StreamParameterAdapter.java,v 1.3 2005/08/10 17:45:10 clq2 Exp $
+ * $Id: StreamParameterAdapter.java,v 1.4 2008/02/12 12:10:56 pah Exp $
  * 
  * Created on 09-Nov-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import org.astrogrid.io.Piper;
 /**
  * A @link org.astrogrid.applications.parameter.ParameterAdapter that creates and consumes streams.
  * @todo @TODO test me.
+ * @TODO should check that buffered input streams are being used....
  * @author Paul Harrison (pah@jb.man.ac.uk) 09-Nov-2004
  * @version $Name:  $
  * @since iteration6

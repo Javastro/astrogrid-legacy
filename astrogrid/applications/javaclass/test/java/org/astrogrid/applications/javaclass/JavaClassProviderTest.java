@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.2 2007/02/19 16:20:21 gtr Exp $
+/*$Id: JavaClassProviderTest.java,v 1.3 2008/02/12 12:10:56 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.applications.javaclass;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.MockMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
@@ -25,6 +24,7 @@ import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -171,6 +171,9 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.3  2008/02/12 12:10:56  pah
+build with 1.0 registry and filemanager clients
+
 Revision 1.2  2007/02/19 16:20:21  gtr
 Branch apps-gtr-1061 is merged.
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
+  <extend>${basedir}/../project.xml</extend>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-client</artifactId>
   <currentVersion>2007.2.01</currentVersion>

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineRealAppTestCase.java,v 1.2 2004/09/30 15:10:00 pah Exp $
+ * $Id: AbstractCmdLineRealAppTestCase.java,v 1.3 2008/02/12 12:10:56 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -13,8 +13,7 @@
 package org.astrogrid.applications.commandline;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.MockMonitor;
+import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.community.User;
 
 /**

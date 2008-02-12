@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.13 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.14 2008/02/12 12:10:56 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ import java.io.StringWriter;
  * @author Noel Winstanley (nw@jb.man.ac.uk)
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @todo should really do different things according to what the type of the parameter is.
- * @todo check whether it is really appropriate use Readers and Writers to access the indirect parameters
+ * @fixme check whether it is really appropriate use Readers and Writers to access the indirect parameters -no...
  */
 public class DefaultParameterAdapter extends AbstractParameterAdapter {
     /**
@@ -200,6 +200,9 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.14  2008/02/12 12:10:56  pah
+build with 1.0 registry and filemanager clients
+
 Revision 1.13  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

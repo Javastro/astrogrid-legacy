@@ -2,10 +2,11 @@
 <project>
 
   <pomVersion>3</pomVersion>
-  <groupId>org.astrogrid</groupId>
+  <extend>${basedir}/../project.xml</extend>
+   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-commandline</artifactId>
   <name>CEA command-line-application server</name>
-  <currentVersion>2008.0a1</currentVersion>
+  <currentVersion>2008.0a2</currentVersion>
   <shortDescription>CEA server for command-line applications</shortDescription>
   <description>A CEA application-server for running command-line applications. The service provides
     CEA's standard SOAP interface, "CEC".</description>
@@ -67,7 +68,9 @@
         </resource>
         <resource>
           <directory>${basedir}/config</directory>
+          <includes>
           <include>CeaApplicationConfig.xml</include>
+          </includes>
         </resource>
       </resources>
     </unitTest>
@@ -87,9 +90,8 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-cea-server</artifactId>
-      <version>2007.2.02</version>
+      <version>${astrogrid.applications.version}</version>
       <type>jar</type>
-      <url>http://software.astrogrid.org/</url>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -105,7 +107,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>2007.2.01</version>
+      <version>${astrogrid.common.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -113,8 +115,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client-lite</artifactId>
-      <version>2007.2.01r</version>
-      <url>http://software.astrogrid.org/</url>
+      <version>${astrogrid.registry.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -122,8 +123,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>2007.2.01r</version>
-      <url>http://software.astrogrid.org/</url>
+      <version>${astrogrid.registry.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -134,7 +134,6 @@
       <artifactId>astrogrid-pal-oldquery</artifactId>
       <version>2007.2pl</version>
       <type>jar</type>
-      <url>http://software.astrogrid.org/</url>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -143,7 +142,6 @@
       <artifactId>astrogrid-xml</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2007.2xml</version>
-      <url>http://software.astrogrid.org/</url>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -152,7 +150,6 @@
       <artifactId>astrogrid-utils</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2007.2ut</version>
-      <url>http://software.astrogrid.org/</url>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -160,8 +157,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-common</artifactId>
-      <version>2007.2ct</version>
-      <url>http://software.astrogrid.org/</url>
+      <version>${astrogrid.community.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -169,8 +165,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-resolver</artifactId>
-      <version>2007.2ct</version>
-      <url>http://software.astrogrid.org/</url>
+      <version>${astrogrid.community.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -178,7 +173,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-client</artifactId>
-      <version>2007.2ct</version>
+      <version>${astrogrid.community.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -186,8 +181,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filemanager-client</artifactId>
-      <version>2007.2fm</version>
-      <url>http://software.astrogrid.org/</url>
+      <version>${astrogrid.filemanager.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -195,8 +189,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filemanager-contract</artifactId>
-      <version>2007.2fm</version>
-      <url>http://software.astrogrid.org/</url>
+      <version>${astrogrid.filemanager.frozen.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -204,9 +197,9 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filestore-client</artifactId>
-      <version>2007.2fs</version>
+      <version>${astrogrid.filestore.version}</version>
       <type>jar</type>
-      <url>http://software.astrogrid.org/</url>
+      <url>http://www.astrogrid.org/</url>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -214,9 +207,9 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filestore-common</artifactId>
-      <version>2007.2fs</version>
+      <version>${astrogrid.filestore.version}</version>
       <type>jar</type>
-      <url>http://software.astrogrid.org/</url>
+      <url>http://www.astrogrid.org/</url>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -245,12 +238,6 @@
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
-    </dependency>
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-contracts</artifactId>
-      <version>2007.2</version>
-      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -528,49 +515,32 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>kxml</groupId>
+      <groupId>net.sf.kxml</groupId>
       <artifactId>kxml2</artifactId>
-      <version>UNKNOWN</version>
-      <jar>kxml2.jar</jar>
+      <version>2.1.7</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
     <dependency>
-      <groupId>cds</groupId>
-      <artifactId>savot-model</artifactId>
-      <version>UNKNOWN</version>
-      <jar>cds.savot.model.jar</jar>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
+      <groupId>cds.u-strasbg.fr</groupId>
+      <artifactId>cds.savot.model</artifactId>
+      <version>2.6</version>
     </dependency>
     <dependency>
-      <groupId>cds</groupId>
-      <artifactId>savot-pull</artifactId>
-      <version>UNKNOWN</version>
-      <jar>cds.savot.pull.jar</jar>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
+      <groupId>cds.u-strasbg.fr</groupId>
+      <artifactId>cds.savot.pull</artifactId>
+      <version>2.6</version>
     </dependency>
     <dependency>
-      <groupId>cds</groupId>
-      <artifactId>xml</artifactId>
-      <version>UNKNOWN</version>
-      <jar>cds.xml.jar</jar>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
+      <groupId>cds.u-strasbg.fr</groupId>
+      <artifactId>cds.savot.pull</artifactId>
+      <version>2.6</version>
     </dependency>
     <dependency>
-      <groupId>cds</groupId>
-      <artifactId>samples</artifactId>
-      <version>UNKNOWN</version>
-      <jar>cds.savot.samples.jar</jar>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
+      <groupId>cds.u-strasbg.fr</groupId>
+      <artifactId>cds.savot.writer</artifactId>
+      <version>2.6</version>
     </dependency>
   </dependencies>
   

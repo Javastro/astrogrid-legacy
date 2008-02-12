@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractComponentManagerTestCase.java,v 1.8 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: AbstractComponentManagerTestCase.java,v 1.1 2008/02/12 12:10:55 pah Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -10,7 +10,7 @@
  *
  */ 
 
-package org.astrogrid.applications.component;
+package org.astrogrid.applications.test;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.BaseConfiguration;
@@ -113,6 +114,9 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
 
 /*
  * $Log: AbstractComponentManagerTestCase.java,v $
+ * Revision 1.1  2008/02/12 12:10:55  pah
+ * build with 1.0 registry and filemanager clients
+ *
  * Revision 1.8  2006/03/17 17:50:58  clq2
  * gtr_1489_cea correted version
  *

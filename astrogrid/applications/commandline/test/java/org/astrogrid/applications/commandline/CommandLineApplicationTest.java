@@ -7,23 +7,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URI;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.MockMonitor;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
@@ -234,7 +228,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         assertNotNull(app);
         assertTrue(app instanceof CommandLineApplication);
         // and now run it.
-        MockMonitor monitor = new MockMonitor();
+        org.astrogrid.applications.test.MockMonitor monitor = new org.astrogrid.applications.test.MockMonitor();
 //        app.addObserver(controller);
         app.addObserver(monitor);
         this.execute(app);
@@ -288,7 +282,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            app.setRunTimeLimit(20000);
            
            // and now run it.
-           MockMonitor monitor = new MockMonitor();
+           org.astrogrid.applications.test.MockMonitor monitor = new MockMonitor();
            app.addObserver(monitor);
            this.execute(app);
            monitor.waitFor(WAIT_SECONDS);

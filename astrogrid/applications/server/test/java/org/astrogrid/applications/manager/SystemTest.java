@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.11 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: SystemTest.java,v 1.12 2008/02/12 12:10:56 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.MockMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -31,6 +30,7 @@ import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -173,6 +173,9 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.12  2008/02/12 12:10:56  pah
+build with 1.0 registry and filemanager clients
+
 Revision 1.11  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

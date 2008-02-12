@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTestBase.java,v 1.6 2007/01/16 09:54:55 gtr Exp $
+ * $Id: RegistryEntryBuilderTestBase.java,v 1.1 2008/02/12 12:10:56 pah Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -16,26 +16,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
+
 import junit.framework.TestCase;
+
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.manager.BaseConfiguration;
+import org.astrogrid.applications.manager.DefaultMetadataService;
+import org.astrogrid.common.bean.v1.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
-import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.TestApplicationDescriptionLibrary;
-import org.astrogrid.applications.manager.BaseConfiguration;
-import org.astrogrid.applications.manager.DefaultMetadataService;
-import org.astrogrid.common.bean.v1.Namespaces;
-import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
-import org.astrogrid.test.AstrogridAssert;
-import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.TestApplicationDescriptionLibrary;
-import org.astrogrid.applications.manager.BaseConfiguration;
-import org.astrogrid.applications.manager.DefaultMetadataService;
-import org.astrogrid.common.bean.v1.Namespaces;
 import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
 import org.astrogrid.test.AstrogridAssert;
 import org.exolab.castor.xml.Marshaller;
@@ -70,7 +62,7 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
     * Logger for this class
     */
    private static final Log logger 
-       = LogFactory.getLog(RegistryEntryBuilderTest.class);
+       = LogFactory.getLog(RegistryEntryBuilderTestBase.class);
    
    protected void setUp() throws Exception {
      super.setUp();
@@ -133,6 +125,9 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
 
 /*
  * $Log: RegistryEntryBuilderTestBase.java,v $
+ * Revision 1.1  2008/02/12 12:10:56  pah
+ * build with 1.0 registry and filemanager clients
+ *
  * Revision 1.6  2007/01/16 09:54:55  gtr
  * I replaced org.astrogrid.comon.test.SchemaMap with org.astrogrid.contracts.SchemaMap. This seems to fix the unit test failure in BZ2051.
  *

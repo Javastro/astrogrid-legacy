@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.7 2005/08/10 14:45:37 clq2 Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.8 2008/02/12 12:10:56 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,8 +33,7 @@ import cds.savot.model.SavotVOTable;
 import cds.savot.model.TDSet;
 import cds.savot.model.TRSet;
 import cds.savot.model.TableSet;
-import cds.savot.samples.WriteDocument;
-
+import cds.savot.writer.SavotWriter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -98,7 +97,7 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
         logger.debug("internalWriteVOTable(SavotVOTable, File) - start");
     }
 
-      WriteDocument.generateDocument(votable, outputfil.getPath());
+     new SavotWriter().generateDocument(votable, outputfil.getPath());
 
     if (logger.isDebugEnabled()) {
         logger.debug("internalWriteVOTable(SavotVOTable, File) - end");

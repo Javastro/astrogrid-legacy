@@ -70,6 +70,7 @@ public class BaseConfiguration
    * @return The directory.
    */
   public File getRecordsDirectory() {
+     //TODO needs to be individually settable again
     return this.recordsDirectory;
   }
   

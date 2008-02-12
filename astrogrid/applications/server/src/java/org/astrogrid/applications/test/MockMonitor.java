@@ -1,4 +1,4 @@
-/*$Id: MockMonitor.java,v 1.8 2005/07/05 08:27:01 clq2 Exp $
+/*$Id: MockMonitor.java,v 1.1 2008/02/12 12:10:55 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,11 +8,13 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications;
+package org.astrogrid.applications.test;
 
 import java.util.Observable;
 import java.util.Observer;
 
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 
@@ -88,6 +90,9 @@ public class MockMonitor implements Observer{
 
 /* 
 $Log: MockMonitor.java,v $
+Revision 1.1  2008/02/12 12:10:55  pah
+build with 1.0 registry and filemanager clients
+
 Revision 1.8  2005/07/05 08:27:01  clq2
 paul's 559b and 559c for wo/apps and jes
 

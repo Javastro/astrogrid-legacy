@@ -96,6 +96,7 @@
 		<description>The full path to a directory where the CEC may build its configuration structure.</description>
 		<env-entry-name>cea.base.dir</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>/Users/pharriso/Work/ag/src/applications/commandline/ceabase/</env-entry-value>
 	</env-entry>
 	
 	<env-entry>

@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManagerTest.java,v 1.2 2007/02/19 16:20:21 gtr Exp $
+/*$Id: JavaClassCEAComponentManagerTest.java,v 1.3 2008/02/12 12:10:56 pah Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.applications.apps.AppsCEAComponentManager;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.applications.manager.QueryService;
+import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
 import org.astrogrid.config.SimpleConfig;
 
 import java.io.FileNotFoundException;
@@ -70,6 +71,9 @@ public class JavaClassCEAComponentManagerTest extends AbstractComponentManagerTe
 
 /* 
 $Log: JavaClassCEAComponentManagerTest.java,v $
+Revision 1.3  2008/02/12 12:10:56  pah
+build with 1.0 registry and filemanager clients
+
 Revision 1.2  2007/02/19 16:20:21  gtr
 Branch apps-gtr-1061 is merged.
 

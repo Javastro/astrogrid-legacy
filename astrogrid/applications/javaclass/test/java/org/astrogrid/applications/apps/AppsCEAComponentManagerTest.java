@@ -1,4 +1,4 @@
-/*$Id: AppsCEAComponentManagerTest.java,v 1.2 2007/02/19 16:20:24 gtr Exp $
+/*$Id: AppsCEAComponentManagerTest.java,v 1.3 2008/02/12 12:10:56 pah Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.applications.apps;
 
 import org.astrogrid.applications.apps.AppsCEAComponentManager;
-import org.astrogrid.applications.component.AbstractComponentManagerTestCase;
 import org.astrogrid.applications.component.CEAComponentManager;
 
 /**
@@ -20,7 +19,7 @@ import org.astrogrid.applications.component.CEAComponentManager;
  *just relying on tests in base class.
  */
 public class AppsCEAComponentManagerTest 
-    extends AbstractComponentManagerTestCase {
+    extends org.astrogrid.applications.test.AbstractComponentManagerTestCase {
 
     /**
    * Construct a new AppsCEAComponentManagerTest
@@ -53,6 +52,9 @@ public class AppsCEAComponentManagerTest
 
 /* 
 $Log: AppsCEAComponentManagerTest.java,v $
+Revision 1.3  2008/02/12 12:10:56  pah
+build with 1.0 registry and filemanager clients
+
 Revision 1.2  2007/02/19 16:20:24  gtr
 Branch apps-gtr-1061 is merged.
 

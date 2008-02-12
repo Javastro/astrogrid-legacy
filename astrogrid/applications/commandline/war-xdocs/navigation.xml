@@ -7,16 +7,15 @@
       
      <menu name="Administrator documents">
        <item name="About this component" href="about.txt"/>
-       <item name="Overview" href="index.html"/>
-       <item name="Download" href="DOWNLOAD.html"/>
-       <item name="Installation" href="INSTALL.html"/>
-       <item name="Configuration" href="CONFIGURE.html"/>
-       <item name="Self-testing" href="SELF-TEST.html"/>
-       <item name="Registration" href="REGISTER.html"/>
-       <item name="External testing" href="EXTTEST.html"/>
-       <item name="Upgrading" href="UPGRADE.html"/>
-       <item name="Uninstallation" href="UNINSTALL.html"/>
-	     <item name="Reference manual" href="REFERENCE.html"/>
+        <item name="Download" href="doc/DOWNLOAD.html"/>
+       <item name="Installation" href="doc/INSTALL.html"/>
+       <item name="Configuration" href="doc/CONFIGURE.html"/>
+       <item name="Self-testing" href="doc/SELF-TEST.html"/>
+       <item name="Registration" href="doc/REGISTER.html"/>
+       <item name="External testing" href="doc/EXTTEST.html"/>
+       <item name="Upgrading" href="doc/UPGRADE.html"/>
+       <item name="Uninstallation" href="doc/UNINSTALL.html"/>
+	     <item name="Reference manual" href="doc/REFERENCE.html"/>
     </menu>
   	
   	<menu name="Local controls for server">
