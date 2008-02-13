@@ -2,6 +2,11 @@ Machines
 MySQL on terra
 Tomcat on terranova
 
+Deployed at
+http://www.astro.gla.ac.uk/rhessi-dsa/ (=terranova)
+The /manager interface doesn't appear to be working, so deploy
+  by dropping the .war file into terranova:/usr/share/tomcat5/webapps
+
 Accounts
 dsaadmin: norman:norman
 mysql: norman:sitrepdentist
@@ -9,7 +14,6 @@ mysql: dsaaccess:<nothing>
 www.astro Tomcat: manager:dentist4Feets
 
 TODO:
-Re-register it.
 Get Silvia/Kona to prod it.
 Check to see if the nightly updates can be persuaded to send me mail.
 Sort out the cron job for the monthly global update.
