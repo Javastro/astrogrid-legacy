@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.36 2008/02/11 11:13:00 norman Exp $
+     $Id: build.xml,v 1.37 2008/02/13 22:14:58 norman Exp $
 -->
 
 
@@ -150,6 +150,8 @@
    !
    !       sisc.lib         : the directory which contains
    !                          sisc{,-opt,-lib}.jar and sisc.shp.
+   !
+   !       jetty.home       : the directory containing the Jetty support
    ! -->
 
 
@@ -244,6 +246,9 @@
 
   <filelist id='sdb.support' dir='${sdb.lib}' files='sdb.jar'/>
   <fileset id='jdbc.support' file='${postgres.jar}'/>
+  <fileset id='jetty.support' dir='${jetty.home}/lib'>
+    <include name='*.jar'/>
+  </fileset>
 
   <!-- check availability of dependencies -->
   <target name="check-packages"
@@ -272,6 +277,12 @@
     <fail unless='postgres.jdbc'
           message='Must have PostgreSQL JSBC: see jdbc.postgresql.org'/>
 
+    <available property='jetty.present'
+               filepath='${jetty.home}'
+               file='lib'/>
+    <fail unless='jetty.present'
+          message='Must have Jetty: see www.mortbay.org'/>
+
     <!-- Need JUnit for the src/test/org/... testcases: not essential -->
     <available property="junit.present"
                classname="junit.framework.TestCase"/>
@@ -284,6 +295,9 @@
   <path id="sisc.classpath">
     <fileset refid="sisc.support"/>
   </path>
+  <path id='jetty.classpath'>
+    <fileset refid='jetty.support'/>
+  </path>
 
   <path id="compile.classpath">
 
@@ -291,6 +305,7 @@
 
     <!-- for the sisc.shp file -->
     <path refid="sisc.classpath"/>
+    <path refid='jetty.classpath'/>
 
     <!-- Include all elements that Tomcat exposes to applications -->
     <pathelement location="${catalina.home}/common/classes"/>
@@ -507,7 +522,11 @@
       <fileset refid="jena.support"/>
       <filelist refid="sdb.support"/>
       <fileset refid="jdbc.support"/>
+      <fileset refid='jetty.support'/>
     </unjar>
+    <!-- When working on the Java files below, it's convenient to have this commented out
+         and to change the path to point to the .../WEB-INF/classes instead.  You need
+         to adjust the classpath in start-jetty.sh at the same time. -->
     <copy todir="${build.home}/quaestorlib">
       <fileset dir="${build.war}/WEB-INF/classes">
         <include name="org/eurovotech/quaestor/**"/>
@@ -550,6 +569,27 @@
        localWar="file://${build.war}"/>
     <echo>Quaestor deployed to ${quaestor.url}</echo>
 
+  </target>
+
+  <!-- ========== Jetty installation ========== -->
+  <!--
+      Build everything - specifically the quaestorlib and the quaestor.scm -
+      and install a script which can start the standalone Jetty service.
+  -->
+  <target name="jetty" depends="prepare,compile,quaestorlib"
+          description="Build for Jetty">
+    <copy todir="${build.home}">
+      <fileset file="${src.etc}/start-jetty.sh"/>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+      </filterset>
+    </copy>
+    <copy todir="${build.war}/WEB-INF">
+      <fileset file="${src.etc}/SchemeJettyServer.properties"/>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+      </filterset>
+    </copy>
   </target>
 
 
@@ -630,6 +670,7 @@
       <fileset refid="jena.support"/>
       <filelist refid="sdb.support"/>
       <fileset refid='jdbc.support'/>
+      <fileset refid='jetty.support'/>
     </copy>
 
     <copy todir="${build.war}/WEB-INF">

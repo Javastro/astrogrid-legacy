@@ -43,10 +43,14 @@ public class QuaestorTest
 
         if (quaestorURL == null) {
             // first time
-            quaestorURL = new URL(System.getProperty
-                                  ("quaestor.url",
-                                   "http://localhost:8080/quaestor"));
-            contextURL = new URL(quaestorURL, quaestorURL.getPath() + "/");
+            quaestorURL = new URL(System.getProperty("quaestor.url",
+                                                     "http://localhost:8080/quaestor"));
+
+            String normalisedPath = quaestorURL.getPath(); // make sure there's only one / at the end
+            if (! normalisedPath.endsWith("/"))
+                normalisedPath = normalisedPath + "/";
+
+            contextURL = new URL(quaestorURL,  normalisedPath);
             xmlrpcEndpoint = new URL(contextURL, "xmlrpc");
             System.err.println("Testing quaestorURL=" + quaestorURL);
             System.err.println("    ...RPC endpoint=" + xmlrpcEndpoint);
@@ -340,13 +344,11 @@ public class QuaestorTest
                      "encoding", "UTF-8",
                  });
         ParsedRpcResponse rpc;
-        String kbbaseurl = new URL(quaestorURL,
-                                   quaestorURL.getPath()+"/kb/"+testKB).toString();
+        String kbbaseurl = makeKbUrl().toString();
         rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
-        assertEquals(kbbaseurl,
-                     rpc.getResponseString());
+        assertEquals(kbbaseurl, rpc.getResponseString());
 
         // Exactly the same, but with different properties
         call = makeXmlRpcCall("get-model",

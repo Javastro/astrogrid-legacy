@@ -149,6 +149,13 @@
                      jobject)))
         (else #f)))
 
+;; ->STRING-OR-EMPTY : jstring -> string
+;; Like ->STRING, except that it returns "" if the input string is null
+(define (->string-or-empty js)
+  (if (java-null? js)
+      ""
+      (->string js)))
+
 ;; Given a string S, return the URL-decoded string as a jstring
 (define/contract (url-decode-to-jstring (s string?) -> jstring?)
   (define-java-classes
@@ -466,44 +473,37 @@
 ;; webapp-base-from-request java-request optional-bool -> string
 ;;
 ;; Given a Java REQUEST, return the URL for the webapp
-;; (for example http://localhost:8080/quaestor).  If the optional boolean
-;; argument is true, include the servlet path, without path info (producing for example
+;; (for example http://localhost:8080/quaestor); that is, regenerate
+;; the URL corresponding to the host plus context-path.  If the
+;; optional boolean  argument is true, include the servlet path,
+;; without path info (producing for example
 ;; http://localhost:8080/quaestor/kb)
-;;
-;; This is surprisingly complicated, and the only way to do it appears to be to get
-;; the request URL (getRequestURL -> StringBuffer) and then trim the servlet and path-info
-;; strings from it.
 ;;
 ;; The one-arg form will have the same value for any request made to a given servlet.
 (define (webapp-base-from-request request . with-servlet?)
   (define-generic-java-methods
-    (get-request-url |getRequestURL|)
-    get-servlet-path get-path-info
-    to-string append delete length)
-  (let ((req-url (get-request-url request)) ;a StringBuffer
-        (servlet-path-length (->number (length (get-servlet-path request))))
-        (path-info-length (let ((pi (get-path-info request)))
-                            (if (java-null? pi) 0 (->number (length pi)))))
-        (include-servlet-path? (and (not (null? with-servlet?))
+    get-server-name get-server-port
+    get-context-path get-servlet-path
+    to-string concat)
+  (define-java-classes (<url> |java.net.URL|))
+  (let ((include-servlet-path? (and (not (null? with-servlet?))
                                     (car with-servlet?))))
-    ;; getRequestURL returns the full reconstructed URL.  If the second argument is true,
-    ;; then this is what we want; if it's false, then we have to remove from this the
-    ;; stuff following .../quaestor, which is contained in getServletPath+getPathInfo.
-    ;;(chatter "webapp-base-from-request: url=~s  servlet=~a  path=~a  include?=~a" req-url servlet-path-length path-info-length include-servlet-path?)
+;;     (chatter "server-name=~s  server-port=~s  context-path=~s  servlet-path=~s  include-servlet?=~a"
+;;              (->string-or-empty (get-server-name request))
+;;              (->string-or-empty (get-server-port request))
+;;              (->string-or-empty (get-context-path request))
+;;              (->string-or-empty (get-servlet-path request))
+;;              include-servlet-path?)
     (->string
      (to-string
-      ;; yuk: the following is a mess, caused by having to convert between SISC and Java ints
-      ;; in a very ugly way
-      (if include-servlet-path?
-          (delete req-url
-                  (->jint (- (->number (length req-url))
-                             path-info-length))
-                  (length req-url))
-          (delete req-url
-                  (->jint (- (->number (length req-url))
-                             servlet-path-length
-                             path-info-length))
-                  (length req-url)))))))
+      (java-new <url>
+                (->jstring "http")
+                (get-server-name request)
+                (get-server-port request)
+                (if include-servlet-path?
+                    (concat (get-context-path request)
+                            (get-servlet-path request))
+                    (get-context-path request)))))))
 
 ;; Called with one argument, verify that the "Content-*" headers are
 ;; all in the allowed set, returning #t if so.  Otherwise, return #f.
@@ -644,7 +644,7 @@
                           (link (@ (rel stylesheet)
                                    (type text/css)
                                    (href ,(string-append
-                                           (->string (get-context-path request))
+                                           (->string-or-empty (get-context-path request))
                                            "/base.css")))))
                     (body (h1 ,title-string)
                           ,@body-sexp))))

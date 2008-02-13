@@ -21,6 +21,10 @@ sdb.lib=<SDB.LIB>
 # Location of the PostgreSQL JDBC connector jar
 postgres.jar=<POSTGRES.JAR>
 
+# Location of the Jetty home (${jetty.home}/lib is where the jars are)
+# See www.mortbay.org
+jetty.home=<JETTY.HOME>
+
 # SISC binary and library directories.
 # The binary directory is the one which contains the sisc program.
 sisc.bin=<SISC.BIN>

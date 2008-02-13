@@ -40,7 +40,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.45 $ $Date: 2008/02/11 11:13:56 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.46 $ $Date: 2008/02/13 22:14:58 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -247,6 +247,7 @@
     get-output-stream
     set-status
     get-writer
+    to-string
     println)
   (define-java-classes
     <java.lang.string>)
@@ -337,7 +338,9 @@
                (else
                 (no-can-do request response
                            '|SC_NOT_FOUND|
-                           "No such knowledgebase: ~a" kb-name))))))
+                           "No such knowledgebase: ~a (path=~s)"
+                           (->string (to-string kb-name))
+                           path-info-list))))))
 
         (else
          #f)))
