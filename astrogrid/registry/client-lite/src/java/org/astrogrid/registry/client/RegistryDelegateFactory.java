@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.21 2008/01/29 10:52:45 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.22 2008/02/13 16:31:44 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -64,7 +64,7 @@ public class RegistryDelegateFactory {
     * @return RegistryService interface object connected to query the registry.
     */
    public static synchronized RegistryService createQuery() {
-      return createQuery(conf.getUrl(QUERY_URL_PROPERTY,null));
+      return createQuery(conf.getUrl(QUERY_URL_PROPERTY));
    }
 
    /**
@@ -95,7 +95,7 @@ public class RegistryDelegateFactory {
     * @return RegistryService interface object connected to query the registry.
     */
    public static synchronized org.astrogrid.registry.client.query.v1_0.RegistryService createQueryv1_0() {
-	  URL queryCheckURL = conf.getUrl(QUERY_URL_PROPERTY,null);
+	  URL queryCheckURL = conf.getUrl(QUERY_URL_PROPERTY);
 	  URL queryURL = queryCheckURL;
 	  if(queryCheckURL.toString().endsWith("RegistryQuery")) {
 		  try {
@@ -159,7 +159,7 @@ public class RegistryDelegateFactory {
     * @return RegistryAdminService interface object connected to query the registry.
     */
    public static synchronized RegistryAdminService createAdmin() {      
-      return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null),DEFAULT_CONTRACT_VERSION);      
+      return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY),DEFAULT_CONTRACT_VERSION);      
    }
 
    /**
@@ -194,7 +194,7 @@ public class RegistryDelegateFactory {
     * @return RegistryService interface object connected to query the registry.
     */
    public static synchronized RegistryAdminService createAdmin(String contractVersion) {      
-      return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null),contractVersion);      
+      return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY),contractVersion);      
    }
    
    /**
@@ -241,7 +241,7 @@ public class RegistryDelegateFactory {
     * @return  OAIService to query the registry OAI.
     */
    public static synchronized OAIService createOAI() {
-      return createOAI(conf.getUrl(OAI_URL_PROPERTY,null));      
+      return createOAI(conf.getUrl(OAI_URL_PROPERTY));      
    }
 
    

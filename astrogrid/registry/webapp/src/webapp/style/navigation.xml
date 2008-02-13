@@ -46,13 +46,11 @@
          <li><a href="<%=request.getContextPath()%>/admin/harvestResource.jsp">2.Harvest</a></li>
          <li><a href="<%=request.getContextPath()%>/admin/harvestVOSI.jsp">3.Harvest VOSI</a></li>         
          <li><a href="<%=request.getContextPath()%>/admin/getRegistryFromHarvest.jsp">4.Get/Find New Registries</a></li>
-       <% if(!contractVersion.equals("0.1")) { %>         
-	         <li><a href="<%=request.getContextPath()%>/admin/newManagedAuthority.jsp">4.Manage New Authority</a></li>
-		<%}%>	         
-         <li><a href="<%=request.getContextPath()%>/admin/removeResource.jsp">5.Remove Resource</a></li>
-         <li><a href="<%=request.getContextPath()%>/admin/environment-main.jsp">6.Edit Properties</a></li>         
-         <li><a href="<%=request.getContextPath()%>/admin/fingerprint.jsp">7.FingerPrint</a></li>
-         <li><a href="<%=request.getContextPath()%>/admin/index.jsp" >8.Admin Home (Other Tasks)</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/newManagedAuthority.jsp">5.Manage New Authority</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/removeResource.jsp">6.Remove Resource</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/environment-main.jsp">7.Edit Properties</a></li>         
+         <li><a href="<%=request.getContextPath()%>/admin/fingerprint.jsp">8.FingerPrint</a></li>
+         <li><a href="<%=request.getContextPath()%>/admin/index.jsp" >9.Admin Home (Other Tasks)</a></li>
       </ul>
    </div>
    <div id='menuDB'>

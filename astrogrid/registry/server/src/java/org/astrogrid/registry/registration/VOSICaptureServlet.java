@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.astrogrid.util.DomHelper;
+
+
 /**
  * Servlet to transcribe IVOA service-metadata into an IVOA registration
  * document. The service metadata are capabaility elements read from the
@@ -38,8 +44,27 @@ public class VOSICaptureServlet extends RegistrarServlet {
                                  "parameter IVORN is not set.");
     }
     String encodedIvorn = URLEncoder.encode(ivornString, "UTF-8");
+    URL resourceUrl = new URL(this.getContextUri(request) +
+            "/viewResourceEntry.jsp?IVORN=" +
+            encodedIvorn);
+    String xsiType = null;
+    try {
+	    Document checkDoc = DomHelper.newDocument(resourceUrl);
+	    org.w3c.dom.NodeList nl = checkDoc.getElementsByTagNameNS("*","Resource");
+	    if(nl.getLength() == 0) {
+	    	throw new ServletException("Could not find Resource in the Registry.  Identifier given but is not correct.");
+	    }
+	    xsiType = ((Element)nl.item(0)).getAttributeNS("http://www.w3.org/2001/XMLSchema-instance","type");
+    }catch(javax.xml.parsers.ParserConfigurationException pc) {
+    	throw new ServletException("Parser Configuration Exception happened when trying to read the given Resource out of the registry.");    	
+    }catch(org.xml.sax.SAXException se) {
+    	throw new ServletException("SAX Exception happened when trying to read the given Resource out of the registry.");
+    }
     String redirectUri = "/registration/ServiceMetadataForm.jsp?IVORN=" + 
                          encodedIvorn;
+    if( xsiType != null && xsiType.endsWith("Application") ) {
+    	redirectUri += "&appResource=true";
+    }
     request.getRequestDispatcher(redirectUri).forward(request, response);
   }
   
@@ -58,10 +83,10 @@ public class VOSICaptureServlet extends RegistrarServlet {
     
     // Establish the URI from which the service metadata are to be read.
     String vosiUri = request.getParameter("VOSI_Capabilities");
-    String vosiTableUri = request.getParameter("VOSI_TableData");
+    String vosiAppDataUri = request.getParameter("VOSI_AppData");
     if ((vosiUri == null || vosiUri.trim().length() == 0) &&
-        (vosiTableUri == null || vosiTableUri.trim().length() == 0)) {
-      throw new ServletException("No URI was given for the service metadata; " +
+        (vosiAppDataUri == null || vosiAppDataUri.trim().length() == 0)) {
+      throw new ServletException("No URI was given for the  metadata; " +
                                  "parameter VOSI is not set.");
     }
     
@@ -104,6 +129,9 @@ public class VOSICaptureServlet extends RegistrarServlet {
           register(ivorn,vosiHarvest.harvestCapabilities(transformer.getResultAsDomNode()));
           
 //          register(ivorn, transformer.getResultAsDomNode());
+      }else if(vosiAppDataUri != null && vosiAppDataUri.trim().length() > 0) {
+    	  System.out.println("transforming for app data");
+          register(ivorn,vosiHarvest.harvestApplicationInfo(vosiAppDataUri,DomHelper.newDocument(resourceUrl)));    	  
       }
     } catch (Exception ex) {
       throw new ServletException("Failed to transform a registration.", ex);

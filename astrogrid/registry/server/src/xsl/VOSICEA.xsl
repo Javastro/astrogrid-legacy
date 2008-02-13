@@ -16,7 +16,12 @@
 		</xsl:template>
 
 	<xsl:template match="identifier">
-	  <identifier><xsl:value-of select="." />/ceaApplication</identifier>
+	  <xsl:if test="count(../table) &gt;  0">
+	  	<identifier><xsl:value-of select="." />/ceaApplication</identifier>
+	  </xsl:if>
+	  <xsl:if test="count(../table) = 0">
+	  <identifier><xsl:value-of select="." /></identifier>
+	  </xsl:if>
     </xsl:template>
 
     <xsl:template match="relationship">
@@ -27,6 +32,7 @@
     </xsl:template>
 
     <xsl:template match="capability">
+
     </xsl:template>
     
      <xsl:template match="capability[not(following::capability)]">
@@ -39,13 +45,11 @@
        <xsl:copy-of select="document($ceaURL)//sourceCodeURL"/>
        <xsl:copy-of select="document($ceaURL)//applicationDefinition"/>
     </xsl:template>
-    
-    <xsl:template match="table">
-    
-    </xsl:template>
-
-<!--
-    <xsl:template match="table[not(following::table)]">
+   
+      <xsl:template match="content[not(following::capability)]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
        <xsl:copy-of select="document($ceaURL)//cost"/>
        <xsl:copy-of select="document($ceaURL)//licence"/>
        <xsl:copy-of select="document($ceaURL)//openSource"/>
@@ -55,7 +59,14 @@
        <xsl:copy-of select="document($ceaURL)//sourceCodeURL"/>
        <xsl:copy-of select="document($ceaURL)//applicationDefinition"/>
     </xsl:template>
--->
+
+<xsl:template match="applicationDefinition"> 
+
+</xsl:template>
+
+    <xsl:template match="table">
+    
+    </xsl:template>
 
     <xsl:template match="@*|node()">
         <xsl:copy>

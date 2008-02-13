@@ -144,7 +144,6 @@ public class VOSIHarvest extends RegistrarServlet {
         if(ceaURL != null && ceaURL.trim().length() > 0) {
         	transformer.setTransformationParameter("ceaURL", ceaURL);
         }
-
         transformer.transform();
         Document reg = DomHelper.newDocument("<ri:VOResources from=\"1\" numberReturned=\"1\" more=\"false\" xmlns:cea=\"http://www.ivoa.net/xml/CEA/v1.0rc1\" xmlns:ri=\"http://www.ivoa.net/xml/RegistryInterface/v1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"></ri:VOResources>");
         //transformer.getResultAsDomNode();
@@ -163,7 +162,35 @@ public class VOSIHarvest extends RegistrarServlet {
             Node ceaImportNode = reg.importNode(((Document)transformer.getResultAsDomNode()).getDocumentElement()/*.getElementsByTagNameNS("*","Resource").item(0)*/,true);
             reg.getDocumentElement().appendChild(ceaImportNode);
         }
+        
+        if(capURL != null && capURL.trim().length() > 0 &&
+           reg.getElementsByTagNameNS("*","capability").getLength() == 0) {
+        	throw new Exception("Capability VOSI URL found but no capability elements resulting in the harvest.  An error may occurred at the vosi capability url or xml not well formed.  Capability url = " + capURL);
+        }
+        if(tableURL != null && tableURL.trim().length() > 0 &&
+           reg.getElementsByTagNameNS("*","table").getLength() == 0) {
+             	throw new Exception("Table VOSI URL found but no table elements resulting in the harvest.  An error may occurred at the vosi table url or xml not well formed.  Table url = " + tableURL);
+        }
+        if(ceaURL != null && ceaURL.trim().length() > 0 &&
+           reg.getElementsByTagNameNS("*","applicationDefinition").getLength() == 0) {
+             	throw new Exception("CEA VOSI URL found but no applicatinDefinition elements resulting in the harvest.  An error may occurred at the vosi cea url or xml not well formed.  CEA url = " + ceaURL);
+        }
+        
+        
         //System.out.println("final Document = " + DomHelper.DocumentToString(reg));
+        return reg;
+	}
+	
+	public Node harvestApplicationInfo(String ceaURL, Node sourceNode) throws Exception {
+		Document reg = DomHelper.newDocument("<ri:VOResources from=\"1\" numberReturned=\"1\" more=\"false\" xmlns:cea=\"http://www.ivoa.net/xml/CEA/v1.0rc1\" xmlns:ri=\"http://www.ivoa.net/xml/RegistryInterface/v1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"></ri:VOResources>");
+    	URL transformUrl = this.getClass().getResource("/xsl/VOSICEA.xsl");
+    	RegistryTransformer transformer = new RegistryTransformer(transformUrl);
+    	//transformer.setTransformationSource(reg);
+    	transformer.setTransformationSource(sourceNode);
+    	transformer.setTransformationParameter("ceaURL", ceaURL);
+        transformer.transform();
+        Node ceaImportNode = reg.importNode(((Document)transformer.getResultAsDomNode()).getDocumentElement()/*.getElementsByTagNameNS("*","Resource").item(0)*/,true);
+        reg.getDocumentElement().appendChild(ceaImportNode);
         return reg;
 	}
 	
