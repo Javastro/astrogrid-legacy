@@ -1,0 +1,22 @@
+BRANCH nxg-2008-02-11-jetty-quaestor
+
+Created to make Quaestor use Jetty, and thus have an alternative
+standalone mode, free of Tomcat.  This needs more work, since the
+Jetty support in org/eurovotech/quaestor/SchemeJettyServer.java is
+rather crude.  Also, what this has ended up with is a rather odd
+beast, with the Jetty support sitting on top of the Tomcat support, in
+a way.  Also, the two are currently mixed together untidily in the
+build.xml file.
+
+Merged on to TRUNK 2008-02-13
+
+Branch point: bp-nxg-2008-02-11-jetty-quaestor
+merge point: nxg-2008-02-11-jetty-quaestor-MERGED
+
+----------------------------------------------------------------------
+
+BRANCH nxg-2008-02-13-skua
+
+Created to add the SKUA infrastructure required
+
+Branch point tagged as bp-nxg-2008-02-13-skua
