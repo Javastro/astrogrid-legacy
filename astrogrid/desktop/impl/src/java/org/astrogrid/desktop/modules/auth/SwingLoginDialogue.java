@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.12 2008/01/30 08:38:38 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.13 2008/02/13 17:25:15 mbt Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,12 +87,28 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
             }
             protected void doFinished(Object result) {
                 Resource[] knownCommunities = (Resource[])result;
+
+                // Add each community that we get from the registry.
+                // But if it has the same name as an existing string value 
+                // (probably from the user prefs) remove the string so that
+                // the combo box doesn't contain apparent duplicates.
                 for (int i = 0; i < knownCommunities.length; i++) {
-                    model.addElement(knownCommunities[i]);
+                    Resource community = knownCommunities[i];
+                    String cName = mkCommunityString(community);
+                    for (int j = model.getSize() - 1; j >= 0; j--) {
+                        Object el = model.getElementAt(j);
+                        if (el instanceof String && el.equals(cName)) {
+                            model.removeElementAt(j);
+                        }
+                    }
+                    model.addElement(community);
+                    if (cName.equals(model.getSelectedItem())) {
+                        model.setSelectedItem(community);
+                    }
                 }
             }
     	}).start();
-    	FormLayout fl = new FormLayout("20dlu:grow,right:p,2dlu,80dlu,20dlu:grow","5dlu,p,5dlu,p,2dlu,p,2dlu,p,5dlu,p,5dlu");
+    	FormLayout fl = new FormLayout("20dlu:grow,right:p,2dlu,100dlu,20dlu:grow","5dlu,p,5dlu,p,2dlu,p,2dlu,p,5dlu,p,5dlu");
     	fl.setColumnGroups(new int[][]{{1,5}});
     	PanelBuilder pb = new PanelBuilder(fl);    	
     	CellConstraints cc = new CellConstraints();
@@ -253,7 +269,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	}
     }
 
-    private String mkCommunityString(Resource r) {
+    private static String mkCommunityString(Resource r) {
     	return r.getId().getAuthority();
     }
  
@@ -292,6 +308,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.13  2008/02/13 17:25:15  mbt
+Remove apparent duplicate entries from Community selector - see bug 2561.  Also widen dialogue a bit (community names can be a bit longer than uk.ac.le.star)
+
 Revision 1.12  2008/01/30 08:38:38  nw
 Incomplete - task 313: Digest registry upgrade.
 
