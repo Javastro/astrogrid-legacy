@@ -291,11 +291,17 @@ public class AdqlData {
     // (1) CROSS is for join tables. A cross join should not possess
     //     a predicate. But the schema says the predicate is mandatory.
     //     So, for the moment we need to suppress cross joins.
+    // (2) FULL_OUTER is also for join tables. Unfortunately, full
+    //     outer joins are not so straight forward in MySQL. Not impossible,
+    //     but not straightforward. Might be difficult to manage with a 
+    //     simple XSLT translation. Might need programmable input via XmlBeans
+    //     to achieve.
     //
     public static final Hashtable ENUM_FILTERED_VALUES ;
     static {
         ENUM_FILTERED_VALUES = new Hashtable() ;
         ENUM_FILTERED_VALUES.put( "CROSS", DUMMY_ENTRY ) ;
+        ENUM_FILTERED_VALUES.put( "FULL_OUTER", DUMMY_ENTRY ) ;
     }
     
     public static final Hashtable ENUM_SYNONYMS ;
@@ -400,6 +406,7 @@ public class AdqlData {
     }
     
    
+    // Note: DEC no longer present!
     private static String RESERVED_WORDS = 
            "ABSOLUTE | ACTION | ADD | ALL " +
          "| ALLOCATE | ALTER | AND | ANY | ARE | AS | ASC | ASSERTION | AT | AUTHORIZATION | AVG | BEGIN " +
@@ -407,7 +414,7 @@ public class AdqlData {
          "| CHARACTER | CHAR_LENGTH | CHARACTER_LENGTH | CHECK | CLOSE | COALESCE | COLLATE | COLLATION " +
          "| COLUMN | COMMIT | CONNECT | CONNECTION | CONSTRAINT | CONSTRAINTS | CONTINUE | CONVERT | CORRESPONDING " +
          "| COUNT | CREATE | CROSS | CURRENT | CURRENT_DATE | CURRENT_TIME | CURRENT_TIMESTAMP | CURRENT_USER " +
-         "| CURSOR | DATE | DAY | DEALLOCATE | DEC | DECIMAL | DECLARE | DEFAULT | DEFERRABLE | DEFERRED | DELETE " +
+         "| CURSOR | DATE | DAY | DEALLOCATE | DECIMAL | DECLARE | DEFAULT | DEFERRABLE | DEFERRED | DELETE " +
          "| DESC | DESCRIBE | DESCRIPTOR | DIAGNOSTICS | DISCONNECT | DISTINCT | DOMAIN | DOUBLE | DROP | ELSE " +
          "| END | END-EXEC | ESCAPE | EXCEPT | EXCEPTION | EXEC | EXECUTE | EXISTS" +
          "| EXTERNAL | EXTRACT | FALSE | FETCH | FIRST | FLOAT | FOR | FOREIGN | FOUND | FROM | FULL | GET | GLOBAL " +

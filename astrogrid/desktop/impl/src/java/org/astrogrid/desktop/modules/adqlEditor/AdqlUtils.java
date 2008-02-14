@@ -41,6 +41,9 @@ import org.apache.xmlbeans.XmlString;
 import org.apache.xmlbeans.XmlUnsignedInt;
 import org.apache.xmlbeans.XmlUnsignedLong;
 import org.apache.xmlbeans.XmlUnsignedShort;
+import org.astrogrid.adql.v1_0.beans.ArrayOfFromTableType;
+import org.astrogrid.adql.v1_0.beans.JoinTableType;
+import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 // import org.astrogrid.adql.v1_0.beans.* ;
@@ -503,12 +506,28 @@ public final class AdqlUtils {
             retValue = !AdqlData.UNSUPPORTED_TYPES.containsKey( getLocalName( type ) ) ;
         }
         catch( Exception ex ) {
-            ;
+            if( log.isDebugEnabled() )
+                log.debug( "Unsupported XML type" );
         }
         return retValue ;
     }
-   
-      
+    
+    public static boolean isSupportedTypeWithinParent( SchemaType child, SchemaType parent ) {
+        if( parent == ArrayOfFromTableType.type
+            &&
+            child == JoinTableType.type ) {
+            return false ;
+        }
+        //
+        // This allows use of the 2 comment elements in the schema without creating them
+        // as nodes in a tree. Elements: StartComment and EndComment.
+        // (a bit tricky)...
+        else if( parent == SelectType.type && ( child.isBuiltinType() || child.isAnonymousType() ) ) {
+            return false ;
+        }
+        return true ;
+    }
+         
     public static boolean isTableLinked( XmlObject xmlObject ) {
         return isTableLinked( xmlObject.schemaType() ) ;
     }

@@ -20,6 +20,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
@@ -35,7 +36,9 @@ public class TableInsertCommand extends StandardInsertCommand {
     
     private static final Log log = LogFactory.getLog( TableInsertCommand.class ) ;
    
-    protected Catalog database ;
+//    protected CatalogService catalogService ;
+//    protected Catalog database ;
+    
     protected String tableName ;
     protected String allocatedAlias ;
    
@@ -53,7 +56,8 @@ public class TableInsertCommand extends StandardInsertCommand {
     
     public TableInsertCommand( TableInsertCommand tic ) {
         super( tic.adqlTree, tic.undoManager, tic.getParentEntry(), tic.childType, tic.childElement ) ;
-        this.database = tic.database ;
+//        this.database = tic.database ;
+//        this.catalogService = tic.catalogService ;
         this.tableName = tic.tableName ;
         this.allocatedAlias = tic.allocatedAlias ;
     }
@@ -79,13 +83,9 @@ public class TableInsertCommand extends StandardInsertCommand {
 //        return tableNames ;
 //    }
     
-    public Catalog getDatabase() {
-        return database ;
-    }
-    
-    public void setDatabase( Catalog archive ) {
-        this.database = archive ;
-    }
+//    public void setDatabase( Catalog archive ) {
+//        this.database = archive ;
+//    }
     
     public String getAllocatedAlias() {
         return allocatedAlias ;
@@ -117,15 +117,16 @@ public class TableInsertCommand extends StandardInsertCommand {
                              , "name"
                              , XmlString.Factory.newValue( tabName ) ) ;
                 String name = childType.getName().getLocalPart() ;
-                if( name.equals( "archiveTableType" ) ) {
-                    AdqlUtils.set( getChildObject()
-                                 , "archive"
-                                 , XmlString.Factory.newValue( database.getName() ) ) ;
-                }
-                TableBean[] tables = database.getTables() ;
+//                if( name.equals( "archiveTableType" ) ) {
+//                    AdqlUtils.set( getChildObject()
+//                                 , "archive"
+//                                 , XmlString.Factory.newValue( adqlTree.getCatalogName() ) ) ;
+//                }
+                TableBean[] tables = adqlTree.getCatalogService().getTables() ;
                 for( int i=0; i<tables.length; i++ ) {
                     if( tableName.equals( tables[i].getName() ) ) {
-                        adqlTree.getFromTables().put( tableName, adqlTree.new TableData( database, tables[i], allocatedAlias ) ) ;
+                        adqlTree.getFromTables().put( tableName, adqlTree.new TableData( tables[i], allocatedAlias ) ) ;
+                        break ;
                     }
                 } 
             }
@@ -163,6 +164,7 @@ public class TableInsertCommand extends StandardInsertCommand {
 //                  AdqlEntry.removeInstance( parent, entry ) ;
                     CutCommand cutCommand = new CutCommand( adqlTree, undoManager, entry ) ;
                     cutCommand.execute() ;
+                    adqlTree.getFromTables().remove( AdqlData.DUMMY_TABLE_NAME ) ;
                 }
             }
         }
@@ -201,8 +203,8 @@ public class TableInsertCommand extends StandardInsertCommand {
         buffer.append( super.toString() ) ;
         buffer
             .append( "\nallocatedAlias: ").append( allocatedAlias )
-            .append( "\ntableName: " ).append( tableName )
-            .append( "\ndatabase: " ).append( database ) ;
+            .append( "\ntableName: " ).append( tableName ) ;
+//            .append( "\ndatabase: " ).append( database ) ;
         return buffer.toString() ; 
     }  
         

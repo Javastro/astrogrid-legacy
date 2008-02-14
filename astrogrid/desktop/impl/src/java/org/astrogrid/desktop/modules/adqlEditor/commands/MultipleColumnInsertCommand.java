@@ -38,7 +38,6 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     
     private static final Log logger = LogFactory.getLog( MultipleColumnInsertCommand.class ) ;
     
-    protected Catalog database ;
     protected TableBean table ;
     protected ColumnBean[] columns ;
     protected String tableAlias ;
@@ -71,14 +70,6 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     
     public void setTableAlias( String alias ) {
         this.tableAlias = alias ;
-    }
-    
-    public Catalog getArchive(){
-        return database ;
-    }
-    
-    public void setArchive( Catalog archive ) {
-        this.database = archive ;
     }
     
     public ColumnBean[] getColumns() {
@@ -151,7 +142,6 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     
     protected Result _execute() {
         Result result = null ;
-//        removeAllColumnsOption() ;
         // The column reference must be within the remit of 
         // either a FROM clause within a normal SELECT statement,
         // or a tables' array within a JOIN TABLE clause...
@@ -170,25 +160,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         return result ;
     }
     
-   
-//    private void _removeAllColumnsOption() {
-//
-//        XmlObject o = parent.getXmlObject() ;
-//        if( !AdqlUtils.areTypesEqual( parent.getSchemaType()
-//                                    , AdqlUtils.getType( o, AdqlData.SELECTION_LIST_TYPE ) ) ) 
-//           return ;
-//        int arraySize = AdqlUtils.sizeOfArray( o, "Item" ) ;
-//        if( arraySize == 1 ) {  
-//            XmlObject item = (XmlObject)AdqlUtils.getArray( o, getChildElementName(), 0 ) ;
-//            String name = item.schemaType().getName().getLocalPart() ;
-//            if( name.equals( AdqlData.ALL_SELECTION_ITEM_TYPE ) ) {
-//                AdqlEntry entry = parent.getChild( 0 ) ;           
-//                CutCommand command = new CutCommand( adqlTree, entry ) ;
-//                command.execute() ;
-//            }
-//        }
-//    }
-     
+  
     private Result addSelectedColumns() {
         Result result = CommandExec.FAILED ;
         if( internalUndoManager.getLimit() < columns.length + 10 ) {
@@ -201,7 +173,6 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         	                                 , childType
         	                                 , null ) ;
         if( command != null ) {
-            command.setArchive( database ) ;
             command.setTable( table ) ;
             command.setTableAlias( tableAlias ) ;
             ColumnInsertCommand cic = null ;
@@ -260,7 +231,6 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
                                             , fromEntry
                                             , tableType
                                             , null ) ;
-            tic.setDatabase( database ) ;
             tic.setTableName( table.getName() ) ;
             result = tic.execute() ;    
             if( result == CommandExec.OK || result == CommandExec.WARNING ) {
@@ -442,8 +412,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         buffer.append( super.toString() ) ;
         buffer
             .append( "\ntableAlias: ").append( tableAlias )
-            .append( "\ntable: " ).append( table.getName() )
-            .append( "\ndatabase: " ).append( database.getName() ) ;
+            .append( "\ntable: " ).append( table.getName() ) ;
         if( columns != null ) {
             for( int i=0; i<columns.length; i++ ) {
                 buffer.append( "\ncolumn " ).append( i ).append( ": " ).append( columns[i].getName() ) ;

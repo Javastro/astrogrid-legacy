@@ -41,6 +41,7 @@ import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.swing.ToolTipManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,8 +53,7 @@ import org.apache.xmlbeans.XmlString;
 import org.apache.xmlbeans.impl.values.XmlValueDisconnectedException ;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.ivoa.resource.Catalog;
-import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.*;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
@@ -86,7 +86,10 @@ public final class AdqlTree extends JTree
     private Registry registry ;
     private URI toolIvorn ;
     private AliasStack aliasStack ;
-    private DataCollection catalogueResource = null ;
+    
+    private CatalogService catalogueService ;
+    private String title ;
+    
     private HashMap fromTables = new HashMap() ;
     
     private boolean editingActive = false ;
@@ -98,33 +101,33 @@ public final class AdqlTree extends JTree
     protected final UIComponent parent;
     
    
-    public AdqlTree( UIComponent parent, File xmlFile, Registry registry, URI toolIvorn ) {
+    public AdqlTree( UIComponent parent, File xmlFile, Registry registry, URI toolIvorn, URI tabulaData ) {
         this.parent = parent ;
-        initialize( parseXml( xmlFile ), registry, toolIvorn ) ;
+        initialize( parseXml( xmlFile ), registry, toolIvorn, tabulaData ) ;
     }
      
-    public AdqlTree( UIComponent parent, InputStream xmlStream, Registry registry, URI toolIvorn ) {
+    public AdqlTree( UIComponent parent, InputStream xmlStream, Registry registry, URI toolIvorn, URI tabulaData ) {
         this.parent = parent ;
-        initialize( parseXml( xmlStream ), registry, toolIvorn ) ;
+        initialize( parseXml( xmlStream ), registry, toolIvorn, tabulaData ) ;
     }
     
-    public AdqlTree( UIComponent parent, Registry registry, URI toolIvorn ) {
+    public AdqlTree( UIComponent parent, Registry registry, URI toolIvorn, URI tabulaData ) {
         this.parent = parent ;
-        initialize( parseXml( AdqlData.NEW_QUERY ), registry, toolIvorn ) ;
+        initialize( parseXml( AdqlData.NEW_QUERY ), registry, toolIvorn, tabulaData ) ;
     }
     
-    public AdqlTree( UIComponent parent, String xmlString, Registry registry, URI toolIvorn ) {
+    public AdqlTree( UIComponent parent, String xmlString, Registry registry, URI toolIvorn, URI tabulaData ) {
         this.parent = parent ;
-        initialize( parseXml( xmlString ), registry, toolIvorn ) ;
+        initialize( parseXml( xmlString ), registry, toolIvorn, tabulaData ) ;
     }
     
-    public AdqlTree( UIComponent parent, org.w3c.dom.Node node, Registry registry, URI toolIvorn ) {
+    public AdqlTree( UIComponent parent, org.w3c.dom.Node node, Registry registry, URI toolIvorn, URI tabulaData ) {
         this.parent = parent ;
-        initialize( parseXml( node ), registry, toolIvorn ) ;
+        initialize( parseXml( node ), registry, toolIvorn, tabulaData ) ;
     }
     
-    public void setTree( AdqlNode rootEntry, Registry registry, URI toolIvorn ) {
-        this.initialize( rootEntry, registry, toolIvorn ) ;
+    public void setTree( AdqlNode rootEntry, Registry registry, URI toolIvorn, URI tabulaData ) {
+        this.initialize( rootEntry, registry, toolIvorn, tabulaData ) ;
     }
     
     public AdqlTreeCellRenderer getTreeCellRenderer() {
@@ -318,14 +321,14 @@ public final class AdqlTree extends JTree
      * Sets up the components that make up this tree.
      * 
      */
-    private void initialize( AdqlNode rootEntry, Registry registry, URI toolIvorn ) {
+    
+    private void initialize( AdqlNode rootEntry, Registry registry, URI toolIvorn, URI tabulaData ) {
         this.commandFactory = new CommandFactory( this ) ;
         getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION ) ;
         this.registry = registry ;
         this.toolIvorn = toolIvorn ;
         retrieveAdqlSchemaVersion() ;
-        this.resetCatalogueData() ;
-      
+        this.resetCatalogueData( tabulaData ) ;
         AdqlTreeCellRenderer renderer = new AdqlTreeCellRenderer() ;
         setCellRenderer( renderer ) ;
         setCellEditor( new AdqlTreeCellEditor( renderer ) ) ;
@@ -344,74 +347,72 @@ public final class AdqlTree extends JTree
         this.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
     		.put( KeyStroke.getKeyStroke( KeyEvent.VK_SPACE, InputEvent.CTRL_MASK ), EDIT_PROMPT_NAME ) ;
       
+        ToolTipManager.sharedInstance().registerComponent( this ) ;
     }
     
-    private synchronized void resetCatalogueData() {
-         
+
+    private synchronized void resetCatalogueData( final URI tabulaData ) {
+        
         final XmlCursor cursor = getRoot().newCursor() ;
+        
+        log.debug( tabulaData ) ;
         
         (new BackgroundWorker( parent, "Fetching Catalogue Data" ,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
             protected Object construct() throws Exception {
-                DataCollection dc = null ;
-                String piName = null ;
-                String piValue = null ;
-                StringBuffer buffer = null ;
-                if( log.isDebugEnabled() ) {
-                    buffer = new StringBuffer() ;
-                    buffer.append( "Searching for catalogue PI..." ) ;
-                }
-                while( !cursor.toNextToken().isNone() ) {
-                    if( cursor.isProcinst() ) {
-                        piName = cursor.getName().getLocalPart() ;             
-                        if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
-                            if( log.isDebugEnabled() ) {
-                                buffer.append( "\nPI name: " + cursor.getName() ) ;
-                                buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
-                            }
-                            piValue = cursor.getTextValue().trim() ;
-                            if( piValue.equals( "none" ) )
-                                break ;                           
-                                String id = formatCatalogueId(piValue);
-                                try {
-                                    dc = (DataCollection) registry.getResource(new URI(id));
-                                } catch (Throwable e) {
-                                    log.info("Searching for table definition using " + id + " failed.");
-                                }
-                            if( log.isDebugEnabled() ) {
-                                buffer.append( "\ndc: " + (dc==null?"null":"not null") ) ;
-                            }
-                            break ;
-                        }
-                    }
-                } // end while
-                //
-                // Here I am trying to second-guess the appropriate database for this dsa tool.
-                // Cannot see any harm to this. If it fails, the user still has the option of
-                // choosing for him/herself.
-                if( dc == null ) {
-                    String ivorn = toolIvorn.toString() ;
-                    int index = ivorn.lastIndexOf( "ceaApplication" ) ;
-                    if( index != -1 ) {
-                        String id= ivorn.substring(0,index) + "TDB";
-                        try {
-                            dc = (DataCollection)registry.getResource(new URI(id));
-                        } catch (Throwable e) {
-                            log.info("Searching for table definition using " + id + " failed");
-                        }
-                        if( log.isDebugEnabled() ) {
-                            buffer.append( "\ndc: " + (dc==null?"null":"not null") ) ;
-                        }             
+                CatalogService cs = null ;
+//                String piName = null ;
+//                String piValue = null ;
+//                StringBuffer buffer = null ;
+                if( tabulaData != null ) {
+                    try {
+                        Resource res = registry.getResource( tabulaData );
+                        cs = (CatalogService)res ;
+                    } catch (Throwable e) {
+                        log.debug( "Could not locate tabulaData: " + tabulaData, e ) ;
                     }
                 }
-                if( log.isDebugEnabled() && buffer.length() > 0 ) {
-                    log.debug( buffer ) ;
-                }
-                return dc ;                      
+// Jeff Note:
+//                if( log.isDebugEnabled() ) {
+//                    buffer = new StringBuffer() ;
+//                    buffer.append( "Searching for catalogue PI..." ) ;
+//                }
+//                while( !cursor.toNextToken().isNone() ) {
+//                    if( cursor.isProcinst() ) {
+//                        piName = cursor.getName().getLocalPart() ;             
+//                        if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+//                            if( log.isDebugEnabled() ) {
+//                                buffer.append( "\nPI name: " + cursor.getName() ) ;
+//                                buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
+//                            }
+//                            piValue = cursor.getTextValue().trim() ;
+//                            if( piValue.equals( "none" ) )
+//                                break ;                           
+//                                String id = formatCatalogueId(piValue);
+//                                try {
+////                                    dc = (DataCollection) registry.getResource(new URI(id));
+//                                } catch (Throwable e) {
+//                                    log.info("Searching for table definition using " + id + " failed.");
+//                                }
+//                            if( log.isDebugEnabled() ) {
+////                                buffer.append( "\ndc: " + (dc==null?"null":"not null") ) ;
+//                            }
+//                            break ;
+//                        }
+//                    }
+//                } // end while
+//                if( log.isDebugEnabled() && buffer.length() > 0 ) {
+//                    log.debug( buffer ) ;
+//                }
+                return cs ;                      
             }
             protected void doFinished( Object result ) {
                 cursor.dispose() ;
-                catalogueResource = (DataCollection)result ;
-                if( catalogueResource != null ){
+                catalogueService = (CatalogService)result ;
+                if( catalogueService != null ){
+                    title = catalogueService.getShortName() ;
+                    if( title == null ) {
+                        title = catalogueService.getTitle() ;
+                    }
                     reestablishTablesCollection() ;
                     fireStateChanged() ;
                 }
@@ -423,10 +424,11 @@ public final class AdqlTree extends JTree
                     log.debug( "Worker thread failed searching for catalogue data.", ex )  ;    
                 }
             }
+            
+            
         }).start();
      
     }
-    
     private void retrieveAdqlSchemaVersion() {
         String piName = null ;
         String piValue = null ;
@@ -474,81 +476,84 @@ public final class AdqlTree extends JTree
         // required to accommodate changes in ADQL between versions.
     }
     
-    private String formatCatalogueId ( String piValue ) {
-        // This value follows a standard set up in the portal prior to
-	    // the establishment of ivorns and overcomes some of the problems
-	    // of special characters within table names. 
-	    // Note: The portal QB allows only one table (no joins) so the metadata
-	    // reflects the one table. But we need the whole catalogue/database.
-        String ivornString = "ivo://" + piValue.substring( 0, piValue.lastIndexOf( '!' ) ).replace( '!', '/' ) ;
-        if( log.isDebugEnabled() ) {
-            log.debug( "Catalogue ivorn: " + ivornString ) ;
-        }
-        return ivornString ;
-    }
+//    private String formatCatalogueId ( String piValue ) {
+//        // This value follows a standard set up in the portal prior to
+//	    // the establishment of ivorns and overcomes some of the problems
+//	    // of special characters within table names. 
+//	    // Note: The portal QB allows only one table (no joins) so the metadata
+//	    // reflects the one table. But we need the whole catalogue/database.
+//        String ivornString = "ivo://" + piValue.substring( 0, piValue.lastIndexOf( '!' ) ).replace( '!', '/' ) ;
+//        if( log.isDebugEnabled() ) {
+//            log.debug( "Catalogue ivorn: " + ivornString ) ;
+//        }
+//        return ivornString ;
+//    }
     
 
     
-    private void writeResourceProcessingInstruction() {
-        String piName = null ;
-        String piValue = null ;
-        XmlCursor cursor = getRoot().newCursor() ;
-        StringBuffer buffer = null ;
-        if( log.isDebugEnabled() ) {
-            buffer = new StringBuffer() ;
-            buffer.append( "Searching for PI's..." ) ;
-        }
-        try {
-            while( !cursor.toNextToken().isNone() ) {
-                if( cursor.isProcinst() ) {
-                    piName = cursor.getName().getLocalPart() ;
-                    if( log.isDebugEnabled() ) {
-                        buffer.append( "\nPI name: " + cursor.getName() ) ;
-                        buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
-                    }
-                    if( piName.equals( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
-                       // OK. There's already one here.
-                       // But does it say "none"?...
-                        if( cursor.getTextValue().trim().equals( "none") ) {
-                            piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-                            + '!' 
-                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
-                            cursor.setTextValue( piValue ) ;
-                        }
-                    }
-                }
-                else if( cursor.isStart()
-                         &&
-                         cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
-                    // We need to create the required PI to track the catalogue resource.
-                    // Currently only one catalogue. Soon we will need to cover multiple catalogues...
-                    // (I've simply chosen the first table to align it with the portal)
-                    piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-                            + '!' 
-                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
-                    if( log.isDebugEnabled() ) {
-                        buffer.append( "\nNew PI Text: " +piValue ) ;
-                    }
-                    cursor.insertProcInst( AdqlData.PI_QB_REGISTRY_RESOURCES, piValue ) ;
-                    break ;               
-                }
-            } // end while
-        }
-        finally {
-            if( log.isDebugEnabled() ) {
-                log.debug( buffer ) ;
-            }
-            cursor.dispose();
-        }
-       
-    }
+//    private void writeResourceProcessingInstruction() {
+//        String piName = null ;
+//        String piValue = null ;
+//        XmlCursor cursor = getRoot().newCursor() ;
+//        StringBuffer buffer = null ;
+//        if( log.isDebugEnabled() ) {
+//            buffer = new StringBuffer() ;
+//            buffer.append( "Searching for PI's..." ) ;
+//        }
+//        try {
+//            while( !cursor.toNextToken().isNone() ) {
+//                if( cursor.isProcinst() ) {
+//                    piName = cursor.getName().getLocalPart() ;
+//                    if( log.isDebugEnabled() ) {
+//                        buffer.append( "\nPI name: " + cursor.getName() ) ;
+//                        buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
+//                    }
+//                    if( piName.equals( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+//                       // OK. There's already one here.
+//                       // But does it say "none"?...
+//                        if( cursor.getTextValue().trim().equals( "none") ) {
+//// Jeff Note:
+////                            piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
+////                            + '!' 
+////                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
+//                            piValue = "Something here needs to change" ;
+//                            cursor.setTextValue( piValue ) ;
+//                        }
+//                    }
+//                }
+//                else if( cursor.isStart()
+//                         &&
+//                         cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
+//                    // We need to create the required PI to track the catalogue resource.
+//                    // Currently only one catalogue. Soon we will need to cover multiple catalogues...
+//                    // (I've simply chosen the first table to align it with the portal)
+//// Jeff Note:
+////                    piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
+////                            + '!' 
+////                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
+//                    piValue = "Something here needs to change" ;
+//                    if( log.isDebugEnabled() ) {
+//                        buffer.append( "\nNew PI Text: " +piValue ) ;
+//                    }
+//                    cursor.insertProcInst( AdqlData.PI_QB_REGISTRY_RESOURCES, piValue ) ;
+//                    break ;               
+//                }
+//            } // end while
+//        }
+//        finally {
+//            if( log.isDebugEnabled() ) {
+//                log.debug( buffer ) ;
+//            }
+//            cursor.dispose();
+//        }
+//      
+//    }
     
     
     private void reestablishTablesCollection() {
         XmlString xTableName = null ;
         XmlString xAlias = null ;
         String alias = null ;
-        Catalog db = catalogueResource.getCatalogues()[0] ;
         //
         // Loop through the whole of the query looking for table types....
         XmlCursor cursor = getRoot().newCursor() ;
@@ -561,6 +566,13 @@ public final class AdqlTree extends JTree
                       cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.ARCHIVE_TABLE_TYPE ) )                       
                 ) {
                     xTableName = (XmlString)AdqlUtils.get( cursor.getObject(), "name" ) ;
+                    String tableName = xTableName.getStringValue() ;
+                    //
+                    // Ignore the dummy table...
+                    // (Should be deleted in any case from the query on the first column or table insert)
+                    if( tableName.equals( AdqlData.DUMMY_TABLE_NAME ) ) {
+                        continue ;
+                    }
                     xAlias = (XmlString)AdqlUtils.get( cursor.getObject(), "alias" ) ;
                     alias = (xAlias == null ? null : xAlias.getStringValue())  ; 
                     if( log.isDebugEnabled() ) {
@@ -569,7 +581,7 @@ public final class AdqlTree extends JTree
                                  + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;
                     }                           
                     fromTables.put( xTableName.getStringValue()
-                                  , new TableData( db, findTableIndex( db, xTableName.getStringValue()), alias ) ) ;
+                                  , new TableData( findTableBean( xTableName.getStringValue()), alias ) ) ;
                 }
             } // end while
         }
@@ -579,14 +591,15 @@ public final class AdqlTree extends JTree
  
     }
     
-    private int findTableIndex( Catalog db, String tableName ) {
-        TableBean[] tables = db.getTables() ;
+
+    public TableBean findTableBean( String tableName ) {
+        TableBean[] tables = catalogueService.getTables() ;
         for( int i=0; i<tables.length; i++ ) {
             if( tables[i].getName().equals( tableName ) ) {
-                return i ;
+                return tables[i] ;
             }
         }
-        return -1;
+        return null ;
     }
 
     
@@ -619,34 +632,16 @@ public final class AdqlTree extends JTree
     
     
     public TableData getTableData( String tableName ) {
-        TableData tableData = null ;
-        java.util.Set set = fromTables.entrySet() ;
-        Iterator it = set.iterator() ;
-        while( it.hasNext() ) {
-            tableData = (TableData)((java.util.Map.Entry)it.next()).getValue() ;
-            try {
-                if( tableData.database.getTables()[ tableData.tableIndex ].getName().equals( tableName ) )
-                    break ;
-            }
-            catch( ArrayIndexOutOfBoundsException ex ) {
-                ;
-            }
-            tableData = null ;
-        }
+        TableData tableData = (TableData)fromTables.get( tableName ) ;
         return tableData ;
     }
     
-    public DataCollection getCatalogueResource() {
-        return catalogueResource;
+    public CatalogService getCatalogService() {
+        return catalogueService;
     }
     
-    public void setCatalogueResource( DataCollection tdbInfo ) {
-        this.catalogueResource = tdbInfo ;
-        this.writeResourceProcessingInstruction() ;
-    }
-    
-    public boolean isCatalogueResourceSet() {
-        return catalogueResource != null ;
+    public boolean isCatalogServiceSet() {
+        return catalogueService != null ;
     }
     
     public HashMap getFromTables() {
@@ -1185,30 +1180,16 @@ public final class AdqlTree extends JTree
     
     public class TableData {
         
-        public Catalog database ;
-        public int tableIndex ;
+        public TableBean table ;
         public String alias ;
         
-        public TableData( Catalog database, int tableIndex, String alias ) {
-            this.database = database ;
-            this.tableIndex = tableIndex ;
-            this.alias = alias ;
-        }
-        
-        public TableData( Catalog database, TableBean table, String alias ) {
-            this.database = database ;
-            this.alias = alias ;
-            final TableBean[] tables = database.getTables() ;
-            for (int i = 0; i < tables.length; i++) {
-                if( tables[i].getName().equals( table.getName() ) ) {
-                    tableIndex = i ;
-                    break ;
-                }
-            }  
+        public TableData( TableBean table, String alias ) {
+            this.table = table ;
+            this.alias = alias ;            
         }
         
         public TableBean getTable() {
-            return database.getTables()[ tableIndex ] ;
+            return table ;
         }
         
         
@@ -1359,6 +1340,33 @@ public final class AdqlTree extends JTree
         } // end if
 
     } // end of ensureSomeNodeSelected()
+
+    /* (non-Javadoc)
+     * @see javax.swing.JTree#getToolTipText(java.awt.event.MouseEvent)
+     */
+    public String getToolTipText(MouseEvent event) {
+        if( event == null )
+            return null ;
+        TreePath path = this.getPathForLocation( event.getX(), event.getY() ) ;
+        if( path == null )
+            return null ;
+        AdqlNode node = (AdqlNode)path.getLastPathComponent() ;
+        XmlObject xo = node.getXmlObject() ;
+        if( xo.schemaType() == SelectType.type ) {
+            SelectType st = (SelectType)xo ;
+            if( st.isSetStartComment() ) {
+                return "<HTML>" + st.getStartComment().replaceAll( "\n", "<BR>" ) ;
+            }
+        }       
+        return null ;
+    }
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
     
 } // end of class AdqlTree
 

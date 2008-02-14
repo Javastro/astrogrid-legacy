@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;;
 
 /**
  * . 
@@ -46,7 +47,7 @@ public final class NodeFactory {
     }
     
     public AdqlNode newInstance( XmlObject rootObject ) {
-        AdqlNode rootEntry = newInstance( null, rootObject ) ;
+        AdqlNode rootEntry =  new AdqlNode( this, null, rootObject ) ;
         setTreeModel( rootEntry ) ;
         return rootEntry ;
     }
@@ -60,7 +61,7 @@ public final class NodeFactory {
             else if( HidingNode.isHidingRequired( xmlObject ) ) {
                 node = new AtomNode( this, parent, xmlObject, childNodeIndex ) ;
             }
-            else {
+            else if( AdqlUtils.isSupportedTypeWithinParent( xmlObject.schemaType(), parent.getSchemaType() ) ) {
                 node = new AdqlNode( this, parent, xmlObject, childNodeIndex ) ;
             }
         }
@@ -71,7 +72,7 @@ public final class NodeFactory {
     }
      
     public AdqlNode newInstance( AdqlNode parent, XmlObject xmlObject ) {
-        AdqlNode entry = null ;
+        AdqlNode entry = null ; 
         if( xmlObject == null )
             return entry ;
         try { 
@@ -81,7 +82,7 @@ public final class NodeFactory {
             else if( HidingNode.isHidingRequired( xmlObject ) ) {
                 entry = new AtomNode( this, parent, xmlObject ) ;
             }
-            else {
+            else if( AdqlUtils.isSupportedTypeWithinParent( xmlObject.schemaType(), parent.getSchemaType() ) ) {
                 entry = new AdqlNode( this, parent, xmlObject ) ;
             }
         }

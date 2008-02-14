@@ -177,7 +177,6 @@ public class AdqlEditorTabularMetadataViewer extends TabularMetadataViewer {
 	        if( command == null ) {
 	            return false ;
 	        }
-	        command.setArchive( (Catalog)cataCombo.getSelectedItem() ) ;
 	        command.setTable( (TableBean)tableCombo.getSelectedItem() ) ;
 	        command.setColumns( columnBeans ) ;
 	        return true ;
@@ -196,11 +195,7 @@ public class AdqlEditorTabularMetadataViewer extends TabularMetadataViewer {
   	        model.nodeStructureChanged( command.getParentEntry() ) ;
   	        model.nodeStructureChanged( command.findFromClause( path ) ) ;
               adqlTree.repaint() ;
-          }
-	        
-	        
-	        
-	        
+          }	        
 	    }
 	        
   }  

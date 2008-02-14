@@ -30,13 +30,11 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ColumnInsertCommand extends StandardInsertCommand {
-    
-    protected Catalog archive ;
+  
     protected TableBean table ;
     protected String columnName ;
     protected String tableAlias ;
 
-   
     /**
      * @param target
      * @param 
@@ -51,7 +49,6 @@ public class ColumnInsertCommand extends StandardInsertCommand {
     
     public ColumnInsertCommand( ColumnInsertCommand cic ) {
         super( cic.adqlTree, cic.undoManager, cic.getParentEntry(), cic.childType, cic.childElement ) ;
-        this.archive = cic.archive ;
         this.table = cic.table ;
         this.columnName = cic.columnName ;
         this.tableAlias = cic.tableAlias ;
@@ -72,15 +69,7 @@ public class ColumnInsertCommand extends StandardInsertCommand {
     public TableBean getTable() {
         return table ;
     }
-    
-    public Catalog getArchive() {
-        return this.archive ;
-    }
-    
-    public void setArchive( Catalog archive ) {
-        this.archive = archive ;
-    }
-    
+ 
     public void setTable( TableBean tableBean ) {
         this.table = tableBean ;
     }
@@ -100,7 +89,6 @@ public class ColumnInsertCommand extends StandardInsertCommand {
     
     
     protected Result _execute() {
-//        removeAllColumnsOption() ;
         Result result = super._execute() ;
         if( result != CommandExec.FAILED ) {
             try {          
@@ -111,17 +99,11 @@ public class ColumnInsertCommand extends StandardInsertCommand {
                 }
                 else {
                     String tableName = table.getName() ;
-//                    if( !AdqlUtils.isRegularIdentifier( tableName.toUpperCase() ) ) {
-//                        tableName = "\"" +tableName + "\""  ;
-//                    }
                     AdqlUtils.set( getChildObject()
                                  , "table"
                                  , XmlString.Factory.newValue( tableName ) ) ;
                 } 
                 String colName = columnName ;
-//                if( !AdqlUtils.isRegularIdentifier( colName.toUpperCase() ) ) {
-//                    colName = "\"" +colName + "\""  ;
-//                }
                 AdqlUtils.set( getChildObject()
                              , "name"
                              , XmlString.Factory.newValue( colName ) ) ;
@@ -135,7 +117,6 @@ public class ColumnInsertCommand extends StandardInsertCommand {
     
     protected Result _unexecute() {
         Result result = super._unexecute() ;
-//        reinstateAllColumnsOption() ;
         return result ;
     }
     
@@ -176,8 +157,7 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         buffer
             .append( "\ncolumnName: ").append( columnName )
             .append( "\ntable: " ).append( table.getName() )
-            .append( "\ntableAlias: " ).append( tableAlias )
-            .append( "\narchive: " ).append( archive.getName() ) ;
+            .append( "\ntableAlias: " ).append( tableAlias ) ;
         return buffer.toString() ; 
     }  
 }

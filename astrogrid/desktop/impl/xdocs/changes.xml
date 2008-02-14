@@ -14,6 +14,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2546">
+    Final aspects of ADQL folded into Query Builder
+</action> 
+<action dev="jl" type="fix" issue="2560">
+    Retrieval of metadata for Query Builder now at Registry v1.0
+</action>
 <release version="2008.1.beta2" date="2008-01-30">
     <action dev="nw" type="fix" issue="2520">
     URLs now visible in voexplorer resource display

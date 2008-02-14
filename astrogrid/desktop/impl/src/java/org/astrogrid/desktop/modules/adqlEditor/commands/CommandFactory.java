@@ -26,10 +26,16 @@ import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.astrogrid.adql.AdqlStoX;
 import org.astrogrid.adql.AdqlCompiler ;
+import org.astrogrid.adql.metadata.MetadataQuery;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+
+import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.ivoa.resource.Catalog;
+import org.astrogrid.acr.ivoa.resource.DataCollection;
 
 /**
  * @author jl99
@@ -44,8 +50,8 @@ public class CommandFactory {
     private AdqlTree adqlTree ;
     private UndoManager undoManager ;
     private EditStore editStore ;
-    //private AdqlStoX adqlCompiler ;
     private AdqlCompiler adqlCompiler ;
+    private MetadataQuery metadataQuery ;
 
     /**
      * 
@@ -112,6 +118,8 @@ public class CommandFactory {
                                
                     for( int j=0; j<concreteSubtypes.length; j++ ) {
                         if( !AdqlUtils.isSupportedType( concreteSubtypes[j] ) )
+                            continue ;
+                        if( !AdqlUtils.isSupportedTypeWithinParent( concreteSubtypes[j], parent.getSchemaType() ) )
                             continue ;
                         if( AdqlUtils.isEnumeratedElement( concreteSubtypes[j] ) )
                             continue ;
@@ -392,11 +400,45 @@ public class CommandFactory {
     public AdqlCompiler getAdqlCompiler( String source ) {
         if( adqlCompiler == null ) {
             adqlCompiler = new AdqlCompiler( new StringReader( source ) ) ;
+            metadataQuery = new MetadataQueryImpl() ;
+            adqlCompiler.setMetadataQuery( metadataQuery ) ;
         }
         else {
             adqlCompiler.ReInit( new StringReader( source ) ) ;
         }
+        
         return adqlCompiler;
+    }
+    
+    protected class MetadataQueryImpl implements MetadataQuery {
+
+        /* (non-Javadoc)
+         * @see org.astrogrid.adql.metadata.MetadataQuery#isColumn(java.lang.String, java.lang.String)
+         */
+        public boolean isColumn( String tableName, String columnName ) {
+            TableBean table = adqlTree.findTableBean( tableName ) ;
+            if( table == null )
+                return false ;           
+            return getColumn( table, columnName ) != null ;
+        }
+
+        /* (non-Javadoc)
+         * @see org.astrogrid.adql.metadata.MetadataQuery#isTable(java.lang.String)
+         */
+        public boolean isTable( String tableName ) {
+            return adqlTree.findTableBean( tableName ) != null ;
+        }
+        
+        private ColumnBean getColumn( TableBean table, String columnName ) {
+            ColumnBean[] columns = table.getColumns() ;
+            for( int i=0; i<columns.length; i++ ) {
+                if( columns[i].getName().equalsIgnoreCase( columnName ) ) {
+                    return columns[i] ; 
+                }
+            }
+            return null ;
+        }
+        
     }
        
 }

@@ -21,8 +21,12 @@ import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.AdqlCompiler;
 import org.astrogrid.adql.ParseException;
 import org.astrogrid.adql.AdqlException;
+import org.astrogrid.adql.v1_0.beans.SelectDocument;
+import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 /**
  * @author jl99@star.le.ac.uk
  *
@@ -52,9 +56,43 @@ public class EditCommand extends AbstractCommand {
         try {  
             String elementContextPath = getFromEditStore( childToken ).getElementContextPath() ;
             log.debug( "child.getElementContextPath(): " + elementContextPath ) ;
-            newValue = compiler.compileFragmentToXmlBean( elementContextPath ) ;
-            adqlTree.getNodeFactory().setForcedNotToUseModel( true ) ;
-            exchangeInEditStore( childToken, getParentEntry().replace( this, newValue ) ) ;
+            XmlObject pxo = this.getParentObject() ;
+//            elementContextPath.equalsIgnoreCase( "/Select[@type='selectType']"
+            if( pxo.schemaType() == SelectDocument.type ) {
+                SelectType sto = (SelectType)getChildObject() ;
+                //
+                // We preserve a start comment to prevent the absence of
+                // a comment removing an existing comment...
+                String preservedComment = null ;
+                if( sto.isSetStartComment() ) {
+                    preservedComment = sto.getStartComment() ;
+                }
+                String[] comments = new String[2] ;
+                newValue = compiler.execFragment( elementContextPath, comments ) ; 
+                sto = (SelectType)newValue ;
+                adqlTree.getNodeFactory().setForcedNotToUseModel( true ) ;
+                //
+                // If there is a genuine start comment,
+                // We replace it in the query
+                // Otherwise we use the preserved comment if there is one...
+                if( comments[0] != null ) {
+                    if( comments[0].length() > 0 ) {
+                        sto.setStartComment( comments[0].replaceAll( "-- |--", "" ) ) ;
+                    }
+                    else if( preservedComment != null ) {
+                        sto.setStartComment( preservedComment ) ;
+                    }                   
+                }
+                else if( preservedComment != null ) {
+                    sto.setStartComment( preservedComment ) ;
+                }   
+                exchangeInEditStore( childToken, getParentEntry().replace( this, newValue ) ) ; 
+            }
+            else {
+                newValue = compiler.compileFragmentToXmlBean( elementContextPath ) ;
+                adqlTree.getNodeFactory().setForcedNotToUseModel( true ) ;
+                exchangeInEditStore( childToken, getParentEntry().replace( this, newValue ) ) ;
+            }
             adqlTree.getNodeFactory().setForcedNotToUseModel( false ) ;
             
             //

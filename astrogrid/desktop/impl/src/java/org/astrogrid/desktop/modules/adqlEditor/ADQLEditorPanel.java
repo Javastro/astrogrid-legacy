@@ -32,8 +32,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -86,10 +89,9 @@ import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.ivoa.resource.Catalog;
-import org.astrogrid.acr.ivoa.resource.DataCollection;
-import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.*;
 import org.astrogrid.adql.AdqlException;
+import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -134,8 +136,14 @@ public class ADQLEditorPanel
     private static final Log log = LogFactory.getLog( ADQLEditorPanel.class ) ;
     private StringBuffer logIndent ;
     
+    public static final String DIAGNOSTICS_ICON = "flag16.png" ;
     public static final String GOOD_COMPILE_ICON = "tick16.png" ;
     public static final String BAD_COMPILE_ICON = "no16.png" ;
+    public static final String INFO_ICON = "info16.png" ;
+    public static final String METADATA_ICON = "table16.png" ;
+    public static final String XML_ICON = "xml.gif" ;
+    public static final String EDIT_ICON = "edit16.png" ;
+    public static final String LASTEDITS_ICON = "multiplefile16.png" ;
     
     private final ParameterValue queryParam;
     /** registry resource that describes the application this query is targeted at 
@@ -147,6 +155,9 @@ public class ADQLEditorPanel
     protected final RegistryGoogle regChooser;
     protected final Registry registry ;
     protected final Preference showDebugPanePreference;
+    
+    private URI ceaApplicationURI ;
+    private URI tabulaDataURI ;
       
     // LHS Editor tabs...
     private JTabbedPane tabbedEditorPane ;
@@ -154,6 +165,7 @@ public class ADQLEditorPanel
     private AdqlTree adqlTree ;
     private AdqlXmlView adqlXmlView ;
     private AdqlMainView adqlMainView ;
+    private CommentView adqlCommentView ;
     
     //RHS Metadata tabs...
     private JTabbedPane tabbedMetadataPane ;
@@ -164,7 +176,7 @@ public class ADQLEditorPanel
     private JTextPane diagnostics ;
     private JTextPane history ;
     
-    private JButton chooseResourceButton ;
+//    private JButton chooseResourceButton ;
     
     private JButton validateEditButton ;
     
@@ -271,7 +283,6 @@ public class ADQLEditorPanel
     
     // private BranchExpansionListener branchExpansionListener = null ;
     private AdqlTransformer transformer ;
-    private boolean statusAfterValidate = false ;
           
     public ADQLEditorPanel(ParameterValue queryParam
     						  , Resource targetApplication
@@ -279,6 +290,7 @@ public class ADQLEditorPanel
     						  ,RegistryGoogle regChooser
                               , Registry registry
                               , Preference showDebugPanePref ) {
+        if( log.isTraceEnabled() ) enterTrace( "ADQLEditorPanel()" ) ;
     	this.queryParam = queryParam;
     	this.targetApplication = targetApplication;
         this.parent = parent;
@@ -288,8 +300,8 @@ public class ADQLEditorPanel
         this.showDebugPanePreference = showDebugPanePref;
         this.showDebugPanePreference.addPropertyChangeListener(this);        
         this.init();
-        new ContextMenuAssistant(this,parent.getContextMenu());
-       
+        new ContextMenuAssistant( this, parent.getContextMenu() );
+        if( log.isTraceEnabled() ) exitTrace( "ADQLEditorPanel()" ) ;
     }
     
     /** class to manage showing / hiding of context menu items. 
@@ -304,6 +316,7 @@ public class ADQLEditorPanel
         private final JMenu subMenu;
 
         public ContextMenuAssistant(JPanel p, JMenu contextMenu) {
+            if( log.isTraceEnabled() ) enterTrace( "ContextMenuAssistant()" ) ;
             this.contextMenu = contextMenu;
             it = new JMenuItem("context-sensitive-example");
          //   it.setVisible(false); temporarily made invisible for the first beta release.
@@ -311,6 +324,7 @@ public class ADQLEditorPanel
             subMenu.add(new JMenuItem("an entry"));
           //  subMenu.setVisible(false);  temporarily made invisible for the first beta release.
             p.addHierarchyListener(this);
+            if( log.isTraceEnabled() ) exitTrace( "ContextMenuAssistant()" ) ;
         }
 
 
@@ -340,7 +354,7 @@ public class ADQLEditorPanel
         this.adqlTree = null ;
         if( queryParam == null ) {
             if( this.adqlTree == null ) {
-                this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
+                this.adqlTree = new AdqlTree( parent, registry, toolIvorn, tabulaDataURI ) ;
             }
         }
         //
@@ -351,15 +365,15 @@ public class ADQLEditorPanel
             if( log.isDebugEnabled() ) log.debug( "Query is a remote reference." ) ;
             query = readQuery() ;
             if( query == null || query.length() < 5 ) {
-                this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
+                this.adqlTree = new AdqlTree( parent, registry, toolIvorn, tabulaDataURI ) ;
             }
             else if( query.startsWith( "<" ) ) {
                 query = adaptToVersion( query ) ;
                 try {          
-                    this.adqlTree = new AdqlTree( parent, query, registry, toolIvorn ) ;
+                    this.adqlTree = new AdqlTree( parent, query, registry, toolIvorn, tabulaDataURI ) ;
                 }
                 catch ( Exception ex ) {
-                    this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
+                    this.adqlTree = new AdqlTree( parent, registry, toolIvorn, tabulaDataURI ) ;
                 }
             }  
             if( log.isDebugEnabled() ) log.debug( "...setting indirect to false" ) ;
@@ -385,16 +399,16 @@ public class ADQLEditorPanel
             if( log.isDebugEnabled() ) log.debug( "Query is inline..." ) ;
            query = queryParam.getValue() ;
            if( query == null || query.length() < 5 ) {
-               this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
+               this.adqlTree = new AdqlTree( parent, registry, toolIvorn, tabulaDataURI ) ;
            }
            else if( query.startsWith( "<" ) ) {
                // Assume this is an instream adql/x query...
                query = adaptToVersion( query ) ;
                try {          
-                   this.adqlTree = new AdqlTree( parent, query, registry, toolIvorn ) ;
+                   this.adqlTree = new AdqlTree( parent, query, registry, toolIvorn, tabulaDataURI ) ;
                }
                catch ( Exception ex ) {
-                   this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
+                   this.adqlTree = new AdqlTree( parent, registry, toolIvorn, tabulaDataURI ) ;
                }
            }
            else { 
@@ -405,7 +419,7 @@ public class ADQLEditorPanel
                // can be recovered from the adql/s in a simple way
                // (maybe some specialized comment?)
                // So for the moment...
-               this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
+               this.adqlTree = new AdqlTree( parent, registry, toolIvorn, tabulaDataURI ) ;
 //                      
 //               Document doc = null ;
 //               try {          
@@ -504,19 +518,49 @@ public class ADQLEditorPanel
 //        }).start();
 //   
 //    }
-    
+    private void findTabulaData() {
+        if( targetApplication != null ) {
+            ceaApplicationURI = targetApplication.getId() ;
+            Content content = targetApplication.getContent() ;
+            Relationship[] rels = content.getRelationships() ;
+            ResourceName[] rns = rels[0].getRelatedResources() ;
+            try {
+                tabulaDataURI = new URI( rns[0].getValue() ) ;
+            }
+            catch ( URISyntaxException uex ) {
+                tabulaDataURI = null ;
+            }     
+        }   
+        if( log.isDebugEnabled() ) {
+            
+            if( targetApplication == null ) {
+                log.debug( "targetApplication is null" ) ;
+            }
+            else {
+                StringBuffer b = new StringBuffer() ;
+                b.append( targetApplication.getId() ).append( '\n' )
+                 .append( targetApplication.getShortName() ).append( '\n' )
+                 .append( targetApplication.getType() ).append( '\n' );
+               
+              Content content = targetApplication.getContent() ;
+              Relationship[] rels = content.getRelationships() ;
+              for( int i=0; i<rels.length; i++ ) {
+                  b.append( rels[i].getRelationshipType() ).append( '\n' ) ;
+                  ResourceName[] rns = rels[i].getRelatedResources() ;
+                  for( int j=0; j<rns.length; j++ ) {
+                      b.append( rns[j].getId() ).append( '\n' ) ;
+                      b.append( rns[j].getValue() ).append( '\n' ) ;
+                  }
+                  b.append( "===" ) ;
+              }
+              log.debug( b.toString() ) ;
+            }
+           
+        }
+    }
 
-    private void _init() {   
-        setLayout(new BorderLayout());
-        // Put the editing panels plus the metadata panels in the top half of the split pane.
-        add( initTopView(),BorderLayout.CENTER) ;
-
-        // Put the diagnostics panel at the bottom of the split pane.
-        add( initBottomView(),BorderLayout.SOUTH) ; 
-        setPreferredSize(new Dimension(400,450));
-    } // end of init()
-    
     private void init() {
+        findTabulaData() ;
         setLayout( new GridBagLayout() ) ;       
         GridBagConstraints gbc ;
         JSplitPane splAdqlToolEditor = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
@@ -578,6 +622,10 @@ public class ADQLEditorPanel
         // Experiment with combined views (tree/adql/s)...
         this.setAdqlTree() ;
         this.adqlMainView = new AdqlMainView( tabbedEditorPane ) ;
+        
+        //
+        // Place any top comment in the Comment View...
+        this.adqlCommentView = new CommentView( tabbedEditorPane ) ;
 
         // Adql/x panel ...
         // This is really only here for debug purposes...
@@ -601,7 +649,8 @@ public class ADQLEditorPanel
         gbc.gridwidth = 8 ;
         gbc.gridx = 0 ;
         gbc.gridy = 7 ;        
-        gbc.fill = GridBagConstraints.HORIZONTAL ;
+//        gbc.fill = GridBagConstraints.HORIZONTAL ;
+        gbc.fill = GridBagConstraints.NONE ;
         
         lhsPanel.add( getValidateEditButton(), gbc) ;  
             
@@ -632,7 +681,7 @@ public class ADQLEditorPanel
         diagnostics.setBorder(BorderFactory.createEmptyBorder());
         JScrollPane scrContent = new JScrollPane(diagnostics);
         scrContent.setBorder(BorderFactory.createEmptyBorder());
-        tabbedBottomPane.addTab( "Diagnostics", scrContent ) ;
+        tabbedBottomPane.addTab( "Diagnostics", IconHelper.loadIcon( DIAGNOSTICS_ICON ),  scrContent, "View errors" ) ; 
     }
     
     private void formatHistoryTab( ) {
@@ -685,7 +734,7 @@ public class ADQLEditorPanel
         history = new JTextPane() ;
         history.setBorder(BorderFactory.createEmptyBorder());
         hscrContent.setViewportView( history );
-        tabbedBottomPane.addTab( "History stack", hscrContent ) ;
+        tabbedBottomPane.addTab( "History stack", IconHelper.loadIcon( LASTEDITS_ICON ), hscrContent, "View last 16 edits" ) ; 
     }
     
     private SizedStack getHistoryStack() {
@@ -756,7 +805,7 @@ public class ADQLEditorPanel
         
         // First catalogue panel...
         JPanel catalog1 = new JPanel();
-        tabbedMetadataPane.addTab( "Archive", catalog1 ) ;
+        tabbedMetadataPane.addTab( "Archive",IconHelper.loadIcon( METADATA_ICON ), catalog1, "View metadata" ) ;
         
         //@todo replace this with a flip panel.
         GridBagConstraints gbc = new GridBagConstraints() ;
@@ -769,56 +818,57 @@ public class ADQLEditorPanel
         gbc.fill = GridBagConstraints.BOTH ;
         rhsPanel.add( tabbedMetadataPane, gbc ) ;
         
-        gbc.weighty = 0;
-        gbc.gridheight = 1 ;
-        gbc.gridwidth = 8 ;
-        gbc.gridx = 0 ;
-        gbc.gridy = 7 ;        
-        gbc.fill = GridBagConstraints.HORIZONTAL ;
-        
-        rhsPanel.add(getChooseResourceButton(), gbc);  
-        //
-        // If we are reloading a previous adql query, then we first load
-        // the catalogue data, then prime the tables collection...
-        chooseResourceButton.setEnabled( false ) ;
-//        if( adqlTree.isCatalogueResourceSet() ) {
-//            chooseResourceButton.setEnabled( false ) ;
-//            formatCatalogTab() ;
-//        }
-//        else {
-//            chooseResourceButton.setEnabled( true ) ;
-//        }             
+//        gbc.weighty = 0;
+//        gbc.gridheight = 1 ;
+//        gbc.gridwidth = 8 ;
+//        gbc.gridx = 0 ;
+//        gbc.gridy = 7 ;        
+//        gbc.fill = GridBagConstraints.HORIZONTAL ;
+//        
+//        rhsPanel.add(getChooseResourceButton(), gbc);  
+//        //
+//        // If we are reloading a previous adql query, then we first load
+//        // the catalogue data, then prime the tables collection...
+//        chooseResourceButton.setEnabled( false ) ;
+////        if( adqlTree.isCatalogueResourceSet() ) {
+////            chooseResourceButton.setEnabled( false ) ;
+////            formatCatalogTab() ;
+////        }
+////        else {
+////            chooseResourceButton.setEnabled( true ) ;
+////        }             
         return rhsPanel ;
     }
     
     public void treeNodesChanged(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.setAdqlParameter() ;
-            refreshDebugView() ;
+            refreshCommentAndDebugViews() ;
         }
     }
     public void treeNodesInserted(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.update() ;
-            refreshDebugView() ;
+            refreshCommentAndDebugViews() ;
         }
     }
     public void treeNodesRemoved(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.update() ;
-            refreshDebugView() ;
+            refreshCommentAndDebugViews() ;
         }
     }
     public void treeStructureChanged(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.update() ;
-            refreshDebugView() ;
+            refreshCommentAndDebugViews() ;
         }
     }
     
-    private void refreshDebugView() {
+    private void refreshCommentAndDebugViews() {
         if( this.adqlXmlView != null )
             this.adqlXmlView.refreshFromModel() ;
+        this.adqlCommentView.refreshDisplay() ;
     }
     
     private void update() {
@@ -830,7 +880,6 @@ public class ADQLEditorPanel
         if( log.isTraceEnabled() ) enterTrace( "validateAdql()" ) ; 
         String[] messages = validateUponAdqlsFromRoot() ;      
         if( messages.length != 0 ){
-            statusAfterValidate = false ;
             setDiagnosticsIcon( false ) ;            
             StringBuffer buffer = new StringBuffer( 1024 ) ;
           for (int i = 0; i < messages.length; i++) {
@@ -840,8 +889,7 @@ public class ADQLEditorPanel
         }
         else {
             this.diagnostics.setText( "" )  ;
-            setDiagnosticsIcon( true ) ; 
-            statusAfterValidate = true ;           
+            setDiagnosticsIcon( true ) ;          
         }
         if( log.isTraceEnabled() ) exitTrace( "validateAdql()" ) ; 
     }
@@ -864,13 +912,16 @@ public class ADQLEditorPanel
             messages = adqlex.getMessages() ;
             if( messages == null ) {
                 messages = ( new String[] { "Internal compiler error. See log."} ) ;
+                log.debug( "Internal compiler error.", adqlex ) ;
             }  
             else if ( messages.length == 0 ) {
                 messages = ( new String[] { "Internal compiler error. See log."} ) ;
+                log.debug( "Internal compiler error.", adqlex ) ;
             }
         }
         catch( Exception ex ) {
             messages = ( new String[] { "Internal compiler error. See log."} ) ;
+            log.debug( "Internal compiler error.", ex ) ;
         }
         return messages ;   
     }
@@ -1250,27 +1301,27 @@ public class ADQLEditorPanel
         
 	} // end of class InsertAction
 	
-    protected JButton getChooseResourceButton() {
-        if (chooseResourceButton == null) {
-            chooseResourceButton = new JButton("Set Archive Definition..");
-            chooseResourceButton.addActionListener(new ActionListener() {               
-                public void actionPerformed(ActionEvent e) {
-                   Resource[] selection = regChooser.selectResourcesXQueryFilter( "Select Catalogue description for " 
-                                                                   + targetApplication.getTitle()
-                                                                   ,false
-                                                                   , "(@xsi:type &= '*TabularDB')"
-                                                                   ) ;
-                   if( selection != null && selection.length > 0 ) {
-                       if( log.isDebugEnabled() ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + selection[0].getClass().getName() ) ; 
-                       adqlTree.setCatalogueResource( (DataCollection)selection[0]) ;
-                       chooseResourceButton.setEnabled( false ) ;
-                       formatCatalogTab() ;
-                   }
-                }
-            });
-        }
-        return chooseResourceButton;
-    }
+//    protected JButton getChooseResourceButton() {
+//        if (chooseResourceButton == null) {
+//            chooseResourceButton = new JButton("Set Archive Definition..");
+//            chooseResourceButton.addActionListener(new ActionListener() {               
+//                public void actionPerformed(ActionEvent e) {
+//                   Resource[] selection = regChooser.selectResourcesXQueryFilter( "Select Catalogue description for " 
+//                                                                   + targetApplication.getTitle()
+//                                                                   ,false
+//                                                                   , "(@xsi:type &= '*TabularDB')"
+//                                                                   ) ;
+//                   if( selection != null && selection.length > 0 ) {
+//                       if( log.isDebugEnabled() ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + selection[0].getClass().getName() ) ; 
+//                       adqlTree.setCatalogueResource( (DataCollection)selection[0]) ;
+//                       chooseResourceButton.setEnabled( false ) ;
+//                       formatCatalogTab() ;
+//                   }
+//                }
+//            });
+//        }
+//        return chooseResourceButton;
+//    }
     
     protected JButton getValidateEditButton() {
         if ( validateEditButton == null) {
@@ -1287,22 +1338,14 @@ public class ADQLEditorPanel
     
     private void formatCatalogTab() {
         if( tabbedMetadataPane.getTabCount() == 1 ) {
-        	DataCollection catalogueResource = adqlTree.getCatalogueResource() ;
-            if( catalogueResource.getCatalogues().length > 0) {
-            	Catalog dbs = catalogueResource.getCatalogues()[0];           
-                String title = dbs.getName() ; 
-                if( title == null || title.trim().length() == 0 ); {
-                    title = catalogueResource.getTitle() ;
-                }
-                tabbedMetadataPane.setTitleAt( 0, title );
+            CatalogService catalogService = adqlTree.getCatalogService() ;
+        
+                tabbedMetadataPane.setTitleAt( 0, adqlTree.getTitle() );
                 
                 // First catalogue panel...
-                //JPanel catalog1 = (JPanel)tabbedMetadataPane.getComponentAt( 0 ) ;
                 TabularMetadataViewer tmv = new AdqlEditorTabularMetadataViewer(this,adqlTree);
-                tmv.display(catalogueResource);
-                tabbedMetadataPane.setComponentAt(0,tmv);
-        
-            }     
+                tmv.display(catalogService);
+                tabbedMetadataPane.setComponentAt(0,tmv);   
         }
     }
     
@@ -1329,12 +1372,12 @@ public class ADQLEditorPanel
         ColumnInsertCommand cic = (ColumnInsertCommand)command ;
         JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
         insertMenu.setEnabled( false ) ;
-        Iterator it = adqlTree.getFromTables().entrySet().iterator() ;
+        Object[] tables = adqlTree.getFromTables().values().toArray() ;
+        Arrays.sort( tables, new TableDataComparator() ) ;
+        ColumnBeanComparator colComparator = new ColumnBeanComparator() ;
         ColumnInsertCommand cicForTable = null ;
-        // For each table ...
-        while( it.hasNext() ) {
+        for( int i=0; i<tables.length; i++ ) {
             if( cicForTable == null ) {
-                cic.setArchive( adqlTree.getCatalogueResource().getCatalogues()[0] ) ;
                 cicForTable = cic ;
                 insertMenu.setEnabled( true ) ;
             }
@@ -1342,7 +1385,7 @@ public class ADQLEditorPanel
                 // Shallow copy of the command...
                 cicForTable = new ColumnInsertCommand( cic ) ;
             }
-            AdqlTree.TableData tableData = (AdqlTree.TableData)((java.util.Map.Entry)it.next()).getValue() ;
+            AdqlTree.TableData tableData = (AdqlTree.TableData)tables[i] ;
             try {
                 TableBean table = tableData.getTable() ;
                 cicForTable.setTable( table ) ;
@@ -1350,44 +1393,35 @@ public class ADQLEditorPanel
                 JMenu tableMenu = new JMenu( table.getName() ) ;
                 insertMenu.add( tableMenu ) ;
                 ColumnBean[] columns = table.getColumns();
-                for( int i=0; i<columns.length; i++ ) {
-                    tableMenu.add( new InsertAction( columns[i].getName(), cicForTable ) ) ;
+                Arrays.sort( columns, colComparator ) ;
+                for( int j=0; j<columns.length; j++ ) {
+                    tableMenu.add( new InsertAction( columns[j].getName(), cicForTable ) ) ;
                 }
             }
             catch( ArrayIndexOutOfBoundsException ex ) {
                 continue ;
-            }                       
-        }           
+            }
+        }
         return insertMenu ;
     }
        
-    private JMenu getInsertTableMenu( StandardInsertCommand command ) {
-        TableInsertCommand tic= (TableInsertCommand)command ;       
+    private JMenu getInsertTableMenu( StandardInsertCommand command ) {      
         JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
-        DataCollection tdb = adqlTree.getCatalogueResource() ;
-        if( tdb != null ) {
-            Catalog db = tdb.getCatalogues()[0];
-            tic.setDatabase( db ) ;
-            TableBean[] tables = db.getTables() ;
-            for( int i=0; i<tables.length; i++ ){            
-               insertMenu.add( new InsertAction( tables[i].getName(), command ) ) ;
-            }
+        TableBean[] tables = adqlTree.getCatalogService().getTables() ;
+        Arrays.sort( tables, new org.astrogrid.acr.astrogrid.TableBeanComparator() ) ;
+        for( int i=0; i<tables.length; i++ ){            
+            insertMenu.add( new InsertAction( tables[i].getName(), command ) ) ;
         }
         return insertMenu ;
     }
     
-    private JMenu getInsertJoinTableMenu( StandardInsertCommand command ) {
-        TableInsertCommand tic= (TableInsertCommand)command ;       
+    private JMenu getInsertJoinTableMenu( StandardInsertCommand command ) {      
         JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
-        DataCollection tdb = adqlTree.getCatalogueResource() ;
-        if( tdb != null ) {
-            Catalog db = tdb.getCatalogues()[0];
-            tic.setDatabase( db ) ;
-            TableBean[] tables = db.getTables() ;
+            TableBean[] tables = adqlTree.getCatalogService().getTables() ;
+            Arrays.sort( tables, new org.astrogrid.acr.astrogrid.TableBeanComparator() ) ;
             for( int i=0; i<tables.length; i++ ){            
                insertMenu.add( new InsertAction( tables[i].getName(), command ) ) ;
             }
-        }
         return insertMenu ;
     }
     
@@ -1416,7 +1450,7 @@ public class ADQLEditorPanel
             textPane.setEditable( false ) ;
             this.setLayout( new BorderLayout() ) ;
             this.add(xmlScrollContent, BorderLayout.CENTER );
-            owner.addTab( "Debug", this ) ; 
+            owner.addTab( "Debug", IconHelper.loadIcon( XML_ICON ), this, "View the query in XML" ) ;
             this.refreshFromModel() ;
         }
         
@@ -1432,11 +1466,69 @@ public class ADQLEditorPanel
         }
              
     } // end of class AdqlXmlView
+    
+    private class CommentView extends JTextPane implements FocusListener {
+
+        public CommentView( JTabbedPane owner ) {
+            super() ;
+//            JScrollPane scrollContent = new JScrollPane();
+//            scrollContent.setViewportView( textPane );
+            setEditable( true ) ;
+            SelectDocument selectDoc = (SelectDocument)adqlTree.getRoot() ;
+            SelectType select = selectDoc.getSelect() ;
+            if( select.isSetStartComment() ) {
+                setText( select.getStartComment() ) ;
+            }
+            this.setLayout( new BorderLayout() ) ;
+//            this.add( scrollContent, BorderLayout.CENTER );
+            owner.addTab( "Description", IconHelper.loadIcon( INFO_ICON ), this, "Enter a description for the query" ) ; 
+            addFocusListener(this);
+        }
+
+        /* (non-Javadoc)
+         * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
+         */
+        public void focusLost(FocusEvent e) {
+            if( log.isTraceEnabled() ) enterTrace( "CommentView.focusLost()" ) ;
+            SelectDocument selectDoc = (SelectDocument)adqlTree.getRoot() ;
+            SelectType select = selectDoc.getSelect() ;
+            String comment = getText().trim() ;
+            if( comment == null ) {
+                if( select.isSetStartComment() ) {
+                    select.unsetStartComment() ;
+                }              
+            }
+            else if( comment.length() == 0 ) {
+                if( select.isSetStartComment() ) {
+                    select.unsetStartComment() ;
+                }  
+            }
+            else {
+                select.setStartComment( comment ) ;
+            } 
+            refreshDebugView() ;
+            if( log.isTraceEnabled() ) exitTrace( "CommentView.focusLost()" ) ;
+        }
+        
+        public void focusGained(FocusEvent e) {}
+        
+        protected void refreshDisplay() {
+            SelectDocument selectDoc = (SelectDocument)adqlTree.getRoot() ;
+            SelectType select = selectDoc.getSelect() ;
+            if( select.isSetStartComment() ) {
+                setText( select.getStartComment() ) ;
+          }
+        }
+        
+        private void refreshDebugView() {
+            if( adqlXmlView != null )
+                adqlXmlView.refreshFromModel() ;
+        }
+                    
+    } // end of class CommentView
 
     private class AdqlMainView extends JSplitPane {
         
-        // AdqlNode selectedNode ;
-        // Integer selectedNodeToken = null ;
         private final JTabbedPane owner ;
         private final AdqlsView textPane = new AdqlsView();
         
@@ -1458,8 +1550,6 @@ public class ADQLEditorPanel
                     } 
             ) ;
             scrTree.setBorder(BorderFactory.createEmptyBorder());
-            
-            //
                  
             this.setBorder(BorderFactory.createEmptyBorder());
             this.setTopComponent( scrTree ) ;
@@ -1473,7 +1563,7 @@ public class ADQLEditorPanel
             this.setDividerLocation(200);
             this.setOneTouchExpandable(false); // folk find this irritating.
             
-            this.owner.addTab( "ADQL", this ) ; 
+            this.owner.addTab( "Edit", IconHelper.loadIcon( EDIT_ICON ), this, "Edit and validate query" ) ; 
         }
         
         protected void executeEditCommand() {
@@ -1784,12 +1874,12 @@ public class ADQLEditorPanel
     public void stateChanged( ChangeEvent e) {
         if( log.isTraceEnabled() ) enterTrace( "stateChanged()"  ) ;
         if( e.getSource() == adqlTree ) {
-            if( adqlTree.isCatalogueResourceSet() ) {
-                chooseResourceButton.setEnabled( false ) ;
+            if( adqlTree.isCatalogServiceSet() ) {
+//                chooseResourceButton.setEnabled( false ) ;
                 formatCatalogTab() ;
             }
             else {
-                chooseResourceButton.setEnabled( true ) ;
+//                chooseResourceButton.setEnabled( true ) ;
             } 
             if( log.isTraceEnabled() ) {
                 log.debug( "e.getSource() == adqlTree" ) ;
@@ -2017,7 +2107,7 @@ public class ADQLEditorPanel
 
         }
         else if( command.isChildTableLinked() ) {
-            if( adqlTree.isCatalogueResourceSet() ) { 
+            if( adqlTree.isCatalogServiceSet() ) { 
                 menu = getInsertTableMenu( command ) ;
                 menu.setEnabled( command.isChildEnabled() ) ;
             }
@@ -2062,11 +2152,24 @@ public class ADQLEditorPanel
         return logIndent ;
     }
 
+    private class TableDataComparator implements Comparator {
 
+        public int compare(Object arg0, Object arg1) {
+            AdqlTree.TableData t0 = (AdqlTree.TableData)arg0 ;
+            AdqlTree.TableData t1 = (AdqlTree.TableData)arg1 ;
+            return t0.getTable().getName().compareTo( t1.getTable().getName() ) ;
+        }
+        
+    }
     
+    private class ColumnBeanComparator implements Comparator {
 
-
-
-    
-    
+        public int compare(Object arg0, Object arg1) {
+            ColumnBean c0 = (ColumnBean)arg0 ;
+            ColumnBean c1 = (ColumnBean)arg1 ;
+            return c0.getName().compareTo( c1.getName() ) ;
+        }
+        
+    }
+        
 } // end of ADQLToolEditor
