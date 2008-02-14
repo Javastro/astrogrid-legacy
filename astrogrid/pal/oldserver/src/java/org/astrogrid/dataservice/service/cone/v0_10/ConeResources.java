@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.4 2007/12/04 17:31:39 clq2 Exp $
+/*$Id: ConeResources.java,v 1.2 2008/02/14 15:02:00 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,6 +84,12 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.2  2008/02/14 15:02:00  clq2
+ PAL_KEA_2556
+
+ Revision 1.1.2.1  2008/02/08 13:02:13  kea
+ Moving unused files from server to oldserver.
+
  Revision 1.4  2007/12/04 17:31:39  clq2
  PAL_KEA_2378
 

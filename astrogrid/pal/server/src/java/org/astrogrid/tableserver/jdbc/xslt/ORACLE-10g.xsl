@@ -34,12 +34,22 @@
 		<xsl:apply-templates select="ad:InTo"/>
 		<xsl:apply-templates select="ad:From"/>
 		<xsl:apply-templates select="ad:Where"/>
+		<!-- if where not set, handle restrict -->
+      <xsl:choose>
+		<xsl:when test="ad:Where">
+		   <xsl:apply-templates select="ad:Restrict">
+             <xsl:with-param name='restrictWord' select="'And'"/>
+          </xsl:apply-templates>
+       </xsl:when>
+		<xsl:otherwise>
+		   <xsl:apply-templates select="ad:Restrict">
+             <xsl:with-param name='restrictWord' select="'Where'"/>
+          </xsl:apply-templates>
+		</xsl:otherwise>
+      </xsl:choose>
 		<xsl:apply-templates select="ad:GroupBy"/>
 		<xsl:apply-templates select="ad:Having"/>
 		<xsl:apply-templates select="ad:OrderBy"/>
-      <!-- need to put restrict at end for final "limit x" sql -->
-      <xsl:apply-templates select="ad:Restrict"/>
-
 	</xsl:template>
 	
 	<!-- the "main" elements -->
@@ -58,7 +68,8 @@
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'aliasSelectionItemType'] | *[@xsi:type = 'aliasSelectionItemType']">
 		<xsl:apply-templates select="ad:Expression"/>
 		<xsl:if test="@As">
-			<xsl:text> as </xsl:text>
+			<!--<xsl:text> as </xsl:text>-->
+			<xsl:value-of select="$spaceCharacter"/>
 			<xsl:value-of select="@As"/>
 		</xsl:if>
 	</xsl:template>
@@ -88,18 +99,20 @@
 		<xsl:text>:</xsl:text>
 		<xsl:value-of select="@Name"/>
 		<xsl:if test="@Alias">
-			<xsl:text> as </xsl:text>
+			<!--<xsl:text> as </xsl:text>-->
+			<xsl:value-of select="$spaceCharacter"/>
 			<xsl:value-of select="@Alias"/>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'tableType'] | *[@xsi:type = 'tableType']">
       <xsl:if test="@Archive">
-          <xsl:value-of select="@Archive"/>
-          <xsl:text>.</xsl:text>
+         <xsl:value-of select="@Archive"/>
+         <xsl:text>.</xsl:text>
       </xsl:if>
 		<xsl:value-of select="@Name"/>
 		<xsl:if test="@Alias">
-			<xsl:text> as </xsl:text>
+			<!--<xsl:text> as </xsl:text>-->
+			<xsl:value-of select="$spaceCharacter"/>
 			<xsl:value-of select="@Alias"/>
 		</xsl:if>
 	</xsl:template>
@@ -170,22 +183,22 @@
 	<!-- the 'searchType' templates -->
 	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'intersectionSearchType'] | *[@xsi:type = 'intersectionSearchType']">    
-      <xsl:text> (</xsl:text>
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[1]"/>
-      <xsl:text>) </xsl:text>
+		<xsl:text>) </xsl:text>
 		<xsl:text> And </xsl:text>
-      <xsl:text> (</xsl:text>
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[2]"/>
-      <xsl:text>) </xsl:text>
+		<xsl:text>) </xsl:text>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'unionSearchType'] | *[@xsi:type = 'unionSearchType']">
-      <xsl:text> (</xsl:text>
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[1]"/>
-      <xsl:text>) </xsl:text>
+		<xsl:text>) </xsl:text>
 		<xsl:text> Or </xsl:text>
-      <xsl:text> (</xsl:text>
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[2]"/>
-      <xsl:text>) </xsl:text>
+		<xsl:text>) </xsl:text>
 	</xsl:template>
 	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'likePredType'] | *[@xsi:type = 'likePredType']">
@@ -316,9 +329,7 @@
 		<xsl:apply-templates select="ad:Literal"/>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'realType'] | *[@xsi:type = 'realType']">
-      <xsl:text>CAST( </xsl:text>
-		    <xsl:value-of select="@Value"/>
-      <xsl:text> AS double precision)</xsl:text>
+		<xsl:value-of select="@Value"/>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'integerType'] | *[@xsi:type = 'integerType']">
 		<xsl:value-of select="@Value"/>
@@ -334,7 +345,10 @@
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	<xsl:template match="ad:Restrict">
-		<xsl:text>LIMIT </xsl:text>
+      <xsl:param name='restrictWord'/>
+		<xsl:value-of select="$restrictWord"/>
+		<xsl:value-of select="$spaceCharacter"/>
+		<xsl:text>rownum&lt;=</xsl:text>
 		<xsl:value-of select="@Top"/>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
@@ -354,6 +368,12 @@
             <xsl:text>)</xsl:text>
             <xsl:value-of select="$spaceCharacter"/>
          </xsl:when>
+         <xsl:when test="@Name = 'COT'">
+           <xsl:text>(1.0 / TAN(</xsl:text>
+           <xsl:apply-templates select="ad:Arg"/>
+           <xsl:text>))</xsl:text>
+           <xsl:value-of select="$spaceCharacter"/>
+         </xsl:when>
          <xsl:otherwise>
             <xsl:value-of select="@Name"/>
             <xsl:text>(</xsl:text>
@@ -364,9 +384,6 @@
          </xsl:otherwise>
       </xsl:choose>
 	</xsl:template>
-   <!-- Note that PostgreSQL is quite picky about the type of math function
-     arguments; explicitly cast all such arguments to double precision to
-     be cautious.  -->
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'mathFunctionType'] | *[@xsi:type = 'mathFunctionType']">
       <xsl:choose>
          <!-- This is a custom action for SQUARE function (not supported) -->
@@ -384,74 +401,78 @@
            <xsl:text>)</xsl:text>
            <xsl:value-of select="$spaceCharacter"/>
          </xsl:when>
-         <!-- Need to keep the second argument of POWER an int -->
-         <!--
-         <xsl:when test="@Name = 'POWER'">
-            <xsl:text>POWER</xsl:text>
-           <xsl:text>(</xsl:text>
+         <!-- This is a custom action for TRUNCATE function (takes 2 args) -->
+	 <!--
+         <xsl:when test="@Name = 'TRUNCATE'">
+           <xsl:text>TRUNCATE(</xsl:text>
            <xsl:apply-templates select="ad:Allow"/>
-           <xsl:text>CAST( </xsl:text>
-           <xsl:apply-templates select="ad:Arg[1]"/>
-           <xsl:text> AS double precision)</xsl:text>
-           <xsl:text>,</xsl:text>
-           <xsl:apply-templates select="ad:Arg[2]"/>
+           <xsl:apply-templates select="ad:Arg"/>
+           <xsl:text>,0)</xsl:text>
+           <xsl:value-of select="$spaceCharacter"/>
+         </xsl:when>
+	 -->
+         <!-- This is a custom action for LOG function (LOG(base, arg)) -->
+         <xsl:when test="@Name = 'LOG10'">
+           <xsl:text>LOG(10,</xsl:text>
+           <xsl:apply-templates select="ad:Arg"/>
            <xsl:text>)</xsl:text>
            <xsl:value-of select="$spaceCharacter"/>
          </xsl:when>
-         -->
+         <xsl:when test="@Name = 'RADIANS'">
+           <xsl:text>(0.0174532925 * </xsl:text>
+           <xsl:apply-templates select="ad:Arg"/>
+           <xsl:text>)</xsl:text>
+           <xsl:value-of select="$spaceCharacter"/>
+         </xsl:when>
+         <xsl:when test="@Name = 'DEGREES'">
+           <xsl:text>(57.2957795 * </xsl:text>
+           <xsl:apply-templates select="ad:Arg"/>
+           <xsl:text>)</xsl:text>
+           <xsl:value-of select="$spaceCharacter"/>
+         </xsl:when>
          <xsl:otherwise>
-         <!-- If we haven't got "SQUARE", make subchoice -->
-            <xsl:choose>
-              <!-- TRUNCATE should be TRUNC -->
-              <xsl:when test="@Name = 'TRUNCATE'">
-                <xsl:text>TRUNC</xsl:text>
-              </xsl:when>
-              <!-- CEILING should be CEIL -->
-              <xsl:when test="@Name = 'CEILING'">
-                <xsl:text>CEIL</xsl:text>
-              </xsl:when>
-              <!-- LOG should be LN -->
-              <xsl:when test="@Name = 'LOG'">
-                <xsl:text>LN</xsl:text>
-              </xsl:when>
-              <!-- LOG10 should be LOG -->
-              <xsl:when test="@Name = 'LOG10'">
-                <xsl:text>LOG</xsl:text>
-              </xsl:when>
-              <!-- POWER should be POW -->
-              <xsl:when test="@Name = 'POWER'">
-                <xsl:text>POW</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <!-- This is the default action for maths functions 
-                - just use specified name -->
-                <xsl:value-of select="@Name"/>
-              </xsl:otherwise>
-            </xsl:choose>
-            <xsl:text>( </xsl:text>
+	    <xsl:choose>
+	       <!-- LOG should be LN -->
+	       <xsl:when test="@Name = 'LOG'">
+		  <xsl:text>LN</xsl:text>
+	       </xsl:when>
+	       <!-- LOG10 should be LOG -->
+	       <xsl:when test="@Name = 'LOG10'">
+		  <xsl:text>LOG</xsl:text>
+	        </xsl:when>
+	       <!-- TRUNCATE should be TRUNC -->
+	       <xsl:when test="@Name = 'TRUNCATE'">
+		  <xsl:text>TRUNC</xsl:text>
+	       </xsl:when>
+	       <!-- CEILING should be CEIL -->
+	       <xsl:when test="@Name = 'CEILING'">
+		  <xsl:text>CEIL</xsl:text>
+	       </xsl:when>
+	       <xsl:otherwise>
+                  <!-- This is the default action for maths functions -->
+                  <xsl:value-of select="@Name"/>
+	       </xsl:otherwise>
+	    </xsl:choose>
+            <xsl:text>(</xsl:text>
 
             <xsl:apply-templates select="ad:Allow"/>
 
-            <!-- Jeff's change to accommodate function argument cardinalities -->
-            <!-- xsl:apply-templates select="ad:Arg"/ -->
-            <xsl:variable name="list">
-              <xsl:for-each select="ad:Arg">
-                <!-- Apply cast to all math function args; Postgres is a 
-                  royal pain when it comes to auto type promotion.  -->
-                <xsl:text>CAST( </xsl:text>
-                  <xsl:apply-templates select="."/>
-                <xsl:text> AS double precision)</xsl:text>
-                <xsl:text>,</xsl:text>
-                <xsl:value-of select="$spaceCharacter"/>
-              </xsl:for-each>
-            </xsl:variable>
-            <xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
-            <!-- end of Jeff's change -->
+           <!-- Jeff's change to accommodate function argument cardinalities -->
+           <!-- xsl:apply-templates select="ad:Arg"/ -->
+           <xsl:variable name="list">
+             <xsl:for-each select="ad:Arg">
+               <xsl:apply-templates select="."/>
+               <xsl:text>,</xsl:text>
+               <xsl:value-of select="$spaceCharacter"/>
+             </xsl:for-each>
+           </xsl:variable>
+           <xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
+           <!-- end of Jeff's change -->
 
-            <xsl:text> )</xsl:text>
-            <xsl:value-of select="$spaceCharacter"/>
-          </xsl:otherwise>
-        </xsl:choose>
+           <xsl:text>)</xsl:text>
+           <xsl:value-of select="$spaceCharacter"/>
+         </xsl:otherwise>
+      </xsl:choose>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'aggregateFunctionType'] | *[@xsi:type = 'aggregateFunctionType']">
 		<xsl:value-of select="@Name"/>
@@ -508,6 +529,11 @@
 	<!-- Jeff's additions end here -->
 	
 	
+	
+	
+	
+	
 	<xsl:template match="text()"/>
 	
 </xsl:stylesheet>
+

@@ -51,26 +51,14 @@ so that other parts of the Virtual Observatory can be aware of it.
 <h1>Registering your Datacenter</h1>
 
 <p> 
-The DSA-catalog installation has a self-registration function;
-you can simply use the <a href='../admin/register.jsp'>Registration</a> 
-page to 'push' the metadata to the Registry:
+The DSA-catalog installation has an administration page to help you create
+and manage your registration metadata:
 </p>
 
-<h4>&nbsp;&nbsp;&nbsp;<a href='../admin/register.jsp'>Self-register your DSA/catalog installation &gt;&gt;</a></h4>
+<h4>&nbsp;&nbsp;&nbsp;<a href='../admin/register.jsp'>Manage your DSA/catalog installation registrations&gt;&gt;</a></h4>
 
-
-<p>
-Alternatively, if you prefer, you can copy your registration XML metadata 
-manually from the <a href='../GetMetadata'>XML Metadata page</a>) and paste
-it into the appropriate Registry's user interface pages.  Note that
-some browsers mangle XML when displaying it, so you should copy the
-metadata from the page source (using e.g. your browser's "View page source"
-option).
-</p>
-
-<p>
-Once the registration has completed, you may wish to visit the Registry
-where your data was submitted just to check that you can now see it there.
+<p>Please follow the instructions on the page to register your DSA/catalog
+installation at your chosen publishing registry.
 </p>
 
 <p>

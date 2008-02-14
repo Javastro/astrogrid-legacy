@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.15 2008/02/07 17:27:45 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.16 2008/02/14 15:02:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -116,10 +116,10 @@ public class SampleStarsPlugin extends JdbcPlugin
 
       //set up the properties for the authority bit
       ConfigFactory.getCommonConfig().setProperty("datacenter.name", "Default Astrogrid DSA/Catalog running test database");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.publisher", "AstroGrid");
+      //ConfigFactory.getCommonConfig().setProperty("datacenter.publisher", "AstroGrid");
       ConfigFactory.getCommonConfig().setProperty("datacenter.description", "This is a default (unconfigured) DSA/catalog installation.  It accesses a small HSQLDB database containing fictitious tables of stars and galaxies for testing and demonstration purposes.");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "The AstroGrid Team");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "astrogrid_dsa@star.le.ac.uk");
+      //ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "The AstroGrid Team");
+      //ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "astrogrid_dsa@star.le.ac.uk");
 
       ConfigFactory.getCommonConfig().setProperty("default.table","TabName_SampleStars");
       // Conesearch and self-test properties

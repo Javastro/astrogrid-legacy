@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.3 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: TabularDbResources.java,v 1.2 2008/02/14 15:02:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */

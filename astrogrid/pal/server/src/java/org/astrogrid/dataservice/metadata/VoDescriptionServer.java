@@ -15,7 +15,7 @@ import org.astrogrid.cfg.ConfigFactory;
 // Can't import the VoDescriptionGenerator classes by name here,
 // or the compiler gets confused (even if they are referred to
 // by fully qualified name as below), so import by *
-import org.astrogrid.dataservice.metadata.v0_10.*;
+//import org.astrogrid.dataservice.metadata.v0_10.*;
 import org.astrogrid.dataservice.metadata.v1_0.*;
 
 import org.astrogrid.registry.RegistryException;
@@ -51,18 +51,18 @@ public class VoDescriptionServer {
    protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
 
    // Versioned description generators
-   protected static org.astrogrid.dataservice.metadata.v0_10.VoDescriptionGenerator generator_v0_10 = new org.astrogrid.dataservice.metadata.v0_10.VoDescriptionGenerator();
+   //protected static org.astrogrid.dataservice.metadata.v0_10.VoDescriptionGenerator generator_v0_10 = new org.astrogrid.dataservice.metadata.v0_10.VoDescriptionGenerator();
 
    protected static org.astrogrid.dataservice.metadata.v1_0.VoDescriptionGenerator generator_v1_0 = new org.astrogrid.dataservice.metadata.v1_0.VoDescriptionGenerator();
 
    // Caches for document versions
-   protected static Document cache_v0_10 = null;
+   //protected static Document cache_v0_10 = null;
    protected static Document cache_v1_0 = null;
 
    //These are the VOResource versions that the DSA knows about.
-   public final static String V0_10        = "v0_10";   
+   //public final static String V0_10        = "v0_10";   
    public final static String V1_0         = "v1_0";
-   public final static String VERSIONS[] = { V0_10, V1_0 };
+   public final static String VERSIONS[] = { V1_0 };
 
    /**
     * Returns true if the specified version is supported by DSA, 
@@ -71,10 +71,12 @@ public class VoDescriptionServer {
     */
    public static boolean isSupported(String version) 
    {
+      /*
       if (V0_10.equals(version)) {
          return true;
       }
-      else if (V1_0.equals(version)) {
+      */
+      if (V1_0.equals(version)) {
          return true;
       }
       return false;
@@ -87,6 +89,7 @@ public class VoDescriptionServer {
     */
    public static boolean isEnabled(String version) 
    {
+      /*
       if (V0_10.equals(version)) {
          // Check whether v0.10 resources are required
          String s = ConfigFactory.getCommonConfig().getString(
@@ -95,7 +98,8 @@ public class VoDescriptionServer {
            return true; // v0.10 resources are enabled
          }
       }
-      else if (V1_0.equals(version)) {
+      */
+      if (V1_0.equals(version)) {
          // Check whether v0.10 resources are required
          String s = ConfigFactory.getCommonConfig().getString(
               "datacenter.resource.register.v1_0",null);
@@ -115,6 +119,7 @@ public class VoDescriptionServer {
             throws IOException, MetadataException 
    {
       // Deal with v0.10 resources
+      /*
       if (V0_10.equals(version)) {
         if (isEnabled(version)) {
           if (cache_v0_10 == null) {
@@ -126,8 +131,9 @@ public class VoDescriptionServer {
             throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
         }
       } 
+      */
       // Deal with v1.0 resources
-      else if (V1_0.equals(version)) {
+      if (V1_0.equals(version)) {
         if (isEnabled(version)) {
           if (cache_v1_0 == null) {
             cache_v1_0 = generator_v1_0.getVoDescription();
@@ -150,7 +156,7 @@ public class VoDescriptionServer {
     */
    public synchronized static void clearCaches()
    {
-      cache_v0_10 = null;
+      //cache_v0_10 = null;
       cache_v1_0 = null;
    }
 
@@ -161,6 +167,7 @@ public class VoDescriptionServer {
    public static Document getWrappedResource(String version, String resourceType) throws IOException, MetadataException 
    {
       // Deal with v0.10 resources
+      /*
       if (V0_10.equals(version)) {
         if (isEnabled(version)) {
           return generator_v0_10.getWrappedResource(resourceType);
@@ -169,8 +176,9 @@ public class VoDescriptionServer {
             throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
         }
       } 
+      */
       // Deal with v1.0 resources
-      else if (V1_0.equals(version)) {
+      if (V1_0.equals(version)) {
         if (isEnabled(version)) {
           return generator_v1_0.getWrappedResource(resourceType);
         }
@@ -192,6 +200,7 @@ public class VoDescriptionServer {
    public static void pushToRegistry(String version, URL targetRegistry) 
          throws IOException, RegistryException {
       // Deal with v0.10 resources
+   /*
       if (V0_10.equals(version)) {
         if (isEnabled(version)) {
           generator_v0_10.pushToRegistry(targetRegistry, "0.1");
@@ -200,8 +209,9 @@ public class VoDescriptionServer {
             throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
         }
       } 
+      */
       // Deal with v1.0 resources
-      else if (V1_0.equals(version)) {
+      if (V1_0.equals(version)) {
         if (isEnabled(version)) {
           generator_v1_0.pushToRegistry(targetRegistry, "1.0");
         }

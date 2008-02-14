@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.16 2008/02/07 17:27:45 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.17 2008/02/14 15:02:00 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,6 @@ public class InstallationPropertiesCheck extends TestCase {
 
       initConfig();
 
-      // Check all properties are set
       if (!checkSet("datacenter.url", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.metadoc.file", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.querier.plugin", accum)) { bad = bad+1; }
@@ -106,10 +105,15 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("datacenter.authorityId", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.resourceKey", accum)) { bad = bad+1; }
 
-      if (!checkSet("datacenter.publisher", accum)) { bad = bad+1; }
-      if (!checkSet("datacenter.contact.name", accum)) { bad = bad+1; }
-      if (!checkSet("datacenter.contact.email", accum)) { bad = bad+1; }
-      if (!checkSet("datacenter.data.creator.name", accum)) { bad = bad+1; }
+      // Old dublin core stuff, now set at registry
+      if (!checkUnset("datacenter.publisher", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.contact.name", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.contact.email", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.contact.date", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.data.creator.name", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.data.creator.logo", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.reference.url", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.shortname", accum)) { bad = bad+1; }
 
       // Catch old resource plugin settings (shouldn't be more than 3)
       if (!checkUnset("datacenter.resource.plugin.1", accum)) { bad = bad+1; }

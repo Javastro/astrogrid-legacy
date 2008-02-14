@@ -102,6 +102,26 @@
 		</xsl:if>
 	</xsl:template>
 	
+ 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'joinTableType'] | *[@xsi:type = 'joinTableType']">
+	    <xsl:variable name="joinType" select="ad:Qualifier" />
+	    <xsl:apply-templates select="ad:Tables/ad:fromTableType[1]"/>
+        <xsl:choose>
+           <xsl:when test="$joinType='LEFT_OUTER'" ><xsl:text> LEFT OUTER JOIN </xsl:text></xsl:when>
+           <xsl:when test="$joinType='RIGHT_OUTER'" ><xsl:text> RIGHT OUTER JOIN </xsl:text></xsl:when>           
+           <xsl:when test="$joinType='FULL_OUTER'" ><xsl:text> FULL OUTER JOIN </xsl:text></xsl:when>           
+           <xsl:when test="$joinType='INNER'" ><xsl:text> INNER JOIN </xsl:text></xsl:when>    
+           <xsl:when test="$joinType='CROSS'" ><xsl:text> CROSS JOIN </xsl:text></xsl:when> 
+           <xsl:otherwise><xsl:text> INNER JOIN </xsl:text></xsl:otherwise>  
+        </xsl:choose> 
+        <xsl:apply-templates select="ad:Tables/ad:fromTableType[2]"/>   
+        <xsl:choose>
+           <xsl:when test="$joinType!='CROSS'" >
+              <xsl:text> ON </xsl:text>  
+              <xsl:apply-templates select="ad:Condition"/> 
+           </xsl:when>
+        </xsl:choose>              
+	</xsl:template>
+	
 	<xsl:template match="ad:Where">  
 		<xsl:text>Where </xsl:text>
 		<xsl:apply-templates select="ad:Condition"/>
@@ -225,7 +245,7 @@
 		<xsl:apply-templates select="ad:Condition"/>
       <xsl:text>) </xsl:text>
 	</xsl:template>
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'comparisonPredType'] | *[@xsi:type = 'comparisonPredType']">
+   <xsl:template match="*[substring-after(@xsi:type, ':') = 'comparisonPredType'] | *[@xsi:type = 'comparisonPredType'] | *[@Comparison]">
 		<xsl:apply-templates select="ad:Arg[1]"/>
 		<xsl:value-of select="@Comparison"/>
 		<xsl:apply-templates select="ad:Arg[2]"/>

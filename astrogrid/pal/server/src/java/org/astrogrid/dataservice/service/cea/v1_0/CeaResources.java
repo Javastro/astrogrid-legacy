@@ -11,20 +11,18 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
-import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.metadata.VoResourceSupportBase;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescription;
 
-
 /**
  * Serves the CEA capabilities and application registrations.  
  * @author M Hill, K Andrews
  */
 
-public class CeaResources extends VoResourceSupport {
+public class CeaResources extends VoResourceSupportBase {
    protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
    
    /**

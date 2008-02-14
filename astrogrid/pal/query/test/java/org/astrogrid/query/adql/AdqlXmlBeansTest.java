@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXmlBeansTest.java,v 1.4 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: AdqlXmlBeansTest.java,v 1.5 2008/02/14 15:02:00 clq2 Exp $
  * (C) Copyright Astrogrid...
  */
 
@@ -185,6 +185,18 @@ public class AdqlXmlBeansTest extends XMLTestCase   {
    public void testSelectTwoTablesFourColsArchive() throws Exception {
      suiteTest("selectTwoTablesFourColsArchive", "v1_0", true);
    }
+   public void testSelectFromInnerJoin() throws Exception {
+     suiteTest("selectFromInnerJoin", "v1_0", true);
+   }
+   public void testSelectFromOuterJoin() throws Exception {
+     suiteTest("selectFromOuterJoin", "v1_0", true);
+   }
+   public void testSelectFromRightOuterJoin() throws Exception {
+     suiteTest("selectFromRightOuterJoin", "v1_0", true);
+   }
+   public void testSelectSomeNoAlias() throws Exception {
+     suiteTest("selectSomeNoAlias", "v1_0", true);
+   }
 
    public static Test suite() {
       // Reflection is used here to add all the testXXX() methods to the suite.
@@ -250,13 +262,13 @@ public class AdqlXmlBeansTest extends XMLTestCase   {
      FromType fromType = null;
      fromType = selectType.getFrom();
      if (!selectType.isSetFrom()) {
-       System.out.println("!!!! DIDN'T GET FROM !!!!! ");
+       //System.out.println("!!!! DIDN'T GET FROM !!!!! ");
        fromType = FromType.Factory.parse(DEFAULT_FROM);
        selectType.setFrom(fromType);
        //Check still valid
        isValid = isValidAdql(selectDoc);
        if (!isValid) {
-         System.out.println("!!!! Broke ADQL adding FROM!!!!! ");
+         //System.out.println("!!!! Broke ADQL adding FROM!!!!! ");
          fail();
        }
      }

@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.20 2008/01/11 15:58:25 kea Exp $
+ * $Id: VoResourceSupport.java,v 1.2 2008/02/14 15:01:59 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */

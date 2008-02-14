@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!-- NB THIS IS A REALLY UTTERLY NONSENSICAL QUERY - JUST FOR SYNTAX CHECKS -->
+    <Restrict Top="100"/>
+    <SelectionList>
+        <Item xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
+        <Item xsi:type="columnReferenceType" Table="b" Name="POS_EQ_DEC"/>
+    </SelectionList>
+    <From>
+        <Table xsi:type="joinTableType">
+            <Qualifier>RIGHT_OUTER</Qualifier>
+            <Tables>
+                <fromTableType xsi:type="tableType" Name="INSERT_TABLE" Alias="a"/>
+                <fromTableType xsi:type="tableType" Name="INSERT_TABLE" Alias="b"/>
+            </Tables>
+            <Condition Comparison="=">
+                <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
+                <Arg xsi:type="columnReferenceType" Table="b" Name="POS_EQ_DEC"/>
+            </Condition>
+        </Table>
+    </From>
+</Select>
+

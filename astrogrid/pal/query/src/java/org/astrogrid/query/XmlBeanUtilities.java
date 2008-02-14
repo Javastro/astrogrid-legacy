@@ -151,27 +151,15 @@ public class XmlBeanUtilities  {
       SelectType selectType = selectDocument.getSelect();
       if (selectType.isSetFrom()) {
          FromType from = selectType.getFrom();
-         int numTables = from.sizeOfTableArray();
+         TableType[] tables = getAllBaseTables(from);
+         int numTables = tables.length;
          Vector parentNames = new Vector();
          for (int i = 0; i < numTables; i++) {
             String name = "";
             String parentCatalog = null;     //Default
-            FromTableType fromTable = (FromTableType)(from.getTableArray(i));
-            if (fromTable instanceof TableType) {
-               TableType tableType = 
-                  (TableType)(from.getTableArray(i));
-               name = tableType.getName();
-               parentCatalog = getParentCatalog(tableType);
-            }
-            else if (fromTable instanceof JoinTableType) {
-               /*
-               JoinTableType tableType = 
-                  (JoinTableType)(from.getTableArray(i));
-               name = tableType.getName();
-               */
-               throw new QueryException("This DSA/catalog installation " +
-                     "can not handle queries involving joins");
-            }
+            TableType tableType = tables[i];
+            name = tableType.getName();
+            parentCatalog = getParentCatalog(tableType);
             boolean duplicate = false;
             for (int j = 0; j < parentNames.size(); j++) {
                if (name.equals((String)(parentNames.elementAt(j)))) {
@@ -192,6 +180,7 @@ public class XmlBeanUtilities  {
       }
       return new String[0];
    } 
+
    /** Returns all table names that are used in the query.
     *  This can be needed for dealing with VOTable metadata etc.
     */
@@ -206,11 +195,11 @@ public class XmlBeanUtilities  {
       SelectType selectType = selectDocument.getSelect();
       if (selectType.isSetFrom()) {
          FromType from = selectType.getFrom();
-         int numTables = from.sizeOfTableArray();
-         //String tableNames[] = new String[numTables];
+         TableType[] tables = getAllBaseTables(from);
+         int numTables = tables.length;
          Vector tableNames = new Vector();
          for (int i = 0; i < numTables; i++) {
-            TableType tableType = (TableType)(from.getTableArray(i));
+           TableType tableType = tables[i];
             String name = tableType.getName();
             boolean duplicate = false;
             for (int j = 0; j < tableNames.size(); j++) {
@@ -224,11 +213,11 @@ public class XmlBeanUtilities  {
             }    
          }
          numTables = tableNames.size();
-         String[] tables = new String[numTables];
+         String[] tableStrings = new String[numTables];
          for (int i = 0; i < numTables; i++) {
-           tables[i] = (String)tableNames.elementAt(i);
+           tableStrings[i] = (String)tableNames.elementAt(i);
          }
-         return tables;
+         return tableStrings;
       }
       return new String[0];
    } 
@@ -325,10 +314,13 @@ public class XmlBeanUtilities  {
       SelectType selectType = selectDocument.getSelect();
       if (selectType.isSetFrom()) {
          FromType from = selectType.getFrom();
-         int numTables = from.sizeOfTableArray();
+         TableType[] fromTables = XmlBeanUtilities.getAllBaseTables(from);
+         int numTables = fromTables.length;
+         //int numTables = from.sizeOfTableArray();
          String tableNames[] = new String[numTables];
          for (int i = 0; i < numTables; i++) {
-            TableType tableType = (TableType)(from.getTableArray(i));
+            //TableType tableType = (TableType)(from.getTableArray(i));
+            TableType tableType = fromTables[i];
             if (tableType.getName().equals(tableRef)) {
                return tableType.getAlias();
             }
@@ -394,29 +386,57 @@ public class XmlBeanUtilities  {
       SelectType selectType = selectDocument.getSelect();
       if (selectType.isSetFrom()) {
          FromType from = selectType.getFrom();
+         TableType[] tables = getAllBaseTables(from);
          int numTables = from.sizeOfTableArray();
          Vector parentNames = new Vector();
          for (int i = 0; i < numTables; i++) {
-            String name = "";
-            String parentCatalog = null;     //Default
-            FromTableType fromTable = (FromTableType)(from.getTableArray(i));
-            if (fromTable instanceof TableType) {
-               TableType tableType = 
-                  (TableType)(from.getTableArray(i));
-               setParentCatalog(tableType, catalogName, overwrite);
-            }
-            else if (fromTable instanceof JoinTableType) {
-               /*
-               JoinTableType tableType = 
-                  (JoinTableType)(from.getTableArray(i));
-               name = tableType.getName();
-               */
-               throw new QueryException("This DSA/catalog installation " +
-                     "can not handle queries involving joins");
-            }
+            setParentCatalog(tables[i], catalogName, overwrite);
          }
       }
    } 
+   /** Returns a list of all the TableType elements in the specified 
+    * FromType (including those buried inside a JoinTableType element). 
+    */
+   public static TableType[] getAllBaseTables(FromType from) throws QueryException
+   {
+      Vector fullList = getVectorOfAllBaseTables(from);
+      TableType[] emptyList = new TableType[0];
+      return (TableType[])fullList.toArray(emptyList);
+   }
+
+   protected static Vector getVectorOfAllBaseTables(FromType from) throws QueryException
+   {
+      Vector fullList = new Vector();
+      if (from == null) {
+         throw new QueryException("Input FromType may not be null!");
+      }
+      int numTables = from.sizeOfTableArray();
+      for (int i = 0; i < numTables; i++) {
+         String name = "";
+         String parentCatalog = null;     //Default
+         FromTableType fromTable = (FromTableType)(from.getTableArray(i));
+         if (fromTable instanceof TableType) {
+            fullList.add((TableType)(from.getTableArray(i)));
+         }
+         else if (fromTable instanceof JoinTableType) {
+            JoinTableType tableType = 
+               (JoinTableType)(from.getTableArray(i));
+            ArrayOfFromTableType tables = tableType.getTables();
+            FromTableType[] fromTableArray = tables.getFromTableTypeArray();
+            for (int j = 0; j < fromTableArray.length; j++) {
+               if (fromTableArray[j] instanceof TableType) {
+                  fullList.add((TableType)(fromTableArray[j]));
+               }
+               else {
+                  // KONA TOFIX DO SOMETHING ELSE LATER?
+                  throw new QueryException("Got an unrecognised table type from a JoinTableType element - this input query is not supported");
+               }
+            }
+         }
+      }
+      return fullList;
+   }
+
 
    /** Returns the real table name for the specified alias (or just 
     * returns the input value if it is actually a table name, not an alias).
@@ -433,10 +453,13 @@ public class XmlBeanUtilities  {
       SelectType selectType = selectDocument.getSelect();
       if (selectType.isSetFrom()) {
          FromType from = selectType.getFrom();
-         int numTables = from.sizeOfTableArray();
+         TableType[] fromTables = XmlBeanUtilities.getAllBaseTables(from);
+         int numTables = fromTables.length;
+         //int numTables = from.sizeOfTableArray();
          String tableNames[] = new String[numTables];
          for (int i = 0; i < numTables; i++) {
-            TableType tableType = (TableType)(from.getTableArray(i));
+            //TableType tableType = (TableType)(from.getTableArray(i));
+            TableType tableType = fromTables[i];
             // Check if we have an alias
             if (tableType.getAlias().equals(tableAlias)) {
                return tableType.getName();

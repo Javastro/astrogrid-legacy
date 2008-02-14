@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.7 2008/02/07 17:27:45 clq2 Exp $
+/*$Id: AdqlSqlMaker.java,v 1.8 2008/02/14 15:01:59 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -335,10 +335,11 @@ public class AdqlSqlMaker implements SqlMaker {
          throw new QueryException("Input SelectDocument must have a FROM clause!");
       }
       FromType from = selectType.getFrom();
-      int numTables = from.sizeOfTableArray();
+      TableType[] fromTables = XmlBeanUtilities.getAllBaseTables(from);
+      int numTables = fromTables.length;
       try {
          for (int i = 0; i < numTables; i++) {
-            TableType tableType = (TableType)(from.getTableArray(i));
+            TableType tableType = fromTables[i];
             String tableName = tableType.getName(); 
             // Strip any catalog prefix off table name, just in case
             int dotIndex = tableName.lastIndexOf(".");

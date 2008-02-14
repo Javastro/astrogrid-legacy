@@ -1,5 +1,5 @@
 /*
- * $Id: TableResources.java,v 1.2 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: TableResources.java,v 1.3 2008/02/14 15:02:00 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoTypes;
-import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
@@ -19,9 +18,7 @@ import org.astrogrid.ucd.UcdVersions;
 import org.astrogrid.ucd.UcdException;
 
 /**
- * Generates VoResource elements for VoDataService catalog resources.
- *
- * TOFIX THIS IS STILL SERVING OLD VERSION!!! JUST A PLACEHOLDER!!
+ * Generates Table descriptions for CatalogService catalog resources.
  *
  */
 

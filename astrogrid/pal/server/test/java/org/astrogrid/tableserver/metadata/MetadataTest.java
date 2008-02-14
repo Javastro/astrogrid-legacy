@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.6 2008/02/07 17:27:45 clq2 Exp $
+/*$Id: MetadataTest.java,v 1.7 2008/02/14 15:02:00 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,11 +19,9 @@ import java.util.Hashtable;
 import java.util.Locale;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.metadata.FileResourcePlugin;
-import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
-import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
+import org.astrogrid.dataservice.metadata.VoResourceSupportBase;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
@@ -64,7 +62,7 @@ public class MetadataTest extends TestCase {
          catch (URISyntaxException use) {
             fail("id "+rawId+" is not a valid IVORN: "+use);
          }
-         String configAuth = ConfigFactory.getCommonConfig().getString(VoResourceSupport.AUTHID_KEY);
+         String configAuth = ConfigFactory.getCommonConfig().getString(VoResourceSupportBase.AUTHID_KEY);
          assertTrue("identity "+id.getAuthority()+" doesn't start with config'd authority '"+configAuth+"'", id.getAuthority().startsWith(configAuth));
             
          //check for duplicates
@@ -167,39 +165,6 @@ public class MetadataTest extends TestCase {
       //debug
       DomHelper.DocumentToStream(metaDoc, System.out);
     }
-
-   /*
-   public void testMetadataFileServer() throws Throwable{
-      
-      ConfigFactory.getCommonConfig().setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
-      //get non-existent file
-      ConfigFactory.getCommonConfig().setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "doesntexist");
-      VoDescriptionServer.clearCache(); //force reload
-      try {
-         Document metadata = VoDescriptionServer.getVoDescription();
-         fail("Should have complained no metadata file");
-      } catch (FileNotFoundException fnfe) {
-         //ignore, supposed to happen
-      }
-      
-      ConfigFactory.getCommonConfig().setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "org/astrogrid/tableserver/metadata/sample-metadata.xml");
-      VoDescriptionServer.clearCache(); //force reload
-      Document metadata = VoDescriptionServer.getVoDescription();
-      assertNotNull(metadata);
-      assertIdentifiersOK(metadata);
-   }
-   */
-   
-   /*
-   public void testMetatdataUrlServer() throws Throwable{
-      ConfigFactory.getCommonConfig().setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, UrlResourcePlugin.class.getName());
-
-      ConfigFactory.getCommonConfig().setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, MetadataTest.class.getResource("sample-metadata.xml").toString());
-      Document metadata = VoDescriptionServer.getVoDescription();
-      assertNotNull(metadata);
-      assertIdentifiersOK(metadata);
-   }
-   */
 
    public void testRegistryDates() {
       Calendar ukcal = new GregorianCalendar(Locale.UK);

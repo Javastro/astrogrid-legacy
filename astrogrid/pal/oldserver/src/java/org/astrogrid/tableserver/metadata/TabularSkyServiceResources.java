@@ -1,5 +1,5 @@
 /*
- * $Id: TabularSkyServiceResources.java,v 1.5 2007/06/08 13:16:09 clq2 Exp $
+ * $Id: TabularSkyServiceResources.java,v 1.2 2008/02/14 15:02:01 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */

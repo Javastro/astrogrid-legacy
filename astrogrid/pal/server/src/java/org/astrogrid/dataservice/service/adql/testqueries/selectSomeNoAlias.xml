@@ -4,6 +4,9 @@
     <SelectionList xsi:type="selectionListType">
         <Item xsi:type="columnReferenceType" Table="INSERT_TABLE" Name="INSERT_RA"/>
         <Item xsi:type="columnReferenceType" Table="INSERT_TABLE" Name="INSERT_DEC"/>
+        <Item xsi:type="trigonometricFunctionType" Name="SIN">
+            <Arg xsi:type="columnReferenceType" Table="INSERT_TABLE" Name="INSERT_RA"/>
+        </Item>
     </SelectionList>
     <From xsi:type="fromType">
         <Table xsi:type="tableType" Name="INSERT_TABLE" INSERT_CATALOG/>

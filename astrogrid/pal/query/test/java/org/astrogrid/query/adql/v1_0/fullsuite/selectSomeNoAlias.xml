@@ -1,0 +1,12 @@
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="columnReferenceType" Table="catalogue" Name="POS_EQ_RA"/>
+        <Item xsi:type="columnReferenceType" Table="catalogue" Name="POS_EQ_DEC"/>
+        <Item xsi:type="columnReferenceType" Table="catalogue" Name="ID_FIELD"/>
+        <Item xsi:type="columnReferenceType" Table="catalogue" Name="CODE_QUALITY"/>
+        <Item xsi:type="columnReferenceType" Table="catalogue" Name="PHOT_FLUX_PEAK"/>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Name="catalogue"/>
+    </From>
+</Select>

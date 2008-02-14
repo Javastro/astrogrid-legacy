@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.13 2007/12/04 17:31:39 clq2 Exp $
+ * $Id: Query.java,v 1.14 2008/02/14 15:02:00 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -605,9 +605,10 @@ public class Query  {
          // with resolving aliases/table names when no alias is supplied
          // in the From clause, leading to a null pointer error.
          FromType from = selectType.getFrom();
-         int numTables = from.sizeOfTableArray();
+         TableType[] fromTables = XmlBeanUtilities.getAllBaseTables(from);
+         int numTables = fromTables.length;
          for (int i = 0; i < numTables; i++) {
-            TableType tableType = (TableType)(from.getTableArray(i));
+            TableType tableType = fromTables[i];
             boolean hasAlias = tableType.isSetAlias();
             if (hasAlias == false) {
               // If no alias, add one same as table name

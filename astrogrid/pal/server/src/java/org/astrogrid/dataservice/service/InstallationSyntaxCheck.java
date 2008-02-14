@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.11 2007/12/04 17:31:39 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.12 2008/02/14 15:02:00 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,7 +74,13 @@ public class InstallationSyntaxCheck {
       "selectBoolOps.xml",
       "selectAllNoAlias.xml",
       "selectSomeNoAlias.xml",
-      "selectColourCutter.xml"
+      "selectColourCutter.xml",
+      "selectFromInnerJoin.xml",
+      "selectFromOuterJoin.xml",
+      "selectFromRightOuterJoin.xml"
+      // This one will definitely fail if the same table is used 
+      // for both tables in the join for testing purposes
+      //"selectFromOuterJoinNoAlias.xml"
    };
 
    private Principal testPrincipal = new LoginAccount("SelfTest", "localhost");

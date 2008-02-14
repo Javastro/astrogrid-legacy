@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.7 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: PalProxyPlugin.java,v 1.2 2008/02/14 15:02:00 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */

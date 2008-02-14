@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsQueryValidator.java,v 1.8 2008/02/07 17:27:45 clq2 Exp $
+ * $Id: RdbmsQueryValidator.java,v 1.9 2008/02/14 15:01:59 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */

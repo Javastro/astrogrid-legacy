@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.9 2008/01/11 15:58:25 kea Exp $
+ * $Id: ProxyResourceSupport.java,v 1.2 2008/02/14 15:01:59 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
