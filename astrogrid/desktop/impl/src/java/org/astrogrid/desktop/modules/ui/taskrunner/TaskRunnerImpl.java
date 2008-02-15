@@ -700,7 +700,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                         String iface = pForm.getModel().getIName();
                         pForm.buildForm(iface,res);
                     }
-	            });
+	            }).show();
 	        }
 	    }
 	
