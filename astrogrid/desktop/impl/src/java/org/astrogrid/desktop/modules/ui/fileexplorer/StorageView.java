@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -347,7 +348,10 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	    public void actionPerformed(ActionEvent e) {
 	        // work out where we are at the moment.
 	        final FileObject base =navigator.current();
-	        Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
+	        Component pc = parent.getComponent();
+	        Window w = pc instanceof Window
+	                 ? (Window) pc
+	                 : SwingUtilities.getWindowAncestor(pc);
 	        
 	        final BaseDialog d;
 	        if (w instanceof Frame) {

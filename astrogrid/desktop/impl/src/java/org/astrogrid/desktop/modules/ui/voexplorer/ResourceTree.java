@@ -771,7 +771,10 @@ public class ResourceTree extends JTree {
                 }
             }
             else if (this == rename && folder != null) {
-                Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
+                Component pc = parent.getComponent();
+                Window w = pc instanceof Window
+                         ? (Window) pc
+                         : SwingUtilities.getWindowAncestor(pc);
                 
                 final BaseDialog d;
                 if (w instanceof Frame) {

@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.17 2007/12/12 13:54:15 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.18 2008/02/15 13:09:02 mbt Exp $
 
  * Created on 30-Mar-2005
  *
@@ -12,6 +12,7 @@
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -408,7 +409,10 @@ public class VOExplorerImpl extends UIComponentImpl
 	}
 
     public void editNewResourceBranch(ResourceBranch f) {
-        Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,getComponent());
+        Component c = getComponent();
+        Window w = c instanceof Window
+                 ? (Window) c
+                 : SwingUtilities.getWindowAncestor(c);
         
         final BaseDialog d;
         if (w instanceof Frame) {

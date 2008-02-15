@@ -26,7 +26,10 @@ public class ConfirmDialog extends BaseDialog {
     private Runnable okAction2;
 
     public static ConfirmDialog newConfirmDialog(Component parent, String title,String message, Runnable action) {
-        Window window = (Window)SwingUtilities.getAncestorOfClass(Window.class, parent);
+        Window window = parent instanceof Window
+                      ? (Window) parent
+                      : (Window) SwingUtilities.getWindowAncestor(parent);
+
         if (window instanceof Frame) {
           return new ConfirmDialog((Frame)window,title,message,action);
         } else if (window instanceof Dialog) {

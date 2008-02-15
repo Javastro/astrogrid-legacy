@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -163,7 +164,10 @@ public class RenameActivity extends AbstractFileActivity {
 		List l = computeInvokable();
 		logger.debug(l);
 		final FileObject original = (FileObject)l.get(0);
-		Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,uiParent.get().getComponent());
+        Component pc = uiParent.get().getComponent();
+        Window w = pc instanceof Window
+                 ? (Window) pc
+                 : SwingUtilities.getWindowAncestor(pc);
 		
 		final BaseDialog d;
 		if (w instanceof Frame) {

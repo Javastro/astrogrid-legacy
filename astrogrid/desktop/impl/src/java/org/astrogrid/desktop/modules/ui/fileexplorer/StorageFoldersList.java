@@ -133,7 +133,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
         }
         public void actionPerformed(ActionEvent e) {
             StorageFolder f = new StorageFolder();
-            Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
+            Component pc = parent.getComponent();
+            Window w = pc instanceof Window
+                     ? (Window) pc
+                     : SwingUtilities.getWindowAncestor(pc);
             final BaseDialog d;
             if (w instanceof Frame) {
                 d = new CreateBookmarkDialog((Frame)w, f);
@@ -205,7 +208,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             final StorageFolder f = (StorageFolder)getSelectedValue();
             final int ix = getSelectedIndex();
             if (f != null) {
-                Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
+                Component pc = parent.getComponent();
+                Window w = pc instanceof Window
+                         ? (Window) pc
+                         : SwingUtilities.getWindowAncestor(pc);
                 final BaseDialog d;
                 if (w instanceof Frame) {
                     d = new EditBookmarkDialog((Frame)w, f, ix);

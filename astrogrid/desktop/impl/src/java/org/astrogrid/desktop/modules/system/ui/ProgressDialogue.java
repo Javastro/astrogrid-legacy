@@ -136,7 +136,10 @@ public class ProgressDialogue extends BaseDialog implements Observer {
     }    
     
     public static ProgressDialogue newProgressDialogue(BackgroundWorker worker) {
-        Window window = (Window)SwingUtilities.getAncestorOfClass(Window.class, worker.getParent().getComponent());
+        Component pc = worker.getParent().getComponent();
+        Window window = pc instanceof Window
+                      ? (Window) pc
+                      : SwingUtilities.getWindowAncestor(pc);
         if (window instanceof Frame) {
           return new ProgressDialogue((Frame)window,worker);
         } else if (window instanceof Dialog) {

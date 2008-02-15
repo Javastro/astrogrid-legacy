@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.6 2007/11/21 07:55:39 nw Exp $
+/*$Id: ResultDialog.java,v 1.7 2008/02/15 13:09:02 mbt Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,9 @@ public class ResultDialog extends BaseDialog {
     private JEditorPane resultDisplay;
 
     public static ResultDialog newResultDialog(Component parent, Object message) {
-        Window window = (Window)SwingUtilities.getAncestorOfClass(Window.class, parent);
+        Window window = parent instanceof Window
+                      ? (Window) parent
+                      : SwingUtilities.getWindowAncestor(parent);
         if (window instanceof Frame) {
           return new ResultDialog((Frame)window,message);
         } else if (window instanceof Dialog) {
@@ -98,6 +100,13 @@ public class ResultDialog extends BaseDialog {
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.7  2008/02/15 13:09:02  mbt
+Replace use of SwingUtilities.getAncestorOfClass(Window.class,comp) with
+an idiom which does what that method ought to, viz. returns comp itself
+if comp is a Window, rather than only one of its ancestors.
+This prevents Dialogs from being unparented and hence risking being
+obscured by the windows which ought to be their parent.
+
 Revision 1.6  2007/11/21 07:55:39  nw
 Complete - task 65: Replace modal dialogues
 
