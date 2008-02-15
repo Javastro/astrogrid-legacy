@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.10 2008/02/05 16:36:22 gtr Exp $
+/*$Id: CeaHelper.java,v 1.11 2008/02/15 14:31:25 pah Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,9 +48,13 @@ import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DocumentHandler;
 
 /** helper object for working with cea services.
  * <P>
@@ -199,8 +207,7 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 		if (tool.getName().startsWith("ivo://")) {
 			tool.setName(tool.getName().substring(6));
 		}
-                makeMySpaceIvornsConcrete(tool);
-		return tool;
+ 		return tool;
     	} catch (MarshalException e) {
     		throw new InvalidArgumentException(e);
     	} catch (ValidationException e) {
@@ -209,28 +216,33 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 	}
 
   /**
-   * Converts identifiers for MySpace locations to the concrete form.
+   * Creates a deep copy of the tool converting identifiers for MySpace locations to the concrete form.
    * Abstract form is the account IVORN with the MySpace path added
    * as a URI fragment. Concrete form is the IVORN of the services hosting
    * the space with the MySpace path added as a URI fragment.
    */
-  protected void makeMySpaceIvornsConcrete(Tool tool) throws InvalidArgumentException {
-    try {
-      Input input = tool.getInput();
-      for (int i = 0; i < input.getParameterCount(); i++) {
-        ParameterValue p = input.getParameter(i);
-        makeMySpaceIvornsConcrete(p);
-      }
-      
-      Output output = tool.getOutput();
-      for (int i = 0; i < output.getParameterCount(); i++) {
-        ParameterValue p = output.getParameter(i);
-        makeMySpaceIvornsConcrete(p);
-      }
-    } catch (Exception ex) {
-      throw new InvalidArgumentException("Failed to resolve a reference to MySpace", ex);
-    }
-  }
+public Tool makeMySpaceIvornsConcrete(Tool intool) throws InvalidArgumentException {
+	    Tool tool = null;
+	    try {
+		Node node = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		Marshaller.marshal(intool, node);
+		tool = (Tool)Unmarshaller.unmarshal(Tool.class, node);
+		Input input = tool.getInput();
+		for (int i = 0; i < input.getParameterCount(); i++) {
+		    ParameterValue p = input.getParameter(i);
+		    makeMySpaceIvornsConcrete(p);
+		}
+
+		Output output = tool.getOutput();
+		for (int i = 0; i < output.getParameterCount(); i++) {
+		    ParameterValue p = output.getParameter(i);
+		    makeMySpaceIvornsConcrete(p);
+		}
+	    } catch (Exception ex) {
+		throw new InvalidArgumentException("Failed to make MySpace references concrete", ex);
+	    }
+	    return tool;
+	}
   
   /**
    * Makes the IVORN of an indirect parameter concrete.

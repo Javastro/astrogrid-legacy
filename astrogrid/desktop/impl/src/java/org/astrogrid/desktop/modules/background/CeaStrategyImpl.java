@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.29 2007/11/26 14:44:46 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.30 2008/02/15 14:31:25 pah Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,6 +80,7 @@ import org.w3c.dom.Document;
  * periodically poll remote cea servers, injjct messages into the system
  *  - temporary, until cea actually calls back into the workbench.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
+ * @TODO remove the concrete myspace ivorn hack
  *
  */
 public class CeaStrategyImpl implements RemoteProcessStrategy{
@@ -183,7 +184,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
             delegate = ceaHelper.createCEADelegate(target);                                   
             info("Initializing on server " + target.getId() );
 
-            ceaid = delegate.init(tool,jid);
+            //make a version of the tool with concrete ivorns, just for the remote service
+            Tool remotetool = ceaHelper.makeMySpaceIvornsConcrete(tool);
+            ceaid = delegate.init(remotetool,jid);
             info("Server returned taskID " + ceaid);            
             setId(ceaHelper.mkRemoteTaskURI(ceaid,target));
             // kick it off.
@@ -198,7 +201,10 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
             } catch (CEADelegateException x) {
                 error("Failed to execute application ",x);
                 throw new ServiceException(x);
-            }       
+            } catch (InvalidArgumentException x) {
+                error("Failed to execute application ",x);
+                throw new ServiceException(x);
+	    }       
         }
         
         /**
@@ -319,24 +325,28 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				        for (int i = 0 ; i < arr.length; i++) {
 				            final ParameterValue val = arr[i];
 				            ParameterBean desc = findDescriptionFor(val,descs);
-				                if (val.getIndirect()) { 
+						if (val.getIndirect()) { 
+					            String value = val.getValue(); 
+
+				                    //FIXME this is a hack to prevent concrete ivorns leaking back into the desktop - taking the indirect parameter value from the input tool, rather than reading back what the CEA server sends back - should be removed when myspace leaves us....		the line above should take precedence			            
+				                    value = ((ParameterValue)tool.findXPathValue("/output/parameter[name='"+val.getName()+"']")).getValue();
 				                    // do something clever - get a pointer to the remote file, and then add this as the result.
 				                    //@issue hope this doesn't force login. if it does, need to create an lazily-initialized file object here instead.
 				                    // however, user would probably have logged in to setup this indirection in the first place.
 				                    try {
-				                        FileObject src = vfs.resolveFile(val.getValue());
+				                        FileObject src = vfs.resolveFile(value);
 				                            src.refresh();
 				                        if (! src.exists()) {
 				                            // caught by surrounding block.
-				                            throw new FileSystemException(val.getValue() + " does not exist");
+				                            throw new FileSystemException(value + " does not exist");
 				                        }
 				                        addResult(val.getName(),src);
 				                    } catch (FileSystemException e) {
-				                        logger.debug("Failed to retrieve " + val.getValue(),e);
-				                        warn("Failed to retrieve " + val.getValue() + "<br>" + exFormatter.format(e,ExceptionFormatter.ALL));
+				                        logger.debug("Failed to retrieve " + value,e);
+				                        warn("Failed to retrieve " + value + "<br>" + exFormatter.format(e,ExceptionFormatter.ALL));
 				                    }
 				                } else {
-				                    addResult(val.getName(),val.getName() + suggestExtension(desc),val.getValue());
+				                    addResult(val.getName(),val.getName() + suggestExtension(desc), val.getValue());
 				                }
 				            
 				        }
@@ -584,6 +594,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
     public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException {
             Tool tool = ceaHelper.parseTool(doc);
+
             URI appId;
             CeaApplication info;
             try {
@@ -633,6 +644,10 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.30  2008/02/15 14:31:25  pah
+RESOLVED - bug 2547: Resolve MySpace IVORNs before job submission
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2547
+
 Revision 1.29  2007/11/26 14:44:46  nw
 Complete - task 224: review configuration of all backgroiund workers
 

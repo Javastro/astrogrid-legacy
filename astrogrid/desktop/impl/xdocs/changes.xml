@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="pah" type="fix" issue="2547">
+ "concrete" myspace ivorns used to call cea server
+</action>
 <action dev="jl" type="fix" issue="2546">
     Final aspects of ADQL folded into Query Builder
 </action> 
