@@ -697,8 +697,12 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	            ConfirmDialog.newConfirmDialog(TaskRunnerImpl.this.getComponent(),"Reset Form","Any edits will be lost. Continue?",new Runnable() {
                     public void run() {
                         CeaApplication res = pForm.getModel().currentResource();
-                        String iface = pForm.getModel().getIName();
-                        pForm.buildForm(iface,res);
+                        if (pForm != null && pForm.getModel() != null) {
+                            String iface = pForm.getModel().getIName();
+                            if (iface != null && res != null) {
+                                pForm.buildForm(iface,res);
+                            }
+                        }
                     }
 	            }).show();
 	        }
