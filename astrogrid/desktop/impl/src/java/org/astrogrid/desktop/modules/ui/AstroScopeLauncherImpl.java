@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.77 2007/12/12 13:54:14 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.78 2008/02/15 12:34:32 mbt Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -1058,7 +1058,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	                   history.clear();
 	               }
 	           }
-	           );
+	           ).show();
 	       }
 	}
 
