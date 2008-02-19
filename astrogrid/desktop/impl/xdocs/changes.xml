@@ -14,6 +14,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="mbt" type="add" issue="2559">
+  New network preferences configuration panel enables configuration of
+  HTTP proxy and other network system preferences.
+</action>
+<action dev="mbt" type="fix" issue="2430">
+  Make sure resources tree is expanded when first viewed.
+</action>
 <action dev="pah" type="fix" issue="2547">
  "concrete" myspace ivorns used to call cea server
 </action>
@@ -46,13 +53,6 @@
     </action>
     <action dev="nw" type="fix" issue="2465">
         Fixed filename-related bug on windows. 
-    </action>
-    <action dev="mbt" type="add">
-    New network preferences configuration panel enables configuration of
-    HTTP proxy and other network system preferences.
-    </action>
-    <action dev="mbt" type="fix" issue="2430">
-    Make sure resources tree is expanded when first viewed.
     </action>
 </release>
 <release version="2007.4.beta1" date="2007-12-12">
