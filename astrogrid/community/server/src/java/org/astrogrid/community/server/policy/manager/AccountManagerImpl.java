@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory ;
 
 import java.util.Vector ;
 import java.util.Collection ;
+import org.astrogrid.filemanager.resolver.FileManagerResolverException;
 
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.OQLQuery;
@@ -88,15 +89,16 @@ public class AccountManagerImpl
             {
             }
         }
+    
+    protected boolean useMockNodeDelegate = false;
 
     /**
      * Public constructor, using default database configuration.
      *
      */
-    public AccountManagerImpl()
-        {
-        super() ;
-        }
+    public AccountManagerImpl() {
+      super();
+    }
 
     /**
      * Public constructor, using specific database configuration.
@@ -147,109 +149,73 @@ public class AccountManagerImpl
      * @throws CommunityPolicyException If the identifier is already in the database.
      * @throws CommunityServiceException If there is an internal error in the service.
      * @throws RemoteException If the WebService call fails.
-     * @todo Needs refactoring to make it more robust.
-     * @todo If the 'everyone' group does not exist, then create it.
-     * @todo If the account group already exists (as an AccountGroup) then don't throw a duplicate exception.
-     * @todo If the account already belongs to the account group then don't throw a duplicate exception.
-     * @todo If the account already belongs to the 'everyone' group then don't throw a duplicate exception.
-     * @todo If the MySpace call adds the Account, store the MySpace server and Account details.
-     * @todo Tidy up fragments of old data, e.g. groups, membership and permissions,
-     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
-     *
      */
     public AccountData addAccount(AccountData externalAccount)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException {
       
-        if (null == externalAccount) {
-            throw new CommunityIdentifierException("Null account");
-        }
+      if (null == externalAccount) {
+        throw new CommunityIdentifierException("Null account");
+      }
         
-        // The given account will probably have the wrong name, and
-        // the AccountData class is too broken to fix it in situ.
-        // Therefore, make a new account object in which the name is the
-        // required primary key for the DB.
-        /*
-        CommunityIvornParser parser = 
-            new CommunityIvornParser(externalAccount.getIdent());
-        String string = primaryKey(parser);
-        AccountData account = new AccountData(string);
-        account.setDescription(externalAccount.getDescription());
-        account.setDisplayName(externalAccount.getDisplayName());
-        account.setEmailAddress(externalAccount.getEmailAddress());
-        account.setHomeSpace(externalAccount.getHomeSpace());
-        System.out.println("Primary key is " + string);
-	account.setIdent(string) ;
-         */
-        AccountData account = internalAccount(externalAccount);
-        System.out.println("Recorded account is named " + account.getIdent());
-        String string = account.getIdent();
+      // The given account will probably have the wrong name, and
+      // the AccountData class is too broken to fix it in situ.
+      // Therefore, make a new account object in which the name is the
+      // required primary key for the DB.
+      AccountData account = internalAccount(externalAccount);
+      System.out.println("Recorded account is named " + account.getIdent());
+      String string = account.getIdent();
         
-            //
-            // Create the corresponding Group object.
-            GroupData group = new GroupData() ;
-            group.setIdent(string) ;
-            group.setType(GroupData.SINGLE_TYPE) ;
-            //
-            // Add the account to the group.
-            GroupMemberData groupmember = new GroupMemberData() ;
-            groupmember.setAccount(string) ;
-            groupmember.setGroup(string) ;
-            //
-            // Add the account to the guest group.
-//
-// TODO Need better 'default' group handling.
-//
-            GroupMemberData guestmember = new GroupMemberData() ;
-            guestmember.setAccount(string) ;
-            guestmember.setGroup(
-                DEFAULT_GROUP_IVORN.toString()
+      //
+      // Create the corresponding Group object.
+      GroupData group = new GroupData() ;
+      group.setIdent(string) ;
+      group.setType(GroupData.SINGLE_TYPE) ;
+      //
+      // Add the account to the group.
+      GroupMemberData groupmember = new GroupMemberData() ;
+      groupmember.setAccount(string) ;
+      groupmember.setGroup(string) ;
+      //
+      // Add the account to the guest group.
+      GroupMemberData guestmember = new GroupMemberData() ;
+      guestmember.setAccount(string) ;
+        guestmember.setGroup(
+           DEFAULT_GROUP_IVORN.toString()
                 ) ;
-            //
-            // Try performing our transaction.
-            Database database = null ;
-            try {
-                database = this.getDatabase() ;
-                database.begin();
-                database.create(account);
-                database.create(group);
-                database.create(groupmember);
-                try {
-                  allocateSpace(account) ;
-                  System.out.println("Home : " + account.getHomeSpace()) ;
-                }
-                catch (Exception ouch){
-                  logException(ouch,
-                              "AccountManagerImpl.addAccount.allocateSpace()");
-                }
-                database.commit() ;
-            }
-            //
-            // If we already have an object with that ident.
-            catch (DuplicateIdentityException ouch) {
-                rollbackTransaction(database) ;
-                throw new CommunityPolicyException(
-                    "Duplicate Account identifier",
-                    account.getIdent()
-                    ) ;
-            }
-            catch (Exception ouch) {
-                logException(
-                    ouch,
-                    "AccountManagerImpl.addAccount()"
-                    ) ;
-                rollbackTransaction(database) ;
-                throw new CommunityServiceException(
-                    "Database transaction failed",
-                    account.getIdent(),
-                    ouch
-                    ) ;
-            }
-            finally {
-              closeConnection(database) ;
-            }
             
-            return externalAccount(account);
-        }
+      // Record the account. use a DB transaction s.t. either 
+      // all of the information is recorded or none. This includes
+      // creating the home space for the account in the remote service:
+      // if the space cannot be created then the account is not
+      // recorded.
+      Database database = null ;
+      try {
+        database = this.getDatabase() ;
+        database.begin();
+        database.create(account);
+        database.create(group);
+        database.create(groupmember);
+        allocateSpace(account);
+        database.commit() ;
+      }
+      catch (DuplicateIdentityException ouch) {
+        rollbackTransaction(database);
+        throw new CommunityPolicyException("The account already exists", 
+                                           account.getIdent());
+      }
+      catch (Exception ouch) {
+        logException(ouch,  "AccountManagerImpl.addAccount()");
+        rollbackTransaction(database) ;
+        throw new CommunityServiceException("Failed to create the account " +
+                                            account.getIdent(),
+                                            ouch);
+      }
+      finally {
+        closeConnection(database);
+      }
+            
+      return externalAccount(account);
+    }
 
     /**
      * Request an Account details, given the Account ident.
@@ -348,7 +314,7 @@ public class AccountManagerImpl
                 //
                 // Throw a new Exception.
                 throw new CommunityServiceException(
-                    "Database transaction failed",
+                    "Failed to retrieve an account",
                     ident.toString(),
                     ouch
                     ) ;
@@ -419,7 +385,7 @@ public class AccountManagerImpl
         logException(ouch,"AccountManagerImpl.setAccount()");
         rollbackTransaction(database);
         throw new CommunityServiceException(
-                    "Database transaction failed",
+                    "Failed to update an account",
                     externalAccount.getIdent(),
                     ouch
                     );
@@ -707,95 +673,102 @@ public class AccountManagerImpl
         return array ;
         }
 
+  /**
+   * Tells the manager to use a mock object for its VOSpace.
+   * This should be set only for unit testing.
+   */
+  public void useMockNodeDelegate() {
+    this.useMockNodeDelegate = true;
+  }
+    
     /**
-     * Allocate VoSpace space for an Account.
+     * Allocates home space in MySpace for an Account.
+     * If a home sapce for the given account already exists then it is 
+     * destroyed and a new, empty space is created.
+     *
      * @param account The AccountData to update.
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityServiceException If the service is unable to allocate the space.
-     *
      */
     protected void allocateSpace(AccountData account)
-        throws CommunityServiceException, CommunityIdentifierException
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("AccountManagerImpl.allocateSpace()") ;
-        System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
-        //
-        // Check for null account.
-        if (null == account)
-            {
-            throw new CommunityIdentifierException(
-                "Null account"
-                ) ;
-            }
-        //
-        // Check for null identifier.
-        if (null == account.getIdent())
-            {
-            throw new CommunityIdentifierException(
-                "Null account identifier"
-                ) ;
-            }
-        //
-        // If the Account home space is not set.
-        if (null == account.getHomeSpace())
-            {
-            //
-            // If we have a FileManager ivorn configured.
-            Ivorn ivorn = this.getDefaultVoSpace() ;
-            if (null != ivorn)
-                {
-                //
-                // Try calling the FileManager client to create the space.
-                try {
-                    //
-                    // Create the FileManager resolver.
-                    System.out.println("  Creating FileManager.NodeDelegateResolver") ;
-                    NodeDelegateResolver resolver = new NodeDelegateResolverImpl(
-                        null
-                        );                    
-                    //
-                    // Try to resolve the ivorn into a delegate.
-                    System.out.println("  Resolving FileManager ivorn : " + ivorn.toString()) ;
-                    NodeDelegate delegate = resolver.resolve(ivorn);                    
-                    //
-                    // Ask the degagate to create a new account.
-                    System.out.println("  Creating account home") ;
-                    FileManagerNode node = delegate.addAccount(
-                        new AccountIdent(
-                            account.getIdent()
-                            )
-                        );
-                    //
-                    // Get the node metadata.
-                    NodeMetadata meta = node.getMetadata();
-                    //
-                    // Extract the node ivorn.
-                    NodeIvorn home = meta.getNodeIvorn();
-                    System.out.println("  New account home : " + home.toString()) ;
-                    //
-                    // Update the Account data
-                    System.out.println("  Updating account details") ;
-                    account.setHomeSpace(
-                        home.toString()
-                        ) ;
+        throws CommunityServiceException, CommunityIdentifierException {
+      System.out.println("") ;
+      System.out.println("----\"----") ;
+      System.out.println("AccountManagerImpl.allocateSpace()") ;
+      System.out.println("  Account : " + ((null != account) ? account.getIdent() : null)) ;
+        
+      // Check for null account.
+      if (null == account) {
+        throw new CommunityIdentifierException("Null account");
+      }
+        
+      // Do nothing if this account already has a homespace.
+      if (account.getHomeSpace() != null) {
+        return;
+      }
+            
+      // Check for null identifier.
+      if (null == account.getIdent()) {
+        throw new CommunityIdentifierException("Null account identifier");
+      }
+      
+      // Get the IVORN for the VOSpace service in which we create
+      // the homespace. This call will throw an exception if
+      // the VOSpace isn't configured.
+      Ivorn ivorn = this.getDefaultVoSpace();
+      
+      // Call FileManager client to create the space.
+      try {
+        NodeDelegate delegate = getFileManagerDelegate(ivorn);
+                    
+        // Make an identity object out of the account IVORN.
+        AccountIdent fmAccount = new AccountIdent(account.getIdent());
+                    
+        /*
+                    // Delete any previous home-space for the account.
+                    // If the file manager can't find that account, then it
+                    // throws; but this is expected in most cases so we discard
+                    // the exception.
+                    try {
+                      FileManagerNode node = delegate.getAccount(fmAccount);
+                      System.out.println("Deleting");
+                      node.delete();
+                      log.info("The homespace for account " + 
+                               account.getIdent() +
+                               " in " +
+                               ivorn +
+                               " has been deleted and can now be recreated.");
                     }
-                catch (Throwable ouch)
-                    {
-                    //
-                    // Log the exception.
-                    logException(ouch, "AccountManagerImpl.allocateSpace()") ;
-                    //
-                    // Throw a new Exception.
-                    throw new CommunityServiceException(
-                        "Unable to create VoSpace",
-                        ouch
-                        ) ;
+                    catch (Exception e) {
+                      log.info("The account " + 
+                               account.getIdent() +
+                               " did not have a home space in " +
+                               ivorn);
                     }
-                }
-            }
-        }
+                    */
+        
+        // Ask the degagate to create a new account.
+        FileManagerNode node = delegate.addAccount(fmAccount);
+        log.info("Home space for account " + 
+                 account.getIdent() +
+                 " has been created in " +
+                 ivorn);
+                    
+        // Recover the concrete IVORN for the created space.
+        NodeIvorn home = node.getMetadata().getNodeIvorn();
+        log.info("The new space is at " + home);
+        account.setHomeSpace(home.toString());
+                    
+      }
+      
+      // If the homespace was not created.
+      catch (Exception ouch) {
+        logException(ouch, "AccountManagerImpl.allocateSpace()");
+        throw new CommunityServiceException("Unable to create VoSpace",
+                                            ouch);
+      }
+    
+    }
 
     /**
      * The config property key for our default VoSpace ivorn.
@@ -803,56 +776,27 @@ public class AccountManagerImpl
      */
     private static final String DEFAULT_VOSPACE_PROPERTY = "org.astrogrid.community.default.vospace" ;
 
-    /**
-     * Get the default VoSpace ivorn.
-     * @return An Ivorn for the default VoSpace service.
-     * @throws CommunityServiceException If unable to get the VoSpace ivorn.
-     *
-     */
-    public Ivorn getDefaultVoSpace()
-        throws CommunityServiceException
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("AccountManagerImpl.getDefaultVoSpace()") ;
-        //
-        // Get the default identifier from our config.
-        String string = null ;
-        try {
-            string = (String) config.getProperty(DEFAULT_VOSPACE_PROPERTY,null) ;
-            }
-        catch (PropertyNotFoundException ouch)
-            {
-            throw new CommunityServiceException(
-                "Default VoSpace not configured"
-                ) ;
-            }
-        System.out.println("    Default VoSpace : " + string) ;
-        //
-        // If we found the default identifier.
-        if (null != string)
-            {
-            //
-            // Try making it into an Ivorn.
-            try {
-                return new Ivorn(string) ;
-                }
-            catch (Exception ouch)
-                {
-                throw new CommunityServiceException(
-                    "Unable to convert default VoSpace into Ivorn",
-                    ouch
-                    ) ;
-                }
-            }
-        //
-        // If we didn't find the local ident.
-        else {
-            throw new CommunityServiceException(
-                "Default VoSpace not configured"
-                ) ;
-            }
-        }
+  /**
+   * Get the IVORN for the configured, default VOSpace.
+   *
+   * @return An Ivorn for the default VoSpace service.
+   * @throws CommunityServiceException If unable to get the VoSpace ivorn.
+   *
+   */
+  public Ivorn getDefaultVoSpace() throws CommunityServiceException {
+    try {
+      return new Ivorn((String)config.getProperty(DEFAULT_VOSPACE_PROPERTY));
+    }
+    catch (PropertyNotFoundException ouch) {
+      throw new CommunityServiceException("Default VOSpace is not configured");
+    }
+    catch (Exception ouch) {
+      throw new CommunityServiceException(
+          "Unable to convert default VoSpace into Ivorn",
+          ouch
+      );
+    }
+  }
     
   /**
    * Derives from the account IVORN the primary key for the DB tables.
@@ -908,5 +852,26 @@ public class AccountManagerImpl
     externalAccount.setHomeSpace(internalAccount.getHomeSpace());
     System.out.println("External account is named " + externalAccount.getIdent());
     return externalAccount;
-  } 
+  }
+  
+  /**
+   * Supplies a file-manager delegate for a given MySpace service.
+   * May supply a mock delegate if the object s set up correctly.
+   *
+   * @param fileManagerService The IVORN for the file manager service.
+   * @return The delegate - never null.
+   * @throws FileManagerResolverException If the file-manager service cannot be found.
+   */
+  protected NodeDelegate getFileManagerDelegate(Ivorn fileManagerService) 
+      throws FileManagerResolverException {
+    if (this.useMockNodeDelegate) {
+      System.out.println("using a mock delegate");
+      return new MockNodeDelegate();
+    }
+    else {
+      NodeDelegateResolver resolver = new NodeDelegateResolverImpl(null);
+      return resolver.resolve(fileManagerService);
+    }
+  }
+  
 }

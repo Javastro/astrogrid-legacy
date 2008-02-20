@@ -19,7 +19,27 @@
         <servlet-name>PasswordChangeServlet</servlet-name>
         <servlet-class>org.astrogrid.community.webapp.PasswordChangeServlet</servlet-class>
     </servlet>
+    
+    
+  <servlet>
+    <servlet-name>AccountServlet</servlet-name>
+    <servlet-class>org.astrogrid.community.webapp.AccountServlet</servlet-class>
+  </servlet>
+  
+    <servlet>
+        <servlet-name>CaServlet</servlet-name>
+        <servlet-class>org.astrogrid.community.webapp.CaServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DatabaseServlet</servlet-name>
+        <servlet-class>DatabaseServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
+    <servlet-name>AccountServlet</servlet-name>
+    <url-pattern>/accounts/*</url-pattern>
+  </servlet-mapping>
+    
+  <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/servlet/AxisServlet</url-pattern>
   </servlet-mapping>
@@ -42,6 +62,18 @@
     <servlet-mapping>
         <servlet-name>PasswordChangeServlet</servlet-name>
         <url-pattern>/password</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CaServlet</servlet-name>
+        <url-pattern>/admin/ca</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CaServlet</servlet-name>
+        <url-pattern>/admin/ca/passphrase</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DatabaseServlet</servlet-name>
+        <url-pattern>/admin/database</url-pattern>
     </servlet-mapping>
     <mime-mapping>
     <extension>wsdl</extension>
@@ -86,7 +118,6 @@
    <env-entry>
       <description>Community Default VOSpace (Registry Ivorn)</description>
       <env-entry-name>org.astrogrid.community.default.vospace</env-entry-name>
-      <env-entry-value>ivo://@REGAUTHORITY@/myspace</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>
    

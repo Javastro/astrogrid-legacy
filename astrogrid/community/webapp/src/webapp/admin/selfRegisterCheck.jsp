@@ -15,7 +15,6 @@
         </style>
     </head>
     <body>
-        <%@ include file="beans.xml" %>
         <%@ include file="header.xml" %>
         <%@ include file="navigation.xml" %>
         <div id='bodyColumn'>
@@ -47,31 +46,9 @@
             </p>
             <form method="post">
                 <p>
-                    <%
-                    String version = request.getParameter("version");
-                    if (version != null && version.trim().length() > 0)
-                        {
-                        %>
-                        <input type="hidden" name="version" value="<%=version%>" />
-                        <%
-                        }
-                    %>
                     <input type="hidden" name="addFromText" value="true" />
                     <textarea name="Resource" cols='100' rows='20'>
-                        <%
-                        if(version == null || version.trim().length() <= 0 || version.equals("null") ||  version.equals("0.9"))
-                            {
-                            %>
-                            <%@ include file="MetaDataXML0.9.jsp" %>
-                            <%
-                            }
-                        else if (version.equals("0.10"))
-                            {
-                            %>
-                            <%@ include file="MetaDataXML0.10.jsp" %>
-                            <%
-                            }
-                        %>
+                      <%@ include file="MetaDataXML0.10.jsp" %>
                     </textarea>
                 </p>
                 <p>

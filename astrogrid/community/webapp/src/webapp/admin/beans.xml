@@ -1,5 +1,0 @@
-<!-- Declarations for Java beans used in most or all administration pages. -->
-<jsp:useBean class="org.astrogrid.community.webapp.CommunityDbBean"
-    id="db" scope="page"/>
-<jsp:useBean class="org.astrogrid.community.webapp.CertificateAuthorityBean"
-    id="ca" scope="session"/>

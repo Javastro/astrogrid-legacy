@@ -383,6 +383,24 @@
           <war.bundle>true</war.bundle>
         </properties>
       </dependency>
+      
+      <dependency>
+        <artifactId>bcprov-jdk14</artifactId>
+        <groupId>bouncycastle</groupId>
+        <version>137</version>
+        <type>jar</type>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+      <dependency>
+        <artifactId>cog-jglobus</artifactId>
+        <groupId>globus</groupId>
+        <version>1.4</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
         
     </dependencies>
 

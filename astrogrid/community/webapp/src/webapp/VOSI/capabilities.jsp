@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
-<%@page contentType="application/xml"%>
+<%@page contentType="application/xml"
+        import="java.net.URI"%>
 
-<% String base = (String) request.getAttribute("org.astrogrid.vosi.baseurl"); %>
+<% 
+String base = (String) request.getAttribute("org.astrogrid.vosi.baseurl");
+String secure = (String) request.getAttribute("org.astrogrid.vosi.baseurlsecure");
+%>
 
 <?xml-stylesheet type="text/xsl" href="<%=base%>/VOSI/capabilities.xsl"?>
 
@@ -17,6 +21,12 @@
     "
 >
 
+  <capability standardID="ivo://org.astrogrid/std/Community/accounts">
+    <interface xsi:type="vs:ParamHTTP">
+      <accessURL use="base"><%=secure%>/accounts</accessURL>
+    </interface>
+  </capability>
+  
   <capability standardID="ivo://org.astrogrid/std/Community/v1.0#PolicyManager">
     <interface xsi:type="vr:WebService">
       <accessURL use="full"><%=base%>/services/PolicyManager</accessURL>

@@ -1,50 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: gtr $</cvs:author>
- * <cvs:date>$Date: 2008/01/24 16:56:43 $</cvs:date>
- * <cvs:version>$Revision: 1.15 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: PolicyManagerImpl.java,v $
- *   Revision 1.15  2008/01/24 16:56:43  gtr
- *   branch community-gtr-2521 is merged
- *
- *   Revision 1.14.150.1  2008/01/24 16:31:13  gtr
- *   2008.0a5.
- *
- *   Revision 1.14  2004/11/22 13:03:04  jdt
- *   Merges from Comm_KMB_585
- *
- *   Revision 1.13  2004/10/29 15:50:05  jdt
- *   merges from Community_AdminInterface (bug 579)
- *
- *   Revision 1.12.18.1  2004/10/18 22:10:28  KevinBenson
- *   some bug fixes to the PermissionManager.  Also made it throw some exceptions.
- *   Made  it and GroupManagerImnpl use the Resolver objects to actually get a group(PermissionManageriMnpl)
- *   or account (GroupMember) from the other community.  Changed also for it to grab a ResourceData from the
- *   database to verifity it is in our database.  Add a few of these resolver dependencies as well.
- *   And last but not least fixed the GroupMemberData object to get rid of a few set methods so Castor
- *   will now work correctly in Windows
- *
- *   Revision 1.12  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.11.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.11  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.10.32.3  2004/06/17 15:24:31  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.10.32.2  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.server.policy.manager ;
 
 import org.apache.commons.logging.Log ;
@@ -559,7 +512,14 @@ public class PolicyManagerImpl
         return permissionManager.delPermission(resource, group, action) ;
         }
 
+    /**
+     * Instructs the manager to simulate a VOSpace service.
+     * This should only be done for testing.
+     */
+    public void useMockVoSpace() {
+      this.accountManager.useMockNodeDelegate();
     }
+ }
 
 
 

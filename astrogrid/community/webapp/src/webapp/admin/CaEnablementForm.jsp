@@ -10,7 +10,6 @@
 </head>
 
 <body>
-<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 <div id="bodyColumn">
@@ -20,10 +19,10 @@ To use the certificate authority, you must enter its passphrase.
 The certificate-authority software will retain this passphrase for
 your current session only.
 </p>
-<form action="CaEnablementResult.jsp" method="post">
+<form action="ca/passphrase" method="post">
   <p>
     <label>Passphrase for certificate authority:</label>
-    <input type="password" name="caPassword"/>
+    <input type="password" name="passphrase"/>
   </p>
   <p>
     <input type="submit" value="Submit"/>

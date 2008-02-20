@@ -2,9 +2,9 @@ package org.astrogrid.community.resolver ;
 
 import java.net.URI;
 import java.net.URL;
-import java.security.KeyStoreException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertPath;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.security.auth.Subject;
@@ -133,6 +133,49 @@ public class CommunityPasswordResolver {
       throws RegistryException,
              CommunityResolverException,
              CommunityIdentifierException   {
+
+    Subject s = null;
+    try {
+      log.info("Logging in " + account + " at the community.");
+      s = checkPasswordAtCommunity(account, password, lifetime, trustAnchors);
+      log.info("Got credentials from the community.");
+    }
+    catch (Exception e1) {
+      log.info("Failed to log in " + account + " at the community: " + e1);
+      log.info("Logging in " + account + " at MyProxy");
+      try {
+        s = checkPasswordAtMyProxy(account, password, lifetime, trustAnchors);
+      }
+      catch (Exception e2) {
+        log.info("Failed to log in " + account + " at MyProxy: " + e2);
+        log.info("No credentials are available for " + account);
+        throw new CommunityResolverException("No credentials are available for " + account);
+      }
+    }
+    return s;
+  }
+  
+  /**
+   * Resolves an account-name and password into a set of cryptographic
+   * credentials and a user alias. This implementation talks directly
+   * to a MyProxy service. The credentials are transformed into a
+   * java.security.PrivateKey and a java.security.cert.CertPath (i.e.
+   * a certificate chain) and these are packaged and returned in
+   * a JAAS Subject.
+   * 
+   * @param account IVOID for account.
+   * @param password Plain-text password
+   * @param lifetime Desired length of validity of credentials in seconds.
+   * @param trustAnchors Name of directory holding trusted certificates.
+   * @return The credentials.
+   */
+  protected Subject checkPasswordAtMyProxy(String account, 
+                                           String password, 
+                                           int    lifetime,
+                                           String trustAnchors) 
+      throws RegistryException,
+             CommunityResolverException,
+             CommunityIdentifierException   {
     
     // Record where the trusted certificates are kept. The MyProxy
     // class from Globus needs this information specifically attached
@@ -146,6 +189,7 @@ public class CommunityPasswordResolver {
     
     // Get the account name from the account IVOID.
     String name = parser.getAccountName();
+    log.info(name + " is trying to log in using MyProxy.");
     
     // Get a delegate for the MyProxy service associated with the account.
     MyProxy myProxy = this.myProxyResolver.resolve(parser.getIvorn());
@@ -173,6 +217,7 @@ public class CommunityPasswordResolver {
       CertificateFactory factory = CertificateFactory.getInstance("X509");
       CertPath certPath = factory.generateCertPath(certList);
       subject.getPublicCredentials().add(certPath);
+      log.info(name + " has logged in using MyProxy.");
       return subject;
     }
     catch (Exception e) {
@@ -180,5 +225,48 @@ public class CommunityPasswordResolver {
           "the resolver failed to package them in a JAAS Subject.", e);
     }
   }
-
+  
+  /**
+   * Resolves an account-name and password into a set of cryptographic
+   * credentials and a user alias. This implementation talks directly
+   * to a MyProxy service. The credentials are transformed into a
+   * java.security.PrivateKey and a java.security.cert.CertPath (i.e.
+   * a certificate chain) and these are packaged and returned in
+   * a JAAS Subject.
+   * 
+   * @param account IVOID for account.
+   * @param password Plain-text password
+   * @param lifetime Desired length of validity of credentials in seconds.
+   * @param trustAnchors Name of directory holding trusted certificates.
+   * @return The credentials.
+   */
+  protected Subject checkPasswordAtCommunity(String account, 
+                                             String password, 
+                                             int    lifetime,
+                                             String trustAnchors) 
+      throws RegistryException,
+             CommunityResolverException,
+             CommunityIdentifierException   {
+    
+    // Parse the account IVORN. This gives access to details of
+    // both the account and the community.
+    CommunityIvornParser parser = new CommunityIvornParser(account);
+    
+    // Get the account name from the account IVOID.
+    String userName = parser.getAccountName();
+    log.info(userName + " is trying to log in using the community accounts protocol.");
+    
+    // Get the endpoint of the SSO service.
+    // KLUDGE: hard-code the endpoint
+    CommunityEndpointResolver resolver = new CommunityEndpointResolver();
+    URL endpoint = 
+        resolver.resolve(parser.getCommunityIvorn(), 
+                         "ivo://org.astrogrid/std/Community/accounts");
+    
+    // Get and return the credentials.
+    SsoClient client = new SsoClient(endpoint.toString());
+    Subject s = client.authenticate(userName, password, lifetime, trustAnchors);
+    log.info(userName + " has logged in using the community accounts protocol.");
+    return s;
+  }
 }

@@ -1,68 +1,60 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/database/configuration/DatabaseConfiguration.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: DatabaseConfiguration.java,v $
- *   Revision 1.6  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.5.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.5  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.4.36.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- *
- */
 package org.astrogrid.community.server.database.configuration ;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-
-import java.net.URL ;
-
-import org.exolab.castor.jdo.JDO ;
-import org.exolab.castor.jdo.Database ;
-import org.exolab.castor.jdo.DatabaseNotFoundException ;
-import org.exolab.castor.jdo.PersistenceException ;
-
-import org.exolab.castor.jdo.OQLQuery ;
-import org.exolab.castor.jdo.QueryResults ;
-import org.exolab.castor.jdo.QueryException ;
-
-import org.exolab.castor.mapping.MappingException ;
-
-import java.io.Reader ;
-import java.io.BufferedReader ;
-import java.io.InputStream ;
-import java.io.InputStreamReader ;
-
-import java.io.IOException ;
-import java.io.FileNotFoundException ;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.Reader;
+import java.net.URL;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.PropertyNotFoundException;
+import org.astrogrid.config.SimpleConfig;
+import org.exolab.castor.jdo.JDO;
+import org.exolab.castor.jdo.Database;
+import org.exolab.castor.jdo.DatabaseNotFoundException;
+import org.exolab.castor.jdo.PersistenceException;
+import org.exolab.castor.jdo.OQLQuery;
+import org.exolab.castor.jdo.QueryResults;
+import org.exolab.castor.jdo.QueryException;
+import org.exolab.castor.mapping.MappingException;
 
 /**
- * A class to handle configuration settings for a Castor JDO database connection.
- * @todo Move all of the resource finding stuff into a helper class.
- * @todo Everything should just use URLs instead.
+ * Configuration settings for a Castor JDO database connection.
+ * <p>
+ * There are three configurable items: the main DB configuration (XML),
+ * the JDO-mapping file (XML) and the script for creating the DB schema (SQL).
+ * <p>
+ * In production, the main configuration-file is outside the web-application
+ * so that it may be configured during deployment and may survive replacement
+ * of the web-application. This file is located using the configuration key
+ * whose name is given by the constant DB_CONFIG_PROPERTY of this class. For
+ * tests, a default configuration may be loaded from the classpath and this
+ * is done if the configuration key is not set.
+ * <p>
+ * The mapping and script files are never changed during deployment. They are
+ * always loaded from the classpath and are not influenced by configuration
+ * keys.
+ * <p>
+ * There are two constructors. One takes as arguments the names of the
+ * configuration files; the other defaults the names. The former constructor
+ * should be used only for unit testing when the property locating the 
+ * main configuration-file is not set. The no-argument constructor should be
+ * used in a production system when the property should be set.
  *
- *
+ * @author Dave Morris
+ * @author Guy Rixon
  */
-public class DatabaseConfiguration
-    {
-    /**
-     * Our debug logger.
-     *
-     */
+public class DatabaseConfiguration {
+  
     private static Log log = LogFactory.getLog(DatabaseConfiguration.class);
+    
+    /**
+     * The configuration key leading to the database-configuration.
+     */
+    public static String DB_CONFIG_PROPERTY = 
+        "org.astrogrid.community.dbconfigurl";
 
     /**
      * The default name of our database.
@@ -81,68 +73,70 @@ public class DatabaseConfiguration
      */
     public static final String DEFAULT_DATABASE_SQL = "database.sql" ;
 
-    /**
-     * Public constructor.
-     * Configures a database using the default settings.
-     * This will trigger an automatic load of the default JDO config and engine.
-     *
-     * @see DEFAULT_DATABASE_NAME
-     * @see DEFAULT_DATABASE_XML
-     */
-    public DatabaseConfiguration()
-        throws IOException, MappingException
-        {
-        this(
-        	DEFAULT_DATABASE_NAME,
-        	DEFAULT_DATABASE_XML,
-        	DEFAULT_DATABASE_SQL
-        	) ;
-        }
+  /**
+   * Constructs a DatabaseConfiguration using default names for the
+   * configuration files. Always use this constructor for production
+   * builds. When using this constructor, the property named by
+   * DB_CONFIG_PROPERTY should be set.
+   *
+   * @see DB_CONFIG_PROPERTY
+   * @see DEFAULT_DATABASE_NAME
+   * @see DEFAULT_DATABASE_XML
+   */
+  public DatabaseConfiguration() throws IOException, MappingException {
+    this(DEFAULT_DATABASE_NAME, DEFAULT_DATABASE_XML, DEFAULT_DATABASE_SQL);
+  }
 
-    /**
-     * Public constructor.
-     * This will trigger an automatic load of the JDO config and engine.
-     * Appends '.xml' to the database name to set the JDO config name.
-     * @param name - The database name.
-     *
-     */
-    public DatabaseConfiguration(String name)
-        throws IOException, MappingException
-        {
-        this(
-        	name,
-        	(name + ".xml"),
-        	(name + ".sql")
-        	) ;
-        }
+  /**
+   * Constucts a DataBaseConfiguration using given names for the
+   * configuration files. This should only be used for unit testing when
+   * several different configurations are needed. When using this constructor,
+   * the property named by DB_CONFIG_PROPERTY must not be set (it defeats the
+   * use of the given names). The names of the configuration files are
+   * taken to be the name of the database with .xml and .sql appended.
+   *
+   * @see DB_CONFIG_PROPERTY
+   */
+  public DatabaseConfiguration(String name) throws IOException, MappingException {
+    this(name, (name + ".xml"), (name + ".sql"));
+  }
+  
 
-    /**
-     * Public constructor.
-     * This will trigger an automatic load of the JDO config and engine.
-     * @param name - The database name.
-     * @param xml  - The Castor JDO config file.
-     * @param sql  - The SQL script to create the tables.
-     *
-     */
-    public DatabaseConfiguration(String name, String xml, String sql)
-        throws IOException, MappingException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("DatabaseConfiguration()") ;
-        log.debug("  Name : '" + name + "'") ;
-        log.debug("  XML  : '" + xml + "'") ;
-        log.debug("  SQL  : '" + sql + "'") ;
-        //
-        // Set our database name.
-        this.setDatabaseName(name) ;
-        //
-        // Set our database configuration.
-        this.setDatabaseConfigResource(xml) ;
-        //
-        // Set our SQL script.
-        this.setDatabaseScriptResource(sql) ;
-        }
+  /**
+   * Constucts a DataBaseConfiguration using given names for the
+   * configuration files. This should only be used for unit testing when
+   * several different configurations are needed. When using this constructor,
+   * the property named by DB_CONFIG_PROPERTY must not be set (it defeats the
+   * use of the given names).
+   *
+   * @param xml  - The Castor JDO config file.
+   * @param sql  - The SQL script to create the tables.
+   *
+   * @see DB_CONFIG_PROPERTY
+   */
+  public DatabaseConfiguration(String name, String xml, String sql)
+    throws IOException, MappingException {
+    System.out.println("") ;
+    System.out.println("----\"----") ;
+    System.out.println("DatabaseConfiguration()") ;
+    System.out.println("  Name : '" + name + "'") ;
+    System.out.println("  XML  : '" + xml + "'") ;
+    System.out.println("  SQL  : '" + sql + "'") ;
+        
+    this.setDatabaseName(name);
+      
+    // Setting a resource causes the item to be loaded from the classpath;
+    // in practice, this means that it comes from the jar holding the
+    // current class. Setting a URL loads the item from somewhere else,
+    // typically somewhere that survives a redeployment of the community
+    // web-application.
+    try {
+      setDatabaseConfigUrl(SimpleConfig.getSingleton().getUrl(DB_CONFIG_PROPERTY));
+    } catch (PropertyNotFoundException e) {
+      setDatabaseConfigResource(xml);
+    }
+    setDatabaseScriptResource(sql);
+  }
 
     /**
      * Get a new JDO database connection.
@@ -353,11 +347,11 @@ public class DatabaseConfiguration
     protected void loadDatabaseEngine()
         throws IOException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("DatabaseConfiguration:loadDatabaseEngine()") ;
-        log.debug("  Name   : '" + this.databaseName + "'" ) ;
-        log.debug("  Config : '" + this.databaseConfigUrl + "'" ) ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("DatabaseConfiguration:loadDatabaseEngine()") ;
+        System.out.println("  Name   : '" + this.databaseName + "'" ) ;
+        System.out.println("  Config : '" + this.databaseConfigUrl + "'" ) ;
         //
         // If we have a database name.
         if (null != this.databaseName)
@@ -420,9 +414,9 @@ public class DatabaseConfiguration
     public void resetDatabaseTables()
         throws IOException, DatabaseNotFoundException, PersistenceException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("DatabaseConfiguration:resetDatabaseTables()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("DatabaseConfiguration:resetDatabaseTables()") ;
         //
         // If we have a database script.
         if (null != this.databaseScriptResource)
@@ -448,10 +442,10 @@ public class DatabaseConfiguration
     public void executeSQL(String resource)
         throws IOException, DatabaseNotFoundException, PersistenceException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("DatabaseConfiguration:executeSQL()") ;
-        log.debug("  SQL : '" + resource + "'") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("DatabaseConfiguration:executeSQL()") ;
+        System.out.println("  SQL : '" + resource + "'") ;
         //
         // Check for null params.
         if (null != resource)
@@ -467,7 +461,7 @@ public class DatabaseConfiguration
                 //
                 // Throw a FileNotFoundException.
                 String message = "Failed to find SQL resource : '" + resource + "'" ;
-                log.debug(message) ;
+                System.out.println(message) ;
                 throw new FileNotFoundException(message) ;
                 }
             //
@@ -622,10 +616,10 @@ public class DatabaseConfiguration
                     }
                 catch(PersistenceException ouch)
                     {
-                    log.debug("Exception while executing SQL statement") ;
-                    log.debug("----") ;
-                    log.debug(ouch) ;
-                    log.debug("----") ;
+                    System.out.println("Exception while executing SQL statement") ;
+                    System.out.println("----") ;
+                    System.out.println(ouch) ;
+                    System.out.println("----") ;
                     //
                     // Rollback our database transaction.
                     database.rollback() ;
@@ -658,9 +652,9 @@ public class DatabaseConfiguration
     public boolean checkDatabaseTables()
         throws DatabaseNotFoundException, PersistenceException, QueryException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("DatabaseConfiguration:checkDatabaseTables()") ;
+        System.out.println("") ;
+        System.out.println("----\"----") ;
+        System.out.println("DatabaseConfiguration:checkDatabaseTables()") ;
         
         //
         // Start with healthy set to 'false', and set it to 'true' if we actually get some data.
@@ -691,22 +685,22 @@ public class DatabaseConfiguration
                             Object result = results.next() ;
                             if (result instanceof DatabaseConfigurationTestData)
                                 {
-                                log.debug("  PASS : got test data '" + result + "'") ;
+                                System.out.println("  PASS : got test data '" + result + "'") ;
                                 healthy = true ;
                                 }
                             else {
-                                log.debug("  FAIL : unknown result type '" + result.getClass() + "'") ;
+                                System.out.println("  FAIL : unknown result type '" + result.getClass() + "'") ;
                                 healthy = false ;
                                 }
                             }
                         }
                     else {
-                        log.debug("  FAIL : empty results") ;
+                        System.out.println("  FAIL : empty results") ;
                         healthy = false ;
                         }
                     }
                 else {
-                    log.debug("  FAIL : null results") ;
+                    System.out.println("  FAIL : null results") ;
                     healthy = false ;
                     }
                 database.commit() ;
@@ -722,11 +716,10 @@ public class DatabaseConfiguration
         // Catch anything that goes bang.
         catch (PersistenceException ouch)
             {
-            log.debug("Exception caught in checkDatabaseTables()") ;
-            log.debug("  Exception : " + ouch) ;
+            System.out.println("Exception caught in checkDatabaseTables()") ;
+            System.out.println("  Exception : " + ouch) ;
             healthy = false ;
             }
         return healthy ;
         }
     }
-

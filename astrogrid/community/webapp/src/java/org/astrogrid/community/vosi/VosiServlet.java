@@ -69,7 +69,6 @@ public class VosiServlet extends HttpServlet {
     String base;
     try {
       base = SimpleConfig.getSingleton().getString("org.astrogrid.vosi.baseurl");
-      new URI(base); // Check that it's a valid URI.
     }
     catch (Exception e) {
       base = "http://" +
@@ -79,6 +78,22 @@ public class VosiServlet extends HttpServlet {
              request.getContextPath();
     }
     request.setAttribute("org.astrogrid.vosi.baseurl", base);
+    
+    // Set the base, secured URI of the web-application as a request attribute. 
+    // Use the configured value if it is a syntatically-valid URI; otherwise, 
+    // infer the URI from the request.
+    String secure;
+    try {
+      secure = SimpleConfig.getSingleton().getString("org.astrogrid.vosi.baseurlsecure");
+    }
+    catch (Exception e) {
+      secure = "https://" +
+             request.getLocalName() +
+             ":" +
+             request.getLocalPort() +
+             request.getContextPath();
+    }
+    request.setAttribute("org.astrogrid.vosi.baseurlsecure", secure);
     
     // Set the up-time in the form needed for an xsd:duration element.
     Date now = new Date();

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/security/service/Attic/SecurityServiceImplTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: gtr $</cvs:author>
- * <cvs:date>$Date: 2008/01/23 15:24:12 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2008/02/20 08:17:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImplTestCase.java,v $
+ *   Revision 1.3  2008/02/20 08:17:46  gtr
+ *   Branch community-gtr-2555 is merged
+ *
+ *   Revision 1.2.8.1  2008/02/12 13:11:15  gtr
+ *   Changes to make thte component testable when homespace creation is enforced.
+ *
  *   Revision 1.2  2008/01/23 15:24:12  gtr
  *   Branch community-gtr-2512 is merged.
  *
@@ -46,6 +52,7 @@ import org.astrogrid.community.server.database.configuration.DatabaseConfigurati
 import org.astrogrid.community.server.database.configuration.DatabaseConfigurationFactory ;
 import org.astrogrid.community.server.database.configuration.TestDatabaseConfigurationFactory ;
 import org.astrogrid.community.server.security.manager.SecurityManagerImpl;
+import org.astrogrid.config.SimpleConfig;
 
 /**
  * A JUnit test case for our SecurityService implementation.
@@ -61,9 +68,12 @@ public class SecurityServiceImplTestCase extends TestCase {
     TestDatabaseConfigurationFactory factory = 
         new TestDatabaseConfigurationFactory();
     this.config = factory.testDatabaseConfiguration();
+    SimpleConfig.getSingleton().setProperty("org.astrogrid.community.default.vospace",
+                                              "ivo://foo.bar/vospace");
     DatabaseManagerImpl dbm = new DatabaseManagerImpl(config);
     dbm.resetDatabaseTables();
     AccountManagerImpl am = new AccountManagerImpl(config);
+    am.useMockNodeDelegate();
     am.addAccount("ivo://frog@org.astrogrid.regtest/community");
     SecurityManagerImpl sm = new SecurityManagerImpl(config);
     sm.setPassword("ivo://frog@org.astrogrid.regtest/community", "croakcroak");

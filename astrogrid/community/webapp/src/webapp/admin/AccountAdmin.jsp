@@ -4,8 +4,7 @@
                  org.astrogrid.config.SimpleConfig,
                  org.astrogrid.community.server.security.manager.SecurityManagerImpl,
                  org.astrogrid.community.server.policy.manager.PolicyManagerImpl,                 
-                 org.astrogrid.community.server.policy.manager.AccountManagerImpl,
-                 org.astrogrid.community.webapp.MyProxyBean"
+                 org.astrogrid.community.server.policy.manager.AccountManagerImpl"
     session="true" %>
     
     
@@ -107,7 +106,6 @@ else
 </head>
 
 <body>
-<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 
@@ -215,11 +213,12 @@ else
          if(accounts != null && accounts.length > 0)
          for(int i = 0;i < accounts.length;i++) {
             ad = (AccountData)accounts[i];
+            String userName = new CommunityIvornParser(ad.getIdent()).getAccountName();
       %>
          <tr>
             <form method="get">
                <td>
-                  <%=ad.getIdent()%>
+                  <%=userName%>
                </td>
                <td>
                   <input type="text" name="userCommonName" value="<%=ad.getDisplayName()%>" />
@@ -250,9 +249,10 @@ else
                   <input type="submit" name="RemoveAccountSubmit" value="Remove" />
                </td>
             </form>
-            <form method="post" action="UserInitiationResult.jsp">
+            <form method="post" action="ca">
               <td>
-                <input type="hidden" name="userLoginName" value="<%=ad.getIdent()%>"/>
+                <input type="hidden" name="username" value="<%=userName%>"/>
+                <input type="hidden" name="commonname" value="<%=ad.getDisplayName()%>"/>
                 <input type="submit" name="GenerateCredentialsSubmit" value="Issue ID certificate"/>
               </td>
             </form>

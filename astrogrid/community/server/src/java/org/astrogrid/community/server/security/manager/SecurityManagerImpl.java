@@ -2,6 +2,7 @@ package org.astrogrid.community.server.security.manager ;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
+import org.astrogrid.config.SimpleConfig;
 
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
@@ -202,6 +203,51 @@ public class SecurityManagerImpl
            parser.getIvorn().toUri().getHost() +
            "/" +
            parser.getAccountName();
+  }
+  
+  /**
+   * Derives the primary key for the DB tables from the user name and
+   * configured community name.
+   */
+  protected String primaryKey(String userName) {
+    String community = 
+        SimpleConfig.getSingleton().getString("org.astrogrid.community.ident");
+    int slash = community.indexOf("/");
+    String authority = (slash == -1)? community : community.substring(0, slash);
+    return "ivo://" + authority + "/" + userName;
+  }
+  
+  /**
+   * Exposes the password for a user account.
+   * <p>
+   * This method supports the certificate-authority servlet which
+   * uses the password of an existing account to protect that account's
+   * credentials. The method should definitely not be exposed as a web service!
+   *
+   * @param userName The name of the account, not in IVORN form, e.g. fred rather than ivo://fred@foo/
+   */
+  public String getPassword(String userName) throws CommunityServiceException {
+    
+    // Get the password record from the community database.
+    PasswordData data;
+    Database database = null ;
+    try {
+      database = this.getDatabase();
+      database.begin();
+      String primaryKey = primaryKey(userName);
+      System.out.println("Loading PasswordData with JDO identity " + primaryKey);
+      data = (PasswordData) (database.load(PasswordData.class, primaryKey));
+      database.commit();
+    }
+    catch (Exception e) {
+      rollbackTransaction(database);
+      throw new CommunityServiceException("Failed to read the password for " + userName, e);
+    }
+    finally {
+      closeConnection(database);
+    }
+    
+    return data.getPassword();
   }
     
 }

@@ -1,38 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/service/CommunityServiceImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: CommunityServiceImpl.java,v $
- *   Revision 1.8  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.7.8.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.7  2004/09/09 01:19:50  dave
- *   Updated MIME type handling in MySpace.
- *   Extended test coverage for MIME types in FileStore and MySpace.
- *   Added VM memory data to community ServiceStatusData.
- *
- *   Revision 1.6.74.2  2004/09/07 04:38:26  dave
- *   Debug print out of server memory ...
- *
- *   Revision 1.6.74.1  2004/09/07 04:01:47  dave
- *   Added memory stats ...
- *
- *   Revision 1.6  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.5.14.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.server.service ;
 
 import org.apache.commons.logging.Log ;
@@ -271,20 +236,21 @@ public class CommunityServiceImpl
         }
 
     /**
-     * Generic log reporting for an un-expected exception.
-     * Use this to log exceptions that you don;t expect to happen, and cause a failure.
+     * Logs an un-expected exception.
+     * Use this to log exceptions that you don't expect to happen
+     * and which cause a failure.
      *
+     * @param ouch The exception to be logged.
+     * @param location The location to be logged (free text).
      */
-    public void logException(Throwable ouch, String location)
-        {
-        log.debug("") ;
-        log.debug("  ----") ;
-        log.debug("  WARNING - Exception caught") ;
-        log.debug("  Location  : " + location) ;
-        log.debug("  Exception : " + ouch) ;
-        log.debug("  Message   : " + ouch.getMessage()) ;
-        log.debug("  ----") ;
-        }
+    public void logException(Throwable ouch, String location) {
+      log.warn("----");
+      log.warn("WARNING - Exception caught");
+      log.warn("Location  : " + location);
+      log.warn("Exception : " + ouch);
+      log.warn("Message   : " + ouch.getMessage());
+      log.warn("----");
+    }
 
     /**
      * Generic log reporting for an expected exception.

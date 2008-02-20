@@ -15,7 +15,7 @@
         +-->
     <id>astrogrid-community-resolver</id>
     
-    <currentVersion>2008.0a6</currentVersion>
+    <currentVersion>2008.0a7</currentVersion>
 
     <!--+
         | The full name of the project.
@@ -193,7 +193,12 @@
     		<type>jar</type>
     	</dependency>
         
-
+      <dependency>
+        <groupId>bouncycastle</groupId>
+        <artifactId>bcprov-jdk14</artifactId>
+        <version>137</version>
+        <type>jar</type>
+      </dependency>
     	
     </dependencies>
 
@@ -225,6 +230,10 @@
                 <resource>
                   <directory>src/config</directory>
                   <includes>registry.properties</includes>
+                </resource>
+                <resource>
+                  <directory>src/pem</directory>
+                  <includes>*</includes>
                 </resource>
             </resources>
                 +-->

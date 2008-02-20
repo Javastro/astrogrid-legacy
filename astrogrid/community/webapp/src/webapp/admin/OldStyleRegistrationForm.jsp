@@ -12,7 +12,6 @@
         </title>
     </head>
 <body>
-<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 

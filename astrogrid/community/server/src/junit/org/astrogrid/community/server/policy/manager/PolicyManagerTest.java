@@ -4,6 +4,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.common.policy.manager.PolicyManager;
+import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
+import org.astrogrid.community.server.database.configuration.TestDatabaseConfigurationFactory;
+import org.astrogrid.config.SimpleConfig;
 
 /**
  * Test cases for our PolicyManager.
@@ -23,6 +26,12 @@ public class PolicyManagerTest
      *
      */
     private PolicyManager manager = null ;
+    
+    
+    public void setUp() throws Exception {
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.community.default.vospace",
+                                              "ivo://foo.bar/vospace");
+    }
 
     /**
      * Check we can create a manager, using default database configuration.
@@ -37,9 +46,7 @@ public class PolicyManagerTest
         log.debug("PolicyManagerTest:testCreateDefaultManager()") ;
         //
         // Try creating a default manager.
-        assertNotNull("Null policy manager",
-            new PolicyManagerImpl()
-            ) ;
+        assertNotNull("Null policy manager", new PolicyManagerImpl());
         }
 
     /**
@@ -54,11 +61,7 @@ public class PolicyManagerTest
         log.debug("PolicyManagerTest:testCreateTestManager()") ;
         //
         // Try creating our manager.
-        assertNotNull("Null manager",
-            new PolicyManagerImpl(
-                this.getDatabaseConfiguration()
-                )
-            ) ;
+        assertNotNull("Null manager", getSut());
         }
 
     /**
@@ -73,14 +76,12 @@ public class PolicyManagerTest
         log.debug("PolicyManagerTest:testCreateAccount()") ;
         //
         // Try creating our manager.
-        PolicyManager manager = new PolicyManagerImpl(
-            this.getDatabaseConfiguration()
-            ) ;
+        PolicyManager manager = getSut();
         assertNotNull("Null manager", manager) ;
         //
         // Try creating an Account.
         assertNotNull("Null account",
-            manager.addAccount("test-account")
+            manager.addAccount("ivo://test-account@whatever")
             ) ;
         }
 
@@ -96,17 +97,15 @@ public class PolicyManagerTest
         log.debug("PolicyManagerTest:testDeleteAccount()") ;
         //
         // Try creating our manager.
-        PolicyManager manager = new PolicyManagerImpl(
-            this.getDatabaseConfiguration()
-            ) ;
+        PolicyManager manager = getSut();
         assertNotNull("Null manager", manager) ;
         //
         // Try creating an Account.
-        AccountData created = manager.addAccount("test-account") ;
+        AccountData created = manager.addAccount("ivo://test-account@whatever") ;
         assertNotNull("Null account", created) ;
         //
         // Try deleting the Account.
-        AccountData deleted = manager.delAccount("test-account") ;
+        AccountData deleted = manager.delAccount("ivo://test-account@whatever") ;
         assertNotNull("Null account", deleted) ;
         //
         // Check that the two objects represent the same Account.
@@ -114,6 +113,12 @@ public class PolicyManagerTest
         }
 
 
-
-
+    private PolicyManager getSut() throws Exception {
+      DatabaseConfiguration c = 
+          new TestDatabaseConfigurationFactory().testDatabaseConfiguration();
+      c.resetDatabaseTables();
+      PolicyManagerImpl m = new PolicyManagerImpl(c);
+      m.useMockVoSpace();
+      return m;
     }
+}

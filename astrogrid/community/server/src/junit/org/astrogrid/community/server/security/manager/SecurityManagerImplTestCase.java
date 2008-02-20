@@ -6,6 +6,7 @@ import org.astrogrid.community.server.database.configuration.TestDatabaseConfigu
 import org.astrogrid.community.server.database.manager.DatabaseManagerImpl;
 import org.astrogrid.community.server.security.data.PasswordData;
 import org.astrogrid.community.server.security.service.SecurityServiceImpl;
+import org.astrogrid.config.SimpleConfig;
 import org.exolab.castor.jdo.Database;
 
 /**
@@ -58,6 +59,11 @@ public class SecurityManagerImplTestCase extends TestCase {
     Database database = config.getDatabase();
     database.begin();
     database.load(PasswordData.class, "ivo://org.astrogrid.regtest/frog");
-  }
+    
+    // Check that it can retreive it.
+    SimpleConfig.getSingleton().setProperty("org.astrogrid.community.ident", 
+                                            "org.astrogrid.regtest/community");
+    assertEquals("fubarbaz", sut.getPassword("frog"));
+  } 
   
 }

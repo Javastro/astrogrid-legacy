@@ -1,47 +1,6 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
- * <cvs:author>$Author: gtr $</cvs:author>
- * <cvs:date>$Date: 2008/01/23 15:24:12 $</cvs:date>
- * <cvs:version>$Revision: 1.16 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: SecurityServiceImpl.java,v $
- *   Revision 1.16  2008/01/23 15:24:12  gtr
- *   Branch community-gtr-2512 is merged.
- *
- *   Revision 1.15.122.2  2008/01/23 13:26:46  gtr
- *   no message
- *
- *   Revision 1.15.122.1  2008/01/22 15:25:08  gtr
- *   I deprecated the checkToken() method.
- *
- *   Revision 1.15  2005/02/18 17:14:55  jdt
- *   merge with community_pah_910
- *
- *   Revision 1.12.44.1  2005/02/07 16:03:37  pah
- *   updated log messages to make it explicit in the logs when login-logout occurs.
- *
- *   Revision 1.12  2004/09/16 23:18:08  dave
- *   Replaced debug logging in Community.
- *   Added stream close() to FileStore.
- *
- *   Revision 1.11.82.1  2004/09/16 09:58:48  dave
- *   Replaced debug with commons logging ....
- *
- *   Revision 1.11  2004/06/18 13:45:20  dave
- *   Merged development branch, dave-dev-200406081614, into HEAD
- *
- *   Revision 1.10.18.2  2004/06/17 15:24:31  dave
- *   Removed unused imports (PMD report).
- *
- *   Revision 1.10.18.1  2004/06/17 13:38:59  dave
- *   Tidied up old CVS log entries
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.community.server.security.service ;
 
+import java.security.AccessControlException;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
@@ -569,6 +528,33 @@ public class SecurityServiceImpl
         return vector.toArray() ;
         }
 
+  /**
+   * Checks a password against the password database.
+   * The given user-name is assumed to be part of this community;
+   * e.g. "fred" rather than "ivo://fred@foo.bar/community".
+   *
+   * @throws AccessControlException If the password does not match the user name.
+   * @throws AccessControlException If the user name does not match a local account.
+   */
+  public void authenticate(String userName, String password)
+      throws AccessControlException {
+    try {
+
+      // Form the IVORN for the account.
+      String account = "ivo://" +
+                       userName +
+                       "@" + 
+                       CommunityIvornParser.getLocalIdent();
+      
+      // Check that the password matches the account.
+      checkPassword(account, password);
+    }
+    catch (Exception e) {
+      throw new AccessControlException("Password check failed for " + userName);
+    }
+    
+  }
+    
   /**
    * Derives from the account IVORN the primary key for the DB tables.
    * This key is an old form of account IVORN in which the account name
