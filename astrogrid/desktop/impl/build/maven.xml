@@ -831,7 +831,12 @@ todo see if we can include other things in the disk image too. -->
         }   
     -keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl {
         public *;
-        }   
+        }
+
+    <!-- resolver library: SSL breaks when stripping this? -->
+    -keep class org.astrogrid.community.resolver.GullibleX509TrustManager {
+        public *;
+        }
           
       <!--  xalan - resources -->
       -keep class org.apache.xml.res.* {
