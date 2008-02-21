@@ -1,86 +1,48 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <document>
-    <properties>
-        <title>AstroGrid community install</title>
-    </properties>
-    <body>
+  <properties>
+      <title>AstroGrid community: installation</title>
+  </properties>
+  <body>
     <section name="Installation">
       <p>
         Normal installation is as follows.
       </p>
       <ul>
-        <li>Tomcat 5.0.x (5.0.28 recommended) as the web server, run from a non-privileged account.</li>
-        <li>An AstroGrid community web-application running in Tomcat</li>
-        <li>HSQLDB (included in the AstroGrid WAR) as the DBMS.</li>
-        <li>MyProxy installed as a separate, non-HTTP service, run by root.</li>
-        <li>A local certificate authority installed in the web-application.</li>
+        <li>Community files owned by the root account.</li>
+        <li>Tomcat 5.5.x as the web server, run under the root account, 
+            using ports 80 (HTTP) and 443 (HTTPS).</li>
+        <li>User credentials issued by a community certificate-authority (CA).</li>
+        <li>A prescribed directory-structure of configuration, database, CA and 
+            user-credential files, stored outside the Tomcat installation.</li>
+        <li>No connection with MyProxy.</li>
       </ul>
       <p>
-        That arranagement is document in these page. Other approaches are
+        That arranagement is documented in these pages. Other approaches are
         possible, at your own risk. Please contact AstroGrid before trying 
         anything unusual; we may be able to help you past the difficulties.
       </p>
-      
-      <subsection name="Preparing Tomcat">
-        <p>
-          Install Apache Tomcat following its own instructions. In Tomcat's
-          list of known users (the file tomcat-users.xml in the normal
-          configuration; note that this set of users governs admin access
-          to Tomcat, not membership of the IVO community), make sure that there
-          is at least one username with the <i>admin</i> and <i>manager</i>
-          roles, and that you know the password for this username.
-        </p>
-      </subsection>
-      
-      <subsection name="Installing the WAR">
-        <p>
-          Download the WAR from the AstroGrid site. Choose a name for your
-          installation; just "community" is fine if you will only have one
-          of them; otherwise, pick a name that doesn't clash with what you
-          already have installed. Rename the WAR accordingly.
-        </p>
-        <p>
-          Now copy the WAR into Tomcat's webapps directory. Wait 30 seconds.
-          Now check in Tomcat's manager application (look on Tomcat's front
-          page to find the link to the manager; you will need to give a password).
-          You should see your web-application installed and running.
-        </p>
-      </subsection>
-      
-      <subsection name="Installing the DB software">
-        <p>
-          The DB software is supplied in the WAR which you have just installed.
-          You don't have to install it manually. (C.f. earlier versions of
-          community where you needed to move a JAR into common/lib.)
-        </p>
-      </subsection>
-      
-      <subsection name="MyProxy installation">
-        <p>
-          You need to install a MyProxy service to work with the community
-          web-application. 
-          <a href="http://grid.ncsa.uiuc.edu/myproxy/">MyProxy</a> is a non-Java 
-          product from NCSA, and you will have to install it separately from
-          the AstroGrid Java software. At the present time, you will also
-          have to download, and possibly build from source,
-          a suitable copy of Myproxy; apologies for this.
-          In later versions, AstroGrid may be able to package MyProxy for
-          easier installation.
-        </p>
-        <p>
-          The standard distribution of MyProxy is the one in
-          <a href="http://www.globus.org/toolkit/">Globus Toolkit 4</a>.
-        </p>
-      </subsection>
-      
-      <subsection name="Certificate-authority installation">
-        <p>
-          You may want to run a local certificate authority (CA) within your community. 
-          This is optional, but you may need one for full operation.
-          Please see the <a href="CA-installation.html">CA installation guide</a> 
-          for details.
-        </p>
-      </subsection>
+      <p>
+        The standard procedure for installation follows.
+      </p>
+      <ol>
+        <li><a href="standard-tomcat.html">Install and configure Tomcat.</a></li>
+        <li><a href="standard-directories.html">Create the directory structure.</a>
+            (<a href="variant-directories.html">variants</a>)</li>
+        <li><a href="standard-db.html">Install the database.</a></li>
+        <li><a href="standard-ca.html">Install the certificate authority.</a></li>
+        <li><a href="standard-context.html">Generate the context file.</a></li>
+        <li><a href="standard-webapp.html">Install the web application with its context file.</a></li>
+        <li>Run the self-tests. (See the main menu in the installed community.)</li>
+        <li>Register the community in the IVO registry. (See the main menu in the installed community.)</li>
+      </ol>
+      <p>
+        In this sequence, all the configuration is set before the web application
+        is installed; there is nothing to tune afterwards. If you find that the
+        configuration isn't quite right then the best way to fix it is to
+        remove the web application, edit the configuration files and reinstall
+        the web application.
+      </p>
     </section>
-   </body>
+  </body>
 </document>

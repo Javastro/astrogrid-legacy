@@ -43,6 +43,17 @@
           file="${maven.war.webapp.dir}/about.txt"/>
     <echo>...done</echo>
            
-   </postGoal>  
+   </postGoal>
+   
+  <preGoal name="xdoc">
+    <echo message="Copying configuration files..."/>
+    <copy verbose="true" todir="${maven.docs.dest}">
+      <fileset dir="${basedir}/src/webapp">
+        <include name="astrogrid-community-database.xml"/>
+        <include name="astrogrid-community-mapping.xml"/>
+        <include name="sample-environment.xml"/>
+      </fileset>
+    </copy>
+  </preGoal>
 
 </project>

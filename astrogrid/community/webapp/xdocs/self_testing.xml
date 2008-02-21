@@ -6,8 +6,11 @@
     <body>
     <section name="Self Testing">
       <p>
-         In general the best way to self test is to start off at your {context name}/admin/index.jsp which will ask for a tomcat manager username and password.  See "installation" documentation on info about setting up tomcat manager users.<br />
-         Now you are ready to begin adding accounts, groups, members, and permissions.  As you add accounts it should also add to VOSpace/Myspace the account if the community is setup to have a Myspace which is normally done.
+         The main menu of the community web-application lists some
+         scripted tests which you invoke. If you have followed the
+         standard installation procedure, the installation should pass
+         these tests as soon as the web application is installed. You
+         can, and should, run the tests before registering the community.
       </p>
    </section>
    </body>

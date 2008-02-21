@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community: standard context file</title>
+    </properties>
+    <body>
+    <section name="Standard form of the context file">
+      <p>
+        The community web-application needs to be told where to find
+        various files and external services. When using Tomcat, you do this 
+        by preparing an XML configuration-file listing <i>environment entries</i>.
+        This is known as the <i>context file</i>. 
+      </p>
+      <p>
+        Download the 
+        <a href="sample-environment.xml">sample context-file.</a>
+        You will have to edit some of the values to suit your installation.
+      </p>
+      <p>
+        These entries have to be set specifically for your registry, even if
+        you are using the standard installation.
+      </p>
+      <dl>
+        <dt>org.astrogrid.community.ident</dt>
+        <dd>The formal name of the community. This is the registry identifier
+        ("IVORN") of the community with the ivo:// prefix stripped off.</dd>
+        <dt>org.astrogrid.vosi.baseurl</dt>
+        <dd>The URL at which you installed the web-application. This is the URL
+        leading to the web-application's front page. This affects the
+        registration of the community.</dd>
+        <dt>org.astrogrid.vosi.baseurlsecure</dt>
+        <dd>The same as <i>org.astrogrid.community.baseurl</i>, but for HTTPS.</dd>
+        <dt>org.astrogrid.community.dbconfigurl</dt>
+        <dd>The URL for the main database-configuration file (should begin with 
+        <i>file:</i>).</dd>
+        <dt>org.astrogrid.community.default.vospace</dt>
+        <dd>The registry identifier ("IVORN") for the VOSpace service associated
+        with the community.</dd>
+        <dt>org.astrogrid.registry.admin.endpoint</dt>
+        <dd>The URL for the web service for "push" registration in your
+        publishing registry.</dd>
+      </dl>  
+      <p>
+        These entries are already correct for your community if you are
+        following the standard installation. You may need to change them if
+        you change the installation details.
+      </p>
+      <dl>
+        <dt>org.astrogrid.community.dbconfigurl</dt>
+        <dd>The URL for the main database-configuration file (should begin with 
+        <i>file:</i>).</dd>
+        <dt>org.astrogrid.community.myproxy</dt>
+        <dd>The directory in which the community keeps its user credentials.
+         (so named because the MyProxy server shares this directory when present;
+         you still need this value even if you do not run MyProxy).</dd>
+        <dt>org.astrogrid.community.cakey</dt>
+        <dd>The file holding the CA's private key (always a <i>.pem</i> file.</dd>
+        <dt>org.astrogrid.community.cacert</dt>
+        <dd>The file holding the CA's root certificate (always a <i>.pem</i> file.</dd>
+        <dt>org.astrogrid.community.caserial</dt>
+        <dd>The file holding the CA's record of certificate serial-numbers.</dd>
+      </dl>
+      <p>
+        Having made the context file, put a copy somewhere safe, where it will be
+        backed up. In the standard directory-layout, 
+        <i>/astrogrid/community/context.xml</i> is the best place. Storing a
+        copy here does not actually apply the settings; that is done when the
+        web application is deployed into Tomcat.
+      </p>
+    </section>
+   </body>
+</document>

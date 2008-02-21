@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community: standard configuration of Tomcat</title>
+    </properties>
+    <body>
+    <section name="Standard Configuration of Apache Tomcat">
+      <p>
+        Use Apache Tomcat 5.5.x. Version 2008.0 of the community web-application
+        was tested with Tomcat 5.5.26.
+      </p>
+      <p>
+        The root account should run the Tomcat installation and own all its files.
+      </p>
+      <p>
+        Tomcat should provide HTTP service on port 80 and HTTPS service on
+        port 443. These ports are specified in Tomcat's <i>conf/server.xml</i> 
+        file, in <i>Connector</i> elements; edit the file if they are not already
+        correct.
+        The default configuration in the downloaded Tomcat usually has the
+        correct ports, but make sure that the HTTPS connector has not
+        been commented out.
+      </p>
+      <p>
+        Ensure that you can get to Tomcat's manager page; that page is linked
+        from Tomcat's home page. To view the manager you need a user name,
+        password and role in <i>conf/tomcat-users.xml</i>. See Tomcat's own
+        documents for details. You need to use the manager page to deploy
+        the community.
+      </p>
+      <p>
+        Configure HTTPS with credentials for the host running Tomcat, following
+        Tomcat's normal procedure. Self-signed credentials are sufficient for
+        the current community, but later upgrades might require you to get
+        credentials from a recognised certificate-authority. You need the
+        credentials to make HTTPS work, and you need HTTPS to run the
+        community accounts service.
+      </p>
+      <p>
+        Set Tomcat to start whenever the host machine reboots. The procedure
+        for this depends on the operating system, but generally requires you
+        to write a short shell-script. In this script, you may pass parameters
+        to the JVM that runs Tomcat. AstroGrid recommends these settings, which
+        are based on the SUN JVM.
+      </p>
+      <dl>
+        <dt>-server</dt>
+        <dd>Use the server version of the JVM.</dd>
+        <dt>-Xmx750m</dt>
+        <dd>Allow 750MB of heap space.</dd>
+        <dt>-XX:MaxPermSize=256m</dt>
+        <dd>Allow 256MB of "permanent generation" space (the default is
+        64MB which is too low).</dd>
+        <dt>-Djava.net.preferIPv4Stack=true"</dt>
+        <dd>Avoids IPv6 connections which give problems when the
+        intervening network is not completely suitable for IPV6.</dd>
+      </dl>
+      <p>
+        Run Tomcat with Java 5. The SUN JDK/JRE 1.5.0 is preferred.
+      </p>
+    </section>
+   </body>
+</document>

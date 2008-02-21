@@ -6,14 +6,9 @@
 
     <id>astrogrid-community</id>
     <name>Community Web Application</name>
-    <currentVersion>2008.0a9</currentVersion>
-    <shortDescription>Community web application</shortDescription>
-    <description>
-        <![CDATA[
-         Community is a Astrogrid component to manage accounts, groups, members, and currently not used externally but also resources and permissions.  See the
-         documentation on the left hand side for all information about the community.
-        ]]>
-    </description>
+    <currentVersion>2008.0a10</currentVersion>
+    <shortDescription>Community web-application</shortDescription>
+  <description>Community is a AstroGrid web application to manage user accounts.</description>
 
     <!--+
         | Our cvs repository location.
@@ -61,34 +56,28 @@
             </properties>
         </dependency>
         <!--+
-            | The Community common components.
+            | The Community jars.
             +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a6</version>
+            <version>2008.0a7</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The Community client components.
-            +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a6</version>
+            <version>2008.0a7</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The Community server components.
-            +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
@@ -99,19 +88,17 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!--+
-            | The Community resolver components.
-            +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>2008.0a6</version>
-            <type>jar</type>
+            <version>2008.0a7</version>
             <url>http://www.astrogrid.org/</url>
+            <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        
         <!--+
             | The Registry common classes.
             +-->

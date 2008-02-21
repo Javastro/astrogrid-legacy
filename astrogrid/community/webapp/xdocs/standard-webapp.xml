@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+  <properties>
+      <title>AstroGrid community: standard installation of web application</title>
+  </properties>
+  <body>
+    <section name="Installing the web application">
+      <p>
+        If you have followed the standard installation-procedure, you now have
+        to hand a web application in a web-archive (the <i>.war</i> file) and a
+        context file (the XML file with the <i>Environment</i> elements).
+        The most reliable way to install these is via Tomcat's manager page,
+        using the panel labeled "deploy directory or WAR file located on server".
+      </p>
+      <p>
+        Copy your <i>.war</i> file and your context file onto the server in
+        a directory outside the Tomcat installation. Go to the mamaner page
+        with your web browser.
+      </p>
+      <p>
+        Fill in the context-path field. The value here is the path in the URL
+        leading to the front page of the web application. E.g., if your
+        web application is to go at <i>http://foo.bar/community</i>, then
+        the value for the context path is <i>/community</i>; the leading slash
+        is essential. Note that the
+        context path must match the URLs that you declared for the community
+        when setting up the context file.
+      </p>
+      <p>
+        Fill in the locations of the <i>.war</i> and context files. These values
+        of these fields must be URLs, so prepend <i>file:</i> to the file
+        paths.
+      </p>
+      <p>
+        Now press the button to deploy the web application. Tomcat should
+        deploy it and add it to the list within a few seconds.
+      </p>
+      <p>
+        Of the handful of ways to add a web application to Tomcat, this one
+        is the most reliable. I strongly recommend that you do it this way.
+      </p>
+    </section>
+  </body>
+</document>

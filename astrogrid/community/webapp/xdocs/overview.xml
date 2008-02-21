@@ -5,13 +5,36 @@
     </properties>
     <body>
     <section name="Overview">
-      <p>
-         This is the main project to build a war file for deployment and that can be just dropped into a server.  It bundles the Axis
-         web service toolkit along with all the necessary jar file dependencies such as all into this
-         war file.  The community is a Astrogrid webapp that allows management of accounts, group, members, resources and permissions (currently resources and permissions not in use in other astrogrid software).
-         By stepping through the installation and configuration, then you will begin to be able to add accounts and groups.  Then login to other software components with the accounts you setup, such as portal, aladdin, topcat, and workbench.
-         It is normally expected that you will point the community to a known database system at your site, but the installation and configuration steps you through an example of hsqldb that you may use if you don't have a database or just wish to use hsqldb.
-      </p>
+       <p>
+         The community software provides a means to register IVO users, and
+         to provide them with credentials so that they can access restricted
+         resources. The community is supplied as a web application that
+         provides a number of services.
+       </p>
+     <dl>    
+       <dt>Security service:</dt>
+           <dd>a SOAP service that allows users to authenticate with passwords.</dd>
+           <dd>
+           This service is obsolecent since it does not supply the credentials
+           needed for modern, secure services. It is 
+           retained for compatibility with old
+           clients of MySpace.</dd>
+       <dt>Policy manager:</dt>
+       <dd>a SOAP service with reports to the client the IVORN for the user's
+       home space.</dd>
+       <dd>This is also obscelecent.</dd>
+       <dt>Accounts service:</dt>
+       <dd>a RESTful web-service that dispenses credentials.</dd>
+       <dd>This service replaces the SOAPy security service. It will later
+           be extended to replace the policy manager.</dd>
+       <dt>Administration interface:</dt>
+       <dd>a classical web-browser interface for the community operators.</dd>
+     </dl>
+     
+     <p>
+       The community contains a local certificate authority, operated by the
+       community managers through the community's administration interface.
+     </p>
     </section>
    </body>
 </document>

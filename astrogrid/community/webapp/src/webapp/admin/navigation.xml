@@ -13,15 +13,14 @@
     </ul>
     <h5>For community managers</h5>
     <ul>
-      <li><a href='../configure.jsp'>Configuration instructions</a></li>
-      <li><a href='fingerprint.jsp'>Service fingerprint</a></li>
-      <li><a href="ResetDB.jsp">Initialize the database</a></li>
-      <li><a href="RegistrationInstructions.jsp">Register the community</a></li>
-      <li><a href="AccountAdmin.jsp">View or change user accounts</a></li>
-      <li><a href="CaEnablementForm.jsp">Enable the certificate authority</a></li>
-      <li><a href="../VOSI/capabilities">View service's capabilities</a></li>
-      <li><a href="../VOSI/availability">View service's availability</a></li>
-      <li><a href="../axis/happyaxis.jsp">Test the Apache-Axis installation</a></li>
+      <li><a href="self-test.jsp">Self tests</a></li>
+      <li><a href='fingerprint.jsp'>Fingerprint</a></li>
+      <li><a href="ResetDB.jsp">Database reset</a></li>
+      <li><a href="RegistrationInstructions.jsp">Registration</a></li>
+      <li><a href="AccountAdmin.jsp">User accounts</a></li>
+      <li><a href="CaEnablementForm.jsp">Certificate authority</a></li>
+      <li><a href="../VOSI/capabilities">Service's capabilities</a></li>
+      <li><a href="../VOSI/availability">Service's availability</a></li>
     </ul>  
   </div>
 </div>

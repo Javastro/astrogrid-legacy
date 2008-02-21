@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community: standard configuration of the database</title>
+    </properties>
+    <body>
+    <section name="Database installation">
+      <p>
+        The community web-application includes the HypersonicSQL RDBMS. The
+        Java code connects to the RDBMS through the Castor JDO library.
+        The latter needs to be told where to find the data files and how to
+        map database records to Java objects. You do this by installing two
+        XML configuration-files.
+      </p>
+      <p>
+        Download the sample copy of the 
+        <a href="astrogrid-community-database.xml">main configuration file</a>
+        for the database. If you are
+        using the <a href="standard-directories.html">standard directory-layout</a>
+        then this sample is correct for your community. If you are using a
+        variant set of directories then you must edit the file to tell the
+        database where to find its data files. The sample file contains
+        comments telling you what to change. Install the configuration file at
+        <i>/astrogrid/community/db/astrogrid-community-database.xml</i>.
+      </p>
+      <p>
+        Download the 
+        <a href="astrogrid-community-mapping.xml">mapping file</a>. 
+        This is the same for all installations of
+        the community. Install the mapping file at
+        <i>/astrogrid/community/db/astrogrid-community-mapping.xml</i> (it
+        must always be in the same directory as the database configuration-file).
+      </p>
+      <p>
+        If you are upgrading an existing community with a populated database, then
+        you will need to copy the data files from the previous installation.
+        There are two files to copy: <i>org.astrogrid.community.properties</i>
+        and <i>org.astrogrid.community.script</i>. Put them both in
+        <i>/astrogrid/community/db</i>. The actual contents of the database are
+        in <i>org.astrogrid.community.script</i>.
+      </p>
+    </section>
+   </body>
+</document>

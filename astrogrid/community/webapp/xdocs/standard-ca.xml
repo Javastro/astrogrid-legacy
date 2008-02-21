@@ -4,8 +4,35 @@
     <title>Certificate-authority generator</title>
   </properties>
   <body>
-    <section name="Certificate-authority generator">
-          <p>The generator writes these three files:</p>
+    
+    <section name="Creating and installing a certificate authority">
+      
+      <p>
+        The certificate authority consists in:
+      </p>
+      <ul>
+        <li>the OpenSSL package;</li>
+        <li>Java software to drive OpenSSL;</li>
+        <li>three files of credentials and configuration which you mus supply.</li>
+      </ul>
+      
+      <p>
+        Most Unix and Linux platforms provide OpenSSL, but you may need to
+        install it yourself. The executable programme <i>openssl</i> must
+        be on the PATH of the account that runs Tomcat (i.e., in the
+        standard installation, on root's PATH).
+      </p>
+      
+      <p>
+        The Java software for the CA is included in the community
+        web-application.
+      </p>
+      
+      <p>
+        The credential files turn the generic CA-software into your
+        CA, specific to your community; therefore you have to generate them.
+        They are:
+      </p>
     <ul>
       <li>a root certificate that identifies the certificate authority;</li>
       <li>a private key, use of which is protected by a password;</li>
@@ -13,9 +40,13 @@
       the CA (number 00 means the CA's own, self-signed certificate).</li>
     </ul>
     <p>
-      Using these files, you can add a <em>certificate authority</em> (CA) to your
-      installation of the AstroGrid community component. That is, you can set
-      up your community to issue its own identity certificates.
+      The CA files follow OpenSSL's conventions, since it is the <i>openssl</i>
+      excutable that uses them. This means, <i>inter alia</i> that the key
+      and certificate are in PEM format.
+    </p>
+    <p>
+      The standard way to generate the files is to use AstroGrid's
+      CA-generator application.
     </p>
     
     <subsection name="Downloading and running the generator">
@@ -41,7 +72,7 @@
       <li>Choose the password for the private key (must be at least 8 characters long).</li>
       <li>Press the <em>generate CA files</em> button.</li>
       <li>Copy the three files into the appropriate places in your community service 
-      (see the separate documentation for the service to find the right places).</li>
+      (see below).</li>
     </ol>
     </subsection>
     
@@ -125,6 +156,28 @@
       The password must be at least eight characters long: this is a restriction
       of the OpenSSL software on which the CA package is based.
     </p>
+    </subsection>
+    
+    <subsection name="Installing the files">
+      <p>
+        When you have generated the CA files, you must then install them.
+        In the standard directory layout, they go here:
+      </p>
+      <pre>
+  /astrogrid/community/ca/ca-key.pem
+  /astrogrid/community/ca/ca-certificate.pem
+  /astrogrid/community/ca/ca-serial.txt
+      </pre>
+      <p>
+        If you don't follow the standard layout, make sure that you edit the
+        <a href="standard-context.html">context file</a> to match where you
+        do install them.
+      </p>
+      <p>
+        The community would like the key and certificate file to be
+        write-locked but the serial-number file must be writable by its owner.
+      </p>
+      
     </subsection>
     </section>
   </body>
