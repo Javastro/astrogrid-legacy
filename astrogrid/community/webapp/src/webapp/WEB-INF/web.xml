@@ -6,35 +6,53 @@
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
+    <description>Runs the SOAP services.</description>
     <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>VosiServlet</servlet-name>
     <display-name>VOSI</display-name>
+    <description>Provides VOSI availavility and capability data.</description>
     <servlet-class>org.astrogrid.community.vosi.VosiServlet</servlet-class>
   </servlet>
     
-    <servlet>
-        <servlet-name>PasswordChangeServlet</servlet-name>
-        <servlet-class>org.astrogrid.community.webapp.PasswordChangeServlet</servlet-class>
-    </servlet>
-    
-    
+  <servlet>
+    <servlet-name>PasswordChangeServlet</servlet-name>
+    <display-name>Password change</display-name>
+    <description>Allows users to change their passwords.</description>
+    <servlet-class>org.astrogrid.community.webapp.PasswordChangeServlet</servlet-class>
+  </servlet>
+      
   <servlet>
     <servlet-name>AccountServlet</servlet-name>
+    <display-name>User accounts</display-name>
+    <description>Allows users to extract certificate chains.</description>
     <servlet-class>org.astrogrid.community.webapp.AccountServlet</servlet-class>
   </servlet>
   
-    <servlet>
-        <servlet-name>CaServlet</servlet-name>
-        <servlet-class>org.astrogrid.community.webapp.CaServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>DatabaseServlet</servlet-name>
-        <servlet-class>DatabaseServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
+  <servlet>
+    <servlet-name>CaServlet</servlet-name>
+    <display-name>Certificate authority</display-name>
+    <description>Allows the community operator to issue certificates to users.</description>
+    <servlet-class>org.astrogrid.community.webapp.CaServlet</servlet-class>
+  </servlet>
+    
+  <servlet>
+    <servlet-name>DatabaseServlet</servlet-name>
+    <display-name>Community database</display-name>
+    <description>Monitors the health of the database.</description>
+    <servlet-class>DatabaseServlet</servlet-class>
+  </servlet>
+    
+  <servlet>
+    <servlet-name>JUnitEETestServlet</servlet-name>
+    <display-name>JUnitEE test runner</display-name>
+    <description>Runs the self-tests.</description>
+    <servlet-class>org.junitee.servlet.JUnitEEThreadedServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
     <servlet-name>AccountServlet</servlet-name>
     <url-pattern>/accounts/*</url-pattern>
   </servlet-mapping>
@@ -59,25 +77,34 @@
     <url-pattern>/VOSI/availability</url-pattern>
   </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>PasswordChangeServlet</servlet-name>
-        <url-pattern>/password</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CaServlet</servlet-name>
-        <url-pattern>/admin/ca</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CaServlet</servlet-name>
-        <url-pattern>/admin/ca/passphrase</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DatabaseServlet</servlet-name>
-        <url-pattern>/admin/database</url-pattern>
-    </servlet-mapping>
-    <mime-mapping>
+  <servlet-mapping>
+    <servlet-name>PasswordChangeServlet</servlet-name>
+    <url-pattern>/password</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>CaServlet</servlet-name>
+    <url-pattern>/admin/ca</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>CaServlet</servlet-name>
+    <url-pattern>/admin/ca/passphrase</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>DatabaseServlet</servlet-name>
+    <url-pattern>/admin/database</url-pattern>
+  </servlet-mapping>
+    
+  <servlet-mapping>
+    <servlet-name>JUnitEETestServlet</servlet-name>
+    <url-pattern>/admin/test/*</url-pattern>
+  </servlet-mapping>
+    
+  <mime-mapping>
     <extension>wsdl</extension>
-     <mime-type>text/xml</mime-type>
+    <mime-type>text/xml</mime-type>
   </mime-mapping>
   
   <mime-mapping>

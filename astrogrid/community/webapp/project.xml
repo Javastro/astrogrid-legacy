@@ -384,6 +384,7 @@
         </properties>
       </dependency>
       
+      <!-- Cryptography stuff. -->
       <dependency>
         <artifactId>bcprov-jdk14</artifactId>
         <groupId>bouncycastle</groupId>
@@ -397,6 +398,17 @@
         <artifactId>cog-jglobus</artifactId>
         <groupId>globus</groupId>
         <version>1.4</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+      
+      <!-- Self testing in the deployed web-app. -->
+      <dependency>
+        <groupId>junitee</groupId>
+        <artifactId>junitee</artifactId>
+        <version>1.11</version>
+        <type>jar</type>
         <properties>
           <war.bundle>true</war.bundle>
         </properties>
