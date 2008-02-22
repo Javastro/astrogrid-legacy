@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.78 2008/02/15 12:34:32 mbt Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.79 2008/02/22 17:03:35 mbt Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
@@ -807,26 +809,34 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
         protected void doFinished(Object result) {
         	Service[] services = (Service[])result;
-        	vizModel.getSummarizer().addAll(services);
-        	parent.showTransientMessage(services.length + " " + this.p.getName().toLowerCase() + " services to query","");
-        	setProgressMax(getProgressMax() + services.length);
-        	if (this.p instanceof SpatialDalProtocol) {
-        		SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
-        		for (int i = 0; i < services.length; i++) {
-        			spatial.createRetriever(services[i],this.ra,this.dec,this.radius,this.radius).start();
-        		}                            
-        	} else if (this.p instanceof TemporalDalProtocol) {
-        		TemporalDalProtocol temporal = (TemporalDalProtocol)this.p;
-        		Date start = startCal.getDate();
-        		Date end = endCal.getDate();
-        		for (int i = 0; i < services.length; i++) {
-        			if (noPosition.isSelected()) { // zero out the positional fields.
-        				temporal.createRetriever(services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();
-        			} else {
-        				temporal.createRetriever(services[i],start,end,this.ra,this.dec,this.radius,this.radius).start();
-        			}
-        		}      							
-        	}
+            List rList = new ArrayList();
+            if (this.p instanceof SpatialDalProtocol) {
+                SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
+                for (int i = 0; i < services.length; i++) {
+                    Retriever[] retrievers = spatial.createRetrievers(services[i],this.ra,this.dec,this.radius,this.radius);
+                    rList.addAll(Arrays.asList(retrievers));
+                }
+            } else if (this.p instanceof TemporalDalProtocol) {
+                TemporalDalProtocol temporal = (TemporalDalProtocol)this.p;
+                Date start = startCal.getDate();
+                Date end = endCal.getDate();
+                for (int i = 0; i < services.length; i++) {
+                    Retriever[] retrievers;
+                    if (noPosition.isSelected()) { // zero out the positional fields
+                        retrievers = temporal.createRetrievers(services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN);
+                    } else {
+                        retrievers = temporal.createRetrievers(services[i],start,end,this.ra,this.dec,this.radius,this.radius);
+                    }
+                    rList.addAll(Arrays.asList(retrievers));
+                }
+            }
+            Retriever[] retrievers = (Retriever[]) rList.toArray(new Retriever[0]);
+            vizModel.getSummarizer().addAll(retrievers);
+            parent.showTransientMessage(retrievers.length + " " + this.p.getName().toLowerCase() + " services to query", "");
+            setProgressMax(getProgressMax() + retrievers.length);
+            for (int i = 0; i < retrievers.length; i++) {
+                retrievers[i].start();
+            }
         }
     }
 

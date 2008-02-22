@@ -1,6 +1,9 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.net.URI;
+
 import org.astrogrid.acr.ivoa.Cone;
+import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.xml.sax.SAXException;
 
@@ -12,8 +15,8 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 public class CatalogTerminalConeRetrieval extends ConeRetrieval {
     
 
-	public CatalogTerminalConeRetrieval(Service service, TreeNode primaryNode, VizModel model, Cone cone, double ra, double dec, double sz) {
-		super(service, primaryNode, model, cone, ra, dec, sz);
+	public CatalogTerminalConeRetrieval(Service service, ConeCapability cap, URI acurl, NodeSocket socket, VizModel model, Cone cone, double ra, double dec, double sz) {
+		super(service, cap, acurl, socket, model, cone, ra, dec, sz);
 	}
 
 	protected BasicTableHandler createTableHandler(TreeNode serviceNode) {

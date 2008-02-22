@@ -28,16 +28,6 @@ public abstract class TemporalDalProtocol extends DalProtocol {
 		super(name,img);
 	}
 
-	public abstract Retriever createRetriever(
-			Service i,
-			Date start, Date end,
-			 double ra, double dec, double raSize, double decSize,String format);
-
-	
-	public abstract Retriever createRetriever(
-			Service i,
-			Date start, Date end,
-			 double ra, double dec, double raSize, double decSize);
-
+    public abstract Retriever[] createRetrievers(Service i, Date start, Date end, double ra, double dec, double raSize, double decSize);
 
 }

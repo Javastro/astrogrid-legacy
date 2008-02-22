@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.11 2007/12/12 13:54:13 nw Exp $
+/*$Id: SiapProtocol.java,v 1.12 2008/02/22 17:03:35 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,18 +13,22 @@ package org.astrogrid.desktop.modules.ui.scope;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
+ * @author Mark Taylor
  *
  */
 public class SiapProtocol extends SpatialDalProtocol {
@@ -50,8 +54,34 @@ public class SiapProtocol extends SpatialDalProtocol {
     } 
 
 
-    public Retriever createRetriever(Service i, double ra, double dec, double raSize, double decSize) {
-        return new SiapRetrieval(i,getPrimaryNode(),getVizModel(),siap,ra,dec,raSize,decSize);
+    public Retriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
+        Capability[] capabilities = service.getCapabilities();
+        List cList = new ArrayList();
+        for (int i = 0; i < capabilities.length; i++) {
+            if (capabilities[i] instanceof SiapCapability && findParamUrl(capabilities[i]) != null) {
+                cList.add(capabilities[i]);
+            }
+        }
+        SiapCapability[] siaps = (SiapCapability[]) cList.toArray(new SiapCapability[0]);
+        int nsiap = siaps.length;
+        final Retriever[] retrievers;
+        if (nsiap == 0) {
+            retrievers = new Retriever[0];
+        }
+        else if (nsiap == 1) {
+            retrievers = new Retriever[] {
+                new SiapRetrieval(service, siaps[0], findParamUrl(siaps[0]), getDirectNodeSocket(), getVizModel(), siap, ra, dec, raSize, decSize),
+            };
+        }
+        else {
+            NodeSocket socket = createIndirectNodeSocket(service);
+            retrievers = new Retriever[nsiap];
+            for (int i = 0; i < nsiap; i++) {
+                retrievers[i] = new SiapRetrieval(service, siaps[i], findParamUrl(siaps[i]), socket, getVizModel(), siap, ra, dec, raSize, decSize);
+            }
+        }
+        setSubNames(capabilities, retrievers);
+        return retrievers;
     }
     
 	public Service[] filterServices(List resourceList) {
@@ -71,6 +101,22 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.12  2008/02/22 17:03:35  mbt
+Merge from branch mbt-desktop-2562.
+Basically, Retrievers rather than Services are now the objects (associated
+with TreeNodes) which communicate with external servers to acquire results.
+Since Registry v1.0 there may be multiple Retrievers (even of a given type)
+per Service.
+
+Revision 1.11.18.3  2008/02/22 15:18:29  mbt
+Fix so that multiple capabilities of a single service are anchored at a single node representing that service, rather than direct from the primary node
+
+Revision 1.11.18.2  2008/02/21 15:35:15  mbt
+Now does multiple-capability-per-service for all known protocols
+
+Revision 1.11.18.1  2008/02/21 11:06:09  mbt
+First bash at 2562.  AstroScope now runs multiple cone searches per Service
+
 Revision 1.11  2007/12/12 13:54:13  nw
 astroscope upgrade, and minor changes for first beta release
 

@@ -16,6 +16,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -41,21 +42,12 @@ public class StapRetrieval extends Retriever {
 	private final Date start;
 	private final Date end;
 	private final String format;
+    private final URI accessUrl;
 
-	public StapRetrieval(Service information,TreeNode primaryNode,VizModel model, 
-			Stap stap, Date start, Date end, double ra, double dec, double raSize,double decSize)  {
-		super(information,primaryNode,model,ra,dec);
-		this.raSize = raSize;
-		this.decSize = decSize;
-		this.stap = stap;
-		this.start = start;
-		this.end = end;
-		this.format = null;
-	}
-
-	public StapRetrieval(Service information,TreeNode primaryNode,VizModel model, 
+	public StapRetrieval(Service information,StapCapability cap,URI acurl,NodeSocket socket,VizModel model, 
 			Stap stap, Date start,Date end, double ra, double dec, double raSize,double decSize, String format)  {
-		super(information,primaryNode,model,ra,dec);
+		super(information,cap,socket,model,ra,dec);
+        this.accessUrl = acurl;
 		this.raSize = raSize;
 		this.decSize = decSize;
 		this.stap = stap;
@@ -71,19 +63,18 @@ public class StapRetrieval extends Retriever {
 	protected Object construct() throws Exception{
         reportProgress("Constructing query");	    
 		URL stapURL = null;
-		final URI endpoint = service.getId();
 		//check if there is a ra,dec and construct a stap query accordingly.
 		if(Double.isNaN(ra) || Double.isNaN(dec)) {
 			if(format != null)
-				stapURL = stap.constructQueryF(endpoint,start, end, format);
+				stapURL = stap.constructQueryF(accessUrl,start, end, format);
 			else
-				stapURL = stap.constructQuery(endpoint,start, end);
+				stapURL = stap.constructQuery(accessUrl,start, end);
 		}
 		else {
 			if(format != null)
-				stapURL = stap.constructQuerySF(endpoint,start, end, ra, dec, raSize, decSize, format);
+				stapURL = stap.constructQuerySF(accessUrl,start, end, ra, dec, raSize, decSize, format);
 			else
-				stapURL = stap.constructQueryS(endpoint,start, end, ra, dec, raSize, decSize);
+				stapURL = stap.constructQueryS(accessUrl,start, end, ra, dec, raSize, decSize);
 		}
 
 		StringBuffer sb = new StringBuffer();
@@ -245,7 +236,7 @@ public class StapRetrieval extends Retriever {
 				                        ,null // don't know the mime type.
 				                );
 				                String name = afo.getName().getBaseName();
-				                model.addResultFor(service,StringUtils.replace(details,"/","_") + " - " + StringUtils.replace(label,"/","_") + " - " + name,afo,referenceNode);
+				                model.addResultFor(StapRetrieval.this,StringUtils.replace(details,"/","_") + " - " + StringUtils.replace(label,"/","_") + " - " + name,afo,referenceNode);
 				                referenceNode.setAttribute(LABEL_ATTRIBUTE,label + " (" + name +")");
 				                referenceNode.setAttribute(IMAGE_URL_ATTRIBUTE,u.toString());
 				                referenceNode.setAttribute(TOOLTIP_ATTRIBUTE,u.toString());
@@ -303,7 +294,7 @@ public class StapRetrieval extends Retriever {
 		                 filenameBuilder.append(".");
 			        filenameBuilder.append(type.trim().toLowerCase());
 			    }
-			    model.addResultFor(service,filenameBuilder.toString(),afo,(FileProducingTreeNode)valNode);
+			    model.addResultFor(StapRetrieval.this,filenameBuilder.toString(),afo,(FileProducingTreeNode)valNode);
                 valNode.setAttribute(LABEL_ATTRIBUTE,filenameBuilder.toString());
 			} catch(FileSystemException e) {
 			    logger.warn(service.getId() + " : Unable to create result file object - skipping row",e);

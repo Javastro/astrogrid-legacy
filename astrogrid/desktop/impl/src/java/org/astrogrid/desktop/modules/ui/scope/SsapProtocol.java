@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.10 2008/02/01 07:34:06 nw Exp $
+/*$Id: SsapProtocol.java,v 1.11 2008/02/22 17:03:35 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -39,10 +42,35 @@ public class SsapProtocol extends SpatialDalProtocol {
         return result;
     }
 
-	public Retriever createRetriever(Service i, double ra, double dec, double raSize, double decSize) {
-	    return new SsapRetrieval(i,getPrimaryNode(),getVizModel(),ssap,ra,dec,raSize,decSize);
-	    
-	}
+	public Retriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
+        Capability[] capabilities = service.getCapabilities();
+        List cList = new ArrayList();
+        for (int i = 0; i < capabilities.length; i++) {
+            if (capabilities[i] instanceof SsapCapability && findParamUrl(capabilities[i]) != null) {
+                cList.add(capabilities[i]);
+            }
+        }
+        SsapCapability[] ssaps = (SsapCapability[]) cList.toArray(new SsapCapability[0]);
+        int nssap = ssaps.length;
+        final Retriever[] retrievers;
+        if (nssap == 0) {
+            retrievers = new Retriever[0];
+        }
+        else if (nssap == 1) {
+            retrievers = new Retriever[] {
+                new SsapRetrieval(service, ssaps[0], findParamUrl(ssaps[0]), getDirectNodeSocket(), getVizModel(), ssap, ra, dec, raSize, decSize),
+            };
+        }
+        else {
+            NodeSocket socket = createIndirectNodeSocket(service);
+            retrievers = new Retriever[nssap];
+            for (int i = 0; i < nssap; i++) {
+                retrievers[i] = new SsapRetrieval(service, ssaps[i], findParamUrl(ssaps[i]), socket, getVizModel(), ssap, ra, dec, raSize, decSize);
+            }
+        }
+        setSubNames(capabilities, retrievers);
+        return retrievers;
+    }
     
 	public Service[] filterServices(List resourceList) {
 		List result = new ArrayList();
@@ -60,6 +88,22 @@ public class SsapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.11  2008/02/22 17:03:35  mbt
+Merge from branch mbt-desktop-2562.
+Basically, Retrievers rather than Services are now the objects (associated
+with TreeNodes) which communicate with external servers to acquire results.
+Since Registry v1.0 there may be multiple Retrievers (even of a given type)
+per Service.
+
+Revision 1.10.12.3  2008/02/22 15:18:30  mbt
+Fix so that multiple capabilities of a single service are anchored at a single node representing that service, rather than direct from the primary node
+
+Revision 1.10.12.2  2008/02/21 15:35:15  mbt
+Now does multiple-capability-per-service for all known protocols
+
+Revision 1.10.12.1  2008/02/21 11:06:09  mbt
+First bash at 2562.  AstroScope now runs multiple cone searches per Service
+
 Revision 1.10  2008/02/01 07:34:06  nw
 altered to use new SsapService and StapService registry types
 

@@ -20,7 +20,7 @@ public abstract class SpatialDalProtocol extends DalProtocol {
 		super(name,img);
 	}
 
-	public abstract Retriever createRetriever(Service i, double ra, double dec, double raSize, double decSize);
+	public abstract Retriever[] createRetrievers(Service i, double ra, double dec, double raSize, double decSize);
 
 
 	

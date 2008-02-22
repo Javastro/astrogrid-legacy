@@ -2,6 +2,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 
@@ -15,6 +16,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
@@ -33,18 +35,20 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 public class SiapRetrieval extends Retriever {
 
 
-    public SiapRetrieval(Service service,TreeNode primaryNode,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
-        super(service,primaryNode,model,ra,dec);
+    public SiapRetrieval(Service service, SiapCapability cap, URI acurl, NodeSocket socket,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
+        super(service,cap,socket,model,ra,dec);
+        this.accessUrl = acurl;
         this.raSize = raSize;
         this.decSize = decSize;
         this.siap = siap;
     }
+    private final URI accessUrl;
     private final double raSize;
     private final double decSize;
     private final Siap siap;
     protected Object construct() throws Exception{
         reportProgress("Constructing query");        
-            URL siapURL = siap.constructQueryS(service.getId(),ra, dec,raSize,decSize);
+            URL siapURL = siap.constructQueryS(accessUrl, ra, dec,raSize,decSize);
             StringBuffer sb = new StringBuffer();
             sb.append("<html>Title: ").append(service.getTitle())
                 .append("<br>ID: ").append(service.getId());
@@ -168,7 +172,7 @@ public class SiapRetrieval extends Retriever {
                     filenameBuilder.append(StringUtils.replace(title,"/","_"));
                     filenameBuilder.append(".");
                     filenameBuilder.append(StringUtils.substringAfterLast(type,"/"));
-                    model.addResultFor(service,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);
+                    model.addResultFor(SiapRetrieval.this,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);
                 } catch (FileSystemException e) {
                     logger.warn(service.getId() + " : Unable to create result file object - skipping row ",e);
                 }

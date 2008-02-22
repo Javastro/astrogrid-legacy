@@ -88,9 +88,12 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
              for (int i = 0; i < added.length; i++) {
                  if (added[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = queryResults.findService((TreeNode)added[i]);
-                     if (s != null && ! tableSelected.contains(s)) {
-                         tableSelected.add(s); 
+                     Retriever r = queryResults.findRetriever((TreeNode)added[i]);
+                     if (r != null) {
+                         Service s = new RetrieverService(r);
+                         if (! tableSelected.contains(s)) {
+                             tableSelected.add(s); 
+                         }
                      }
                  }
              }
@@ -100,9 +103,12 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
              for (int i = 0; i < removed.length; i++) {
                  if (removed[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = queryResults.findService((TreeNode)removed[i]);
-                     if (s != null && tableSelected.contains(s)) {
-                         tableSelected.remove(s); 
+                     Retriever r = queryResults.findRetriever((TreeNode)removed[i]);
+                     if (r != null) {
+                         Service s = new RetrieverService(r);
+                         if (tableSelected.contains(s)) {
+                             tableSelected.remove(s); 
+                         }
                      }
                  }
              }               
@@ -113,9 +119,12 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
                  TreeNode t = (TreeNode)i.next();
                  if (t.getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = queryResults.findService(t);
-                     if (s != null && ! tableSelected.contains(s)) {
-                         tableSelected.add(s); 
+                     Retriever r = queryResults.findRetriever(t);
+                     if (r != null) {
+                         Service s = new RetrieverService(r);
+                         if (! tableSelected.contains(s)) {
+                             tableSelected.add(s); 
+                         }
                      }
                  }
              }               
@@ -130,8 +139,8 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
          }     
          clearPrefuseSelection();    
          for(int i = 0; i < tableSelected.size(); i++) {
-             Service s = (Service)tableSelected.get(i);
-             TreeNode t = queryResults.findTreeNode(s);
+             RetrieverService s = (RetrieverService)tableSelected.get(i);
+             TreeNode t = queryResults.findTreeNode(s.getRetriever());
              if (t != null) {
                  DoubleClickMultiSelectFocusControl.selectSubtree(t,vizSelected);
              }
@@ -222,8 +231,8 @@ public final Action getHyperbolicAction() {
 public static final String SERVICE_FILTERED_ATTR = "service-filtered";
 /** a resource is removed from the list */
 public void dispose(Object sourceValue, Object transformedValue) {
-    Service res = (Service)sourceValue;
-    TreeNode node = queryResults.findTreeNode(res);
+    RetrieverService res = (RetrieverService)sourceValue;
+    TreeNode node = queryResults.findTreeNode(res.getRetriever());
     if (node != null) {
         node.setAttribute(SERVICE_FILTERED_ATTR,"true");
     }
@@ -236,8 +245,8 @@ public Object reevaluate(Object sourceValue, Object transformedValue) {
 
 /** called when an item appears in the list */
 public Object evaluate(Object sourceValue) {
-    Service res = (Service)sourceValue;
-    TreeNode node = queryResults.findTreeNode(res);
+    RetrieverService res = (RetrieverService)sourceValue;
+    TreeNode node = queryResults.findTreeNode(res.getRetriever());
     if (node != null) {        
         node.setAttribute(SERVICE_FILTERED_ATTR,"false");
     }

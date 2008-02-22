@@ -3,8 +3,12 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.table.TableColumn;
 
@@ -38,7 +42,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 
 /** specialized subtype of registrygooglepanel that displays summary
- * of queries services.
+ * of queries retrievers.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 2, 20075:58:51 PM
  */
@@ -92,52 +96,60 @@ public class ScopeServicesList extends RegistryGooglePanel
 
 	}
 	/** add a number of services to the tabular display */
-	public void addAll(Service[] services) {
+	public void addAll(Retriever[] retrievers) {
 	    VizModel model = astroscope.getVizModel(); // can only access this now, not in the construct, as it's not yet been initialized at this point.
-	    for (int i = 0; i < services.length; i++) {
+	    for (int i = 0; i < retrievers.length; i++) {
+            Retriever retriever = retrievers[i];
 	        // eagerly create this, and hang onto it - else it tends to get GC'd and we
 	        // lost the results tree
 	        FileObject fo = null;
 	        try {
-	            fo = model.createResultsDirectory(services[i]);
+	            fo = model.createResultsDirectory(retriever);
 	        } catch (FileSystemException e) {
-	            logger.warn("Inable to create results directory for " + services[i].getId());
+	            logger.warn("Inable to create results directory for " + retriever.getLabel());
 	        }
-	        QueryResult qr = new QueryResult(services[i],fo);
+	        QueryResult qr = new QueryResult(retriever,fo);
 	        queryResults.addResult(qr);
 	    }
 	    items.getReadWriteLock().writeLock().lock();
 	    try {
-	        items.addAll(Arrays.asList(services));
+            for (int i = 0; i < retrievers.length; i++) {
+                items.add(new RetrieverService(retrievers[i]));
+            }
 	    } finally {
 	        items.getReadWriteLock().writeLock().unlock();
 	    }        
 	}
 
-	public void addQueryFailure(Service ri, Throwable t) {
+	public void addQueryFailure(Retriever ri, Throwable t) {
 	    String message= ExceptionFormatter.formatException(t);
 	    if (astroscope.isTransientWarnings()) {
-	        parent.showTransientWarning("Unable to query " + ri.getTitle()
+	        parent.showTransientWarning("Unable to query " + ri.getLabel()
 	            ,message.length() < 200 ? message : "See services view for details");
 	    }
 	    queryResults.getResult(ri).error = message;
 	    notifyServiceUpdated(ri);
 	}
 
-    public void addQueryResult(Service ri, AstroscopeTableHandler handler) {
+    public void addQueryResult(Retriever ri, AstroscopeTableHandler handler) {
         final QueryResult qr = queryResults.getResult(ri);
         qr.count = new Integer(handler.getResultCount());
         queryResults.associateNode(qr,handler.getServiceNode());
         notifyServiceUpdated(ri);
     }
     
-    private void notifyServiceUpdated(Service ri) {        
+    private void notifyServiceUpdated(Retriever retriever) {        
+        // Creating a new RetrieverService here will not give an object which
+        // is actually in the table alredy, but it will have the correct
+        // equivalence relations (equals()/hashCode()).
+        Service ri = new RetrieverService(retriever);
+
         int ix = items.indexOf(ri);
         if (ix != -1) {
           items.set(ix,ri); // updates the table
         }
         // now if we're in results view, and it's the selected item that's just updated, make the 
-        // results view update to.
+        // results view update too.
         if (tabPane.getSelectedIndex() ==0 && ri.equals(currentlyDisplaying)) {
             resourceViewers[0].display(ri);
         }
@@ -156,10 +168,8 @@ public class ScopeServicesList extends RegistryGooglePanel
         public ServicesListTableFormat(AnnotationService annService,
                 VoMonInternal vomon, CapabilityIconFactory capBuilder) {
             super(annService, vomon, capBuilder);
-            ModularColumn[] already = getColumns();
-            ModularColumn[] more = new ModularColumn[already.length+1];
-            System.arraycopy(already,0,more,0,already.length);
-            more[already.length] =new Column(RESULTS_NAME,Integer.class,new Comparator() {
+            List colList = new ArrayList(Arrays.asList(getColumns()));
+            colList.add(new Column(RESULTS_NAME,Integer.class,new Comparator() {
                 // has to handle integers, and the string 'failed'
                 public int compare(Object arg0, Object arg1) {
                     if (arg0 instanceof String) {
@@ -176,23 +186,30 @@ public class ScopeServicesList extends RegistryGooglePanel
                 }
             }){
                 public Object getColumnValue(Object baseObj) {
-                    Service r = (Service)baseObj;
-                    return queryResults.getResult(r).getFormattedResultCount();          
+                    Retriever r = ((RetrieverService)baseObj).getRetriever();
+                    return queryResults.getResult(r).getFormattedResultCount();
                 }
                 public void configureColumn(TableColumn tcol) {
                     tcol.setPreferredWidth(60);
                 }
-            };
+            });
+            colList.add(new StringColumn(SUBNAME_NAME) {
+                protected String getValue(Resource res) {
+                    Retriever r = ((RetrieverService)res).getRetriever();
+                    return r.getSubName();
+                }
+            });
 
-            setColumns(more);
+            setColumns((ModularColumn[])colList.toArray(new ModularColumn[0]));
         }
 
         private final static String RESULTS_NAME = "Results"; // integer, comparableComparator
+        private final static String SUBNAME_NAME = "SubName";
 
 	    
 	    public String[] getDefaultColumns() {
 	        return new String[] {
-	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,CAPABILITY_NAME
+	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,SUBNAME_NAME,CAPABILITY_NAME,
 	        };
 	    }
 	}
@@ -200,6 +217,4 @@ public class ScopeServicesList extends RegistryGooglePanel
     public final QueryResults getQueryResults() {
         return this.queryResults;
     }
-
-
 }

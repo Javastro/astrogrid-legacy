@@ -110,14 +110,14 @@ public class ResultsResourceViewer extends FlipPanel implements ResourceViewer ,
 	}
 private final HtmlBuilder sb = new HtmlBuilder();
 private NavigableFilesList errorFiles;
-private Service service;
+private RetrieverService service;
 private NavigableFilesTable resultsTable;
 
 public void display(Resource res) {
     
-    if ( res instanceof Service) {	        
-        service = (Service)res;
-        final QueryResult result = parent.getServicesList().getQueryResults().getResult(service);
+    if ( res instanceof RetrieverService) {
+        service = (RetrieverService)res;
+        final QueryResult result = parent.getServicesList().getQueryResults().getResult(service.getRetriever());
         try {
         if (result.error != null) { // flip and display this
             sb.clear();
@@ -185,7 +185,7 @@ public void display(Resource res) {
         }
         sb.append("?subject=Error%20Report%20for%20");
         sb.append(URLEncoder.encode(service.getId().toString()));
-        final QueryResult result = parent.getServicesList().getQueryResults().getResult(service);
+        final QueryResult result = parent.getServicesList().getQueryResults().getResult(service.getRetriever());
         if (result != null && result.error != null) {
             sb.append("&body=");
             sb.append(StringUtils.replace(URLEncoder.encode(result.error),"+","%20"));

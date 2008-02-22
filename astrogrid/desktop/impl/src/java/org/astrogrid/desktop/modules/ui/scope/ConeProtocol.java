@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.16 2007/12/12 13:54:12 nw Exp $
+/*$Id: ConeProtocol.java,v 1.17 2008/02/22 17:03:35 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +20,9 @@ import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
+import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -28,6 +31,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
+ * @author Mark Taylor
  *
  */
 public class ConeProtocol extends SpatialDalProtocol {
@@ -51,10 +55,34 @@ public class ConeProtocol extends SpatialDalProtocol {
         return result;
     }
 
-    public Retriever createRetriever(Service i,double ra, double dec, double raSize, double decSize) {
- //Replaced with a simpler version       return new ConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
-        return new CatalogTerminalConeRetrieval(i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
-        
+    public Retriever[] createRetrievers(Service service,double ra, double dec, double raSize, double decSize) {
+        Capability[] capabilities = service.getCapabilities();
+        List cList = new ArrayList();
+        for (int i = 0; i < capabilities.length; i++) {
+            if (capabilities[i] instanceof ConeCapability && findParamUrl(capabilities[i]) != null) {
+                cList.add(capabilities[i]);
+            }
+        }
+        ConeCapability[] cones = (ConeCapability[]) cList.toArray(new ConeCapability[0]);
+        int ncone = cones.length;
+        final Retriever[] retrievers;
+        if (ncone == 0) {
+            retrievers = new Retriever[0];
+        }
+        else if (ncone == 1) {
+            retrievers = new Retriever[] {
+                new CatalogTerminalConeRetrieval(service, cones[0], findParamUrl(cones[0]), getDirectNodeSocket(), getVizModel(), cone, ra, dec, raSize),
+            };
+        }
+        else {
+            NodeSocket socket = createIndirectNodeSocket(service);
+            retrievers = new Retriever[ncone];
+            for (int i = 0; i < ncone; i++) {
+                retrievers[i] = new CatalogTerminalConeRetrieval(service, cones[i], findParamUrl(cones[i]), socket, getVizModel(), cone, ra, dec, raSize);
+            }
+        }
+        setSubNames(capabilities, retrievers);
+        return retrievers;
     }
 
 	public Service[] filterServices(List resourceList) {
@@ -109,6 +137,22 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.17  2008/02/22 17:03:35  mbt
+Merge from branch mbt-desktop-2562.
+Basically, Retrievers rather than Services are now the objects (associated
+with TreeNodes) which communicate with external servers to acquire results.
+Since Registry v1.0 there may be multiple Retrievers (even of a given type)
+per Service.
+
+Revision 1.16.18.3  2008/02/22 15:18:29  mbt
+Fix so that multiple capabilities of a single service are anchored at a single node representing that service, rather than direct from the primary node
+
+Revision 1.16.18.2  2008/02/21 15:35:15  mbt
+Now does multiple-capability-per-service for all known protocols
+
+Revision 1.16.18.1  2008/02/21 11:06:09  mbt
+First bash at 2562.  AstroScope now runs multiple cone searches per Service
+
 Revision 1.16  2007/12/12 13:54:12  nw
 astroscope upgrade, and minor changes for first beta release
 

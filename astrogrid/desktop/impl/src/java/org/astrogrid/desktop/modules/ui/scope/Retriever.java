@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -77,27 +78,67 @@ public abstract class Retriever extends BackgroundWorker {
     protected final double ra;
     protected final double dec;
     protected final Service service;
+    protected final Capability capability;
     protected final VizModel model;
-    protected final TreeNode primaryNode;
-    
-    
+    protected final NodeSocket nodeSocket;
+    protected String subName = "";
 
     
-    public Retriever(Service information,TreeNode primaryNode,VizModel model,double ra, double dec) {
+    public Retriever(Service information,Capability cap,NodeSocket socket,VizModel model,double ra, double dec) {
         super(model.getParent(),information.getTitle(),SHORT_TIMEOUT,Thread.MIN_PRIORITY+3);
         this.ra = ra;
         this.dec = dec;
         this.service = information;
+        this.capability = cap;
         this.model = model;
-        this.primaryNode = primaryNode;
+        this.nodeSocket = socket;
     }
 
-
-    
     /** return a string describing what kind of service this is */
     public abstract String getServiceType();
-        
-    
+
+    /** set a disambiguation string - distinguishes different retrievers 
+     *  within the same service.  May be the empty string if only one retriever
+     *  per parent service.
+     */
+    public void setSubName(String subName) {
+        this.subName = subName;
+    }
+
+    /** return a disambiguation string - distinguishes different retrievers 
+     *  within the same service.  May be the empty string if only one retriever
+     *  per parent service.
+     */
+    public String getSubName() {
+        return this.subName;
+    }
+
+    public Service getService() {
+        return this.service;
+    }
+
+    public Capability getCapability() {
+        return this.capability;
+    }
+
+    /** returns terse string describing this retriever
+     */
+    public String getLabel() {
+        StringBuffer sbuf = new StringBuffer()
+           .append(getService().getId())
+           .append('_')
+           .append(getServiceType());
+        if (subName != null && subName.length()>0) {
+            sbuf.append('_')
+                .append(subName);
+        }
+        return sbuf.toString();
+    }
+
+    public String toString() {
+        return getLabel();
+    }
+
     /** helper method - called by subclasses to SAX-parse a votable, attaching results as nodes to the service node 
      * @param tableHandler handler to use on the votable.
      * @throws FactoryConfigurationError
@@ -375,7 +416,7 @@ public abstract class Retriever extends BackgroundWorker {
 
 
     protected final void doError(Throwable ex) {
-           model.getSummarizer().addQueryFailure(service,ex);
+           model.getSummarizer().addQueryFailure(this,ex);
     }
     
 
@@ -392,11 +433,9 @@ public abstract class Retriever extends BackgroundWorker {
         // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
         // concurrent modification exceptions
         AstroscopeTableHandler th = (AstroscopeTableHandler)result;
-        model.getSummarizer().addQueryResult(service,th);
+        model.getSummarizer().addQueryResult(this,th);
         if (th.getResultCount() > 0) {
-            DefaultEdge edge = new DefaultEdge(primaryNode,th.getServiceNode());
-            edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              
-            model.getTree().addChild(edge);   
+            nodeSocket.addNode(th.getServiceNode());
         }                                       
         parent.setStatusMessage(service.getTitle() + " - " + th.getResultCount() + " results");
     }
@@ -423,7 +462,7 @@ public abstract class Retriever extends BackgroundWorker {
                 filename = StringUtils.replace(service.getTitle(),"/","-") + " Search Results.vot";
             }
             serviceNode = new FileProducingTreeNode();
-            model.addResultFor(service,filename,afo,(FileProducingTreeNode)serviceNode);
+            model.addResultFor(this,filename,afo,(FileProducingTreeNode)serviceNode);
         } catch (Exception e) {
             logger.warn(service.getId() + " : Unable to create file object for serviceNode - falling back",e);
             serviceNode = new DefaultTreeNode(); // fall back to a default tree node.

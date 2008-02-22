@@ -4,18 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.vfs.FileObject;
-import org.astrogrid.acr.ivoa.resource.Service;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** class that keeps a summary of the query result of each service */
+/** class that keeps a summary of the query result of each retriever */
 public final class QueryResults {
     private final Map m = new HashMap();
     private final Map nodeMap = new HashMap();
-    public QueryResults.QueryResult getResult(Service s) {
-        return (QueryResults.QueryResult) m.get(s);
+    public QueryResults.QueryResult getResult(Retriever r) {
+        return (QueryResults.QueryResult) m.get(r);
     }
     void addResult(QueryResults.QueryResult qr) {
-        m.put(qr.service,qr);
+        m.put(qr.retriever,qr);
     }
 
     void clear() {
@@ -23,9 +22,9 @@ public final class QueryResults {
         nodeMap.clear();
     }
     
-    /** for a given service, find the associated tree node, if any */
-    public TreeNode findTreeNode(Service s) {
-        QueryResults.QueryResult result = getResult(s);
+    /** for a given retriever, find the associated tree node, if any */
+    public TreeNode findTreeNode(Retriever r) {
+        QueryResults.QueryResult result = getResult(r);
         if (result != null) {
             return result.node;
         } else {
@@ -33,30 +32,30 @@ public final class QueryResults {
             
         }
     }
-    /** for a given tree node, find the associated service */
-    public Service findService(TreeNode t) {
-        return (Service)nodeMap.get(t);
+    /** for a given tree node, find the associated retriever */
+    public Retriever findRetriever(TreeNode t) {
+        return (Retriever)nodeMap.get(t);
     }
     /** associate a node with a query result.
      * @param qr
      * @param serviceNode
      */
     public void associateNode(QueryResults.QueryResult qr, TreeNode node) {
-        nodeMap.put(node,qr.service);
+        nodeMap.put(node,qr.retriever);
         qr.node = node;
     }
 /** structure representing a single query result */
 public static final class QueryResult {
-    public QueryResult(Service s,FileObject resultsDir) {
-        this.service = s;
+    public QueryResult(Retriever r,FileObject resultsDir) {
+        this.retriever = r;
         this.resultsDir = resultsDir;
     }
     /** an error message  - may be null */
    public String error;
    /** count of results returned. only expected to be valid if error == null */
    public Integer count = PENDING;
-   /** the service this result pertains to */
-   public final Service service;
+   /** the retriever this result pertains to */
+   public final Retriever retriever;
    /** the virtual results directory containing pointers to the result files */
    public  final FileObject resultsDir;
    /** the tree node assocoated with this result */

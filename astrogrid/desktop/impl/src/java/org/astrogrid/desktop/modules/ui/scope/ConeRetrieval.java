@@ -1,5 +1,6 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.lang.WordUtils;
@@ -22,17 +23,19 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * */
 public class ConeRetrieval extends Retriever {
     
-    public ConeRetrieval(Service service,TreeNode primaryNode,VizModel model, Cone cone, double ra, double dec, double sz)  {
-        super(service,primaryNode,model,ra,dec);
+    public ConeRetrieval(Service service, ConeCapability cap, URI acurl, NodeSocket socket, VizModel model, Cone cone, double ra, double dec, double sz)  {
+        super(service,cap,socket,model,ra,dec);
+        this.accessUrl = acurl;
         this.sz = sz;
         this.cone = cone;
     } 
+    private final URI accessUrl;
     private final Cone cone;
     private final double sz;
     
     protected Object construct() throws Exception {
         reportProgress("Constructing query");
-        URL coneURL = cone.constructQuery(service.getId(),ra,dec,sz);        
+        URL coneURL = cone.constructQuery(accessUrl,ra,dec,sz);        
         // construct 2 urls - one that returns minimal results to query on to get data for astroscope.
         // other - with fullest data -  to use as the url passed to plastic apps / saved to disk
         final URL prelimURL = cone.addOption(coneURL,"VERB","1"); // least verbose.

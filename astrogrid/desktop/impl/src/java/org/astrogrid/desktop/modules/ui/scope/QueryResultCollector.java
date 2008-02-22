@@ -1,4 +1,4 @@
-/*$Id: QueryResultCollector.java,v 1.1 2007/12/12 13:54:13 nw Exp $
+/*$Id: QueryResultCollector.java,v 1.2 2008/02/22 17:03:35 mbt Exp $
  * Created on 30-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,24 +20,34 @@ public interface QueryResultCollector {
 
     /** report a query success
      */
-    public void addQueryResult(Service ri,AstroscopeTableHandler handler);
+    public void addQueryResult(Retriever ri,AstroscopeTableHandler handler);
 
     
     /** report a query failure */
-    public void addQueryFailure(Service ri,Throwable t);
+    public void addQueryFailure(Retriever ri,Throwable t);
     /** clear all previous summaries */
     public void clear();
     
 
-/** add these services to the list of things that are going to be queried.
- * @param services
+/** add these retriever to the list of things that are going to be queried.
+ * @param retrievers
  */
-void addAll(Service[] services);
+void addAll(Retriever[] retrievers);
 
 }
 
 /* 
  $Log: QueryResultCollector.java,v $
+ Revision 1.2  2008/02/22 17:03:35  mbt
+ Merge from branch mbt-desktop-2562.
+ Basically, Retrievers rather than Services are now the objects (associated
+ with TreeNodes) which communicate with external servers to acquire results.
+ Since Registry v1.0 there may be multiple Retrievers (even of a given type)
+ per Service.
+
+ Revision 1.1.18.1  2008/02/21 11:06:09  mbt
+ First bash at 2562.  AstroScope now runs multiple cone searches per Service
+
  Revision 1.1  2007/12/12 13:54:13  nw
  astroscope upgrade, and minor changes for first beta release
 

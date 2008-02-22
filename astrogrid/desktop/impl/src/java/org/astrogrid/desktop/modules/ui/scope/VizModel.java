@@ -168,13 +168,13 @@ public  final class VizModel {
 
 	/** add a result into the results direcotry. 
 	 * 
-	 * @param serv the service to add a result for
+	 * @param retriever the retriever to add a result for
 	 * @param name the name of the result
 	 * @param result the file object that contains the contents of the result.
 	 * @param the tree node to cache the freshly created file object in.
 	 */
-	public void addResultFor(Service serv,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
-	        final String serviceDir = mkFileName(serv);
+	public void addResultFor(Retriever retriever,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
+	        final String retDir = mkFileName(retriever);
 	        int renameCount = 0;	        
 	        final String prefix = StringUtils.substringBeforeLast(name,".");
 	        final String suffix = StringUtils.substringAfterLast(name,".");
@@ -182,9 +182,9 @@ public  final class VizModel {
 	            FileObject candidate; 	        
 	            do { // make a unique name
 	                if (renameCount == 0) {
-	                    fullName = serviceDir + "/" + name;
+	                    fullName = retDir + "/" + name;
 	                } else {
-	                    fullName = serviceDir + "/" + prefix + "-" + renameCount + "." + suffix;
+	                    fullName = retDir + "/" + prefix + "-" + renameCount + "." + suffix;
 	                }
 	                synchronized(resultsFS) {
 	                    candidate = resultsFS.resolveFile(fullName);
@@ -215,26 +215,30 @@ public  final class VizModel {
 	    return new AstroscopeFileObject(core,size,date,type);
 	}
 	
-	/** create a results directory for this service.
-	 * @param serv
+	/** create a results directory for this retriever.
+	 * @param retriever
 	 * @return
 	 * @throws FileSystemException 
 	 */
-	public FileObject createResultsDirectory(Service serv) throws FileSystemException {
-	    String name = mkFileName(serv);
+	public FileObject createResultsDirectory(Retriever retriever) throws FileSystemException {
+	    String name = mkFileName(retriever);
 	    FileObject fo= resultsFS.resolveFile(name);	    
 	    return fo;
      
 	}
 	
 	/** compute a legal and fairly pretty filename from a service id */
-	private String mkFileName(Service s) {
-	    java.net.URI id = s.getId();
-	    String munged = StringUtils.replaceChars(id.getSchemeSpecificPart(),"/:;?=&\\$+!*'()@{}|[]^~<>#`","_"); // convert  / to _, strip : and any other odd symbols
+	private String mkFileName(Retriever r) {
+        String name = r.getService().getId().getSchemeSpecificPart();
+        name += "_" + r.getServiceType();
+        String subName = r.getSubName();
+        if (subName != null && subName.length()>0) {
+            name += "_" + subName;
+        }
+	    String munged = StringUtils.replaceChars(name,"/:;?=&\\$+!*'()@{}|[]^~<>#`","_"); // convert  / to _, strip : and any other odd symbols
 	    return "/" + URLEncoder.encode(munged);
 	}
 	
-
 
     public final AstroScopeLauncherImpl getParent() {
         return this.parent;
@@ -243,7 +247,5 @@ public  final class VizModel {
     public final QueryResultCollector getSummarizer() {
         return this.summarizer;
     }
-
-    
 
 }

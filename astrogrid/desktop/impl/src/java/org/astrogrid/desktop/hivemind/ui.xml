@@ -72,7 +72,7 @@ ASTROSCOPE
 			<inject object="service:UiBuilder" />	
             <inject-arg />		
 			<inject object="service:votech.vomon" />
-			<inject object="service:dialogs.capabilityIconFactory" />	
+			<inject object="service:scopeCapabilityIconFactory" />	
 			<inject object="service:votech.annotate" />
             <inject object="preference:acr.advanced" />
 		</object>
@@ -88,6 +88,12 @@ ASTROSCOPE
 			</construct>
 		</invoke-factory>
 	</service-point>	
+
+    <service-point id="scopeCapabilityIconFactory"
+                   interface="org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory">
+      <create-instance model="primitive"
+                       class="org.astrogrid.desktop.modules.ui.scope.SingleCapabilityIconFactory"/>
+    </service-point>
 		
 	<service-point id="protocolsBuilder" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder"
 		visibility="private">

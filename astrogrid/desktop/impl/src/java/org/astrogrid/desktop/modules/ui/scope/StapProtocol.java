@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.12 2008/02/01 07:34:06 nw Exp $
+/*$Id: StapProtocol.java,v 1.13 2008/02/22 17:03:35 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,14 +19,17 @@ import java.util.List;
 
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
  * @author Kevin Benson
+ * @author Mark Taylor
  *
  */
 public class StapProtocol extends TemporalDalProtocol {
@@ -50,19 +54,36 @@ public class StapProtocol extends TemporalDalProtocol {
         return result;        
     } 
 
+	public Retriever[] createRetrievers(Service service, Date start, Date end, double ra, double dec, double raSize, double decSize) {
+        Capability[] capabilities = service.getCapabilities();
+        List cList = new ArrayList();
+        for (int i = 0; i < capabilities.length; i++) {
+            if (capabilities[i] instanceof StapCapability && findParamUrl(capabilities[i]) != null) {
+                cList.add(capabilities[i]);
+            }
+        }
+        StapCapability[] staps = (StapCapability[]) cList.toArray(new StapCapability[0]);
+        int nstap = staps.length;
+        final Retriever[] retrievers;
+        if (nstap == 0) {
+            retrievers = new Retriever[0];
+        }
+        else if (nstap == 1) {
+            retrievers = new Retriever[] {
+                new StapRetrieval(service, staps[0], findParamUrl(staps[0]), getDirectNodeSocket(), getVizModel(), stap, start, end, ra, dec, raSize, decSize, null),
+            };
+        }
+        else {
+            NodeSocket socket = createIndirectNodeSocket(service);
+            retrievers = new Retriever[nstap];
+            for (int i = 0; i < nstap; i++) {
+                retrievers[i] = new StapRetrieval(service, staps[i], findParamUrl(staps[i]), socket, getVizModel(), stap, start, end, ra, dec, raSize, decSize, null);
+            }
+        }
+        setSubNames(capabilities, retrievers);
+        return retrievers;
+    }
 
-
-	public Retriever createRetriever(Service i, Date start, Date end, double ra, double dec, double raSize, double decSize, String format) {
-		return new StapRetrieval(i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize,format); 
-				 
-	}
-
-
-	public Retriever createRetriever( Service i, Date start, Date end, double ra, double dec, double raSize, double decSize) {
-		return new StapRetrieval(i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize); 
-				 
-	}
-    
 	public Service[] filterServices(List resourceList) {
 		List result = new ArrayList();
 		for (Iterator i = resourceList.iterator(); i.hasNext();) {
@@ -79,6 +100,22 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.13  2008/02/22 17:03:35  mbt
+Merge from branch mbt-desktop-2562.
+Basically, Retrievers rather than Services are now the objects (associated
+with TreeNodes) which communicate with external servers to acquire results.
+Since Registry v1.0 there may be multiple Retrievers (even of a given type)
+per Service.
+
+Revision 1.12.12.3  2008/02/22 15:18:30  mbt
+Fix so that multiple capabilities of a single service are anchored at a single node representing that service, rather than direct from the primary node
+
+Revision 1.12.12.2  2008/02/22 11:01:07  mbt
+Withdraw overloaded createRetrievers method.  Doesn't seem to be used anywhere
+
+Revision 1.12.12.1  2008/02/21 15:35:15  mbt
+Now does multiple-capability-per-service for all known protocols
+
 Revision 1.12  2008/02/01 07:34:06  nw
 altered to use new SsapService and StapService registry types
 

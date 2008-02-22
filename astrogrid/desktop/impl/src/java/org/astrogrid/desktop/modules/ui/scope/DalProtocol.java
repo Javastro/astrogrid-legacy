@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.12 2007/12/12 13:54:12 nw Exp $
+/*$Id: DalProtocol.java,v 1.13 2008/02/22 17:03:35 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,20 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
+import java.net.URI;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 
+import org.astrogrid.acr.ivoa.resource.AccessURL;
+import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.Service;
 
+import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
@@ -95,12 +101,113 @@ public abstract class DalProtocol {
 	 * @return the subset that this protocol can query
 	 */
 	public abstract Service[] filterServices(List resourceList) ;
-   
+
+    /** returns a NodeSocket which will join nodes directly to the primary 
+     *  node for this protocol.
+     */
+    public NodeSocket getDirectNodeSocket() {
+        if (directNodeSocket == null) {
+            directNodeSocket = new NodeSocket() {
+                public void addNode(TreeNode child) {
+                    DefaultEdge edge = new DefaultEdge(primaryNode, child);
+                    edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE, "2");
+                    vizModel.getTree().addChild(edge);
+                }
+            };
+        }
+        return directNodeSocket;
+    }
+    private NodeSocket directNodeSocket;
+
+    /**
+     * Returns a new NodeSocket which will join nodes to the primary node
+     * for this protocol indirectly via a node corresponding to a given Service.
+     * The service node is only inserted into the tree when the addNode method
+     * of the returned socket is called for the first time.
+     */
+    public NodeSocket createIndirectNodeSocket(final Service service) {
+        return new NodeSocket() {
+            private TreeNode serviceNode;
+            private synchronized TreeNode getServiceNode() {
+                if (serviceNode == null) {
+                    serviceNode = new DefaultTreeNode();
+                    String nodeLabel = service.getShortName();
+                    if (nodeLabel == null || nodeLabel.trim().length() == 0) {
+                        nodeLabel = service.getTitle();
+                    }
+                    serviceNode.setAttribute(Retriever.LABEL_ATTRIBUTE, nodeLabel);
+                    serviceNode.setAttribute(Retriever.SERVICE_ID_ATTRIBUTE, service.getId().toString());
+                    getDirectNodeSocket().addNode(serviceNode);
+                }
+                return serviceNode;
+            }
+            public void addNode(TreeNode child) {
+                DefaultEdge edge = new DefaultEdge(getServiceNode(), child);
+                edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE, "2");
+                vizModel.getTree().addChild(edge);
+            }
+        };
+    }
+
+    /** return a ParamHTTP-type base url for a given capability
+     * @param  cap  capability
+     * @return   first likely-looking base url, or null if there is none
+     */
+    public static URI findParamUrl(Capability cap) {
+        Interface[] ifs = cap.getInterfaces();
+        for (int i = 0; i < ifs.length; i++) {
+            if (ifs[i] instanceof ParamHttpInterface) {
+                AccessURL[] urls = ((ParamHttpInterface) ifs[i]).getAccessUrls();
+                for (int j = 0; j < urls.length; j++) {
+                    URI uri = urls[i].getValueURI();
+                    if (uri != null) {
+                        return uri;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Sets up subnames for a list of retrievers.  These are more-or-less
+     *  human-readable diambiguation strings which distinguish between
+     *  different capabilities provided by the same service.
+     * @param capabilities  all capabilities provided by a service
+     * @param retrievers  retrievers associated with a subset of capabilities
+     */
+    public static void setSubNames(Capability[] capabilities, Retriever[] retrievers) {
+        if (capabilities.length > 1) {
+            if (retrievers.length == 1) {
+                retrievers[0].setSubName(retrievers[0].getServiceType());
+            }
+            else {
+                for (int i = 0; i < retrievers.length; i++) {
+                    retrievers[i].setSubName(retrievers[i].getServiceType() + (i+1));
+                }
+            }
+        }
+    }
 }
 
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.13  2008/02/22 17:03:35  mbt
+Merge from branch mbt-desktop-2562.
+Basically, Retrievers rather than Services are now the objects (associated
+with TreeNodes) which communicate with external servers to acquire results.
+Since Registry v1.0 there may be multiple Retrievers (even of a given type)
+per Service.
+
+Revision 1.12.18.3  2008/02/22 15:12:19  mbt
+Add utility NodeSocket dispatch methods
+
+Revision 1.12.18.2  2008/02/21 15:35:15  mbt
+Now does multiple-capability-per-service for all known protocols
+
+Revision 1.12.18.1  2008/02/21 11:06:09  mbt
+First bash at 2562.  AstroScope now runs multiple cone searches per Service
+
 Revision 1.12  2007/12/12 13:54:12  nw
 astroscope upgrade, and minor changes for first beta release
 

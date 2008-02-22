@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.15 2007/12/12 13:54:12 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.16 2008/02/22 17:03:35 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,6 +27,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -39,18 +41,20 @@ import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class SsapRetrieval extends Retriever {
-    public SsapRetrieval(Service service,TreeNode primaryNode,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
-        super(service,primaryNode,model,ra,dec);
+    public SsapRetrieval(Service service,SsapCapability cap,URI acurl,NodeSocket socket,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
+        super(service,cap,socket,model,ra,dec);
+        this.accessUrl = acurl;
         this.ssap = ssap;
         this.raSize= raSize;
         this.decSize = decSize;
     }
     protected final Ssap ssap;
+    protected final URI accessUrl;
     protected final double raSize;
     protected final double decSize;
     protected Object construct() throws Exception {
         reportProgress("Constructing query");        
-        URL ssapURL =  ssap.constructQueryS(service.getId(),ra,dec,raSize,decSize);
+        URL ssapURL =  ssap.constructQueryS(accessUrl,ra,dec,raSize,decSize);
         StringBuffer sb = new StringBuffer();
         sb.append("<html>Title: ").append(service.getTitle())
             .append("<br>ID: ").append(service.getId());
@@ -242,7 +246,7 @@ public class SsapRetrieval extends Retriever {
                     }
                     filenameBuilder.append(".");
                     filenameBuilder.append(StringUtils.substringAfterLast(type,"/"));
-                    model.addResultFor(service,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);                    
+                    model.addResultFor(SsapRetrieval.this,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);                    
                 } catch (FileSystemException e) {
                     logger.warn(service.getId() + " : Unable to create result file object - skipping row",e);
                 }
@@ -307,6 +311,22 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.16  2008/02/22 17:03:35  mbt
+Merge from branch mbt-desktop-2562.
+Basically, Retrievers rather than Services are now the objects (associated
+with TreeNodes) which communicate with external servers to acquire results.
+Since Registry v1.0 there may be multiple Retrievers (even of a given type)
+per Service.
+
+Revision 1.15.18.3  2008/02/22 15:18:30  mbt
+Fix so that multiple capabilities of a single service are anchored at a single node representing that service, rather than direct from the primary node
+
+Revision 1.15.18.2  2008/02/21 15:35:15  mbt
+Now does multiple-capability-per-service for all known protocols
+
+Revision 1.15.18.1  2008/02/21 11:06:09  mbt
+First bash at 2562.  AstroScope now runs multiple cone searches per Service
+
 Revision 1.15  2007/12/12 13:54:12  nw
 astroscope upgrade, and minor changes for first beta release
 
