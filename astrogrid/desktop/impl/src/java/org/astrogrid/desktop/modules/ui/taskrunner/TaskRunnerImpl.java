@@ -234,7 +234,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		this.setSize(900,600);
 		logger.info("New TaskRunner - Completed");
 	}	
-	private final JMenu contextMenu = new JMenu("Query Builder") {
+	private final JMenu contextMenu = new JMenu("Query extras") {
         {
             setEnabled(false);
         }

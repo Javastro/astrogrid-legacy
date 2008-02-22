@@ -10,6 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.DataFlavor;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -24,10 +29,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.AdqlStoX;
 import org.astrogrid.adql.AdqlCompiler ;
 import org.astrogrid.adql.metadata.MetadataQuery;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
@@ -52,6 +60,7 @@ public class CommandFactory {
     private EditStore editStore ;
     private AdqlCompiler adqlCompiler ;
     private MetadataQuery metadataQuery ;
+    private AdqlTransformer transformer ;
 
     /**
      * 
@@ -59,30 +68,49 @@ public class CommandFactory {
     public CommandFactory( AdqlTree adqlTree ) {
         this.adqlTree = adqlTree ;
         this.undoManager = new UndoManager() ;
-        this.editStore = new EditStore() ;        
+        this.undoManager.setLimit(1) ;
+        this.editStore = new EditStore() ; 
+        this.transformer = new AdqlTransformer() ;
     }
     
     private CommandFactory() {}
    
     
     public PasteOverCommand newPasteOverCommand( AdqlNode targetOfPasteOver, CopyHolder copy  ) {
-        if( AdqlUtils.isSuitablePasteOverTarget( targetOfPasteOver, copy.getSource() ) ) {
-            return new PasteOverCommand( adqlTree, undoManager, targetOfPasteOver, copy ) ;
-        }
-        return null ;
+        return new PasteOverCommand( adqlTree, undoManager, targetOfPasteOver, copy ) ;
     }
     
     public PasteIntoCommand newPasteIntoCommand( AdqlNode targetOfPasteInto, CopyHolder copy ) {
-        SchemaType pastableType = AdqlUtils.findSuitablePasteIntoTarget( targetOfPasteInto, copy.getSource() ) ;
-        if( pastableType != null ) {
-            return new PasteIntoCommand( adqlTree, undoManager, targetOfPasteInto, pastableType, copy ) ;
+        //
+        // The first part attempts to see whether the system clipboard contains an exact
+        // replica of the local CopyHolder based clipboard. OK: this is a cludge to overcome
+        // some of the difficulties of in-context menus. (I hope temporarilly).
+        // If the two match exactly, then we go ahead with the local clipboard. 
+        //
+        if( isCopyHolderIdenticalToSystemClipboard( copy ) ) {
+            //
+            // If we get this far, then we know we can safely use the local copy...
+            SchemaType pastableType = AdqlUtils.findSuitablePasteIntoTarget( targetOfPasteInto, copy.getSource() ) ;
+            if( pastableType != null ) {
+                return new PasteIntoCommand( adqlTree, undoManager, targetOfPasteInto, pastableType, copy ) ;
+            }
         }
         return null ;
     }
     
     public PasteNextToCommand newPasteNextToCommand( AdqlNode targetOfNextTo, CopyHolder copy, boolean before ) {
-        if( AdqlUtils.isSuitablePasteOverTarget( targetOfNextTo, copy.getSource() ) ) {
-            return new PasteNextToCommand( adqlTree, undoManager, targetOfNextTo, copy, before ) ;
+        //
+        // The first part attempts to see whether the system clipboard contains an exact
+        // replica of the local CopyHolder based clipboard. OK: this is a cludge to overcome
+        // some of the difficulties of in-context menus. (I hope temporarilly).
+        // If the two match exactly, then we go ahead with the local clipboard. 
+        //
+        if( isCopyHolderIdenticalToSystemClipboard( copy ) ) {
+            //
+            // If we get this far, then we know we can safely use the local copy...
+            if( AdqlUtils.isSuitablePasteOverTarget( targetOfNextTo, copy.getSource() ) ) {
+                return new PasteNextToCommand( adqlTree, undoManager, targetOfNextTo, copy, before ) ;
+            }
         }
         return null ;
     }
@@ -169,10 +197,6 @@ public class CommandFactory {
     }
     
     public EditCommand newEditCommand( AdqlTree adqlTree, AdqlNode target, String source ) {
-//        source = source.trim() ;
-//        if( source.length() == 0 || source.charAt( source.length()-1 ) != ';' ) {
-//            source += ';' ;
-//        }
         return new EditCommand( adqlTree, undoManager, target, getAdqlCompiler( source ) ) ;
     }
     
@@ -233,6 +257,43 @@ public class CommandFactory {
     
     public EditStore getEditStore() {
         return this.editStore ;
+    }
+    
+    private boolean isCopyHolderIdenticalToSystemClipboard( CopyHolder copy ) {
+        //
+        // The first part attempts to see whether the system clipboard contains an exact
+        // replica of the local CopyHolder based clipboard. OK: this is a cludge to overcome
+        // some of the difficulties of in-context menus. (I hope temporarilly).
+        // If the two match exactly, then we use the local clipboard copy. This allows
+        // us to grey out (or not) the paste action where the underlying type is incorrect.
+        // The local clipboard contains enough info to determine type.
+        // This is currently impossible to do from the system clipboard because we have no
+        // way of testing ADQL type from text present in the system clipboard.
+        //
+        boolean retValue = false ;
+        XmlCursor nodeCursor = null ;
+        try {
+            XmlObject userObject = copy.getSource() ;       
+            userObject = AdqlUtils.modifyQuotedIdentifiers( userObject ) ;
+            nodeCursor = userObject.newCursor();
+            String text = nodeCursor.xmlText();                    
+            userObject = AdqlUtils.unModifyQuotedIdentifiers( userObject ) ;
+            String adqls = transformer.transformToAdqls( text, " " ) ; 
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable t = clipboard.getContents( this ) ;
+            String contents = ((String)t.getTransferData( DataFlavor.stringFlavor )).trim() ;
+            if( contents.equalsIgnoreCase( adqls ) ) {
+                retValue = true ;
+            }
+        } 
+        catch ( Exception ex ) {
+            ;
+        }
+        finally {
+            if( nodeCursor != null )
+                nodeCursor.dispose() ;
+        }       
+        return retValue ;
     }
 
     /**
@@ -305,9 +366,6 @@ public class CommandFactory {
     public class EditStore {
          
         private Random random = new Random() ;
-//        private Hashtable tokenToEntryStore = new Hashtable( 64 ) ;
-//        private Hashtable entryToTokenStore = new Hashtable( 64 ) ;
-        
         private LinkedHashMap tokenToEntryStore = new LinkedHashMap( 64 ) ;
         private LinkedHashMap entryToTokenStore = new LinkedHashMap( 64 ) ;
         

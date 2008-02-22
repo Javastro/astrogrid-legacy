@@ -92,15 +92,13 @@ public final class AdqlTree extends JTree
     
     private HashMap fromTables = new HashMap() ;
     
-    private boolean editingActive = false ;
     private int availableWidth ;
     private CommandFactory commandFactory ;
     private NodeFactory nodeFactory ;
     private String adqlSchemaVersion ;
     private final ChangeEvent changeEvent = new ChangeEvent( this ) ;
     protected final UIComponent parent;
-    
-   
+      
     public AdqlTree( UIComponent parent, File xmlFile, Registry registry, URI toolIvorn, URI tabulaData ) {
         this.parent = parent ;
         initialize( parseXml( xmlFile ), registry, toolIvorn, tabulaData ) ;
@@ -261,15 +259,6 @@ public final class AdqlTree extends JTree
         log.debug( buffer ) ;
     }
     
- 
-    public boolean isEditingActive() {
-        return editingActive;
-    }
-    public void setEditingActive(boolean editingActive) {
-        this.editingActive = editingActive;
-    }
-    
-    
     public AdqlNode parseXml(File xmlFile)
     {
         AdqlNode entry = null ;
@@ -360,9 +349,6 @@ public final class AdqlTree extends JTree
         (new BackgroundWorker( parent, "Fetching Catalogue Data" ,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
             protected Object construct() throws Exception {
                 CatalogService cs = null ;
-//                String piName = null ;
-//                String piValue = null ;
-//                StringBuffer buffer = null ;
                 if( tabulaData != null ) {
                     try {
                         Resource res = registry.getResource( tabulaData );
@@ -371,38 +357,6 @@ public final class AdqlTree extends JTree
                         log.debug( "Could not locate tabulaData: " + tabulaData, e ) ;
                     }
                 }
-// Jeff Note:
-//                if( log.isDebugEnabled() ) {
-//                    buffer = new StringBuffer() ;
-//                    buffer.append( "Searching for catalogue PI..." ) ;
-//                }
-//                while( !cursor.toNextToken().isNone() ) {
-//                    if( cursor.isProcinst() ) {
-//                        piName = cursor.getName().getLocalPart() ;             
-//                        if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
-//                            if( log.isDebugEnabled() ) {
-//                                buffer.append( "\nPI name: " + cursor.getName() ) ;
-//                                buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
-//                            }
-//                            piValue = cursor.getTextValue().trim() ;
-//                            if( piValue.equals( "none" ) )
-//                                break ;                           
-//                                String id = formatCatalogueId(piValue);
-//                                try {
-////                                    dc = (DataCollection) registry.getResource(new URI(id));
-//                                } catch (Throwable e) {
-//                                    log.info("Searching for table definition using " + id + " failed.");
-//                                }
-//                            if( log.isDebugEnabled() ) {
-////                                buffer.append( "\ndc: " + (dc==null?"null":"not null") ) ;
-//                            }
-//                            break ;
-//                        }
-//                    }
-//                } // end while
-//                if( log.isDebugEnabled() && buffer.length() > 0 ) {
-//                    log.debug( buffer ) ;
-//                }
                 return cs ;                      
             }
             protected void doFinished( Object result ) {
@@ -476,79 +430,6 @@ public final class AdqlTree extends JTree
         // required to accommodate changes in ADQL between versions.
     }
     
-//    private String formatCatalogueId ( String piValue ) {
-//        // This value follows a standard set up in the portal prior to
-//	    // the establishment of ivorns and overcomes some of the problems
-//	    // of special characters within table names. 
-//	    // Note: The portal QB allows only one table (no joins) so the metadata
-//	    // reflects the one table. But we need the whole catalogue/database.
-//        String ivornString = "ivo://" + piValue.substring( 0, piValue.lastIndexOf( '!' ) ).replace( '!', '/' ) ;
-//        if( log.isDebugEnabled() ) {
-//            log.debug( "Catalogue ivorn: " + ivornString ) ;
-//        }
-//        return ivornString ;
-//    }
-    
-
-    
-//    private void writeResourceProcessingInstruction() {
-//        String piName = null ;
-//        String piValue = null ;
-//        XmlCursor cursor = getRoot().newCursor() ;
-//        StringBuffer buffer = null ;
-//        if( log.isDebugEnabled() ) {
-//            buffer = new StringBuffer() ;
-//            buffer.append( "Searching for PI's..." ) ;
-//        }
-//        try {
-//            while( !cursor.toNextToken().isNone() ) {
-//                if( cursor.isProcinst() ) {
-//                    piName = cursor.getName().getLocalPart() ;
-//                    if( log.isDebugEnabled() ) {
-//                        buffer.append( "\nPI name: " + cursor.getName() ) ;
-//                        buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
-//                    }
-//                    if( piName.equals( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
-//                       // OK. There's already one here.
-//                       // But does it say "none"?...
-//                        if( cursor.getTextValue().trim().equals( "none") ) {
-//// Jeff Note:
-////                            piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-////                            + '!' 
-////                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
-//                            piValue = "Something here needs to change" ;
-//                            cursor.setTextValue( piValue ) ;
-//                        }
-//                    }
-//                }
-//                else if( cursor.isStart()
-//                         &&
-//                         cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
-//                    // We need to create the required PI to track the catalogue resource.
-//                    // Currently only one catalogue. Soon we will need to cover multiple catalogues...
-//                    // (I've simply chosen the first table to align it with the portal)
-//// Jeff Note:
-////                    piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-////                            + '!' 
-////                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
-//                    piValue = "Something here needs to change" ;
-//                    if( log.isDebugEnabled() ) {
-//                        buffer.append( "\nNew PI Text: " +piValue ) ;
-//                    }
-//                    cursor.insertProcInst( AdqlData.PI_QB_REGISTRY_RESOURCES, piValue ) ;
-//                    break ;               
-//                }
-//            } // end while
-//        }
-//        finally {
-//            if( log.isDebugEnabled() ) {
-//                log.debug( buffer ) ;
-//            }
-//            cursor.dispose();
-//        }
-//      
-//    }
-    
     
     private void reestablishTablesCollection() {
         XmlString xTableName = null ;
@@ -619,6 +500,10 @@ public final class AdqlTree extends JTree
         return nodeFactory.getRootEntry().getXmlObject() ;
     }
     
+    public AdqlNode getRootNode() {
+        return nodeFactory.getRootEntry() ;
+    }
+    
 
     private String extractAttributeValue( XmlObject xmlObject ) {
         String retVal = null ;
@@ -676,26 +561,14 @@ public final class AdqlTree extends JTree
         }
         
         public void actionPerformed( ActionEvent e ) {
-            if( editingActive ) {               
-                //
-                // This is not adequate on its own.
-                // We need a listener on all tree changes that effect
-                // structure and values, so that the
-                // query parameter can be correctly maintained.
                 stopEditing() ;            
-                editingActive = false ;
-            }
-            else {
                 TreePath path = getSelectionPath() ;             
                 if( path != null ) {
                     AdqlNode selectedEntry = (AdqlNode)getLastSelectedPathComponent();
                     if( selectedEntry.isBottomLeafEditable() ) {
                         startEditingAtPath( path ) ;
-                        editingActive = true ;
                     }
-                }
-            }         
-            
+                }        
         }
         
     } // end of class EditPromptAction

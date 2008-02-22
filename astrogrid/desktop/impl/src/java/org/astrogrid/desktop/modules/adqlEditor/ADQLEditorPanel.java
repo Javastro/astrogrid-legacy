@@ -10,13 +10,20 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor; 
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -25,12 +32,16 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.im.InputContext;
+import java.awt.Toolkit;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -44,6 +55,7 @@ import java.util.Stack;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -64,6 +76,7 @@ import javax.swing.JTextPane;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -75,6 +88,11 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.plaf.UIResource;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -109,11 +127,13 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.PasteNextToCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.PasteOverCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.StandardInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.TableInsertCommand;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory.UndoManager;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.TabularMetadataViewer;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
 
 /**
@@ -287,7 +307,7 @@ public class ADQLEditorPanel
     public ADQLEditorPanel(ParameterValue queryParam
     						  , Resource targetApplication
     						  , UIComponentWithMenu parent
-    						  ,RegistryGoogle regChooser
+    						  , RegistryGoogle regChooser
                               , Registry registry
                               , Preference showDebugPanePref ) {
         if( log.isTraceEnabled() ) enterTrace( "ADQLEditorPanel()" ) ;
@@ -310,40 +330,49 @@ public class ADQLEditorPanel
      * would probably be replaced with Action classes defined separately, 
      * so this class would just populate / depopulate the menu and control the visibility of the items.
      * */
-    private class ContextMenuAssistant implements HierarchyListener{
+    private class ContextMenuAssistant implements HierarchyListener {
+        
         private final JMenu contextMenu;
-        private final JMenuItem it;
-        private final JMenu subMenu;
+        private MenuListener menuListener ;
 
-        public ContextMenuAssistant(JPanel p, JMenu contextMenu) {
+        public ContextMenuAssistant( JPanel p, JMenu contextMenu ) {
             if( log.isTraceEnabled() ) enterTrace( "ContextMenuAssistant()" ) ;
             this.contextMenu = contextMenu;
-            it = new JMenuItem("context-sensitive-example");
-         //   it.setVisible(false); temporarily made invisible for the first beta release.
-            subMenu = new JMenu("context-submenu");
-            subMenu.add(new JMenuItem("an entry"));
-          //  subMenu.setVisible(false);  temporarily made invisible for the first beta release.
             p.addHierarchyListener(this);
             if( log.isTraceEnabled() ) exitTrace( "ContextMenuAssistant()" ) ;
         }
-
-
+        
         public void hierarchyChanged(HierarchyEvent e) {
             long flags = e.getChangeFlags();            
             if ((flags &  HierarchyEvent.SHOWING_CHANGED ) != 0){
                 contextMenu.setEnabled(isShowing());
             } else if ((flags &  HierarchyEvent.PARENT_CHANGED) != 0) {
-                    if (getParent() == null) {
-                        // remove the menu entries
-                        contextMenu.remove(it);
-                        contextMenu.remove(subMenu);
-                    } else {
-                        // add the menu entries.
-                        contextMenu.add(it);
-                        contextMenu.add(subMenu);
-                    }                  
+                if (getParent() == null) {
+                    // remove the menu entries for non ADQL contexts...
+                    contextMenu.removeMenuListener( menuListener ) ;
+                } else {
+                    // "add" the menu entries, or at least a menu listener
+                    // that manages adding or removing...
+
+                    menuListener = new MenuListener() {
+
+                        public void menuCanceled( MenuEvent e ) {}
+                        public void menuDeselected(MenuEvent e) {}
+                        public void menuSelected(MenuEvent e) { 
+                            if( isShowing() ) {
+                                AdqlNode entry = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
+                                if( entry != null) {
+                                    buildEditContextMenu( contextMenu, entry ) ;
+                                } 
+                            }                                                             
+                        }
+                                           
+                    } ;
+                    contextMenu.addMenuListener( menuListener ) ;
+                }                     
             } 
         }
+        
     }
 
       
@@ -445,6 +474,32 @@ public class ADQLEditorPanel
         }
         this.setAdqlParameter() ;
         this.adqlTree.getModel().addTreeModelListener( this );
+        
+        //
+        // setup the actionmap...
+        ActionMap map = this.adqlTree.getActionMap();
+          map.put(UIComponentMenuBar.EditMenuBuilder.COPY, new CopyAction() );
+          map.put(UIComponentMenuBar.EditMenuBuilder.CUT, new CutAction() );
+          map.put(UIComponentMenuBar.EditMenuBuilder.PASTE, new PasteOverAction() );
+          
+        this.adqlTree.addTreeSelectionListener(
+                new TreeSelectionListener() {
+
+                    public void valueChanged( TreeSelectionEvent e ) {
+                        if( e.isAddedPath() ) {
+                            TreePath path = e.getPath() ;
+                            ActionMap map = adqlTree.getActionMap();
+                            CopyAction copya = (CopyAction)map.get( UIComponentMenuBar.EditMenuBuilder.COPY ) ;
+                            copya.setEnabled( copya.wouldBeEnabled( path ) ) ;
+                            CutAction cuta = (CutAction)map.get( UIComponentMenuBar.EditMenuBuilder.CUT ) ;
+                            cuta.setEnabled( cuta.wouldBeEnabled( path ) ) ;
+                            PasteOverAction pasta = (PasteOverAction)map.get( UIComponentMenuBar.EditMenuBuilder.PASTE ) ;
+                            pasta.setEnabled( pasta.wouldBeEnabled( path ) ) ;
+                        }                 
+                    }
+                    
+                }) ;
+               
         if( log.isTraceEnabled() ) exitTrace( "setAdqlTree()"  ) ;
         return this.adqlTree ;
     }
@@ -492,32 +547,6 @@ public class ADQLEditorPanel
     }
     
     
-    
-   
-    
-//    private void queryRegistry( final String searchString ) {
-//        
-//        (new BackgroundWorker(parent,"Querying registry"){
-//
-//            protected Object construct()  {
-//                try {
-//                    return (registry.adqlSearchRI( searchString )[0]) ;
-//                } catch (Exception e) {
-//                    return e.getMessage();
-//                }
-//            }
-//            
-//            protected void doFinished( Object result ) {
-//                if( result instanceof String ) {
-//                    log.error( "Failed to find catalogue entry using: \n" + searchString ) ;
-//                }
-//                else {
-//                    catalogueResource = (TabularDatabaseInformation)result ;
-//                }
-//            }
-//        }).start();
-//   
-//    }
     private void findTabulaData() {
         if( targetApplication != null ) {
             ceaApplicationURI = targetApplication.getId() ;
@@ -979,55 +1008,72 @@ public class ADQLEditorPanel
 	    
 	    private JPopupMenu getPopupMenu( AdqlNode entry ) {
             JPopupMenu popup = new JPopupMenu( "AdqlTreeContextMenu" ) ;
-	        buildEditMenu( popup, entry ) ;
+	        buildPopupEditMenu( popup, entry ) ;
             return popup ;
 	    }
 	           
 	} // end of class PopupMenu
 	
 	private class CutAction extends AbstractAction {
-	    private CutCommand command ;
 	       
-	    public CutAction( AdqlNode entry ) {
+	    public CutAction() {
 	        super( "Cut" ) ;
-	        TreePath path = adqlTree.getSelectionPath() ;
-            if( log.isDebugEnabled() ) {
-                if( path == null ) {
-                    log.debug("CutAction path: " + path ) ;
-                }
-                else {
-                    log.debug( "CutAction path: " 
-                             + "\n path count = " + path.getPathCount() 
-                             + "\n last path component is of type " 
-                             + ((AdqlNode)path.getLastPathComponent()).getShortTypeName() 
-                             + "\n element context path = "
-                             + ((AdqlNode)path.getLastPathComponent()).getElementContextPath() ) ;
-                }
-            }
-	        // If the path is null or there is no parent ( count < 2 )
-            // Or it is the top select element (count == 2 )
-	        // Then we cannot cut...
-	        if( path == null ) {
-                setEnabled( false ) ;
-                return ;
-	        }     
-            if( path.getPathCount() <= 2 ) {
-                setEnabled( false ) ;
-                return ;
-            }
-	        this.command = adqlTree.getCommandFactory().newCutCommand( adqlTree
-	                                                                 , adqlTree.getCommandFactory().getUndoManager()
-	                                                                 , (AdqlNode)path.getLastPathComponent() ) ;
 	    }
+        
+        public boolean isEnabled() {
+            TreePath path = adqlTree.getSelectionPath() ;
+            return wouldBeEnabled( path ) ;
+        }
+        
+        public boolean wouldBeEnabled( TreePath path ) {
+            //
+            // If the path is null or there is no parent ( count < 2 )
+            // (ie: we should not remove the SelectDocument)
+            // Then we cannot cut...
+            if( path == null ) {
+                return false ;
+            } 
+            int pathCount = path.getPathCount() ;
+            if( pathCount < 2 ) {
+                return false ;
+            } 
+            else {
+                //
+                // OK. We now need to be sure we don't cut the top
+                // SelectType (ie: the whole query)...
+                AdqlNode node = (AdqlNode)path.getLastPathComponent() ;
+                AdqlNode root = adqlTree.getRootNode() ;
+                //
+                // Not sure the first will work in all situations...
+                if( node == root ) {
+                    return false ;
+                }
+                if( pathCount < 3 
+                    &&
+                    AdqlUtils.areTypesEqual( node.getXmlObject(), AdqlData.SELECT_TYPE) ) {
+                    return false ;
+                }
+            }            
+            return true ;
+        }
 	    
 	    public void actionPerformed( ActionEvent e ) {
 	        if( log.isTraceEnabled() ) { enterTrace( "CutAction.actionPerformed()" ) ; }
 	        try {
-	            clipBoard.push( command.getCopy() ) ;    
+                TreePath path = adqlTree.getSelectionPath() ;
+                if( path == null )
+                    return ;
+                AdqlNode node = (AdqlNode)path.getLastPathComponent() ;
+                CutCommand command = adqlTree.getCommandFactory().newCutCommand( adqlTree
+                        , adqlTree.getCommandFactory().getUndoManager()
+                        , node ) ;
+                CopyHolder copy = command.getCopy() ;
+	            clipBoard.push( copy ) ;   
+                copyToSystemClipboard( node ) ;
 	            if( command.execute() != CommandExec.FAILED ) {
 	                DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
 	                model.nodeStructureChanged( command.getParentEntry() ) ;
-	                adqlTree.ensureSomeNodeSelected( this.command ) ;
+	                adqlTree.ensureSomeNodeSelected( command ) ;
 	                adqlTree.repaint() ;
 	            }
 	        }
@@ -1038,68 +1084,108 @@ public class ADQLEditorPanel
 	}
 	
 	private class CopyAction extends AbstractAction {
-	    private AdqlNode entry ;
-	       
-	    public CopyAction( AdqlNode entry ) {
-	        super( "Copy" ) ;
+
+        public boolean isEnabled() {
             TreePath path = adqlTree.getSelectionPath() ;
-            if( log.isDebugEnabled() ) {
-                if( path == null ) {
-                    log.debug("CopyAction path: " + path ) ;
-                }
-                else {
-                    log.debug( "CopyAction path: " 
-                             + "\n path count = " + path.getPathCount() 
-                             + "\n last path component is of type " 
-                             + ((AdqlNode)path.getLastPathComponent()).getShortTypeName() 
-                             + "\n element context path = "
-                             + ((AdqlNode)path.getLastPathComponent()).getElementContextPath() ) ;
-                }
-            }
+            return wouldBeEnabled( path ) ;
+        }
+        
+        public boolean wouldBeEnabled( TreePath path ) {
+            //
             // If the path is null or there is no parent ( count < 2 )
             // Then we cannot copy...
             if( path == null ) {
-                setEnabled( false ) ;
-                return ;
+                return false ;
             }     
             if( path.getPathCount() < 2 ) {
-                setEnabled( false ) ;
-                return ;
+                return false ;
             }
-	        this.entry = entry ;
+            return true ;
+        }
+
+
+        public CopyAction() {
+	        super( "Copy" ) ;
 	    }
-	    
+        
+
 	    public void actionPerformed( ActionEvent e ) {
-	        clipBoard.push( CopyHolder.holderForCopyPurposes( entry ) ) ;
+            TreePath path = adqlTree.getSelectionPath() ;
+            if( path == null )
+                return ;
+            AdqlNode node = (AdqlNode)path.getLastPathComponent() ;
+            CopyHolder copy = CopyHolder.holderForCopyPurposes( node ) ;
+	        clipBoard.push( copy ) ;
+            copyToSystemClipboard( node ) ;
 	    }
 	}
-	
+    
+	private void copyToSystemClipboard( AdqlNode node ) {
+        XmlCursor nodeCursor = null ;
+        try {
+            XmlObject userObject = node.getXmlObject() ;       
+            userObject = AdqlUtils.modifyQuotedIdentifiers( userObject ) ;
+            nodeCursor = userObject.newCursor();
+            String text = nodeCursor.xmlText();                    
+            userObject = AdqlUtils.unModifyQuotedIdentifiers( userObject ) ;
+            String adqls = transformer.transformToAdqls( text, " " ) ; 
+            StringSelection contents = new StringSelection( adqls );
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents( contents, null ) ; 
+        } 
+        catch ( Exception ex) {
+            ;
+        }
+        finally {
+            if( nodeCursor != null )
+                nodeCursor.dispose() ;
+        }      
+    }
+
+    
 	private class PasteOverAction extends AbstractAction {
 	    
-	    private PasteOverCommand command = null ;
-	    
-	    public PasteOverAction( AdqlNode entry ) {
-	        super( "Paste over" ) ;
-	        if( preConditionsForPaste() == true ) {
-	            this.command = adqlTree.getCommandFactory().newPasteOverCommand( entry, (CopyHolder)clipBoard.peek() ) ;
-	        }
-	        setEnabled( command != null ) ;
+	    public PasteOverAction() {
+	        super( "Paste" ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {	
             if( log.isTraceEnabled() ) { enterTrace( "PasteOverAction.actionPerformed()" ) ; }
             try {
-                if( command.execute() != CommandExec.FAILED ) {
+                AdqlNode node = (AdqlNode)adqlTree.getSelectionPath().getLastPathComponent() ;
+                PasteOverCommand command = adqlTree.getCommandFactory().newPasteOverCommand( node, (CopyHolder)clipBoard.peek() ) ;
+                if( command.execute() != CommandExec.FAILED ) {               
                     DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
                     model.nodeStructureChanged( command.getParentEntry() ) ;
-                    adqlTree.ensureSomeNodeSelected( this.command ) ;
+                    adqlTree.ensureSomeNodeSelected( command ) ;
                     adqlTree.repaint() ;
                 }               
             }
             finally {
                 if( log.isTraceEnabled() ) { exitTrace( "PasteOverAction.actionPerformed()" ) ; }
             }
-	    }	    
+	    }
+        
+        public boolean isEnabled() {
+            TreePath path = adqlTree.getSelectionPath() ;
+            return wouldBeEnabled( path ) ;
+        }
+        
+        public boolean wouldBeEnabled( TreePath path ) {
+            if( preConditionsForPaste( path ) == true ) {
+                CopyHolder copy = (CopyHolder)clipBoard.peek() ;                   
+                if( AdqlUtils.isCopyHolderIdenticalToSystemClipboard( copy, transformer ) ) {
+                    //
+                    // If we get this far, then we know we can safely use the local copy...
+                    AdqlNode targetOfPasteOver = (AdqlNode)path.getLastPathComponent() ;
+                    if( AdqlUtils.isSuitablePasteOverTarget( targetOfPasteOver, copy.getSource() ) ) {
+                        return true ; 
+                    }
+                }
+            }           
+            return false ;
+        }
+        
 	}
 	
 	private class PasteNextToAction extends AbstractAction {
@@ -1112,8 +1198,9 @@ public class ADQLEditorPanel
 	        }
 	        else {
 	            super.putValue( Action.NAME, "Paste after" ) ;
-	        }    
-	        if( preConditionsForPaste() == true ) {
+	        } 
+            TreePath path = adqlTree.getSelectionPath() ;
+	        if( preConditionsForPaste( path ) == true ) {
 	            this.command = adqlTree.getCommandFactory().newPasteNextToCommand( entry, (CopyHolder)clipBoard.peek(), before );
 	        }
 	        setEnabled( command != null && command.isChildEnabled() ) ;    
@@ -1141,7 +1228,8 @@ public class ADQLEditorPanel
 	       
 	    public PasteIntoAction( AdqlNode entry ) {
 	        super( "Paste into" ) ;
-	        if( preConditionsForPaste() == true ) {
+            TreePath path = adqlTree.getSelectionPath() ;
+	        if( preConditionsForPaste( path ) == true ) {
 	            this.command = 
 	                adqlTree.getCommandFactory().newPasteIntoCommand( entry, (CopyHolder)clipBoard.peek() );
 	        }
@@ -1219,6 +1307,44 @@ public class ADQLEditorPanel
 	    }
 	    
 	}
+    
+private class UndoRedoAction extends AbstractAction {
+        
+        CommandFactory.UndoManager undoManager ;
+        
+        public UndoRedoAction() {
+            super() ;
+            undoManager = adqlTree.getCommandFactory().getUndoManager() ;
+            super.putValue( Action.NAME, undoManager.getUndoOrRedoPresentationName() ) ;
+            setEnabled( true ) ;
+        }
+        
+        public void actionPerformed( ActionEvent e ) {
+            if( log.isTraceEnabled() ) { enterTrace( "UndoRedoAction.actionPerformed()" ) ; }
+            try {
+                if( undoManager.canRedo() ) {
+                    CommandInfo ci = (CommandInfo)undoManager.getCommandToBeRedone() ;          
+                    undoManager.redo() ;
+                    DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+                    model.nodeStructureChanged( ci.getParentEntry() ) ;
+                    adqlTree.ensureSomeNodeSelected( ci ) ;
+                    adqlTree.repaint() ;
+                }
+                else if( undoManager.canUndo() ) {
+                    CommandInfo ci = (CommandInfo)undoManager.getCommandToBeUndone() ;           
+                    undoManager.undo() ;
+                    DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+                    model.nodeStructureChanged( ci.getParentEntry() ) ;
+                    adqlTree.ensureSomeNodeSelected( ci ) ;
+                    adqlTree.repaint() ;
+                }                          
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "UndoRedoAction.actionPerformed()" ) ; }
+            }
+        }
+        
+    }
 	
 	private class EditAction extends AbstractAction {
 	       
@@ -1577,12 +1703,7 @@ public class ADQLEditorPanel
 
         // tree selection listener interface.
         public void valueChanged( TreeSelectionEvent e ) {
-//          AdqlNode newSelectedNode = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
-//          if( newSelectedNode != null ) {
-//              selectedNodeToken = adqlTree.getCommandFactory().getEditStore().add( newSelectedNode ) ;
-                displayText() ;
-                
-//          }
+            displayText() ;
         }
         
         // focus listener interface
@@ -1658,33 +1779,14 @@ public class ADQLEditorPanel
            
             if( !historyStack.isEmpty() && afterImage.equals( (String)historyStack.peek() ) )
                 return ;    
-//            java.util.Enumeration e = historyStack.elements() ;
-//            while( e.hasMoreElements() ) {
-//                if( content.equals( (String)e.nextElement() ) ) 
-//                    return ;
-//            }
             historyStack.push( afterImage ) ; 
             historyStack.setCurrentPosition( 1 ) ;
             setHistoryText( afterImage ) ;    
         }
         
         private void refreshFromModel() {         
- //            adqlTree.setTree( NodeFactory.newInstance( this.controller.getRoot() ), registry, toolModel.getInfo().getId() );
-//            adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
             setAdqlParameter() ;
-//            adqlTree.openBranches() ;
        }
-        
-//        protected String getDisplayText() {
-//            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
-//            XmlObject userObject = node.getXmlObject() ;       
-//            userObject = AdqlUtils.modifyQuotedIdentifiers( userObject ) ;
-//            XmlCursor nodeCursor = userObject.newCursor();
-//            String text = nodeCursor.xmlText();
-//            nodeCursor.dispose() ;
-//            userObject = AdqlUtils.unModifyQuotedIdentifiers( userObject ) ;
-//            return transformer.transformToAdqls( text, " " ).trim() ; 
-//        }
 
         public void displayText() {
             if( bEditWindowUpdatedByFocusGained ) {
@@ -1737,11 +1839,6 @@ public class ADQLEditorPanel
                 getActionMap().put( "ValidateAdql", new AbstractAction (){
                     public void actionPerformed(ActionEvent e) {
                         if( log.isTraceEnabled() ) enterTrace( "AdqlMainView.VK_ENTER.actionPerformed()" ) ;
-//                        AdqlNode newSelectedNode = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
-//                        if( newSelectedNode != null ) {
-//                            selectedNodeToken = adqlTree.getCommandFactory().getEditStore().add( newSelectedNode ) ;
-//                            executeEditCommand( selectedNodeToken ) ;
-//                        } 
                         executeEditCommand() ;
                         action.actionPerformed( e ) ;
                         if( log.isTraceEnabled() ) exitTrace( "AdqlMainView.VK_ENTER.actionPerformed()" ) ;
@@ -1752,7 +1849,6 @@ public class ADQLEditorPanel
         public void executeEditCommand() {
             if( log.isTraceEnabled() ) { enterTrace( "AdqlMainView.executeEditCommand()" ) ; }
             try {
-//            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
             String image = getText() ;
             if (!followPath) { // set selection to top selection node first, as this edit comes from an editor containing all the adqls.
                 adqlTree.setSelectionToTopSelectNode();
@@ -1851,8 +1947,7 @@ public class ADQLEditorPanel
         return adqlTree.getRoot() ;
     }
     
-    private boolean preConditionsForPaste() {
-        TreePath path = adqlTree.getSelectionPath() ;
+    private boolean preConditionsForPaste( TreePath path ) {
         // If the path is null or there is no parent
         // Then we cannot paste into this entry...
         if( path == null )
@@ -1864,105 +1959,16 @@ public class ADQLEditorPanel
             return false ;
         return true ;
     }
-
-    
-    
-    
+   
     /* (non-Javadoc)
      * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
      */
     public void stateChanged( ChangeEvent e) {
-        if( log.isTraceEnabled() ) enterTrace( "stateChanged()"  ) ;
         if( e.getSource() == adqlTree ) {
             if( adqlTree.isCatalogServiceSet() ) {
-//                chooseResourceButton.setEnabled( false ) ;
                 formatCatalogTab() ;
             }
-            else {
-//                chooseResourceButton.setEnabled( true ) ;
-            } 
-            if( log.isTraceEnabled() ) {
-                log.debug( "e.getSource() == adqlTree" ) ;
-                exitTrace( "stateChanged()"  ) ;
-            }
-            return ;
         }
-        if( e.getSource() instanceof JTabbedPane == false ) {
-            if( log.isTraceEnabled() ) {
-                log.debug( "e.getSource() instanceof JTabbedPane == false" ) ;
-                exitTrace( "stateChanged()"  ) ;
-            }
-            return ;
-        }
-          
-        JTabbedPane tp = (JTabbedPane)e.getSource() ;
-        java.awt.Component c = tp.getSelectedComponent() ;
-        if( c == this ) {
-            // We have just gained selection:
-            boolean bEditFound = false ;
-            boolean bOptionsFound = false ;
-            JMenuBar mb = ((UIComponentImpl)parent).getJMenuBar() ;
-            int mc = mb.getMenuCount() ;
-            JMenu menu = null ;
-            for( int i=0; i<mc; i++ ) {
-                menu = mb.getMenu(i) ;
-                String name = menu.getName() ;
-                String text = menu.getText();
-                if( name == null )
-                    continue ;
-                if( name.equals("Edit") || text.equals("Edit")) {
-                    bEditFound = true ;
-                    menu.setEnabled( true ) ;
-                }
-                else if( name.equals( "Options" ) || text.equals("Edit") ) {
-                    bOptionsFound = true ;
-                    menu.setEnabled( true ) ;
-                }
-            }
-            if( !bEditFound ) {
-                final JMenu editMenu = new JMenu( "Edit" ) ;
-                editMenu.setName( "Edit") ;
-                editMenu.addMenuListener( new MenuListener() {
-
-                    public void menuCanceled( MenuEvent e ) { }
-                    public void menuDeselected(MenuEvent e) { }
-                    public void menuSelected(MenuEvent e) {  
-                        AdqlNode entry = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;                       
-                        buildEditMenu( editMenu, entry ) ;
-                    }
-                                       
-                } ) ;
-               
-                mb.add(editMenu) ;
-                editMenu.setEnabled( true ) ;
-            }
-            else {
-                if( log.isDebugEnabled() ) {
-                    log.debug( "site of: causes a NPE on startup." ) ;
-                }
-            	// NW - temporarily edited out - causes a NPE on startup.
-            	//
-            	//     buildEditMenu( menu, (AdqlNode)adqlTree.getLastSelectedPathComponent() ) ;
-            }
-        }
-        else {
-            // We have just lost selection:
-            JMenuBar mb = ((UIComponentImpl)parent).getJMenuBar() ;
-            int mc = mb.getMenuCount() ;
-            for( int i=0; i<mc; i++ ) {
-                JMenu menu = mb.getMenu(i) ;
-                String name = menu.getName() ;
-                if (name != null) {
-                if( name.equals("Edit") ) {
-                    menu.setEnabled( false ) ;
-                }
-                else if( name.equals( "Options" ) ) {
-                    menu.setEnabled( false ) ;
-                }
-                }
-            }
-        }
-        if( log.isTraceEnabled() ) exitTrace( "stateChanged()"  ) ;
     }
     
 
@@ -1982,116 +1988,106 @@ public class ADQLEditorPanel
 	}
     
     
-    private void buildEditMenu( JComponent menuComponent, AdqlNode entry ) {
-        
-        final class MenuAdapter {
-            
-            private JComponent menuComponent ;
-            
-            MenuAdapter( JComponent menuComponent ) {
-                this.menuComponent = menuComponent ;
-                if( this.menuComponent instanceof JPopupMenu ) {
-                    ((JPopupMenu)menuComponent).removeAll() ;
-                }
-                else if( this.menuComponent instanceof JMenu ) {
-                    ((JMenu)menuComponent).removeAll() ;
-                }
-                else if( menuComponent == null ){
-                    log.debug( "buildEditMenu().MenuAdapter(): menuComponent = " + menuComponent ) ;
-                }
-                else {
-                    log.debug( "buildEditMenu().MenuAdapter(): menuComponent = " + menuComponent.getClass() ) ;
-                }
-            }
-            
-            JComponent add( Action action ) {
-                JComponent jc = null ;
-                if( this.menuComponent instanceof JPopupMenu ) {
-                    jc = ((JPopupMenu)menuComponent).add( action ) ;
-                }
-                else if( this.menuComponent instanceof JMenu ) {
-                    jc = ((JMenu)menuComponent).add( action ) ;
-                }
-                return jc ;
-            }
-            
-            JComponent add( JMenu menu ) {
-                JComponent jc = null ;
-                if( this.menuComponent instanceof JPopupMenu ) {
-                    jc = ((JPopupMenu)menuComponent).add( menu ) ;
-                }
-                else if( this.menuComponent instanceof JMenu ) {
-                    jc = ((JMenu)menuComponent).add( menu ) ;
-                }
-                return jc ;
-            }
-            
-            JComponent add( String text) {
-                JComponent jc = null ;
-                if( this.menuComponent instanceof JPopupMenu ) {
-                    jc = ((JPopupMenu)menuComponent).add( text ) ;
-                }
-                else if( this.menuComponent instanceof JMenu ) {
-                    jc = ((JMenu)menuComponent).add( text ) ;
-                }
-                return jc ;
-            }
-            
-            void addSeparator() {
-                if( this.menuComponent instanceof JPopupMenu ) {
-                    ((JPopupMenu)menuComponent).addSeparator() ;
-                }
-                else if( this.menuComponent instanceof JMenu ) {
-                    ((JMenu)menuComponent).addSeparator() ;
-                }
-            }
-        }
-        
+    private void buildPopupEditMenu( JPopupMenu popupMenu, AdqlNode entry ) {
         //
         // Safety first...
         if( entry == null ) {
-            log.debug( "buildEditMenu(JComponent, AdqlNode): AdqlNode is null." ) ;
-            // Create an empty menu...
-            new MenuAdapter( menuComponent ) ;
             return ;
         }
-            
-        MenuAdapter ma = new MenuAdapter( menuComponent ) ;
        
         if( entry.isBottomLeafEditable() ) {
-            ma.add( new EditAction( entry ) ) ;
+            popupMenu.add( new EditAction( entry ) ) ;
         }
-        ma.add( new CutAction( entry ) ) ;
-        ma.add( new CopyAction( entry ) ) ;
-        ma.add( new PasteIntoAction( entry ) ) ;
-        ma.add( new PasteOverAction( entry ) ) ;
-        ma.add( new  PasteNextToAction( entry, true ) ) ; // Before
-        ma.add( new  PasteNextToAction( entry, false ) ) ; // After          
-        ma.addSeparator() ;
-        ma.add( new UndoAction() ) ;
-        ma.add( new RedoAction() ) ;
+        
+        ActionMap map = this.adqlTree.getActionMap();                     
+               
+        CopyAction copyAction = (CopyAction)map.get(UIComponentMenuBar.EditMenuBuilder.COPY) ;
+        copyAction.setEnabled( copyAction.isEnabled() ) ;
+        JMenuItem mi = (JMenuItem)popupMenu.add( copyAction ) ;
+        mi.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_C,UIComponentMenuBar.MENU_KEYMASK) ) ;
+        
+        CutAction cutAction = (CutAction)map.get(UIComponentMenuBar.EditMenuBuilder.CUT) ;
+        cutAction.setEnabled( cutAction.isEnabled() ) ; // redundant?
+        mi = (JMenuItem)popupMenu.add( cutAction ) ;
+        mi.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_X,UIComponentMenuBar.MENU_KEYMASK) ) ;
+                
+        PasteOverAction pasteOverAction = (PasteOverAction)map.get(UIComponentMenuBar.EditMenuBuilder.PASTE) ;
+        pasteOverAction.setEnabled( pasteOverAction.isEnabled() ) ;       
+        mi = (JMenuItem)popupMenu.add( pasteOverAction ) ;
+        mi.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_V,UIComponentMenuBar.MENU_KEYMASK) ) ;
+        
+        popupMenu.addSeparator() ;        
+        popupMenu.add( new PasteIntoAction( entry ) ) ;        
+        popupMenu.add( new  PasteNextToAction( entry, true ) ) ; // Before
+        popupMenu.add( new  PasteNextToAction( entry, false ) ) ; // After   
+        
+        UndoManager undoManager = adqlTree.getCommandFactory().getUndoManager() ;
+        if( undoManager.canUndoOrRedo() ) {
+            popupMenu.addSeparator() ;
+            popupMenu.add( new UndoRedoAction() ) ;
+        }
  
         List commandArray = adqlTree.getCommandFactory().newInsertCommands( entry ) ;
         if( commandArray != null && commandArray.size() > 0 ) {
-            ma.addSeparator() ;
-            ma.add( "Insert into " + entry.getDisplayName() + "..." ) ;
-            // ma.addSeparator() ;
+            popupMenu.addSeparator() ;
+            popupMenu.add( "Insert into " + entry.getDisplayName() + "..." ) ;
             ListIterator iterator = commandArray.listIterator() ;               
             while( iterator.hasNext() ) {
                 StandardInsertCommand command = (StandardInsertCommand)iterator.next() ;
                 if( !command.isChildSupportedType() )
                     continue ;
                 if( command.isChildCascadeable() ) {
-                    ma.add( getCascadeableMenu( command ) ) ;
+                    popupMenu.add( getCascadeableMenu( command ) ) ;
                 }
                 else {
-                    ma.add( new InsertAction( command.getChildDisplayName(), command ) ) ;
+                    popupMenu.add( new InsertAction( command.getChildDisplayName(), command ) ) ;
                 }
             }
         }      
 
     }
     
+    private void buildEditContextMenu( JMenu contextMenu, AdqlNode entry ) {
+        contextMenu.removeAll() ;
+        //
+        // Safety first...
+        if( entry == null ) {
+            return ;
+        }
+       
+        if( entry.isBottomLeafEditable() ) {
+            contextMenu.add( new EditAction( entry ) ) ;
+        }
+               
+        contextMenu.add( new PasteIntoAction( entry ) ) ;        
+        contextMenu.add( new  PasteNextToAction( entry, true ) ) ; // Before
+        contextMenu.add( new  PasteNextToAction( entry, false ) ) ; // After 
+        
+        UndoManager undoManager = adqlTree.getCommandFactory().getUndoManager() ;
+        if( undoManager.canUndoOrRedo() ) {
+            contextMenu.addSeparator() ;
+            contextMenu.add( new UndoRedoAction() ) ;
+        }
+       
+        List commandArray = adqlTree.getCommandFactory().newInsertCommands( entry ) ;
+        if( commandArray != null && commandArray.size() > 0 ) {
+            contextMenu.addSeparator() ;
+            contextMenu.add( "Insert into " + entry.getDisplayName() + "..." ) ;
+            ListIterator iterator = commandArray.listIterator() ;               
+            while( iterator.hasNext() ) {
+                StandardInsertCommand command = (StandardInsertCommand)iterator.next() ;
+                if( !command.isChildSupportedType() )
+                    continue ;
+                if( command.isChildCascadeable() ) {
+                    contextMenu.add( getCascadeableMenu( command ) ) ;
+                }
+                else {
+                    contextMenu.add( new InsertAction( command.getChildDisplayName(), command ) ) ;
+                }
+            }
+        }      
+
+    }
     
     private JMenu getCascadeableMenu( StandardInsertCommand command ) {
         JMenu menu = new JMenu( command.getChildDisplayName() ) ;

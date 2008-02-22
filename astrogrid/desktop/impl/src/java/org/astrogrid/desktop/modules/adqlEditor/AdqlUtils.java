@@ -9,6 +9,10 @@
  *
 **/
 package org.astrogrid.desktop.modules.adqlEditor ;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,6 +48,7 @@ import org.apache.xmlbeans.XmlUnsignedShort;
 import org.astrogrid.adql.v1_0.beans.ArrayOfFromTableType;
 import org.astrogrid.adql.v1_0.beans.JoinTableType;
 import org.astrogrid.adql.v1_0.beans.SelectType;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CopyHolder;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 // import org.astrogrid.adql.v1_0.beans.* ;
@@ -1153,6 +1158,43 @@ public final class AdqlUtils {
             retVal = tempObject.changeType( type ) ;
         }       
         return retVal ;
+    }
+    
+    public static boolean isCopyHolderIdenticalToSystemClipboard( CopyHolder copy, AdqlTransformer transformer ) {
+        //
+        // The first part attempts to see whether the system clipboard contains an exact
+        // replica of the local CopyHolder based clipboard. OK: this is a cludge to overcome
+        // some of the difficulties of in-context menus. (I hope temporarilly).
+        // If the two match exactly, then we use the local clipboard copy. This allows
+        // us to grey out (or not) the paste action where the underlying type is incorrect.
+        // The local clipboard contains enough info to determine type.
+        // This is currently impossible to do from the system clipboard because we have no
+        // way of testing ADQL type from text present in the system clipboard.
+        //
+        boolean retValue = false ;
+        XmlCursor nodeCursor = null ;
+        try {
+            XmlObject userObject = copy.getSource() ;       
+            userObject = AdqlUtils.modifyQuotedIdentifiers( userObject ) ;
+            nodeCursor = userObject.newCursor();
+            String text = nodeCursor.xmlText();                    
+            userObject = AdqlUtils.unModifyQuotedIdentifiers( userObject ) ;
+            String adqls = transformer.transformToAdqls( text, " " ) ; 
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable t = clipboard.getContents( null ) ;
+            String contents = ((String)t.getTransferData( DataFlavor.stringFlavor )).trim() ;
+            if( contents.equalsIgnoreCase( adqls ) ) {
+                retValue = true ;
+            }
+        } 
+        catch ( Exception ex ) {
+            ;
+        }
+        finally {
+            if( nodeCursor != null )
+                nodeCursor.dispose() ;
+        }       
+        return retValue ;
     }
 
 }

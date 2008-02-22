@@ -79,7 +79,7 @@ public class AdqlTransformer {
         try {
             textTransformer.setParameter( "spaceCharacter", spaceCharacter ) ;
             textTransformer.transform( source, result ) ;
-            retVal = ((StringWriter)result.getWriter()).toString() ; 
+            retVal = ((StringWriter)result.getWriter()).toString().trim() ; 
         }
         catch( Exception ex ) {
             log.error ( ex ) ;
