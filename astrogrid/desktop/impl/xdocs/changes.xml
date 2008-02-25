@@ -14,6 +14,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="mbt" type="fix" issue="2562">
+    Multiple capabilities (even of the same kind) per resource now supported
+    in AstroScope.
+</action>
 <action dev="jl" type="fix" issue="2418">
     In-context menu reintroduced into Query Builder
 </action>
