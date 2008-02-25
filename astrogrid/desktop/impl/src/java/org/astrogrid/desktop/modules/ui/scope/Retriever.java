@@ -468,7 +468,14 @@ public abstract class Retriever extends BackgroundWorker {
             serviceNode = new DefaultTreeNode(); // fall back to a default tree node.
         }
 
-        serviceNode.setAttribute(LABEL_ATTRIBUTE,service.getTitle());
+        final String label;
+        if (nodeSocket.isService() && getSubName() != null && getSubName().trim().length() > 0) {
+            label = getSubName();
+        } else {
+            label = service.getTitle();
+        }
+        serviceNode.setAttribute(LABEL_ATTRIBUTE,label);
+       
         serviceNode.setAttribute(WEIGHT_ATTRIBUTE,"2");
         serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, service.getId().toString());
         serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL.toString());
