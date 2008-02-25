@@ -1,10 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientImpl.java,v $</cvs:source>
  * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2008/02/05 11:37:59 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2008/02/25 12:18:34 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientImpl.java,v $
+ *   Revision 1.7  2008/02/25 12:18:34  pah
+ *   RESOLVED - bug 2573: Race condition on creating parent folders
+ *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2573
+ *
  *   Revision 1.6  2008/02/05 11:37:59  pah
  *   RESOLVED - bug 2545: Problem with IVORN resolution
  *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2545
@@ -66,6 +70,7 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.filemanager.client.delegate.NodeDelegate;
+import org.astrogrid.filemanager.common.DuplicateNodeFault;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
@@ -408,7 +413,13 @@ class FileManagerClientImpl implements FileManagerClient {
         for (Iterator i = missing.iterator(); i.hasNext();) {
            String name = i.next().toString();
            if (i.hasNext()) { // i.e. it's not the final one.
+               try {
                ancestor = ancestor.addFolder(name);
+               }
+               catch (DuplicateNodeFault e)//IMPL not nice to program by exceptions  - inefficient
+               {
+        	   ancestor = ancestor.getChild(name);
+               }
            }
         }
         return ancestor;
