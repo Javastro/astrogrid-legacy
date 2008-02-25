@@ -80,6 +80,10 @@ public class StapRetrieval extends Retriever {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<html>Title: ").append(service.getTitle())
 		.append("<br>ID: ").append(service.getId());
+        String subName = getSubName();
+        if (subName != null && subName.trim().length() > 0) {
+            sb.append(" - ").append(subName);
+        }
 //		if (service.getContent() != null) {
 //			sb.append("<br>Description: <p>")
 //			.append(service.getContent().getDescription()!= null 

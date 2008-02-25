@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.16 2008/02/22 17:03:35 mbt Exp $
+/*$Id: SsapRetrieval.java,v 1.17 2008/02/25 13:25:48 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,6 +58,10 @@ public class SsapRetrieval extends Retriever {
         StringBuffer sb = new StringBuffer();
         sb.append("<html>Title: ").append(service.getTitle())
             .append("<br>ID: ").append(service.getId());
+        String subName = getSubName();
+        if (subName != null && subName.trim().length() > 0) {
+            sb.append(" - ").append(subName);
+        }
 //                if (service.getContent() != null) {
 //               sb.append("<br>Description: <p>")
 //                .append(service.getContent().getDescription()!= null 
@@ -311,6 +315,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.17  2008/02/25 13:25:48  mbt
+Add subnames to node tooltips as appropriate
+
 Revision 1.16  2008/02/22 17:03:35  mbt
 Merge from branch mbt-desktop-2562.
 Basically, Retrievers rather than Services are now the objects (associated
