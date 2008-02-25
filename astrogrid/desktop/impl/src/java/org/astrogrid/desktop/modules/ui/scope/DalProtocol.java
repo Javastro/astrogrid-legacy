@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.13 2008/02/22 17:03:35 mbt Exp $
+/*$Id: DalProtocol.java,v 1.14 2008/02/25 13:27:48 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,6 +113,9 @@ public abstract class DalProtocol {
                     edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE, "2");
                     vizModel.getTree().addChild(edge);
                 }
+                public boolean isService() {
+                    return false;
+                }
             };
         }
         return directNodeSocket;
@@ -128,23 +131,37 @@ public abstract class DalProtocol {
     public NodeSocket createIndirectNodeSocket(final Service service) {
         return new NodeSocket() {
             private TreeNode serviceNode;
+            private String baseLabel;
+            private int nChild;
             private synchronized TreeNode getServiceNode() {
                 if (serviceNode == null) {
                     serviceNode = new DefaultTreeNode();
-                    String nodeLabel = service.getShortName();
-                    if (nodeLabel == null || nodeLabel.trim().length() == 0) {
-                        nodeLabel = service.getTitle();
+                    baseLabel = service.getShortName();
+                    if (baseLabel == null || baseLabel.trim().length() == 0) {
+                        baseLabel = service.getTitle();
                     }
-                    serviceNode.setAttribute(Retriever.LABEL_ATTRIBUTE, nodeLabel);
+                    serviceNode.setAttribute(Retriever.LABEL_ATTRIBUTE, baseLabel);
                     serviceNode.setAttribute(Retriever.SERVICE_ID_ATTRIBUTE, service.getId().toString());
+                    StringBuffer tbuf = new StringBuffer()
+                        .append("<html>")
+                        .append(service.getTitle())
+                        .append("<br>ID: ")
+                        .append(service.getId());
+                    serviceNode.setAttribute(Retriever.TOOLTIP_ATTRIBUTE, tbuf.toString());
                     getDirectNodeSocket().addNode(serviceNode);
                 }
                 return serviceNode;
             }
             public void addNode(TreeNode child) {
-                DefaultEdge edge = new DefaultEdge(getServiceNode(), child);
+                nChild++;
+                TreeNode servNode = getServiceNode();
+                servNode.setAttribute(Retriever.LABEL_ATTRIBUTE, baseLabel + " - " + nChild + ((nChild == 1) ? " search" : " searches"));
+                DefaultEdge edge = new DefaultEdge(servNode, child);
                 edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE, "2");
                 vizModel.getTree().addChild(edge);
+            }
+            public boolean isService() {
+                return true;
             }
         };
     }
@@ -192,6 +209,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.14  2008/02/25 13:27:48  mbt
+Improve node labelling
+
 Revision 1.13  2008/02/22 17:03:35  mbt
 Merge from branch mbt-desktop-2562.
 Basically, Retrievers rather than Services are now the objects (associated
