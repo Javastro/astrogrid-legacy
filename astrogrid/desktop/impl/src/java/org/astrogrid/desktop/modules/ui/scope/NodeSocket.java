@@ -18,4 +18,11 @@ public interface NodeSocket {
      * @param  child   node to add
      */
     void addNode(TreeNode child);
+
+    /**
+     * Indicates whether this socket represents a Service object.
+     *
+     * @return  true iff this parent represents a Service
+     */
+    boolean isService();
 }
