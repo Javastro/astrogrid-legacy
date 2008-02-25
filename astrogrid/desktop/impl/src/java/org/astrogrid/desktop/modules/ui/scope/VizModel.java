@@ -91,11 +91,18 @@ public  final class VizModel {
      */
     private void createResultsFilesystem() {
         try {
-            this.resultsFS = vfs.createVirtualFileSystem("astroscope://").getFileSystem();
+
+            // Use a different scheme for each new go at the results vfs.
+            // This is a reliable (though perhaps not optimally efficient)
+            // way to ensure that the new vfs does not pick up results from 
+            // old ones.
+            String scheme = "astroscope" + (++vfsSeq);
+            this.resultsFS = vfs.createVirtualFileSystem(scheme+"://").getFileSystem();
         } catch (FileSystemException x) {
             throw new RuntimeException("Not expected to fail",x);
         }
     }
+    int vfsSeq = 0;
 
     /** clears the graph, plus all selections */
     public void clear() {
@@ -115,6 +122,12 @@ public  final class VizModel {
 
         // seems like I can't remove these junctions - nuciance.
         // just need to delete the whole fs.
+ 
+        // Note (mbt 2008-02-25): closeFileSystem does not itself appear to 
+        // delete the files.  FileObject.delete doesn't work here because the
+        // delegate vfs doesn't support deletion.
+        // Hack: createResultsFileSystem makes sure it uses a new namespace
+        // each time.
         vfs.closeFileSystem(resultsFS);
         createResultsFilesystem();
         
