@@ -102,7 +102,7 @@
                 <alternative>http://alt.registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
-                <alternative>http://rakaposhi.star.le.ac.uk/galahad-registry/services/RegistryQueryv1_0</alternative>
+                <alternative>http://rakaposhi.star.le.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
    <!-- remove the following for public release -->
 				<alternative>http://msslxt.mssl.ucl.ac.uk:8080/astrogrid-regtest-1_0/services/RegistryQueryv1_0</alternative>
                 <alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</alternative>
@@ -117,7 +117,7 @@
                 <alternative>http://registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
-                <alternative>http://rakaposhi.star.le.ac.uk/galahad-registry/services/RegistryQueryv1_0</alternative>
+                <alternative>http://rakaposhi.star.le.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
    <!-- remove the following for public release -->
                 <alternative>http://msslxt.mssl.ucl.ac.uk:8080/astrogrid-regtest-1_0/services/RegistryQueryv1_0</alternative>
                 <alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</alternative>
