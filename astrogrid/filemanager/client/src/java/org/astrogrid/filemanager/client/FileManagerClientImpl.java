@@ -1,10 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientImpl.java,v $</cvs:source>
  * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2008/02/25 12:18:34 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2008/02/26 17:50:40 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientImpl.java,v $
+ *   Revision 1.8  2008/02/26 17:50:40  pah
+ *   RESOLVED - bug 2578: Problem accessing vospace via AR/python
+ *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2578
+ *
  *   Revision 1.7  2008/02/25 12:18:34  pah
  *   RESOLVED - bug 2573: Race condition on creating parent folders
  *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2573
@@ -95,6 +99,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implementation of the FileManager client interface.
@@ -119,7 +125,20 @@ class FileManagerClientImpl implements FileManagerClient {
             throw new IllegalArgumentException(
                     "Can't pass in null security token");
         }
-            this.homeIvorn = new Ivorn(token.getAccount());
+        
+        //N.B. token now returns something of the form PaulHarrison@uk.ac.test/community
+            String regexp = "(\\w+)@([^/]+)/\\w+";
+            Pattern patt = Pattern.compile(regexp);
+            Matcher matcher = patt.matcher(token.getAccount());
+            if(matcher.find()){
+            String user = matcher.group(1);
+            String comm = matcher.group(2);
+            this.homeIvorn = new Ivorn(comm,user,"");
+            }
+            else
+            {
+        	throw new IllegalArgumentException("error parsing account - "+token.getAccount());
+            }
             log.info("Creating FileManagerClient with token " + token);
         this.resolvers = factory;
         this.tokenSource = new TokenSource(token);
