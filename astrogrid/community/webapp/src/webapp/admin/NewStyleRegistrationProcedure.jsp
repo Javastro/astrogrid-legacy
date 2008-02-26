@@ -5,7 +5,7 @@
 
 <%
 String registryUi = 
-    SimpleConfig.getSingleton().getProperty("org.astrogrid.registry.query.endpoint")
+    SimpleConfig.getSingleton().getProperty("org.astrogrid.registry.admin.endpoint")
     + "/../../";
 %>
 

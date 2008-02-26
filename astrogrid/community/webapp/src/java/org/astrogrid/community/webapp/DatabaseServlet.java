@@ -1,3 +1,4 @@
+package org.astrogrid.community.webapp;
 /*
  * DatabaseServlet.java
  *

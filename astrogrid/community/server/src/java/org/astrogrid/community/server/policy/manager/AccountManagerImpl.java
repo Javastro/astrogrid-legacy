@@ -603,8 +603,7 @@ public class AccountManagerImpl
 
     /**
      * Request a list of local Accounts.
-     * @return An array of AccountData objects.
-     * @throws CommunityServiceException If there is an internal error in the service.
+     * @return An array of AccountData objects (null on error).
      * @todo Return empty array rather than null.
      *
      */
@@ -683,14 +682,14 @@ public class AccountManagerImpl
     
     /**
      * Allocates home space in MySpace for an Account.
-     * If a home sapce for the given account already exists then it is 
+     * If a home space for the given account already exists then it is 
      * destroyed and a new, empty space is created.
      *
      * @param account The AccountData to update.
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityServiceException If the service is unable to allocate the space.
      */
-    protected void allocateSpace(AccountData account)
+    public void allocateSpace(AccountData account)
         throws CommunityServiceException, CommunityIdentifierException {
       System.out.println("") ;
       System.out.println("----\"----") ;
@@ -795,6 +794,36 @@ public class AccountManagerImpl
           "Unable to convert default VoSpace into Ivorn",
           ouch
       );
+    }
+  }
+  
+  /**
+   * Lists the user names of registered accounts.
+   * If the accounts database is not acessible, supresses the exceptions and
+   * returns a zero-length array. This supports the account-list JSP; the method
+   * is not really suitable for any other use.
+   *
+   * @return The list of names (never null; may have a length of zero).
+   */
+  public String[] getUserNames() {
+    Object[] o = getLocalAccounts();
+    if (o == null) {
+      return new String[0];
+    }
+    else {
+      String[] names = new String[o.length];
+      for (int i = 0; i < o.length; i++) {
+        AccountData ad = (AccountData) o[i];
+        try {
+          names[i] = new CommunityIvornParser(ad.getIdent()).getAccountName();
+        }
+        catch (Exception e) {
+          throw new RuntimeException("Invalid account-IVORN " + 
+                                     ad.getIdent() + 
+                                     " was found in the community database!");
+        }
+      }
+      return names;
     }
   }
     

@@ -70,11 +70,6 @@ public class CaServlet extends HttpServlet {
     else {
       useCa(request, response);
     }
-    if (!response.isCommitted()) {
-      response.setHeader("Location", 
-                         request.getContextPath() + "/admin/AccountAdmin.jsp");
-      response.setStatus(response.SC_SEE_OTHER);
-    }
   }
   
   
@@ -153,6 +148,10 @@ public class CaServlet extends HttpServlet {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR,
                          "The CA isn't right: " + e.getMessage());
     }
+    
+    response.setHeader("Location", 
+                         request.getContextPath() + "/admin/account-list.jsp");
+    response.setStatus(response.SC_SEE_OTHER);
   }
 
   /**
@@ -201,14 +200,14 @@ public class CaServlet extends HttpServlet {
     }
     
     // Get the user name from the HTTP request.
-    String userName = request.getParameter("username");
+    String userName = request.getParameter("userName");
     if (userName == null || userName.length() == 0) {
       response.sendError(response.SC_BAD_REQUEST, "No user-name was given.");
       return;
     }
     
     // Get the common name from the HTTP request.
-    String commonName = request.getParameter("commonname");
+    String commonName = request.getParameter("commonName");
     if (commonName == null || commonName.length() == 0) {
       response.sendError(response.SC_BAD_REQUEST, "No common name was given.");
       return;
@@ -220,8 +219,11 @@ public class CaServlet extends HttpServlet {
       password = new SecurityManagerImpl().getPassword(userName);
     }
     catch (Exception e) {
+      e.printStackTrace();
       response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
-                         "The password could not be read from the community database: " + e);
+                         "The password for " + 
+                         userName + 
+                         " could not be read from the community database: " + e);
       return;
     }
     
@@ -236,7 +238,12 @@ public class CaServlet extends HttpServlet {
     } catch (Exception ex) {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
     }
+    
+    response.setHeader("Location", 
+                       request.getContextPath() + 
+                           "/admin/account-update.jsp?userName=" + 
+                           userName);
+    response.setStatus(response.SC_SEE_OTHER);
   }
-  
-  
+   
 }

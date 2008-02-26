@@ -30,12 +30,11 @@
         registration of the community.</dd>
         <dt>org.astrogrid.vosi.baseurlsecure</dt>
         <dd>The same as <i>org.astrogrid.community.baseurl</i>, but for HTTPS.</dd>
-        <dt>org.astrogrid.community.dbconfigurl</dt>
-        <dd>The URL for the main database-configuration file (should begin with 
-        <i>file:</i>).</dd>
         <dt>org.astrogrid.community.default.vospace</dt>
         <dd>The registry identifier ("IVORN") for the VOSpace service associated
         with the community.</dd>
+        <dt>org.astrogrid.registry.admin.endpoint</dt>
+        <dd>The URL for the web service for queries to the full registry.</dd>
         <dt>org.astrogrid.registry.admin.endpoint</dt>
         <dd>The URL for the web service for "push" registration in your
         publishing registry.</dd>

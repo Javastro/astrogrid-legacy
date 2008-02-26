@@ -42,7 +42,7 @@
     <servlet-name>DatabaseServlet</servlet-name>
     <display-name>Community database</display-name>
     <description>Monitors the health of the database.</description>
-    <servlet-class>DatabaseServlet</servlet-class>
+    <servlet-class>org.astrogrid.community.webapp.DatabaseServlet</servlet-class>
   </servlet>
     
   <servlet>
@@ -52,7 +52,15 @@
     <servlet-class>org.junitee.servlet.JUnitEEThreadedServlet</servlet-class>
   </servlet>
   
-  <servlet-mapping>
+    <servlet>
+        <servlet-name>AccountAdminServlet</servlet-name>
+        <servlet-class>org.astrogrid.community.webapp.AccountAdminServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>NewAccountServlet</servlet-name>
+        <servlet-class>org.astrogrid.community.webapp.NewAccountServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
     <servlet-name>AccountServlet</servlet-name>
     <url-pattern>/accounts/*</url-pattern>
   </servlet-mapping>
@@ -102,7 +110,15 @@
     <url-pattern>/admin/test/*</url-pattern>
   </servlet-mapping>
     
-  <mime-mapping>
+    <servlet-mapping>
+        <servlet-name>AccountAdminServlet</servlet-name>
+        <url-pattern>/admin/account-update</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NewAccountServlet</servlet-name>
+        <url-pattern>/admin/new-account</url-pattern>
+    </servlet-mapping>
+    <mime-mapping>
     <extension>wsdl</extension>
     <mime-type>text/xml</mime-type>
   </mime-mapping>
