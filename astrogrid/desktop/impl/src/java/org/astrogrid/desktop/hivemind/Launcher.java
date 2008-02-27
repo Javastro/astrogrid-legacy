@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.23 2007/11/26 12:01:48 nw Exp $
+/*$Id: Launcher.java,v 1.24 2008/02/27 13:16:35 mbt Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,8 @@ import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
 import org.apache.hivemind.util.ClasspathResource;
 import org.apache.hivemind.util.URLResource;
+
+import org.astrogrid.desktop.modules.system.pref.WorkaroundTransformerFactory;
 
 /**
  *Assembles and starts some flavour of AR. Used by the main classes in {@link org.astrogrid}
@@ -167,6 +169,9 @@ public class Launcher implements Runnable {
 				URL.setURLStreamHandlerFactory(extensibleStreamHandler);
         	}
         }
+
+        // work around bug with java1.6 and writing java.util.prefs.
+        WorkaroundTransformerFactory.fixJaxp();
        
         // add the preliminary resources.
         addModuleByName("hivemind");
@@ -243,6 +248,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.24  2008/02/27 13:16:35  mbt
+Invoke WorkaroundTransformerFactory.fixJaxp() - see bugzilla 2595
+
 Revision 1.23  2007/11/26 12:01:48  nw
 added framework for progress indication for background processes
 
