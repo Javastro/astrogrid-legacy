@@ -310,6 +310,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 			}
 		}
 		pForm.buildForm(t,interfaceName,cea);
+
+        // Update the list of servers which can execute this application.
+        toolbar.executionServers.clear();
+        (new ListServicesWorker(cea.getId())).start();
 	}
     public Object create() {
 		// deliberately not implemented. will work out how to do this later.
