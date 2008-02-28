@@ -255,7 +255,7 @@ do
         # Create the missing account.
         echo "Creating ${ACCOUNT_NAME}"
         ACCOUNT_HOME=/home/${ACCOUNT_NAME}
-        /usr/sbin/useradd -c "AstroGrid" -m -G users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
+        /usr/sbin/useradd -c "AstroGrid" -m -g users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
         #
         # Install our ssh keys.
         # Not required when on local machine.
@@ -295,7 +295,7 @@ do
         echo ""
         echo "Creating ${ACCOUNT_NAME}"
         ACCOUNT_HOME=/home/${ACCOUNT_NAME}
-        /usr/sbin/useradd -c "AstroGrid" -m -G users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
+        /usr/sbin/useradd -c "AstroGrid" -m -g users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
         #
         # Install our ssh keys.
         # Not required when on local machine.
