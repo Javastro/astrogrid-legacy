@@ -13,7 +13,7 @@
    <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2007.2-SNAPSHOT</version>
+      <version>2008.1-SNAPSHOT</version>
     </parent>
    <dependencies>
       <!-- axis -really only the topmost axis should be a dependency if it had a proper pom..-->

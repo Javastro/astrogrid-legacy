@@ -8,24 +8,26 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-base</artifactId>
   <name>Astrogrid Master Maven POM</name>
-  <version>2007.2-SNAPSHOT</version>
+  <version>2008.1-SNAPSHOT</version>
   <packaging>pom</packaging>
     <modules>
       <module>ws</module>
       <module>spring</module>
    </modules> 
-  <url>http://www.astrogrid.org/maven/docs/wrong/index.html</url>
+  <url>http://www.astrogrid.org/maven/docs/HEAD/${astrogrid.name}/index.html</url>
   <issueManagement>
+    <system>Bugzilla</system>
     <url>http://www.astrogrid.org/bugzilla/</url>
   </issueManagement>
   <inceptionYear>2002</inceptionYear>
-  <mailingLists>
+  <!-- DEAD  <mailingLists>
     <mailingList>
       <name>Astrogrid Forum</name>
       <subscribe>http://forum.astrogrid.org</subscribe>
       <archive>http://forum.astrogrid.org</archive>
     </mailingList>
   </mailingLists>
+  -->
   <developers>
     <developer>
       <id>ael</id>
@@ -185,7 +187,7 @@
       </license>
    </licenses>
   <scm>
-    <connection>scm:cvs:pserver:anoncvs@cvs2.astrogrid.org:/devel:astrogrid/${astrogrid.name}</connection>
+    <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid.name}</connection>
     <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</developerConnection>
     <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/</url>
   </scm>
@@ -200,7 +202,8 @@
       <resource>
         <directory>${basedir}/src/java</directory>
         <includes>
-          <include>**/log4j.properties</include>
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
         </includes>
       </resource>
     </resources>
@@ -251,15 +254,21 @@
          <plugin>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
-               <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
+               <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory> <!-- consistent with current 1.0 practice -->
             </configuration>
          </plugin>
          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-site-plugin</artifactId>
+              <configuration>
+                 <xdocDirectory>{$basedir}/xdocs</xdocDirectory>
+             </configuration>
+      </plugin>
+         
+         <plugin>
             <artifactId>maven-eclipse-plugin</artifactId>
             <configuration>
                <downloadSources>true</downloadSources>
-               <downloadJavadocs>true</downloadJavadocs>
+               <downloadJavadocs>false</downloadJavadocs>
            </configuration>
          </plugin>
          <!-- need to create a tomcat config first (as in instructions for $CATALINA_BASE then point $tomcat.config.dir in you local settings to that... 
@@ -326,7 +335,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-contracts</artifactId>
-      <version>2007.2.03</version>
+      <version>2008.0a2</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -336,12 +345,12 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client-lite</artifactId>
-      <version>2007.2.01r</version>
+      <version>2008.0.a4r</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>2007.2.01r</version>
+      <version>2008.0.a4r</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -361,37 +370,37 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-common</artifactId>
-      <version>2007.2ct</version>
+      <version>2008.0a6</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-resolver</artifactId>
-      <version>2007.2ct</version>
+      <version>2008.0a6</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-community-client</artifactId>
-      <version>2007.2ct</version>
+      <version>2008.0a6</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filemanager-client</artifactId>
-      <version>2007.2fm</version>
+      <version>2008.0b2</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filemanager-contract</artifactId>
-      <version>2007.2fm</version>
+      <version>2007.2.01fm</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filestore-client</artifactId>
-      <version>2007.2fs</version>
+      <version>2007.2.01fs</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-filestore-common</artifactId>
-      <version>2007.2fs</version>
+      <version>2007.2.01fs</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -428,17 +437,23 @@
     <dependency>
       <groupId>castor</groupId>
       <artifactId>castor</artifactId>
-      <version>0.9.5</version>
+      <version>1.1.2.1</version>
+      <exclusions>
+         <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+         </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.9.0</version>
+      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xml-apis</artifactId>
-      <version>2.9.0</version>
+      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>regexp</groupId>
@@ -516,15 +531,22 @@
         <groupId>org.apache.maven.plugins</groupId> 
         <artifactId>maven-changes-plugin</artifactId>
                <configuration>
-          <xmlPath>${basedir}/src/site/changes.xml</xmlPath>
+          <xmlPath>${basedir}/xdoc/changes.xml</xmlPath> <!-- for compatibility with 1.0 layout -->
+          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
         </configuration>
         
       </plugin>
-      <!--  appears to have become obsolete in m2 -shame
+      
        <plugin>
        	<groupId>org.apache.maven.plugins</groupId>
        	<artifactId>maven-changelog-plugin</artifactId>
-       </plugin> -->
+         <version>2.1</version><!-- this version avoids http://jira.codehaus.org/browse/MCHANGELOG-56 - was not automatically being picked up for me...-->
+         <configuration>
+          <type>range</type>
+          <range>30</range>
+          <connectionType>developerConnection</connectionType>           
+         </configuration>
+       </plugin>
        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -537,8 +559,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
       </plugin>
-            
-         <plugin>
+       <plugin>
             <artifactId>maven-checkstyle-plugin</artifactId>
             <configuration>
                <configLocation>
@@ -558,11 +579,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changelog-plugin</artifactId>
-      </plugin>
-        
+      
         
       </plugins>
    </reporting>
@@ -589,12 +606,15 @@
          <url>${vos.server.url}/maven1repo</url>
          <layout>legacy</layout>
       </repository>
+      -->
       <repository>
          <id>astrogrid1</id>
          <name>Astrogrid maven 1 repository</name>
          <url>http://www.astrogrid.org/maven/</url>
          <layout>legacy</layout>
-      </repository>-->
+         <snapshots><enabled>true</enabled><checksumPolicy>ignore</checksumPolicy></snapshots>
+      </repository>
+<!-- 
       <repository>
          <id>codehaus.org</id>
          <name>CodeHaus Snapshots</name>
@@ -606,6 +626,7 @@
             <enabled>true</enabled>
          </snapshots>
       </repository>
+       -->
       <!--  
       <repository>
          <id>vosproducts</id>
@@ -614,7 +635,34 @@
       </repository>-->
       
    </repositories>
-  <distributionManagement>
+   <!-- 
+   <pluginRepositories>
+      <pluginRepository>
+         <id>maven2-repository.dev.java.net</id>
+         <name>Java.net Maven 2 Repository</name>
+         <url>http://download.java.net/maven/2</url>
+      </pluginRepository>
+      <pluginRepository>
+         <id>maven-repository.dev.java.net</id>
+         <name>Java.net Maven 1 Repository (legacy)</name>
+         <url>http://download.java.net/maven/1</url>
+         <layout>legacy</layout>
+      </pluginRepository>
+        <pluginRepository>
+               <id>codehaus.org</id>
+               <name>CodeHaus Main</name>
+               <url>http://repository.codehaus.org</url>
+               <releases>
+                  <enabled>true</enabled>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+               </snapshots>
+         </pluginRepository>
+ 
+   </pluginRepositories>
+    -->
+   <distributionManagement>
     <site>
       <id>agsite</id>
       <name>Default Site</name>
