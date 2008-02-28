@@ -256,7 +256,7 @@ do
         echo "Creating ${ACCOUNT_NAME}"
         ACCOUNT_HOME=/home/${ACCOUNT_NAME}
         /usr/sbin/useradd -c "AstroGrid" -m -G users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
-        /usr/sbin/usermod users ${ACCOUNT_NAME}
+        /usr/sbin/usermod -g users ${ACCOUNT_NAME}
         #
         # Install our ssh keys.
         # Not required when on local machine.
@@ -297,7 +297,7 @@ do
         echo "Creating ${ACCOUNT_NAME}"
         ACCOUNT_HOME=/home/${ACCOUNT_NAME}
         /usr/sbin/useradd -c "AstroGrid" -m -G users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
-        /usr/sbin/usermod users ${ACCOUNT_NAME}
+        /usr/sbin/usermod -g users ${ACCOUNT_NAME}
         #
         # Install our ssh keys.
         # Not required when on local machine.
