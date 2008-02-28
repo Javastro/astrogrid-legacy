@@ -220,7 +220,7 @@ then
 else
     pushd ${VOSPACE_BASE}
         #svn update vospace.${VOSPACE_BRANCH}
-        cvs -z3 -d :ext:gg78@cvs.astrogrid.org:/devel update
+        cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel update
     popd
 fi
 chown -R root.users ${VOSPACE_BASE}/${VOSPACE_MODULE}
@@ -255,7 +255,8 @@ do
         # Create the missing account.
         echo "Creating ${ACCOUNT_NAME}"
         ACCOUNT_HOME=/home/${ACCOUNT_NAME}
-        /usr/sbin/useradd -c "AstroGrid" -m -g users -G ${ACCOUNT_NAME} -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
+        /usr/sbin/useradd -c "AstroGrid" -m -g users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
+        /usr/sbin/adduser ${ACCOUNT_NAME} ${ACCOUNT_NAME}
         #
         # Install our ssh keys.
         # Not required when on local machine.
@@ -295,7 +296,8 @@ do
         echo ""
         echo "Creating ${ACCOUNT_NAME}"
         ACCOUNT_HOME=/home/${ACCOUNT_NAME}
-        /usr/sbin/useradd -c "AstroGrid" -m -g users -G ${ACCOUNT_NAME} -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
+        /usr/sbin/useradd -c "AstroGrid" -m -g users -p ${TESTER_CRYPT} -d ${ACCOUNT_HOME} ${ACCOUNT_NAME} 
+        /usr/sbin/adduser ${ACCOUNT_NAME} ${ACCOUNT_NAME}
         #
         # Install our ssh keys.
         # Not required when on local machine.
