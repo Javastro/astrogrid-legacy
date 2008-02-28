@@ -204,18 +204,23 @@ fi
 
 #
 # Checkout a copy of the source code.
-VOSPACE_BRANCH=20080225.zrq
-VOSPACE_MODULE=webapp/myspace/testing/client/new
+#VOSPACE_BRANCH=20080225.zrq
+#VOSPACE_MODULE=webapp/myspace/testing/client/new
+VOSPACE_MODULE=astrogrid/stresstest
 echo "Checking vospace source"
-if [ ! -d ${VOSPACE_BASE}/vospace.${VOSPACE_BRANCH} ]
+if [ ! -d ${VOSPACE_BASE}/vospace ]
 then
     pushd ${VOSPACE_BASE}
 # need to change this so no prompting for password - use AG cvs?
-        svn checkout http://esavo02.esac.esa.int/svnvo/VOSpace/branches/${VOSPACE_BRANCH}/${VOSPACE_MODULE} vospace.${VOSPACE_BRANCH}
+        #svn checkout http://esavo02.esac.esa.int/svnvo/VOSpace/branches/${VOSPACE_BRANCH}/${VOSPACE_MODULE} vospace.${VOSPACE_BRANCH}
+    CVS_RSH=ssh
+    export CVS_RSH
+    cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel co ${VOSPACE_MODULE}
     popd
 else
     pushd ${VOSPACE_BASE}
-        svn update vospace.${VOSPACE_BRANCH}
+        #svn update vospace.${VOSPACE_BRANCH}
+        cvs -z3 -d :ext:gg78@cvs.astrogrid.org:/devel update
     popd
 fi
 chown -R root.users ${VOSPACE_BASE}/vospace.${VOSPACE_BRANCH}
