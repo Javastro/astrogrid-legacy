@@ -223,8 +223,8 @@ else
         cvs -z3 -d :ext:gg78@cvs.astrogrid.org:/devel update
     popd
 fi
-chown -R root.users ${VOSPACE_BASE}/vospace.${VOSPACE_BRANCH}
-chmod -R u=rwx,g=rwx,o=rx ${VOSPACE_BASE}/vospace.${VOSPACE_BRANCH}
+chown -R root.users ${VOSPACE_BASE}/${VOSPACE_MODULE}
+chmod -R u=rwx,g=rwx,o=rx ${VOSPACE_BASE}/${VOSPACE_MODULE}
 
 #
 # Create the current vospace link.
@@ -233,7 +233,7 @@ if [ -L ${VOSPACE_CURRENT} ]
 then
     rm -f ${VOSPACE_CURRENT}
 fi
-ln -s ${VOSPACE_BASE}/vospace.${VOSPACE_BRANCH} ${VOSPACE_CURRENT}
+ln -s ${VOSPACE_BASE}/${VOSPACE_MODULE} ${VOSPACE_CURRENT}
 chown root.users ${VOSPACE_CURRENT}
 
 #
