@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool interface="ADQL" name="SUBS_IVORN" xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+  <input>
+    <parameter name="Query">
+      <ns1:value xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">&lt;Select xsi:type=&quot;selectType&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://www.ivoa.net/xml/ADQL/v1.0&quot;>     &lt;?ag-adql-schema-version v1.0a1 ?>    &lt;Restrict Top=&quot;SUBS_TOP&quot;/>&lt;SelectionList xsi:type=&quot;selectionListType&quot;>              &lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;POS_EQ_RA&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;POS_EQ_DEC&quot;/>&lt;Item xsi:type=&quot;binaryExprType&quot; Oper=&quot;*&quot;>&lt;Arg xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;POS_EQ_RA&quot;/>&lt;Arg xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;POS_EQ_DEC&quot;/>&lt;/Item>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;CODE_QUALITY&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;PHOT_FLUX_PEAK&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;PHOT_FLUX_INT&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;PHOT_FLUX_ERROR&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;PHOT_FLUX_ERROR&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;EXTENSION_FWHM_MAJ&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;EXTENSION_FWHM_MIN&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;POS_POSANG&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;EXTENSION_FWHM_MAJ_FIT&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;EXTENSION_FWHM_MIN_FIT&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;POS_POSANG_FIT&quot;/>&lt;Item xsi:type=&quot;columnReferenceType&quot; Table=&quot;a&quot; Name=&quot;ID_FIELD&quot;/>&lt;/SelectionList>     &lt;From xsi:type=&quot;fromType&quot;>              &lt;Table xsi:type=&quot;tableType&quot; Alias=&quot;a&quot; Name=&quot;SUBS_TABLE&quot;/>&lt;/From> &lt;/Select></ns1:value>
+    </parameter>
+    <parameter name="Format">
+      <ns2:value xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">SUBS_FORMAT</ns2:value>
+    </parameter>
+  </input>
+  <output>
+    <parameter name="Result" indirect="true">
+      <ns3:value xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">SUBS_DEST</ns3:value>
+    </parameter>
+  </output>
+</tool>
+
+
+
