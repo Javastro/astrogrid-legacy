@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.18 2008/02/15 13:09:02 mbt Exp $
+/*$Id: VOExplorerImpl.java,v 1.19 2008/02/29 10:38:58 mbt Exp $
 
  * Created on 30-Mar-2005
  *
@@ -30,6 +30,8 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -69,6 +71,7 @@ import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
 import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.folders.ResourceBranch;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
@@ -232,7 +235,14 @@ public class VOExplorerImpl extends UIComponentImpl
         JScrollPane foldersScroll = new JScrollPane(resourceLists,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         foldersScroll.setBorder(null);
         foldersScroll.setMinimumSize(new Dimension(200,100));
-        foldersPanel.add( foldersScroll ,BorderLayout.CENTER);
+        JComponent foldersLine = Box.createHorizontalBox();
+        JLabel foldersLabel = new JLabel("Resource Lists");
+        foldersLabel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+        foldersLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
+        foldersLine.add(foldersLabel);
+        foldersLine.add(Box.createHorizontalGlue());
+        foldersPanel.add(foldersLine, BorderLayout.NORTH);
+        foldersPanel.add(foldersScroll, BorderLayout.CENTER);
 		foldersPanel.setBorder(null);
 		foldersPanel.setMinimumSize(new Dimension(200,100));
 		
