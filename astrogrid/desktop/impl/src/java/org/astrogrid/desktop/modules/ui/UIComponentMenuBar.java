@@ -434,7 +434,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             this.context = context;
             final ButtonModel m = context.getLoggedInModel();
             setEnabled(m.isEnabled());
-            setToolTipText("Log out of the virtual observatory");
+            setToolTipText("Log out for restricted access services, e.g. VOSpace");
             setIcon(IconHelper.loadIcon("connect_no16.png"));   
             setActionCommand(UIContext.LOGOUT);
             addActionListener(context);
@@ -459,7 +459,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             this.context = context;
             final ButtonModel m = context.getLoggedInModel();
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,UIComponentMenuBar.MENU_KEYMASK));
-            setToolTipText("Gives access to items that require user to be registered, e.g. VOSpace");
+            setToolTipText("Log in for restricted access services, e.g. VOSpace");
             setIcon(IconHelper.loadIcon("connect_established16.png"));
             setEnabled(!m.isEnabled());
             setActionCommand(UIContext.LOGIN);
