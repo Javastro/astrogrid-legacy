@@ -53,8 +53,9 @@ astropass =	'qwerty'
 from logger import *
 
 #
-# Set the default loop count.
-testloop=10
+# Set the default loop counters.
+innerloop=10
+outerloop=10
 #
 # Set the default wait.
 testwait=5
@@ -69,12 +70,13 @@ testexit=False
 # Get the command line options.
 opts, args = getopt.getopt(
 	sys.argv[1:],
-	'a:u:p:l:w:dtx',
+	'a:u:p:i:o:w:dtx',
     	[
     	'auth=',
     	'user=',
     	'pass=',
-    	'loop=',
+    	'inner=',
+    	'outer=',
     	'wait=',
     	'debug',
     	'tidy',
@@ -99,10 +101,15 @@ for opt, arg in opts:
     if opt == "--pass":
         astropass = arg
 
-    if opt == "-l":
-        testloop = int(arg)
-    if opt == "--loop":
-        testloop = int(arg)
+    if opt == "-i":
+        innerloop = int(arg)
+    if opt == "--inner":
+        innerloop = int(arg)
+
+    if opt == "-o":
+        outerloop = int(arg)
+    if opt == "--outer":
+        outerloop = int(arg)
 
     if opt == "-w":
         testwait = int(arg)*60

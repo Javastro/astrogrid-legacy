@@ -35,7 +35,7 @@ from startup import *
 #
 # Create the flat set of folders.
 total = 0
-for loop in range(1, testloop) :
+for loop in range(1, outerloop) :
 
     logging.debug("Loop %d", loop)
     logging.info("CREATE [%d]", loop)

@@ -60,7 +60,7 @@ for loop in range(1, outerloop) :
 #
 # Wrap the set into a tree.
 total = 0
-for loop in range(1, (testloop - 1)) :
+for loop in range(1, (outerloop - 1)) :
 
     #
     # Log the start of the loop.
@@ -98,7 +98,7 @@ if (testtidy):
         ar,
         '%(root)s/test-%(loop)03X' % {
             'root':astroroot,
-            'loop':(testloop - 1)
+            'loop':(outerloop - 1)
             },
     	)
     done  = time.time()
