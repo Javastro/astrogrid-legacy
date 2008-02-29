@@ -150,4 +150,11 @@ class MySpace:
             ivorn
             )
 
-
+    #
+    # Logout
+    def logout(self, ar):
+        if ar.astrogrid.community.isLoggedIn():
+            logging.debug(
+                "Logging out as [%s] at [%s]",
+                 )
+            ar.astrogrid.community.logout()
