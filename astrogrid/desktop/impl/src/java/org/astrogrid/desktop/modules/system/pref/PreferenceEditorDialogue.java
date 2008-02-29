@@ -139,7 +139,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		        getBanner().setVisible(false);
 		        getContentPane().add(PreferenceEditorDialogue.this);  
-		        setTitle("Preferences");
+		        setTitle("VODesktop Preferences");
 		    }
 		    public void ok() {
 		        super.ok();
