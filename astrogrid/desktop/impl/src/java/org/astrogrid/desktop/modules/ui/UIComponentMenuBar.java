@@ -347,22 +347,9 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             JMenuItem contents = createHelpContentsMenuItem(context);
             menu.add(contents);
         
-            // recommended apps submenu
-            JMenu apps = new JMenu("Other Applications");
-            apps.add(new HyperlinkMenuItem("Aladin",IconHelper.loadIcon("aladin_48pix.png"),"http://aladin.u-strasbg.fr/"));
-            apps.add(new HyperlinkMenuItem("Gaia","http://star-www.dur.ac.uk/~pdraper/gaia/gaia.html"));
-            apps.add(new HyperlinkMenuItem("Octet",IconHelper.loadIcon("cvo.png"),"http://www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/"));
-            apps.add(new HyperlinkMenuItem("Splat",IconHelper.loadIcon("splat.gif"),"http://star-www.dur.ac.uk/~pdraper/splat/splat.html"));
-            apps.add(new HyperlinkMenuItem("Topcat",IconHelper.loadIcon("tc3.gif"),"http://www.star.bris.ac.uk/~mbt/topcat/"));
-            apps.add(new HyperlinkMenuItem("Visivo",IconHelper.loadIcon("visivo.png"),"http://visivo.cineca.it/"));
-            apps.add(new HyperlinkMenuItem("VOSpec",IconHelper.loadIcon("vospecLogo.png"),"http://esavo.esa.int/vospecapp"));
-            menu.add(apps);
-
             separator();
-            JMenuItem report = new HyperlinkMenuItem("Report a Bug",
-                    "http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR"
-            );
-            menu.add(report);
+            menu.add(new HyperlinkMenuItem("VO Desktop online help", "http://www.astrogrid.org/help/"));
+            menu.add(new HyperlinkMenuItem("AstroGrid helpdesk", "http://www.astrogrid.org/support/"));
         }
         
         public JMenu create() {
