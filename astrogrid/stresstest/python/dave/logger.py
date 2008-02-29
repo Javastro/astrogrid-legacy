@@ -22,6 +22,7 @@
 #
 
 import os
+import sys
 import time
 import socket
 import getpass
@@ -44,11 +45,7 @@ testuser = getpass.getuser()
 testdate = time.strftime('%Y%m%d-%H%M%S')
 
 #
-# Create the test name.
-
-#
 # Set the default format.
-logging.basicConfig()
 """
 logging.basicConfig(
     level  = logging.DEBUG,
@@ -62,39 +59,52 @@ logging.basicConfig(
 """
 
 #
-# Setup the logfile name.
-#filepath = TEST_LOGS
-filename = '%(host)s-%(user)s-%(date)s-test.log' % { 
-    'date':testdate,
-    'host':testhost,
-    'user':testuser
-    }
+# Create the default formatter.
+formatter = logging.Formatter(
+    '%%(asctime)-15s %%(levelname)-5s %(host)s %(user)s %%(message)s' % {
+        'host':testhost,
+        'user':testuser
+        }
+    )
+#
+# Create our console logger.
+livehandler = logging.StreamHandler(
+    sys.stderr
+    )
 
 #
 # Create a file logger.
 filehandler = logging.FileHandler(
-    os.path.join(TEST_LOGS, filename),
-    'a'
-    )
-#
-# Set the logfile format.
-filehandler.setFormatter(
-    logging.Formatter(
-        '%%(asctime)-15s ACR %%(levelname)-5s %(host)s %(user)-5.5s %%(message)s' % {
+    os.path.join(
+        TEST_LOGS,
+        '%(host)s-%(user)s-%(date)s.log' % { 
+            'date':testdate,
             'host':testhost,
             'user':testuser
             }
-        )
+        ),
+    'a'
+    )
+#
+# Set the format.
+filehandler.setFormatter(
+    formatter
+    )
+livehandler.setFormatter(
+    formatter
     )
 #
 # Get the test logger.
-logger = logging.getLogger('')
+logger = logging.getLogger()
 #
-# Add the file logger.
+# Add the handlers.
+logger.addHandler(livehandler)
 logger.addHandler(filehandler)
+
 #
-# Set the logging level.
-logger.setLevel(logging.DEBUG)
+# Set the default logging level.
+logger.setLevel(logging.INFO)
 #
 # Check it works.
-logging.info("Logging started")
+logger.info("Logging started")
+

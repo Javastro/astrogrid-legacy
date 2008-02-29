@@ -30,9 +30,7 @@ class MySpace:
         self.community = community
 
     #
-    # Login to myspace.
-    # This assumes we only are only dealing with one myspace.
-    # Move this to community ?
+    # Login to our myspace.
     def login(self, ar):
         if not ar.astrogrid.community.isLoggedIn():
             logging.debug(

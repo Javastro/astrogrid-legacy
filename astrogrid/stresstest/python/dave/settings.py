@@ -30,12 +30,12 @@ REGISTRY_QUERY = 'http://casx019-zone1.ast.cam.ac.uk:8080/astrogrid-registry/ser
 #REGISTRY_ADMIN = 'http://localhost:8080/astrogrid-registry/services/RegistryAdmin'
 
 #
-# Test settings.
-TEST_AUTH = 'org.astrogrid.regtest'
+# Service settings.
 #TEST_DSA  = 'ivo://org.astrogrid.demo/first-catalogue/ceaApplication'
 
 #
 # Test settings.
+TEST_AUTH = 'org.astrogrid.regtest'
 TEST_USER = 'alpha'
 TEST_PASS =	'qwerty'
 
