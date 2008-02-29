@@ -45,7 +45,7 @@ do
 done
 
 ${RM} -rf ${PROJECT_BASE}
-
+${RM} ~/current
 
 
 
