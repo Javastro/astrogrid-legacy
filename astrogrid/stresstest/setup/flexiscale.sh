@@ -218,6 +218,8 @@ then
     popd
 else
     pushd ${ASTROGRID_BASE}
+        CVS_RSH=ssh
+        export CVS_RSH
         cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel update
     popd
 fi
@@ -242,7 +244,7 @@ USER_ADD=/usr/sbin/useradd
 # Create our own user accounts.
 echo ""
 echo "Checking user accounts"
-for ACCOUNT_NAME in Catherine Dave Gary ktn Kona
+for ACCOUNT_NAME in Catherine Dave Gary Keith Kona
 do
     #
     # Check the account exists.
@@ -276,7 +278,7 @@ done
 sshkey Dave      http://www.metagrid.co.uk/maven/ssh/zarquan.metagrid.co.uk.pub
 sshkey Catherine      http://www.astrogrid.org/maven/ssh/id_rsa_clq2.pub
 sshkey Gary http://www.astrogrid.org/gg.id_dsa.pub
-sshkey ktn http://www.astrogrid.org/ag_ktn_dsa.pub
+sshkey Keith http://www.astrogrid.org/ag_ktn_dsa.pub
 sshkey Kona  http://www.astrogrid.org/maven/ssh/kea-ssh-key.pub
 
 #
