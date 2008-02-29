@@ -28,7 +28,7 @@ get_homedir()
     }
 
 
-for ACCOUNT_NAME in Gary Dave Catherine ktn agtester-000 agtester-001 agtester-002 agtester-003
+for ACCOUNT_NAME in Gary Dave Catherine ktn Kona agtester-000 agtester-001 agtester-002 agtester-003
 do
     # reset default group to user so /etc/group gets tidied up too
     ${USER_MOD} -g ${ACCOUNT_NAME} ${ACCOUNT_NAME}
