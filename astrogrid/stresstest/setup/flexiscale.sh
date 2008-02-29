@@ -192,49 +192,49 @@ then
     chmod u=rwx,g=rwx,o=rx ${PROJECT_BASE}
 fi
 
-VOSPACE_BASE=${PROJECT_BASE}/vospace
+ASTROGRID_BASE=${PROJECT_BASE}/vospace
 echo "Checking vospace directory."
-if [ ! -d ${VOSPACE_BASE} ]
+if [ ! -d ${ASTROGRID_BASE} ]
 then
     echo "Creating vospace directory."
-    mkdir ${VOSPACE_BASE}
-    chown root.users ${VOSPACE_BASE}
-    chmod u=rwx,g=rwx,o=rx ${VOSPACE_BASE}
+    mkdir ${ASTROGRID_BASE}
+    chown root.users ${ASTROGRID_BASE}
+    chmod u=rwx,g=rwx,o=rx ${ASTROGRID_BASE}
 fi
 
 #
 # Checkout a copy of the source code.
-#VOSPACE_BRANCH=20080225.zrq
-#VOSPACE_MODULE=webapp/myspace/testing/client/new
-VOSPACE_MODULE=astrogrid/stresstest
+#ASTROGRID_BRANCH=20080225.zrq
+#ASTROGRID_MODULE=webapp/myspace/testing/client/new
+ASTROGRID_MODULE=astrogrid/stresstest
 echo "Checking vospace source"
-if [ ! -d ${VOSPACE_BASE}/vospace ]
+if [ ! -d ${ASTROGRID_BASE}/vospace ]
 then
-    pushd ${VOSPACE_BASE}
+    pushd ${ASTROGRID_BASE}
 # need to change this so no prompting for password - use AG cvs?
-        #svn checkout http://esavo02.esac.esa.int/svnvo/VOSpace/branches/${VOSPACE_BRANCH}/${VOSPACE_MODULE} vospace.${VOSPACE_BRANCH}
+        #svn checkout http://esavo02.esac.esa.int/svnvo/VOSpace/branches/${ASTROGRID_BRANCH}/${ASTROGRID_MODULE} vospace.${ASTROGRID_BRANCH}
     CVS_RSH=ssh
     export CVS_RSH
-    cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel co ${VOSPACE_MODULE}
+    cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel co ${ASTROGRID_MODULE}
     popd
 else
-    pushd ${VOSPACE_BASE}
-        #svn update vospace.${VOSPACE_BRANCH}
+    pushd ${ASTROGRID_BASE}
+        #svn update vospace.${ASTROGRID_BRANCH}
         cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel update
     popd
 fi
-chown -R root.users ${VOSPACE_BASE}/${VOSPACE_MODULE}
-chmod -R u=rwx,g=rwx,o=rx ${VOSPACE_BASE}/${VOSPACE_MODULE}
+chown -R root.users ${ASTROGRID_BASE}/${ASTROGRID_MODULE}
+chmod -R u=rwx,g=rwx,o=rx ${ASTROGRID_BASE}/${ASTROGRID_MODULE}
 
 #
 # Create the current vospace link.
-VOSPACE_CURRENT=${VOSPACE_BASE}/current
-if [ -L ${VOSPACE_CURRENT} ]
+ASTROGRID_CURRENT=${ASTROGRID_BASE}/current
+if [ -L ${ASTROGRID_CURRENT} ]
 then
-    rm -f ${VOSPACE_CURRENT}
+    rm -f ${ASTROGRID_CURRENT}
 fi
-ln -s ${VOSPACE_BASE}/${VOSPACE_MODULE} ${VOSPACE_CURRENT}
-chown root.users ${VOSPACE_CURRENT}
+ln -s ${ASTROGRID_BASE}/${ASTROGRID_MODULE} ${ASTROGRID_CURRENT}
+chown root.users ${ASTROGRID_CURRENT}
 
 #
 # Set the useradd binary.
@@ -269,7 +269,7 @@ do
     then
         rm -f ${ACCOUNT_HOME}/current
     fi
-    ln -s ${VOSPACE_BASE}/current ${ACCOUNT_HOME}/current
+    ln -s ${ASTROGRID_BASE}/current ${ACCOUNT_HOME}/current
 
 done
 
@@ -331,14 +331,14 @@ do
     then
         rm -f ${ACCOUNT_HOME}/voexplorer
     fi
-    ln -s ${VOSPACE_CURRENT}/voexplorer/voexplorer.sh ${ACCOUNT_HOME}/voexplorer
+    ln -s ${ASTROGRID_CURRENT}/voexplorer/voexplorer.sh ${ACCOUNT_HOME}/voexplorer
 
     echo "Creating python link"
     if [ -L ${ACCOUNT_HOME}/python ]
     then
         rm -f ${ACCOUNT_HOME}/python
     fi
-    ln -s ${VOSPACE_CURRENT}/python ${ACCOUNT_HOME}/python
+    ln -s ${ASTROGRID_CURRENT}/python ${ACCOUNT_HOME}/python
 
     #
     # Set the Xvfb display number.
