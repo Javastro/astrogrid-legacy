@@ -192,11 +192,11 @@ then
     chmod u=rwx,g=rwx,o=rx ${PROJECT_BASE}
 fi
 
-ASTROGRID_BASE=${PROJECT_BASE}/vospace
-echo "Checking vospace directory."
+ASTROGRID_BASE=${PROJECT_BASE}/astrogrid
+echo "Checking astrogrid directory."
 if [ ! -d ${ASTROGRID_BASE} ]
 then
-    echo "Creating vospace directory."
+    echo "Creating astrogrid directory."
     mkdir ${ASTROGRID_BASE}
     chown root.users ${ASTROGRID_BASE}
     chmod u=rwx,g=rwx,o=rx ${ASTROGRID_BASE}
@@ -207,19 +207,17 @@ fi
 #ASTROGRID_BRANCH=20080225.zrq
 #ASTROGRID_MODULE=webapp/myspace/testing/client/new
 ASTROGRID_MODULE=astrogrid/stresstest
-echo "Checking vospace source"
-if [ ! -d ${ASTROGRID_BASE}/vospace ]
+echo "Checking astrogrid source"
+if [ ! -d ${ASTROGRID_BASE}/astrogrid ]
 then
     pushd ${ASTROGRID_BASE}
 # need to change this so no prompting for password - use AG cvs?
-        #svn checkout http://esavo02.esac.esa.int/svnvo/VOSpace/branches/${ASTROGRID_BRANCH}/${ASTROGRID_MODULE} vospace.${ASTROGRID_BRANCH}
     CVS_RSH=ssh
     export CVS_RSH
     cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel co ${ASTROGRID_MODULE}
     popd
 else
     pushd ${ASTROGRID_BASE}
-        #svn update vospace.${ASTROGRID_BRANCH}
         cvs -z3 -d :ext:flexiscale@cvs.astrogrid.org:/devel update
     popd
 fi
@@ -227,7 +225,7 @@ chown -R root.users ${ASTROGRID_BASE}/${ASTROGRID_MODULE}
 chmod -R u=rwx,g=rwx,o=rx ${ASTROGRID_BASE}/${ASTROGRID_MODULE}
 
 #
-# Create the current vospace link.
+# Create the current astrogrid link.
 ASTROGRID_CURRENT=${ASTROGRID_BASE}/current
 if [ -L ${ASTROGRID_CURRENT} ]
 then
