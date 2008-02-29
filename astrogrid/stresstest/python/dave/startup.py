@@ -21,31 +21,49 @@
 # </meta:header>
 #
 
+#
+# Import the Python libraries.
+import os
 import sys
 import time
 import getopt
+import logging
+import xmlrpclib
 
 #
-# Import our test tools.
-from logger  import *
+# Import our MySpace wrapper.
+from myspace import MySpace 
+
+#
+# Test registry settings.
+astroreg = 'http://casx019-zone1.ast.cam.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0'
+
+#
+# Service settings.
+#astrodsa  = 'ivo://org.astrogrid.demo/first-catalogue/ceaApplication'
+
+#
+# Default test settings.
+astroauth = 'org.astrogrid.regtest'
+astrouser = 'alpha'
+astropass =	'qwerty'
+
+#
+# Setup our logger.
+from logger import *
 
 #
 # Set the default loop count.
-TEST_LOOP=100
+testloop=10
 #
 # Set the default wait.
-TEST_WAIT=5
+testwait=5
 #
 # Set the tidy flag to false.
-TEST_TIDY=False
+testtidy=False
 #
 # Set the exit flag to false.
-TEST_EXIT=False
-#
-# Get the test script name.
-TEST_NAME= os.path.basename(
-    sys.argv[0]
-    )
+testexit=False
 
 #
 # Get the command line options.
@@ -67,29 +85,29 @@ opts, args = getopt.getopt(
 for opt, arg in opts:
 
     if opt == "-a":
-        TEST_AUTH = arg
+        astroauth = arg
     if opt == "--auth":
-        TEST_AUTH = arg
+        astroauth = arg
 
     if opt == "-u":
-        TEST_USER = arg
+        astrouser = arg
     if opt == "--user":
-        TEST_USER = arg
+        astrouser = arg
 
     if opt == "-p":
-        TEST_PASS = arg
+        astropass = arg
     if opt == "--pass":
-        TEST_PASS = arg
+        astropass = arg
 
     if opt == "-l":
-        TEST_LOOP = int(arg)
+        testloop = int(arg)
     if opt == "--loop":
-        TEST_LOOP = int(arg)
+        testloop = int(arg)
 
     if opt == "-w":
-        TEST_WAIT = int(arg)*60
+        testwait = int(arg)*60
     if opt == "--wait":
-        TEST_WAIT = int(arg)*60
+        testwait = int(arg)*60
 
     if opt == "-d":
         logger.setLevel(logging.DEBUG)
@@ -97,37 +115,104 @@ for opt, arg in opts:
         logger.setLevel(logging.DEBUG)
 
     if opt == "-t":
-        TEST_TIDY = True
+        testtidy = True
     if opt == "--tidy":
-        TEST_TIDY = True
+        testtidy = True
 
     if opt == "-x":
-        TEST_EXIT = True
+        testexit = True
     if opt == "--exit":
-        TEST_EXIT = True
+        testexit = True
 
-logging.debug("Test name [%s]", TEST_NAME)
-logging.debug("Test user [%s]", TEST_USER)
-logging.debug("Test auth [%s]", TEST_AUTH)
+logging.debug(
+    "Starting test : [%s]",
+    os.path.basename(
+        sys.argv[0]
+        )
+    )
+logging.debug("Astro user [%s]", astrouser)
+logging.debug("Astro auth [%s]", astroauth)
 
 #
-# If we have a startup delay.
-if (TEST_WAIT > 0):
-    wait = TEST_WAIT
-    logging.info("Pausing for %ds", wait)
-    while (wait > 39):
+# Pause for the delayed start.
+if (testwait > 0):
+    logging.info("Pausing for %ds", testwait)
+    while (testwait > 39):
         time.sleep(20)
-        wait = wait - 20
-        logging.debug("........... %ds", wait)
+        testwait = testwait - 20
+        logging.debug("........... %ds", testwait)
 
-    while (wait > 19):
+    while (testwait > 19):
         time.sleep(10)
-        wait = wait - 10
-        logging.debug("........... %ds", wait)
+        testwait = testwait - 10
+        logging.debug("........... %ds", testwait)
 
-    while (wait > 0):
+    while (testwait > 0):
         time.sleep(1)
-        wait = wait - 1
-        logging.debug("........... %ds", wait)
+        testwait = testwait - 1
+        logging.debug("........... %ds", testwait)
+
+#
+# Get the connection endpoint.
+endpoint = file(
+    os.path.expanduser(
+        '~/.astrogrid-desktop'
+        )
+    ).next().rstrip() + "xmlrpc"
+#
+# Connect to the ACR.
+logging.debug(
+	"Connecting to VOExplorer at [%s]",
+	endpoint
+	)
+ar = xmlrpclib.Server(
+    endpoint
+    )
+#
+# Check the root URL.
+logging.debug("Checking VOExplorer connection")
+ar.system.webserver.getUrlRoot()
+#
+# Set the registry endpoints
+logging.debug(
+    "Setting VOExplorer registry endpoint [%s]",
+    astroreg
+    )
+ar.system.configuration.setKey(
+    "org.astrogrid.registry.query.endpoint",
+    astroreg
+    )
+ar.system.configuration.setKey(
+    "org.astrogrid.registry.query.altendpoint",
+    astroreg
+    )
+
+#
+# Set the test root.
+astroroot='%(host)s-%(user)s-%(date)s' % { 
+    'date':testdate,
+    'host':testhost,
+    'user':testuser
+    }
+#
+# Create our myspace wrapper.
+logging.debug("Creating myspace object")
+myspace = MySpace(
+    ar,
+	astrouser,
+	astropass,
+	astroauth
+	)
+#
+# Login to our myspace account.
+myspace.login(
+    ar
+    )
+#
+# Create the test root folder.
+myspace.createFolder(
+    ar,
+    astroroot
+	)
 
 

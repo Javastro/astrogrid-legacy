@@ -29,10 +29,6 @@ import getpass
 import logging
 
 #
-# Import our test settings.
-from settings import *
-
-#
 # Get the machine IP address.
 testhost = socket.gethostbyname(
     socket.gethostname()
@@ -57,7 +53,6 @@ logging.basicConfig(
         )
     )
 """
-
 #
 # Create the default formatter.
 formatter = logging.Formatter(
@@ -71,12 +66,13 @@ formatter = logging.Formatter(
 livehandler = logging.StreamHandler(
     sys.stderr
     )
-
 #
-# Create a file logger.
+# Create our file logger.
 filehandler = logging.FileHandler(
     os.path.join(
-        TEST_LOGS,
+        os.path.expanduser(
+            '~/logs'
+            ),
         '%(host)s-%(user)s-%(date)s.log' % { 
             'date':testdate,
             'host':testhost,
@@ -86,7 +82,7 @@ filehandler = logging.FileHandler(
     'a'
     )
 #
-# Set the format.
+# Set the handler formats.
 filehandler.setFormatter(
     formatter
     )
