@@ -41,8 +41,8 @@ public class UIDialogueComponentImpl extends BaseDialog implements UIComponent {
     }
 
     public void show() {
-        super.show();
         context.registerWindow(this);
+        super.show();
     }
     public void hide() {
         super.hide();
