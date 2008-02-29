@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 
-# refresh the scripts checked out of cvs.
+# refresh the scripts checked out of cvs
 # 
 
 
