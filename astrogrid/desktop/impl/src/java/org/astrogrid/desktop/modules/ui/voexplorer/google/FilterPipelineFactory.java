@@ -97,15 +97,17 @@ public class FilterPipelineFactory   {
 		toggleButton = new ExpandCollapseButton(filterPane);
 		final Action toggleAction = toggleButton.getAction();
 		toggleAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_B,UIComponentMenuBar.MENU_KEYMASK));
-		toggleAction.putValue(Action.NAME,"Show Browser");
-		toggleAction.putValue(Action.SHORT_DESCRIPTION,"Show Browser: filter resources using metadata");
+		toggleAction.putValue(Action.NAME,"Show Metadata Browser");
+		toggleAction.putValue(Action.SHORT_DESCRIPTION,"Filter resource list using metadata");
 		filterPane.addPropertyChangeListener("collapsed",new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 if (filterPane.isCollapsed()) {
-                    toggleAction.putValue(Action.NAME,"Show Browser");                   
+                    toggleAction.putValue(Action.NAME,"Show Metadata Browser");
+		            toggleAction.putValue(Action.SHORT_DESCRIPTION,"Filter resource list using metadata");
                 } else {
-                    toggleAction.putValue(Action.NAME,"Hide Browser");                    
+                    toggleAction.putValue(Action.NAME,"Hide Metadata Browser");
+                    toggleAction.putValue(Action.SHORT_DESCRIPTION,"View unfiltered resource list");
                 }
             }
 		});
