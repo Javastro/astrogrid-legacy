@@ -36,7 +36,7 @@ do
     ${USER_DEL} ${ACCOUNT_NAME}
 done
 
-${RM} ${PROJECT_BASE}
+${RM} -rf ${PROJECT_BASE}/*
 
 
 
