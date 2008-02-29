@@ -133,7 +133,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
         m.add(a);
         m.addSeparator();              
         
-        JMenuItem sd = new JMenuItem("Exit");
+        JMenuItem sd = new JMenuItem("Exit VO Desktop");
         sd.setIcon(IconHelper.loadIcon("exit16.png"));
         sd.setActionCommand(UIContext.EXIT);
          sd.addActionListener(context);

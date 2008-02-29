@@ -143,7 +143,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         m.add(a);   
         m.addSeparator();        
         
-        MenuItem sd = new MenuItem("Exit");
+        MenuItem sd = new MenuItem("Exit VO Desktop");
         sd.setActionCommand(UIContext.EXIT);
         sd.addActionListener(context);
         m.add(sd);

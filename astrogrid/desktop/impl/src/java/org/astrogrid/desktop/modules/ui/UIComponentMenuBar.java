@@ -586,7 +586,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
      * @return
      */
     public static JMenuItem createExitMenuItem(UIContext context) {
-        JMenuItem exit = new JMenuItem("Exit"+ UIComponentMenuBar.ELLIPSIS,KeyEvent.VK_E);
+        JMenuItem exit = new JMenuItem("Exit VODesktop"+ UIComponentMenuBar.ELLIPSIS,KeyEvent.VK_E);
         exit.setToolTipText("Close all windows and exit VODesktop");
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,UIComponentMenuBar.MENU_KEYMASK));
         exit.setActionCommand(UIContext.EXIT);
