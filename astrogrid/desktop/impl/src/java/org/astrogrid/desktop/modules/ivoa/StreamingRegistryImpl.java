@@ -382,7 +382,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
     private void checkEndpointPref(Preference endpoint, String regLabel) {
         String value = endpoint.getValue();
         if (!Arrays.asList(endpoint.getAlternatives()).contains(value)) {
-            logger.warn("Non-recommened " + regLabel + " registry endpoint: " + value);
+            logger.warn("Non-recommended " + regLabel + " registry endpoint: " + value);
         }
     }
 
