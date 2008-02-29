@@ -289,7 +289,7 @@ public class ResourceTree extends JTree {
         properties.setEnabled(false);
         export = new TreeAction("Export" + UIComponentMenuBar.ELLIPSIS,
                                 IconHelper.loadIcon("filesave16.png"),
-                                "Export the description of this folder to an XML file");
+                                "Export the description the selected folder or resource list to an XML file");
         export.setEnabled(false);
         ymport = new TreeAction("Import" + UIComponentMenuBar.ELLIPSIS,
                                 IconHelper.loadIcon("fileopen16.png"),
