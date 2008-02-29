@@ -95,7 +95,6 @@ then
 #    echo "Creating new log directory"
 #	mkdir ${LOG_HOME}
     echo "Creating symlink to shared log directory"
-	mkdir ${LOG_HOME}
         ln -s ${SHARED_LOG_HOME} ${LOG_HOME}
 fi
 
