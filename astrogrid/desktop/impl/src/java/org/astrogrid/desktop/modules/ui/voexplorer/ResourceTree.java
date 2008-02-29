@@ -267,23 +267,23 @@ public class ResourceTree extends JTree {
                                          "Create a new item which loads its definition from an external source");
         duplicate = new TreeAction("Duplicate",
                                    IconHelper.loadIcon("editcopy16.png"),
-                                   "Duplicate this item"
+                                   "Duplicate selected item"
                                    ,KeyStroke.getKeyStroke(KeyEvent.VK_D,UIComponentMenuBar.MENU_KEYMASK)                                   
                                    );
         duplicate.setEnabled(false);
         remove = new TreeAction("Delete",
                                 IconHelper.loadIcon("editremove16.png"),
-                                "Remove this item"
+                                "Remove selected item"
                                 ,KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,UIComponentMenuBar.MENU_KEYMASK)                                
                                 );
         remove.setEnabled(false);
         rename = new TreeAction("Rename"+UIComponentMenuBar.ELLIPSIS,
                                 IconHelper.loadIcon("rename16.png"),
-                                "Rename this item");
+                                "Rename selected item");
         rename.setEnabled(false);
         properties = new TreeAction("Edit" + UIComponentMenuBar.ELLIPSIS,
                                     IconHelper.loadIcon("edit16.png"),
-                                    "Edit this item"
+                                    "Edit selected item"
                                     ,KeyStroke.getKeyStroke(KeyEvent.VK_E,UIComponentMenuBar.MENU_KEYMASK)                                    
                                     );
         properties.setEnabled(false);
