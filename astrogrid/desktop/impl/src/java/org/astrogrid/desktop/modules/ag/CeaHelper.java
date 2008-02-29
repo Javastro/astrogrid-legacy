@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.11 2008/02/15 14:31:25 pah Exp $
+/*$Id: CeaHelper.java,v 1.12 2008/02/29 10:49:20 mbt Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -239,7 +239,7 @@ public Tool makeMySpaceIvornsConcrete(Tool intool) throws InvalidArgumentExcepti
 		    makeMySpaceIvornsConcrete(p);
 		}
 	    } catch (Exception ex) {
-		throw new InvalidArgumentException("Failed to make MySpace references concrete", ex);
+		throw new InvalidArgumentException("Failed to make VOSpace references concrete", ex);
 	    }
 	    return tool;
 	}

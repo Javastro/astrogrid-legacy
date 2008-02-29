@@ -122,7 +122,7 @@ public class BulkCopyWorker extends BackgroundWorker {
             throw new Exception("Not permitted to write to " + saveTarget.getName());
         }                
         
-        reportProgress((saveToMyspace ? "MySpace " : "" ) + "Save location validated");
+        reportProgress((saveToMyspace ? "VOSpace " : "" ) + "Save location validated");
         setProgress(++progress,tasksCount);
         // will records destinations or errors of copying each individual file, continue, and report at the end.
         Map outcome = new HashMap();

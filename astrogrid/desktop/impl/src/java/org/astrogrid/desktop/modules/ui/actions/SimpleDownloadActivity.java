@@ -59,7 +59,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         this.chooser = chooser;
 		setText("Download" + UIComponentMenuBar.ELLIPSIS);
 		setIcon(IconHelper.loadIcon("filesave16.png"));		
-		setToolTipText("Download the selected file(s) to local disk or MySpace");
+		setToolTipText("Download the selected file(s) to local disk or VOSpace");
 		setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
 	}
 

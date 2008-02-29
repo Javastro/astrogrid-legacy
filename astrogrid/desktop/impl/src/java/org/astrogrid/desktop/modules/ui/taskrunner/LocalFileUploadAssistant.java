@@ -90,9 +90,9 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
         final boolean loggedIn = parent.getContext().getLoggedInModel().isEnabled();
         final boolean firstRun = prefs.getBoolean(FIRST_RUN_KEY,true);
         if ( ! loggedIn || firstRun) {
-            ConfirmDialog.newConfirmDialog(parent.getComponent(),"Upload this file to myspace?"
+            ConfirmDialog.newConfirmDialog(parent.getComponent(),"Upload this file to VOSpace?"
                     , "<html>You have selected a file on a local disk. Local disks cannot be accessed by remote applications."
-                    +"<br>Do you want to have this file uploaded to MySpace, where it will be accessible?"
+                    +"<br>Do you want to have this file uploaded to VOSpace, where it will be accessible?"
                     + (! loggedIn ? "<br>(This will require you to login)" :"")
                     , new Runnable() {
                 public void run() {
