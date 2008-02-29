@@ -15,6 +15,14 @@ then
 fi
 
 #
+# Make sure no-one still logged in
+if [ "`who|grep -v root | wc -l`" -gt 0 ]
+then
+    echo -e "There are still non-root user(s) logged in - cannot reset"
+    exit 1
+fi
+
+#
 # Set the userdel binary.
 USER_DEL=/usr/sbin/userdel
 USER_MOD=/usr/sbin/usermod

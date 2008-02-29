@@ -6,7 +6,6 @@
 PROJECT_BASE=/var/local/projects/astrogrid
 CURRENT_BASE=${PROJECT_BASE}/current
 
-
 #
 # Check this is being run as root.
 if [ $(id -u) -ne 0 ]
