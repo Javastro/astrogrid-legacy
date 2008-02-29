@@ -306,6 +306,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
          */
         private void addNonOSXActions() {
             JMenuItem showPrefs = new JMenuItem("Preferences" + UIComponentMenuBar.ELLIPSIS);
+            showPrefs.setToolTipText("Edit preferences for VODesktop and Astro Runtime background software");
             showPrefs.setActionCommand(UIContext.PREF);
             showPrefs.addActionListener(context);
             showPrefs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA,UIComponentMenuBar.MENU_KEYMASK));
