@@ -244,7 +244,7 @@ USER_ADD=/usr/sbin/useradd
 # Create our own user accounts.
 echo ""
 echo "Checking user accounts"
-for ACCOUNT_NAME in Catherine Dave Gary ktn
+for ACCOUNT_NAME in Catherine Dave Gary ktn Kona
 do
     #
     # Check the account exists.
@@ -279,6 +279,7 @@ sshkey Dave      http://www.metagrid.co.uk/maven/ssh/zarquan.metagrid.co.uk.pub
 sshkey Catherine      http://www.astrogrid.org/maven/ssh/id_rsa_clq2.pub
 sshkey Gary http://www.astrogrid.org/gg.id_dsa.pub
 sshkey ktn http://www.astrogrid.org/ag_ktn_dsa.pub
+sshkey Kona  http://www.astrogrid.org/maven/ssh/kea-ssh-key.pub
 
 #
 # Create the test user accounts.
@@ -321,6 +322,7 @@ do
     sshkey ${ACCOUNT_NAME} http://www.astrogrid.org/maven/ssh/id_rsa_clq2.pub
     sshkey ${ACCOUNT_NAME} http://www.astrogrid.org/gg.id_dsa.pub
     sshkey ${ACCOUNT_NAME} http://www.astrogrid.org/ag_ktn_dsa.pub
+    sshkey ${ACCOUNT_NAME} http://www.astrogrid.org/maven/ssh/kea-ssh-key.pub
 
     #
     # Create the symbolic links.
