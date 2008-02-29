@@ -8,30 +8,68 @@ import os.path
 import urlparse
 import time
 from optparse import OptionParser
-from astrogrid import acr
+#from astrogrid import acr
+
+sys.path.append("../dave/")
+from myspace import *
+from testacr import *
+from settings import *
+from logger import *
+
+#logging in as ktn first
+
+# Create a myspace wrapper.
+logging.debug("Creating myspace object with info: %s %s %s", TEST_USER, TEST_PASS, TEST_AUTH)
+#logging.debug("creating myspace object")
+myspace = MySpace(ar, TEST_USER, TEST_PASS, TEST_AUTH)
+
+myspace.login(ar)
+
 
 # **************************************************************************
 # KEITH: USER-CONFIGURABLE SETTINGS 
+# *********************************
+# NB!!: Use this registry endpoint in VOExplorer:
+#  http://casx019-zone1.ast.cam.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0
+
 
 # The required results format
-formats = ["VOTABLE"]
-#formats = ["VOTABLE", "VOTABLE-BINARY", "COMMA-SEPARATED"]
+#----------------------------
+formats = ["VOTABLE"]	# All in votable
+#formats = ["VOTABLE", "VOTABLE-BINARY", "COMMA-SEPARATED"] #Variety
 
-# The number of rows to return 
+
+# The number of rows to return for each query
+#--------------------------------------------
 #top = "100"
 top = "10000"
 #top = "100000"
 #top = "1000000"
 
+
 # The folder in VOSpace in which to put the results files
-destFolder = "ivo://ktn@org.astrogrid.regtest/community#/stresstest_folder"
+#--------------------------------------------------------
+destFolder = "ivo://ktn@org.astrogrid.regtest/community#/stresstest_folder_smallq"
+
 
 # The number of simultaneous queries to launch
-#numQueries = 1
-numQueries = 10
-#numQueries = 50
+#---------------------------------------------
+#numQueries = 20
+numQueries = 50
 #numQueries = 100
+
+
+# The DSA to use
+#----------------
+# NB - smallq has a small job queue, other dsa has a bigger one
+#ivorn="org.astrogrid.regtest.dsa/mysql-first-smallq/CatName_first/ceaApplication"
+ivorn="org.astrogrid.regtest.dsa/mysql-first/CatName_first/ceaApplication"
+
+# *********************************
+# END OF USER-CONFIGURABLE SETTINGS 
 # **************************************************************************
+
+
 
 
 #-------------------------------------------------------------------------------
@@ -201,11 +239,10 @@ elif (len(sys.argv) != 1) :
 #-----------------------------------------------------------------------------
 # The ivorn of the cea service
 # CAM TEST NETWORK
-ivorn="org.astrogrid.regtest.dsa/first-dsa/wsa/ceaApplication"
+#ivorn="org.astrogrid.regtest.dsa/mysql-first/CatName_first/ceaApplication"
 
 # The table to be queried
-#table = "TabName_catalogue"
-table = "wsa.firstSource"
+table = "TabNameFirst_catalogue"
 
 
 # The task document to use
@@ -213,4 +250,5 @@ query = "TEMPLATES/selectAll_query.xml"
 #query = "TEMPLATES/selectSome_query.xml"
 #-----------------------------------------------------------------------------
 
-runQuickAdqlTests(ivorn,table,formats,top,destFolder,numQueries,query,checkonly)
+#runQuickAdqlTests(ivorn,table,formats,top,destFolder,numQueries,query,checkonly)
+runAdqlTests(ivorn,table,formats,top,destFolder,numQueries,query,checkonly)

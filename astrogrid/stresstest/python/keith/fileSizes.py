@@ -5,8 +5,8 @@
 from astrogrid import acr
 
 #checkfolder = "ivo://ktn@org.astrogrid.regtest/community#/stresstest_folder"
-checkfolder = "ivo://org.astrogrid.regtest/ktn#/stresstest_folder/"
-expected = 100
+checkfolder = "ivo://org.astrogrid.regtest/ktn#/stresstest_folder_smallq/"
+expected = 10
 
 def fileSizes(folderToUse, expected):
 	badCount = 0
