@@ -3,7 +3,7 @@
 
 #
 # Set the project directory.
-PROJECT_BASE=/var/local/projects/vospace
+PROJECT_BASE=/var/local/projects/astrogrid
 CURRENT_BASE=${PROJECT_BASE}/current
 
 
@@ -12,6 +12,14 @@ CURRENT_BASE=${PROJECT_BASE}/current
 if [ $(id -u) -ne 0 ]
 then
     echo -e "The resetuser script must be run as root."
+    exit 1
+fi
+
+#
+# Make sure no-one still logged in
+if [ "`who|grep -v root | wc -l`" -gt 0 ]
+then
+    echo -e "There are still non-root user(s) logged in - cannot reset"
     exit 1
 fi
 
