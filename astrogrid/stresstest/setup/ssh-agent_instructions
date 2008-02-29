@@ -1,0 +1,18 @@
+Please follow these instructions on your laptop / desktop machine to allow your account on the astro-XX.flexiscale.metagrid.co.uk machines to update the scripts checked out from cvs without needing to enter a password.
+
+This relies on your public key being on the *.flexiscale.metagrid.co.uk machines and you accessing it using it's *.flexiscale.metagrid.co.uk name and not IP address.
+
+
+Add these two lines to /etc/ssh/ssh_config on your own machine:
+
+Host *.flexiscale.metagrid.co.uk
+   ForwardAgent yes
+
+as root:
+/etc/init.d/ssh reload
+
+as yourself:
+eval `ssh-agent`
+ssh-add
+
+
