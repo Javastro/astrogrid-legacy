@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.16 2007/10/07 10:40:13 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.17 2008/02/29 15:06:47 mbt Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,10 +67,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
         getDialog().setLocalEnabled(enableLocalFile);
         getDialog().setUrlEnabled(enableURI);
         getDialog().setVospaceEnabled(enableMySpace);
-
-        getDialog().setVisible(true);
-        getDialog().requestFocus();
-        getDialog().toFront();
+        getDialog().show();
         return getDialog().getUri(); 
     }    
 
@@ -97,6 +94,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.17  2008/02/29 15:06:47  mbt
+More sensible dialogue usage
+
 Revision 1.16  2007/10/07 10:40:13  nw
 added method to access VFS, as it's present.
 
