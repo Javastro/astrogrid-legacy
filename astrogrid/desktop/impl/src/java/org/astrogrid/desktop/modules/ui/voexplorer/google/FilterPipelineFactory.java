@@ -72,6 +72,7 @@ public class FilterPipelineFactory   {
 				,new NotToggleMatcherEditor(systemToggle,new SystemFilter()));
         // incremental text field..
 		SearchField sf = new SearchField("Filter results");
+        sf.setToolTipText("Filter list of resources using text string");
 		FilterList filteredItems = new FilterList(systemFilteredItems
 				, new TextComponentMatcherEditor(sf.getWrappedDocument(), new ResourceTextFilterator(annotationService)));
 		textField = sf;
@@ -97,7 +98,7 @@ public class FilterPipelineFactory   {
 		final Action toggleAction = toggleButton.getAction();
 		toggleAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_B,UIComponentMenuBar.MENU_KEYMASK));
 		toggleAction.putValue(Action.NAME,"Show Browser");
-		toggleAction.putValue(Action.SHORT_DESCRIPTION,"Show Browser: Quickly filter this list of resources");
+		toggleAction.putValue(Action.SHORT_DESCRIPTION,"Show Browser: filter resources using metadata");
 		filterPane.addPropertyChangeListener("collapsed",new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
