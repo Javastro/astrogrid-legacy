@@ -108,7 +108,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         
         final ButtonModel model = context.getLoggedInModel();        
         m.addSeparator();
-        final MenuItem login = new MenuItem("Login...");
+        final MenuItem login = new MenuItem("Login to Community...");
         login.setActionCommand(UIContext.LOGIN);
         login.addActionListener(context);
         login.setEnabled(!model.isEnabled());

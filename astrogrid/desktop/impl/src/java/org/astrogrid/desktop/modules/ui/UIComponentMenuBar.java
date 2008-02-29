@@ -455,11 +455,11 @@ public abstract class UIComponentMenuBar extends JMenuBar {
 
 
         public LoginMenuItem(UIContext context) {
-            super("Login"+ UIComponentMenuBar.ELLIPSIS, KeyEvent.VK_L);
+            super("Login to Community"+ UIComponentMenuBar.ELLIPSIS, KeyEvent.VK_L);
             this.context = context;
             final ButtonModel m = context.getLoggedInModel();
             setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,UIComponentMenuBar.MENU_KEYMASK));
-            setToolTipText("Log in to the virtual observatory");
+            setToolTipText("Gives access to items that require user to be registered, e.g. VOSpace");
             setIcon(IconHelper.loadIcon("connect_established16.png"));
             setEnabled(!m.isEnabled());
             setActionCommand(UIContext.LOGIN);
