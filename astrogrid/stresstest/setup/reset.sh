@@ -3,7 +3,7 @@
 
 #
 # Set the project directory.
-PROJECT_BASE=/var/local/projects/vospace
+PROJECT_BASE=/var/local/projects/astrogrid
 CURRENT_BASE=${PROJECT_BASE}/current
 
 #
