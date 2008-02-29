@@ -40,8 +40,8 @@ public class SaveResourceActivity extends AbstractResourceActivity implements Ac
 		this.vfs = vfs;
 		this.reg = reg;
 		this.cxt = cxt;
-		setText("Export as XML" + UIComponentMenuBar.ELLIPSIS);
-		setToolTipText("Export the xml definition of the selected resource(s)");
+		setText("Export Full XML" + UIComponentMenuBar.ELLIPSIS);
+		setToolTipText("Export the full XML records for the selected resource(s)");
 		setIcon(IconHelper.loadIcon("xml.gif"));
 	}
 

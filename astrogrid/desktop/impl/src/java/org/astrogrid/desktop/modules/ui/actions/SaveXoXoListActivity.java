@@ -39,8 +39,8 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 	public SaveXoXoListActivity(ResourceChooserInternal chooser,FileSystemManager vfs) {
 		this.chooser = chooser;
 		this.vfs = vfs;
-		setText("Export Summaries"+ UIComponentMenuBar.ELLIPSIS);
-		setToolTipText("Export formatted details of the selected resource(s)");
+		setText("Export Abbreviated XML"+ UIComponentMenuBar.ELLIPSIS);
+		setToolTipText("Export a summary of the selected resource(s) in HTML-like format");
 		setIcon(IconHelper.loadIcon("ascii16.png"));
 	}
 
