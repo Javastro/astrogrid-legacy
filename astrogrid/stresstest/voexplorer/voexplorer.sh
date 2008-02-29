@@ -33,6 +33,7 @@ TEST_HOME=~
 #
 # Log file settings.
 LOG_HOME=~/logs
+SHARED_LOG_HOME=/var/shared/logs
 LOG_FILE="`host \`hostname\` | gawk '{print $4}'`-`whoami`-`date "+%Y%m%d-%H%M$S"`-ASR.log"
 
 #
@@ -91,8 +92,11 @@ echo "Checking log directory"
 echo "  ${LOG_HOME}"
 if [ ! -d ${LOG_HOME} ]
 then
-    echo "Creating new log directory"
+#    echo "Creating new log directory"
+#	mkdir ${LOG_HOME}
+    echo "Creating symlink to shared log directory"
 	mkdir ${LOG_HOME}
+        ln -s ${SHARED_LOG_HOME} ${LOG_HOME}
 fi
 
 #
