@@ -165,12 +165,13 @@ fi
 
 #
 # Run Xvfb and grab the process ID.
+XVFB_EXE=/usr/X11R6/bin/Xvfb
 if [ ${XVFB_DISPLAY} -ne 0 ]
 then
     echo ""
     echo "Starting Xvfb"
     echo "  DISPLAY "
-    Xvfb :${XVFB_DISPLAY} &
+    ${XVFB_EXE} :${XVFB_DISPLAY} &
     XVFB_PID=$!
     export DISPLAY=:${XVFB_DISPLAY}
 else
