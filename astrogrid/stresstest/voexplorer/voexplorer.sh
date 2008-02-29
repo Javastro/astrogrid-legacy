@@ -34,7 +34,7 @@ TEST_HOME=~
 # Log file settings.
 LOG_HOME=~/logs
 SHARED_LOG_HOME=/var/shared/logs
-LOG_FILE="`host \`hostname\` | gawk '{print $4}'`-`whoami`-`date "+%Y%m%d-%H%M$S"`-ASR.log"
+LOG_FILE="`host \`hostname\` | gawk '{print $4}'`-`whoami`-`date "+%Y%m%d-%H%M$S"`-voexplorer.log"
 
 #
 # VOExplorer version and repo.
@@ -82,7 +82,7 @@ then
     echo ""
     echo "Downloading VOExplorer jar file"
     echo "${VOEXPLORER_REPO}/${VOEXPLORER_JAR}"
-	wget -P ${TEST_HOME} ${VOEXPLORER_REPO}/${VOEXPLORER_JAR}
+	wget -q -P ${TEST_HOME} ${VOEXPLORER_REPO}/${VOEXPLORER_JAR}
 fi
 
 #
@@ -142,7 +142,7 @@ log4j.category.org.apache.axis=WARN, CONSOLE, DEBUGLOG
 log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
 log4j.appender.CONSOLE.Threshold=DEBUG
 log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
-log4j.appender.CONSOLE.layout.ConversionPattern=%d{ISO8601} ASR %5p %m%n
+log4j.appender.CONSOLE.layout.ConversionPattern=%d{ISO8601} voexplorer %5p %m%n
 #
 # DEBUGLOG is written to the local logs directory.
 log4j.appender.DEBUGLOG=org.apache.log4j.FileAppender 
@@ -150,7 +150,7 @@ log4j.appender.DEBUGLOG.File=${LOG_HOME}/${LOG_FILE}
 log4j.appender.DEBUGLOG.Append=true 
 log4j.appender.DEBUGLOG.Threshold=DEBUG 
 log4j.appender.DEBUGLOG.layout=org.apache.log4j.PatternLayout 
-log4j.appender.DEBUGLOG.layout.ConversionPattern=%d{ISO8601} ASR %5p %m%n
+log4j.appender.DEBUGLOG.layout.ConversionPattern=%d{ISO8601} voexplorer %5p %m%n
 EOF
 fi
 
