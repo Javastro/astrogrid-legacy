@@ -40,7 +40,7 @@ public WebInterfaceActivity(BrowserControl browser) {
 	this.browser = browser;
 	setText("Web interface");
 	setIcon(IconHelper.loadIcon("browser16.png"));
-	setToolTipText("Open the web interface for this resource in the system browser");
+	setToolTipText("Open the providers's own web interface for this resource");
   //  setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4,UIComponentMenuBar.MENU_KEYMASK));	
 }
 	protected boolean invokable(Resource r) {
