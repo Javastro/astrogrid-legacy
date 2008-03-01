@@ -155,6 +155,13 @@ EOF
 fi
 
 #
+# Check for orphaned astrogrid-desktop.
+if [ -f ~/.astrogrid-desktop ]
+then
+    rm .astrogrid-desktop
+fi
+
+#
 # Check for an Xvfb display number.
 if [ -e ~/xvfb.display ]
 then
