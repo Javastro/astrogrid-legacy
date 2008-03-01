@@ -19,7 +19,7 @@
 # </meta:header>
 #
 
-VOEXPLORER='~/voexplorer ; echo ; echo "Test done" ; read OK'
+VOEXPLORER='~/voexplorer'
 COMMAND1='~/python/dave/copymove.py --user dave --outer 200 --wait  5 --debug --exit ; echo ; echo "Test done" ; read OK'
 COMMAND2='~/python/dave/copymove.py --user dave --outer 200 --wait 10 --debug --exit ; echo ; echo "Test done" ; read OK'
 COMMAND3='~/python/dave/copymove.py --user dave --outer 200 --wait 15 --debug --exit ; echo ; echo "Test done" ; read OK'
@@ -35,6 +35,3 @@ gnome-terminal --geometry=80x20+600+350 --tab -e "ssh agtester-003@alpha $VOEXPL
 # gnome-terminal -e "ssh root@alpha"
 # for pid in `ps -e | grep java | awk '{ print $1 }'`; do echo $pid ; kill $pid; done
 
-
-
-~/python/dave/copymove.py --user dave --outer 200 --debug --exit

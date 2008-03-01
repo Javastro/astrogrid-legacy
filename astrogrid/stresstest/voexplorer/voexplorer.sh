@@ -203,4 +203,10 @@ then
     kill ${XVFB_PID}
 fi 
 
+#
+# Wait for use to say ok.
+echo ""
+echo "Test done ..."
+read OK
+
 
