@@ -60,7 +60,7 @@ for loop in range(1, outerloop) :
 
     #
     # Create the test folder.
-    start = time.time()
+    #start = time.time()
     myspace.createFolder(ar, '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':loop})
     #print "root is :", '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':loop}
     for loopfile in range(1, innerloop):
@@ -68,12 +68,12 @@ for loop in range(1, outerloop) :
         endpoint=myspace.copyURLToContent(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot, 'loop':loop, 'filename':loopfile}, 'http://www.astrogrid.org/maven/test.html')
         #print "ENDPOINT IS", endpoint
 
-    done  = time.time()
-    diff  = done - start
-    total = total + diff
+    #done  = time.time()
+    #diff  = done - start
+    #total = total + diff
 
-    logger.info("Time %f", diff)
-    logger.info("Aver %f", (total/loop))
+    #logger.info("Time %f", diff)
+    #logger.info("Aver %f", (total/loop))
 
 '''
 copyOld will read info from the old myspace tree and produce a data structure as a file on the local disk
@@ -258,15 +258,15 @@ def httpExists(url):
     return found
 
 if __name__ == "__main__":
- #   createRootFolder()
+    #start timer in logs
+    logging.info("EXPORT start from migration")    
+    start = time.time()
+    #   createRootFolder()
     copyRoot()
     ##if close here, the structure are radom read-in ones, need to organize it better
     fobj.close()
     reArrange()
-#    myspace.logout(ar)
 
-    #print "OLD LOGIN INFO IS:", astroauth, astrouser, astropass
-#myspace.logout(ar)
     try:
         if ar.astrogrid.community.isLoggedIn():
             #print "after step 1 still logged in"
@@ -276,13 +276,13 @@ if __name__ == "__main__":
             #print "astrogrid.myspace.getHome() after trying to logout is ", ar.astrogrid.community.isLoggedIn()
     except Exception, e:
         logger.debug("there is a problem with this account, can't get myspace info, force exit! " + str(e))
-#################from migration2.py
-#reset the login details - hard coded for now
+    #################from migration2.py
+    #reset the login details - hard coded for now
     astroauth = 'org.astrogrid.regtest'
     astrouser = 'anybody'
     astropass = 'qwerty'
    
-#    print "NEW LOGIN INFO IS: ", astroauth, astrouser, astropass
+    #    print "NEW LOGIN INFO IS: ", astroauth, astrouser, astropass
     myspace1 = MySpace(
         ar,
             astrouser,
@@ -291,40 +291,9 @@ if __name__ == "__main__":
             )
 
     myspace1.login(ar)
-#    createRootFolder()
-#create another root
-#astroroot1='%(host)s-%(user)s-%(date)s' % {
-#    'date':testdate,
-#    'host':testhost,
-#    'user':testuser
-#    }
-
-#total1 = 0
-#for loop1 in range(1, outerloop) :
-
-#    logger.info("Loop %d", loop)
-#    logger.info("CREATE [%d]", loop)
-
-    #
-    # Create the test folder.
-#    start1 = time.time()
-#    myspace.createFolder(ar, '%(root)s/test-%(loop)03X' % {'root':astroroot1, 'loop':loop})
-#    print "NEW ROOT X^&^(*&^*&^ root is :", '%(root)s/test-%(loop)03X' % {'root':astroroot1, 'loop':loop}
-#    for loopfile in range(1, innerloop):
-#        myspace.createFile(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot1, 'loop':loop, 'filename':loopfile})
-#        endpoint1=myspace.copyURLToContent(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot1, 'loop':loop, 'filename':loopfile}, 'http://www.astrogrid.org/maven/test.html')
-        #print "ENDPOINT IS", endpoint
-
-#    done1  = time.time()
-#    diff1  = done1 - start1
-#    total1 = total1 + diff1
-
-#    logger.info("Time %f", diff1)
-#    logger.info("Aver %f", (total1/loop))
-
+    #    createRootFolder()
 
     upload()
-    #myspace1.logout(ar)
     testtidy=True
     #
     # Delete the last top node.
@@ -337,6 +306,9 @@ if __name__ == "__main__":
         diff  = done - start
         logging.debug("Time %f", diff)
     myspace1.logout(ar)
+    done  = time.time()
+    diff  = done - start
+    logging.info("EXPORT done from migration [%f]", diff)
     #
     # Exit the AR.
     if (testexit):
@@ -349,4 +321,5 @@ if __name__ == "__main__":
     #
     # Done ...
     logging.info("Test done ...")
+    
 
