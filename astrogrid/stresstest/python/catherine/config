@@ -1,0 +1,15 @@
+old_ivorn=ivo://uk.ac.le.star
+new_ivorn=ivo://org.astrogrid.demo
+#new_user=vospace1
+#username=a
+#password=a
+#community=b
+ 
+dataFileRaw=rawMetaData
+#dataFileMod=modMetaData
+folderMod=folderMod
+fileMod=fileMod
+logfile=logfile
+
+##this is the path where the myspace.py, testacr.py, settings.py 
+includePath=/home/clq2/netbeansWS/20080123.clq/webapp/myspace/testing/client/python
