@@ -1,3 +1,13 @@
+'''
+stresstest migration tool, create folder/file according to pre-set variables in startup.py and copy them to another user's account
+test createFolder/createFile/copy/paste/delete/myspace.copyURLToContent/login-out from ar
+
+at the moment
+  running using -t (tidy) forcefully as need to figure out a way to create another directory in second account
+  running second account - hard coded in code as anybody/qwerty - need to fix this later
+  also need to double check the logging messages are correct format
+
+'''
 import sys
 import os
 import string
@@ -13,30 +23,10 @@ import urlparse
 from itertools import izip
 from configobj import ConfigObj
 
-#config = ConfigObj(".config")
 sys.path.append("../dave/")
-#sys.path.append("/home/clq2/netbeansWS/20080225.clq/webapp/myspace/testing/migration1/python")
-#path = config['includePath']
-#print "path is: ", path
-#sys.path.append(path)
 
 from startup import *
 from myspace import *
-#from testacr import *
-#from settings import *
-
-#trying to see if this account is valid first, catching exception if we can't login and bail out
-#try:
-#    if ar.astrogrid.community.isLoggedIn():
-        #print "logged in"
-        #print astroauth, astrouser, astropass
-        #print "astrogrid.myspace.getHome() is ", ar.astrogrid.myspace.getHome()
-#    else:
-        #print "CANT login"
-#except Exception, e:
-#    logger.debug("there is a problem with this account, can't get myspace info, force exit! " + str(e))
-#    sys.exit()
-
 
 #Global variables
 
@@ -259,7 +249,7 @@ def httpExists(url):
 
 if __name__ == "__main__":
     #start timer in logs
-    logging.info("EXPORT start from migration")    
+    logging.info("EXPORT start from test: migration")    
     start = time.time()
     #   createRootFolder()
     copyRoot()
@@ -283,12 +273,7 @@ if __name__ == "__main__":
     astropass = 'qwerty'
    
     #    print "NEW LOGIN INFO IS: ", astroauth, astrouser, astropass
-    myspace1 = MySpace(
-        ar,
-            astrouser,
-            astropass,
-            astroauth
-            )
+    myspace1 = MySpace(ar, astrouser, astropass, astroauth)
 
     myspace1.login(ar)
     #    createRootFolder()
@@ -308,7 +293,8 @@ if __name__ == "__main__":
     myspace1.logout(ar)
     done  = time.time()
     diff  = done - start
-    logging.info("EXPORT done from migration [%f]", diff)
+    # myspace.deleteFile(ar, '%(root)s' % {'root':astroroot})
+    logging.info('EXPORT ACTIOIN migration [%(time-delta)f] %(outerloop)s %(innerloop)s' % {'time-delta':diff, 'outerloop':outerloop, 'innerloop':innerloop})
     #
     # Exit the AR.
     if (testexit):
