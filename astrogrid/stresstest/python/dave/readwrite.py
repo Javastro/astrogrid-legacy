@@ -5,7 +5,7 @@
 #     </meta:title>
 #     <meta:description>
 #         MySpace comparison test script.
-#         Creates a set of files and copies them around within the myspace tree.
+#         Imports some data into a file and then reads the contents back.
 #         Designed to compare behaviour of FileManager and VOSpace services.
 #     </meta:description>
 #     <meta:licence>
@@ -22,72 +22,68 @@
 #
 #
 
+
 import os
 import sys
 import time
 import getopt
 import logging
 
+import urllib
+import httplib
+
 #
 # Start our test.
 from startup import *
 
 #
-# Create the flat set of folders.
-total = 0
-for loop in range(1, outerloop) :
-
-    logging.debug("Loop %d", loop)
-    logging.info("CREATE [%d]", loop)
+# Import the data several times.
+for inport in range(1, outerloop) :
+    #
+    # Set the target file name.
+    path = '%(root)s/test-%(loop)03X' % {
+        'root':astroroot,
+        'loop':inport
+        }
 
     #
-    # Create the test folder.
+    # Inport data from the source URL.
+    logging.info("INPORT start")
     start = time.time()
-    myspace.createFolder(
+    endpoint = myspace.copyURLToContent(
         ar,
-        '%(root)s/test-%(loop)03X' % {
-            'root':astroroot,
-            'loop':loop
-            }
+        path,
+        'http://www.astrogrid.org/maven/test.html'
     	)
     done  = time.time()
     diff  = done - start
-    total = total + diff
-
-    logging.debug("Time %f", diff)
-    logging.debug("Aver %f", (total/loop))
-
-#
-# Wrap the set into a tree.
-total = 0
-for loop in range(1, (outerloop - 1)) :
+    logging.debug("INPORT done [%f]", diff)
 
     #
-    # Log the start of the loop.
-    # This entry is the one that will be used for the stats.
-    logging.info("MOVE   [%d]", loop)
+    # Read the data several times.
+    for read in range(1, innerloop) :
+        #
+        # Get a URL to read the data from.
+        logging.info("EXPORT start")
+        start = time.time()
+        endpoint = myspace.getReadContentURL(
+            ar,
+            path
+        	)
+        done  = time.time()
+        diff  = done - start
+        logging.info("EXPORT done [%f]", diff)
 
-    #
-    # Move the test folder.
-    start = time.time()
-    myspace.moveFile(
-        ar,
-        '%(root)s/test-%(loop)03X' % {
-            'root':astroroot,
-            'loop':loop
-            },
-        '%(root)s/test-%(next)03X/test-%(loop)03X' % {
-            'root':astroroot,
-            'next':(loop + 1),
-            'loop':loop
-            }
-    	)
-    done  = time.time()
-    diff  = done - start
-    total = total + diff
-
-    logging.debug("Time %f", diff)
-    logging.debug("Aver %f", (total/loop))
+        #
+        # Read the data back and check it.
+        logging.info("READ   start")
+        start = time.time()
+        data = urllib.urlopen(
+            endpoint
+            ).read()
+        done  = time.time()
+        diff  = done - start
+        logging.info("READ   done [%f]", diff)
 
 #
 # Delete the last top node.
@@ -114,6 +110,5 @@ if (testexit):
 #
 # Done ...
 logging.info("Test done ...")
-
 
 

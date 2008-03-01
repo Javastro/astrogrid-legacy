@@ -1,0 +1,122 @@
+
+
+for tester in 000 001 002 003
+gnome-terminal --geometry=80x20+0+50    --tab -e 'ssh agtester-001@alpha \~/voexplorer'
+
+VOEXPLORER='\~/voexplorer'
+echo $VOEXPLORER
+TESTSCRIPT='\~/python/dave/copymove.py --user dave --outer 2'
+echo $TESTSCRIPT
+
+ssh -t agtester-001@alpha $VOEXPLORER
+
+VOEXPLORER_SSH='ssh agtester-001@alpha $VOEXPLORER'
+echo $VOEXPLORER_SSH
+
+gnome-terminal --geometry=80x20+0+50    --tab -e 'ssh agtester-001@alpha'
+
+
+TESTSCRIPT='~/frog.sh'
+echo $TESTSCRIPT
+ssh agtester-001@alpha $TESTSCRIPT
+
+TESTSCRIPT_SSH='ssh agtester-001@alpha \$TESTSCRIPT'
+echo $TESTSCRIPT_SSH
+gnome-terminal --geometry=80x20+0+50    --tab -e "$TESTSCRIPT_SSH"
+
+gnome-terminal --geometry=80x20+0+50    --tab -e 'ssh agtester-001@alpha $TESTSCRIPT'
+
+
+
+
+ --tab -e 'ssh agtester-000@alpha --user dave --loop 2 --exit'
+
+
+ && wmctrl -t 5 -r :ACTIVE: 
+
+gnome-terminal --geometry=80x20+200+150 --tab -e 'ssh test2@tryptophan' --tab -e 'ssh test2@tryptophan' && wmctrl -t 5 -r :ACTIVE: 
+gnome-terminal --geometry=80x20+400+250 --tab -e 'ssh test3@tryptophan' --tab -e 'ssh test3@tryptophan' && wmctrl -t 5 -r :ACTIVE: 
+gnome-terminal --geometry=80x20+600+350 --tab -e 'ssh test4@tryptophan' --tab -e 'ssh test4@tryptophan' && wmctrl -t 5 -r :ACTIVE:
+
+
+FROG='~/frog.sh'
+ssh agtester-001@alpha $FROG
+TOAD='ssh agtester-001@alpha $FROG'
+
+TOAD='ls -al ; sleep 10'
+echo $TOAD
+gnome-terminal --geometry=80x20+0+50 -e '$TOAD'
+
+
+
+
+cat >> temp << EOF
+ls -al
+sleep 2
+EOF
+chmod a+x temp
+gnome-terminal --add-tab --tname="MGT Man Page" --tcommand="ls -al" 
+gnome-terminal -x ~/temp 
+
+VOEXPLORER='\~/voexplorer'
+echo $VOEXPLORER
+TESTSCRIPT='\~/python/dave/copymove.py --user dave --outer 2'
+echo $TESTSCRIPT
+
+ssh -t agtester-001@alpha $VOEXPLORER
+
+VOEXPLORER_SSH='ssh agtester-001@alpha $VOEXPLORER'
+echo $VOEXPLORER_SSH
+
+
+
+-----
+This works :
+    COMMAND='ls -al'
+    ssh agtester-001@alpha $COMMAND
+
+This works :
+    ssh agtester-001@alpha << EOF
+    ls -al
+    EOF
+
+cat >> temp << EOF
+ls -al
+sleep 2
+EOF
+chmod a+x temp
+gnome-terminal --tab -e '~/temp'
+
+gnome-terminal --tab -e "ssh test1@glutamine" --tab -e "ssh test1@glutamine"
+
+gnome-terminal --tab -e "ssh agtester-001@alpha ls -al" --tab -e "ssh agtester-001@alpha ls -al"
+
+
+-----
+This works :
+
+gnome-terminal --tab -e "ssh agtester-000@alpha $COMMAND1" --tab -e "ssh agtester-000@alpha $COMMAND2"
+gnome-terminal --tab -e "ssh agtester-001@alpha $COMMAND1" --tab -e "ssh agtester-001@alpha $COMMAND3"
+gnome-terminal --tab -e "ssh agtester-002@alpha $COMMAND1" --tab -e "ssh agtester-002@alpha $COMMAND4"
+gnome-terminal --tab -e "ssh agtester-003@alpha $COMMAND1" --tab -e "ssh agtester-003@alpha $COMMAND5"
+
+
+
+
+VOEXPLORER='~/voexplorer ; echo ; echo "Test done" ; read OK'
+COMMAND1='~/python/dave/copymove.py --user dave --outer 200 --wait  5 --debug --exit ; echo ; echo "Test done" ; read OK'
+COMMAND2='~/python/dave/copymove.py --user dave --outer 200 --wait 10 --debug --exit ; echo ; echo "Test done" ; read OK'
+COMMAND3='~/python/dave/copymove.py --user dave --outer 200 --wait 15 --debug --exit ; echo ; echo "Test done" ; read OK'
+COMMAND4='~/python/dave/copymove.py --user dave --outer 200 --wait 20 --debug --exit ; echo ; echo "Test done" ; read OK'
+
+gnome-terminal --geometry=80x20+0+50    --tab -e "ssh agtester-000@alpha $VOEXPLORER" --tab -e "ssh agtester-000@alpha $COMMAND1"
+gnome-terminal --geometry=80x20+200+150 --tab -e "ssh agtester-001@alpha $VOEXPLORER" --tab -e "ssh agtester-001@alpha $COMMAND2"
+gnome-terminal --geometry=80x20+400+250 --tab -e "ssh agtester-002@alpha $VOEXPLORER" --tab -e "ssh agtester-002@alpha $COMMAND3"
+gnome-terminal --geometry=80x20+600+350 --tab -e "ssh agtester-003@alpha $VOEXPLORER" --tab -e "ssh agtester-003@alpha $COMMAND4"
+
+#
+gnome-terminal -e "ssh root@alpha"
+for pid in `ps -e | grep java | awk '{ print $1 }'`; do echo $pid ; kill $pid; done
+
+
+
