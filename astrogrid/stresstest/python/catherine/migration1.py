@@ -50,17 +50,19 @@ fobjFodMod = open ( foldernameMod, 'w')
 file = open(filenameMod)
 #remember this test should be able to run within same user account or transfer data to another user account
 #
+#def createRootFolder():
 # Create the flat set of folders.
 total = 0
 for loop in range(1, outerloop) :
 
-    logging.debug("Loop %d", loop)
-    logging.debug("CREATE [%d]", loop)
+    logger.info("Loop %d", loop)
+    logger.info("CREATE [%d]", loop)
 
     #
     # Create the test folder.
     start = time.time()
     myspace.createFolder(ar, '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':loop})
+    print "root is :", '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':loop}
     for loopfile in range(1, innerloop):
         myspace.createFile(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot, 'loop':loop, 'filename':loopfile})
         endpoint=myspace.copyURLToContent(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot, 'loop':loop, 'filename':loopfile}, 'http://www.astrogrid.org/maven/test.html')
@@ -70,8 +72,8 @@ for loop in range(1, outerloop) :
     diff  = done - start
     total = total + diff
 
-    logging.debug("Time %f", diff)
-    logging.debug("Aver %f", (total/loop))
+    logger.info("Time %f", diff)
+    logger.info("Aver %f", (total/loop))
 
 '''
 copyOld will read info from the old myspace tree and produce a data structure as a file on the local disk
@@ -257,6 +259,7 @@ def httpExists(url):
     return found
 
 if __name__ == "__main__":
+ #   createRootFolder()
     copyRoot()
     ##if close here, the structure are radom read-in ones, need to organize it better
     fobj.close()
@@ -289,8 +292,67 @@ if __name__ == "__main__":
             )
 
     myspace1.login(ar)
+#    createRootFolder()
+#create another root
+#astroroot1='%(host)s-%(user)s-%(date)s' % {
+#    'date':testdate,
+#    'host':testhost,
+#    'user':testuser
+#    }
+
+#total1 = 0
+#for loop1 in range(1, outerloop) :
+
+#    logger.info("Loop %d", loop)
+#    logger.info("CREATE [%d]", loop)
+
+    #
+    # Create the test folder.
+#    start1 = time.time()
+#    myspace.createFolder(ar, '%(root)s/test-%(loop)03X' % {'root':astroroot1, 'loop':loop})
+#    print "NEW ROOT X^&^(*&^*&^ root is :", '%(root)s/test-%(loop)03X' % {'root':astroroot1, 'loop':loop}
+#    for loopfile in range(1, innerloop):
+#        myspace.createFile(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot1, 'loop':loop, 'filename':loopfile})
+#        endpoint1=myspace.copyURLToContent(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot1, 'loop':loop, 'filename':loopfile}, 'http://www.astrogrid.org/maven/test.html')
+        #print "ENDPOINT IS", endpoint
+
+#    done1  = time.time()
+#    diff1  = done1 - start1
+#    total1 = total1 + diff1
+
+#    logger.info("Time %f", diff1)
+#    logger.info("Aver %f", (total1/loop))
 
 
     upload()
+    #myspace1.logout(ar)
+#testtidy=True
+#
+# Delete the last top node.
+    if (testtidy):
+        logging.info("Deleting tree")
+        print "TESTTIDY ISSSSSSSSSSSSSSSSSSSS", testtidy
+        print "AUTHHHHHHHHHHH",  astroauth, astrouser, astropass
+        start = time.time()
+#'%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot, 'loop':loop, 'filename':loopfile}
+    #myspace.deleteFile(ar, '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':(outerloop - 1)},)
+        myspace.deleteFile(ar, '%(root)s' % {'root':astroroot})
+        print "$$$$$$$$$$$$$$$$$$$$$$", '%(root)s' % {'root':astroroot}
+        done  = time.time()
+        diff  = done - start
+        logging.debug("Time %f", diff)
     myspace1.logout(ar)
+    print "LOGGINGGGGGGG :", testexit
+#
+# Exit the AR.
+    if (testexit):
+       logging.info("Shutting down ACR ...")
+       try:
+           ar.builtin.shutdown.halt()
+       except :
+           logging.debug("Shutdown ...")
+
+#
+# Done ...
+    logging.info("Test done ...")
 
