@@ -26,16 +26,16 @@ from myspace import *
 #from settings import *
 
 #trying to see if this account is valid first, catching exception if we can't login and bail out
-try:
-    if ar.astrogrid.community.isLoggedIn():
-        print "logged in"
-        print astroauth, astrouser, astropass
-        print "astrogrid.myspace.getHome() is ", ar.astrogrid.myspace.getHome()
-    else:
-        print "CANT login"
-except Exception, e:
-    print "there is a problem with this account, can't get myspace info, force exit! " + str(e)
-    sys.exit()
+#try:
+#    if ar.astrogrid.community.isLoggedIn():
+        #print "logged in"
+        #print astroauth, astrouser, astropass
+        #print "astrogrid.myspace.getHome() is ", ar.astrogrid.myspace.getHome()
+#    else:
+        #print "CANT login"
+#except Exception, e:
+#    logger.debug("there is a problem with this account, can't get myspace info, force exit! " + str(e))
+#    sys.exit()
 
 
 #Global variables
@@ -62,7 +62,7 @@ for loop in range(1, outerloop) :
     # Create the test folder.
     start = time.time()
     myspace.createFolder(ar, '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':loop})
-    print "root is :", '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':loop}
+    #print "root is :", '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':loop}
     for loopfile in range(1, innerloop):
         myspace.createFile(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot, 'loop':loop, 'filename':loopfile})
         endpoint=myspace.copyURLToContent(ar, '%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot, 'loop':loop, 'filename':loopfile}, 'http://www.astrogrid.org/maven/test.html')
@@ -115,11 +115,11 @@ def copyOld(folder, nodeInfo=""):
                 copyOld(f, nodeInfo)
            #     print "copyOld else: ", nodeInfo
     except Exception, e:
-        print "can't find contents using ar.astrogrid.myspace.listIvorns(folder) " + str(e)
+        logger.debug("can't find contents using ar.astrogrid.myspace.listIvorns(folder) " + str(e))
 
 def copyRoot():
     home = ar.astrogrid.myspace.getHome()
-    print "HomeSpace: " + home
+    #print "HomeSpace: " + home
     # home should be a directory !
     copyOld(home,os.path.curdir)
 
@@ -177,7 +177,7 @@ def reArrange():
         fobjFodMod.close()
         f1.close()
     except Exception, e:
-        print "Whoops can't print modified file " + str(e)
+        logger.debug("Whoops can't print modified file " + str(e))
 
 
 itemsKey = []
@@ -187,7 +187,6 @@ myDict = {}
 #config = ConfigObj("config")
 fileLogName = config['logfile']
 fileLog = open(fileLogName, 'w')
-print "fileLog is: ", fileLogName
 
 ##In order to make a useful Dict, create 2 list, one contain Key, one contain Value for the files
 ##so we can extract useful info to upload into vospace. Key = filename (absolute); Value = URL that contains the file contents
@@ -215,26 +214,26 @@ def createList():
 def upload():
     try:
         myDict = createList()
-        print "myDict is:", myDict
+        #print "myDict is:", myDict
         for key in myDict.keys():
-            print "key=%s, value=%s" % (key, myDict[key])
+            #print "key=%s, value=%s" % (key, myDict[key])
             path = key
             contentURL = myDict[key]
-            print "key is: ", key, "!!value = ", contentURL 
+            #print "key is: ", key, "!!value = ", contentURL 
             
             if httpExists(contentURL) == 1:
                 #create folder/file in vospace ready to take contents
                 myspace1.createFile(ar, path)
-                print "creating file:", path
+                #print "creating file:", path
                 #now do the upload to vospace stuff
-                print "contentURL: " +contentURL
+                #print "contentURL: " +contentURL
                 myspace1.copyURLToContent(ar, path, contentURL)
-                print "after uploaded file"
+                #print "after uploaded file"
             else:
                 fileLog.write('%s%s%s' % ('content URL for file: ', path, os.linesep))
-                print "url file does not exist&&&&"
+                #print "url file does not exist&&&&"
     except Exception, e:
-        print "Whoops " + str(e)
+        logger.debug("Whoops " + str(e))
     fileLog.close()
 
 def httpExists(url):
@@ -255,7 +254,7 @@ def httpExists(url):
             fileLog.write('Status %d %s : %s%s' % (responseOb.status, responseOb.reason, url, os.linesep))
             #print 'Status %d %s : %s' % (responseOb.status, responseOb.reason, url)
     except Exception, e:
-        print e.__class__,  e, url
+        logger.debug(e.__class__,  e, url)
     return found
 
 if __name__ == "__main__":
@@ -266,24 +265,24 @@ if __name__ == "__main__":
     reArrange()
 #    myspace.logout(ar)
 
-    print "OLD LOGIN INFO IS:", astroauth, astrouser, astropass
+    #print "OLD LOGIN INFO IS:", astroauth, astrouser, astropass
 #myspace.logout(ar)
     try:
         if ar.astrogrid.community.isLoggedIn():
-            print "after step 1 still logged in"
-            print astroauth, astrouser, astropass
-            print "astrogrid.myspace.getHome() is ", ar.astrogrid.myspace.getHome()
+            #print "after step 1 still logged in"
+            #print astroauth, astrouser, astropass
+            #print "astrogrid.myspace.getHome() is ", ar.astrogrid.myspace.getHome()
             myspace.logout(ar)
-            print "astrogrid.myspace.getHome() after trying to logout is ", ar.astrogrid.community.isLoggedIn()
+            #print "astrogrid.myspace.getHome() after trying to logout is ", ar.astrogrid.community.isLoggedIn()
     except Exception, e:
-        print "there is a problem with this account, can't get myspace info, force exit! " + str(e)
+        logger.debug("there is a problem with this account, can't get myspace info, force exit! " + str(e))
 #################from migration2.py
-#reset the login details
+#reset the login details - hard coded for now
     astroauth = 'org.astrogrid.regtest'
     astrouser = 'anybody'
     astropass = 'qwerty'
    
-    print "NEW LOGIN INFO IS: ", astroauth, astrouser, astropass
+#    print "NEW LOGIN INFO IS: ", astroauth, astrouser, astropass
     myspace1 = MySpace(
         ar,
             astrouser,
@@ -326,25 +325,20 @@ if __name__ == "__main__":
 
     upload()
     #myspace1.logout(ar)
-#testtidy=True
-#
-# Delete the last top node.
+    testtidy=True
+    #
+    # Delete the last top node.
     if (testtidy):
         logging.info("Deleting tree")
-        print "TESTTIDY ISSSSSSSSSSSSSSSSSSSS", testtidy
-        print "AUTHHHHHHHHHHH",  astroauth, astrouser, astropass
         start = time.time()
-#'%(root)s/test-%(loop)03X/filename-%(filename)s' % {'root':astroroot, 'loop':loop, 'filename':loopfile}
-    #myspace.deleteFile(ar, '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':(outerloop - 1)},)
         myspace.deleteFile(ar, '%(root)s' % {'root':astroroot})
-        print "$$$$$$$$$$$$$$$$$$$$$$", '%(root)s' % {'root':astroroot}
+        myspace1.deleteFile(ar, '%(root)s' % {'root':astroroot})
         done  = time.time()
         diff  = done - start
         logging.debug("Time %f", diff)
     myspace1.logout(ar)
-    print "LOGGINGGGGGGG :", testexit
-#
-# Exit the AR.
+    #
+    # Exit the AR.
     if (testexit):
        logging.info("Shutting down ACR ...")
        try:
@@ -352,7 +346,7 @@ if __name__ == "__main__":
        except :
            logging.debug("Shutdown ...")
 
-#
-# Done ...
+    #
+    # Done ...
     logging.info("Test done ...")
 
