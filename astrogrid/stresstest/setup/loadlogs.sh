@@ -15,6 +15,9 @@ AWK=/usr/bin/awk
 # drop database ready for repopulating it
 `echo "drop database astrolog;" |psql template1 postgres`
 
+# after dropping, then creating new db with same name, previous data still present, needs to be fixed
+
+
 # create fresh database
 `echo "CREATE DATABASE astrolog ;" |psql template1 postgres`
 `echo "\c astrolog" |psql template1 postgres`
@@ -51,4 +54,5 @@ do
    `echo "INSERT INTO logtime (file, date, host, name, time) VALUES( '${LOG_DIR}/${LOGFILENAME}', '${TIMESTAMP}', '${IP_ADDRESS}', '${USERNAME}', '69.448219');" |psql template1 postgres`
 
 done
+
 
