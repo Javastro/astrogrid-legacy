@@ -51,6 +51,13 @@ do
 
    #echo "INSERT INTO table (username, ip, user, action, loop, time) VALUES (${USERNAME}, ${IP_ADDRESS}, )"
    # need to fix TIMESTAMP so format is '2007-06-18 04:27:42', not '20070618-042742'
+   YEAR=`echo ${TIMESTAMP} |cut -b-4`
+   MONTH=`echo ${TIMESTAMP} |cut -b5-6`
+   DAY=`echo ${TIMESTAMP} |cut -b7-8`
+   HOUR=`echo ${TIMESTAMP} |cut -b10-11`
+   MINS=`echo ${TIMESTAMP} |cut -b12-13`
+   SECS=`echo ${TIMESTAMP} |cut -b14-15`
+   TIMESTAMP="${YEAR}-${MONTH}-${DAY} ${HOUR}:${MINS}:${SECS}"
    `echo "INSERT INTO logtime (file, date, host, name, time) VALUES( '${LOG_DIR}/${LOGFILENAME}', '${TIMESTAMP}', '${IP_ADDRESS}', '${USERNAME}', '69.448219');" |psql template1 postgres`
 
 done
