@@ -3,38 +3,38 @@
 
 AWK=/usr/bin/awk
 
-# Drop database
-# Create new empty one 
-# Grabs logs, parses info from filename
 # Loads into database - IP address, username, timestamp, actual log
-
 # So match lines that have ACTION [(.*)] LOOP [(.*)] TIME [.*]
 # and re-write them as INSERT INTO table (timestamp, IP, user, action, loop, time) VALUES ('xxxx', 'xxxx' ....)
 
 
-# drop database ready for repopulating it
-`echo "drop database astrolog;" |psql template1 postgres`
+# drop database and user ready for repopulating it
+psql template1 postgres << EOF
+DROP USER astrologger;
+DROP DATABASE astrolog;
+EOF
 
 # after dropping, then creating new db with same name, previous data still present, needs to be fixed
 
+# create fresh database, user, table and set privileges
+psql template1 postgres << EOF
+CREATE DATABASE astrolog;
+CREATE USER astrologger;
+CREATE TABLE logtime ( ident SERIAL, file varchar(100), date timestamp, host varchar(20), name varchar(20), time real );
+GRANT SELECT, UPDATE, INSERT ON logtime TO astrologger;
+GRANT SELECT, UPDATE ON logtime_ident_seq TO astrologger;
+EOF
 
-# create fresh database
-`echo "CREATE DATABASE astrolog ;" |psql template1 postgres`
-`echo "\c astrolog" |psql template1 postgres`
-#`echo "CREATE USER astrologger ;" |psql template1 postgres`
-`echo "CREATE TABLE logtime ( ident SERIAL, file varchar(100), date timestamp, host varchar(20), name varchar(20), time real );" |psql template1 postgres`
 
-`echo "GRANT SELECT, UPDATE, INSERT ON logtime TO astrologger ;" |psql template1 postgres`
-`echo "GRANT SELECT, UPDATE ON logtime_ident_seq TO astrologger ;" |psql template1 postgres`
 
 #`echo "\d logtime" |psql template1 postgres`
 #`echo "INSERT INTO logtime (date, host, name, time) VALUES( '2007-06-18 04:27:42', '10.0.0.15', 'test1', '69.448219');" |psql template1 postgres`
 
 
 
-#LOG_DIR=/var/shared/logs
+LOG_DIR=/var/shared/logs
 #LOG_DIR=/root/logtest
-LOG_DIR=/home/gary/logtest
+#LOG_DIR=/home/gary/logtest
 LOGLIST=`ls -1 ${LOG_DIR}`
 
 for LOGFILENAME in ${LOGLIST}
@@ -58,7 +58,23 @@ do
    MINS=`echo ${TIMESTAMP} |cut -b12-13`
    SECS=`echo ${TIMESTAMP} |cut -b14-15`
    TIMESTAMP="${YEAR}-${MONTH}-${DAY} ${HOUR}:${MINS}:${SECS}"
-   `echo "INSERT INTO logtime (file, date, host, name, time) VALUES( '${LOG_DIR}/${LOGFILENAME}', '${TIMESTAMP}', '${IP_ADDRESS}', '${USERNAME}', '69.448219');" |psql template1 postgres`
+
+    psql astrolog astrologger << EOF
+    INSERT INTO logtime (file, 
+                         date, 
+                         host, 
+                         name, 
+                         time) 
+    VALUES( '${LOG_DIR}/${LOGFILENAME}', 
+                         '${TIMESTAMP}', 
+                        '${IP_ADDRESS}', 
+                          '${USERNAME}', 
+                            '12.345678');
+
+
+EOF
+#   `echo "INSERT INTO logtime (file, date, host, name, time) VALUES( '${LOG_DIR}/${LOGFILENAME}', '${TIMESTAMP}', '${IP_ADDRESS}', '${USERNAME}', '69.448219');" |psql astrolog astrologger`
+
 
 done
 
