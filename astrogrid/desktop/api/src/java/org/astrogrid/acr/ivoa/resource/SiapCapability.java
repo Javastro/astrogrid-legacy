@@ -15,7 +15,7 @@ public class SiapCapability extends Capability {
         setStandardID(CAPABILITY_ID);
     }
     /** standard identifier for this capability */
-    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/SIA");
+    private static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/SIA");
 
 	
 	public static class SkySize implements Serializable {

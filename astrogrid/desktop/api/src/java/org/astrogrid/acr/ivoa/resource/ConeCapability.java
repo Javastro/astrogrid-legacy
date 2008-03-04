@@ -21,7 +21,7 @@ public class ConeCapability extends Capability {
         setStandardID(CAPABILITY_ID);
     }
     /** standard identifier for this capability */
-    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/ConeSearch");
+    private static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/ConeSearch");
 	/**
 	 * 
 	 */
