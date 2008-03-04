@@ -7,7 +7,6 @@ import java.net.URI;
 import java.util.Arrays;
 
 import org.astrogrid.acr.ivoa.resource.Capability;
-//import org.astrogrid.contracts.StandardIds;  //SEE COMMENT BELOW
 
 /**Registry description of a CEA server.
  * @bean
@@ -23,17 +22,8 @@ public class CeaServerCapability extends Capability {
     public CeaServerCapability() {
         setStandardID(CAPABILITY_ID);
     }
-    /** standard identifier for this capability 
-     * @tofix - A string constant for the capability ID is defined in the 
-     * contracts package, as shown  in commented-out line.
-     * We really ought to be using that common constant, but nothing
-     * else in API depends on contracts at the moment so I'm reluctant to 
-     * introduce that dependency without consulting with Noel.  Hardwiring
-     * for now.  KEA.
-     */
-    //
-    //public static final URI CAPABILITY_ID = URI.create(StandardIds.CEA_1_0);
-    public static final URI CAPABILITY_ID = URI.create("ivo://org.astrogrid/std/CEA/v1.0");
+    /** standard identifier for this capability */
+    private static final URI CAPABILITY_ID = URI.create("ivo://org.astrogrid/std/CEA/v1.0");
 	/**
 	 * 
 	 */
