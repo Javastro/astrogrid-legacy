@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.13 2007/11/27 07:09:51 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.14 2008/03/05 10:57:59 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,6 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         super();
         this.defaultSession = session.findSessionForKey(session.getDefaultSessionId());
         this.context = context;
-        this.daemon = new ClockDaemon();
         // make shceduled tasks run at low priority, but above the backgound executor tasks.
         this.daemon.setThreadFactory(new ThreadFactory() {
             private final ThreadFactory wrapped = daemon.getThreadFactory();
@@ -75,7 +74,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         }
     }
     // the implementation of the clock.
-    final ClockDaemon daemon;
+    final ClockDaemon daemon =  new ClockDaemon();
     final Principal defaultSession;
     final UIContext context;
     
@@ -146,6 +145,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.14  2008/03/05 10:57:59  nw
+fix to handle stricter compiler in new eclipse.
+
 Revision 1.13  2007/11/27 07:09:51  nw
 integrate commons.io
 

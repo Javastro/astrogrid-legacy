@@ -62,7 +62,7 @@ import ca.odell.glazedlists.swing.JEventListPanel;
 public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWorkersMonitor{
 
     
-    private final JComboBox subsetCombo;
+    private JComboBox subsetCombo;
 
     public void showAll() {
         subsetCombo.setSelectedIndex(0);
