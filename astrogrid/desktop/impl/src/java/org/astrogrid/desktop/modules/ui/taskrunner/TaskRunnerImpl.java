@@ -279,7 +279,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 				logger.error("ServiceException",x);
 				//should report an error somewhere.
 				return;
-			}
+			}		
 		}
 		
 		// start off a background process to find a list of servers that execute this app.
@@ -288,6 +288,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		(new ListServicesWorker(appId)).start();
 		
 		selectStartingInterface(cea);
+		updateWindowTitle();
 	}
 	
     public void edit(final FileObject o) {
@@ -368,7 +369,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
     }
 	private void clearStorageLocation() {
 	     storageLocation = null;
-	     setTitle("Task Runner - untitled");
+	     updateWindowTitle();
 	 }
 	
 	private URI getStorageLocation() {
@@ -376,8 +377,20 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	 }
     private void setStorageLocation(URI u) {
 	     storageLocation = u;
-	     setTitle("Task Runner - " + u.toString())	  ;   
+	     updateWindowTitle();
 	 }
+    
+    /** update window title, based on whether there's a curent resource, and/or a storage location */
+    private void updateWindowTitle() {
+        final CeaApplication res = pForm.getModel().currentResource();
+        final String loc = storageLocation == null ? "untitled" : storageLocation.toString();
+        if (res == null) {
+            setTitle("Task Runner - " + loc)   ;
+        } else {
+            setTitle("Task Runner for " + res.getTitle() + " - " + loc);
+        }
+    }
+    
     /**
      * @param cea
      */
@@ -718,7 +731,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		 
 	        public SaveAction() {
 	            super("Save");
-	            this.putValue(SHORT_DESCRIPTION,"Save task document");
+	            this.putValue(SHORT_DESCRIPTION,"Save XML document defining task and current parameter values");
 	            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_S,UIComponentMenuBar.MENU_KEYMASK));
 	        }
 
@@ -734,7 +747,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
     private class SaveAsAction extends AbstractAction {
 	       public SaveAsAction() {
                super("Save As"+UIComponentMenuBar.ELLIPSIS);
-               this.putValue(SHORT_DESCRIPTION,"Save task document");
+               this.putValue(SHORT_DESCRIPTION,"Save XML document defining task and current parameter values");
                putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_S,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
            }
            protected SaveAsAction(String s) {

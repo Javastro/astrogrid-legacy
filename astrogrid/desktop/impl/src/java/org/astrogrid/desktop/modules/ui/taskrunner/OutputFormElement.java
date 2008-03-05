@@ -23,7 +23,7 @@ public class OutputFormElement extends AbstractTaskFormElement {
 	public OutputFormElement(ParameterValue pval, ParameterBean pdesc,ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
 		super.localFileEnabled=false;
-		indirectToggle.setToolTipText("Save this result to vo workspace");
+		indirectToggle.setToolTipText("Save this result to VO Workspace");
 	}
 
 	protected JComponent createEditor() {

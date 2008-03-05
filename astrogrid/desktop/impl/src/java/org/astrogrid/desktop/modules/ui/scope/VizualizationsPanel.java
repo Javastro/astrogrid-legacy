@@ -168,7 +168,7 @@ private void clearPrefuseSelection() {
      public RadialAction() {
          super("as Radial Graph");
          putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
-         putValue(SHORT_DESCRIPTION,"view the results as a spoked graph");            
+         putValue(SHORT_DESCRIPTION,"view the results as a radial graph");            
      }
      public void actionPerformed(ActionEvent e) {
          if (servicesHasPrecedence) { // we've flipped from services view - clear selection
@@ -183,7 +183,7 @@ private void clearPrefuseSelection() {
      public HyperbolicAction() {
          super("as Hyperbolic Graph");
          putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));
-         putValue(SHORT_DESCRIPTION,"view the results as a radial graph (shows all nodes)");            
+         putValue(SHORT_DESCRIPTION,"view the results as a hyperbolic graph (shows all nodes, compressed towards the edges)");            
      }
      public void actionPerformed(ActionEvent e) {
          if (servicesHasPrecedence) { // we've flipped from services view - clear selection

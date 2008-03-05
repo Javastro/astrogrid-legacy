@@ -37,6 +37,7 @@ public class StorageFolder extends Folder {
 	}			
 	
 	private URI uri;
+	private String description;
 	// constructor for persistence.
 	public StorageFolder()  {
 		super();
@@ -92,6 +93,14 @@ public class StorageFolder extends Folder {
 			return false;
 		return true;
 	}
+
+    public final String getDescription() {
+        return this.description;
+    }
+
+    public final void setDescription(String description) {
+        this.description = description;
+    }
 
 
 

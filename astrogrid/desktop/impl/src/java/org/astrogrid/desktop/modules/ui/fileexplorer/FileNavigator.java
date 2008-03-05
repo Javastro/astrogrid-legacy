@@ -504,8 +504,8 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     private class GoWorkspaceAction extends AbstractAction {
     
         public GoWorkspaceAction() {
-            super("Workspace",IconHelper.loadIcon("networkdisk16.png"));
-            putValue(SHORT_DESCRIPTION,"Go to workspace");
+            super("VO Workspace",IconHelper.loadIcon("networkdisk16.png"));
+            putValue(SHORT_DESCRIPTION,"Go to VO Workspace");
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_W,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
              
         }

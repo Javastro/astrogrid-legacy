@@ -110,7 +110,11 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 				StorageFolder f = (StorageFolder)value;				
 				l.setText(f == null ? "" : f.getName());
 				l.setIcon(f == null ? null : f.getIcon());
-				l.setToolTipText(f.getUriString());
+				if (f.getDescription() != null) {
+				    l.setToolTipText("<html><b>" + f.getUriString() + "</b><br>" + f.getDescription());
+				} else {
+				    l.setToolTipText(f.getUriString());
+				}
 				return l;
 			}
 		});	
