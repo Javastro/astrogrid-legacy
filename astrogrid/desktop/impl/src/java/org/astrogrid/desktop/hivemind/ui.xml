@@ -44,7 +44,7 @@ ASTROSCOPE
 	</service-point>
 
 	<contribution configuration-id="system.windowFactories">
-		<window name="All-VO Scope">service:astroscope</window>
+		<window name="All-VO Astroscope">service:astroscope</window>
 	</contribution>
 		
 										
@@ -163,7 +163,7 @@ HELIOSCOPE
     </service-point>
 
     <contribution configuration-id="system.windowFactories">
-        <window name="Helio Scope">service:helioscope</window>
+        <window name="All-VO Helioscope">service:helioscope</window>
     </contribution>
         <contribution configuration-id="hivemind.EagerLoad">
         <load service-id="helioscope"/><!--  loads the helopscope service list -->

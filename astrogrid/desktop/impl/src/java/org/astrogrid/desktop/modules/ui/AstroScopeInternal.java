@@ -15,5 +15,8 @@ import org.astrogrid.acr.ui.AstroScope;
 public interface AstroScopeInternal extends AstroScope , Factory{
 	/** run astroscope against a specified list of resources */
 	public void runSubset(List resources);
+	
+	   /** run astroscope against a specified list of resources, mark it as 'helioscope'  - sheesh. */
+    public void runSubsetAsHelioscope(List resources);
 
 }

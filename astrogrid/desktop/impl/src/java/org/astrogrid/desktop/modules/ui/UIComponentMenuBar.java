@@ -314,7 +314,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         } 
         private void addFinalActions() { // would like to put these on the OSx application menu, but doesn't seem to be possible in java.
             JMenuItem reset = new JMenuItem("Reset Configuration" + UIComponentMenuBar.ELLIPSIS);
-            reset.setToolTipText("Reset all configuration back to factory defaults");
+            reset.setToolTipText("Reset configuration for all of VO Desktop and Astro Runtime back to factory defaults");
             reset.setActionCommand(UIContext.RESET);
             reset.addActionListener(context);
             menu.add(reset);
@@ -343,13 +343,13 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             this.isOsx = isOsx;
             final JMenuItem appHelp = createApplicationHelpMenuItem(context,applicationName, helpKey);
             menu.add(appHelp);
-            
+            /* NWW - can't differentiate between this and 'VO Desktop Help' - so commented it out for now
             JMenuItem contents = createHelpContentsMenuItem(context);
             menu.add(contents);
-        
+        */
             separator();
-            menu.add(new HyperlinkMenuItem("VO Desktop online help", "http://www.astrogrid.org/help/"));
-            menu.add(new HyperlinkMenuItem("AstroGrid helpdesk", "http://www.astrogrid.org/support/"));
+            menu.add(new HyperlinkMenuItem("VO Desktop Help", "http://www.astrogrid.org/help/")); // NWW - removed 'Online' - rather redundant.
+            menu.add(new HyperlinkMenuItem("AstroGrid Helpdesk", "http://www.astrogrid.org/support/"));
         }
         
         public JMenu create() {

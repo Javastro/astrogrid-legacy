@@ -62,7 +62,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
         this.window = new DraggableWindow();
         this.window.setTitle("VO Desktop"); // although wndow title is not shown, this appears in the systray.
         this.window.setIconImage(defaultImage.getImage());
-        this.ico = new JButton("Start",defaultImage);
+        this.ico = new JButton("VO Desktop",defaultImage);
         this.popup = createPopupMenu();
     }
 
@@ -80,7 +80,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
                 // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
                 //ico.setToolTipText("Astro Runtime");
                 javax.swing.JPanel p = new JPanel();
-                p.setBorder(MyTitledBorder.createEmpty("VO Desktop"));
+             //   p.setBorder(MyTitledBorder.createEmpty("VO Desktop"));
                 p.add(ico);
                 window.getContentPane().add(p);
 
@@ -101,12 +101,17 @@ public class FallbackSystemTray  implements SystemTrayInternal{
             m.add(f);
         }
         m.addSeparator();
-        JMenuItem test = new JMenuItem("Self Tests");
+        JMenuItem pref = new JMenuItem("VO Desktop and Astro Runtime Preferences" + UIComponentMenuBar.ELLIPSIS);
+        pref.setActionCommand(UIContext.PREF);
+        pref.addActionListener(context);                
+        m.add(pref);
+        
+        JMenuItem test = new JMenuItem("Run Self Tests");
         test.setActionCommand(UIContext.SELFTEST);
         test.addActionListener(context);
         m.add(test);
         
-        JMenuItem processes = new JMenuItem("Background Processes");
+        JMenuItem processes = new JMenuItem("Show Background Processes");
         processes.setActionCommand(UIContext.PROCESSES);
         processes.addActionListener(context);
         m.add(processes);
@@ -114,11 +119,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
         m.addSeparator();
         m.add(new UIComponentMenuBar.LoginMenuItem(context));
         m.add(new UIComponentMenuBar.LogoutMenuItem(context));
-        JMenuItem pref = new JMenuItem("Preferences" + UIComponentMenuBar.ELLIPSIS);
-        pref.setActionCommand(UIContext.PREF);
-        pref.addActionListener(context);
-                
-        m.add(pref);
+
         m.addSeparator();     
         
         JMenuItem h = new JMenuItem("VO Desktop Help");

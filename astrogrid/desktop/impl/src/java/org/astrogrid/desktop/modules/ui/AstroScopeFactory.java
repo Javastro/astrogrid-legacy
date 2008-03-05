@@ -26,8 +26,11 @@ public class AstroScopeFactory implements AstroScopeInternal{
 	public void runSubset(List resources) {
 		AstroScopeInternal	i = newWindow();
 		i.runSubset(resources) ;
-		//i.show();
 	}
+	   public void runSubsetAsHelioscope(List resources) {
+	        AstroScopeInternal  i = newWindow();
+	        i.runSubsetAsHelioscope(resources) ;
+	    }
 // factory interface
 	public Object create() {
 		return newWindow();

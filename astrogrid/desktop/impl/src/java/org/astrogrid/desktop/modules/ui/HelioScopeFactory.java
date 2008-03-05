@@ -33,7 +33,7 @@ public class HelioScopeFactory implements HelioScopeInternal {
             throw new ApplicationRuntimeException("List of Helioscope Services has not yet been downloaded - please try again in a moment");
         }
             AstroScopeInternal nu = (AstroScopeInternal) factory.create();
-            nu.runSubset(helioscopeResources);
+            nu.runSubsetAsHelioscope(helioscopeResources);           
             return nu;        
     }
 

@@ -95,8 +95,10 @@ System module.
 	</configuration-point>
 	
 	<contribution configuration-id="helpmap">
-		<!--  front page -->
+		<!--  front page - changed again
 		<item id="top" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc/vod2008b-IndexPage" />
+        -->
+        <item id="top" url="http://www.astrogrid.org/help-intro" />
 		<!--  contents / index -->
 		<item id="contents" url="http://www2.astrogrid.org/sitemap" />
 		<item id="gettingStarted" url="http://www2.astrogrid.org/science/getting-started/" />

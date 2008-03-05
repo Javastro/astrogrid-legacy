@@ -53,7 +53,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         ic = IconHelper.loadIcon("running16.png");
         throbbingImage = ic.getImage();
         
-        String tooltip = "Astro Runtime";
+        String tooltip = "VO Desktop";
         PopupMenu menu = createPopupMenu();
         trayIcon = trayConstructor.newInstance(new Object[]{defaultImage,tooltip,menu});
         ReflectionHelper.call(trayIcon,"setImageAutoSize",Boolean.TRUE);
@@ -95,13 +95,20 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
             f.addActionListener(context);
             m.add(f);
         }
+
         m.addSeparator();
-        MenuItem test = new MenuItem("Self Tests");
+        
+        MenuItem pref = new MenuItem("VO Desktop and Astro Runtime Preferences...");
+        pref.setActionCommand(UIContext.PREF);
+        pref.addActionListener(context);
+        m.add(pref);
+        
+        MenuItem test = new MenuItem("Run Self Tests");
         test.setActionCommand(UIContext.SELFTEST);
         test.addActionListener(context);
         m.add(test);
         
-        MenuItem processes = new MenuItem("Background Processes");
+        MenuItem processes = new MenuItem("Show Background Processes");
         processes.setActionCommand(UIContext.PROCESSES);
         processes.addActionListener(context);
         m.add(processes);
@@ -127,10 +134,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
             }            
         });
                 
-        MenuItem pref = new MenuItem("Preferences...");
-        pref.setActionCommand(UIContext.PREF);
-        pref.addActionListener(context);
-        m.add(pref);        
+   
                         
         MenuItem h = new MenuItem("VO Desktop Help");
         h.setActionCommand(UIContext.HELP);

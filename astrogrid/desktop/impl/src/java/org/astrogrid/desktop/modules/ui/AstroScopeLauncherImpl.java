@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.79 2008/02/22 17:03:35 mbt Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.80 2008/03/05 10:52:51 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -141,7 +141,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			,Sesame ses
 			,SnitchInternal snitch
 			,IconFinder iconFinder)  {
-		super(context,"Astroscope","scope.intro");
+		super(context,"All-VO Astroscope","scope.intro");
 		this.history = history;
 		this.snitch = snitch;
 		this.protocols = new DalProtocolManager();
@@ -214,7 +214,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 // spatial
 		builder.addSeparator("At",cc.xyw(2,row,4));
 		row++;
-		builder.addLabel("Position or Object Name",cc.xyw(2,row,3));
+		builder.addLabel("Position (RA,Dec) or Object Name",cc.xyw(2,row,3));
 
 		row++;
 		posText = new NameResolvingPositionTextField(this,ses);
@@ -464,8 +464,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				haltQuery();
 			}
 		});
-
-        this.setTitle("All-VO Scope");		
+	
 	}
 
 
@@ -551,7 +550,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	// configure to run against this list of services.
 	public void runSubset(List resources) {
 		this.resourceList = resources;
-		StrBuilder sb = new StrBuilder("VOScope");
+		StrBuilder sb = new StrBuilder("Astroscope");
 		if (resources.size() == 1) {
 		    sb.append(" - ").append(((Resource)resources.get(0)).getTitle());
 		} 
@@ -574,6 +573,12 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}	
 		setTitle(sb.toString());
 	}
+	
+	   public void runSubsetAsHelioscope(List resources) {
+	       runSubset(resources);
+	       setTitle("All-VO Helioscope: standard set of timed solar data services");
+	   }
+	
 	public Object create() {
 		return null; // @todo will refactor this away later.
 	}
@@ -1003,7 +1008,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	protected class SearchAction extends AbstractAction implements NameResolvingPositionTextField.ResolutionListener {
 		public SearchAction(NameResolvingPositionTextField pos) {		    
 			super("Search",IconHelper.loadIcon("search32.png"));
-			this.putValue(SHORT_DESCRIPTION,"Find resources for this Position");
+			this.putValue(SHORT_DESCRIPTION,"Find data for this Position");
 			this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));
 			pos.addResolutionListener(this);
 		}

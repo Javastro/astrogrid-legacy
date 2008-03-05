@@ -4,19 +4,25 @@
 package org.astrogrid.desktop.modules.system.ui;
 
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.DefaultButtonModel;
+import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -25,12 +31,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.comparators.FixedOrderComparator;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
@@ -40,7 +48,10 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.util.SelfTester;
+
+import com.l2fprod.common.swing.icons.EmptyIcon;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -111,6 +122,7 @@ public class UIContextImpl implements UIContext{
 	        ,final String launchAppName
 	        ) {
 		super();
+		SplashWindow.reportProgress("Starting User Interface...");
 		this.configuration = configuration;
 		this.help = help;
 		this.executor = executor;
@@ -123,7 +135,21 @@ public class UIContextImpl implements UIContext{
         this.configDialog = configDialog;
         this.aboutDialog = aboutDialog;
 		this.plastic = plastic;
-		this.windowFactories = new LinkedHashMap(windowFactories);
+	// just creates a map ordered by whatever order hivemind takes.	
+	//	this.windowFactories = new LinkedHashMap(windowFactories);
+		this.windowFactories = new TreeMap(
+		        //WARNING - this is horribly fragile - string constants must match
+		        // the names of the window factories.
+		        //@todo re-implement sorting based on a value in the configuration.
+		        new FixedOrderComparator(new String[]{
+		                "VO Explorer"
+		                ,"File Explorer"
+		                ,"Task Runner"
+		                ,"All-VO Astroscope"
+		                ,"All-VO Helioscope"
+		        })
+		);
+		this.windowFactories.putAll(windowFactories);
 		windows = new BasicEventList();
 		windowsView = GlazedLists.readOnlyList(windows);
 		
@@ -147,6 +173,7 @@ public class UIContextImpl implements UIContext{
     	Timer t = new Timer(3000,new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
+                SplashWindow.reportProgress("Opening " + launchAppName);
                 UIContextImpl.this.actionPerformed(new ActionEvent(this,0,launchAppName));
             }
     	});
@@ -273,6 +300,7 @@ public class UIContextImpl implements UIContext{
         ,KeyEvent.VK_F11
         ,KeyEvent.VK_F12      
 	};
+    private static final Icon EMPTY_ICON = new EmptyIcon(12,12);
 	public JMenu createWindowMenu() {
 		JMenu windowMenu = new JMenu();
 		windowMenu.setText("Window");
@@ -281,12 +309,12 @@ public class UIContextImpl implements UIContext{
 		addWindowFactories(windowMenu);
 		windowMenu.addSeparator();
 	
-		JMenuItem selftest = new JMenuItem("Self Tests");
+		JMenuItem selftest = new JMenuItem("Run Self Tests");
 		selftest.setActionCommand(SELFTEST);
 		selftest.addActionListener(this);
 		windowMenu.add(selftest);
 		
-		JMenuItem processes = new JMenuItem("Background Processes");
+		JMenuItem processes = new JMenuItem("Show Background Processes");
 		processes.setActionCommand(PROCESSES);
 		processes.addActionListener(this);
 		windowMenu.add(processes);
@@ -296,12 +324,23 @@ public class UIContextImpl implements UIContext{
 
 			public Object evaluate(Object arg0) {
 				final UIComponent c = (UIComponent)arg0;
-				final JMenuItem mi = new JMenuItem(c.getTitle());
-				c.getComponent().addPropertyChangeListener("title",new PropertyChangeListener() {
+				final Window win = (Window)c.getComponent();
+				final JMenuItem mi = new JMenuItem(c.getTitle(),EMPTY_ICON);				
+				win.addPropertyChangeListener("title",new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						mi.setText(c.getTitle());
 					}
 				});
+				
+				win.addWindowFocusListener(new WindowFocusListener() {
+                    public void windowGainedFocus(WindowEvent e) {
+                        mi.setIcon(UIConstants.UNKNOWN_ICON);
+                    }
+                    public void windowLostFocus(WindowEvent e) {
+                        mi.setIcon(EMPTY_ICON);
+                    }
+				});
+				
 				mi.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						c.setVisible(true);
@@ -348,7 +387,7 @@ public class UIContextImpl implements UIContext{
     public void actionPerformed(ActionEvent arg0) {
             final String cmd = arg0.getActionCommand();
             if (cmd.equals(UIContext.EXIT)) {
-                ConfirmDialog exitDialog = new ConfirmDialog("About to Exit","Do you really want to exit the application?",new Runnable(){
+                ConfirmDialog exitDialog = new ConfirmDialog("Exit VO Desktop Application","This will exit all VO Desktop tools and shut down the Astro Runtime background software. OK?",new Runnable(){
                     public void run() {
                         shutdown.halt();
                     }
