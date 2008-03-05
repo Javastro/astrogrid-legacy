@@ -1,4 +1,4 @@
-/*$Id: HivemindMutableACR.java,v 1.7 2007/01/23 11:45:40 nw Exp $
+/*$Id: HivemindMutableACR.java,v 1.8 2008/03/05 10:55:50 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ComponentDescriptor;
 import org.astrogrid.acr.builtin.ModuleDescriptor;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 
@@ -40,6 +41,7 @@ public class HivemindMutableACR implements ACRInternal {
     
     public HivemindMutableACR(Map services,Map descriptors) {
         super();
+        SplashWindow.reportProgress("Starting Astro Runtime background software...");
         this.servicesByName = services;
         this.servicesByClass = createInterfaceClassIndex(services);
         this.modules = createModules(services); 
@@ -182,6 +184,9 @@ public class HivemindMutableACR implements ACRInternal {
 
 /* 
 $Log: HivemindMutableACR.java,v $
+Revision 1.8  2008/03/05 10:55:50  nw
+added progress reporting to splashscreen
+
 Revision 1.7  2007/01/23 11:45:40  nw
 logging.
 

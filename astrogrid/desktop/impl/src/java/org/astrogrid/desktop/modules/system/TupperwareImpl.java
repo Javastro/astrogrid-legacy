@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal;
@@ -56,6 +57,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 	 */
 	public TupperwareImpl(UIContext parent, PlasticHubListenerInternal hub, String applicationName, String description, List handlers, EventList appList) {
 		super();
+		SplashWindow.reportProgress("Registering with PLASTIC Hub...");
 		this.parent = parent;
 		this.model = appList;
 		this.hub = hub;

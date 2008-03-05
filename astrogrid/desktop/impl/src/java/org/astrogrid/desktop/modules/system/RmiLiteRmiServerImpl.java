@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.14 2007/10/22 10:28:31 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.15 2008/03/05 10:59:22 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,7 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.ComponentDescriptor;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.RmiServer;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
@@ -81,6 +82,7 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
      */
     public RmiLiteRmiServerImpl(ACRInternal acr, Map listenerInterfaces, SessionManagerInternal sess) throws UnknownHostException  {
         super();
+        SplashWindow.reportProgress("Starting AstroRuntime RMI Interface...");
         this.acr = acr;
         this.listenerInterfaces = listenerInterfaces;
         this.session = sess;
@@ -283,6 +285,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.15  2008/03/05 10:59:22  nw
+added progress reporting to splashscreen
+
 Revision 1.14  2007/10/22 10:28:31  nw
 moved runtime exceptioni lifting to the RmiServer, where it belongs.
 

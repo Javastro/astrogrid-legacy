@@ -9,16 +9,20 @@
  */
 
 package org.astrogrid.desktop;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Label;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.net.URL;
 
 /** 
@@ -56,6 +60,12 @@ public class SplashWindow extends Window {
     private Image image;
     
     /**
+     * the label used to report progress
+     */
+    private String label ="";    
+    private Font labelFont = Font.decode("Dialog")
+        .deriveFont(AffineTransform.getScaleInstance(0.9,0.9));
+    /**
      * This attribute indicates whether the method
      * paint(Graphics) has been called at least once since the
      * construction of this window.<br>
@@ -77,8 +87,7 @@ public class SplashWindow extends Window {
      */
     private SplashWindow(Frame parent, Image image) {
         super(parent);
-        this.image = image;
-
+        this.image = image;        
         // Load the image
         MediaTracker mt = new MediaTracker(this);
         mt.addImage(image,0);
@@ -88,9 +97,8 @@ public class SplashWindow extends Window {
         	// do nothing.
         }
         
-        // Center the window on the screen
-        int imgWidth = image.getWidth(this);
-        int imgHeight = image.getHeight(this);
+        imgWidth = image.getWidth(this);
+        imgHeight = image.getHeight(this);
         setSize(imgWidth, imgHeight);
         Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(
@@ -119,6 +127,36 @@ public class SplashWindow extends Window {
     }
     
     /**
+     * @param label the label to set
+     */
+    private void setLabel(String label) {
+        this.label = label;
+        Graphics g = getGraphics();
+        if (g != null ) { // if null, label is not shown
+            drawLabel(g);
+        }
+    }
+    
+    private void drawLabel(Graphics g) {
+        // clear
+        g.setColor(Color.WHITE);
+        int sz = labelFont.getSize();
+        g.fillRect(indent,imgHeight - (sz +2) ,imgWidth - indent,sz + 4); // 2px border top and bottom.
+       // draw.
+        g.setFont(labelFont);
+        g.setColor(Color.BLACK);
+        g.drawString(this.label,indent,imgHeight - 2);
+    }
+    
+    /** x of baseline of leftmost character */
+    private final int indent = 10;
+
+    /** dimensions of the image */
+    private final int imgWidth;
+   
+    private final int imgHeight;
+
+    /**
      * Updates the display area of the window.
      */
     public void update(Graphics g) {
@@ -133,7 +171,7 @@ public class SplashWindow extends Window {
      */
     public void paint(Graphics g) {
         g.drawImage(image, 0, 0, this);
-        
+        drawLabel(g);
         // Notify method splash that the window
         // has been painted.
         // Note: To improve performance we do not enter
@@ -154,7 +192,7 @@ public class SplashWindow extends Window {
             
             // Create the splash image
             instance = new SplashWindow(f, image);
-            
+            reportProgress( "Launching VO Desktop...");
             // Show the window.
             //instance.show();
             instance.setVisible(true);
@@ -210,4 +248,13 @@ public class SplashWindow extends Window {
             throw error;
         }
     }
+    
+    // additions for progress reporting
+    
+    public static void reportProgress(String msg) {
+        if (instance != null) {
+            instance.setLabel(msg);
+        }
+    }
+
 }

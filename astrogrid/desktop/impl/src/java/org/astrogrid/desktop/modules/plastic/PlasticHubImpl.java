@@ -35,6 +35,7 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -105,6 +106,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.notificationsEnabled = p;
         this.ui = ui;
         this.arVersion = arVersion;
+        SplashWindow.reportProgress("Constructing a PLASTIC Hub...");
         logger.info("Constructing a PlasticHubImpl");
     }
 

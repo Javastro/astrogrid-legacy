@@ -20,6 +20,7 @@ import org.apache.hivemind.internal.Module;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.modules.system.ConfigurationInternal;
 
 /** Provides access to configuration keys, manages and propagates their edits.
@@ -107,6 +108,7 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 	 * @param sysPreferences source of system properties.
 	 */
 	public PreferenceManagerImpl(Map prefs, List preferencesRoot, SymbolSource sysPreferences) {
+	    SplashWindow.reportProgress("Loading Preferences...");
 		if (prefs == null || sysPreferences == null) {
 			throw new IllegalArgumentException("null parameter");
 		}

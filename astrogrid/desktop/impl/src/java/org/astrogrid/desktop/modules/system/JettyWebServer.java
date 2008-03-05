@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.17 2007/10/22 10:29:54 nw Exp $
+/*$Id: JettyWebServer.java,v 1.18 2008/03/05 10:59:22 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.modules.system.contributions.ServletContextContribution;
 import org.astrogrid.desktop.modules.system.contributions.ServletsContribution;
 import org.mortbay.http.HttpContext;
@@ -86,6 +87,7 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
     private InetAddress inetAddress;
     public JettyWebServer(List servlets,List contextObjects )  {
         super();
+        SplashWindow.reportProgress("Starting Astro Runtime HTTP interface...");
         this.server = new Server();
        // this.server.setStopGracefully(true); 
         this.servlets = servlets;
@@ -423,6 +425,9 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.18  2008/03/05 10:59:22  nw
+added progress reporting to splashscreen
+
 Revision 1.17  2007/10/22 10:29:54  nw
 factored common inet-address code into separate helper class.
 
