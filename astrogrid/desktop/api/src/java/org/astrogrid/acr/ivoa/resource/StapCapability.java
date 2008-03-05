@@ -35,7 +35,7 @@ private static int hashCode(Object[] array) {
 public StapCapability() {
     setStandardID(CAPABILITY_ID);
 }
-    public static final URI CAPABILITY_ID = URI.create("ivo://org.astrogrid/std/STAP/v1.0");
+    private static final URI CAPABILITY_ID = URI.create("ivo://org.astrogrid/std/STAP/v1.0");
     
     private boolean supportPositioning;
     private String[] supportedFormats;

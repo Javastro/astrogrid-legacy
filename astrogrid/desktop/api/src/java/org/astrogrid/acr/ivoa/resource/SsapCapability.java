@@ -31,7 +31,7 @@ public class SsapCapability extends Capability {
         setStandardID(CAPABILITY_ID);
     }
     /** standard identifier for this capability */
-    public static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/SSA");
+    private static final URI CAPABILITY_ID = URI.create("ivo://ivoa.net/std/SSA");
     private static final long serialVersionUID = -8906326302739355714L;
     private String complianceLevel;
     private String[] dataSource;
