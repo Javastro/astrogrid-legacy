@@ -1,4 +1,4 @@
-/*$Id: Workbench.java,v 1.5 2007/01/29 11:11:35 nw Exp $
+/*$Id: Workbench.java,v 1.6 2008/03/05 10:46:16 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ public class Workbench {
     public static void main(String[] args) {
 
         SplashWindow.splash(Workbench.class.getResource("workbench-splash.gif"));
-        SplashWindow.invokeMain("org.astrogrid.Workbench1", args);
+        SplashWindow.invokeMain("org.astrogrid.VODesktop1", args);
         SplashWindow.disposeSplash();
     }
 
@@ -36,6 +36,9 @@ public class Workbench {
 
 /* 
 $Log: Workbench.java,v $
+Revision 1.6  2008/03/05 10:46:16  nw
+altered main application name to vodesktop
+
 Revision 1.5  2007/01/29 11:11:35  nw
 updated contact details.
 
