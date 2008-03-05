@@ -16,6 +16,7 @@ import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.acr.ivoa.resource.StapService;
+import org.astrogrid.contracts.StandardIds;
 
 
 /** Tests parsing of Table Service resources.
@@ -44,7 +45,7 @@ public class TimeServiceParserUnitTest extends AbstractTestForParser {
         
         assertSame(s.getCapabilities()[0],stap.findStapCapability());
         Capability cap = s.getCapabilities()[0];
-        checkCapability(cap,StapCapability.CAPABILITY_ID.toString(),"SimpleTimeAccess",1);
+        checkCapability(cap,StandardIds.STAP_1_0,"SimpleTimeAccess",1);
         assertTrue(cap instanceof StapCapability);
         
         StapCapability scap = (StapCapability)cap;

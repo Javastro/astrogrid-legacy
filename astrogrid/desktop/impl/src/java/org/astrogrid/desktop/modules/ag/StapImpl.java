@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.11 2008/01/25 07:53:25 nw Exp $
+/*$Id: StapImpl.java,v 1.12 2008/03/05 11:52:13 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.acr.ivoa.resource.StapService;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 
 /** Implementaiton of a component that does stap queries.
@@ -130,7 +131,7 @@ public class StapImpl extends DALImpl implements Stap {
 	public String getRegistryAdqlQuery() {
         return "Select * from Registry r where ( " +
         " r.capability/@xsi:type like '%SimpleTimeAccess'  " +
-        " or r.capability/@standardID = '" + StapCapability.CAPABILITY_ID + "' " +
+        " or r.capability/@standardID = '" + StandardIds.STAP_1_0 + "' " +
         ") and @status = 'active'";
 	}
 
@@ -138,7 +139,7 @@ public class StapImpl extends DALImpl implements Stap {
 		return "//vor:Resource[("
 	+"(capability/@xsi:type &= '*SimpleTimeAccess')"
 	+ " or "
-	+ " (capability/@standardID = '" + StapCapability.CAPABILITY_ID + "')"
+	+ " (capability/@standardID = '" + StandardIds.STAP_1_0 + "')"
 	+ ") and ( not ( @status = 'inactive' or @status='deleted'))]";
 	}
 
@@ -179,6 +180,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.12  2008/03/05 11:52:13  nw
+Complete - task 316: use Guy's standardIDs.
+
 Revision 1.11  2008/01/25 07:53:25  nw
 Complete - task 134: Upgrade to reg v1.0
 

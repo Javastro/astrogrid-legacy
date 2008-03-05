@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.11 2008/01/25 07:53:25 nw Exp $
+/*$Id: SsapImpl.java,v 1.12 2008/03/05 11:52:13 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /** implementation of a component that does ssap queries.
@@ -44,7 +45,7 @@ public class SsapImpl extends DALImpl implements Ssap {
     public String getRegistryAdqlQuery() {
         return "Select * from Registry r where ( " +
         " r.capability/@xsi:type like '%SimpleSpectralAccess'  " 
-        +" or r.capability/@standardID = '" + SsapCapability.CAPABILITY_ID + "' )";
+        +" or r.capability/@standardID = '" + StandardIds.SSAP_1_0 + "' )";
 //@issue        " and ( not (@status = 'inactive' or @status='deleted') )";
     }
     public String getRegistryQuery() {
@@ -55,7 +56,7 @@ public class SsapImpl extends DALImpl implements Ssap {
 		return "//vor:Resource[("
 		+ "(capability/@xsi:type &= '*SimpleSpectralAccess')"
 		+ " or " 
-		+ " (capability/@standardID = '" + SsapCapability.CAPABILITY_ID +"' )"
+		+ " (capability/@standardID = '" + StandardIds.SSAP_1_0 +"' )"
 		+ " ) and ( not ( @status = 'inactive' or @status='deleted'))]";
     }
 
@@ -118,6 +119,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.12  2008/03/05 11:52:13  nw
+Complete - task 316: use Guy's standardIDs.
+
 Revision 1.11  2008/01/25 07:53:25  nw
 Complete - task 134: Upgrade to reg v1.0
 

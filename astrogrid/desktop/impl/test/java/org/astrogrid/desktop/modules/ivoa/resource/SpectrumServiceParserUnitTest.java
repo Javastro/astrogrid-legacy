@@ -16,6 +16,7 @@ import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
+import org.astrogrid.contracts.StandardIds;
 
 /** Tests parsing of spectrym services
  * @todo find more examples to test against.
@@ -44,7 +45,7 @@ public class SpectrumServiceParserUnitTest extends AbstractTestForParser {
         
         assertSame(s.getCapabilities()[0],stap.findSsapCapability());
         Capability cap = s.getCapabilities()[0];
-        checkCapability(cap,SsapCapability.CAPABILITY_ID.toString(),"SimpleSpectralAccess",1);
+        checkCapability(cap,StandardIds.SSAP_1_0,"SimpleSpectralAccess",1);
         assertTrue(cap instanceof SsapCapability);
         
         SsapCapability scap = (SsapCapability)cap;

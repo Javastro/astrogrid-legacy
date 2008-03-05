@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -60,7 +61,6 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
-import org.astrogrid.desktop.modules.ui.voexplorer.ResourceLists;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
@@ -98,7 +98,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 		setTransferHandler(new StorageFoldersListTransferHandler());
 		setDragEnabled(true);
 		
-		setBorder(ResourceLists.EMPTY_BORDER);
+		setBorder(BorderFactory.createEmptyBorder());
 		setModel(new EventListModel(folderList));
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setSelectedIndex(0);

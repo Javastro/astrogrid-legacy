@@ -453,14 +453,14 @@ public final class ResourceStreamParser implements Iterator {
         List ssapSupportedFrame = null;
         List ssapSupports = null;
         
-        if (StringUtils.contains(xsiType,"Harvest")  //@todo replace with one from contacts, when defined
-                && RegistryCapability.CAPABILITY_ID.toString().equals(standardID)) {
+        if (StringUtils.contains(xsiType,"Harvest")  
+                && StandardIds.REGISTRY_1_0.equals(standardID)) {
             c = new HarvestCapability();
         } else if (StringUtils.contains(xsiType,"ConeSearch")
                 || StandardIds.CONE_SEARCH_1_0.equals(standardID)) {
             c = new ConeCapability();            
-        } else if (StringUtils.contains(xsiType,"Search") //@todo replace with one from contracts, when defined
-                && RegistryCapability.CAPABILITY_ID.toString().equals(standardID)) {
+        } else if (StringUtils.contains(xsiType,"Search")
+                && StandardIds.REGISTRY_1_0.equals(standardID)) {
             c = new SearchCapability();
             optionalProtols = new ArrayList(1);            
         } else if (StringUtils.contains(xsiType,"CeaCapability")
@@ -469,15 +469,15 @@ public final class ResourceStreamParser implements Iterator {
         } else if (StringUtils.contains(xsiType,"SimpleImageAccess")
                 || StandardIds.SIAP_1_0.equals(standardID)) {
             c = new SiapCapability();            
-        } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess") // @todo replace wit contracts 
-                || SsapCapability.CAPABILITY_ID.toString().equals(standardID)) {
+        } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess")
+                ||StandardIds.SSAP_1_0.equals(standardID)) {
             c = new SsapCapability();
             ssapDataSource = new ArrayList(3);
             ssapCreationType = new ArrayList(3);
             ssapSupportedFrame = new ArrayList(3);
             ssapSupports = new ArrayList(3);            
         } else if (StringUtils.contains(xsiType,"SimpleTimeAccess") //@todo replace with contracts
-                || StapCapability.CAPABILITY_ID.toString().equals(standardID)) {
+                || StandardIds.STAP_1_0.equals(standardID)) {
             c = new StapCapability();
             stapFormats = new ArrayList(3);
         } else {

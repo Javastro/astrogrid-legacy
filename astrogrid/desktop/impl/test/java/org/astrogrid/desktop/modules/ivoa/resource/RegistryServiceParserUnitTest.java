@@ -21,6 +21,7 @@ import org.astrogrid.acr.ivoa.resource.SearchCapability;
 import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
+import org.astrogrid.contracts.StandardIds;
 
 import junit.framework.TestCase;
 
@@ -56,7 +57,7 @@ public class RegistryServiceParserUnitTest extends AbstractTestForParser {
             
             assertSame(s.getCapabilities()[0],reg.findHarvestCapability());
             Capability cap = s.getCapabilities()[0];
-            checkCapability(cap,RegistryCapability.CAPABILITY_ID.toString(),"Harvest",2);
+            checkCapability(cap,StandardIds.REGISTRY_1_0,"Harvest",2);
             assertTrue(cap instanceof HarvestCapability);
             HarvestCapability hCap = (HarvestCapability)cap;
             assertEquals(200,hCap.getMaxRecords());
@@ -77,7 +78,7 @@ public class RegistryServiceParserUnitTest extends AbstractTestForParser {
             
             assertSame(s.getCapabilities()[1],reg.findSearchCapability());
             cap = s.getCapabilities()[1];
-            checkCapability(cap,RegistryCapability.CAPABILITY_ID.toString(),"Search",1);
+            checkCapability(cap,StandardIds.REGISTRY_1_0,"Search",1);
             assertTrue(cap instanceof SearchCapability);
             SearchCapability sCap = (SearchCapability) cap;
             assertEquals("full",sCap.getExtensionSearchSupport());
@@ -126,7 +127,7 @@ public class RegistryServiceParserUnitTest extends AbstractTestForParser {
             
             assertSame(s.getCapabilities()[0],reg.findHarvestCapability());
             Capability cap = s.getCapabilities()[0];
-            checkCapability(cap,RegistryCapability.CAPABILITY_ID.toString(),"Harvest",2);
+            checkCapability(cap,StandardIds.REGISTRY_1_0,"Harvest",2);
             assertTrue(cap instanceof HarvestCapability);
             HarvestCapability hCap = (HarvestCapability)cap;
             assertEquals(0,hCap.getMaxRecords());
@@ -147,7 +148,7 @@ public class RegistryServiceParserUnitTest extends AbstractTestForParser {
             });
             assertSame(s.getCapabilities()[1],reg.findSearchCapability());
             cap = s.getCapabilities()[1];
-            checkCapability(cap,RegistryCapability.CAPABILITY_ID.toString(),"Search",2);
+            checkCapability(cap,StandardIds.REGISTRY_1_0,"Search",2);
             assertTrue(cap instanceof SearchCapability);
             SearchCapability sCap = (SearchCapability) cap;
             assertEquals("partial",sCap.getExtensionSearchSupport());
