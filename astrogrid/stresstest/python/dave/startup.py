@@ -54,8 +54,8 @@ from logger import *
 
 #
 # Set the default loop counters.
-innerloop=10
-outerloop=10
+innerloop=5
+outerloop=5
 #
 # Set the default wait.
 testwait=5
@@ -66,11 +66,17 @@ testtidy=False
 # Set the exit flag to false.
 testexit=False
 
+# Set the DSA-related defaults
+# NB: These will work on the Cam test rig only
+rows=10000
+ceaivorn="org.astrogrid.regtest.dsa/mysql-first/CatName_first/ceaApplication"
+querytable="TabNameFirst_catalogue"
+
 #
 # Get the command line options.
 opts, args = getopt.getopt(
 	sys.argv[1:],
-	'a:u:p:i:o:w:dtx',
+	'a:u:p:i:o:w:r:c:q:dtx',
     	[
     	'auth=',
     	'user=',
@@ -78,6 +84,9 @@ opts, args = getopt.getopt(
     	'inner=',
     	'outer=',
     	'wait=',
+      'rows=',
+      'cea=',
+      'querytable=',
     	'debug',
     	'tidy',
     	'exit'
@@ -130,6 +139,23 @@ for opt, arg in opts:
         testexit = True
     if opt == "--exit":
         testexit = True
+
+    # These ones are for the DSA stresstests in ../keith/
+    if opt == "-r":
+        rows = int(arg)
+    if opt == "--rows":
+        rows = int(arg)
+
+    if opt == "-c":
+        ceaivorn = arg
+    if opt == "--cea":
+        ceaivorn = arg
+
+    if opt == "-q":
+        querytable = arg
+    if opt == "--querytable":
+        querytable = arg
+	
 
 logging.debug("Starting test [%s]", testname)
 logging.debug("Astro user [%s]", astrouser)
