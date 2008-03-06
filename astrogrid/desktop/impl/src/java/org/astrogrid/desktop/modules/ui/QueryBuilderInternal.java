@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ui;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ui.QueryBuilder;
 
@@ -25,11 +26,8 @@ public interface QueryBuilderInternal extends QueryBuilder, Factory {
 	void build(CeaApplication app) ;
 	
 	/** build a query against the specified data collection */
-	void build(DataCollection coll);
-	
-	/** build a query against the specified catalog service 
-	 * @future - not possible yet*/
-	//void build(CatalogService cat);
+	void build(CatalogService coll);
+
 	
 	// irritatingly, dataCollection and catalogService don't have abase class that
 	// expresses 'has table metadata' - commonest baseclass is Resource. will 

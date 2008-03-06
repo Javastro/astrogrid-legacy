@@ -12,9 +12,11 @@ import javax.swing.KeyStroke;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -24,7 +26,6 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 /** build a query from a selected resource.
- * @todo implement
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20074:13:13 PM
  */
@@ -47,7 +48,43 @@ private final QueryBuilderInternal t;
 	public static boolean hasAdqlParameter(CeaApplication a) {
 	    return findAdqlParameter(a) != null;
 	}
-
+	
+	/** indicate what kinds of interface this application has
+	 * @return 0 - query and app interfasces
+	 *             <br>1 - query only 
+	 *             <br>-1 - application only.
+	 */
+	public static int whatKindOfInterfaces(CeaApplication a) {
+	    final ParameterBean pb = findAdqlParameter(a);
+	    if (pb == null) {
+	        return -1;
+	    }
+	    final String name = pb.getName();
+	    // so now see if there's query and/or non-query interfaces
+	    boolean foundQuery = false;
+	    boolean foundNonQuery = false;
+        final InterfaceBean[] interfaces = a.getInterfaces();         
+        for (int i = 0; i < interfaces.length; i++) {  
+            if (foundQuery && foundNonQuery) {
+                break; // no need to search anymore
+            }
+            // search through parameters of this interface. assume it's a non-adql until shown otherwise.            
+            final InterfaceBean iface = interfaces[i];
+            final ParameterReferenceBean[] refs = iface.getInputs();
+            boolean currentIsNonQuery = true;
+            for (int j = 0; j < refs.length; j++) {
+                if (refs[j].getRef().equals(name)) {
+                    foundQuery = true; // it's an adql interface
+                    currentIsNonQuery = false;
+                    break; // no need to scan any more of the parameters.
+                }
+            }
+            // it's a non-adql interface.
+            foundNonQuery = foundNonQuery || currentIsNonQuery;
+        }	    
+        
+        return (foundQuery ? 1 : 0) + (foundNonQuery ? -1 : 0);
+	}
 	/** find the first adql parameter, or return null */
 	   public static ParameterBean findAdqlParameter(CeaApplication a) {
 	        ParameterBean[] parameters = a.getParameters();
@@ -111,13 +148,8 @@ private final QueryBuilderInternal t;
 	            break;
 	        case 1:
 	            Resource r = (Resource) resources.get(0);
-	            if (isDbSchema(r)) { 
-	                // single db schema.
-	                if (r instanceof DataCollection) {
-	                    t.build((DataCollection)r);
-	                } /* not implemented else { // must be a catalog service.
+	            if (r instanceof CatalogService && r instanceof CeaService) {
 	                    t.build((CatalogService)r);
-	                }*/
 	            } else if (r instanceof CeaApplication) {
 	                // a cea app.
 	                t.build((CeaApplication)r);
@@ -163,7 +195,9 @@ private final QueryBuilderInternal t;
 	
 	// accept a single database schema, or a single queriable service.
 	public boolean invokable(Resource resource) {
-		return isDbSchema(resource) ||
+		return
+		        (resource instanceof CatalogService && resource instanceof CeaService)
+		    ||
 				 (resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource));
 
 	}
@@ -173,9 +207,6 @@ private final QueryBuilderInternal t;
 		noneSelected();
 		// later - support multi-query later
 
-	}
-	private boolean isDbSchema(Object r) { // just for tabular db at the moment.
-		return r instanceof DataCollection; // || r instanceof CatalogService;
 	}
 
 	

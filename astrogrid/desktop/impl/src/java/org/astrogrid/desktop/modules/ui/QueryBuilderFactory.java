@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 
 /** factory for the simplified app launcher.
@@ -44,16 +45,12 @@ public class QueryBuilderFactory implements QueryBuilderInternal{
         tr.build(app);
     }
 
-    public void build(DataCollection coll) {
+    public void build(CatalogService coll) {
         QueryBuilderInternal tr = newInstance();
         tr.build(coll);   
         tr.show();        
     }
-//
-//    public void build(CatalogService cat) {
-//        QueryBuilderInternal tr = newInstance();
-//        tr.build(cat);        
-//    }
+
 
     public void edit(FileObject fo) {
         QueryBuilderInternal tr = newInstance();

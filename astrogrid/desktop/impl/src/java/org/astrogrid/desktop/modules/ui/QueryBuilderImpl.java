@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.awt.HeadlessException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
@@ -12,8 +13,11 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -61,19 +65,49 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
         buildForm(app);
     }
 
-    public void build(DataCollection coll) {
+    public void build(final CatalogService coll) {
         // find the related cea app, and go from there...
-        final String s = StringUtils.substringBeforeLast(coll.getId().toString(),"/");
+        Relationship[] relationships = coll.getContent().getRelationships();
+        URI id = null;
+        // first - try to find a relationship, and extract an id from this.
+        if (relationships != null) {
+            for (int i = 0; i < relationships.length; i++) {
+                Relationship r = relationships[i];
+                if ("service-for".equalsIgnoreCase(r.getRelationshipType()) && r.getRelatedResources().length > 0) {
+                    ResourceName rn = r.getRelatedResources()[0];
+                    if (rn.getId() != null) {
+                        id = rn.getId(); // id attribute isn't provided at the moment.
+                    } else {
+                        try {
+                            id = new URI(rn.getValue());
+                        } catch (URISyntaxException e) {
+                        }
+                    }                        
+                }
+            }
+        }
+        if (id == null) { // fallback to string-mangling
+            String s = StringUtils.substringBeforeLast(coll.getId().toString(),"/");
+            try {
+                id = new URI(s + "/ceaApplication");
+            } catch (URISyntaxException x) {
+                // oh, I give up!!
+                showError("Failed to find an application associated with this catalog service");                
+            }
+        }
+        
+        final URI ceaAppId = id; // pesky finals
+        
         // do the query to find a related cea app on a bg thread.
-        (new BackgroundOperation("Finding application definition for this collection",Thread.MAX_PRIORITY) {
+        (new BackgroundOperation("Finding application definition for this catalog",Thread.MAX_PRIORITY) {
 
             protected Object construct() throws Exception {
-                URI id = new URI(s + "/ceaApplication");
-                Resource app =  reg.getResource(id);
+                
+                Resource app =  reg.getResource(ceaAppId);
                 if (app != null && app instanceof CeaApplication) {
                     return app;
                 } else {
-                    throw new ACRException("Failed to find an application associated with this collection");
+                    throw new ACRException("Failed to find an application associated with this catalog service");
                 }
             }
             protected void doFinished(Object result) {
