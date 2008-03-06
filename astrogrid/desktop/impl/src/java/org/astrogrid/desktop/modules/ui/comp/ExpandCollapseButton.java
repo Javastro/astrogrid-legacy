@@ -34,6 +34,7 @@ public class ExpandCollapseButton extends JToggleButton implements ItemListener 
 		toggleAction.putValue(JCollapsiblePane.COLLAPSE_ICON, IconHelper.loadIcon(CONTRACT_ICON));
 		this.setAction(toggleAction);
 		this.putClientProperty("hideActionText",Boolean.TRUE);
+		this.setText(null); // as client property isn't always respected.
        		
 	}
 	
