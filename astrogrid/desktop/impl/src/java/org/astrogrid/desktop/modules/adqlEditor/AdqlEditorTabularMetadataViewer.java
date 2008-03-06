@@ -172,13 +172,24 @@ public class AdqlEditorTabularMetadataViewer extends TabularMetadataViewer {
 
 	        ColumnBean[] columnBeans = jtable.getSelected();
 	        CommandFactory factory = adqlTree.getCommandFactory() ;
+            if( entry.getShortTypeName().equalsIgnoreCase( AdqlData.SELECT_TYPE ) ) {
+                AdqlNode[] cns = entry.getChildren() ;
+                for( int i=0; i<cns.length; i++ ) {
+                    if( cns[i].getShortTypeName().equalsIgnoreCase( AdqlData.SELECTION_LIST_TYPE ) )
+                        entry = cns[i] ;
+                        break ;
+                }
+            }
 	        command = factory.newMultipleColumnInsertCommand( entry 
 	                                                        , AdqlUtils.getType( entry.getXmlObject(), AdqlData.COLUMN_REFERENCE_TYPE ) ) ;
 	        if( command == null ) {
 	            return false ;
 	        }
-	        command.setTable( (TableBean)tableCombo.getSelectedItem() ) ;
-	        command.setColumns( columnBeans ) ;
+            command.setTable( (TableBean)tableCombo.getSelectedItem() ) ;
+            command.setColumns( columnBeans ) ;
+            if( command.isChildEnabled() == false ) {
+                return false ;
+            }	        
 	        return true ;
 	        
 	    }

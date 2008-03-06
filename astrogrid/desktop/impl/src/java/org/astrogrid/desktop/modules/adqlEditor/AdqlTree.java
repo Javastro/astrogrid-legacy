@@ -339,10 +339,12 @@ public final class AdqlTree extends JTree
         ToolTipManager.sharedInstance().registerComponent( this ) ;
     }
     
+    protected KeyStroke getMicroEditAccelerator() {
+        return KeyStroke.getKeyStroke( KeyEvent.VK_SPACE, InputEvent.CTRL_MASK ) ;
+    }
+    
 
     private synchronized void resetCatalogueData( final URI tabulaData ) {
-        
-        final XmlCursor cursor = getRoot().newCursor() ;
         
         log.debug( tabulaData ) ;
         
@@ -350,17 +352,12 @@ public final class AdqlTree extends JTree
             protected Object construct() throws Exception {
                 CatalogService cs = null ;
                 if( tabulaData != null ) {
-                    try {
                         Resource res = registry.getResource( tabulaData );
                         cs = (CatalogService)res ;
-                    } catch (Throwable e) {
-                        log.debug( "Could not locate tabulaData: " + tabulaData, e ) ;
-                    }
                 }
                 return cs ;                      
             }
             protected void doFinished( Object result ) {
-                cursor.dispose() ;
                 catalogueService = (CatalogService)result ;
                 if( catalogueService != null ){
                     title = catalogueService.getShortName() ;
@@ -372,10 +369,10 @@ public final class AdqlTree extends JTree
                 }
             }
             protected void doError(Throwable ex) {
-                cursor.dispose() ;
                 parent.showTransientWarning("Failed to find catalogue data",ExceptionFormatter.formatException(ex));
                 if( log.isDebugEnabled() ) {
-                    log.debug( "Worker thread failed searching for catalogue data.", ex )  ;    
+                    log.debug( "Worker thread failed searching for catalogue data: "
+                             + tabulaData, ex )  ;    
                 }
             }
             
@@ -383,6 +380,7 @@ public final class AdqlTree extends JTree
         }).start();
      
     }
+    
     private void retrieveAdqlSchemaVersion() {
         String piName = null ;
         String piValue = null ;

@@ -107,6 +107,9 @@ private final CellConstraints cc;
 private final PanelBuilder pb;
 
 private FormLayout fl;
+
+private Dimension previousSize = null;
+private Dimension preservedPreferredSize = null ;
 	
 	
 	/**
@@ -238,30 +241,31 @@ private FormLayout fl;
 		bottomPanel.setVisible(false);
 		// listen to the frame changing size, and change preferred size of the adql pane accordingly
 		//-means that all free page gets assignrf to the adql page.
-//		this.addComponentListener(new ComponentAdapter() {
-//		    Dimension previousSize = null;
-//		    public void componentResized(ComponentEvent e) {
-//		        if (bottomPanel.getContentPane().getComponentCount() == 0) {
-//		            // no adql panel present - no point continuing.
-//		            return;
-//		        }
-//		        if (previousSize == null) {
-//		            //first time wev'e been called - on window paint.
-//		            previousSize = getSize();
-//		        } else {
-//		            // wev'e been resized. calculate the difference between new and old sizes.
-//		            Dimension curr = getSize();
-//		            double diff = curr.getHeight() - previousSize.getHeight();
-//		            previousSize = curr;
-//		            // now alter the size of the component.
-//		            final JComponent comp = (JComponent)bottomPanel.getContentPane().getComponent(0);
-//                    curr = comp.getPreferredSize();		            
-//		            Dimension nu = new Dimension((int)curr.getWidth(),(int)(curr.getHeight() + diff));
-//		            comp.setPreferredSize(nu);
-//		            comp.revalidate();
-//		        }
-//		    }
-//		});
+        
+		this.addComponentListener( new ComponentAdapter() {
+
+		    public void componentResized(ComponentEvent e) {
+
+		        if( bottomPanel.getComponentCount() == 0 
+		                ||
+		                bottomPanel.getComponent(0) instanceof ADQLEditorPanel == false ) {
+		            // no adql panel present - no point continuing.
+		            return;
+		        }
+
+		        if (previousSize == null) {
+		            // First time called - on window paint.
+		            // Just preserve the size...
+		            previousSize = getSize();
+		        }
+		        else {
+                    ADQLEditorPanel ae = (ADQLEditorPanel)bottomPanel.getComponent(0) ;
+		            reclaimScreenRealEstate( ae ) ; 
+                    ae.revalidate() ; 
+		        }
+
+		    }
+		});
 		
 		fl = new FormLayout(
 				"fill:d:grow,3dlu,fill:d:grow,3dlu,d:grow" // cols
@@ -364,6 +368,25 @@ private FormLayout fl;
 		String interfaceName = (String)interfaceChooser.getSelectedItem();
 		model.changeInterface(interfaceName); 
 	}
+    
+    private void reclaimScreenRealEstate( ADQLEditorPanel adqlEditor ) { 
+                       
+            //
+            // OK. This is the ADQL Editor...
+            // We've been resized. Calculate the difference between new and old sizes.
+            // We do this just for the sake of resizing the ADQL editor,
+            // where we need to set the preferred size to recapture screen real estate.
+            Dimension curr = getSize();
+            double diffH = curr.getHeight() - previousSize.getHeight();
+            double diffW = curr.getWidth() - previousSize.getWidth() ;
+            previousSize = curr;
+            // now alter the size of the component.
+            curr = adqlEditor.getPreferredSize();                   
+            Dimension nu = new Dimension((int)(curr.getWidth()+diffW),(int)(curr.getHeight() + diffH));
+            adqlEditor.setPreferredSize(nu) ; 
+            preservedPreferredSize = nu ;
+    }
+  
 	
 	
 	/** internal model for the task runner
@@ -607,8 +630,18 @@ private FormLayout fl;
 			// full adql editor..
 			final AdqlTextFormElement adqlElement = builder.createAdqlTextFormElement(adql.values[0],adql.description,model.currentResource(),parent);
 			ADQLEditorPanel adqlEditor = adqlElement.getEditorPanel();
-			adqlEditor.setBorder(null);
-	        adqlEditor.setPreferredSize(new Dimension(900,450));
+			adqlEditor.setBorder( null );
+            if( previousSize == null && preservedPreferredSize == null ) {
+                //
+                // This is for the initial display of the ADQL editor...
+                adqlEditor.setPreferredSize(new Dimension(895,450));
+            }
+            else {
+                //
+                // This is required if we flip between panes and resize...
+                adqlEditor.setPreferredSize( preservedPreferredSize ) ;
+                reclaimScreenRealEstate( adqlEditor ) ;
+            }
 			bottomPanel.removeAll(); // might have an adql editor from a previous app.
 			bottomPanel.add(adqlEditor);			
 			// standard sized editor...

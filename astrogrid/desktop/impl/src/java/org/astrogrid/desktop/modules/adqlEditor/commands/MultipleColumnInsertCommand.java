@@ -19,6 +19,7 @@ import javax.swing.undo.UndoableEdit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
@@ -419,6 +420,37 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
             }
         }
         return buffer.toString() ; 
+    }
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.desktop.modules.adqlEditor.commands.AbstractCommand#isChildEnabled()
+     */
+    public boolean isChildEnabled() {
+            boolean enabled = false ;
+            XmlObject o = getParentEntry().getXmlObject() ;
+            String e = getChildElementName() ;
+            if( isChildOptionalSingleton() ) {
+                enabled = !AdqlUtils.isSet( o, e ) ;
+                if( enabled == true && columns != null && columns.length != 1 ) {
+                    enabled = false ;
+                }
+            }
+            else if( isChildMandatorySingleton() ) {
+                enabled = ( AdqlUtils.get( o, e ) == null ) ;
+                if( enabled == true && columns != null && columns.length != 1 ) {
+                    enabled = false ;
+                }
+            }
+            else if( isChildHeldInArray() ) {
+                if( maxOccurs == -1 ) {
+                    enabled = true ;
+                }
+                else if( columns != null ) {
+                    if( maxOccurs - AdqlUtils.sizeOfArray( o, e ) >= columns.length )
+                        enabled = true ;
+                }
+            }
+            return enabled ;
     }  
     
 }
