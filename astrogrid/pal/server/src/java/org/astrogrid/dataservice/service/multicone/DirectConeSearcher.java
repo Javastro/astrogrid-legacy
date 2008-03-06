@@ -37,8 +37,10 @@ public class DirectConeSearcher {
 
     /**
      * Constructs a direct cone searcher.
+     * If it fails a ServletException is thrown and the token is released.
      *
      * @param  token        token reserving place in resource allocation queue
+     *                      (released on failure)
      * @param  catalogName  table catalogue name
      * @param  tableName    table name
      * @param  bestOnly     true for best match only, false for all matches
@@ -54,9 +56,11 @@ public class DirectConeSearcher {
                                              bestOnly);
         }
         catch (ServletException e) {
+            token.release();
             throw e;
         }
         catch (Throwable e) {
+            token.release();
             throw (ServletException) new ServletException(e.getMessage())
                                     .initCause(e);
         }
