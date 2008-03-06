@@ -27,15 +27,11 @@ import sys
 import time
 import getopt
 import logging
-
-#
-# Import our test settings.
-from settings import *
+import xmlrpclib
 
 #
 # Import our test tools.
 from logger  import *
-from testacr import *
 
 #
 # Default delay of 5 seconds.
