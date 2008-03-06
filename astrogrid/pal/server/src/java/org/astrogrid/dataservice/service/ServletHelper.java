@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.7 2007/10/17 09:58:20 clq2 Exp $
+ * $Id: ServletHelper.java,v 1.8 2008/03/06 14:46:45 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -438,8 +438,7 @@ public class ServletHelper
     * refreshes the page given by the URL - which should point to the same page
     * that contains the snippet */
    public static String makeRefreshSnippet(int secs, String url) {
-         return("(Refreshes every "+secs+" seconds)"+
-                "<META HTTP-EQUIV='Refresh' CONTENT='"+secs+";URL="+url+"'>");
+         return("<META HTTP-EQUIV='Refresh' CONTENT='"+secs+";URL="+url+"'>");
    }
 
    /** Returns the stylesheet to be used for the center's html pages in the form

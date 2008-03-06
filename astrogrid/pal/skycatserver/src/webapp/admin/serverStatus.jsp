@@ -18,7 +18,11 @@
     DataServer server = new DataServer();
 %>
 <html>
-<head><title><%= DataServer.getDatacenterName() %> Status</title>
+<head>
+<%= ServletHelper.makeRefreshSnippet(10,
+         new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/serverStatus.jsp").toString()
+      ) %>
+<title><%= DataServer.getDatacenterName() %> Status</title>
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
@@ -50,10 +54,7 @@
    
    renderer.writeHtmlStatus(out, server.getStatus().getServiceStatus(), persisted); 
    %>
-
-<%= ServletHelper.makeRefreshSnippet(10,
-         new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/serverStatus.jsp").toString()
-      ) %>
+   <p>(Page self-refreshes every 10 seconds)</p>
 </div>
 </body>
 </html>

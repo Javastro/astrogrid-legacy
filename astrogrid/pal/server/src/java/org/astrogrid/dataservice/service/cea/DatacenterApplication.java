@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.15 2008/02/07 17:27:45 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.16 2008/03/06 14:46:45 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -175,6 +175,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       }
       catch (Throwable e) {
          this.setStatus(Status.ERROR);
+         this.reportFailure(e.getMessage());
          this.reportError(e+" executing "+this.getTool().getName(),e);
          return;
       }
@@ -635,7 +636,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       } 
       else if (state.equals(QueryState.ERROR)) {
          /*this.reportError(qs.toString()); // sets us in error state.*/
-         this.reportMessage(qs.toString());
+         //this.reportMessage(qs.toString());
+         this.reportFailure(qs.toString());
          this.setStatus(Status.ERROR);
       } 
       else if (state.equals(QueryState.FINISHED)) {
@@ -660,7 +662,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          logger.fatal("Programming error - unknown state encountered" + state.toString());
          // would like to throw, but won't - as don't know who called me.
          this.setStatus(Status.UNKNOWN);
-         this.reportMessage("Unkown state encountered " + state.toString());
+         this.reportMessage("Unknown state encountered " + state.toString());
       }
       
    }
@@ -677,6 +679,12 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.16  2008/03/06 14:46:45  clq2
+ PAL_KEA_2588
+
+ Revision 1.15.4.1  2008/03/06 13:01:52  kea
+ Tweaks.
+
  Revision 1.15  2008/02/07 17:27:45  clq2
  PAL_KEA_2518
 

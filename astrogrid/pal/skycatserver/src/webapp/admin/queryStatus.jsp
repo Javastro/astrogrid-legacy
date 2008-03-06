@@ -20,7 +20,26 @@
     DataServer server = new DataServer();
 %>
 <html>
-<head><title>Status of Query <%= request.getParameter("ID") %></title>
+<head>
+<%
+   String queryId = request.getParameter("ID");
+   boolean isFinished = false;
+   TaskStatus status = null;
+   if (queryId != null) {
+      try {
+         status = 
+            server.getQueryStatus(LoginAccount.ANONYMOUS, queryId);
+         if (status != null) {
+            if ( ! status.isFinished()) {
+               URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/queryStatus.jsp");
+               out.write(ServletHelper.makeRefreshSnippet(3, statusUrl+"?ID="+queryId));
+            }
+         }
+      } catch (Throwable th) {}  // Errors will be caught and reported below
+   }
+%>
+%
+<title>Status of Query <%= request.getParameter("ID") %></title>
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
@@ -30,22 +49,14 @@
 <%@ include file="../navigation.xml" %>
 <div id='bodyColumn'>
 
-<%
-   String queryId = request.getParameter("ID");
-   
-   if (queryId == null) {
-      throw new IllegalArgumentException("No query 'ID' given");
-   }
-   
-%>
 <h1>Status of Query <%=ServletHelper.makeSafeForHtml(queryId) %></h1>
 <p>at <%= new Date() %>
 </p>
 <%
-   boolean isFinished = false;
+   if (queryId == null) {
+      throw new IllegalArgumentException("No query 'ID' given");
+   }
    try {
-      TaskStatus status = server.getQueryStatus(LoginAccount.ANONYMOUS, queryId);
-
       if (status == null) {
          out.write("<p>No live status information, looking in history...</p>");
          status = new StatusLogger().getPersistedStatus(queryId);
@@ -56,7 +67,6 @@
          }
          
       }
-
       //print first status as header level 2, all following ones at header level 3
       if (status instanceof QuerierStatus) {
          out.write("<h2>"+ServletHelper.makeSafeForHtml(((QuerierStatus) status).getState().toString())+" at "+status.getTimestamp()+"</h2>");
@@ -78,9 +88,6 @@
             out.write("<p>"+((QuerierStatus) status).getProgressMsg()+"</p>");
          }
 
-         //if any status is finsihed, the whole thing is finished
-         if (status.isFinished()) isFinished = true;
-         
          out.write("<hr>");
          status = status.getPrevious();
          if (status != null) {
@@ -93,13 +100,6 @@
             out.write(ServletHelper.makeSafeForHtml(status.getMessage()));
          }
       }
-         
-      if (!isFinished) {
-         //automatic refresh
-         URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/admin/queryStatus.jsp");
-         out.write(ServletHelper.makeRefreshSnippet(3, statusUrl+"?ID="+queryId));
-      }
-         
          
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th+", getting status of query "+queryId, th);

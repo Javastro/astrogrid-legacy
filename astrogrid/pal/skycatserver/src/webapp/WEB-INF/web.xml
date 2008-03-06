@@ -255,7 +255,11 @@
 
   <security-role>
      <role-name>paladmin</role-name>
+  </security-role>
+  <security-role>
      <role-name>dsaadmin</role-name>
+  </security-role>
+  <security-role>
      <role-name>agWebAdminUser</role-name>
   </security-role>
 

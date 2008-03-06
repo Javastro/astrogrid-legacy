@@ -25,9 +25,14 @@
 <%@ include file='../navigation.xml' %>
 
 <div id='bodyColumn'>
-
   <h1>Registering <%= DataServer.getDatacenterName() %></h1>
 
+<%
+// Optionally enable registration (DISABLED when SampleStarsPlugin in use)
+   String qPlugin = ConfigFactory.getCommonConfig().getString(
+        "datacenter.querier.plugin");
+   if ( (qPlugin != null) && (!qPlugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) ) {
+%>
   <p>
   To conform with new IVOA standards, you must manually create the 
   registration(s) for your DSA/catalog installation at your chosen 
@@ -79,6 +84,18 @@ DSA/catalog installation, to ensure that the registry has an up-to-date
 view.
 </p></li>
 </ul>
+<%
+}
+else {
+%>
+  <p>
+  Registration is not supported for DSA/Catalog installations
+  using the SampleStars database;  please configure this installation
+  to use your own data before registering it. 
+  </p>
+<%
+}
+%>
 </div>
 
 <%@ include file='../footer.xml' %>
