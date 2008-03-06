@@ -38,17 +38,17 @@ from startup import *
 
 #
 # Import the data several times.
-for inport in range(1, outerloop) :
+for outer in range(1, outerloop) :
     #
     # Set the target file name.
     path = '%(root)s/test-%(loop)03X' % {
         'root':astroroot,
-        'loop':inport
+        'loop':outer
         }
 
     #
     # Inport data from the source URL.
-    logging.info("INPORT start")
+    logging.info("ACTION [%s] LOOP [%d]", 'inport', outer)
     start = time.time()
     endpoint = myspace.copyURLToContent(
         ar,
@@ -57,14 +57,14 @@ for inport in range(1, outerloop) :
     	)
     done  = time.time()
     diff  = done - start
-    logging.debug("INPORT done [%f]", diff)
+    logging.info("ACTION [%s] LOOP [%d] TIME [%f]", 'inport', outer, diff)
 
     #
     # Read the data several times.
     for read in range(1, innerloop) :
         #
         # Get a URL to read the data from.
-        logging.info("EXPORT start")
+        logging.info("ACTION [%s] LOOP [%d]", 'export', inner)
         start = time.time()
         endpoint = myspace.getReadContentURL(
             ar,
@@ -72,23 +72,23 @@ for inport in range(1, outerloop) :
         	)
         done  = time.time()
         diff  = done - start
-        logging.info("EXPORT done [%f]", diff)
+        logging.info("ACTION [%s] LOOP [%d] TIME [%f]", 'export', inner, diff)
 
         #
         # Read the data back and check it.
-        logging.info("READ   start")
+        logging.info("ACTION [%s] LOOP [%d]", 'read', inner)
         start = time.time()
         data = urllib.urlopen(
             endpoint
             ).read()
         done  = time.time()
         diff  = done - start
-        logging.info("READ   done [%f]", diff)
+        logging.info("ACTION [%s] LOOP [%d] TIME [%f]", 'read', inner, diff)
 
 #
 # Delete the last top node.
 if (testtidy):
-    logging.info("Deleting tree")
+    logging.info("ACTION [%s]", 'delete')
     start = time.time()
     myspace.deleteFile(
         ar,
@@ -96,7 +96,7 @@ if (testtidy):
     	)
     done  = time.time()
     diff  = done - start
-    logging.debug("Time %f", diff)
+    logging.info("ACTION [%s] TIME [%f]", 'delete', diff)
 
 #
 # Exit the AR.
