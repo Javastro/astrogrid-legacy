@@ -1,9 +1,27 @@
 #!/usr/bin/env python
 # Run a bunch of parallel ADQL queries for stress-testing a DSA
 #
-# Additional parameters:    
-#  runADQLs.py -a <authID> -u <user> -p <password> -i <numqueries> -o <numtests># 
-
+# This script makes use of the standard stresstesting commandline options.
+# innerloop defines how many queries are run in parallel, and outerloop
+# defines how many times the overall test (a set of queries in parallel).
+#
+# The script supports the following additional options:
+#
+#   -r <n> / --rows=<n>  
+#   Number of rows to be returned by each query (default 10k)
+# 
+#   -d <cea app ivorn> / --dsa=<cea app ivorn>
+#   The ivorn of the DSA CEA application to use for querying
+#   Default: org.astrogrid.regtest.dsa/mysql-first/CatName_first/ceaApplication
+#
+#   -q <querytable name> / --querytable=<querytable name>
+#   The name of the actual table to be queried (needs to match the DSA chosen)
+#
+#   Sample invocation:
+#
+#  python runADQLs.py -u ktn -p ktn -o 5 -i 10 -r 10000 -c org.astrogrid.regtest.dsa/mysql-first/CatName_first/ceaApplication -q TabNameFirst_catalogue -t
+#	
+##############################################################################
 
 import xmlrpclib as x
 import sys
@@ -17,54 +35,7 @@ from optparse import OptionParser
 sys.path.append("../dave/")
 from startup import *
 from myspace import *
-#from settings import *
 from logger import *
-
-#logger.setLevel(logging.DEBUG)
-
-# Create a myspace wrapper.
-logging.debug("Creating myspace object with info: %s %s %s", astrouser, astropass, astroauth)
-#logging.debug("creating myspace object")
-myspace = MySpace(ar, astrouser, astropass, astroauth)
-myspace.login(ar)
-
-
-# **************************************************************************
-# KEITH: USER-CONFIGURABLE SETTINGS 
-# *********************************
-
-# The required results format
-#----------------------------
-GL_formats = ["VOTABLE"]	# All in votable
-#GL_formats = ["VOTABLE", "VOTABLE-BINARY", "COMMA-SEPARATED"] #Variety
-
-
-# The number of rows to return for each query
-#--------------------------------------------
-GL_top = "100"
-#GL_top = "10000"
-#GL_top = "100000"
-#GL_top = "1000000"
-
-
-
-# The number of simultaneous queries to launch
-#---------------------------------------------
-GL_numQueries = innerloop
-
-
-# The DSA to use
-#----------------
-# NB - smallq has a small job queue, other dsa has a bigger one
-#GL_ivorn="org.astrogrid.regtest.dsa/mysql-first-smallq/CatName_first/ceaApplication"
-GL_ivorn="org.astrogrid.regtest.dsa/mysql-first/CatName_first/ceaApplication"
-
-# The table to be queried
-GL_table = "TabNameFirst_catalogue"
-
-# *********************************
-# END OF USER-CONFIGURABLE SETTINGS 
-# **************************************************************************
 
 
 #-------------------------------------------------------------------------------
@@ -83,7 +54,8 @@ class StatusChecker(Thread) :
 	#
 
 	def run(self) :
-		alldone = 0
+		retryCount = 0
+		maxRetryCount = 30	# Will wait at least 30 seconds for jobs to appear
 		processed = {}
 		finishedIDs = {}
 		failedIDs = {}
@@ -91,8 +63,7 @@ class StatusChecker(Thread) :
 		endTimes = {}
 		
 		# Monitor the status of the jobs 
-		totlen = len(finishedIDs) + len(failedIDs) + len(unknownIDs)
-		while (len(processed) < self.numQueries):
+		while ( (len(processed) < self.numQueries) and (retryCount < maxRetryCount)):
 			keys = self.runningIDs.keys()
 			logging.debug("Checking status, %d active jobs remaining\n" % len(keys))
 			for i in range(len(keys)):
@@ -137,10 +108,16 @@ class StatusChecker(Thread) :
 						unknownIDs[key] = self.runningIDs[key]
 						processed[key] = 1
 	
+			if (len(self.runningIDs) == 0) :
+				retryCount = retryCount + 1
+				logging.debug("Didn't find jobs to monitor- upping retry count")
 			time.sleep(1)
 	
-		# Print a small summary
-		logging.debug("COMPLETED %d    ERROR %d    UNKNOWN %d\n" % (len(finishedIDs),len(failedIDs),len(unknownIDs)))
+		if (retryCount >= maxRetryCount) :
+			logging.error("Status monitor didn't find any jobs to monitor")
+		else :
+			# Print a small summary
+			logging.debug("COMPLETED %d    ERROR %d    UNKNOWN %d\n" % (len(finishedIDs),len(failedIDs),len(unknownIDs)))
 
 #-------------------------------------------------------------------------------
 class AdqlQueryRunner(Thread) :
@@ -181,47 +158,55 @@ class AdqlQueryRunner(Thread) :
 			formatIndex = 0
 			subtemplate = template.replace("SUBS_NUM","%d"%(i))
 			subtemplate = subtemplate.replace("SUBS_FORMAT","%s"%(self.formats[formatIndex]))
-			self.runningIDs[i] = s.astrogrid.applications.submit(subtemplate)
-			self.startTimes[i] = time.time()
-			logging.debug("Launched job %d with id %s\n" % (i,self.runningIDs[i]))
+			try :
+				self.runningIDs[i] = s.astrogrid.applications.submit(subtemplate)
+				self.startTimes[i] = time.time()
+				logging.debug("Launched job %d with id %s\n" % (i,self.runningIDs[i]))
+			except Exception, e:
+				try :
+					del self.runningIDs[i]
+				except Exception, e2:
+					pass
+				logging.error("Failed to launch CEA query:")
+				logging.error(e)
+				exit(1)
 	
 	# END OF runAdqlTests
 #-------------------------------------------------------------------------------
 
-prefix = file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
-s = x.Server(prefix + "xmlrpc")
-
-
-#-----------------------------------------------------------------------------
-# CONFIG SETTINGS
-#-----------------------------------------------------------------------------
-
 # The task document to use
 GL_query = "TEMPLATES/selectAll_query.xml"
 #GL_query = "TEMPLATES/selectSome_query.xml"
-#-----------------------------------------------------------------------------
 
-# Create the folder in VOSpace in which to put the results files
-#---------------------------------------------------------------
-GL_destFolder = "ivo://ktn@org.astrogrid.regtest/community#/stresstest_folder_smallq"
+# The results format(s) to use - round-robined if >1
+GL_formats = ["VOTABLE"]
+#GL_formats = ["VOTABLE", "VOTABLE-BINARY", "COMMA-SEPARATED"]
 
+# Create a myspace wrapper.
+logging.debug("Creating myspace object with info: %s %s %s", astrouser, astropass, astroauth)
+myspace = MySpace(ar, astrouser, astropass, astroauth)
+myspace.login(ar)
+
+prefix = file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
+s = x.Server(prefix + "xmlrpc")
+
+# Now run the tests
 for looper in range(outerloop) :
 
 	# Create the test folder.
 	rootFolder =  '%(root)s/test-%(loop)03X' % {'root':astroroot, 'loop':looper}
-	logger.info("CREATING ROOT FOLDER %s", rootFolder)
+	logging.debug("CREATING ROOT FOLDER %s", rootFolder)
 	myspace.createFolder(ar, rootFolder)
 	GL_destFolder = "ivo://%s@%s/community#/%s" % (astrouser,astroauth,rootFolder)
-	print ("Dest folder is %s\n",GL_destFolder)
-
 	GL_runningIDs = {}
 	GL_startTimes = {}
 
-	queryRunner = AdqlQueryRunner(GL_runningIDs,GL_startTimes,GL_ivorn,
-		GL_table,GL_formats,GL_top,GL_destFolder,GL_numQueries,GL_query, looper)
+	queryRunner = AdqlQueryRunner(GL_runningIDs,GL_startTimes,ceaivorn,
+		querytable,GL_formats,str(rows),GL_destFolder,innerloop,
+		GL_query,looper)
 
 	statusChecker = StatusChecker(GL_runningIDs,GL_startTimes,
-		GL_numQueries,looper)
+		innerloop,looper)
 
 	queryRunner.start()
 	statusChecker.start()
@@ -230,12 +215,8 @@ for looper in range(outerloop) :
 	statusChecker.join()
 
 # Clean up
-#if (testtidy):
-if (1):
+if (testtidy):
 	myspace.deleteFile(ar, '%(root)s' % {'root':astroroot})
-
-
-#if (testtidy):
 #	myspace.logout(ar)
 
 		
