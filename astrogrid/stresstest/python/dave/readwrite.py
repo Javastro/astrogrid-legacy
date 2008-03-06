@@ -61,7 +61,7 @@ for outer in range(1, outerloop) :
 
     #
     # Read the data several times.
-    for read in range(1, innerloop) :
+    for inner in range(1, innerloop) :
         #
         # Get a URL to read the data from.
         logging.info("ACTION [%s] LOOP [%d]", 'export', inner)
