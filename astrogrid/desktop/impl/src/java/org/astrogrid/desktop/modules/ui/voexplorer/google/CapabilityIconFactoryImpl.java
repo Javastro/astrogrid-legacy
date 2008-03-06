@@ -120,11 +120,11 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		}
 		// cea app 
 		if (r instanceof CeaApplication) {
-		    boolean hasADQL = BuildQueryActivity.hasAdqlParameter((CeaApplication)r);
-		    //with no adql interface
-		    caps.set(ix++,! hasADQL);
+		    int code = BuildQueryActivity.whatKindOfInterfaces((CeaApplication)r);
+			//non-adql interface
+		    caps.set(ix++, code < 1);
 		    // cea apps with an adql interface.
-		    caps.set(ix++,hasADQL);
+		    caps.set(ix++,code >= 0);
 		} else {
 		    ix +=2;
 		}

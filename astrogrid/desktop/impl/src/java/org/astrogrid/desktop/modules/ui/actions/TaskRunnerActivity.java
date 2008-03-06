@@ -88,7 +88,9 @@ public void actionPerformed(ActionEvent e) {
 	}
 
 	public boolean invokable(Resource resource) {
-	    return resource instanceof CeaApplication;
+	    // invokable if there's a non-ADQL interface to this app
+	    return resource instanceof CeaApplication
+	        && BuildQueryActivity.whatKindOfInterfaces((CeaApplication)resource) < 1;
 	}
 
 
