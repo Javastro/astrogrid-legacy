@@ -131,12 +131,7 @@ for opt, arg in opts:
     if opt == "--exit":
         testexit = True
 
-logging.debug(
-    "Starting test : [%s]",
-    os.path.basename(
-        sys.argv[0]
-        )
-    )
+logging.debug("Starting test [%s]", testname)
 logging.debug("Astro user [%s]", astrouser)
 logging.debug("Astro auth [%s]", astroauth)
 

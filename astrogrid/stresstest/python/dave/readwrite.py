@@ -64,7 +64,7 @@ for outer in range(1, outerloop) :
     for inner in range(1, innerloop) :
         #
         # Get a URL to read the data from.
-        logging.info("TEST [%s] ACTION [%s] LOOP [%d]", testname, 'export', inner)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d][%d]", testname, 'export', outer, inner)
         start = time.time()
         endpoint = myspace.getReadContentURL(
             ar,
@@ -72,18 +72,18 @@ for outer in range(1, outerloop) :
         	)
         done  = time.time()
         diff  = done - start
-        logging.info("TEST [%s] ACTION [%s] LOOP [%d] TIME [%f]", testname, 'export', inner, diff)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d][%d] TIME [%f]", testname, 'export', outer, inner, diff)
 
         #
         # Read the data back and check it.
-        logging.info("TEST [%s] ACTION [%s] LOOP [%d]", testname, 'read', inner)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d][%d]", testname, 'read', outer, inner)
         start = time.time()
         data = urllib.urlopen(
             endpoint
             ).read()
         done  = time.time()
         diff  = done - start
-        logging.info("TEST [%s] ACTION [%s] LOOP [%d] TIME [%f]", testname, 'read', inner, diff)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d][%d] TIME [%f]", testname, 'read', outer, inner, diff)
 
 #
 # Delete the last top node.

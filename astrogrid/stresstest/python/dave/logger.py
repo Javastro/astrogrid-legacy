@@ -39,6 +39,11 @@ testuser = getpass.getuser()
 #
 # Get todays date.
 testdate = time.strftime('%Y%m%d-%H%M%S')
+#
+# Get the name of the test script.
+testname= os.path.basename(
+    sys.argv[0]
+    )
 
 #
 # Set the default format.
@@ -102,5 +107,5 @@ logger.addHandler(filehandler)
 logger.setLevel(logging.INFO)
 #
 # Check it works.
-logger.info("Logging started")
+logger.info("Logging started for [%s]", testname)
 
