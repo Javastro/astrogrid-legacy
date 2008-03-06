@@ -48,7 +48,7 @@ for outer in range(1, outerloop) :
 
     #
     # Inport data from the source URL.
-    logging.info("ACTION [%s] LOOP [%d]", 'inport', outer)
+    logging.info("TEST [%s] ACTION [%s] LOOP [%d]", testname, 'inport', outer)
     start = time.time()
     endpoint = myspace.copyURLToContent(
         ar,
@@ -57,14 +57,14 @@ for outer in range(1, outerloop) :
     	)
     done  = time.time()
     diff  = done - start
-    logging.info("ACTION [%s] LOOP [%d] TIME [%f]", 'inport', outer, diff)
+    logging.info("TEST [%s] ACTION [%s] LOOP [%d] TIME [%f]", testname, 'inport', outer, diff)
 
     #
     # Read the data several times.
     for inner in range(1, innerloop) :
         #
         # Get a URL to read the data from.
-        logging.info("ACTION [%s] LOOP [%d]", 'export', inner)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d]", testname, 'export', inner)
         start = time.time()
         endpoint = myspace.getReadContentURL(
             ar,
@@ -72,23 +72,23 @@ for outer in range(1, outerloop) :
         	)
         done  = time.time()
         diff  = done - start
-        logging.info("ACTION [%s] LOOP [%d] TIME [%f]", 'export', inner, diff)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d] TIME [%f]", testname, 'export', inner, diff)
 
         #
         # Read the data back and check it.
-        logging.info("ACTION [%s] LOOP [%d]", 'read', inner)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d]", testname, 'read', inner)
         start = time.time()
         data = urllib.urlopen(
             endpoint
             ).read()
         done  = time.time()
         diff  = done - start
-        logging.info("ACTION [%s] LOOP [%d] TIME [%f]", 'read', inner, diff)
+        logging.info("TEST [%s] ACTION [%s] LOOP [%d] TIME [%f]", testname, 'read', inner, diff)
 
 #
 # Delete the last top node.
 if (testtidy):
-    logging.info("ACTION [%s]", 'delete')
+    logging.info("TEST [%s] ACTION [%s]", testname, 'delete')
     start = time.time()
     myspace.deleteFile(
         ar,
@@ -96,7 +96,7 @@ if (testtidy):
     	)
     done  = time.time()
     diff  = done - start
-    logging.info("ACTION [%s] TIME [%f]", 'delete', diff)
+    logging.info("TEST [%s] ACTION [%s] TIME [%f]", testname, 'delete', diff)
 
 #
 # Exit the AR.
