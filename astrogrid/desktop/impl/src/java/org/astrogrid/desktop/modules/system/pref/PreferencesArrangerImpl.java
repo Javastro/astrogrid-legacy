@@ -18,6 +18,7 @@ import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
+import org.apache.commons.collections.comparators.FixedOrderComparator;
 import org.apache.commons.lang.StringUtils;
 
 /**A small helper component that arranges the preferences contribution
@@ -48,19 +49,21 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jan 26, 200712:44:14 PM
 	 */
-	public static class CategoryNamesComparator implements Comparator {
-		public int compare(Object arg0, Object arg1) {
-			String s1 = (String)arg0;
-			String s2 = (String)arg1;
-			if (s1.equalsIgnoreCase("system")) {
-				return -1;
-			} 
-			if (s2.equalsIgnoreCase("system")) {
-				return 1;
-			}
-			
-			return s1.compareToIgnoreCase(s2);
-		}
+	public static class CategoryNamesComparator extends FixedOrderComparator {
+	    /**
+         * hard-coded order. - fragile. Has to match with mapping in PerefesnsArrangerImpl constructor
+         */
+        public CategoryNamesComparator() {
+            super(new String[]{
+                    "System"
+                    ,"General"
+                    ,"Registry"
+                        ,"Cds services"
+                    ,"Network"
+                    ,"Performance"
+                    });
+        }
+
 	}
 	
 	public PreferencesArrangerImpl(List preferences) {
@@ -72,10 +75,20 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 		//sort preferences by module, and then according to advancedNess
 		for (Iterator i = preferences.iterator(); i.hasNext();) {
 			Preference p = (Preference) i.next();
-			// merge framework module into system.
-			String key = p.getModuleName().equalsIgnoreCase("framework")
-				? "system"
-				: p.getModuleName();
+			// map names originating from implementation modules into something more userfriendly.   
+			String moduleName = p.getModuleName();
+			String key;
+			if ("framework".equalsIgnoreCase(moduleName)) {
+			    key = "system";
+			} else if ("votech".equalsIgnoreCase(moduleName) || "util".equalsIgnoreCase(moduleName) || "plastic".equalsIgnoreCase(moduleName)) {
+			    key = "general";
+			} else if ("ivoa".equalsIgnoreCase(moduleName)) {
+			    key = "registry";
+			} else if ("cds".equalsIgnoreCase(moduleName)) {
+			    key = "cds services";
+			} else {
+			    key = moduleName;
+			}
 			if (p.isAdvanced()) {
 				advancedMulti.put(StringUtils.capitalize(key), p);
 			} else {

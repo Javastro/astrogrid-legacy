@@ -30,14 +30,19 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 	 */
 	private static final Log logger = LogFactory
 			.getLog(JackdawAnnotationSource.class);
+    private final Preference enabled;
 
-	public JackdawAnnotationSource(Preference endpoint) {
+	public JackdawAnnotationSource(Preference enabled, Preference endpoint) {
 		super(URI.create(endpoint.getValue()),"Related");
+        this.enabled = enabled;
 		fac = XMLInputFactory.newInstance();
 	}
 	private final XMLInputFactory fac;
 	
 	public Annotation getAnnotationFor(Resource r) {
+	    if (! enabled.asBoolean()) {
+	        return null;
+	    }
 		Annotation ann = new Annotation();
 		ann.setResourceId(r.getId());
 		ann.setSource(this);

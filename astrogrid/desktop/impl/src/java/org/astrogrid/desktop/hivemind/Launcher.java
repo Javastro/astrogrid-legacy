@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.24 2008/02/27 13:16:35 mbt Exp $
+/*$Id: Launcher.java,v 1.25 2008/03/06 12:03:55 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,8 +87,9 @@ public class Launcher implements Runnable {
 
 	// runtime defaults. - can be overridden by things in system properties
     public static final Properties defaults = new Properties(){{
-    	setProperty("java.net.preferIPv4Stack","true");
-        setProperty("java.net.preferIPv6Addresses","false");
+        // set in preferences now.
+    	//setProperty("java.net.preferIPv4Stack","true");
+       // setProperty("java.net.preferIPv6Addresses","false");
         
         setProperty("ivoa.skynode.disabled","true");
         // log4j
@@ -248,6 +249,11 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.25  2008/03/06 12:03:55  nw
+Complete - task 330: recategorize preferences.
+disabled jackdaw by default.
+removed startup-zapping of ipv4 setting - now set in preferences instead.
+
 Revision 1.24  2008/02/27 13:16:35  mbt
 Invoke WorkaroundTransformerFactory.fixJaxp() - see bugzilla 2595
 

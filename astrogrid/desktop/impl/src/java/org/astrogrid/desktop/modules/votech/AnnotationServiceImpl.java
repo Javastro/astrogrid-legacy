@@ -243,7 +243,7 @@ private void saveSourceList() {
 					protected Object construct() throws Exception {
 						final DynamicAnnotationSource dynSource = (DynamicAnnotationSource)source;
 						Annotation ann = (dynSource).getAnnotationFor(r);
-						if (dynSource.shouldCache()) {
+						if (ann != null && dynSource.shouldCache()) {
 							m.put(source,ann);
 							cache.put(toCache); // risk of race, and repeated cache writes here.
 							// but don't think it's a large risk.

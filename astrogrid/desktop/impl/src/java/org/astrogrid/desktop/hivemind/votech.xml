@@ -88,19 +88,32 @@ ANNOTATION SERVICE
 		<inject object="service:vomon" />
 	</object>
 	<object name="jackdaw" class="org.astrogrid.desktop.modules.votech.JackdawAnnotationSource">
+        <inject object="preference:experimental.suggestions.services" />
 		<inject object="preference:votech.jackdaw.endpoint" />
 	</object>
 </contribution>
+
+    <contribution configuration-id="framework.preferences">
+        <preference name="experimental.suggestions.services" 
+            advanced="true"
+            default-value="false" >
+            <ui-name>Enable experimental suggestion service</ui-name>
+            <description>Enable experimental features</description>
+            <units>boolean</units>
+        </preference>
+    </contribution> 
 	
 	<contribution configuration-id="framework.preferences">
 		<preference name="votech.jackdaw.endpoint" 
 			requires-restart="true" advanced="true"
 			default-value="http://thor.roe.ac.uk/jackdaw/like" >
-			<ui-name>Jackdaw suggestions service</ui-name>
-			<description>A http endpoint of a suggestions service</description>
+			<ui-name>Experimental suggestion service endpoint</ui-name>
+			<description>The http endpoint of a suggestions service</description>
 			<units>url</units>
 		</preference>
 	</contribution>	
+
+
 	
 <!-- 
 =============================================

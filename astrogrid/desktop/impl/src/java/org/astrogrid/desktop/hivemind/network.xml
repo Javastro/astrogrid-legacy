@@ -36,7 +36,7 @@ Other Network Settings
     <!-- No proven need for these advanced properties so far, but they may
      !   come in useful. -->
     <preference name="network.preferIPv4Stack"
-                default-value="false"
+                default-value="true"
                 advanced="true"
                 requires-restart="true">
       <ui-name>Prefer IPv4 Stack</ui-name>
