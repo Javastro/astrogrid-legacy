@@ -55,22 +55,22 @@ public class PreferencesArrangerImplUnitTest extends TestCase {
 		List l = new ArrayList();
 		Preference p = new Preference();
 		p.setName("c");
-		p.setModuleName("moduleB");
+		p.setModuleName("General");
 		l.add(p);
 		
 		Preference p1 = new Preference();
 		p1.setName("b");
-		p1.setModuleName("moduleA");
+		p1.setModuleName("System");
 		l.add(p1);
 		
 		Preference p2 = new Preference();
 		p2.setName("a");
-		p2.setModuleName("moduleB");
+		p2.setModuleName("General");
 		l.add(p2);
 		
 		Preference p3 = new Preference();
 		p3.setName("adv");
-		p3.setModuleName("moduleC");
+		p3.setModuleName("Network");
 		p3.setAdvanced(true);
 		l.add(p3);
 		
@@ -80,38 +80,38 @@ public class PreferencesArrangerImplUnitTest extends TestCase {
 		l = pai.listPreferenceCategories();
 		assertNotNull(l);
 		assertEquals(3,l.size());
-		assertEquals("ModuleA",l.get(0));
-		assertEquals("ModuleB",l.get(1));
-		assertEquals("ModuleC",l.get(2));
+		assertEquals("System",l.get(0));
+		assertEquals("General",l.get(1));
+		assertEquals("Network",l.get(2));
 		
 		// check each module in turn.
-		l = pai.listBasicPreferencesForCategory("ModuleA");
+		l = pai.listBasicPreferencesForCategory("System");
 		assertNotNull(l);
 		assertEquals(1,l.size());
 		assertSame(p1,l.get(0));
 		
-		l = pai.listAdvancedPreferencesForCategory("ModuleA");
+		l = pai.listAdvancedPreferencesForCategory("System");
 		assertNotNull(l);
 		assertEquals(0,l.size());
 		
 		//
-		l = pai.listBasicPreferencesForCategory("ModuleB");
+		l = pai.listBasicPreferencesForCategory("General");
 		assertNotNull(l);
 		assertEquals(2,l.size());
 		assertSame(p,l.get(0));  // preferences are unsorted within a module - looks better.
 		assertSame(p2,l.get(1));
 		
-		l = pai.listAdvancedPreferencesForCategory("ModuleB");
+		l = pai.listAdvancedPreferencesForCategory("General");
 		assertNotNull(l);
 		assertEquals(0,l.size());
 
 		//
-		l = pai.listBasicPreferencesForCategory("ModuleC");
+		l = pai.listBasicPreferencesForCategory("Network");
 		assertNotNull(l);
 		assertEquals(0,l.size());		
 
 		
-		l = pai.listAdvancedPreferencesForCategory("ModuleC");
+		l = pai.listAdvancedPreferencesForCategory("Network");
 		assertNotNull(l);
 		assertEquals(1,l.size());
 		assertSame(p3,l.get(0));
