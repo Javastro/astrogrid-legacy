@@ -260,6 +260,7 @@ APPLICATIONS
 			diskPersistent="true"
 			timeToLiveSeconds="${ivo.registry.cacheLife}"
 			timeToIdleSeconds="345600"
+            registrySensitive="true"
 		/>
 	</contribution>
 

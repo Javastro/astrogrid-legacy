@@ -3,6 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,17 +21,19 @@ import org.apache.hivemind.internal.Module;
 import org.apache.hivemind.service.ObjectProvider;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** implementation ofo the data cache - uses the ehCache libraries,
  * @author Noel Winstanley
  * @modified made the caching more conservative.
  * @since Aug 8, 20061:17:09 AM
  */
-public class CacheFactoryImpl implements ShutdownListener, CacheFactory, ObjectProvider {
+public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal, PropertyChangeListener {
 
 	private final CacheManager manager;
+	private final List registrySensitiveCacheNames = new ArrayList();
 	
-	public CacheFactoryImpl(String workingDir, List caches) {
+	public CacheFactoryImpl(String workingDir, List caches, Preference endpointA,Preference endpointB) {
 		Configuration conf = new Configuration();
 		DiskStoreConfiguration diskStore = new DiskStoreConfiguration();
 		diskStore.setPath(workingDir);
@@ -48,11 +53,17 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory, ObjectP
 		conf.setDefaultCacheConfiguration(defaults);
 		
 		for (Iterator i = caches.iterator(); i.hasNext();) {
-			CacheConfiguration c = (CacheConfiguration) i.next();
+			ExtendedCacheConfiguration c = (ExtendedCacheConfiguration) i.next();
 			conf.addCache(c);
+			if (c.isRegistrySensitive()) {
+			    registrySensitiveCacheNames.add(c.getName());
+			}
 		}
 
 		manager = new CacheManager(conf);
+		// listen for changes to these preferences.
+		endpointA.addPropertyChangeListener(this);
+		endpointB.addPropertyChangeListener(this);
 	}
 	
 	
@@ -76,7 +87,7 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory, ObjectP
 	}
 
 
-	public void flush() { // don't flush eternal caches.
+	public void flush() { // don't flush eternal caches. - don't think any are eternal now..
 		String[] cacheNames = manager.getCacheNames();
 		for (int i = 0; i < cacheNames.length; i++) {
             Cache cache = manager.getCache(cacheNames[i]);
@@ -96,6 +107,14 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory, ObjectP
 		}
 		return c;
 	}
+
+	// listen for changes to preferences - and if one heard, flush the cache.
+    public void propertyChange(PropertyChangeEvent evt) {
+        for (Iterator i = registrySensitiveCacheNames.iterator(); i.hasNext(); ) {
+            Cache cache = manager.getCache((String)i.next());
+            cache.removeAll();
+        }       
+    }
 
 
 

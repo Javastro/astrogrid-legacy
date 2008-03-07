@@ -62,6 +62,7 @@
 			diskPersistent="true"
 			timeToLiveSeconds="${ivo.registry.cacheLife}"
 			timeToIdleSeconds="345600"
+            registrySensitive="true"
 		/>
 		cache for registry return documents - resource docs, and xquery docs
 		sized so it's just enough in memory one up, one down in registry google.
@@ -72,6 +73,7 @@
 			diskPersistent="true"
 			timeToLiveSeconds="${ivo.registry.cacheLife}"
 			timeToIdleSeconds="345600"
+            registrySensitive="true"
 		/>
 		cache for bulk searches, etc, of registry documents.
 		smallest amount in memory, enough on disk to store astroscope queries.
@@ -82,6 +84,7 @@
 			diskPersistent="true"
 			timeToLiveSeconds="${ivo.registry.cacheLife}"
 			timeToIdleSeconds="345600"
+            registrySensitive="true"
 		/>			
 	</contribution>
     
@@ -234,14 +237,16 @@ SIAP
 =======================
 RESULT CACHE 
 -->
-	<service-point id="cache" interface="org.astrogrid.acr.ivoa.CacheFactory">
+	<service-point id="cache" interface="org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal">
 	Result Cache. Would fit more logically in the system module, but then causes build
 	problems for the hub. so it's better suited here - as it's used mostly in the ivoa.registry
 	clients anyhow.
-		<invoke-factory model="primitive">
+		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.CacheFactoryImpl">
 				<string>${astrogrid.workdir}</string>
 				<configuration>caches</configuration>
+               <object>preference:org.astrogrid.registry.query.endpoint</object>
+               <object>preference:org.astrogrid.registry.query.altendpoint</object>                
 				<event-listener service-id="builtin.shutdown" />			
 			</construct>
 		</invoke-factory>
@@ -280,7 +285,11 @@ RESULT CACHE
 				<attribute name="timeToLiveSeconds">
 				 Sets the time to idle for an element before it expires.
 				</attribute>
-				<conversion class="net.sf.ehcache.config.CacheConfiguration" />
+                <attribute name="registrySensitive" translator="boolean">
+                 Whether this cache is sensitive to changes to the registry
+                    i.e. if the registry endpoint changes, should this cache be cleared.                
+                </attribute>
+				<conversion class="org.astrogrid.desktop.modules.ivoa.ExtendedCacheConfiguration" />
 			</element>
 		</schema>
 	</configuration-point>

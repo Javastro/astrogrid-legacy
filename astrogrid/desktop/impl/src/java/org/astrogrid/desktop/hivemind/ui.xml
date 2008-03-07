@@ -651,6 +651,7 @@ ACTIONS
 	 		diskPersistent="true"
 	 		timeToLiveSeconds="${ivo.registry.cacheLife}"
 	 		timeToIdleSeconds="${ivo.registry.cacheLife}"
+            registrySensitive="true"
 	 		/>
 	 	</contribution>
 
