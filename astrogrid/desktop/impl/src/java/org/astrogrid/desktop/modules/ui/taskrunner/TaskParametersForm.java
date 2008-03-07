@@ -509,6 +509,18 @@ private Dimension preservedPreferredSize = null ;
 	    }
         public final String getIName() {
             return this.interfaceName;
+        }
+        /**
+         * 
+         */
+        public boolean isAdqlInterface() {
+            for (Iterator i = inputElements.iterator(); i.hasNext();) {
+                AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
+                if (el instanceof AdqlTextFormElement) {
+                    return true;
+                }            
+            }          
+            return false;
         }	    
 	}// end inner class 'Model'
 

@@ -11,7 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -180,6 +187,12 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     .copy()
                     .paste()
                     .selectAll()
+                    .separator();
+                // register the editor action as a listener here - by now everything it depends upon will have been instantiated.
+                pForm.getBottomPane().addComponentListener(showHideFullEditor);
+                pForm.getInterfaceCombo().addItemListener(showHideFullEditor);
+                emb
+                    .windowOperation(showHideFullEditor)
                     .submenu(contextMenu) //enable this on show / hide of lower window
                     .separator()
                     .windowOperation(reset)
@@ -265,6 +278,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	final Action reset = new ResetAction();
 	final Action save = new SaveAction();
 	final Action saveAs = new SaveAsAction();
+	protected final ShowHideFullEditorAction showHideFullEditor = new ShowHideFullEditorAction();
 	public void buildForm(Resource r) {
 		CeaApplication cea = null;
 		if (r instanceof CeaApplication) {
@@ -744,6 +758,46 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	           }
 	        }
 	    }
+	 
+	     /**
+         * show the full adql editor.
+         * behaviour - when showing an adql-containing interface, should be enabled, otherwsie it should be disabled.
+         *              - in an adql-containig interface, should say 'Show' when editor isn't visible and 'Hide' otherwise.
+         */
+	 protected class ShowHideFullEditorAction extends AbstractAction implements ComponentListener, ItemListener{
+        public ShowHideFullEditorAction() {
+            super("Show Full Query Editor");
+            setEnabled(false);
+
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            pForm.setExpanded(! pForm.getBottomPane().isVisible());
+        }
+
+        public void componentHidden(ComponentEvent e) {
+            super.putValue(Action.NAME,"Show Full Query Editor");
+        }
+
+        public void componentMoved(ComponentEvent e) {
+            // ignored
+        }
+
+        public void componentResized(ComponentEvent e) {
+            // ignored
+        }
+
+        public void componentShown(ComponentEvent e) {
+            super.putValue(Action.NAME,"Hide Full Query Editor");                        
+        }
+        // detects when interface has changed.
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                setEnabled(pForm.getModel().isAdqlInterface());
+            }
+        }
+      
+	 }
     private class SaveAsAction extends AbstractAction {
 	       public SaveAsAction() {
                super("Save As"+UIComponentMenuBar.ELLIPSIS);

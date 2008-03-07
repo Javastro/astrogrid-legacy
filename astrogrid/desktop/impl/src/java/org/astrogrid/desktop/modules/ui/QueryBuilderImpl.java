@@ -63,6 +63,7 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
 // cea internal interface - need to harmonize this with taskrunner at some point    
     public void build(CeaApplication app) {
         buildForm(app);
+        super.showHideFullEditor.setEnabled(true);
     }
 
     public void build(final CatalogService coll) {
