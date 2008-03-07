@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.17 2008/02/22 17:03:35 mbt Exp $
+/*$Id: ConeProtocol.java,v 1.18 2008/03/07 12:55:25 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 
     public ConeProtocol(Registry reg, Cone cone) {
-        super("Catalogues",IconHelper.loadIcon("cone16.png").getImage());
+        super("Cat. Objects",IconHelper.loadIcon("cone16.png").getImage());
         this.reg = reg;
         this.cone = cone;
     } 
@@ -137,6 +137,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.18  2008/03/07 12:55:25  nw
+labelling fix for andy.
+
 Revision 1.17  2008/02/22 17:03:35  mbt
 Merge from branch mbt-desktop-2562.
 Basically, Retrievers rather than Services are now the objects (associated
