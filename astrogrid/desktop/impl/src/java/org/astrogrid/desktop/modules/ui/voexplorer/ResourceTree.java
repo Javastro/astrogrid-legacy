@@ -56,11 +56,14 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.WindowConstants;
+import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -240,6 +243,21 @@ public class ResourceTree extends JTree {
                 // just a single folder which it's less obvious what to do with.
                 if (model.getChildCount(model.getRoot()) == 1) {
                     expandRow(1);
+                }
+            }
+        });
+
+        // Ensure that the root node is never collapsed.  It's not useful to
+        // collapse it, and users may find it hard to re-expand if it does
+        // get collapse.
+        addTreeWillExpandListener(new TreeWillExpandListener() {
+            public void treeWillExpand(TreeExpansionEvent evt) {
+            }
+            public void treeWillCollapse(TreeExpansionEvent evt) throws ExpandVetoException {
+                TreePath path = evt.getPath();
+                if (path.getPathCount() == 1) {
+                    assert path.getLastPathComponent() == model.getRoot();
+                    throw new ExpandVetoException(evt, "Refuse to collapse root");
                 }
             }
         });
