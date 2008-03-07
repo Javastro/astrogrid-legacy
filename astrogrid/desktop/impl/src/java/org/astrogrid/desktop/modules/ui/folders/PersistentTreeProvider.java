@@ -110,6 +110,14 @@ public abstract class PersistentTreeProvider implements TreeProvider {
             root = getDefaultRoot();
             save(root);
         }
+
+        // Ensure root is appropriately titled.
+        if (root instanceof DefaultMutableTreeNode) {
+            Object userObj = ((DefaultMutableTreeNode) root).getUserObject();
+            if (userObj instanceof ResourceBranch) {
+                ((Folder) userObj).setName("Resource Lists");
+            }
+        }
         treeModel.setRoot(root);
     }
 
