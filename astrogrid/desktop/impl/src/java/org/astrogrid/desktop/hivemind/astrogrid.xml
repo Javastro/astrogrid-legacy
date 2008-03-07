@@ -103,6 +103,7 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
             <exclude method="isLoggedIn" />
             <exclude method="getUserInformation" />
             <exclude method="guiLogin" /> <!-- as this just delegates to loginDialogue, which is edtInvoked anyhow. -->
+            <exclude method="logout" /> <!--  as no webservice calls are involved. -->
         </interceptor>                        
 		<interceptor service-id="system.throbber" />		
 		<interceptor service-id="hivelock.core.authorization">
