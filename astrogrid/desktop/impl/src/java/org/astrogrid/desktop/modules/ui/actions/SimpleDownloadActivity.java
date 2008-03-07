@@ -88,7 +88,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 		logger.debug(files);
 		
 		// decided to use dirchooser here instead...
-        final URI saveDir = chooser.chooseDirectoryWithParent("Choose destination for download",true,true,false,uiParent.get().getComponent());
+        final URI saveDir = chooser.chooseDirectoryWithParent("Choose destination folder to download into",true,true,false,uiParent.get().getComponent());
         if (saveDir == null) {
             return;
         }
