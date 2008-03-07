@@ -23,7 +23,9 @@ public class OutputFormElement extends AbstractTaskFormElement {
 	public OutputFormElement(ParameterValue pval, ParameterBean pdesc,ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
 		super.localFileEnabled=false;
-		indirectToggle.setToolTipText("Save this result to VO Workspace");
+		indirectToggle.setToolTipText("Toggle whether to store this output in cache or write it to your VO Workspace");
+		chooserButton.setText("Choose Location..");
+		chooserButton.setToolTipText("Select the location in VO Workspace that this output parameter will be saved to");
 	}
 
 	protected JComponent createEditor() {

@@ -103,8 +103,8 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		indirectField = new IndirectURIField(pval);
 		pb.add(indirectField,cc.xy(1,1));
 		
-        chooserButton = new JButton("Browse..");
-        chooserButton.setToolTipText("Select a file");
+        chooserButton = new JButton("Choose File..");
+        chooserButton.setToolTipText("Select a file from local disk or VO Workspace to read this input parameter from");
         chooserButton.addActionListener(this);
         pb.add(chooserButton,cc.xy(2,1));
         
