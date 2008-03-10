@@ -5,7 +5,7 @@ package org.astrogrid;
 
 import org.astrogrid.desktop.hivemind.Launcher;
 
-/** @todo tidy up the configuraito in this.
+/**
  * @author Noel Winstanley
  * @since Apr 11, 20062:41:10 AM
  */

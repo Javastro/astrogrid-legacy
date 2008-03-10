@@ -34,9 +34,6 @@ import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
 
 /** Fallback system tray when not running on Java 6, on on OS where systray is not supported.
- *  * @todo add login/ logout icon and actions..
- * @todo add window lists ?
- * @todo share throbbing model
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 21, 20076:24:07 PM
  */
