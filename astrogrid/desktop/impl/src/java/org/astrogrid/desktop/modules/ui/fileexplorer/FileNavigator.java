@@ -326,7 +326,10 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             Location other = (Location)obj;
 
             return getText().equals(other.getText());
-        }       
+        }      
+        public int hashCode() {
+            return getText().hashCode();
+        }
     } // end of location inner class
 
 // actions     
