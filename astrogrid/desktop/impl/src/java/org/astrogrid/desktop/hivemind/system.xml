@@ -219,7 +219,7 @@ System module.
                 <service>aboutDialogue</service>
 	 			<service>plasticList</service>
 	 			<configuration>windowFactories</configuration>
-                <string>${system.ui.launch}</string>
+                <string>${system.ui.launchApp}</string>
 	 		</construct>
 	 	</invoke-factory>
 	 </service-point>
@@ -244,19 +244,19 @@ System module.
 
 	
 		<!--  control which application to show at startup 
-        names must exactly match name attribute of corresponding system.windowFactory
+        FRAGILE: names must exactly match name attribute of corresponding system.windowFactory
         
         -->
       <contribution configuration-id="framework.preferences">
-		<preference name="system.ui.launch" advanced="false"
+		<preference name="system.ui.launchApp" advanced="false"
 			default-value="VO Explorer">
 			<ui-name>At startup, launch</ui-name>
 			<description>Select which window to open at startup</description>
             <option>VO Explorer</option>
-            <option>All-VO Scope</option>
-            <option>Helio Scope</option>
-            <option>Task Runner</option>
             <option>File Explorer</option>
+            <option>Task Runner</option>
+            <option>All-VO Astroscope</option>
+            <option>All-VO Helioscope</option>
             <option>none</option>            
 		</preference>
 	</contribution>	

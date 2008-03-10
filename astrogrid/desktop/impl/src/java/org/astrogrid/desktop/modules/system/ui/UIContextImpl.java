@@ -12,10 +12,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -138,17 +141,22 @@ public class UIContextImpl implements UIContext{
 	// just creates a map ordered by whatever order hivemind takes.	
 	//	this.windowFactories = new LinkedHashMap(windowFactories);
 		this.windowFactories = new TreeMap(
+		        
+		        new Comparator() {
+                    public int compare(Object arg0, Object arg1) {
+                        return order.indexOf(arg0) - order.indexOf(arg1);
+                    }		        
 		        //WARNING - this is horribly fragile - string constants must match
 		        // the names of the window factories.
 		        //@todo re-implement sorting based on a value in the configuration.
-		        new FixedOrderComparator(new String[]{
+		     private List order = Collections.unmodifiableList(Arrays.asList( new String[]{
 		                "VO Explorer"
 		                ,"File Explorer"
 		                ,"Task Runner"
 		                ,"All-VO Astroscope"
 		                ,"All-VO Helioscope"
-		        })
-		);
+		             }));
+		        });
 		this.windowFactories.putAll(windowFactories);
 		windows = new BasicEventList();
 		windowsView = GlazedLists.readOnlyList(windows);
