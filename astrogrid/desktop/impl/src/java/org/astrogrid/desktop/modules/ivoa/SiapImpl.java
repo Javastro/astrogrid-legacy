@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.15 2008/01/30 08:38:37 nw Exp $
+/*$Id: SiapImpl.java,v 1.16 2008/03/10 14:14:01 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,6 +134,7 @@ public class SiapImpl extends DALImpl implements Siap {
 	        case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's siap capability");
 	        case 1:
 	            std = interfaces[0];
+	            break;
 	        default:    
 	            for (int i = 0; i < interfaces.length; i++) {
 	                Interface cand = interfaces[i];
@@ -154,6 +155,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.16  2008/03/10 14:14:01  nw
+fixed fallthough case statements.
+
 Revision 1.15  2008/01/30 08:38:37  nw
 Incomplete - task 313: Digest registry upgrade.
 

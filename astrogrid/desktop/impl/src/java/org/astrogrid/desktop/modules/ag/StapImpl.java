@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.12 2008/03/05 11:52:13 nw Exp $
+/*$Id: StapImpl.java,v 1.13 2008/03/10 14:14:08 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -156,6 +156,7 @@ public class StapImpl extends DALImpl implements Stap {
                 case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's stap capability");
                 case 1:
                     std = interfaces[0];
+                    break;
                 default:    
                     for (int i = 0; i < interfaces.length; i++) {
                         Interface cand = interfaces[i];
@@ -180,6 +181,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.13  2008/03/10 14:14:08  nw
+fixed fallthough case statements.
+
 Revision 1.12  2008/03/05 11:52:13  nw
 Complete - task 316: use Guy's standardIDs.
 

@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.12 2008/03/05 11:52:13 nw Exp $
+/*$Id: SsapImpl.java,v 1.13 2008/03/10 14:14:01 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,6 +71,7 @@ public class SsapImpl extends DALImpl implements Ssap {
             case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's ssap capability");
             case 1:
                 std = interfaces[0];
+                break;
             default:    
                 for (int i = 0; i < interfaces.length; i++) {
                     Interface cand = interfaces[i];
@@ -119,6 +120,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.13  2008/03/10 14:14:01  nw
+fixed fallthough case statements.
+
 Revision 1.12  2008/03/05 11:52:13  nw
 Complete - task 316: use Guy's standardIDs.
 

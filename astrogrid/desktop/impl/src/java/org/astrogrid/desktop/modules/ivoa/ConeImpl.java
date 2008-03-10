@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.10 2008/01/30 08:38:37 nw Exp $
+/*$Id: ConeImpl.java,v 1.11 2008/03/10 14:14:01 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,6 +81,7 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
                 case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's cone capability");
                 case 1:
                     std = interfaces[0];
+                    break;
                 default:    
                     for (int i = 0; i < interfaces.length; i++) {
                         Interface cand = interfaces[i];
@@ -139,6 +140,9 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.11  2008/03/10 14:14:01  nw
+fixed fallthough case statements.
+
 Revision 1.10  2008/01/30 08:38:37  nw
 Incomplete - task 313: Digest registry upgrade.
 
