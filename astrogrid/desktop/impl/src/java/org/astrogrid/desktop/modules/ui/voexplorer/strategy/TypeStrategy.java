@@ -3,6 +3,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 import java.util.List;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 
@@ -22,7 +23,7 @@ public final class TypeStrategy extends PipelineStrategy {
 			public boolean matches(Object arg0) {
 				Resource r = (Resource)arg0;
 				String type = r.getType();
-				return selected.contains(ResourceFormatter.formatType(type));
+				return selected.contains(PrettierResourceFormatter.formatType(type));
 			}
 		};
 	}
@@ -34,7 +35,7 @@ public final class TypeStrategy extends PipelineStrategy {
 					public Object evaluate(Object arg0) {
 						Resource r = (Resource)arg0;
 						String rawType = r.getType();
-						return ResourceFormatter.formatType(rawType);
+						return PrettierResourceFormatter.formatType(rawType);
 					}
 		});
 	}

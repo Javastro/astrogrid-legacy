@@ -20,7 +20,7 @@ import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 
 /** Factory for fileexplorers- also handles some messages.
  * 
- * @fixme implement the plastic message handling part of this.
+ * @todo implement the plastic message handling part of this, then uncomment section in ui.xml
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:44:32 PM
  */

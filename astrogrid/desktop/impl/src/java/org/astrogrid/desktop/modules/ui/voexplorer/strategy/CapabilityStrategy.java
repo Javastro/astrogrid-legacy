@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 
@@ -30,7 +31,7 @@ public class CapabilityStrategy extends PipelineStrategy {
 					return selected.contains(NONE_PROVIDED.get(0)); // obvioousluy nt a service.
 				}				
 				for (int i = 0; i < c.length; i++) {
-					String subj = ResourceFormatter.formatType(c[i].getType());
+					String subj = PrettierResourceFormatter.formatType(c[i].getType());
 					if (selected.contains(subj)) {
 						return true;
 					}
@@ -56,7 +57,7 @@ public class CapabilityStrategy extends PipelineStrategy {
 			}			
 			final List result = new ArrayList(c.length);
 			for (int i = 0; i < c.length; i++) {
-				result.add(ResourceFormatter.formatType(c[i].getType()));
+				result.add(PrettierResourceFormatter.formatType(c[i].getType()));
 			}
 			return result;
 		}

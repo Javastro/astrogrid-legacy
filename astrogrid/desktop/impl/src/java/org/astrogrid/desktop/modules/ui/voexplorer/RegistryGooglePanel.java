@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.26 2008/03/10 12:25:38 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.27 2008/03/10 12:47:09 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -864,7 +864,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		StringBuffer sb = new StringBuffer("for $r in //vor:Resource[not (@status = 'inactive' or @status= 'deleted')]\nwhere (");
 		for (Iterator i = l.iterator(); i.hasNext();) {
 			URI id = (URI) i.next();
-			sb.append("$r/identifier = '").append(id.toString()).append("'"); // @todo - am doing straight match here, not 'like' - hope it ignores whitespace - need to test this. Also doesn't respect case insensitivity.
+			sb.append("$r/identifier = '").append(id.toString()).append("'"); // @todo  doesn't respect case insensitivity.
 			if (i.hasNext()) {
 				sb.append(" or ");
 			}
@@ -957,6 +957,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.27  2008/03/10 12:47:09  nw
+removed dead code.
+
 Revision 1.26  2008/03/10 12:25:38  nw
 noted a shortcoming.
 

@@ -641,7 +641,6 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			super(name,target);
 		}
 		private static final String[] predicates = new String[] {"contains","does not contain"};
-			//@todo,"starts with","ends with","is","is not"};
 		private static final int CONTAINS = 0;
 		private static final int NOTCONTAINS = 1;
 		SRQL constructClause(JComponent valueField, JComponent predicateField) {

@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ui.actions.Activity.Info;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
@@ -72,7 +73,7 @@ private final Bag types = new TreeBag();
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
-				types.add(ResourceFormatter.formatType(l[i].getType()));
+				types.add(PrettierResourceFormatter.formatType(l[i].getType()));
 		}
 		fmtResult();		
 	}
@@ -88,7 +89,7 @@ private final Bag types = new TreeBag();
 
 	
 	public void oneSelected(Resource r) {
-		typeField.setText("Selection: " + ResourceFormatter.formatType(r.getType()));
+		typeField.setText("Selection: " + PrettierResourceFormatter.formatType(r.getType()));
 		typeField.setVisible(true);
 	}
 	public void oneSelected(FileObject fo) {
