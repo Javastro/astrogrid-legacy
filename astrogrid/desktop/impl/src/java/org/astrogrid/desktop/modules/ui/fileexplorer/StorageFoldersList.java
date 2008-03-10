@@ -386,8 +386,10 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
                     folderList.add(sf);     
                     return true;
                 } 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 parent.showTransientError("Failed to import",ExceptionFormatter.formatException(e));
+            } catch (UnsupportedFlavorException x) {
+                parent.showTransientError("Failed to import",ExceptionFormatter.formatException(x));     
             }
             return false;
 	    }

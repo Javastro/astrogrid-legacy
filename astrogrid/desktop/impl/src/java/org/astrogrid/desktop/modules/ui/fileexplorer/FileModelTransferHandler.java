@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -195,7 +196,9 @@ public class FileModelTransferHandler extends TransferHandler{
                          }
                          return true;
                      }
-                } catch (Exception e) {
+                } catch (IOException e) {
+                    logger.error("Failed to import data",e);
+                } catch (UnsupportedFlavorException e) {
                     logger.error("Failed to import data",e);
                 }                
             }
