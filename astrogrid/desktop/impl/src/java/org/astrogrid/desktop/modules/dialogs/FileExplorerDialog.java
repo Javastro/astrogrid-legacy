@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -315,7 +317,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
                 || (urlEnabled && URL_SCHEMES.contains(scheme))
              );
     }
-    private final static List URL_SCHEMES = new ArrayList();
+    private final static Set URL_SCHEMES = new HashSet();
     static {
         URL_SCHEMES.add("http");
         URL_SCHEMES.add("ftp");

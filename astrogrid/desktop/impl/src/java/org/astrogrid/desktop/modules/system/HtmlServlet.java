@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.12 2007/10/09 14:56:19 nw Exp $
+/*$Id: HtmlServlet.java,v 1.13 2008/03/10 18:52:19 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -218,7 +220,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
     protected Transformer plain;   
     
     /** list of supported result types */
-    private static final List resultTypes = new ArrayList();
+    private static final Set resultTypes = new HashSet();
     static {
         resultTypes.add("html");
         resultTypes.add("plain");
@@ -292,6 +294,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.13  2008/03/10 18:52:19  nw
+used sets in place of lists.
+
 Revision 1.12  2007/10/09 14:56:19  nw
 improved error handling.
 
