@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.19 2007/11/26 14:44:46 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.20 2008/03/10 18:41:05 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,7 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
     private TaskParametersForm parametersPanel;
     private final Applications apps;
    
-    private class ChooseAppAction extends AbstractAction {
+    private static class ChooseAppAction extends AbstractAction {
         {
             setEnabled(false);
         }
@@ -155,6 +155,9 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.20  2008/03/10 18:41:05  nw
+made innder class static
+
 Revision 1.19  2007/11/26 14:44:46  nw
 Complete - task 224: review configuration of all backgroiund workers
 

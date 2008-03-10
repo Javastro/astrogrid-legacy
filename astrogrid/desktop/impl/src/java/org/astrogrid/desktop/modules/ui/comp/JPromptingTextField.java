@@ -97,7 +97,7 @@ public class JPromptingTextField extends JFormattedTextField {
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Oct 4, 20075:19:40 PM
      */
-    private final class MyFormatterFactory extends DefaultFormatterFactory {
+    private static final class MyFormatterFactory extends DefaultFormatterFactory {
         public JFormattedTextField.AbstractFormatter getFormatter(
                 JFormattedTextField source) {
             JFormattedTextField.AbstractFormatter format = null;
