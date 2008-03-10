@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.6 2007/04/18 15:47:07 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.7 2008/03/10 17:41:20 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 /** Implementation of browsercontrol using the webstart additional APIs.
  * if it fails to get a service, will fallback to BrowserLauncherBrowserControl.
  * Likewise, will fallback if it fails to open the url.
+ * @todo delete this - not ever running under webstart.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  *
  */
@@ -81,6 +82,9 @@ public class WebstartBrowserControl extends BrowserLauncherBrowserControl implem
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.7  2008/03/10 17:41:20  nw
+marked for deletion
+
 Revision 1.6  2007/04/18 15:47:07  nw
 tidied up voexplorer, removed front pane.
 
