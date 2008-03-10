@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.10 2007/12/12 13:54:13 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.11 2008/03/10 17:13:28 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,7 @@ public class DalProtocolManager {
      */
     public String getRowspec() {
     	int num= size() / 2;
-    	if (size() % 2 == 1) {
+    	if (size() % 2 != 0) {
     		num++;
     	}
     	StringBuffer sb = new StringBuffer("d");
@@ -103,6 +103,9 @@ public class DalProtocolManager {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.11  2008/03/10 17:13:28  nw
+fixed test for oddness.
+
 Revision 1.10  2007/12/12 13:54:13  nw
 astroscope upgrade, and minor changes for first beta release
 
