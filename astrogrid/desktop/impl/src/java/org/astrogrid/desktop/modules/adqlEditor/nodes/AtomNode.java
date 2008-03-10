@@ -50,7 +50,7 @@ public class AtomNode extends HidingNode {
             displayInfo = hcName + ' ' + formatDisplay()  ;
         }
         
-        if( displayInfo == null || displayInfo.trim().length() == 0 ) {
+        if( displayInfo.trim().length() == 0 ) {
             displayInfo = "NO NAME" ;
         } 
         return displayInfo ;
