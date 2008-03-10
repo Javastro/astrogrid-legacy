@@ -5,9 +5,11 @@ package org.astrogrid.desktop.modules.ivoa;
 
 import java.net.URL;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.util.DomHelper;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
 import junit.framework.TestCase;
@@ -25,7 +27,8 @@ public class RegistryClientLiteLibraryTest extends TestCase {
         super.setUp();
     //    URL endpoint = new URL("http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0");
         //tcpmon
-        URL endpoint = new URL("http://127.0.0.1:8099/mssl-registry/services/RegistryQueryv1_0");
+     //   URL endpoint = new URL("http://127.0.0.1:8099/mssl-registry/services/RegistryQueryv1_0");
+        URL endpoint = new URL("http://registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0");
         this.service = RegistryDelegateFactory.createQueryv1_0(endpoint);
     }
 
@@ -44,6 +47,14 @@ public class RegistryClientLiteLibraryTest extends TestCase {
        Document search = service.search(doc);
        DomHelper.DocumentToStream(search,System.err);
         
+    }
+    
+    public void testCaseInsensitive() throws Exception {
+        Document doc = service.getResourceByIdentifier("ivo://nasa.heasarc/skyview/dss2");
+        assertNotNull(doc);
+        Document doc1 = service.getResourceByIdentifier("ivo://nasa.heasarc/SKYVIEW/Dss2");
+        assertNotNull(doc1);
+        XMLAssert.assertXMLEqual(doc,doc1);
     }
 
 }
