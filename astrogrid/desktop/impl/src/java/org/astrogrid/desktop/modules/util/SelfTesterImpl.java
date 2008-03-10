@@ -94,7 +94,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
         logger.info(suite.countTestCases() + " self tests found");
         // set the tests to run, once, in a few seconds.
         if (runAtStartup) {
-            scheduler.executeAfterDelay(1000 * delay,this);
+            scheduler.executeAfterDelay(1000L * delay,this);
         }
         
     }
