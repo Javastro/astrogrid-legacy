@@ -286,20 +286,7 @@ class CmdLineParser {
 			}
 		}
 	}
-	/** @fixme - should this be called by something?
-	 * @param props
-	 */
-	private static void processPropertyKeys(String[] props) {
-		for (int i = 0; i < props.length; i++) {
-			String[] pair = props[i].split("=");
-			if (pair.length != 2) {
-				logger.warn("Warning: Ignoring malformed property " + props[i]);
-				continue;
-			}
-			logger.debug("'" + pair[0] + "' := '" + pair[1] + "'");
-			System.setProperty(pair[0],pair[1]);
-		}
-	}
+
 	/**
 	 * @param is
 	 * @throws IOException
