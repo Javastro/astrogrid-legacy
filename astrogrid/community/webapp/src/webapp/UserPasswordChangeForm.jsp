@@ -26,6 +26,10 @@
       <td>Your new password (at least seven characters long)</td>
       <td><input type="password" name="newPassword"/>
     </tr>
+        <tr>
+      <td>Repeat the new password, please</td>
+      <td><input type="password" name="repeatNewPassword"/>
+    </tr>
     <tr>
       <td><input type="submit" value="Change password"/>
   </table>

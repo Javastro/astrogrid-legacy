@@ -41,6 +41,7 @@ public class PasswordChangeServlet extends HttpServlet {
     String userName    = getParameter(request, "userLoginName");
     String oldPassword = getParameter(request, "oldPassword");
     String newPassword = getParameter(request, "newPassword");
+    String rptPassword = getParameter(request, "repeatNewPassword");
     
     if (userName == null) {
       respond(request, response,
@@ -57,6 +58,14 @@ public class PasswordChangeServlet extends HttpServlet {
     else if (newPassword == null) {
       respond(request, response,
               "No value was given for the new password.");
+    }
+    else if (rptPassword == null) {
+      respond(request, response,
+              "No value was given for the checking copy of the new password.");
+    }
+    else if (!rptPassword.equals(newPassword)) {
+      respond(request, response,
+              "The two copies of the new password do not match.");
     }
     else {
       String verdict = null;

@@ -63,7 +63,6 @@ public class SsoClient {
       
       // Derive the URL for the user's proxy.
       URL proxyUrl = new URL(endpoint + "/" + userName + "/proxy");
-      System.out.println("URL for proxy is " + proxyUrl);
       
       // Generate a key pair. The private key stays here and the public key
       // eventually goes with the credential request to the community.

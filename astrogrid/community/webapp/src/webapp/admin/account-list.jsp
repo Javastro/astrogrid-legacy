@@ -23,6 +23,10 @@
     <div id='bodyColumn'>
     
       <h1>User accounts</h1>
+      
+      <p>
+        Your community database is  <jsp:include page="database"/>.
+      </p>
     
       <h2>Add an account</h2>
       <form action="new-account" method="post">

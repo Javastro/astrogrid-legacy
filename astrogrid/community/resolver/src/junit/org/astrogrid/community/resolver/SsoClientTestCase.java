@@ -54,9 +54,14 @@ public class SsoClientTestCase extends TestCase {
   public void testReadGoodCertificates() throws Exception {
     System.out.println("readGoodCertificates");
     
-    InputStream is = this.getClass().getResourceAsStream("/fred.pem");
+    // The URL doesn't matter here since the test does not trigger
+    // a request to the service.
     SsoClient sut = new SsoClient("http://foo.bar/baz");
     
+    // This is a known, good certificate-path, supplied as a resource file
+    // for the tests. It was derived from a working installation of the
+    // accounts service.
+    InputStream is = this.getClass().getResourceAsStream("/gtr.pkipath");
     CertPath result = sut.readCertificates(is);
     assertNotNull(result);
     assertEquals(2, result.getCertificates().size());

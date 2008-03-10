@@ -186,29 +186,35 @@
    </env-entry>
    
    <env-entry>
-      <description>Registry Query Endpoint</description>
+      <description>Registry Query Endpoint (primary)</description>
       <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
-      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
+      <env-entry-value>http://registry.astrogrid.org/astrogrid-registry/services/RegistryQuery</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>
 
    <env-entry>
-      <description>Publishing Metadata to Registry endpoint</description>
-      <env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
-      <env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
+      <description>Registry Query Endpoint (back-up)</description>
+      <env-entry-name>org.astrogrid.registry.query.altendpoint</env-entry-name>
+      <env-entry-value>http://alt.registry.astrogrid.org/astrogrid-registry/services/RegistryQuery</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>
 
     <env-entry>
-        <description>The name of the directory in which MyProxy keeps its records.</description>
+        <description>The name of the directory in which credentials are stored for users.</description>
         <env-entry-name>org.astrogrid.community.myproxy</env-entry-name>
         <env-entry-value>/opt/globus4.0.2/var/myproxy</env-entry-value>
         <env-entry-type>java.lang.String</env-entry-type>
     </env-entry>
     
     <env-entry>
-        <description>The URL of the web-application's front page.</description>
+        <description>The URL of the web-application's front page (plain HTTP).</description>
         <env-entry-name>org.astrogrid.vosi.baseurl</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+    </env-entry>
+    
+    <env-entry>
+        <description>The URL of the web-application's front page (HTTPS).</description>
+        <env-entry-name>org.astrogrid.vosi.baseurlsecure</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
     </env-entry>
   

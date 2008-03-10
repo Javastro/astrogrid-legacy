@@ -15,7 +15,7 @@
         +-->
     <id>astrogrid-community-resolver</id>
     
-    <currentVersion>2008.0a7</currentVersion>
+    <currentVersion>2008.0</currentVersion>
 
     <!--+
         | The full name of the project.
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a7</version>
+            <version>2008.0</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a7</version>
+            <version>2008.0</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -202,30 +202,13 @@
     	
     </dependencies>
 
-    <!--+
-        | The build properties for our project.
-        +-->
     <build>
-        <!--+
-            | The location of our Java source code.
-            +-->
         <sourceDirectory>src/java</sourceDirectory>
-        <!--+
-            | The location of our JUnit source code.
-            +-->
         <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
-        <!--+
-            | Our JUnit test classes.
-            +-->
         <unitTest>
-            <!--+
-                | Which tests to include.
-                +-->
             <includes>
                 <include>**/*TestCase.java</include>
             </includes>
-            <!--+
-                | The resources for our tests. -->
             <resources>
                 <resource>
                   <directory>src/config</directory>
@@ -235,8 +218,11 @@
                   <directory>src/pem</directory>
                   <includes>*</includes>
                 </resource>
+                <resource>
+                  <directory>src/pkipath</directory>
+                  <includes>*</includes>
+                </resource>
             </resources>
-                +-->
         </unitTest>
     </build>
 

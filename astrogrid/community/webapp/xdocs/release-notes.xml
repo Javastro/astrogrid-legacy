@@ -67,29 +67,12 @@
         <subsection name="Registry compatibility">
           <p>
             This release has been revised to work with registries providing
-            registry interface v1.0 and containing document based on
-            VOResource v1.0; call this a "new" registry. 
-            Compatibility with the "old" kind of registry (registry interface v0.1
-            and VOResource v0.10) is limited.
-          </p>
-          <p>
-            The querying registry, in which the community service looks up
-            other services, <em>must</em> be a new registry. If you configure
-            an endpoint for an old registry then you will not be able to create
-            new accounts as the community will not be able to look up its
-            VOSpace service.
-          </p>
-          <p>
-            The registry in which the community services are published <em>must</em>
-            be a new registry. Some of the services are only published using the
-            new-style "pull" registration (where you initiate registration from
-            the registry web-pages).
-          </p>
-          <p>
-            The legacy, SOAP services of the community <em>may</em> be
-            registered in an old registry, and the community documentation
-            advises you to do so. This is only worthwhile to support users
-            who have old (2007.x) clients.
+            registry interface v1.0 and containing documents based on
+            VOResource v1.0. A registry of this kind is required in order to
+            publish the community service. A further registry of this kind is
+            required at run-time in order that the community amy look up external
+            services. This version of community cannot work with the older
+            registries (registry interface v0.1 and VOResource v0.10).
           </p>
         </subsection>
         

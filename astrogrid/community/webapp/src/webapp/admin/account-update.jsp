@@ -24,6 +24,10 @@
       
       <h1>Update user account</h1>
       
+      <p>
+        Your community database is  <jsp:include page="database"/>.
+      </p>
+      
       <jsp:useBean id="account" scope="page" class="org.astrogrid.community.webapp.AccountBean"/>
       <jsp:setProperty name="account" property="userName"/>
       
@@ -57,6 +61,9 @@
           <p>User's password: <input name="password" type="password" size="16"/></p>
           <p><input type="submit" value="Reset password"/></p>
         </form>
+        <p>
+         Your certificate authority is <jsp:include page="ca"/>.
+        </p>
         <form action="ca" method="post">
           <input type="hidden" name="userName" value="<jsp:getProperty name="account" property="userName"/>"/>
           <input type="hidden" name="commonName" value="<jsp:getProperty name="account" property="commonName"/>"/>

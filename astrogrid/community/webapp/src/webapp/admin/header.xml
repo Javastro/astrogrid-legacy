@@ -5,6 +5,6 @@
 <div id='breadcrumbs'>
   <p><a href="http://www.astrogrid.org/"><img src="../style/AGlogo.png"/></a>
   AstroGrid Community: administration.
-  Database: <jsp:include page="database"/> 
+  Database: <jsp:include page="database"/>, 
   Certificate authority: <jsp:include page="ca"/></p>
 </div>

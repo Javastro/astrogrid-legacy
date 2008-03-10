@@ -38,51 +38,55 @@ public class CommunityIvornParserTestCase
             "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
-            null,
+            "",
             null,
             null,
             "ivo://org.astrogrid.test/community",
             "ivo://frog@org.astrogrid.test/community"
             },
+            
             {
             "ivo://org.astrogrid.test/frog/extra",
             "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
-            "extra",
+            "/extra",
             null,
             "/extra",
             "ivo://org.astrogrid.test/community",
             "ivo://frog@org.astrogrid.test/community"
             },
+            
             {
             "ivo://org.astrogrid.test/frog#toad",
             "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
-            null,
+            "",
             "toad",
             "#toad",
             "ivo://org.astrogrid.test/community",
             "ivo://frog@org.astrogrid.test/community"
             },
+            
             {
             "ivo://org.astrogrid.test/frog/extra#toad",
             "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
-            "extra",
+            "/extra",
             "toad",
             "/extra#toad",
             "ivo://org.astrogrid.test/community",
             "ivo://frog@org.astrogrid.test/community"
             },
+            
             {
             "ivo://org.astrogrid.test/frog/extra#toad/extra",
             "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
-            "extra",
+            "/extra",
             "toad/extra",
             "/extra#toad/extra",
             "ivo://org.astrogrid.test/community",
@@ -90,34 +94,11 @@ public class CommunityIvornParserTestCase
             },
 
             {
-            "ivo://org.astrogrid.test#frog",
-            "org.astrogrid.test/community",
-            "frog",
-            "org.astrogrid.test/frog",
-            null,
-            null,
-            null,
-            "ivo://org.astrogrid.test/community",
-            "ivo://frog@org.astrogrid.test/community"
-            },
-            {
-            "ivo://org.astrogrid.test#frog/extra",
-            "org.astrogrid.test/community",
-            "frog",
-            "org.astrogrid.test/frog",
-            null,
-            "extra",
-            "#extra",
-            "ivo://org.astrogrid.test/community",
-            "ivo://frog@org.astrogrid.test/community"
-            },
-
-            {
             "ivo://frog@org.astrogrid.test",
-            "org.astrogrid.test",
+            "org.astrogrid.test/community",
             "frog",
             "org.astrogrid.test/frog",
-            null,
+            "",
             null,
             null,
             "ivo://org.astrogrid.test",
@@ -128,7 +109,7 @@ public class CommunityIvornParserTestCase
             "org.astrogrid.test/toad",
             "frog",
             "org.astrogrid.test/frog",
-            "toad",
+            "/toad",
             null,
             "/toad",
             "ivo://org.astrogrid.test/toad",
@@ -139,7 +120,7 @@ public class CommunityIvornParserTestCase
             "org.astrogrid.test/toad/extra",
             "frog",
             "org.astrogrid.test/frog",
-            "toad/extra",
+            "/toad/extra",
             null,
             "/toad/extra",
             "ivo://org.astrogrid.test/toad/extra",
@@ -150,69 +131,89 @@ public class CommunityIvornParserTestCase
             "org.astrogrid.test/toad/extra",
             "frog",
             "org.astrogrid.test/frog",
-            "toad/extra",
+            "/toad/extra",
             "newt",
             "/toad/extra#newt",
             "ivo://org.astrogrid.test/toad/extra",
             "ivo://frog@org.astrogrid.test/toad/extra"
             },
             {
-            "ivo://frog@org.astrogrid.test/toad/extra#newt/extra",
-            "org.astrogrid.test/toad/extra",
+            "ivo://frog@org.astrogrid_test/toad/extra#newt/extra",
+            "org.astrogrid_test/toad/extra",
             "frog",
-            "org.astrogrid.test/frog",
-            "toad/extra",
+            "org.astrogrid_test/frog",
+            "/toad/extra",
             "newt/extra",
             "/toad/extra#newt/extra",
-            "ivo://org.astrogrid.test/toad/extra",
-            "ivo://frog@org.astrogrid.test/toad/extra"
+            "ivo://org.astrogrid_test/toad/extra",
+            "ivo://frog@org.astrogrid_test/toad/extra"
+            },
+            {
+            "ivo://org.astrogrid_test/frog",
+            "org.astrogrid_test/community",
+            "frog",
+            "org.astrogrid_test",
+            "",
+            null,
+            null,
+            "ivo://org.astrogrid_test/community",
+            "ivo://frog@org.astrogrid_test/community"
             }
+            
         } ;
 
-    /**
-     * Test that we can handle a null Ivorn.
-     *
-    public void testNullIvorn()
-        throws Exception
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("CommunityIvornParserTestCase.testNullIvorn()") ;
-        //
-        // Create an IvornResolver.
-        CommunityIvornParser parser = new CommunityIvornParser() ;
-        //
-        // Check the community ident.
-        assertEquals(
-            "Community part not null",
-            null,
-            parser.getCommunityIdent()
-            ) ;
-        //
-        // Check the account ident.
-        assertEquals(
-            "Account part not null",
-            null,
-            parser.getAccountIdent()
-            ) ;
-        }
-     */
 
     /**
      * Test that we can resolve our test Community Ivorn(s).
      *
      */
-    public void testCommunityIvorn()
-        throws Exception
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("CommunityIvornParserTestCase.testCommunityIvorn()") ;
-        for (int i = 0 ; i < data.length ; i++)
-            { 
-            testCommunityIvorn(data[i]) ;
-            }
-        }
+    // The iteration of sets of test data could be done with a for
+    // loop inside one test-method. This takes less code, but
+    // the output on test failure becomes tangled and hard to read.
+    public void testCommunityIvorn0() throws Exception {
+      testCommunityIvorn(data[0]);
+    }
+    public void testCommunityIvorn1() throws Exception {
+      testCommunityIvorn(data[1]);
+    }
+    public void testCommunityIvorn2() throws Exception {
+      testCommunityIvorn(data[2]);
+    }
+    public void testCommunityIvorn3() throws Exception {
+      testCommunityIvorn(data[3]);
+    }
+    public void testCommunityIvorn4() throws Exception {
+      testCommunityIvorn(data[4]);
+    }
+    public void testCommunityIvorn5() throws Exception {
+      String data[] = {
+          "ivo://frog@org.astrogrid.test",
+          "org.astrogrid.test/community",
+          "frog",
+          "org.astrogrid.test/frog",
+          "",
+          null,
+          null,
+          "ivo://org.astrogrid.test/community",
+          "ivo://frog@org.astrogrid.test/community"
+      };
+      testCommunityIvorn(data);
+    }
+    public void testCommunityIvorn6() throws Exception {
+      testCommunityIvorn(data[6]);
+    }
+    public void testCommunityIvorn7() throws Exception {
+      testCommunityIvorn(data[7]);
+    }
+    public void testCommunityIvorn8() throws Exception {
+      testCommunityIvorn(data[8]);
+    }
+    public void testCommunityIvorn9() throws Exception {
+      testCommunityIvorn(data[9]);
+    }
+    public void testCommunityIvorn10() throws Exception {
+      testCommunityIvorn(data[10]);
+    }
 
     /**
      * Test that we can resolve a Community Ivorn.
@@ -232,6 +233,7 @@ public class CommunityIvornParserTestCase
             ) ;
         //
         // Check the community ident.
+        System.out.println("Community name = " + parser.getCommunityName());
         assertEquals(
             "Community name not equal",
             data[1],
@@ -244,17 +246,6 @@ public class CommunityIvornParserTestCase
             data[2],
             parser.getAccountName()
             ) ;
-/*
- *
-        //
-        // Check the account ident.
-        assertEquals(
-            "Account ident not equal",
-            data[3],
-            parser.getAccountIdent()
-            ) ;
- *
- */
         //
         // Check the ivorn path.
         assertEquals(
@@ -284,28 +275,6 @@ public class CommunityIvornParserTestCase
             data[7],
             parser.getCommunityIdent()
             ) ;
-        //
-        // Check the community ivorn.
-/*
- *
-        assertEquals(
-            "Community ivorn not equal",
-            data[7],
-            ((null != parser.getCommunityIvorn()) ? parser.getCommunityIvorn().toString() : null)
-            ) ;
- *
- */
-        
- /*
-        //
-        // Check the account ident.
-        assertEquals(
-            "Account ident not equal",
-            data[8],
-            parser.getAccountIdent()
-            ) ;
-  */
-        
         //
         // Check the account ivorn.
         assertEquals(

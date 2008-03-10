@@ -83,23 +83,20 @@ public class CommunityIvornParser
       this.setIvorn(parse(ident));
     }
 
-    /**
-     * Our target Ivorn.
-     *
-     */
-    private Ivorn ivorn ;
-
-    /**
-     * Our corresponding URI.
-     *
-     */
-    private URI uri ;
-
-    /**
-     * The community ident part.
-     *
-     */
-    private String community ;
+  /**
+   * The given IVORN.
+   */
+  private Ivorn ivorn ;
+    
+  /**
+   * The publishing authority.
+   */
+  private String authority;
+  
+  /**
+   * The IVORN of the community service associated with the given IVORN.
+   */
+  private Ivorn community;
 
     /**
      * The account ident part.
@@ -113,395 +110,76 @@ public class CommunityIvornParser
      */
     private String path ;
 
-    /**
-     * The URI query string.
-     *
-     */
-    private String query ;
+  /**
+   * The query string from the URI form of the IVORN.
+   */
+  private String query ;
 
-    /**
-     * The remaining fragment, after the account ident has been removed.
-     *
-     */
-    private String fragment ;
+  /**
+   * The query string from the URI form of the IVORN.
+   */
+  private String fragment ;
 
-    /**
-     * Get our target Ivorn.
-     *
-     */
-    public Ivorn getIvorn()
-        {
-        return this.ivorn ;
-        }
+  /**
+   * Reveals the IVORN.
+   */
+  public Ivorn getIvorn() {
+    return this.ivorn ;
+  }
 
-    /**
-     * Set our target Ivorn.
-     * @param A vaild Ivorn identifier.
-     * @throws CommunityIdentifierException If the identifier is not valid.
-     *
-     */
-    protected void setIvorn(Ivorn ivorn)
-        throws CommunityIdentifierException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParser.setIvorn()") ;
-        log.debug("  Ivorn : " + ivorn) ;
-        //
-        // Check for null param.
-        if (null == ivorn)
-            {
-            throw new CommunityIdentifierException(
-                "Null identifier"
-                ) ;
-            }
-        //
-        // Save the ivorn.
-        this.ivorn     = ivorn ;
-        //
-        // Reset everything else.
-        this.uri       = null  ;
-        this.account   = null ;
-        this.community = null ;
-        this.path      = null ;
-        this.fragment  = null ;
-        //
-        // Try convert it into a URI.
-        try {
-            this.uri = new URI(ivorn.toString()) ;
-            //
-            // Parse the Community ident.
-            this.parseCommunityIdent() ;
-            //
-            // Parse Account ident.
-            this.parseAccountIdent() ;
-            }
-        //
-        // All Ivorn should be valid URI.
-        catch (URISyntaxException ouch)
-            {
-            throw new CommunityIdentifierException(
-                ouch
-                ) ;
-            }
-        }
+  /**
+   * Records and parses the IVORN.
+   *
+   * @param A valid Ivorn identifier.
+   * @throws CommunityIdentifierException If the identifier is not valid.
+   */
+  protected void setIvorn(Ivorn ivorn) throws CommunityIdentifierException {
+    log.debug("CommunityIvornParser.setIvorn(" + ivorn +  ")");
+       
+    if (null == ivorn) {
+      throw new CommunityIdentifierException("Null identifier");
+    }
+    
+    this.ivorn = ivorn;
+    parseIvornText(ivorn.toString());
+  }
 
-    /**
-     * Parse the Community ident.
-     *
-     */
-    protected void parseCommunityIdent()
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParser.parseCommunityIdent()") ;
-        log.debug("  Ivorn     : " + ivorn) ;
-        if (null != uri) {
-          
-          // Assumes special form one, described in class comment.
-          System.out.println("User = " + uri.getUserInfo());
-          if (uri.getUserInfo() == null) {
-            this.community = uri.getHost() + "/community";
-          }
-          
-          // Assumes special form two, described in class comment.
-          else {
-            this.community = uri.getHost() + uri.getPath();
-          }
-        }
-        log.debug("  Community : " + this.community) ;
-        }
 
-    /**
-     * Get the Community name as a string.
-     * @return The Community name, or null if no match was found.
-     *
-     */
-    public String getCommunityName()
-        {
-        return this.community ;
-        }
 
-    /**
-     * Get the Community ident as a string.
-     * @return The Community ident, or null if no match was found.
-     *
-     */
-    public String getCommunityIdent()
-        {
-        return new StringBuffer()
-            .append(Ivorn.SCHEME)
-            .append("://")
-            .append(this.community)
-            .toString() ;
-        }
 
-    /**
-     * Get the Community ident as a new Ivorn.
-     * @return A new Ivorn, or null if the Community ident is null.
-     *
-     */
-    public Ivorn getCommunityIvorn()
-        {
-        //
-        // If we have a community ident.
-        if (null != this.getCommunityIdent())
-            {
-            //
-            // Create a new Ivorn.
-            return new Ivorn(
-                this.getCommunityName(),
-                null
-                ) ;
-            }
-        //
-        // If we don't have a community ident.
-        else {
-            return null ;
-            }
-        }
+  /**
+   * Reveals the community name.
+   * The name is the string form of the IVORN, stripped of the ivo:// prefix.
+   */
+  public String getCommunityName() {
+    // This method Ivorn.getPath() doesn't return the path of the IVORN
+    // when represented as a URI. It returns the authority + path. 
+    return this.community.getPath();
+  }
+    
+  /**
+   * Reveals the IVORN for the community service.
+   */
+  public String getCommunityIdent() {
+    return this.community.toString();
+  }
+    
+    
+  /**
+   * Reveals the IVORN for the community service.
+   */
+  public Ivorn getCommunityIvorn() { 
+    return this.community;
+  }
 
-    /**
-     * Our regex pattern.
-     *
-     */
-    private static Pattern pattern ;
-    static {
-        try {
-            pattern = Pattern.compile("^/?([^/]+)/?(.*)") ;
-            }
-        catch (Exception ouch)
-            {
-            //
-            // Log this as a fatal error.
-            log.debug("ERROR ----") ;
-            log.debug("CommunityIvornParser RegExp pattern is not valid.") ;
-            log.debug(ouch) ;
-            log.debug("----------") ;
-            }
-        }
-
-    /**
-     * Parse the Account ident.
-     *
-     */
-    protected void parseAccountIdent()
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParser.parseAccountIdent()") ;
-        log.debug("  Ivorn : " + ivorn) ;
-        //
-        // Set all of the parts to null.
-        this.account   = null ;
-        this.path      = null ;
-        this.query     = null ;
-        this.fragment  = null ;
-        //
-        // If we have a valid URI.
-        if (null != uri)
-            {
-            //
-            // Try the user part.
-            this.account  = uri.getUserInfo() ;
-            //
-            // If we got the account from the URI user.
-            if (null != this.account)
-                {
-                //
-                // The path and fragment are left unchanged.
-                if (null != uri.getPath())
-                    {
-                    //
-                    // If there is anything in the path.
-                    if (uri.getPath().length() > 0)
-                        {
-                        //
-                        // Check for a leading '/'
-                        if (uri.getPath().startsWith("/"))
-                            {
-                            //
-                            // If there is anything else.
-                            if (uri.getPath().length() > 1)
-                                {
-                                //
-                                // Use anything after the '/'
-                                this.path = uri.getPath().substring(1) ;
-                                }
-                            }
-                        else {
-                            //
-                            // Use the path as-is.
-                            this.path = uri.getPath() ;
-                            }
-                        }
-                    }
-                //
-                // If there is anything in the fragment.
-                if (null != uri.getFragment())
-                    {
-                    if (uri.getFragment().length() > 0)
-                        {
-                        //
-                        // Use the fragment as-is.
-                        this.fragment = uri.getFragment() ;
-                        }
-                    }
-                }
-            //
-            // If we didn't get the account from the URI user.
-            else {
-                //
-                // If we have a path.
-                if (null != uri.getPath())
-                    {
-                    //
-                    // Try parse the path.
-                    this.parseAccountPath() ;
-                    }
-                //
-                // If we don't have a path.
-                else {
-                    //
-                    // Try parse the fragment.
-                    this.parseAccountFragment() ;
-                    }
-                }
-            //
-            // The query string is untouched.
-            if (null != uri.getQuery())
-                {
-                if (uri.getQuery().length() > 0)
-                    {
-                    this.query = uri.getQuery() ;
-                    }
-                }
-            }
-        log.debug(" Account   : " + this.account) ;
-        log.debug(" Path      : " + this.path) ;
-        log.debug(" Query     : " + this.query) ;
-        log.debug(" Fragment  : " + this.fragment) ;
-        }
-
-    /**
-     * Parse the URI path for the Account ident.
-     *
-     */
-    protected void parseAccountPath()
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParser.parseAccountPath()") ;
-        log.debug("  Ivorn : " + ivorn) ;
-        log.debug("  Path  : " + uri.getPath()) ;
-        //
-        // If we have a path.
-        if (null != uri.getPath())
-            {
-            //
-            // Try match the path.
-            Matcher matcher = pattern.matcher(uri.getPath()) ;
-            //
-            // If we got a match.
-            if (matcher.matches())
-                {
-                //
-                // If we found an account.
-                if (matcher.groupCount() > 0)
-                    {
-                    //
-                    // Use the first match as our account.
-                    this.account = matcher.group(1) ;
-                    }
-                //
-                // If we found anything else.
-                if (matcher.groupCount() > 1)
-                    {
-                    //
-                    // Strip spaces from the remainder.
-                    String temp = matcher.group(2).trim() ;
-                    if (temp.length() > 0)
-                        {
-                        //
-                        // Save anything left over as the path.
-                        this.path = temp ;
-                        System.out.println("path = '" + this.path + "'");
-                        }
-                    }
-                //
-                // The fragment remains unchanged.
-                this.fragment = uri.getFragment() ;
-                }
-            //
-            // If we didn't get a match.
-            else {
-                //
-                // Try parse the fragment.
-                this.parseAccountFragment() ;
-                }
-            }
-        }
-
-    /**
-     * Parse the URI fragment for the Account ident.
-     *
-     */
-    protected void parseAccountFragment()
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityIvornParser.parseAccountFragment()") ;
-        log.debug("  Ivorn    : " + ivorn) ;
-        log.debug("  Fragment : " + uri.getFragment()) ;
-        //
-        // If we have a fragment.
-        if (null != uri.getFragment())
-            {
-            //
-            // Try match the fragment.
-            Matcher matcher = pattern.matcher(uri.getFragment()) ;
-            //
-            // If we got a match.
-            if (matcher.matches())
-                {
-                //
-                // If we found an account.
-                if (matcher.groupCount() > 0)
-                    {
-                    //
-                    // Use the first match as our account.
-                    this.account = matcher.group(1) ;
-                    }
-                //
-                // If we found anything else.
-                if (matcher.groupCount() > 1)
-                    {
-                    //
-                    // Save the rest as the fragment.
-                    //
-                    // Strip spaces from the remainder.
-                    String temp = matcher.group(2).trim() ;
-                    if (temp.length() > 0)
-                        {
-                        //
-                        // Save anything left over as the fragment.
-                        this.fragment = temp ;
-                        }
-                    }
-                }
-            }
-        }
-
-    /**
-     * Get the Account name as a string.
-     * This will contain just the account name, without the community identifier.
-     * @return The Account name, or null if no match was found.
-     *
-     */
-    public String getAccountName()
-        {
-        return this.account ;
-        }
+  /**
+   * Get the Account name as a string.
+   * This will contain just the account name, without the community identifier.
+   * @return The Account name, or null if no match was found.
+   */
+  public String getAccountName() {
+     return this.account;
+  }
 
   /**
    * Get the Account ident as a string.
@@ -543,15 +221,13 @@ public class CommunityIvornParser
     }
   }
 
-    /**
-     * Get the rest of the path, after the Account ident has been removed.
-     * @return The remaining URI path, or null if there is nothing left. 
-     *
-     */
-    protected String getPath()
-        {
-        return path ;
-        }
+  /**
+   * Gets the rest of the path, after the Account ident has been removed.
+   * @return The remaining URI path, or null if there is nothing left. 
+   */
+  protected String getPath() {
+    return path;
+  }
 
     /**
      * Get the query, after the Account ident has been removed.
@@ -586,8 +262,6 @@ public class CommunityIvornParser
         // If we have a path.
         if (null != this.path)
             {
-          System.out.println("appending '" + this.path + "'");
-            buffer.append("/") ;
             buffer.append(this.path) ;
             }
         //
@@ -606,7 +280,6 @@ public class CommunityIvornParser
             }
         //
         // Return the string, or null if it is empty.
-        System.out.println("length = " + buffer.length());
         return (buffer.length() > 0) ? buffer.toString() : null ;
         }
 
@@ -636,11 +309,9 @@ public class CommunityIvornParser
      */
     protected static Ivorn parse(String ident)
         throws CommunityIdentifierException {
-      System.out.println("static parse() was called");
       if (null == ident) {
         throw new CommunityIdentifierException("Null identifier");
       }
-      System.out.println(ident);
       try {
         if (ident.startsWith("ivo://")) {
           return new Ivorn(ident) ;
@@ -736,4 +407,77 @@ public class CommunityIvornParser
         return "CommunityIvornParser : " + ((null != ivorn) ? ivorn.toString() : null) ;
         }
 
+  /**
+   * Parses a given IVORN.
+   *
+   * @throws CommunityIdentifierException If the given string is not a URI.
+   * @throws CommunityIdentifierException If the given string is a URI but not an IVORN.
+   * @throws CommunityIdentifierException If the given string is an IVORN but not for a user account.
+   */
+  private void parseIvornText(String given) throws CommunityIdentifierException {
+    
+    // First, parse the given string as a URI.
+    // This pattern is copied verbatim from appendix A of RFC.
+    // The captured elements are as follows:
+    // scheme    = $2
+    // authority = $4
+    // path      = $5
+    // query     = $7
+    // fragment  = $9
+    Pattern p = 
+        Pattern.compile("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?");
+    Matcher m = p.matcher(given);
+    if (!m.matches()) {
+      throw new CommunityIdentifierException(given + " is not an IVORN (not a valid URI)");
     }
+    this.fragment    = m.group(9);
+    this.query       = m.group(7);
+    String path      = m.group(5);
+    String authority = m.group(4);
+    String scheme    = m.group(2);
+    
+    // It's a URI. Is it an IVORN?
+    if (!"ivo".equals(scheme)) {
+      throw new CommunityIdentifierException(given + " is not an IVORN (wrong URI scheme)");
+    }
+    if (authority == null) {
+      throw new CommunityIdentifierException(given + " is not an IVORN (no authority part)");
+    }
+    
+    // Is it an account URI? It could be in either of the two forms noted in
+    // class comments.
+    Pattern authorityPattern = Pattern.compile("([^@]+)@(.+)");
+    Matcher authorityMatcher = authorityPattern.matcher(authority);
+    if (authorityMatcher.matches()) {
+      this.account   = authorityMatcher.group(1);
+      this.authority = authorityMatcher.group(2);
+      this.community = new Ivorn(this.authority, 
+                                 (path == null || path.length() < 2)? "community" : path.substring(1), 
+                                 null);
+      this.path      = path;
+    }
+    else if (path == null) {
+      throw new CommunityIdentifierException(
+                    given + 
+                    " is not an IVORN for a community account (no user name)"
+                );
+    }
+    else {
+      Pattern pathPattern = Pattern.compile("/([^/]+)(.*)");
+      Matcher pathMatcher = pathPattern.matcher(path);
+      if (pathMatcher.matches()) {
+        this.account   = pathMatcher.group(1);
+        this.authority = authority;
+        this.path      = pathMatcher.group(2);
+        this.community = new Ivorn(this.authority, "community", null);
+      }
+      else {
+        throw new CommunityIdentifierException(
+                    given + 
+                    " is not an IVORN for a community account (no user name)"
+                );
+      }
+    }
+      
+  }
+}

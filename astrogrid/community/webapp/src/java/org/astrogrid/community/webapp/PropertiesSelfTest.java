@@ -76,17 +76,6 @@ public class PropertiesSelfTest extends TestCase {
     registryEndpoint.getContent();
   }
   
-  public void testRegistryAdmin() throws Exception {
-    System.out.println("Testing registry-update endpoint");
-    URL registryEndpoint = 
-        SimpleConfig.getSingleton().getUrl("org.astrogrid.registry.admin.endpoint");
-    System.out.println(registryEndpoint);
-    
-    // Check that something responds. We expect the "content" of the 
-    // registry's SOAP endpoint to be terse error-message.
-    registryEndpoint.getContent();
-  }
-  
   public void testDbConfigUrl() throws Exception {
     System.out.println("Testing the database-configuration URL");
     URL db = 
