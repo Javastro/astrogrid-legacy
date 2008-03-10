@@ -152,7 +152,7 @@ private PositionUtils() {
 	    if(pos == null || pos.trim().length() == 0) {
 	        return false;
 	    }        
-	    return (pos.indexOf(",") != -1);
+	    return (pos.indexOf(',') != -1);
 	}
 
     public static final int DEGREES_TYPE = 1;    
