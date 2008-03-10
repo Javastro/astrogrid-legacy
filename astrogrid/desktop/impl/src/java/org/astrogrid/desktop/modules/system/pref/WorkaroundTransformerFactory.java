@@ -64,7 +64,7 @@ public class WorkaroundTransformerFactory extends TransformerFactory {
         // class to compile at earlier versions.
         try {
             Method method = TransformerFactory.class.getMethod("setFeature", new Class[] {String.class, boolean.class});
-            method.invoke(base, new Object[] {name, new Boolean(value)});
+            method.invoke(base, new Object[] {name, Boolean.valueOf(value)});
         }
         catch (Throwable e) {
             throw new TransformerConfigurationException(e);

@@ -604,9 +604,9 @@ public class NestingNode extends AdqlNode {
             BigInteger biMaxOccurs = getElementProperty().getMaxOccurs() ;
             int maxOccurs = ( biMaxOccurs == null ? -1 : biMaxOccurs.intValue() ) ;
             if( maxOccurs == -1  ||  maxOccurs > 1 )
-                arrayContext = new Boolean( true ) ;
+                arrayContext = Boolean.TRUE;
             else
-                arrayContext = new Boolean( false ) ;
+                arrayContext =Boolean.FALSE;
         }
         return arrayContext.booleanValue() ;
     }
