@@ -118,7 +118,7 @@ public static class XQueryTokenMarker extends SQLTokenMarker {
 			super(getKeywordMap(),true);
 		}
 		private static KeywordMap kw;
-		public static KeywordMap getKeywordMap()
+		public static synchronized KeywordMap getKeywordMap()
 		{
 			if (kw == null) {
 				kw = new KeywordMap(true);
