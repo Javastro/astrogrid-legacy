@@ -167,13 +167,13 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         if( internalUndoManager.getLimit() < columns.length + 10 ) {
             internalUndoManager.setLimit( columns.length + 10 ) ;
         }
-        ColumnInsertCommand 
+        final ColumnInsertCommand 
         	command = new ColumnInsertCommand( adqlTree
         	                                 , internalUndoManager
         	                                 , getParentEntry()
         	                                 , childType
         	                                 , null ) ;
-        if( command != null ) {
+    //can't be null    if( command != null ) {
             command.setTable( table ) ;
             command.setTableAlias( tableAlias ) ;
             ColumnInsertCommand cic = null ;
@@ -191,7 +191,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
                 if( result == CommandExec.FAILED || result == CommandExec.ERROR )
                     break ;
             }
-        }       
+        //}       
         return result ;  
     }
     

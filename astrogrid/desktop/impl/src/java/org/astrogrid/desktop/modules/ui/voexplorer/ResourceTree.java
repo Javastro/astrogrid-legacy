@@ -1182,14 +1182,13 @@ public class ResourceTree extends JTree {
                     throw new InvalidArgumentException("No resource ids found");
                 }
                 return (URI[])result.toArray(new URI[result.size()]);
-            } finally {
-                if (r != null) {
+            } finally {               
                     try {
                         r.close();
                     } catch (IOException e) {
                         //netch
                     }
-                }
+                
             }
         }
     }
