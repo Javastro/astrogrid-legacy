@@ -939,7 +939,7 @@ public final class AdqlTree extends JTree
             public AbstractEnumeratedEditor() {
                 super() ;
            //     setKeySelectionManager( new EnumeratedEditor.KeySelectionManager() ) ;
-                setPrototypeDisplayValue( new String( "mmmmmmmmmmmmmmmm" ) ) ;
+                setPrototypeDisplayValue( "mmmmmmmmmmmmmmmm"  ) ;
                 setEditable( true ) ; 
             }
             
