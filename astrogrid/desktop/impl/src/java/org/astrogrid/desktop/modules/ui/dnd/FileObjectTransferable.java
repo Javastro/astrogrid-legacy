@@ -64,7 +64,9 @@ public class FileObjectTransferable implements Transferable{
 				return new URI(StringUtils.replaceChars(fo.getName().getURI(),' ','+'));
 			} catch (URISyntaxException x) {
 				logger.error("Unable to create URI for fileObject",x);
-				throw new UnsupportedFlavorException(flavor);
+				UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
+				exception.initCause(x);
+				throw exception;
 			}
 		} else if (VoDataFlavour.URI_LIST.equals(flavor)) {
 			return new ByteArrayInputStream((StringUtils.replaceChars(fo.getName().getURI(),' ','+')).getBytes());

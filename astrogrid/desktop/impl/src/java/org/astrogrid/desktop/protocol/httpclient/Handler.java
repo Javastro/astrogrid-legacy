@@ -76,7 +76,9 @@ public final class Handler extends URLStreamHandler {
 			throw new FileNotFoundException("Retrieval Error " + code);
 		}
 		} catch (URISyntaxException e) {
-			throw new IOException("Unexpected Error" + e);
+			IOException exception = new IOException("Unexpected Error");
+			exception.initCause(e);
+			throw exception;
 		} catch (IOException e) { // if an io exception is thrown - clean up.
 			if (meth != null && meth.hasBeenUsed()) {
 				meth.releaseConnection(); // note we can't do this in a finally, as want to keep it open on success

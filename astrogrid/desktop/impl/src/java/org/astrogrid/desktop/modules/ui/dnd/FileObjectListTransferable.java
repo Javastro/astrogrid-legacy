@@ -52,7 +52,9 @@ public class FileObjectListTransferable implements Transferable{
 			return u.toArray(new URI[u.size()]);
 			} catch (URISyntaxException e) {
 				logger.warn("Unable to create a URI for fileobject",e);
-				throw new UnsupportedFlavorException(flavor);
+				UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
+				exception.initCause(e);
+				throw exception;
 			}
 		}
 			StringBuffer s = new StringBuffer();
