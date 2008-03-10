@@ -178,6 +178,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 					break;
 				case ListEvent.DELETE:
 					pane.remove(startPos + i);
+					break;
 				case ListEvent.UPDATE: // ever happens?
 					break; 
 				}
