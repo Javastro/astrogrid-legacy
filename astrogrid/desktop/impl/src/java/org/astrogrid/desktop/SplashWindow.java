@@ -141,11 +141,11 @@ public class SplashWindow extends Window {
         // clear
         g.setColor(Color.WHITE);
         int sz = labelFont.getSize();
-        g.fillRect(indent,imgHeight - (sz +2) ,imgWidth - indent,sz + 4); // 2px border top and bottom.
+        g.fillRect(indent,imgHeight - (sz +4) ,imgWidth - (indent + 4) ,sz + 2);
        // draw.
         g.setFont(labelFont);
         g.setColor(Color.BLACK);
-        g.drawString(this.label,indent,imgHeight - 2);
+        g.drawString(this.label,indent,imgHeight - 4);
     }
     
     /** x of baseline of leftmost character */

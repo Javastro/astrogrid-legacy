@@ -1,4 +1,4 @@
-/*$Id: VODesktop.java,v 1.1 2008/03/05 10:46:16 nw Exp $
+/*$Id: VODesktop.java,v 1.2 2008/03/10 05:52:26 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,8 +25,7 @@ public class VODesktop {
     }
     
     public static void main(String[] args) {
-    	//@todo provide a splash screen.
-        SplashWindow.splash(VODesktop.class.getResource("acr-splash.gif"));
+        SplashWindow.splash(VODesktop.class.getResource("andy-splash-1.png"));//("acr-splash.gif"));
         SplashWindow.invokeMain("org.astrogrid.VODesktop1", args);
         SplashWindow.disposeSplash();
     }
