@@ -317,13 +317,14 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         }
         
         public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
             if (! (obj instanceof Location)) {
                 return false;
             }
             Location other = (Location)obj;
-            if (other == null) {
-                return false;
-            }
+
             return getText().equals(other.getText());
         }       
     } // end of location inner class
