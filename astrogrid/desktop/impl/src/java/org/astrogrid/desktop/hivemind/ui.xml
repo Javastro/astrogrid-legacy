@@ -443,10 +443,11 @@ FILE EXPLORER
 	<contribution configuration-id="system.windowFactories">
 		<window name="File Explorer">service:fileManager</window>
 	</contribution>
-	
+	<!-- doesn't handle any message at the moment - implement later
 	<contribution configuration-id="system.plasticMessageHandlers">
 		<object>service:fileManager</object>
 	</contribution>	
+     -->
 	
 	<contribution configuration-id="UiBuilderObjects">
 		Describes how to build a new fileexplorer window.
