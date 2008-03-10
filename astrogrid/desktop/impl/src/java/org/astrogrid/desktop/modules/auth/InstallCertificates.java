@@ -49,10 +49,12 @@ public class InstallCertificates implements Runnable {
 	}
 	public void run() {
 		(new BackgroundWorker(ui,"Checking for new certificates",Thread.MIN_PRIORITY) {
-			protected Object construct()  {
+			protected Object construct() throws Exception  {
 				if (! certDir.exists()) {
 					reportProgress("Certificate directory does not exist - creating " + certDir);
-					certDir.mkdirs();
+					if (!certDir.mkdirs()) {
+					    throw new Exception("Failed to create certificate directory - unable to install certificates");
+					}
 				}
 				XMLInputFactory fac = XMLInputFactory.newInstance();
 				int count = 0;
