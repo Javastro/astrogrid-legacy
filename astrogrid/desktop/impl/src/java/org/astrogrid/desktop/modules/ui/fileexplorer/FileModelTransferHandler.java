@@ -154,6 +154,7 @@ public class FileModelTransferHandler extends TransferHandler{
                         }     
                     } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST_STRING)) {
                         logger.debug("external uri list as string");
+                        objects = new ArrayList();
                         StringTokenizer tok = new StringTokenizer((String)t.getTransferData(VoDataFlavour.URI_LIST_STRING));
                         while (tok.hasMoreElements()) {
                             String s= tok.nextToken();
