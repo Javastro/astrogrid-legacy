@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.27 2008/03/10 12:47:09 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.28 2008/03/10 16:54:55 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -563,7 +563,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
                 colMenu.show((Component) evt.getSource(), 0, 0);
             }
         };
-        JButton colButton = new JButton(colsAct);
         tableScroller.setCorner(JScrollPane.UPPER_RIGHT_CORNER, new JButton(colsAct));
         tableScroller.setMinimumSize(new Dimension(50,100));
         resourceColumnModel.addColumnModelListener(new TableColumnModelAdapter() {
@@ -957,6 +956,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.28  2008/03/10 16:54:55  nw
+removed dead code
+
 Revision 1.27  2008/03/10 12:47:09  nw
 removed dead code.
 
