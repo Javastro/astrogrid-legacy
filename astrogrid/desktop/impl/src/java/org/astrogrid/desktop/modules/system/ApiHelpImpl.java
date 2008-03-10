@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.10 2007/10/08 08:36:28 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.11 2008/03/10 17:01:28 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public class ApiHelpImpl implements ApiHelp {
     }
     
     public String[] listMethods() {
-        Vector result = new Vector();
+        List result = new ArrayList();
 
         for (Iterator i = reg.getDescriptors().values().iterator(); i.hasNext(); ) {
             ModuleDescriptor m = (ModuleDescriptor) i.next();
@@ -83,7 +83,7 @@ public class ApiHelpImpl implements ApiHelp {
     }
 
     public String[] listModules() {
-        Vector modules = new Vector();
+        List modules = new ArrayList();
         for (Iterator i =reg.getDescriptors().values().iterator(); i.hasNext(); ) {
             ModuleDescriptor md = (ModuleDescriptor)i.next();
             modules.add(md.getName());
@@ -92,7 +92,7 @@ public class ApiHelpImpl implements ApiHelp {
     }
     
     public String[] listComponentsOfModule(String moduleName) throws NotFoundException {
-        Vector components = new Vector();
+        List components = new ArrayList();
         ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
         if (m == null) {
             throw new NotFoundException("Unknown module " + moduleName);
@@ -122,7 +122,7 @@ public class ApiHelpImpl implements ApiHelp {
     }
     
     public String[] listMethodsOfComponent(String componentName) throws NotFoundException {
-        Vector methods = new Vector();
+        List methods = new ArrayList();
         String[] names = componentName.split("\\.");
         ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
 
@@ -141,7 +141,7 @@ public class ApiHelpImpl implements ApiHelp {
     }
     
     public String[][] methodSignature(String methodName) throws NotFoundException {
-        Vector sigs = new Vector();
+        List sigs = new ArrayList();
         if (methodName == null) {
         	throw new NotFoundException("null");
         }
@@ -376,6 +376,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.11  2008/03/10 17:01:28  nw
+removed unneeded synchronization
+
 Revision 1.10  2007/10/08 08:36:28  nw
 improved exception formatting
 
