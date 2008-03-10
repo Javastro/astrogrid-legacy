@@ -54,8 +54,7 @@ public class TablesImpl implements Tables {
 	protected final StarTableOutput writerFactory;
 	protected final FileSystemManager vfs;
 	
-	public String convert(String input, String inFormat, String outFormat) throws InvalidArgumentException, ServiceException {
-        TableBuilder tableBuilder = createTableBuilder(inFormat);
+	public String convert(String input, String inFormat, String outFormat) throws InvalidArgumentException, ServiceException {       
 		StarTableWriter tableWriter = createTableWriter(outFormat);
 		DataSource ds = new StarTableBuilder.InlineDataSource(input);
 		ByteArrayOutputStream os = null;

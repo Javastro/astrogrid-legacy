@@ -729,28 +729,5 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			return 5;
 		}
 	}
-	
-	// main method - for testing only
-	public static void main(String[] args) {
-		newPane();
-	}
-	// part of testing only.
-	private static SrqlQueryBuilderPanel newPane() {
-		JFrame f = new JFrame();
-		final SrqlQueryBuilderPanel pan = new SrqlQueryBuilderPanel();
-		f.getContentPane().add(pan);
-		f.pack();
-		f.setVisible(true);
-		final KeywordSRQLVisitor vis = new KeywordSRQLVisitor();
-		JButton b = new JButton("Clone"); // button can be used to test getting and setting of query.
-		pan.add(b,BorderLayout.SOUTH);
-		b.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				SRQL q = pan.getQuery();				
-				SrqlQueryBuilderPanel p1 = newPane();
-				p1.setQuery(q); 
-			}
-		});
-		return pan;
-	}
+
 }

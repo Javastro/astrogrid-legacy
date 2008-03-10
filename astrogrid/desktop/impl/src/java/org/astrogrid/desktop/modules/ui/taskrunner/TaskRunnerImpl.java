@@ -631,7 +631,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             Service[] services = apps.listServersProviding(this.appId);
             final int sz = services.length;
             logger.debug("resolved app to " + sz + " servers");
-            List l = Arrays.asList(services);
+
             switch(sz) {
                 case 0:
                     return ListUtils.EMPTY_LIST;

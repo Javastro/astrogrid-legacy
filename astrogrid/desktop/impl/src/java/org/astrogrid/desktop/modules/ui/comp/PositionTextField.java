@@ -82,8 +82,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 			if (nums.length != 2) {
 				throw new ParseException("Expected 2 numbers",0);
 			}
-            String sx = nums[0].trim();
-            String sy = nums[1].trim();
+        //unused    String sx = nums[0].trim();
+        //    String sy = nums[1].trim();
             try {
                 return new Point2D.Double(PositionUtils.sexagesimalRaToDecimal(nums[0].trim()),
                                           PositionUtils.sexagesimalDecToDecimal(nums[1].trim()));

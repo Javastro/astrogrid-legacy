@@ -1131,7 +1131,8 @@ public class ResourceTree extends JTree {
                 parentNode = (DefaultMutableTreeNode) targetNode.getParent();
                 childIndex = parentNode.getIndex(targetNode) + 1;
             }
-            ResourceFolder folder = getSubscribedAncestor(parentNode);
+            //NWW - removed as unused.
+          //  ResourceFolder folder = getSubscribedAncestor(parentNode);
             if (isFixed(parentNode)) {
                 failToModifySubscription(parentNode);
                 return false;
