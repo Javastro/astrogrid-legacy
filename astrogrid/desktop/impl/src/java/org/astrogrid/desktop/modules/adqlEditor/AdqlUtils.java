@@ -124,7 +124,7 @@ public final class AdqlUtils {
                 enumList.add( entry ) ;
                 if( isEnumValueSynonymed(  entry ) ) {
                     String synonym = getSlaveEnumSynonym( entry ) ;
-                    if( synonym != entry ) {
+                    if( synonym != entry ) { //@todo NWW - do you mean .equals() here?
                         enumList.add( synonym ) ;
                     }
                 }
