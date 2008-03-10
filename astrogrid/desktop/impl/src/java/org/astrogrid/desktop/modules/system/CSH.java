@@ -842,11 +842,10 @@ public class CSH {
             }
             
             // change all the cursors on all windows
-            Vector topComponents = null;
+            final Vector topComponents = getTopContainers(e.getSource());
             cursors = null;
             
                 cursors = new Hashtable();
-                topComponents = getTopContainers(e.getSource());
                 Enumeration enm = topComponents.elements();
                 while (enm.hasMoreElements()) {
                     setAndStoreCursors((Container)enm.nextElement(), onItemCursor);
@@ -867,12 +866,11 @@ public class CSH {
             }
             
             // restore the old cursors
-            if (topComponents != null) {
                 Enumeration containers = topComponents.elements();
                 while (containers.hasMoreElements()) {
                     resetAndRestoreCursors((Container)containers.nextElement());
                 }
-            }
+            
             cursors = null;
         }
         

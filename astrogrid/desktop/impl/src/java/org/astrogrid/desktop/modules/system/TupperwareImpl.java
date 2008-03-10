@@ -216,10 +216,10 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
             setProgress(++progress,opCount);
 		    List appMsgList = hub.getUnderstoodMessages(this.id);
             setProgress(++progress,opCount);		    
-		     PlasticApplicationDescription result = new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
+		     final PlasticApplicationDescription result = new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
 		     try {
 		    	 model.getReadWriteLock().writeLock().lock();
-			if (result != null && ! model.contains(result)) {  // would be odd if it did already contain it.
+			if (! model.contains(result)) {  // would be odd if it did already contain it.
 				model.add(result); // this should fire notifications, etc.
 			}          
 		     } finally {
