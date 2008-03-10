@@ -40,7 +40,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		        "@xsi:type"
 		        ,"$r/content/type"
 		        ,"$r/capability/@xsi:type"
-		        ,"$r/capability/@standardID"
+		 //drags in too much cruft.       ,"$r/capability/@standardID"
 		        }); 
 		targets.put("level", new String[] {"$r/content/contentLevel"});
 		targets.put("waveband",new String[] {"$r/coverage/waveband"}); 

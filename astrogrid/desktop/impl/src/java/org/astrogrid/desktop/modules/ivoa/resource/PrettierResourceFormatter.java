@@ -137,8 +137,7 @@ public final class PrettierResourceFormatter {
 
 		if (r instanceof DataCollection) {
 			DataCollection d = (DataCollection)r;			
-			//@todo should I have an icon for data collection?
-			sb.append("This resource describes a <b>Data&nbsp;Collection</b>");
+			sb.append("<img src='classpath:/org/astrogrid/desktop/icons/datacollection16.png'>&nbsp;This resource describes a <b>Data&nbsp;Collection</b>");
 			sb.br();
 			sb.appendTitledResourceNames("Facilities",d.getFacilities())	;	
 			sb.appendTitledResourceNames("Instruments",d.getInstruments());
@@ -167,7 +166,7 @@ public final class PrettierResourceFormatter {
         if (r instanceof Service) {
             Service s = (Service)r;
             if (r instanceof RegistryService) {
-                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/server16.png'>&nbsp;This resource describes a <b>Registry&nbsp;Service</b>");
+                sb.append("This resource describes a <b>Registry&nbsp;Service</b>");
                 sb.br();
                 RegistryService rs = (RegistryService)r;
                 sb.appendLabel("Full&nbsp;Registry?");
@@ -406,7 +405,7 @@ public final class PrettierResourceFormatter {
 	        Capability c = capabilities[capabilitiesIndex];
 	        // display capability-specific info.
 	        if (c instanceof CeaServerCapability) {
-	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/server16.png'>&nbsp;This resource describes a <b>Remote&nbsp;Application&nbsp;(CEA)&nbsp;Service</b>");
+	            sb.append("This resource describes a <b>Remote&nbsp;Application&nbsp;(CEA)&nbsp;Service</b>");
 	            sb.br();
 	            sb.appendTitledURIs("Provided&nbsp;Tasks",(((CeaServerCapability)c).getManagedApplications()));
 	        } else
@@ -552,6 +551,11 @@ public final class PrettierResourceFormatter {
 	                        } else if (ConeProtocol.isConeSearchableCdsCatalog(s)){ // detects vizier interfaces that aren't web-browser
 	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");
 	                            sb.br();
+	                        } else if (SystemFilter.isBoringCapability(c)) {
+	                               sb.append("This resource descibes an <b>Technical System Service</b>");
+	                                sb.br();   
+	                                sb.appendTitledObject("Type",capTypeUnprefixed);
+	                                sb.appendTitledObject("StandardID",c.getStandardID());
 	                        } else {
 	                            sb.append("This resource descibes an <b>Service</b>");
 	                            sb.br();   

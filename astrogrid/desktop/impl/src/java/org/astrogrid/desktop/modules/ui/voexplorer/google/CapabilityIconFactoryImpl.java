@@ -70,14 +70,15 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		,"ssap16.png" // ssap
 		,"siap16.png"// siap
 		,"filesave16.png"//download
-		,"server16.png" // technical system service
-		,"unknown_thing16.png" // unknown service
+		,"server16.png" //a  service
+	//	,"unknown_thing16.png" // unknown service
 		,"exec16.png" // cea app
 		,"db16.png"// query
 		,"table16.png" // table.
 		,"browser16.png"// browser
 		,"organization16.png"// org.
 		,"authority16.png"//auth
+		,"datacollection16.png" // data collection
 	};
 	
 	private static final String[] TOOL_TIP_FRAGMENTS = new String[] {
@@ -86,7 +87,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		,"Spectrum access service (SSAP)"
 		,"Image access service (SIAP)"
 		,"Downloadable Table"
-		,"Technical system service"
+	//	,"Technical system service"
 		,"Unspecified service"
 		,"Remote application (CEA)"
 		,"Catalog query service (ADQL)"
@@ -94,6 +95,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		,"Web interface"
 		,"Organization"
 		,"Authority"
+		,"Data collection"
 	};
 	
 	
@@ -113,10 +115,10 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		caps.set(ix++,r instanceof SsapService);	
 		caps.set(ix++,r instanceof SiapService);
 		caps.set(ix++,ConeProtocol.isCdsCatalog(r));
-		caps.set(ix++,r instanceof CeaService || r instanceof RegistryService|| SystemFilter.isBoringServiceTitle(r) || SystemFilter.isBoringRelationship(r));
-		caps.set(ix++, caps.cardinality() == 0); // a service, but an unrecognized one.
+		// something we've not already recognized, but not boring.
+		caps.set(ix++,caps.cardinality() == 0 && ! SystemFilter.onlyBoringCapabilities((Service)r)); // an unrecognized service, but not a boring one.
 		} else { // just skip these.
-			ix+=7;
+			ix+=6;
 		}
 		// cea app 
 		if (r instanceof CeaApplication) {
@@ -133,7 +135,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		caps.set(ix++,WebInterfaceActivity.hasWebBrowserInterface(r));
 		caps.set(ix++,r instanceof Organisation);
 		caps.set(ix++,r instanceof Authority);
-		
+		caps.set(ix++,r instanceof DataCollection);
 		//check how many 'capabilities' we've got.
 		if (caps.cardinality() ==0) { // nothing.
 			return null; 

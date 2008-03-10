@@ -1,11 +1,18 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.resource.Authority;
+import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.DataService;
@@ -15,6 +22,10 @@ import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.acr.ivoa.resource.SsapService;
+import org.astrogrid.acr.ivoa.resource.StapService;
+import org.astrogrid.acr.ivoa.resource.TableService;
+import org.astrogrid.contracts.StandardIds;
 
 import ca.odell.glazedlists.matchers.Matcher;
 
@@ -38,63 +49,76 @@ public final class SystemFilter implements Matcher {
 		if (
 			(r instanceof ConeService)
 			|| (r instanceof DataService)
+			|| ( r instanceof TableService)
 			|| (r instanceof SiapService)
+			|| (r instanceof SsapService)
+			|| (r instanceof StapService)
 			|| (r instanceof Organisation)
 			|| (r instanceof DataCollection)
 			|| (r instanceof CeaApplication)
-			) {
+			) {		    
 			return true;
 		}
-		// types to filter out.
+		//things we know are boring.
 		if (
 				(r instanceof CeaService)
 				|| (r instanceof Authority)
 				|| (r instanceof RegistryService)
-				|| StringUtils.contains(r.getType(),"Registry")
+			// covered in above clause.	|| StringUtils.contains(r.getType(),"Registry")
 			) { 
 			return false;
 		}
 		// kinds of service to filter out
 		if (r instanceof Service
-		        && (	isBoringRelationship(r) || 
-			        isBoringServiceTitle(r)) ){
+		        && onlyBoringCapabilities((Service)r)) {
 				return false;					
 		}
 		// if in doubt.. keep it in.
 		return true;
 	}
-    /**
-     * @param r
-     */
-    public static boolean isBoringRelationship(Resource r) {
-        Relationship[] relationships = r.getContent().getRelationships();
-        for (int i = 0; i < relationships.length; i++) {
-        	Relationship rel = relationships[i];
-        	if (rel.getRelationshipType().equals("derived-from")) {
-        		URI id = rel.getRelatedResources()[0].getId();
-        		if (id != null && (
-        				id.equals(FILESTORE_KIND)
-        				|| id.equals(FILEMANAGER_KIND)
-        				|| id.equals(MYSPACE_KIND)
-        				|| id.equals(COMMUNITY_KIND)
-        		)
-        				) {
-        			return true;
-        		}
-        	}
+
+	/** returns true if the only capabilities this service has are boring ones */
+    public static boolean onlyBoringCapabilities(Service s) {
+        Capability[] caps = s.getCapabilities();        
+        if (caps.length == 0) {
+            return true; // nothing here - it's boring.
         }
-        return false;
+        for (int i = 0; i < caps.length; i++) {
+            Capability c = caps[i];
+            if (! isBoringCapability(c)) {
+                return false;
+            }
+        }
+        return true; // not found an unboring one.
     }
-    /**
-     * @param t
-     * @return
-     */
-    public static boolean isBoringServiceTitle(Resource r) {
-        String t = r.getTitle();
-        return StringUtils.containsIgnoreCase(t,"Security Service")
-        		|| StringUtils.containsIgnoreCase(t,"Security Manager")
-        		|| StringUtils.containsIgnoreCase(t,"Policy Service")
-        		|| StringUtils.containsIgnoreCase(t,"MyProxy")
-        		|| StringUtils.containsIgnoreCase(t,"Myspace Manager");
+    
+    public static boolean isBoringCapability(Capability cap) {
+        URI std = cap.getStandardID();
+        if (std == null) { // an unlabeled std - is it boring or not - we judge not, for now.
+            return false;
+        }
+        return boringCapabilities.contains(std);
     }
+    
+    
+/** a set of the boring capabilities */
+    private static final Set boringCapabilities = new TreeSet(
+            Arrays.asList(
+                    new URI[] {
+                            URI.create(StandardIds.CEA_1_0)
+                            ,URI.create(StandardIds.MY_PROXY_2)
+                            ,URI.create(StandardIds.POLICY_MANAGER_1_0)
+                            ,URI.create(StandardIds.REGISTRY_1_0)
+                            ,URI.create(StandardIds.SECURITY_SERVICE_1_0)
+                            ,URI.create(StandardIds.VOSI_APPLICATION_0_3)
+                            ,URI.create(StandardIds.VOSI_AVAILABILITY_0_3)
+                            ,URI.create(StandardIds.VOSI_CAPABILITIES_0_3)
+                            ,URI.create(StandardIds.VOSI_TABLES_0_3)
+                            // no standard IDs for these yet.
+                            ,URI.create("ivo://org.astrogrid/std/Community/accounts")
+                            ,URI.create("ivo://org.astrogrid/std/myspace/v1.0#myspace")
+                    }
+                    )
+            );
+
 }
