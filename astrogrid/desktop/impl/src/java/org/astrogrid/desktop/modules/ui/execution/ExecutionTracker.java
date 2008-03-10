@@ -299,8 +299,8 @@ public final ProcessMonitor getMoitor() {
                 public void actionPerformed(ActionEvent e) {
                     Component c = (Component) e.getSource();
                 //unused    int px = c.getX();
-                    int py = c.getY() + c.getHeight() + 2;        
                     if(!controlsMenu.isShowing()) {                 
+                        int py = c.getY() + c.getHeight() + 2;        
                         controlsMenu.show( c, 0, py  );
                     } else { 
                         controlsMenu.setVisible(false);

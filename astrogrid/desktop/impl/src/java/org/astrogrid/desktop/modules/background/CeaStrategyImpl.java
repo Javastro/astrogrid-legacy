@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.30 2008/02/15 14:31:25 pah Exp $
+/*$Id: CeaStrategyImpl.java,v 1.31 2008/03/10 18:08:45 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -267,8 +267,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		    if (increaseStandoff) {
 		        runAgain = Math.min(LONGEST,Math.round(runAgain*FACTOR));
 		        int secs = (int)runAgain / 1000;
-		        int mins = secs / 60; 
-		        info("No change: will re-check in " + (secs < 120 ? secs + " seconds" : mins + " minutes" ));
+		        info("No change: will re-check in " + (secs < 120 ? secs + " seconds" : secs/60 + " minutes" ));
 		    } else {
 		        info("No change");
 		    }
@@ -644,6 +643,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.31  2008/03/10 18:08:45  nw
+moved computation inside conditional
+
 Revision 1.30  2008/02/15 14:31:25  pah
 RESOLVED - bug 2547: Resolve MySpace IVORNs before job submission
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2547

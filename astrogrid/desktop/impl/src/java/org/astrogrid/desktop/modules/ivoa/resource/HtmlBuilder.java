@@ -224,8 +224,6 @@ public class HtmlBuilder extends StrBuilder {
     public  HtmlBuilder appendURI(String text, final URI url) {
         if (url != null) {
         String scheme = url.getScheme();
-        // fix for BZ 1970 - odd scheme types.
-        String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
         if ("http".equals(scheme) || "ftp".equals(scheme)) {
             append("<a href='").append(url).append("'>");
             append(text).append("</a>");
@@ -233,6 +231,8 @@ public class HtmlBuilder extends StrBuilder {
                 append("<a class='res' href='").append(url).append("'>");
                 append(text).append("</a>");            
         } else {
+            // fix for BZ 1970 - odd scheme types.
+            String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
                 append("&lt;")
                 .append(text)
                 .append(" - ")

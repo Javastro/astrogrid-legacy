@@ -237,7 +237,6 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             setEnabled(true);
         }
         public void actionPerformed(ActionEvent e) {
-            FileObject base = navigator.current();
             JFileChooser chooser = new JFileChooser(SystemUtils.getUserHome());
             chooser.setDialogTitle("Choose files to upload");
             chooser.setApproveButtonText("Upload");
@@ -245,6 +244,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             chooser.setMultiSelectionEnabled(true);
             int code = chooser.showOpenDialog(getParent().getComponent());
             if (code == JFileChooser.APPROVE_OPTION) {
+                FileObject base = navigator.current();
                 File[] files = chooser.getSelectedFiles();
                 new BulkCopyWorker(vfs,getParent(),base,Arrays.asList(files)).start();
             }

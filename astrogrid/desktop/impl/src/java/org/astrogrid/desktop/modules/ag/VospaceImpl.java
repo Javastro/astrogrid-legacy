@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.26 2008/02/01 07:53:02 nw Exp $
+/*$Id: VospaceImpl.java,v 1.27 2008/03/10 18:08:45 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -554,7 +554,6 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
         if (! exists(ivorn)) {
             createFile(ivorn);
         }        
-        FileManagerNode node = node(ivorn);
         
         if (src.getProtocol().equals("file")) {
             try {
@@ -589,6 +588,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
             }
         } else {
             try {
+                FileManagerNode node = node(ivorn);
                 node.copyURLToContent(src);
             } catch (NodeNotFoundFault e) {
                 throw new NotFoundException(e);
@@ -915,6 +915,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.27  2008/03/10 18:08:45  nw
+moved computation inside conditional
+
 Revision 1.26  2008/02/01 07:53:02  nw
 documentation fix
 

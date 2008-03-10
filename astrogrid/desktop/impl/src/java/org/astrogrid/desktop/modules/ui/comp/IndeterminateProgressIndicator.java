@@ -90,8 +90,8 @@ public class IndeterminateProgressIndicator  extends JComponent{
     }
     
     public void paintComponent(Graphics oldGraphics) {
-        Graphics2D g = (Graphics2D) oldGraphics;
         if (painted && (isDisplayedWhenStopped || timer.isRunning())) {
+            Graphics2D g = (Graphics2D) oldGraphics;
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             if (maxValue != 0) {
                 paintPie(g);

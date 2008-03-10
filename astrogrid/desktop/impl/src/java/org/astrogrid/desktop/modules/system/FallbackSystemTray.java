@@ -66,8 +66,8 @@ public class FallbackSystemTray  implements SystemTrayInternal{
     public void run() {
                 ico.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        Component c = (Component) e.getSource();
                         if(!popup.isShowing()) {                 
+                            Component c = (Component) e.getSource();
                             popup.show( c, 0, c.getHeight() );
                         } else { 
                             popup.setVisible(false);

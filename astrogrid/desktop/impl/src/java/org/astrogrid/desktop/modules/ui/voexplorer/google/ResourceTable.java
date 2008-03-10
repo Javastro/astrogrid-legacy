@@ -122,12 +122,12 @@ public class ResourceTable extends JTable implements MouseListener {
 
 	/** construct a tool tip, based on vomon information */
 	public String getToolTipText(MouseEvent e) {
-		java.awt.Point p = e.getPoint();
-		int rowIndex = rowAtPoint(p);
-		int colIndex = columnAtPoint(p);
-		int realColumnIndex = convertColumnIndexToModel(colIndex);
-		
+		final java.awt.Point p = e.getPoint();
+		final int rowIndex = rowAtPoint(p);
 		if (rowIndex > -1) { 
+		    final int colIndex = columnAtPoint(p);
+		    final int realColumnIndex = convertColumnIndexToModel(colIndex);
+		
 			Resource ri =(Resource) items.get(rowIndex);  // weakness - possiblility of getting the wrong tooltip if the list is rapidly updating. not the end of the world.
             return getFormat().getToolTipText(ri, realColumnIndex);
         } else { 

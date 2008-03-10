@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.12 2008/02/29 10:49:20 mbt Exp $
+/*$Id: CeaHelper.java,v 1.13 2008/03/10 18:08:45 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -268,10 +268,10 @@ public Tool makeMySpaceIvornsConcrete(Tool intool) throws InvalidArgumentExcepti
              CommunityPolicyException, 
              CommunityResolverException, 
              RegistryException {
-    CommunityAccountSpaceResolver resolver = new CommunityAccountSpaceResolver();
     if (p.getIndirect()) {
       String value = p.getValue();
       if (value != null && value.startsWith("ivo://")) {
+          CommunityAccountSpaceResolver resolver = new CommunityAccountSpaceResolver();
         Ivorn ivorn1 = new Ivorn(value);
         Ivorn ivorn2 = resolver.resolve(ivorn1);
         p.setValue(ivorn2.toString());

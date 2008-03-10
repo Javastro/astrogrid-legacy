@@ -185,15 +185,15 @@ public class HyperbolicVizualization extends Vizualization {
             e.getComponent().setCursor(Cursor.getDefaultCursor());
         } //        
         public void itemClicked(VisualItem item, java.awt.event.MouseEvent e) {
-            ItemRegistry registry = getItemRegistry();
+            if ( item instanceof NodeItem ) {
             // animate a translation when a node is clicked
             int cc = e.getClickCount();
-            if ( item instanceof NodeItem ) {
                 if ( cc == 1 && 
                 		!(e.isPopupTrigger() // popup trigger detection don't seem to work. 
                 		|| e.isControlDown()) 
                 		|| e.getButton() == MouseEvent.BUTTON2
                 		|| e.getButton() == MouseEvent.BUTTON3) {
+                    ItemRegistry registry = getItemRegistry();
                     TreeNode node = (TreeNode)registry.getEntity(item);
                     if ( node != null ) {                           
                         translation.setStartPoint(e.getX(), e.getY());
