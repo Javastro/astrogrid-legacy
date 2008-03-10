@@ -359,7 +359,7 @@ public class ResourceTree extends JTree {
         map.put(UIComponentMenuBar.EditMenuBuilder.PASTE,TransferHandler.getPasteAction());
     }
 
-    public void setModel(TreeModel model) {
+    final public void setModel(TreeModel model) {
         super.setModel(model);
         this.model = (ResourceTreeModel) model;
     }

@@ -101,7 +101,7 @@ private void saveSourceList() {
 	}
 
 	/** load and process the annotation sources - or at least those that are static. */
-	public void run() {
+	public final void run() {
 		for (Iterator i = annotationSources.iterator(); i.hasNext();) {
 			AnnotationSource s = (AnnotationSource) i.next();
 			if (! (s instanceof DynamicAnnotationSource)) {

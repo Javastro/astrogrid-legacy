@@ -50,7 +50,7 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
  	
 	private final UIComponent parent;
 	private final RegistryInternal reg;
-	public void clear() {
+	final public void clear() {
 		setText("No entry selected");
 	}
 

@@ -264,7 +264,7 @@ public class FilterPipelineFactory   {
 			}
 				
 		
-		public void setStrategy(PipelineStrategy strategy) {
+		final public void setStrategy(PipelineStrategy strategy) {
 			this.strategy = strategy;
 			// hang onto previous values.
 			TransformedList oldView = view;
