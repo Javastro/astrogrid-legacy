@@ -16,7 +16,6 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ui.actions.Activity.Info;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageTableFormat;

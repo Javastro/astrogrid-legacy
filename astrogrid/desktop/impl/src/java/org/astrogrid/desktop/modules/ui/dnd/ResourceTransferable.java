@@ -13,7 +13,6 @@ import java.util.Arrays;
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 
 /** transferable object that rerpresents a single registry resource
  * @author Noel.Winstanley@manchester.ac.uk

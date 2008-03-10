@@ -7,7 +7,6 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 
 /** Exgtensaion to an JEditorPane  with methods for displaying resources,
  * (and a performance-optimization)
