@@ -998,8 +998,7 @@ private Dimension preservedPreferredSize = null ;
 		}
 		public JComponent getComponent(Object o, int ix) {
 			if (o instanceof JComponent) {
-				JComponent e = (JComponent)o;
-				return ix == 0 ? e : null;
+				return ix == 0 ? ((JComponent)o) : null;
 			} else if (o instanceof AbstractTaskFormElement) {
 				AbstractTaskFormElement e = (AbstractTaskFormElement)o;
 				switch(ix) {
