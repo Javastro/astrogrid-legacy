@@ -95,10 +95,11 @@ public class SkyNodeSystemTest extends InARTestCase {
 	        FunctionBean[] functions = s.getFunctions(endpoint);
 	        System.out.println(Arrays.asList(functions));
 	        //System.out.println(s.getAvailability(endpoint));
-	        
+	        /*
 	        SkyNodeTableBean[] tables = null; // @todo  s.getMetadata(endpoint);
 	        System.out.println(tables[0]);
 	        System.err.println("first table is named " + tables[0].getName());
+	        */
 	        SelectDocument query = SelectDocument.Factory.newInstance();
 	        SelectType sel = query.addNewSelect();
 	        sel.addNewSelectionList()
@@ -107,7 +108,7 @@ public class SkyNodeSystemTest extends InARTestCase {
 	        sel.addNewRestrict().xsetTop(XmlUnsignedInt.Factory.newValue(new Integer(100)));
 	        TableType t = TableType.Factory.newInstance();
 	        t.setAlias("a");
-	        t.setName(tables[0].getName());        
+	        //t.setName(tables[0].getName());        
 	        sel.addNewFrom().setTableArray(new FromTableType[]{t   });
 	        if (! query.validate()) {
 	            throw new RuntimeException("built query is not valid");
