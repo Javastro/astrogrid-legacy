@@ -28,15 +28,14 @@ public class QuerySizeIndicator extends JProgressBar {
 		super(HORIZONTAL);
 		this.parent = parent;
 		this.sizer = qs;
-		//System.out.println(UIManager.getColor("ProgressBar.selectionForeground")); //204,204,204, osX 0,0,0
-        //System.out.println(UIManager.getColor("ProgressBar.selectionBackground")); // 102, 102, 153 osX 255,255,255
-        //System.out.println(UIManager.getColor("ProgressBar.background"));        // for metal, same as foreground, osx unefined
-		setUI(new MetalProgressBarUI());// as OSX l&f doesn't allow bar to change color.
-		Color bgColor = UIManager.getColor("ProgressBar.background");
-		if (bgColor == null) { // not provided by osX laf
-		    bgColor = Color.DARK_GRAY;
-		}
-        setBackground(bgColor);
+
+        // OSX l&f doesn't allow bar to change color.  Selection background is
+        // the colour of the text - defaults can be illegible on OSX.
+		setUI(new MetalProgressBarUI() {
+            public Color getSelectionBackground() {
+                return Color.DARK_GRAY;
+            }
+        });
 		
 		setStringPainted(true);
 		setMinimum(0);
