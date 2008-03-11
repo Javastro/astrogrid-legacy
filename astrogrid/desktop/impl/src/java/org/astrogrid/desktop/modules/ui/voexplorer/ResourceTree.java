@@ -57,7 +57,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
@@ -153,6 +154,7 @@ public class ResourceTree extends JTree {
     private final Action export;
     private final Action ymport;
     private final JPopupMenu popup;
+    private final Expander expander;
     private Point mousePos;
     private boolean dndIsDragging;
     private boolean transferIsDragging;
@@ -230,57 +232,13 @@ public class ResourceTree extends JTree {
         setShowsRootHandles(false);
         setExpandsSelectedPaths(true);
 
-        // Ensure top-level node is expanded to start with.  I'm not sure why, 
-        // but this only works if it's submitted here for later execution rather
-        // than being done directly.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                expandRow(0);
-
-                // If there is only one child (presumably the canned Examples
-                // node) then expand this as well.  Although anomalous, it
-                // means that users seeing this component for the first time
-                // will get a list of resources they can click on rather than
-                // just a single folder which it's less obvious what to do with.
-                if (model.getChildCount(model.getRoot()) == 1) {
-                    expandRow(1);
-                }
-            }
-        });
-
         // Ensure that the root node is never collapsed.  It's not useful to
         // collapse it, and users may find it hard to re-expand if it does
         // get collapse.
-        addTreeWillExpandListener(new TreeWillExpandListener() {
-            public void treeWillExpand(TreeExpansionEvent evt) {
-            }
-            public void treeWillCollapse(TreeExpansionEvent evt) throws ExpandVetoException {
-                TreePath path = evt.getPath();
-                if (path.getPathCount() == 1) {
-                    assert path.getLastPathComponent() == model.getRoot();
-                    throw new ExpandVetoException(evt, "Refuse to collapse root");
-                }
-            }
-        });
-
-        // If the root ever is collapsed, re-expand it.  This should not be
-        // necessary, since the TreeWillCollapseListener should prevent that
-        // ever happening, but it seems that on OS X it sometimes does.
-        addTreeExpansionListener(new TreeExpansionListener() {
-            public void treeCollapsed(TreeExpansionEvent evt) {
-                final TreePath path = evt.getPath();
-                if (path.getPathCount() == 1) {
-                    assert path.getLastPathComponent() == model.getRoot();
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            ResourceTree.this.expandPath(path);
-                        }
-                    });
-                }
-            }
-            public void treeExpanded(TreeExpansionEvent evt) {
-            }
-        });
+        expander = new Expander();
+        addTreeWillExpandListener(expander);
+        model.addTreeModelListener(expander);
+        expander.ensureRootExpanded();
 
         setCellRenderer(RESOURCE_RENDERER);
         // Set up a popup menu.
@@ -380,6 +338,10 @@ public class ResourceTree extends JTree {
     }
 
     final public void setModel(TreeModel model) {
+        if (expander != null) {
+            this.model.removeTreeModelListener(expander);
+            model.addTreeModelListener(expander);
+        }
         super.setModel(model);
         this.model = (ResourceTreeModel) model;
     }
@@ -1378,5 +1340,77 @@ public class ResourceTree extends JTree {
      */
     public final Action getImport() {
         return this.ymport;
+    }
+
+    /**
+     * Implements policy for keeping the expansion state of the tree sensible.
+     *
+     * The policy is:
+     *  - The root of the tree is never permitted to collapse: there's no good 
+     *    reason to do this, and it would be confusing for the user if 
+     *    it happened (not obvious how to undo it).
+     *  - If the root has only a single child, presumably the canned Examples
+     *    node, this is expanded.  Although anomalous, it means that a user
+     *    seeing this for the first time will get the right idea about the
+     *    hierarchical nature of it.
+     */
+    private class Expander implements TreeWillExpandListener, TreeModelListener {
+        public void treeWillCollapse(TreeExpansionEvent evt) throws ExpandVetoException {
+            // Never permit root collapse.
+            if (isRoot(evt.getPath())) {
+                throw new ExpandVetoException(evt, "Refuse to collapse root");
+            }
+        }
+        public void treeWillExpand(TreeExpansionEvent evt) {
+        }
+
+        public void treeNodesChanged(TreeModelEvent evt) { 
+        }
+        public void treeNodesInserted(TreeModelEvent evt) {
+            // Not obvious, but this is required.  Otherwise the root can be
+            // expanded when empty, which behaves like being collapsed.
+            if (isRoot(evt.getTreePath())) {
+                ensureRootExpanded();
+            }
+        }
+        public void treeNodesRemoved(TreeModelEvent evt) {
+        }
+        public void treeStructureChanged(TreeModelEvent evt) {
+        }
+
+        /**
+         * Ensures that the policy is implemented.  Defers execution, which is
+         * required when invoking from tree listener callbacks.
+         */
+        public void ensureRootExpanded() {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    doEnsureRootExpanded();
+                }
+            });
+        }
+
+        /** Does the work in-thread for ensureRootExpanded. */
+        private void doEnsureRootExpanded() {
+
+            // Root should always be expanded.
+            if (!isExpanded(0) && model.getChildCount(model.getRoot()) > 0) {
+                expandRow(0);
+            }
+
+            // If the root has only one child (presumably the canned Examples
+            // node) then expand this as well.  Although anomalous, it
+            // means that users seeing this component for the first time
+            // will get a list of resources they can click on rather than
+            // just a single folder which it's less obvious what to do with.
+            if (model.getChildCount(model.getRoot()) == 1) {
+                expandRow(1);
+            }
+        }
+
+        /** Determines whether a path represents the root of the tree model. */
+        private boolean isRoot(TreePath path) {
+            return path.getPathCount() == 1;
+        }
     }
 }
