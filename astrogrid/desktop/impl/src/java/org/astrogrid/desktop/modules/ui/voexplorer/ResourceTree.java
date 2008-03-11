@@ -57,6 +57,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
@@ -259,6 +260,25 @@ public class ResourceTree extends JTree {
                     assert path.getLastPathComponent() == model.getRoot();
                     throw new ExpandVetoException(evt, "Refuse to collapse root");
                 }
+            }
+        });
+
+        // If the root ever is collapsed, re-expand it.  This should not be
+        // necessary, since the TreeWillCollapseListener should prevent that
+        // ever happening, but it seems that on OS X it sometimes does.
+        addTreeExpansionListener(new TreeExpansionListener() {
+            public void treeCollapsed(TreeExpansionEvent evt) {
+                final TreePath path = evt.getPath();
+                if (path.getPathCount() == 1) {
+                    assert path.getLastPathComponent() == model.getRoot();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            ResourceTree.this.expandPath(path);
+                        }
+                    });
+                }
+            }
+            public void treeExpanded(TreeExpansionEvent evt) {
             }
         });
 
