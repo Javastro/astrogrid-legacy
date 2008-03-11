@@ -14,6 +14,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="mbt" type="fix" issue="2532">
+    Changed text colour in smart list progress bar for readability.
+</action>
+<action dev="mbt" type="fix" issue="2430">
+    Finally(?) fixed problems with initial expansion state of resource list tree.
+</action>
 <release version="2008.1.beta3" date="2008-03-10">
 <action dev="jl" type="fix" issue="2362">
     Resizing query builder.
