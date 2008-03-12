@@ -108,8 +108,12 @@ public List getChildren(Object sourceValue) {
 		}
 		final String appName = StringUtils.capitalize(plas.getName());
 		act.setText("Send "+  (type == null? "" : type + " ") + "to " + appName);
-	    act.setToolTipText("<html>Send selection to " + appName + "<br>" 
-	    		+WordUtils.wrap( plas.getDescription(),40,"<br>",true));		
+	    act.setToolTipText("Send selection to " + appName); 
+	    /* no point adding descirption - it can be horrendously long, 
+	     * and user should know what the app is anyhow - as they've started it, not us.
+	            "\n" 
+	    		+WordUtils.wrap( plas.getDescription(),40,"\n",true));		
+	     */
 	}
 /**
  * @return the systray

@@ -13,7 +13,10 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
+import com.l2fprod.common.swing.JLinkButton;
+
 /** subclass of activity that presents a 'load resource' plastic button
+ * I've modified this so that it only appears on the main menu - as it's advanced, and because of poor resource typeing, not universally applicable.
  *  */
 public class PlasticRegistryActivity extends AbstractResourceActivity {
 
@@ -27,12 +30,23 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 		super();
 		this.plas = descr;
         this.scav = scav;
-		PlasticScavenger.configureActivity("resources",this,plas);
+		PlasticScavenger.configureActivity("resource descriptions",this,plas);
 	}
 
-	public JMenuItem createMenuItem() {
-	    return super.createHidingMenuItem();
-	}
+	  // create components but keep them invisible.
+    public JLinkButton createLinkButton() {
+        JLinkButton b = new JLinkButton(this);
+        b.setVisible(false);
+        return b;
+    }
+    public JMenuItem createHidingMenuItem() {
+        JMenuItem i = new JMenuItem(this);
+        i.setVisible(false);
+        return i;
+    }
+//	public JMenuItem createMenuItem() {
+//	    return super.createHidingMenuItem();
+//	}
 
 	public void actionPerformed(ActionEvent e) {
 		final List l = computeInvokable();
