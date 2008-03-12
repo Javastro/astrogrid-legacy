@@ -352,7 +352,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
         setChooseDirectories(false);    
         
         // move back home.
-        view.getNavigator().home();
+       //2422 - don't go home -  view.getNavigator().home();
         filename.setText(null);        
         okButton.setEnabled(false);
         
