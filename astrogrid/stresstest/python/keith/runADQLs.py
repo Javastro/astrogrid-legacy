@@ -55,8 +55,8 @@ class StatusChecker(Thread) :
 			"TEST [%s] ACTION [%s] LOOP [%d][%d] TIME [%f] STATUS [%s]",
 			testname,
 			'query',
-			outer,
-			inner,
+			outerloop,
+			innerloop,
 			endTime-startTime,
 			status
 			)
