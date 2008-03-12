@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="nw" type="fix" issue="2613">
+test for running on low memory.
+</action>
 <action dev="mbt" type="fix" issue="2532">
     Changed text colour in smart list progress bar for readability.
 </action>

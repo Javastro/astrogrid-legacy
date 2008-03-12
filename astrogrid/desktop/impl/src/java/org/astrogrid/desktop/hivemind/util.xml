@@ -97,6 +97,7 @@ good place to put functionality and coding tests - which should be part of the m
  
     <contribution configuration-id="selftest" >
         <object>instance:org.astrogrid.desktop.modules.util.ConnectivityTests</object>
+        <object>instance:org.astrogrid.desktop.modules.util.MemoryTests</object>        
     </contribution>
 
  </module>
