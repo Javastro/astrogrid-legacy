@@ -29,9 +29,13 @@ public class QuerySizeIndicator extends JProgressBar {
 		this.parent = parent;
 		this.sizer = qs;
 
-        // OSX l&f doesn't allow bar to change color.  Selection background is
-        // the colour of the text - defaults can be illegible on OSX.
+        // OSX l&f doesn't allow bar to change color, so change it.
+        // Selection background/foreground are the colour of the text - 
+        // defaults can be illegible on OSX.
 		setUI(new MetalProgressBarUI() {
+            public Color getSelectionForeground() {
+                return Color.DARK_GRAY;
+            }
             public Color getSelectionBackground() {
                 return Color.DARK_GRAY;
             }
