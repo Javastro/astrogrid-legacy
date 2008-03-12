@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils;
  * @since Mar 12, 200812:16:01 PM
  */
 public class MemoryTests extends TestSuite {
-    private static final long RECOMMENDED_MB =  1024L;
+    private static final long RECOMMENDED_MB =  512L;
     
 
     public MemoryTests() {
@@ -22,7 +22,7 @@ public class MemoryTests extends TestSuite {
                 long maxMemory = Runtime.getRuntime().maxMemory();
                 
                 assertTrue("Available memory " + (maxMemory /  FileUtils.ONE_MB) 
-                        + "MB is less than recommended " + RECOMMENDED_MB + "MB"
+                        + "MB is less than minimum recommended " + RECOMMENDED_MB + "MB"
                         ,maxMemory >= RECOMMENDED_MB * FileUtils.ONE_MB
                         );
             }
