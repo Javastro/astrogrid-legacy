@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="mbt" type="fix" issue="2610">
+    Resource list popup menu on OS X no longer deselects selected resource.
+</action>
 <action dev="nw" type="fix" issue="2422">
     File dialogue remembers position last browsed to.
 </action>
