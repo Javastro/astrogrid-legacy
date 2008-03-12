@@ -16,7 +16,6 @@ import java.awt.dnd.DragSourceListener;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -47,7 +46,7 @@ import ca.odell.glazedlists.swing.EventTableModel;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 12, 20077:33:02 PM
  */
-public class ResourceTable extends JTable implements MouseListener {
+public class ResourceTable extends JTable {
     private class SelectAllAction extends AbstractAction {
         /**
       * 
@@ -87,6 +86,7 @@ public class ResourceTable extends JTable implements MouseListener {
     }
 	private final List items;
 	private final VoMonInternal vomon;
+    private boolean popClick;
 
 	/**
 	 * 
@@ -110,7 +110,6 @@ public class ResourceTable extends JTable implements MouseListener {
 		//right-click menu.
 		popup = new JPopupMenu();
 		//1.5 only :( setComponentPopupMenu(popup);
-		addMouseListener(this);
 		
 		// setup the actionmap.
 		ActionMap map = getActionMap();
@@ -182,33 +181,32 @@ public class ResourceTable extends JTable implements MouseListener {
 		} 
 	}
 
-	// mouse listener interface.
-	public void mouseClicked(MouseEvent e) {
-	    //ignored
-	}
+    /**
+     * Hijack mouse events to handle the popup menu.
+     * Do it this way rather than adding a MouseListener to work round a
+     * nasty issue in OSX java 1.4 and 1.5 (popup gesture ctrl-click can
+     * also deselect a selected item) - bugzilla 2610.
+     */
+    protected void processMouseEvent(MouseEvent e) {
+        int mods = e.getModifiers();
 
-	public void mouseEntered(MouseEvent e) {
-	    //ignored
-	}
+        // If we're coming out of a click which posted the popup menu, 
+        // don't give anyone else a chance to process this event - processing
+        // this is what causes the trouble in OS X.
+        if (popClick && (mods & MouseEvent.MOUSE_RELEASED) != 0) {
+            popClick = false;
+        }
 
-	public void mouseExited(MouseEvent e) {
-	    //ignored
-	}
-
-	public void mousePressed(MouseEvent e) {
-		maybeShowPopup(e);
-	}
-
-	public void mouseReleased(MouseEvent e) {
-		maybeShowPopup(e);
-	}
-	
-	 private void maybeShowPopup(MouseEvent e) {
-		 //@todo change selection if the click didn't happen in the selection.
-	        if (e.isPopupTrigger()) {
-	            popup.show(e.getComponent(),
-	                       e.getX(), e.getY());
-	        }
-	    }
-
+        // Under other circumstances, post popup as required, and make sure to
+        // invoke superclass implementation.
+        else {
+            if (e.isPopupTrigger()) {
+                popup.show(e.getComponent(), e.getX(), e.getY());
+                if ((mods & MouseEvent.MOUSE_PRESSED) != 0) {
+                    popClick = true;
+                }
+            }
+            super.processMouseEvent(e);
+        }
+    }
 }
