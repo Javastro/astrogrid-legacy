@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JToggleButton;
@@ -19,17 +20,18 @@ public class PinnableLabel extends JToggleButton {
 
     private static final Font fnt = new JLabel().getFont();
     
+    public final static Icon EMPTY_ICON =  new EmptyIcon(UIConstants.PIN_ICON.getIconWidth(),UIConstants.PIN_ICON.getIconHeight());  
+    
     public PinnableLabel(String text) {
-        super(text,UIConstants.PIN_ICON);
+        super(text,EMPTY_ICON);
         setFont(fnt);
         setBorder(null);
         setBorderPainted(false);
         setFocusPainted(false);
         setContentAreaFilled(false);
         setMargin(new Insets(0,0,0,0));
-        setDisabledIcon(new EmptyIcon());
-        setSelectedIcon(UIConstants.PIN_ICON); 
-        //setRolloverIcon(UIConstants.PIN_ICON);
+        setSelectedIcon(UIConstants.PIN_ICON);
+        setRolloverIcon(UIConstants.PIN_ICON);
         setHorizontalAlignment(SwingConstants.LEFT);
         setHorizontalTextPosition(SwingConstants.LEFT);
         setFocusable(false);

@@ -317,7 +317,7 @@ private Dimension preservedPreferredSize = null ;
 	public void clear() {
 	    model.clear();
 	    resourceLabel.setText("");
-	    resourceLabel.setIcon(null);
+	    resourceLabel.setIcon(PinnableLabel.EMPTY_ICON);
 	    interfaceChooser.removeItemListener(this);
 	    interfaceChooser.removeAllItems();
 	    interfaceChooser.setEnabled(false);
@@ -336,7 +336,6 @@ private Dimension preservedPreferredSize = null ;
             model.newApplication(applicationResource);	        
 	        // populate the label.
 	        resourceLabel.setText(model.currentResource().getTitle());
-	        resourceLabel.setIcon(null);
 	        doFetchIcon();
 
 	        // populate the top combo box.
