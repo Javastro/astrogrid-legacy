@@ -89,6 +89,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
         ActivitiesManager acts = new NullActivitiesManager();
         this.view = builder.createStorageView(this,acts);
         view.setSingleSelectionMode(true);
+        view.setShowViewComboInMenuBar(true);
         view.getNavigator().addNavigationListener(this);
         JPanel mainPanel = getMainPanel();
 

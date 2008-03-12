@@ -54,6 +54,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
+import org.astrogrid.desktop.modules.ui.comp.ActionComboBox;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
@@ -63,6 +64,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.BookmarkNavig
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 
+import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.ListSelection;
@@ -176,7 +178,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private class IconsAction extends AbstractAction {
 		public IconsAction() {
 			super("as Icons");
-			//putValue(Action.SMALL_ICON,IconHelper.loadIcon("iconview22.png"));
+			putValue(Action.SMALL_ICON,IconHelper.loadIcon("iconview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Icons View: show items as icons");
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
 		}
@@ -191,7 +193,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private class ListAction extends AbstractAction {
 		public ListAction() {
 			super("as List");
-			//putValue(Action.SMALL_ICON,IconHelper.loadIcon("listview22.png"));
+			putValue(Action.SMALL_ICON,IconHelper.loadIcon("listview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"List View: show items as a list");
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));
 
@@ -378,9 +380,9 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             this.foldersList = new FilterList(unfilteredfoldersList,foldersListFilter);
     		
             ButtonGroup bg = new ButtonGroup();
-            bg.add(icons);
-            bg.add(list);
-            icons.setSelected(true);
+            bg.add(iconsMenuItem);
+            bg.add(listMenuItem);
+            iconsMenuItem.setSelected(true);
             
     		// core model.
             SearchField filter = new SearchField("Filter files");		
@@ -445,15 +447,15 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    builder.add(createMainButton(bookmark),cc.xy(r++,c));
     	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
     	    r++;
-    	    /* can't be bothered making this track the menu entries, so remove - declutters.
-    	    views = new BasicEventList();
+    	    // can't be bothered making this track the menu entries, so just make it invisible if the menu is available.
+    	    BasicEventList views = new BasicEventList();
     	    views.add(icons);
     	    views.add(list);    	   
-    	    final ActionComboBox viewsCombo = new ActionComboBox(views);
-    	    viewsCombo.setToolTipText("Views: alter how the folder contents are displayed");
+    	    viewsCombo = new ActionComboBox(views);
+            viewsCombo.setToolTipText("Views: alter how the folder contents are displayed");
+    	    viewsCombo.setVisible(false);
             builder.add(viewsCombo,cc.xy(r++,c));
-            */
-    	    r++; // instead
+            
     	    r++;
     	    // filter was created much earlier.
     	    builder.add(filter,cc.xy(r++,c));
@@ -495,8 +497,14 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private final Action openFolder = new OpenFolderAction();
 	private final Action openLocation = new OpenLocationAction();
 	private final Action go = new GoAction();
-	private final JRadioButtonMenuItem icons = new JRadioButtonMenuItem(new IconsAction());
-	private final JRadioButtonMenuItem list = new JRadioButtonMenuItem(new ListAction());
+	private final Action icons = new IconsAction();
+	private final Action list = new ListAction();
+	private final JRadioButtonMenuItem iconsMenuItem = new JRadioButtonMenuItem(icons);
+	private final JRadioButtonMenuItem listMenuItem = new JRadioButtonMenuItem(list);
+	{
+	    iconsMenuItem.setIcon(null); // don't want icons on these menu items.
+	    listMenuItem.setIcon(null);
+	}
 	private final Action bookmark = new BookmarkAction();
 	private final Action newFolder = new NewFolderAction();
 
@@ -505,8 +513,16 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private final BiStateButton goButton;
     private final MutableMatcherEditor foldersListFilter;
     private final Action upload = new UploadAction();
+    private final ActionComboBox viewsCombo;
 
-	
+	/** set to true to show a combo-box in menu bar that allows selection of views 
+	 * default - not shown.
+	 * @param b
+	 */
+    public void setShowViewComboInMenuBar(boolean b) {
+        viewsCombo.setVisible(b);
+    }
+    
 	/** create and configure a button from an action */
 	private JButton createMainButton(Action act) {
 		JButton b = new JButton(act);
@@ -655,14 +671,14 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
      * @return the icons action
      */
     public final JRadioButtonMenuItem getIcons() {
-        return this.icons;
+        return this.iconsMenuItem;
     }
 
     /**
      * @return the list action
      */
     public final JRadioButtonMenuItem getList() {
-        return this.list;
+        return this.listMenuItem;
     }
 
     /**

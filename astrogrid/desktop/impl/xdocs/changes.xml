@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="nw" type="fix" issue="2439">
+    File dialogue can now display in list view.
+</action>
 <action dev="nw" type="fix" issue="2629">
     Improved progres display of self tests.
 </action>
