@@ -23,7 +23,7 @@ public class MemoryTests extends TestSuite {
                 
                 assertTrue("Available memory " + (maxMemory /  FileUtils.ONE_MB) 
                         + "MB is less than minimum recommended " + RECOMMENDED_MB + "MB"
-                        ,maxMemory >= RECOMMENDED_MB * FileUtils.ONE_MB
+                        ,maxMemory >= RECOMMENDED_MB * FileUtils.ONE_MB * 0.95
                         );
             }
         });
