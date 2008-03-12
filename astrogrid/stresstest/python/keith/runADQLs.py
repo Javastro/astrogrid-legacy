@@ -56,7 +56,7 @@ class StatusChecker(Thread) :
 			testname,
 			'query',
 			outer,
-			inner
+			inner,
 			endTime-startTime,
 			status
 			)
