@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.8 2007/10/22 07:24:19 nw Exp $
+/*$Id: CommunityImpl.java,v 1.9 2008/03/12 11:37:36 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -121,9 +121,9 @@ public class CommunityImpl implements CommunityInternal {
         } catch (CommunityServiceException e) {
             throw new ServiceException(e);
         } catch (CommunitySecurityException e) {
-            throw new SecurityException(e);
+            throw new SecurityException(e.getMessage());
         } catch (CommunityIdentifierException e) {
-            throw new SecurityException(e);
+            throw new SecurityException(e.getMessage());
         } catch (RegistryException e) {
             throw new ServiceException(e);
         } finally {
@@ -190,6 +190,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.9  2008/03/12 11:37:36  nw
+Complete - task 270: improve error message when login fails.
+
 Revision 1.8  2007/10/22 07:24:19  nw
 altered login dialogue to be a full UIComponent.
 

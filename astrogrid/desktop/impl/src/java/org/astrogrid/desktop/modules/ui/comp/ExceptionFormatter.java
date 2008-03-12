@@ -74,6 +74,7 @@ public class ExceptionFormatter {
     
     /** format an exception, according to the provided strategy */
     public String format(Throwable ex,int strategy) {
+        // handy to see what's getting thrown aruond - ex.printStackTrace();
         switch(strategy) {
             case OUTERMOST:
                 return formatSingle(ex);

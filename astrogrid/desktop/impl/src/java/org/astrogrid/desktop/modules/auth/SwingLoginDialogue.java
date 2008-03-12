@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.13 2008/02/13 17:25:15 mbt Exp $
+/*$Id: SwingLoginDialogue.java,v 1.14 2008/03/12 11:37:36 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -224,7 +224,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
                 setVisible(false); // close the dialogue.
             }
             protected void doError(Throwable ex) {
-                showTransientError("Unable to login",ExceptionFormatter.formatException(ex,ExceptionFormatter.INNERMOST));
+                showError("Unable to login: " + ExceptionFormatter.formatException(ex,ExceptionFormatter.INNERMOST));
             }
 
         }.start();
@@ -308,6 +308,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.14  2008/03/12 11:37:36  nw
+Complete - task 270: improve error message when login fails.
+
 Revision 1.13  2008/02/13 17:25:15  mbt
 Remove apparent duplicate entries from Community selector - see bug 2561.  Also widen dialogue a bit (community names can be a bit longer than uk.ac.le.star)
 
