@@ -270,6 +270,9 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             private TextField tf = new TextField(20);
             private void init (){
                 baseName = base.getName().getBaseName();
+                if (StringUtils.isEmpty(baseName)) {
+                    baseName = "/";
+                }
                 setModal(false);
                 setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
                 setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
