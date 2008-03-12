@@ -85,8 +85,8 @@ public class ConnectivityTests extends TestSuite{
                 try {
                     u.openConnection().connect();
                 } catch (IOException x) {
-                    logger.error("unable to connect to port 80 at www.google.com",x);
-                  fail("Unable to connect to port 80 at www.google.com");
+                    logger.error("unable to connect to port 80 at www.google.com - is firewall blocking port 80?",x);
+                  fail("Unable to connect to port 80 at www.google.com - is firewall blocking port 80?");
                 }
             }
         });
@@ -97,8 +97,8 @@ public class ConnectivityTests extends TestSuite{
                 try {
                     u.openConnection().connect();
                 } catch (IOException x) {
-                    logger.error("unable to connect to http://rofr.ivoa.net:8080/ ",x);
-                  fail("Unable to connect to http://rofr.ivoa.net:8080/ ");
+                    logger.error("unable to connect to port 8080 at rofr.ivoa.net - is firewall blocking port 8080?",x);
+                  fail("Unable to connect to port 8080 at rofr.ivoa.net - is firewall blocking port 8080?");
                 }
             }
         });

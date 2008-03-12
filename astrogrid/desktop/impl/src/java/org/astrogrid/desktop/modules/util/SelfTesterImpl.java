@@ -107,6 +107,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
+                logger.info("Running self tests");
                 theDisplay = new SelfTestDisplay(context);
                 theDisplay.actionPerformed(null);
             }
@@ -136,7 +137,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
              * @param priority
              */
             private TestRunningWorker() {
-                super(SelfTestDisplay.this.getContext(), "Running self tests", BackgroundWorker.LONG_TIMEOUT, Thread.MIN_PRIORITY);
+                super(SelfTestDisplay.this, "Running self tests", BackgroundWorker.LONG_TIMEOUT, Thread.MIN_PRIORITY);
             }
             int count = 0;
             int max = suite.countTestCases();
@@ -152,7 +153,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
 
             protected void doFinished(Object result) {
                 TestResult tr= (TestResult)result;
-               setTitle("Self Testing - " + tr.runCount() + " tests run, " + tr.failureCount() + " failures, " + tr.errorCount() + " errors");
+                setStatusMessage( max + " tests run, " + (tr.failureCount() + tr.errorCount()) + " failed");
             }
 
             protected void doAlways() {
@@ -166,7 +167,14 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             }
 
             public void endTest(Test arg0) {
-                setProgress(++count,max);
+                setProgress(++count,max); // this is the background worker progress monitor.
+                final int progress = count;
+                SwingUtilities.invokeLater(new Runnable() { // set the ui progress monitor.
+                    public void run() {
+                        setProgressValue(progress);
+                        setStatusMessage("completed " + progress + " of " + max + " tests");
+                    }
+                });
             }
             public void startTest(Test arg0) {
                 if (arg0 instanceof TestCase) {
@@ -194,6 +202,8 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                     ,new SelfTestTableFormat()
                     ));
             table.getColumnModel().getColumn(0).setMaxWidth(10);
+            table.getColumnModel().getColumn(1).setPreferredWidth(60);
+            table.getColumnModel().getColumn(2).setPreferredWidth(250);
             setJMenuBar(new UIComponentMenuBar(this,true) { // minimalistic menu
 
                 protected void populateEditMenu(EditMenuBuilder emb) {
@@ -215,7 +225,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             topPanel.add(helpButton);
             pane.add(topPanel,BorderLayout.NORTH);
             retest.addActionListener(this);
-            this.setTitle("Self Testing");
+            this.setTitle("Self Tests");
             // as this window can be re-shown, override the windowCLose op defined by parent class
             setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
             // remove the window listener defined by the parent class.
@@ -248,6 +258,8 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             } finally {
                 testResults.getReadWriteLock().writeLock().unlock();
             }
+            setProgressMax(suite.countTestCases());
+            setProgressValue(0);
             new TestRunningWorker().start();
         }
         
