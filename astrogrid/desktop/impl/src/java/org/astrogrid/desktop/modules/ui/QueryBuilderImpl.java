@@ -6,13 +6,16 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.HeadlessException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.CeaServerCapability;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Relationship;
@@ -68,9 +71,11 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
 
     public void build(final CatalogService coll) {
         // find the related cea app, and go from there...
-        Relationship[] relationships = coll.getContent().getRelationships();
+
         URI id = null;
-        // first - try to find a relationship, and extract an id from this.
+        //
+        // first - try to find a relationship, and extract an id from this.       
+        Relationship[] relationships = coll.getContent().getRelationships();      
         if (relationships != null) {
             for (int i = 0; i < relationships.length; i++) {
                 Relationship r = relationships[i];
@@ -87,15 +92,45 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
                 }
             }
         }
-        if (id == null) { // fallback to string-mangling
-            String s = StringUtils.substringBeforeLast(coll.getId().toString(),"/");
-            try {
-                id = new URI(s + "/ceaApplication");
-            } catch (URISyntaxException x) {
-                // oh, I give up!!
-                showError("Failed to find an application associated with this catalog service");                
+        //
+        // If we fail, look for a suitable capability...
+        if( id == null ) {
+            Capability[] capabilities = coll.getCapabilities() ;
+            if( capabilities != null ) {
+                for( int i=0; i<capabilities.length; i++ ) {
+                    Capability c = capabilities[i] ;
+                    if( c instanceof CeaServerCapability  ) {
+                        CeaServerCapability ceac = (CeaServerCapability)c ;
+                        URI[] apps = ceac.getManagedApplications() ;
+                        if( apps != null ) {
+                            if( apps.length != 0 ) {
+                                if( apps.length == 1 ) {
+                                    id = apps[0] ;
+                                }
+                                else {
+                                    id = apps[ new Random().nextInt( apps.length ) ] ;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+        //
+        // No point in going further if we've found nothing suitable so far...
+        if( id == null ) {
+            showError("Failed to find an application associated with this catalog service");
+            return ;
+        }
+//        if (id == null) { // fallback to string-mangling
+//            String s = StringUtils.substringBeforeLast(coll.getId().toString(),"/");
+//            try {
+//                id = new URI(s + "/ceaApplication");
+//            } catch (URISyntaxException x) {
+//                // oh, I give up!!
+//                showError("Failed to find an application associated with this catalog service");                
+//            }
+//        }
         
         final URI ceaAppId = id; // pesky finals
         

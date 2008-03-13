@@ -14,6 +14,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2632">
+    Execute button enabled and populated within TaskRunner.
+    Some failsafe checking when trying to retrieve tabular metadata.
+    Some ivorns within registry inconsistent on case when used as a foreign key.
+</action>
 <action dev="nw" type="fix" issue="2624">
     Renable astroscope search button when resolve fails.
 </action>
