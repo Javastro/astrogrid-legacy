@@ -50,6 +50,11 @@ public class NameResolvingPositionTextField extends PositionTextField implements
          * @param ev
          */
         public void resolved(ResolutionEvent ev);
+        
+        /** messaged when the position text field has failed to resolve an object name
+         * (and so contents of the field have been left as-is.
+         */
+        public void resolveFailed(ResolutionEvent ev);
     }
     
     /** event object fired to a resolution listener */
@@ -114,7 +119,12 @@ public class NameResolvingPositionTextField extends PositionTextField implements
             ((ResolutionListener)listeners.get(i)).resolved(re);
         }        
     }
-    
+    protected void fireResolveFailed() {
+        ResolutionEvent re = new ResolutionEvent(this);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ResolutionListener)listeners.get(i)).resolveFailed(re);
+        }        
+    }    
     
     protected class SesameResolver extends AbstractFormatter {
     	public SesameResolver(AbstractFormatter orig) {
@@ -174,13 +184,14 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 			protected void doAlways() {
 				if (this == latest) {
 				    latest = null;
-				    setEnabled(true);
+				    setEnabled(true);				    
 				}
 			}
 			protected void doError(Throwable ex) {
 			    if (this == latest) {
 			        setText(inputPos); // put things back as they were.
 			        parent.showTransientError("Unable to resolve " + inputPos,ExceptionFormatter.formatException(ex));
+			        fireResolveFailed();
 			    }
 			}
 			protected void doFinished(Object result) {	

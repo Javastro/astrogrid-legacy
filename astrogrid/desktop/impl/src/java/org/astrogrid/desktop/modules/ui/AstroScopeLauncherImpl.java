@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.80 2008/03/05 10:52:51 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.81 2008/03/13 05:25:00 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -1020,11 +1020,15 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			snitch.snitch("SUBMIT",m);
 			query();		
 		}
-
+		//enable the search button
         public void resolved(ResolutionEvent ev) {
             setEnabled(true);
         }
-
+        // even though the resolve failed, enable the search button.
+        public void resolveFailed(ResolutionEvent ev) {
+            setEnabled(true);
+        }
+        // disable the 'search button'
         public void resolving(ResolutionEvent ev) {
             setEnabled(false);
         }

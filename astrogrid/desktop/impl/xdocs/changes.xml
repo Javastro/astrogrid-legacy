@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="nw" type="fix" issue="2624">
+    Renable astroscope search button when resolve fails.
+</action>
 <action dev="mbt" type="fix" issue="2610">
     Resource list popup menu on OS X no longer deselects selected resource.
 </action>
