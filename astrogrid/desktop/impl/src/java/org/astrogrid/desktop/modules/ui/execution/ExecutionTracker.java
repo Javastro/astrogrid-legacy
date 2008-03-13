@@ -37,6 +37,7 @@ import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -47,6 +48,7 @@ import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessEvent;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.RetriableBackgroundWorker;
@@ -95,9 +97,19 @@ public class ExecutionTracker implements ListSelectionListener{
      * Logger for this class
      */
     private static final Log logger = LogFactory.getLog(ExecutionTracker.class);
+
+    private final SystemTray tray;
+
+    private final Preference messageTrayOnCompletion;
     
-    public ExecutionTracker(UIComponent parent,RemoteProcessManagerInternal rpmi, TypesafeObjectBuilder uiBuilder, ActivityFactory actFact) {
+    public ExecutionTracker(UIComponent parent
+            ,RemoteProcessManagerInternal rpmi
+            , TypesafeObjectBuilder uiBuilder
+            , ActivityFactory actFact
+            ,SystemTray tray, Preference messageTrayOnCompletion) {
 		super();
+        this.tray = tray;
+        this.messageTrayOnCompletion = messageTrayOnCompletion;
 		logger.debug("creating execution tracker");
         this.uiParent = parent;
 		this.rpmi = rpmi;
@@ -383,7 +395,10 @@ public final ProcessMonitor getMoitor() {
 				public void run() {			
 					populateStatusLabel();
 					populateTitleLabel();
-					triggerUpdate();			
+					triggerUpdate();		
+					if (messageTrayOnCompletion.asBoolean()) {
+					    tray.displayInfoMessage(title.getText(),pm.getStatus());
+					}
 				}
 			});
 		}

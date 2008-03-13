@@ -188,6 +188,15 @@ HELIOSCOPE
 		<window name="Task Runner">service:applicationLauncher</window>
 	</contribution>
 	
+    <contribution configuration-id="framework.preferences">
+        <preference name="taskrunner.notificationsenabled"
+            default-value="true">
+            <ui-name>Display task runner events</ui-name>
+            <description>Show task runner event notifications in the system tray</description>
+            <units>boolean</units>
+        </preference>
+    </contribution>
+    
 		<contribution configuration-id="UiBuilderObjects">
 		<object name="taskrunner" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl" >
 		  Describes how to build a new task runner window.
@@ -205,6 +214,8 @@ HELIOSCOPE
 			<inject object="service:astrogrid.processManager" />
             <inject object="service:ui.UiBuilder" />
             <inject object="service:actionsBuilder" />
+            <inject object="service:system.systray" />
+            <inject object="preference:taskrunner.notificationsenabled" />
 		</object>
         
         <object name="fileNavigator" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator">

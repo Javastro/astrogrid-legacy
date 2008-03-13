@@ -80,7 +80,7 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 			String key;
 			if ("framework".equalsIgnoreCase(moduleName)) {
 			    key = "system";
-			} else if ("votech".equalsIgnoreCase(moduleName) || "util".equalsIgnoreCase(moduleName) || "plastic".equalsIgnoreCase(moduleName)) {
+			} else if ("votech".equalsIgnoreCase(moduleName) || "ui".equalsIgnoreCase(moduleName) || "util".equalsIgnoreCase(moduleName) || "plastic".equalsIgnoreCase(moduleName)) {
 			    key = "general";
 			} else if ("ivoa".equalsIgnoreCase(moduleName)) {
 			    key = "registry";
