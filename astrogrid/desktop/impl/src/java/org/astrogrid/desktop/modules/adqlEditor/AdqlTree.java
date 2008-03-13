@@ -474,7 +474,7 @@ public final class AdqlTree extends JTree
     public TableBean findTableBean( String tableName ) {
         TableBean[] tables = catalogueService.getTables() ;
         for( int i=0; i<tables.length; i++ ) {
-            if( tables[i].getName().equals( tableName ) ) {
+            if( tables[i].getName().equalsIgnoreCase( tableName ) ) {
                 return tables[i] ;
             }
         }

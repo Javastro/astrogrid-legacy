@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2639">
+    Tables should not be case sensitive in ADQL.
+</action>
 <action dev="jl" type="fix" issue="2632">
     Execute button enabled and populated within TaskRunner.
     Some failsafe checking when trying to retrieve tabular metadata.
