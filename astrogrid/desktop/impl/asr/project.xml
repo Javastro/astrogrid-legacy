@@ -543,7 +543,7 @@
 		<url>http://www.jcraft.com/jsch/</url>
 		<properties>
 				<dist.bundle>true</dist.bundle>
-			    <strip>true</strip>    <!-- TODO fix - complains about missing 'Random' class -->
+			    <strip>false</strip>    <!-- future - add rules to enable stripping -->
 		</properties>
 	</dependency>			
 	
