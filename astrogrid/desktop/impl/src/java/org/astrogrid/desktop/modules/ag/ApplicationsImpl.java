@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.29 2008/01/30 08:38:38 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.30 2008/03/13 07:19:17 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -504,7 +504,7 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 			
 		Resource[] res =  nuReg.xquerySearch("//vor:Resource[not (@status='inactive' or @status='deleted') " +
 	
-				"and capability[@xsi:type &= 'CeaCapability' or @standardID='"
+				"and capability[@xsi:type &= '*CeaCapability' or @standardID='"
 		        + StandardIds.CEA_1_0
 		        +"']/managedApplications/ApplicationReference='"+ arg0 +"']");
 		List result = new ArrayList();
@@ -623,6 +623,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.30  2008/03/13 07:19:17  nw
+fix for 2632
+
 Revision 1.29  2008/01/30 08:38:38  nw
 Incomplete - task 313: Digest registry upgrade.
 
