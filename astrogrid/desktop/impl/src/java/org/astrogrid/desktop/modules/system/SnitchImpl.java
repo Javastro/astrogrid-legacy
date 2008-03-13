@@ -65,9 +65,13 @@ public class SnitchImpl implements SnitchInternal {
 			);
 		}
 		Map m = new HashMap();
-		m.put("app", version +  " | "
-				+ (appMode != null ? appMode : "unknown") + " | " 
-				+	(System.getProperty("javawebstart.version") != null ? "webstart" : "standalone")
+		m.put("app", version
+		        //+  " | "
+				//+ (appMode != null ? appMode : "unknown")
+
+				//+ " | " 
+				//+	(System.getProperty("javawebstart.version") != null ? "webstart" : "standalone")
+			//	+ ""
 					);
 		m.put("env",System.getProperty("java.version")
 			+ " | " + System.getProperty("os.name"));
