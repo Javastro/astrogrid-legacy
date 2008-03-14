@@ -94,6 +94,9 @@ public class SchemaMap {
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd"));
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd"));
         
+        ALL.put("urn:astrogrid:schema:vo-resource-types:STAP:v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/STAP/v1.0/STAP.xsd"));
+        ALL.put("http://www.ivoa.net/xml/SSA/v0.4",SchemaMap.class.getResource("/schema/vo-resource-types/SSA/v0.4/SSA.xsd"));
+                
         ALL.put("http://www.ivoa.net/xml/SIA/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/SIA/v1.0/SIA.xsd"));        
         ALL.put("http://www.ivoa.net/xml/SIA/v0.7",SchemaMap.class.getResource("/schema/vo-resource-types/SIA/v0.7/SIA.xsd"));
         ALL.put("http://www.ivoa.net/xml/OpenSkyNode/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/OpenSkyNode/v0.1/OpenSkyNode.xsd"));
@@ -129,6 +132,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.11  2008/03/14 16:07:48  KevinBenson
+added SSA schema v0.4 official from ivoa to our contracts
+
 Revision 1.10  2007/11/06 14:35:02  KevinBenson
 Added the AstrogridResource schema to the contracts so it could be validated against via some new registration xsl/jsp pages
 
