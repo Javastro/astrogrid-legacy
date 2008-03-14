@@ -226,6 +226,7 @@ public abstract class RegistryAdminService {
       if(validateXML) {
           try {
         	  String validRootElement = xsDoc.getDocumentElement().getLocalName();
+        	  //System.out.println("In RAS before validate element = " + DomHelper.ElementToString(xsDoc.getDocumentElement()));
         	  if(validRootElement.equals("Update") || validRootElement.indexOf("Update") != -1) {
         		  validRootElement = xsDoc.getDocumentElement().getFirstChild().getLocalName();
         	  }

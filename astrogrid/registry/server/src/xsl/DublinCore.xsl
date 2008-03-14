@@ -28,6 +28,7 @@
   <xsl:param name="referenceURL">http://www.astrogrid.org/</xsl:param>
   <xsl:param name="type"/>
   <xsl:param name="contentLevel"/>
+  <xsl:param name="contentSource"/>  
   <xsl:param name="relationship"/>
   <xsl:param name="vosiURL"/>  
   
@@ -125,8 +126,15 @@
       <subject><xsl:value-of select="$subject"/></subject>
       
       <description><xsl:value-of select="$description"/></description>
-      
+      <!-- 
       <xsl:copy-of select="content/source"/>
+      -->
+      <xsl:if test="$contentSource">      
+	      <source>
+		      <xsl:attribute name="format"></xsl:attribute>
+		      <xsl:value-of select="$contentSource"/>
+	      </source>
+      </xsl:if>
       
       <referenceURL><xsl:value-of select="$referenceURL"/></referenceURL>
       
@@ -138,7 +146,7 @@
         <contentLevel><xsl:value-of select="$contentLevel"/></contentLevel>
       </xsl:if>
       
-      <xsl:copy-of select="relationship"/>
+      <xsl:copy-of select="content/relationship"/>
       
     </content>
    	<xsl:choose>

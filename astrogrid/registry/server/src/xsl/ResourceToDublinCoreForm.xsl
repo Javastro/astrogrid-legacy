@@ -17,6 +17,7 @@
       <body>
         <h1>Core metadata: editor</h1>
               <div id='bodyColumn'>
+        <p>You may wish to open the Resource Help page in a seperate window that has help for all core and coverage information.  Right click and open in a new tab/window <a href='../resourceHelp.jsp'>here</a></p> 
         <form action="DublinCore" method="post">
           <input type="hidden" name="IVORN">
             <xsl:attribute name="value"><xsl:value-of select="identifier"/></xsl:attribute>
@@ -408,7 +409,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:choose>
-                    <xsl:when test="@status='Elementary education'">
+                    <xsl:when test="@status='Elementary Education'">
                       <option selected="yes">Elementary education</option>
                     </xsl:when>
                     <xsl:otherwise>

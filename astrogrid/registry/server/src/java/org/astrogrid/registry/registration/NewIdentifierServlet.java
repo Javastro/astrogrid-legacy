@@ -30,7 +30,7 @@ public class NewIdentifierServlet extends RegistrarServlet {
    * This is fixed to be the VOResource-1.0 collection as the query
    * used below only worls with that schema.
    */
-  static final public String COLLECTION_NAME = "/db/astrogridv1_0";
+  static public String COLLECTION_NAME = "astrogridv1_0";
   
   /**
    * Handles the HTTP GET method.
@@ -178,7 +178,7 @@ public class NewIdentifierServlet extends RegistrarServlet {
      
     // Is it already used?
     String q = "declare namespace ri = 'http://www.ivoa.net/xml/RegistryInterface/v1.0'; " +
-               "for $r in //ri:Resource[identifier = '" + ivorn.toString() + "' and @status != 'deleted'] return $r";
+               "for $r in //ri:Resource[identifier = '" + ivorn.toString() +"'] return $r";
     System.out.println(q);
     XMLDBRegistry db = new XMLDBRegistry();
     ResourceSet rs = db.query(q, COLLECTION_NAME);

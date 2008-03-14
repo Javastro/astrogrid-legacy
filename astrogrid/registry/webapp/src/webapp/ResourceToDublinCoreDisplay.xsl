@@ -89,11 +89,11 @@
           </tr>
           <tr>
             <td>Source of the resource content</td>
-            <td><xsl:value-of select="content.source"/></td>
+            <td><xsl:value-of select="content/source"/></td>
           </tr>
           <tr>
             <td><strong>URL for web page describing this resource</strong></td>
-            <td><xsl:value-of select="content.referenceURL"/></td>
+            <td><xsl:value-of select="content/referenceURL"/></td>
           </tr>
           <tr>
             <td><strong>Type of the resource content</strong></td>

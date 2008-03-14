@@ -22,7 +22,7 @@ public class PublishingAuthorities {
    * This is fixed to be the VOResource-1.0 collection as the query
    * used below only worls with that schema.
    */
-  static public String COLLECTION_NAME = "/db/astrogridv1_0";
+  static public String COLLECTION_NAME = "astrogridv1_0";
   
   /**
    * Reveals the authority identifiers managed in this registry.

@@ -59,17 +59,18 @@
         <xsl:copy-of select="rights"/>
         <xsl:copy-of select="format"/>
 
+        <!-- Copy the service capabilities -->
+        <xsl:copy-of select="capability"/>
+
         <!-- Write the coverage description -->
         <coverage>
-          <xsl:call-template name="wavebands"/>
           <xsl:call-template name="STC"/>
+          <xsl:call-template name="wavebands"/>          
         </coverage>
 
         <!-- Copy the optional data-collection and service elements -->
         <xsl:copy-of select="table"/>
         
-        <!-- Copy the service capabilities -->
-        <xsl:copy-of select="capability"/>
 
       </ri:Resource>
   <!--  </agr:AstrogridResource> -->
@@ -96,7 +97,7 @@
       <waveband>EUV</waveband>
     </xsl:if>
     <xsl:if test="$wavebandXRay">
-      <waveband>X-Ray</waveband>
+      <waveband>X-ray</waveband>
     </xsl:if>
     <xsl:if test="$wavebandGammaRay">
       <waveband>Gamma-ray</waveband>
@@ -107,10 +108,13 @@
   <xsl:template name="STC">
     <stc:STCResourceProfile>
       <stc:AstroCoordSystem id="whatever">
+      <!-- 
         <stc:TimeFrame>
           <stc:TimeScale>TT</stc:TimeScale>
           <stc:TOPOCENTER/>
         </stc:TimeFrame>
+ 	-->   
+ 	<!--      
         <stc:SpaceFrame>
           <xsl:choose>
             <xsl:when test="$region='Box'">
@@ -126,6 +130,8 @@
           <stc:TOPOCENTER/>
           <stc:SPHERICAL coord_naxes="2"/>
         </stc:SpaceFrame>
+         -->
+        <!-- 
         <stc:SpectralFrame>
           <stc:TOPOCENTER/>
         </stc:SpectralFrame>
@@ -133,6 +139,7 @@
           <stc:DopplerDefinition>RADIO</stc:DopplerDefinition>
           <stc:LSR/>
         </stc:RedshiftFrame>
+         -->
       </stc:AstroCoordSystem>
       <xsl:choose>
         <xsl:when test="$region='Box'">
@@ -162,7 +169,7 @@
         </xsl:when>
         <xsl:otherwise>
           <stc:AstroCoordArea coord_system_id="whatever">
-            <AllSky/>
+            <stc:AllSky/>
           </stc:AstroCoordArea>
         </xsl:otherwise>
       </xsl:choose>

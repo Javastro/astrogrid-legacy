@@ -33,6 +33,8 @@ public abstract class RegistrarServlet extends HttpServlet {
   static Log log = 
       LogFactory.getLog("org.astrogrid.registry.registration.RegistrarServlet");
   
+  RegistryAdminService ras = new RegistryAdminService();
+  
   protected void validate(URI ivorn, Node resource) throws ServletException {
         	  Element resElem;
         	  NodeList nl;
@@ -74,8 +76,11 @@ public abstract class RegistrarServlet extends HttpServlet {
       // Insert the document into the DB.
       //XMLDBRegistry registry = new XMLDBRegistry();
       //registry.storeXMLResource(id2, "astrogridv1_0", resource);
-      new RegistryAdminService().updateInternal((Document)resource);
-      log.info(id2 + " in astrogridv1_0 " + " was replaced with a new version.");
+      Document doc = ras.updateInternal((Document)resource);
+      if(doc.getDocumentElement().getLocalName().equals("Fault")) {
+    	  throw new ServletException("Failed to enter Document a Fault occurred, XML Text = " + DomHelper.DocumentToString(doc));
+      }
+      //log.info(id2 + " in astrogridv1_0 " + " was replaced with a new version.");
       
     } catch (Exception ex) {
       throw new ServletException("Failed to enter a document into the registry", ex);
