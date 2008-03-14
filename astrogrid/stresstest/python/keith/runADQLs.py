@@ -52,11 +52,12 @@ class StatusChecker(Thread) :
 #			"EXPORT ACTION [query] OUTERLOOP [%d] INNERLOOP [%d] TIMING [%f] STATUS [%s]\n",
 #			outerloop,innerloop,endTime-startTime,status);
 		logging.info(
-			"TEST [%s] ACTION [%s] LOOP [%d][%d] TIME [%f] STATUS [%s]",
+			"TEST [%s] ACTION [%s] LOOP [%d][%d] ROWS [%d] TIME [%f] STATUS [%s]",
 			testname,
 			'query',
 			outerloop,
 			innerloop,
+			rows,
 			endTime-startTime,
 			status
 			)
