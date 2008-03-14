@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.16 2008/03/06 14:46:45 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.17 2008/03/14 16:09:21 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -485,14 +485,21 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          };
 
          // Get a suitable ConeSearcher object.  There are several possible
-         // implementations.  Currently a DirectConeSearcher is used, which 
-         // uses a direct JDBC connection to the database, bypassing the 
-         // expensive repeated ADQL translation layer.  To provide throttling,
-         // we block waiting for a free slot in the global AsyncConnectionQueue
-         // before proceeding.
+         // implementations.  Currently a DirectConeSearcher is used by
+         // default, which uses a direct JDBC connection to the database, 
+         // bypassing the expensive repeated ADQL translation layer.  
+         // To provide throttling, we block waiting for a free slot in the 
+         // global AsyncConnectionQueue before proceeding.
          final ConeSearcher coneSearcher;
-         boolean direct = true;
-         if (direct) {
+         String forceadql = "false";
+         try {
+            forceadql =  ConfigFactory.getCommonConfig().getString(
+               "datacenter.multicone.forceadql","false");
+         }
+         catch (PropertyNotFoundException pnfe) {
+            // Just ignore if property is unset
+         }
+         if (!("true".equalsIgnoreCase(forceadql))) {
              TokenQueue.Token token = Queues.getAsyncConnectionQueue().waitForToken();  // may block if server is busy
              coneSearcher = DirectConeSearcher
                            .createConeSearcher(token, catalogName, tableName, bestOnly);
@@ -679,6 +686,12 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.17  2008/03/14 16:09:21  clq2
+ PAL_KEA_2619
+
+ Revision 1.16.2.1  2008/03/11 15:29:50  kea
+ Tweaks for multicone, and conesearch compulsory UCDs.
+
  Revision 1.16  2008/03/06 14:46:45  clq2
  PAL_KEA_2588
 

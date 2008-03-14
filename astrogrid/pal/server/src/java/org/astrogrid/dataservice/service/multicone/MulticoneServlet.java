@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.ConfigReader;
+import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.dataservice.service.Queues;
 import org.astrogrid.dataservice.service.TokenQueue;
 import org.astrogrid.dataservice.service.ServletHelper;
@@ -194,10 +195,22 @@ public class MulticoneServlet extends HttpServlet {
                                        FIND_MODE_PARAM +
                                        " (should be BEST or ALL)");
         }
-        boolean direct;
+        boolean direct = true;
         String impl = params.getParameter(IMPL_PARAM);
         if (impl == null) {
-            direct = true;
+           // If impl is unset, check system config
+           try {
+              String forceadql = "false";
+              forceadql =  ConfigFactory.getCommonConfig().getString(
+                 "datacenter.multicone.forceadql","false");
+              if ("true".equalsIgnoreCase(forceadql)) {
+                 direct = false;
+              }
+           }
+           catch (PropertyNotFoundException pnfe) {
+              // Just ignore if property is unset
+              direct = true;
+           }
         }
         else if (impl.equalsIgnoreCase("DIRECT")) {
             direct = true;

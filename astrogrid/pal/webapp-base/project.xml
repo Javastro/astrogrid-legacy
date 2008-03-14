@@ -466,6 +466,17 @@
       </properties>
     </dependency>
 
+    <!-- xalan (to stop axis getting upset - can remove when axis no
+    longer used - see 
+      http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2633) -->
+    <dependency>
+      <id>xalan</id>
+      <version>2.7.0</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <!--
       REMOVED BY KEA 06/09/06
     <dependency>

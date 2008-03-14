@@ -212,6 +212,10 @@ public class DirectConeSearcher {
      * Returns the catalogue.table qualified table name in a form suitable
      * for use in SQL queries over a given connection.
      *
+     * KEA Note:  When the DSA is configured in single-database mode,
+     * the catalog (database) prefix is not required and if present
+     * may break some JDBC drivers.  
+     *
      * @param  connection   database connection
      * @param  catalogName  catalogue name
      * @param  tableName    table name
@@ -238,9 +242,36 @@ public class DirectConeSearcher {
                // Don't worry if this property isn't found, go on and
                // try to get separator from the connection metadata 
             }
+            // Check to see if we are in single- or multiple- database 
+            // mode
+            String hideCat = "true";   //By default
+            try {
+               String[] catIDs = TableMetaDocInterpreter.getCatalogIDs();
+               if (catIDs.length > 1) {
+                  hideCat = "false";
+                  try {
+                     // Assume we don't want to hide prefix in multi-DB
+                     // case, unless explicitly told to in the config
+                     hideCat = ConfigFactory.getCommonConfig().getString(
+                        "datacenter.plugin.jdbc.hidecatalog","false");
+                  }
+                  catch (Exception e) {
+                    // Ignore if property not found
+                  }
+               }
+            }
+            catch (Exception e) {
+               // Shouldn't really get here in working DSA installation
+               // Just assume single-DB mode if in doubt, so do nothing
+            }
+            if ("true".equals(hideCat) || "TRUE".equals(hideCat)) {
+               //Single-database mode - don't need a database prefix
+               return tableName;
+            }
+            // Otherwise return fully-qualified name
             return catalogName
-                 + connection.getMetaData().getCatalogSeparator()
-                 + tableName;
+               + connection.getMetaData().getCatalogSeparator()
+               + tableName;
         }
     }
 }

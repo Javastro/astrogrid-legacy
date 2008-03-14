@@ -1,6 +1,8 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,11 +21,15 @@ import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.JoinFixAction;
 import uk.ac.starlink.table.RowListStarTable;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.StarTableFactory;
+import uk.ac.starlink.votable.VOTableBuilder;
 import uk.ac.starlink.table.Tables;
 import uk.ac.starlink.ttools.cone.ConeMatcher;
 import uk.ac.starlink.ttools.cone.ConeSearcher;
 import uk.ac.starlink.ttools.cone.QuerySequenceFactory;
 import uk.ac.starlink.ttools.task.TableProducer;
+
+import uk.ac.starlink.votable.VOTableWriter;
 
 public class MulticoneTest extends TestCase {
 
@@ -48,10 +54,6 @@ public class MulticoneTest extends TestCase {
         String tableName = TableMetaDocInterpreter.getTableNameForID(
               catalogID,tableID);
 
-        // Test ADQL-type cone.
-        Principal user = new LoginAccount("UnitTester", "test.org");
-        doMulticone(new DsaConeSearcher(catalogName, tableName, user, getClass().getName()));
-
         // Test direct JDBC-type cone.
         TokenQueue tq = new TokenQueue(1);
         assertEquals(0, tq.getActiveCount());
@@ -59,14 +61,12 @@ public class MulticoneTest extends TestCase {
         assertEquals(1, tq.getActiveCount());
         assertNotNull(token);
         
-        // I can't get this to work, because I can't get the table name
-        // for the SELECT statement right.  I think this must be to do with
-        // some detail of HSQLDB that I don't understand.  
-        // The DirectConeSearcher has been shown to work by testing by hand
-        // using MySQL and SQL Server though.  - mbt
-        // KONA Comment:  Select now OK, but getting "Connection is closed"
-        // error from HSQLDB (after some queries apparently run) - not sure
-        // why right now.  TOFIX later.
+        // Test ADQL-type cone.
+        Principal user = new LoginAccount("UnitTester", "test.org");
+        doMulticone(new DsaConeSearcher(catalogName, tableName, user, getClass().getName()));
+
+        // KONA Comment:  "Connection is closed" error from HSQLDB - for 
+        // reasons discussed below. TOFIX later.
         //doMulticone(DirectConeSearcher.createConeSearcher(token, catalogName, tableName, false));
 
         assertEquals(1, tq.getActiveCount());
@@ -94,6 +94,7 @@ public class MulticoneTest extends TestCase {
         assertEquals(9L, cone1.getRowCount());
         int nConeCol = cone1.getColumnCount();
         assertEquals(6, nConeCol);  // I happen to know
+
         StarTable in = createTestTable();
         long nInRow = in.getRowCount();
         long nInCol = in.getColumnCount();

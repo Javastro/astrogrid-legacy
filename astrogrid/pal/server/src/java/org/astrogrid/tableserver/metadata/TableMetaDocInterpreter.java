@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.19 2008/02/07 17:27:45 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.20 2008/03/14 16:09:21 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Vector;
+import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -1171,7 +1172,11 @@ public class TableMetaDocInterpreter
          ColumnInfo raColInfo = getColumnInfoByName(
                catalogName, tableName, raColName);
          String raUcd = raColInfo.getUcd("1");
-         if (!"POS_EQ_RA_MAIN".equals(raUcd)) {
+         if (
+           (raUcd == null) ||
+           //Bit of a kludge, really ought to parse the UCD properly
+           (raUcd.indexOf("POS_EQ_RA_MAIN") == -1)
+         ) {
             throw new MetadataException(
                "Resource metadoc file is invalid: "+
                "Conesearchable RA column with name '" +raColName +
@@ -1185,7 +1190,11 @@ public class TableMetaDocInterpreter
          ColumnInfo decColInfo = getColumnInfoByName(
                catalogName, tableName, decColName);
          String decUcd = decColInfo.getUcd("1");
-         if (!"POS_EQ_DEC_MAIN".equals(decUcd)) {
+         if (
+           (decUcd == null) ||
+           //Bit of a kludge, really ought to parse the UCD properly
+           (decUcd.indexOf("POS_EQ_DEC_MAIN") == -1)
+         ) {
             throw new MetadataException(
                "Resource metadoc file is invalid: "+
                "Conesearchable Dec column with name '" +decColName +
@@ -1198,8 +1207,15 @@ public class TableMetaDocInterpreter
          ColumnInfo[] allCols = getColumnsInfoByName(catalogName, tableName);
          int found = 0;
          for (int j = 0; j < allCols.length; j++) {
-            if ("ID_MAIN".equals(allCols[j].getUcd("1"))) {
-               found = found + 1; 
+            String ucd = allCols[j].getUcd("1");
+            if (ucd != null) {
+               StringTokenizer tokenizer = new StringTokenizer(ucd,";");
+               while (tokenizer.hasMoreTokens()) {
+                  String token = tokenizer.nextToken().trim();
+                  if ("ID_MAIN".equals(token)) {
+                     found = found + 1;
+                  }
+               }
             }
          }
          if (found != 1) {
