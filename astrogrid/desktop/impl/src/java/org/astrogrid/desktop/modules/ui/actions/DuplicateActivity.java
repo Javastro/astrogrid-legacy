@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.KeyStroke;
@@ -43,9 +44,14 @@ public class DuplicateActivity extends AbstractFileActivity {
     
     public void actionPerformed(ActionEvent e) {
         final List l = computeInvokable();
+        // each item in the list is going to be a file object. Construct a command array...
+        CopyCommand[] commands = new CopyCommand[l.size()];
+        for (int i = 0; i < l.size(); i++) {
+            commands[i] = new CopyCommand((FileObject)l.get(i));
+        }
         try {
             FileObject parent = ((FileObject)l.get(0)).getParent();
-            new BulkCopyWorker(vfs,uiParent.get(),parent,l).start();
+            new BulkCopyWorker(vfs,uiParent.get(),parent,commands).start();
         } catch (FileSystemException x) {
             uiParent.get().showTransientError("Unable to duplicate",ExceptionFormatter.formatException(x));
         }

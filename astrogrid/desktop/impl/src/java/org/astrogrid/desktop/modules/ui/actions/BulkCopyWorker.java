@@ -12,8 +12,8 @@ import javax.swing.UIManager;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
@@ -30,10 +30,13 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** worker class which does a bulk copy of a bunch of files/folders to another target.
+ * 
+ * api is a form of the command pattern - it processes a set of copy commands.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 25, 20074:49:51 PM
  */
 public class BulkCopyWorker extends BackgroundWorker {
+    
     /**
      * 
      */
@@ -41,7 +44,7 @@ public class BulkCopyWorker extends BackgroundWorker {
     /**
      * 
      */
-    private final List l;
+    protected final CopyCommand[] cmds;
     private final FileSystemManager vfs;
     private final FileObject saveObject;
     private final URI saveLoc;
@@ -49,34 +52,33 @@ public class BulkCopyWorker extends BackgroundWorker {
     /**
      * @param parent ui parent
      * @param saveDir directory to copy data to.
-     * @param l list of files to copy. Contents can be mixture of fileObjects, things with a toString that can be resolved by 
-     * vfs - so URI, URL, String, etc. 
+     * @param l list of files to copy. 
      */
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,File saveDir, List l) {
+    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,File saveDir, CopyCommand[] l) {
         super(parent,  "Copying to " + saveDir,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveDir = saveDir;
         saveObject = null;
         saveLoc = null;
-        this.l = l;
+        this.cmds = l;
     }
     
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, List l) {
+    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, CopyCommand[] l) {
         super(parent,  "Copying to " + saveObject.getName().getPath(),BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveObject = saveObject;
         this.saveDir = null;
         saveLoc = null;
-        this.l = l;
+        this.cmds = l;
     }
     
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,URI saveLoc, List l) {
+    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,URI saveLoc, CopyCommand[] l) {
         super(parent,  "Copying to " + saveLoc,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveLoc = saveLoc;
         this.saveObject = null;
         this.saveDir = null;
-        this.l = l;
+        this.cmds = l;
     }
     {
         setWouldLikeIndividualMonitor(true);
@@ -100,7 +102,7 @@ public class BulkCopyWorker extends BackgroundWorker {
   
     protected FileObject saveTarget;
     protected Object construct() throws Exception {
-        final int tasksCount = l.size() + 1;
+        final int tasksCount = cmds.length + 1;
         int progress = 0;
         setProgress(progress,tasksCount);
         reportProgress("Validating save location");
@@ -124,23 +126,25 @@ public class BulkCopyWorker extends BackgroundWorker {
         
         reportProgress((saveToMyspace ? "VOSpace " : "" ) + "Save location validated");
         setProgress(++progress,tasksCount);
-        // will records destinations or errors of copying each individual file, continue, and report at the end.
-        Map outcome = new HashMap();
         // go through each file in turn.
-        for (Iterator i = this.l.iterator(); i.hasNext(); ) {
-                FileObject src;
-                Object something = i.next();
-                if (something instanceof FileObject) {
-                    src = (FileObject)something;
+        for (int i  = 0; i < this.cmds.length; i++ ) {
+                CopyCommand cmd = cmds[i];
+                FileObject src =cmd.resolveSourceFileObject(vfs);
+                reportProgress("Processing " + src.getName());
+                String name;
+                String ext;
+                if (cmd instanceof CopyAsCommand) {
+                    // already specifies a name
+                    CopyAsCommand ccmd = (CopyAsCommand)cmd;
+                    name = StringUtils.substringBeforeLast(ccmd.getTargetFilename(),".");
+                    ext = StringUtils.substringAfterLast(ccmd.getTargetFilename(),".");
                 } else {
-                    final String uriString = something.toString();
-                    src =vfs.resolveFile(uriString);
+                    // compute a suitable name
+                    name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
+                    ext = StringUtils.substringAfterLast(src.getName().getBaseName(),".");
                 }
-                reportProgress("Processing " + src.getName().getBaseName());
                 FileObject dest = null;
                 try {
-                    String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
-                    String ext = StringUtils.substringAfterLast(src.getName().getBaseName(),".");
                     if (StringUtils.isNotBlank(ext)) {
                         ext = "." + ext;
                     }
@@ -151,11 +155,11 @@ public class BulkCopyWorker extends BackgroundWorker {
                         n++;
                     } while  (dest.exists());
                     reportProgress("Destination will be " + dest.getName().getBaseName());
-                    // cool. now got a non-existent destination file                    
+                    // good. now got a non-existent destination file                    
                     dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
-                    outcome.put(src,dest.getName().getURI());
+                    cmd.recordSuccess(dest.getName());
                 } catch (FileSystemException x) {
-                    outcome.put(src,x);
+                    cmd.recordError(x);
                     reportProgress("Copy from " + src.getName().getBaseName() + " failed");
                     reportProgress("Cause: " + exFormatter.format(x,ExceptionFormatter.INNERMOST));
                     
@@ -170,36 +174,33 @@ public class BulkCopyWorker extends BackgroundWorker {
                 ((AbstractFileSystem)fs).fireFileChanged(saveTarget);
             }
       //  }
-        return outcome;
+        return cmds; // results have been recorded in here.
     }
     private ExceptionFormatter exFormatter = new ExceptionFormatter();
 
-    protected void doFinished(Object result) {
-        Map outcome = (Map)result;
-        boolean seenErrs = CollectionUtils.exists(outcome.entrySet(),new Predicate() {
-
-            public boolean evaluate(Object arg0) {
-                Map.Entry kv = (Map.Entry)arg0;
-                return kv.getValue() instanceof Throwable;                    
+    protected void doFinished(Object ignored) {
+        // check if we've seen any errors.
+        boolean seenErrs = false;
+        for (int i = 0; i < cmds.length; i++) {
+            if (cmds[i].failed()) {
+                seenErrs = true;
+                break;
             }
-        });
+        }
         if (! seenErrs) {             
                 parent.showTransientMessage("Copy completed",
-                outcome.size() == 1 
-                        ? outcome.keySet().iterator().next() + "<br>  copied to <br>" + outcome.values().iterator().next() 
-                        : outcome.size() + " files copied to " + saveTarget.getName().getURI());            
+                cmds.length == 1 
+                        ? cmds[0].formatResult()
+                        : cmds.length + " files copied to " + saveTarget.getName().getURI());            
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    
-        for (Iterator i = outcome.entrySet().iterator(); i.hasNext();) {
-            Map.Entry err = (Map.Entry) i.next();
-            FileObject f = (FileObject)err.getKey();
-            if (! (err.getValue() instanceof Throwable )) {
+        for (int i = 0; i < cmds.length; i++) {
+            CopyCommand cmd = cmds[i];
+            if (! cmd.failed()) {
                 continue;
             }
-            Throwable e = (Throwable)err.getValue();
-            msgBuilder.append(f.getName().getPath()).append("<br>");
-            msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
+            msgBuilder.append(cmd.formatResult());
             msgBuilder.append("<p>");
         }
         ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);

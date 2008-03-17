@@ -23,6 +23,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** worker class which does a bulk move of a bunch of files/folders to another target.
+ * @future upgrade this to use the CopyCommands instead.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 25, 20074:49:51 PM
  */

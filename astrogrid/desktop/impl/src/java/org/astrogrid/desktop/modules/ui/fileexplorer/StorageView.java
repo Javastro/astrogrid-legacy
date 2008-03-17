@@ -54,6 +54,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
+import org.astrogrid.desktop.modules.ui.actions.CopyCommand;
 import org.astrogrid.desktop.modules.ui.comp.ActionComboBox;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
@@ -248,7 +249,11 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             if (code == JFileChooser.APPROVE_OPTION) {
                 FileObject base = navigator.current();
                 File[] files = chooser.getSelectedFiles();
-                new BulkCopyWorker(vfs,getParent(),base,Arrays.asList(files)).start();
+                CopyCommand[] commands = new CopyCommand[files.length];
+                for (int i = 0; i < files.length; i++) {
+                    commands[i] = new CopyCommand(files[i]);
+                }
+                new BulkCopyWorker(vfs,getParent(),base,commands).start();
             }
         }
 	}

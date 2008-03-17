@@ -20,6 +20,7 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
+import org.astrogrid.desktop.modules.ui.actions.CopyCommand;
 import org.astrogrid.desktop.modules.ui.comp.JPromptingTextField;
 
 import ca.odell.glazedlists.EventList;
@@ -110,18 +111,14 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
     
     private void relocateFile(final URI u,final JFormattedTextField resultField) {
         resultField.setEnabled(false);
-        List upload = new ArrayList();
-        upload.add(u);
+        final CopyCommand cmd = new CopyCommand(u);        
         parent.showTransientMessage("Uploading","Copying " + u);
-        new BulkCopyWorker(vfs,parent,workingDir,upload){
+        new BulkCopyWorker(vfs,parent,workingDir,new CopyCommand[]{cmd}){            
             protected void doFinished(Object result) {
                 super.doFinished(result);
-                Map outcome = (Map)result;
-                // I know very well it's' a single-item map at this point.
-                Object outURI = outcome.values().iterator().next();
-                if (outURI instanceof String) {
-                    resultField.setValue((String)outURI);
-                } 
+                if (! cmd.failed()) {
+                    resultField.setValue(cmd.getDestination().getURI());
+                }            
             }
             protected void doAlways() {
                 super.doAlways();

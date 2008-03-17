@@ -10,6 +10,7 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 import org.astrogrid.desktop.modules.ui.actions.BulkMoveWorker;
+import org.astrogrid.desktop.modules.ui.actions.CopyCommand;
 
 /** Implementation of operations on files - liable to change.
  * @todo hook this into tasks infrastryctyre, when it comes along - use to 
@@ -36,7 +37,11 @@ public class VFSOperationsImpl implements VFSOperations {
 
 	public void copyToCurrent(final List fileObjects) {
 		final FileObject target = current.get(); // take a ref before going into background. 
-		(new BulkCopyWorker(vfs,parent,target,fileObjects)).start();
+		CopyCommand[] commands = new CopyCommand[fileObjects.size()];
+		for (int i = 0; i < commands.length; i++) {
+		    commands[i] = new CopyCommand((FileObject)fileObjects.get(i));
+		}
+		(new BulkCopyWorker(vfs,parent,target,commands)).start();
 
 	}
 

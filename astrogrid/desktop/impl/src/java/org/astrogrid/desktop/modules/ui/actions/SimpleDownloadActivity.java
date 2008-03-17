@@ -5,13 +5,16 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import org.apache.commons.codec.Encoder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.vfs.FileObject;
@@ -27,6 +30,7 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
+import org.astrogrid.desktop.modules.ui.scope.VizModel;
 
 import com.l2fprod.common.swing.JDirectoryChooser;
 
@@ -65,7 +69,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 
 	public void actionPerformed(ActionEvent e) {
         final List resources = computeInvokableResources();
-        final List files = new ArrayList();
+        final List files = computeInvokableFiles();
         int sz = resources.size() + files.size();
         confirmWhenOverThreshold(sz,"Download all " + sz + " files?",new Runnable() {
             public void run() {
@@ -73,19 +77,36 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
             }
         });      
 	}
+	
+	
 	private void doit(List resources, List files) {
+	    List commandList = new ArrayList();
         if (resources.size() > 0) {
             // very CDS swpecific at the moment
             for (Iterator i = resources.iterator(); i.hasNext();) {
                 CatalogService vizCatalog = (CatalogService) i.next();
                 URI s = findDownloadLinkForCDSResource(vizCatalog);
                 if (s != null) {
-                    files.add(s);
+                    /* shortName no good - not unique in vizier , and not very useful
+                    String fname = StringUtils.isEmpty(vizCatalog.getShortName()) 
+                            ? StringUtils.replace(vizCatalog.getTitle(),"/","_") + ".vot"
+                            : StringUtils.replace(vizCatalog.getShortName(),"/","_") + ".vot"
+                            ;
+                            */
+                 //   String fname = StringUtils.replace(vizCatalog.getTitle(),"/","_") + ".vot";     
+                        String fname = VizModel.removeLineNoise(vizCatalog.getTitle()) + ".vot";
+                        commandList.add(new CopyAsCommand(s,fname));                                       
                 }
             }            
-        }	    
-		files.addAll(computeInvokableFiles());
-		logger.debug(files);
+        }	 
+        
+		for (int i = 0 ; i < files.size(); i++) {
+		    commandList.add(new CopyCommand((FileObject)files.get(i)));
+		}
+		
+		if (commandList.isEmpty()) {
+		    return; // nothing to do
+		}
 		
 		// decided to use dirchooser here instead...
         final URI saveDir = chooser.chooseDirectoryWithParent("Choose destination folder to download into",true,true,false,uiParent.get().getComponent());
@@ -103,8 +124,8 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         }
         URI saveDir = chooser.getSelectedFile().toURI();
      */
-        //@fixme - generate nicer file names 
-		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, files)).start();
+        CopyCommand[] cmdArr = (CopyCommand[])commandList.toArray(new CopyCommand[commandList.size()]);
+		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, cmdArr)).start();
 		
 	}
 	

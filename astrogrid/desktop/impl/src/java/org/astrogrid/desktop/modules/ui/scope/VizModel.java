@@ -248,8 +248,8 @@ public  final class VizModel {
         if (subName != null && subName.length()>0) {
             name += "_" + subName;
         }
-	    String munged = StringUtils.replaceChars(name,"/:;?=&\\$+!*'()@{}|[]^~<>#`","_"); // convert  / to _, strip : and any other odd symbols
-	    return "/" + URLEncoder.encode(munged);
+	    
+	    return "/" + removeLineNoise(name);
 	}
 	
 
@@ -261,4 +261,13 @@ public  final class VizModel {
         return this.summarizer;
     }
 
+    private static final String FORBIDDEN = "/:;?=&\\$+!*\"'()@{}|[]^~<>#` ";
+    private static final String REPLACE = StringUtils.repeat("_",FORBIDDEN.length());
+    
+    /** cponverts all line noise to underscore */ 
+    public static String removeLineNoise(String name) {
+        String munged = StringUtils.replaceChars(name,FORBIDDEN,REPLACE); // convert  / to _, strip : and any other odd symbols
+        return URLEncoder.encode(munged);
+    }
+    
 }
