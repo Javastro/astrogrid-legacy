@@ -116,31 +116,20 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-        final List resources = computeInvokableResources();
-        final List files = new ArrayList();
-        int sz = resources.size() + files.size(); 
-        confirmWhenOverThreshold(sz,"Send all " + sz + " files?",new Runnable() {
+        final List sources = new ArrayList();
+        sources.addAll(computeInvokableResources());
+        sources.addAll( computeInvokableFiles());
+        confirmWhenOverThreshold(sources.size(),"Send all " + sources.size() + " files?",new Runnable() {
             public void run() {
-                doit(resources,files);
+                doit(sources);
             }
         });
 	}
-	public void doit(List resources, List files) {
-        if (resources.size() > 0) {
-            // very CDS-specific at tge moment
-            for (Iterator i = resources.iterator(); i.hasNext();) {
-                CatalogService vizCatalog = (CatalogService) i.next();
-                URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
-                if (s != null) {
-                    files.add(s);
-                }
-            }               
-        }
-        // add in any selected files (it's an and/or thing really, but makes the code clearer)
-	    files.addAll(computeInvokableFiles());
+	public void doit(List sources) {
+
 
 	    if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
-	        for (Iterator i = files.iterator(); i.hasNext();) {
+	        for (Iterator i = sources.iterator(); i.hasNext();) {
 	            Object o = i.next();
 	            if (o instanceof FileObject) {                    
 	                FileObject f = (FileObject) o;
@@ -148,17 +137,31 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	                    f = ((DelegateFileObject)f).getDelegateFile();
 	                }
 	                (new LoadVotableWorker(f)).start();
+	                
+	            } else if (o instanceof CatalogService) {
+	                CatalogService vizCatalog = (CatalogService) o;
+	                URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
+	                (new LoadVotableWorker(s,vizCatalog.getTitle())).start();
+ 
 	            } else if (o instanceof URI) {
-	                (new LoadVotableWorker((URI)o)).start();                  
+	                URI u= (URI)o;
+	                (new LoadVotableWorker(u,u.toString())).start();                  
 	            }						    
 	        }
 	    } else { // fallback
-	        for (Iterator i = files.iterator(); i.hasNext();) {			    
+	        for (Iterator i = sources.iterator(); i.hasNext();) {			    
 	            Object o = i.next();
 	            if (o instanceof FileObject) {
 	                (new LoadVotableInlineWorker((FileObject)o)).start();
+	                
+                } else if (o instanceof CatalogService) {
+                    CatalogService vizCatalog = (CatalogService)o;
+                    URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
+                    (new LoadVotableInlineWorker(s,vizCatalog.getTitle())).start();
+                    
 	            } else if (o instanceof URI) {
-	                (new LoadVotableInlineWorker((URI)o)).start();				    
+	                URI u = (URI)o;
+	                (new LoadVotableInlineWorker(u,u.toString())).start();				    
 	            }
 	        }			
 	    }
@@ -167,19 +170,24 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 
 	/** background process that sends an inline votable plastic message */
     private class LoadVotableInlineWorker extends BackgroundWorker {
-        protected FileObject fo;
-        protected URI uri;
+        protected final FileObject fo;
+        protected final URI uri;
+        protected final String id;
         /**
          * 
          */
         public LoadVotableInlineWorker(FileObject fo) {
             super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
             this.fo = fo;
+            this.id = fo.getName().getBaseName();
+            this.uri = null;
             setTransient(true);
         }
-        public LoadVotableInlineWorker(URI uri) {
+        public LoadVotableInlineWorker(URI uri, String id) {
             super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
             this.uri = uri;
+            this.id = id;
+            this.fo = null;
             setTransient(true);
         }   	
 
@@ -188,13 +196,10 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 				InputStream is = null;
 				try {
 					List l = new ArrayList();
-					String id;
 					if (fo != null) {
 					    is = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB * 10);
-					    id = fo.getName().getBaseName();
 					} else { // must be auri then.
 					    is = MonitoringInputStream.create(this,uri.toURL(),MonitoringInputStream.ONE_KB * 10);
-					    id = uri.toString();
 					}
 					reportProgress("Opened file");
 					String hopefullyNotVeryBig = IOUtils.toString(is);
@@ -225,20 +230,17 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         public LoadVotableWorker(FileObject fo) {
             super(fo);
         }
-        public LoadVotableWorker(URI uri) {
-            super(uri);
+        public LoadVotableWorker(URI uri, String id) {
+            super(uri,id);
         }        
 
 			protected Object construct() throws Exception {
 			    // first check if it's applicable, and if not fallback.
 			    URL url;
-			    String id;
 			    if (fo != null) {				        
 			        url = fo.getURL();
-			        id = fo.getName().getBaseName();
 			    } else { // must be a uri then.
 			        url = uri.toURL();
-			        id = uri.toString();
 			    }
 			    reportProgress("Resolved URI");
 			    if (! supportedProtocols.contains(url.getProtocol())) {
