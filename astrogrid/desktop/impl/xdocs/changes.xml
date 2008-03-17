@@ -14,6 +14,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2008.1.beta4" date="2008-03-17">
 <action dev="jl" type="fix" issue="2639">
     Tables should not be case sensitive in ADQL.
 </action>
@@ -35,7 +36,7 @@
     File dialogue can now display in list view.
 </action>
 <action dev="nw" type="fix" issue="2629">
-    Improved progres display of self tests.
+    Improved progress display of self tests.
 </action>
 <action dev="nw" type="fix" issue="2613">
 test for running on low memory.
@@ -46,6 +47,7 @@ test for running on low memory.
 <action dev="mbt" type="fix" issue="2430">
     Finally fixed problems with initial expansion state of resource list tree.
 </action>
+</release>
 <release version="2008.1.beta3" date="2008-03-10">
 <action dev="jl" type="fix" issue="2362">
     Resizing query builder.
