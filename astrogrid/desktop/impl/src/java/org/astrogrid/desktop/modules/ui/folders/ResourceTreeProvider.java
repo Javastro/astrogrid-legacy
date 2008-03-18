@@ -168,7 +168,7 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                                 ,"ivo://nasa.heasarc/skyview/rass"
                                 ,"ivo://nasa.heasarc/skyview/sdss"
                     })
-                    , new SmartList("Spectrum access examples","type = spectrum")
+                    , new SmartList("Spectrum access examples","type = Spectral")
                     ,new SmartList("Remote applications","type = CeaApplication")
                     ,new StaticList("Queryable database examples",new String[]{
                             "ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/ceaApplication"
