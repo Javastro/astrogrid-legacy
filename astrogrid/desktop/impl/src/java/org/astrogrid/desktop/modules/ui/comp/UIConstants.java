@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.geom.AffineTransform;
 
 import javax.swing.Icon;
@@ -37,4 +38,10 @@ public class UIConstants {
     
     /** threshold above which to prompt user that they really want to do an activity on so many resources */
     public static final int LARGE_SELECTION_THRESHOLD = 30;
+    
+    
+    /** margin sizes of buttons aren't consistent between different platform laf - which pushes out my layout.
+     * so will define my own margins.
+     */
+    public static final Insets SMALL_BUTTON_MARGIN = new Insets(1,1,1,1);
 }

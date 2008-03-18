@@ -77,7 +77,7 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
 
 		colours = new JComboBox(new Object[]{
 				Color.BLACK,Color.GREEN,Color.BLUE,Color.RED, Color.LIGHT_GRAY,Color.GRAY
-		});
+		});		
 		colours.setToolTipText("Change the appearance of this resource in the list");
 		colours.setRenderer(new ColorCellRenderer());
 		colours.addActionListener(new ActionListener() {

@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.20 2008/03/07 10:29:08 mbt Exp $
+/*$Id: VOExplorerImpl.java,v 1.21 2008/03/18 08:34:13 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -103,7 +103,7 @@ public class VOExplorerImpl extends UIComponentImpl
         this.persister = persister;
 		logger.info("Constructing new VOExplorer");
         this.google = builder.createGooglePanel(this);
-		this.setSize(800, 600);    
+		this.setSize(800, 650);    
 		JPanel pane = getMainPanel();
 		pane.setBorder(BorderFactory.createEmptyBorder());
 

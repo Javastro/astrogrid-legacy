@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.14 2008/03/12 11:37:36 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.15 2008/03/18 08:34:13 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -127,7 +127,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
         final URL registerURL = new URL(registerLink);
 
-        JButton registerButton = new JLinkButton("Not got an account? Click here to register..");
+        JButton registerButton = new JLinkButton("Click here to register..");
         registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");
         
         registerButton.addActionListener(new ActionListener() {           
@@ -308,6 +308,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.15  2008/03/18 08:34:13  nw
+Complete - task 308: improve appearance on windows.
+
 Revision 1.14  2008/03/12 11:37:36  nw
 Complete - task 270: improve error message when login fails.
 

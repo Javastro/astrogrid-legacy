@@ -245,7 +245,7 @@ public final class PrettierResourceFormatter {
                 .append("' >")
                 .append("</object>")
                 ;
-                sb.br();
+                sb.p();
             }
          }
     }

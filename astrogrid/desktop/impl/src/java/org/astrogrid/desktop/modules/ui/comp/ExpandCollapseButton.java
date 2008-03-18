@@ -1,5 +1,6 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -35,6 +36,7 @@ public class ExpandCollapseButton extends JToggleButton implements ItemListener 
 		this.setAction(toggleAction);
 		this.putClientProperty("hideActionText",Boolean.TRUE);
 		this.setText(null); // as client property isn't always respected.
+		setMargin(UIConstants.SMALL_BUTTON_MARGIN);
        		
 	}
 	

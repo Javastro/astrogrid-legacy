@@ -21,6 +21,7 @@ import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageTableFormat;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
+import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
 /** information about the selection - a special kind of activity
@@ -102,6 +103,7 @@ private final Bag types = new TreeBag();
 
 
 	public void addTo(JTaskPaneGroup grp) {
+	    typeField.setBackground(grp.getBackground());
 		grp.add(typeField);
 	}
 

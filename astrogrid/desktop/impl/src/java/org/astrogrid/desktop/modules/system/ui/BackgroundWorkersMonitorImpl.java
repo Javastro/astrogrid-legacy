@@ -36,6 +36,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker.Info;
 import org.astrogrid.desktop.modules.ui.comp.AbstractCloseAction;
 import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -314,12 +315,15 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
             halt.setToolTipText("Stop this process");
             halt.setActionCommand(HALT);            
             halt.addActionListener(this);
+            halt.setMargin(UIConstants.SMALL_BUTTON_MARGIN);
+            halt.setBorderPainted(false);
             
             this.singleDialogue = new JButton(IconHelper.loadIcon("show16.png"));
             singleDialogue.setToolTipText("Display the progress of this process in a separate window");
             singleDialogue.setActionCommand(SINGLE);
             singleDialogue.addActionListener(this);
-            
+            singleDialogue.setMargin(UIConstants.SMALL_BUTTON_MARGIN);
+            singleDialogue.setBorderPainted(false);
             reload(); // do first populate of controls
         }
         

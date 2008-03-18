@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.13 2007/11/13 05:06:04 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.14 2008/03/18 08:34:12 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -132,12 +132,16 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		    foldersScroller.setBorder(null);
 			JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersScroller
 					,activitiesScroller);
-		    leftPane.setDividerLocation(250);
+		    leftPane.setDividerLocation(200);
+		    leftPane.setDividerSize(6);
+		    leftPane.setResizeWeight(0.5);
 		    leftPane.setBorder(null);
 
 		    // combine LHS and RSH
 		    JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,leftPane,mainPanel);
 		    lrPane.setDividerLocation(200);
+		    lrPane.setResizeWeight(0.1);
+		    lrPane.setDividerSize(6);
 		    lrPane.setBorder(null);
 		    pane.add(lrPane,BorderLayout.CENTER); 
 		    

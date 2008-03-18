@@ -70,6 +70,7 @@ public class ActivityFactoryImpl implements ActivityFactory {
         }};
         tasks.add(usePane);
         tasks.add(infoPane);
+        tasks.setBackground(infoPane.getBackground()); // fix for windows, where it appears white - not very nice.
         
         Map actsMap = new ListOrderedMap();
         for (int i = 0; i < acts.length; i++) {

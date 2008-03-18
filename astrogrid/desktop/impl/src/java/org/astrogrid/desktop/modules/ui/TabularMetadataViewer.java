@@ -74,7 +74,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		columns = new BasicEventList();
 
 		// build the panel. 
-		FormLayout layout = new FormLayout("right:d, 3dlu,100dlu:grow,d" // cols
+		FormLayout layout = new FormLayout("right:d, 3dlu,100dlu:grow,1dlu,d" // cols
 				,"d,max(10dlu;d),d,max(10dlu;d),fill:m:grow" // rows
 		);
 		PanelBuilder builder = new PanelBuilder(layout,this);
@@ -97,7 +97,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		cataCombo.setEditable(false);
 		builder.add(cataCombo,cc.xy(3,row++));
 
-		cataLabel = builder.addLabel("",cc.xyw(1,row++,4));
+		cataLabel = builder.addLabel("",cc.xyw(1,row++,5));
 		cataLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
 
 		builder.addLabel("Table",cc.xy(1,row));
@@ -175,9 +175,9 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 					new TextComponentMatcherEditor(filterField.getWrappedDocument(), new ColumnTextFilterator()));
 
         // add the text-filter box to the same row as the table combo.
-        builder.add(filterField,cc.xy(4,row++));		
+        builder.add(filterField,cc.xy(5,row++));		
         
-        tableLabel = builder.addLabel("",cc.xyw(1,row++,4));
+        tableLabel = builder.addLabel("",cc.xyw(1,row++,5));
         tableLabel.setFont(UIConstants.SMALL_DIALOG_FONT);		
 		
 
@@ -187,7 +187,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		jtableScrollpane.setBorder(BorderFactory.createEmptyBorder());
 		jtableScrollpane.setMinimumSize(new Dimension(50,50));
 		jtableScrollpane.getViewport().setBackground(jtable.getBackground());
-		builder.add(jtableScrollpane,cc.xyw(1,row++,4));		
+		builder.add(jtableScrollpane,cc.xyw(1,row++,5));		
 	}
 	
 	private static class ColumnTextFilterator implements TextFilterator {

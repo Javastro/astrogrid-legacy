@@ -61,6 +61,7 @@ import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.SearchField;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.BookmarkNavigationEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
@@ -544,9 +545,10 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		b.setRolloverEnabled(true);
 		//future -  make this a preference, or something.
 		b.setText(null);
+		b.setMargin(UIConstants.SMALL_BUTTON_MARGIN);
 	//	b.setVerticalTextPosition(JButton.BOTTOM);
 	//	b.setHorizontalTextPosition(JButton.CENTER);
-		b.putClientProperty("is3DEnabled", Boolean.FALSE);		
+		//b.putClientProperty("is3DEnabled", Boolean.FALSE);		
 	}
 
 	public StorageFoldersList getFoldersList() {

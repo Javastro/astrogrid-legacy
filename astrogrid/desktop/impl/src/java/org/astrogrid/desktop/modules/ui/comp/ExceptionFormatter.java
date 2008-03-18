@@ -3,6 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -51,6 +54,11 @@ import com.l2fprod.common.swing.JLinkButton;
  * @since Sep 21, 20071:21:24 PM
  */
 public class ExceptionFormatter {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(ExceptionFormatter.class);
     
     /** format all exceptions in the cause chain */
     public static final int ALL = 0;
@@ -74,7 +82,8 @@ public class ExceptionFormatter {
     
     /** format an exception, according to the provided strategy */
     public String format(Throwable ex,int strategy) {
-        // handy to see what's getting thrown aruond - ex.printStackTrace();
+        // handy to see what's getting thrown around
+        logger.debug("Intercepted",ex); // just for debugging.
         switch(strategy) {
             case OUTERMOST:
                 return formatSingle(ex);
