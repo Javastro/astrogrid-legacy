@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.4 2008/01/09 16:57:06 kea Exp $
+/*$Id: ConeResources.java,v 1.5 2008/03/18 17:30:28 kea Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,8 +85,8 @@ public class ConeResources {
 
       String coneCap = 
          "  <capability xsi:type=\"cs:ConeSearch\" standardID=\"ivo://ivoa.net/std/ConeSearch\">\n" +
-         "    <description>Cone search on Catalog " + catName + 
-             ", table " +tabName +"</description>\n" +
+         "    <description>" + catName + 
+             ", " +tabName +": cone search</description>\n" +
          "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\">\n" + 
          "      <accessURL use=\"base\">" + 
             ServletHelper.getUrlStem()+"SubmitCone?DSACAT="+
