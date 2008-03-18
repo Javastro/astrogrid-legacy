@@ -15,6 +15,12 @@
 	</head>
 <body>
 <action dev="nw" type="fix">
+Improved appearance on windows
+</action>
+<action dev="nw" type="fix">
+System tray now responds to right and left mouse clicks
+</action>
+<action dev="nw" type="fix">
 Provide better info when sending vizier tables via plastic.
 </action>
 <action dev="nw" type="fix">

@@ -413,6 +413,7 @@ SYSTEM TRAY
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.BestSuitableSystemTray">
 				<service>system.ui</service>
+                <object>preference:system.ui.launchApp</object>
 			</construct>
 		</invoke-factory>
 	</implementation>

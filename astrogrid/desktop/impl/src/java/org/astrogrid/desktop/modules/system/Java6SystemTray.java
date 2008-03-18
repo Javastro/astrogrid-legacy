@@ -6,7 +6,9 @@ package org.astrogrid.desktop.modules.system;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -17,10 +19,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.commons.collections.Factory;
+import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** System tray implementation for Java6
  * reuses much of the machinery of the fallback system tray.
@@ -31,11 +37,14 @@ import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 20, 200710:30:07 AM
  */
-public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInternal {
+public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInternal, ActionListener {
 
-	public Java6SystemTray(UIContext context) throws Exception {
+	private final Preference appToLaunch;
+
+    public Java6SystemTray(UIContext context, Preference appToLaunch) throws Exception {
 	    super(context);
 	    // so got all the fallback machinery all ready. see if java6 will behave..
+        this.appToLaunch = appToLaunch;
 	    
         Class systrayClz = Class.forName("java.awt.SystemTray");
         Object b =ReflectionHelper.callStatic(systrayClz,"isSupported");
@@ -76,6 +85,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
             logger.info("Starting Java 1.6 Systemtray");
             try {
                 ReflectionHelper.call(systemTray,"add",trayIcon);
+                ReflectionHelper.call(trayIcon,"addActionListener",this);
             } catch (Throwable x) {
                 logger.warn("Failed to call SystemTray.add() - belatedly falling back",x);
                 java6Failed = true;
@@ -242,4 +252,20 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 	        }		
 	    }
 	}
+	/** show main window, or create a new one */
+    public void actionPerformed(ActionEvent e) {
+        UIComponent win = context.findMainWindow();
+        if (win == null || win instanceof HeadlessUIComponent) {
+            String factoryName = appToLaunch.getValue();
+            Object o = context.getWindowFactories().get(factoryName);
+            if (o != null && o instanceof Factory) {
+                ((Factory)o).create();
+            }
+        } else {
+            win.setVisible(true);
+            Window w = (Window)win.getComponent();
+            w.toFront();
+            w.requestFocus();
+        }
+    }
 }

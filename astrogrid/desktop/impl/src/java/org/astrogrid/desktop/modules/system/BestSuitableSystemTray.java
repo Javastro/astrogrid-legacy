@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.system.SystemTray;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** attempts to create the best appropriate system tray implementation, and then delegates all methods to it.
@@ -22,11 +23,11 @@ public class BestSuitableSystemTray implements SystemTrayInternal {
      * @param conf 
      * 
      */
-    public BestSuitableSystemTray(UIContext cxt) {
+    public BestSuitableSystemTray(UIContext cxt, Preference pref) {
         // first try to construct a java6 systray.
         SystemTrayInternal best = null;
         try {
-            best = new Java6SystemTray(cxt);
+            best = new Java6SystemTray(cxt, pref);
         } catch (Throwable e) {            
             // fallback then.
             logger.info("Failed to create system tray - falling back");
