@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.14 2008/02/25 13:27:48 mbt Exp $
+/*$Id: DalProtocol.java,v 1.15 2008/03/18 14:31:01 mbt Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -199,7 +199,9 @@ public abstract class DalProtocol {
             }
             else {
                 for (int i = 0; i < retrievers.length; i++) {
-                    retrievers[i].setSubName(retrievers[i].getServiceType() + (i+1));
+                    // String subName = retrievers[i].getServiceType() + (i+1);
+                    String subName = capabilities[i].getDescription();
+                    retrievers[i].setSubName(subName);
                 }
             }
         }
@@ -209,6 +211,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.15  2008/03/18 14:31:01  mbt
+Use description not servicetype+index as retriever SubName
+
 Revision 1.14  2008/02/25 13:27:48  mbt
 Improve node labelling
 
