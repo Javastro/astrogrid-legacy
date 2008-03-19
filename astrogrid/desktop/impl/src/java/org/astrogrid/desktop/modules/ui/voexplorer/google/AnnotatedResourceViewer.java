@@ -142,7 +142,6 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	private final EventList annotations = new BasicEventList();
 	
 	private final AnnotationService annService;
-	private Resource current;
 	private final HyperlinkListener hyperLinkHandler;
 	private final Timer lingerTimer;
 	private final JScrollPane scrollPane;
@@ -152,8 +151,8 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	
 	// callback called by linger timer..
 	public void actionPerformed(ActionEvent e) {
-		if (current != null) {
-		        annService.processRemainingAnnotations(current,this);
+		if (currentResource != null) {
+		        annService.processRemainingAnnotations(currentResource,this);
 		}
 	}
 
@@ -166,24 +165,20 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	    userAnnotationPanel.clear();
 		lingerTimer.stop();
 		annotations.clear();
-		current = null;
-		setText("<html><body></body></html>");
+		super.clear();
 	}
 
 	public void display(Resource res) {
 	    userAnnotationPanel.clear(); // clear this first, which causes any writes to be saved.
 		annotations.clear();
-		current = res;
 		lingerTimer.restart();
-		final String html = PrettierResourceFormatter.renderResourceAsHTML(res);
-		setText(html);
-		setCaretPosition(0);		
+		super.display(res);	
 		// annotations.
 		annService.processLocalAnnotations(res,this);
 	}
 	
 	public void process(Annotation a) {
-		if (current != null && current.getId().equals(a.getResourceId())) {		
+		if (currentResource != null && currentResource.getId().equals(a.getResourceId())) {		
 			annotations.add(a); // eventlist itself takes care of producing the new panel.
 		}
 	}
@@ -200,10 +195,10 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	private void saveAnnotation() {
 		UserAnnotation ann = userAnnotationPanel.createAnnotation();
 		if (ann == null) {
-		    annService.removeUserAnnotation(current);
+		    annService.removeUserAnnotation(currentResource);
 		} else {		
 		// now write back to store.
-		    annService.setUserAnnotation(current,ann);
+		    annService.setUserAnnotation(currentResource,ann);
 		}
 	}
 	public void stateChanged(ChangeEvent e) {
