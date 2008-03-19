@@ -37,11 +37,12 @@ import ca.odell.glazedlists.matchers.Matcher;
  * @since Jun 17, 200710:39:37 PM
  */
 public final class SystemFilter implements Matcher {
+    /* unused now
 	public static final URI FILESTORE_KIND = URI.create("ivo://org.astrogrid/FileStoreKind");
 	public static final URI FILEMANAGER_KIND = URI.create("ivo://org.astrogrid/FileManagerKind");
 	public static final URI MYSPACE_KIND = URI.create("ivo://org.astrogrid/MySpaceKind");
 	public static final URI COMMUNITY_KIND = URI.create("ivo://org.astrogrid/CommunityServerKind");	
-
+*/
 	public boolean matches(Object arg0) {
 		Resource r = (Resource)arg0;
 		
