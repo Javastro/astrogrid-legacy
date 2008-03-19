@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
 import java.net.URISyntaxException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.provider.AbstractFileName;
@@ -39,6 +40,10 @@ public class MyspaceFileName extends AbstractFileName {
 	
 	public Ivorn getIvorn() throws URISyntaxException {
 		return new Ivorn(getURI());
+	}
+	
+	public String getURI() {
+	    return StringUtils.replace(super.getURI()," ","%20"); // bugfix override.
 	}
 
 }

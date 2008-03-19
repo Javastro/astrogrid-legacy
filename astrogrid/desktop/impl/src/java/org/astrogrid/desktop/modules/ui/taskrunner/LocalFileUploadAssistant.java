@@ -15,6 +15,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
@@ -117,7 +118,7 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
             protected void doFinished(Object result) {
                 super.doFinished(result);
                 if (! cmd.failed()) {
-                    resultField.setValue(cmd.getDestination().getURI());
+                    resultField.setValue(StringUtils.replace(cmd.getDestination().getURI().trim()," ","%20"));
                 }            
             }
             protected void doAlways() {

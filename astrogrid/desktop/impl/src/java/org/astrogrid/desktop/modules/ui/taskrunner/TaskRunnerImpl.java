@@ -53,6 +53,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileContent;
@@ -465,7 +466,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             protected void doFinished(Object o) {
             	buildForm((Tool)o,newInterface.getName(),newApp);
             	try {
-                    setStorageLocation(new URI(fo.getName().getURI()));
+                    setStorageLocation(new URI(StringUtils.replace(fo.getName().getURI().trim()," ","%20")));
                 } catch (URISyntaxException x) {
                     logger.error("URISyntaxException",x);
                     // unlikely.

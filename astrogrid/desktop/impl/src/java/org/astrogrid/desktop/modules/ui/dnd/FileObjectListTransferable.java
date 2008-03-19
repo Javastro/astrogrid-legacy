@@ -17,6 +17,7 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -47,7 +48,7 @@ public class FileObjectListTransferable implements Transferable{
 			List u = new ArrayList();
 			for (Iterator i = l.iterator(); i.hasNext();) {
 				FileObject r = (FileObject) i.next();
-				u.add(new URI(r.getName().getURI()));
+				u.add(new URI(StringUtils.replace(r.getName().getURI()," ","%20")));
 			}
 			return u.toArray(new URI[u.size()]);
 			} catch (URISyntaxException e) {
@@ -60,7 +61,7 @@ public class FileObjectListTransferable implements Transferable{
 			StringBuffer s = new StringBuffer();
 			for (Iterator i = l.iterator(); i.hasNext();) {
 				FileObject r = (FileObject) i.next();
-				s.append(r.getName().getURI());
+				s.append(StringUtils.replace(r.getName().getURI()," ","%20"));
 				s.append("\n");
 			}
 			if (VoDataFlavour.URI_LIST.equals(flavor)||VoDataFlavour.PLAIN.equals(flavor)) {

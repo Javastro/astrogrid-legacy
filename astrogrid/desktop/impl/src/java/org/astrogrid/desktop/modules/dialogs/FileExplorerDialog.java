@@ -134,7 +134,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
     public void ok() {
         super.ok();
         try {
-            setUri(new URI(StringUtils.replaceChars(selected.getName().getURI(),' ','+')));
+            setUri(new URI(StringUtils.replace(selected.getName().getURI()," ","%20")));
         } catch (URISyntaxException x) {
             //very unlikely to happen, as if this was the case, the ok button woudlnt'
             // be enabled, and so we couldn't have got here.

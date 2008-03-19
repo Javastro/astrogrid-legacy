@@ -61,7 +61,7 @@ public class FileObjectTransferable implements Transferable{
 			return fo;
 		} else if (VoDataFlavour.LOCAL_URI.equals(flavor)) {
 			try {
-				return new URI(StringUtils.replaceChars(fo.getName().getURI(),' ','+'));
+				return new URI(StringUtils.replace(fo.getName().getURI()," ","%20"));
 			} catch (URISyntaxException x) {
 				logger.error("Unable to create URI for fileObject",x);
 				UnsupportedFlavorException exception = new UnsupportedFlavorException(flavor);
@@ -69,9 +69,9 @@ public class FileObjectTransferable implements Transferable{
 				throw exception;
 			}
 		} else if (VoDataFlavour.URI_LIST.equals(flavor)) {
-			return new ByteArrayInputStream((StringUtils.replaceChars(fo.getName().getURI(),' ','+')).getBytes());
+			return new ByteArrayInputStream((StringUtils.replace(fo.getName().getURI()," ","%20")).getBytes());
 		} else if (VoDataFlavour.URI_LIST_STRING.equals(flavor)){
-		    return StringUtils.replaceChars(fo.getName().getURI(),' ','+');
+		    return StringUtils.replace(fo.getName().getURI()," ","%20");
 		} else { // must be asking for the content of the file then..
 			return fo.getContent().getInputStream();
 		}

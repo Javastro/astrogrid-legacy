@@ -15,6 +15,9 @@
 	</head>
 <body>
 <action dev="nw" type="fix">
+FileExplorer: fixed handling of spaces in filepath.
+</action>
+<action dev="nw" type="fix">
 Improved appearance on windows
 </action>
 <action dev="nw" type="fix">

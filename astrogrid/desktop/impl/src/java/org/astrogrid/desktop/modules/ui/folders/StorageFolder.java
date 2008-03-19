@@ -9,7 +9,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 
 /**representaiton of a storage folder
@@ -58,7 +60,10 @@ public class StorageFolder extends Folder {
 		return this.uri == null ? null :  this.uri.toString();
 	} 
 	public void setUriString(String uri) throws URISyntaxException {
-		this.uri = new URI(uri);
+	    if (StringUtils.isEmpty(uri)) {
+	        throw new URISyntaxException(uri,"Empty URI provided");
+	    }
+		this.uri = new URI(StringUtils.replace(uri.trim()," ","%20")); //escape any spaces that have leaked in.
 		file = null;
 	}
 	
