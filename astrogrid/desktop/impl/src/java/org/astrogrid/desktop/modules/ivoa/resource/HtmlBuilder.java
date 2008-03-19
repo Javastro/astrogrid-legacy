@@ -107,6 +107,19 @@ public class HtmlBuilder extends StrBuilder {
 	        } 
 	        return this;
 	    }
+	   
+       public HtmlBuilder appendTitledObjectNoBR(String title,int i) {
+               appendLabel(title)                
+                   .append(i)
+                   .append("&nbsp; ");
+           return this;
+       }
+       public HtmlBuilder appendTitledObjectNoBR(String title,double d) {
+               appendLabel(title)                
+                   .append(d)
+                   .append("&nbsp; ");
+           return this;
+       }       
 /** append a reouscr name, prefixed with title, if the resource name is non-null
  * adds a br afterwards
  */
