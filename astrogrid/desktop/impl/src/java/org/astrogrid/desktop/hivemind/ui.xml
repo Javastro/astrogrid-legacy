@@ -239,6 +239,7 @@ HELIOSCOPE
             <inject-arg />
             <inject object="service:system.browser" />
             <inject object="service:ui.registryBrowser" />
+            <inject object="service:ivoa.capabilityTester" />            
         </object>
         
         <!--  full adql editor panel -->

@@ -27,6 +27,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -60,8 +61,8 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	private static final Log logger = LogFactory
 			.getLog(AnnotatedResourceViewer.class);
 
-    public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, AnnotationService annService) {
-		super(browser, regBrowser);
+    public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, AnnotationService annService, CapabilityTester tester) {
+		super(browser, regBrowser, tester);
 		this.annService = annService;
 		userSource = annService.getUserAnnotationSource();
 	

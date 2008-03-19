@@ -15,6 +15,12 @@
 	</head>
 <body>
 <release version="2008.1.beta5" date="2008-03-25">
+<action dev="nw" type="add">
+Display test queries in resources, and allow them to be executed.
+</action>
+<action dev="nw" type="fix" issue="2666">
+Query size estimator gives total size of registry.
+</action>
 <action dev="nw" type="update">
 Upgraded parser to handle SSAP v0.4 resource schema
 </action>

@@ -25,7 +25,7 @@ import org.astrogrid.desktop.icons.IconHelper;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 22, 20072:23:19 PM
  */
-public class ShowMetadataButton extends JButton implements ActionListener {
+public class ShowMetadataButton extends ResourceDisplayPaneEmbeddedButton implements ActionListener {
     /**
      * 
      */

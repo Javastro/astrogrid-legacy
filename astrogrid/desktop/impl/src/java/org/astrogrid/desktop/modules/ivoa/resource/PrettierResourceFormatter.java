@@ -234,15 +234,10 @@ public final class PrettierResourceFormatter {
                 } else {
                     sb.append("Partial Sky");
                 }
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                DomHelper.PrettyDocumentToStream(stc.getStcDocument(),bos);
-                sb.br();
+                    sb.br();
                 sb.append("<object classid='")
                 .append(ShowCoverageButton.class.getName())
                 .append("'>")
-                .append("<param name='doc' value='")
-                .append(bos.toString())
-                .append("' >")
                 .append("</object>")
                 ;
                 sb.p();
@@ -448,7 +443,26 @@ public final class PrettierResourceFormatter {
 	                            sb.append(cc.getMaxRecords());
 	                            sb.br();
 	                        }
-	                        //@todo output test queries
+	                        if (cc.getTestQuery() != null) {
+	                            sb.br();
+	                            sb.append("<object classid='")
+	                            .append(TestQueryButton.class.getName())
+	                            .append("'>")
+	                            .append("<param name='capabilityIndex' value='")
+	                            .append(capabilitiesIndex)
+	                            .append("' >")
+	                            .append("</object>")
+	                            ;	                            
+	                            sb.appendTitledObjectNoBR("RA",cc.getTestQuery().getRa());
+	                            sb.appendTitledObjectNoBR("Dec",cc.getTestQuery().getDec());
+	                            sb.appendTitledObjectNoBR("SR",cc.getTestQuery().getSr());
+	                            if (cc.getTestQuery().getVerb() != 0) {
+	                                sb.appendTitledObjectNoBR("Verbose",cc.getTestQuery().getVerb());
+	                            }
+	                            sb.appendTitledObjectNoBR("Catalog",cc.getTestQuery().getCatalog());
+	                            sb.appendTitledObjectNoBR("Extra&nbsp;Params",cc.getTestQuery().getExtras());
+	                            sb.br();
+	                        }
 	                    } else if (c instanceof SiapCapability) {
 	                        SiapCapability cc = (SiapCapability)c;
 	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/siap16.png'>&nbsp;This resource describes a <b>Image&nbsp;Access&nbsp;Service&nbsp;(SIAP)</b>");
@@ -483,7 +497,26 @@ public final class PrettierResourceFormatter {
 	                            sb.append(sz.getLat()).append(",").append(sz.getLong());
 	                            sb.append("&nbsp; ");
 	                        }
-                            //@todo output test queries	                        
+                            if (cc.getTestQuery() != null) {
+                                sb.br();
+                                sb.append("<object classid='")
+                                .append(TestQueryButton.class.getName())
+                                .append("'>")
+                                .append("<param name='capabilityIndex' value='")
+                                .append(capabilitiesIndex)
+                                .append("' >")
+                                .append("</object>")
+                                ;                               
+                                sb.appendTitledObjectNoBR("Long",cc.getTestQuery().getPos().getLong() );                                
+                                sb.appendTitledObjectNoBR("Lat",cc.getTestQuery().getPos().getLat());
+                                sb.appendTitledObjectNoBR("Size",cc.getTestQuery().getSize().getLong()
+                                            +",&nbsp;" + cc.getTestQuery().getSize().getLat());  
+                                if (cc.getTestQuery().getVerb() != 0) {
+                                    sb.appendTitledObjectNoBR("Verbose",cc.getTestQuery().getVerb());
+                                }
+                                sb.appendTitledObjectNoBR("Extra&nbsp;Params",cc.getTestQuery().getExtras());
+                                sb.br();
+                            }                        
 	                        sb.br();
 	                    } else if (c instanceof StapCapability) {
 	                        StapCapability sc = (StapCapability)c;
@@ -498,7 +531,28 @@ public final class PrettierResourceFormatter {
 	                        sb.append(sc.isSupportPositioning());
 	                        sb.append("&nbsp; ");
 	                        sb.appendTitledSequence("Supported&nbsp;Formats",sc.getSupportedFormats());
-	                        //@todo test query.
+                            if (sc.getTestQuery() != null) {
+                                sb.br();
+                                sb.append("<object classid='")
+                                .append(TestQueryButton.class.getName())
+                                .append("'>")
+                                .append("<param name='capabilityIndex' value='")
+                                .append(capabilitiesIndex)
+                                .append("' >")
+                                .append("</object>")
+                                ;                               
+                                sb.appendTitledObjectNoBR("Start",sc.getTestQuery().getStart());
+                                sb.appendTitledObjectNoBR("End",sc.getTestQuery().getEnd());
+                                if (sc.getTestQuery().getPos() != null) {
+                                    sb.appendTitledObjectNoBR("Long",sc.getTestQuery().getPos().getLong());                                    
+                                    sb.appendTitledObjectNoBR("Lat",sc.getTestQuery().getPos().getLat());
+                                }
+                                if (sc.getTestQuery().getSize() != null) {
+                                    sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize().getLong()
+                                            + ",&nbsp;" + sc.getTestQuery().getSize().getLat());                                                                        
+                                }
+                                sb.br();
+                            }	                       
 	                    } else if (c instanceof SsapCapability) {
 	                        SsapCapability sc = (SsapCapability)c;
 	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;Access&nbsp;Service&nbsp;(SSAP)</b>");
@@ -535,16 +589,29 @@ public final class PrettierResourceFormatter {
                             sb.br();                            
                             sb.appendTitledSequence("Supported&nbsp;Frames",sc.getSupportedFrames());
                             sb.appendTitledSequence("Supports",sc.getSupports());
-                            sb.append("&nbsp; ");                            
+                            sb.append("&nbsp; ");      
+                            if (sc.getTestQuery() != null) {
+                                sb.br();
+                                sb.append("<object classid='")
+                                .append(TestQueryButton.class.getName())
+                                .append("'>")
+                                .append("<param name='capabilityIndex' value='")
+                                .append(capabilitiesIndex)
+                                .append("' >")
+                                .append("</object>")
+                                ;                               
+                                sb.appendTitledObjectNoBR("Long",sc.getTestQuery().getPos().getLong());
+                                sb.appendTitledObjectNoBR("Lat",sc.getTestQuery().getPos().getLat());
+                                sb.appendTitledObjectNoBR("Ref Frame",sc.getTestQuery().getPos().getRefframe());                              
+                                sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize());
+                                sb.appendTitledObjectNoBR("Query",sc.getTestQuery().getQueryDataCmd());
+                                sb.br();
+                            }                            
 	                    }	else { // take a guess.
 	                        String capType = c.getType();
 	                        String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
 	                        ? StringUtils.substringAfterLast( capType,":")
 	                                : capType;
-	                        //@todo put this back in.
-	                      //  if (capabilities.length == 1 && SystemFilter.isBoringServiceTitle(s) || SystemFilter.isBoringRelationship(s)) {
-	                        //    sb.append("<img src='classpath:/org/astrogrid/desktop/icons/service16.png'>&nbsp;This resource describes a <b>Technical&nbsp;System&nbsp;Service</b>");
-	                        //} else 
 	                            if ("WebBrowser".equals(capTypeUnprefixed)) {
 	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/browser16.png'>&nbsp;This resource describes a <b>Web&nbsp;Interface</b>");
 	                            sb.br();

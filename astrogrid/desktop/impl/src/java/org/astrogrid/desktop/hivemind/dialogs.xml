@@ -132,11 +132,13 @@ REGISTRY GOOGLE
 	<object name="formattedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer">
 			<inject object="service:system.browser" />
 			<inject object="service:ui.registryBrowser" />
+            <inject object="service:ivoa.capabilityTester" />
 	</object>
 	<object name="annotatedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.AnnotatedResourceViewer">
 			<inject object="service:system.browser" />
 			<inject object="service:ui.registryBrowser" />
 			<inject object="service:votech.annotate" />
+            <inject object="service:ivoa.capabilityTester" />            
 	</object>	
 	<object name="tableResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer">
     </object>

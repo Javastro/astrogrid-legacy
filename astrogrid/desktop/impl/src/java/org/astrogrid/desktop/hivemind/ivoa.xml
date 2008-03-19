@@ -294,5 +294,19 @@ RESULT CACHE
 		</schema>
 	</configuration-point>
 	
+    <!--  capabilitieis tester
+    =================================
+     -->
+        <service-point id="capabilityTester" interface="org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester">
+            Testing component - if a resource capability has a test query, this component knows how to verify that it's working.
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ivoa.resource.CapabilityTesterImpl">
+                <service>cone</service>
+                <service>ssap</service>
+                <service>astrogrid.stap</service>
+                <service>siap</service>           
+            </construct>
+        </invoke-factory>
+    </service-point>
  </module>
  

@@ -12,6 +12,7 @@ import javax.swing.JTabbedPane;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
@@ -23,8 +24,8 @@ import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
  */ 
 public class FormattedResourceViewer extends ResourceDisplayPane implements ResourceViewer {
 
-	public FormattedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser) {
-		super(browser, regBrowser);
+	public FormattedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, CapabilityTester tester) {
+		super(browser, regBrowser, tester);
 		CSH.setHelpIDString(this, "reg.details");
 		setPreferredSize(new Dimension(200,100));		
 	}

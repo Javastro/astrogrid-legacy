@@ -6,6 +6,7 @@ import javax.swing.JEditorPane;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 
 /** Exgtensaion to an JEditorPane  with methods for displaying resources,
@@ -17,18 +18,17 @@ import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
  * @since Jul 11, 20072:22:46 PM
  */
 public class ResourceDisplayPane extends JEditorPane {
-	public ResourceDisplayPane() {
+	private final CapabilityTester tester;
+	
+	/** construct a display pane with additional support for following hyperlinks */
+	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, CapabilityTester tester) {
 		setContentType("text/html");
 		setBorder(null);
 		setEditable(false);
 		putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
 		setFont(UIConstants.SANS_FONT);
 		setName(ResourceDisplayPane.class.getName());
-	}
-	
-	/** construct a display pane with additional support for following hyperlinks */
-	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser) {
-		this();
+        this.tester = tester;
 		addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
 	}
 	
@@ -51,5 +51,9 @@ public class ResourceDisplayPane extends JEditorPane {
 	/** acccess the resource currently being displayed */
     public final Resource getCurrentResource() {
         return this.currentResource;
+    }
+
+    public final CapabilityTester getTester() {
+        return this.tester;
     }
 }

@@ -17,6 +17,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
@@ -52,8 +53,8 @@ public class ParametersInfoPane extends ResourceDisplayPane implements MouseList
  * @param browser 
  * @param regBrowser 
  */
-    public ParametersInfoPane(Model model, EventList allElements, BrowserControl browser, RegistryBrowser regBrowser) {
-        super(browser,regBrowser);
+    public ParametersInfoPane(Model model, EventList allElements, BrowserControl browser, RegistryBrowser regBrowser, CapabilityTester tester) {
+        super(browser,regBrowser,tester);
         this.model = model;
         // using a function list means that we can register & deregister simply as the underlying parameter list changes.
         this.paramPins = new FunctionList(allElements,this); 
