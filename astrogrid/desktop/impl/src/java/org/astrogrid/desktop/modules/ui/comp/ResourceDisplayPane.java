@@ -10,6 +10,9 @@ import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 
 /** Exgtensaion to an JEditorPane  with methods for displaying resources,
  * (and a performance-optimization)
+ * 
+ * this component is named 'ResourceDisplayPane.class.getName()'
+ * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 11, 20072:22:46 PM
  */
@@ -20,6 +23,7 @@ public class ResourceDisplayPane extends JEditorPane {
 		setEditable(false);
 		putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
 		setFont(UIConstants.SANS_FONT);
+		setName(ResourceDisplayPane.class.getName());
 	}
 	
 	/** construct a display pane with additional support for following hyperlinks */
@@ -28,7 +32,7 @@ public class ResourceDisplayPane extends JEditorPane {
 		addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
 	}
 	
-	private Resource currentResource;
+	protected Resource currentResource;
 	private String currentHTML;
 	public void display(Resource r) {
 		if (currentResource != r) {
@@ -41,5 +45,11 @@ public class ResourceDisplayPane extends JEditorPane {
 	
 	public void clear() {
 		setText("<html><body></body></html>");
+		currentResource = null;
 	}
+
+	/** acccess the resource currently being displayed */
+    public final Resource getCurrentResource() {
+        return this.currentResource;
+    }
 }
