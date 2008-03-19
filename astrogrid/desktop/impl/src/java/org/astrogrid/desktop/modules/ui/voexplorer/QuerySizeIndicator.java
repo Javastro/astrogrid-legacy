@@ -19,10 +19,10 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 public class QuerySizeIndicator extends JProgressBar {
 
 	public QuerySizeIndicator(UIComponent parent,QuerySizer qs) {
-		this(parent,qs,500,1000); //@todo make this configurable.
+		this(parent,qs,500,1000); 
 	}
 	
-	private volatile static boolean sizingAlreadyInProgress = false;
+
 	
 	public QuerySizeIndicator(UIComponent parent,QuerySizer qs,int goodThresh, int acceptableThresh) {
 		super(HORIZONTAL);
@@ -47,8 +47,7 @@ public class QuerySizeIndicator extends JProgressBar {
 		setToolTipText("Indicates how many resources this query is likely to return");
 		this.goodThresh = goodThresh;
 		this.acceptableThresh = acceptableThresh;
-		if (!sizingAlreadyInProgress) {
-		    sizingAlreadyInProgress = true;
+
 		(new BackgroundWorker(parent,"Finding registry size",BackgroundWorker.LONG_TIMEOUT,Thread.MIN_PRIORITY + 3) {
 		    {
 		        setTransient(true);
@@ -61,7 +60,7 @@ public class QuerySizeIndicator extends JProgressBar {
 				setMaximum(size);		
 			}
 		}).start();			
-		}
+		
 	}
 
 	private final QuerySizer sizer;		

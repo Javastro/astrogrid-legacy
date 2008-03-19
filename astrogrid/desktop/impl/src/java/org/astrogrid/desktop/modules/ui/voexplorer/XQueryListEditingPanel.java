@@ -63,7 +63,6 @@ public class XQueryListEditingPanel extends EditingPanel implements ActionListen
 		
 		row++;
 		sizing = new QuerySizeIndicator(parent,sizer);
-		sizing.setValue(0);
 		
 		builder.add(sizing,cc.xyw(2,row,5));
 		estimate = new JButton("Estimate");
