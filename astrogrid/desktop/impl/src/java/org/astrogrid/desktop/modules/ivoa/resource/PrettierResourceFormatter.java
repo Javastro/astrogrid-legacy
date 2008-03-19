@@ -533,7 +533,7 @@ public final class PrettierResourceFormatter {
                                 sb.append(sc.getMaxSearchRadius());
                             }
                             sb.br();                            
-                            sb.appendTitledURIs("Supported&nbsp);Frames",sc.getSupportedFrames());
+                            sb.appendTitledSequence("Supported&nbsp;Frames",sc.getSupportedFrames());
                             sb.appendTitledSequence("Supports",sc.getSupports());
                             sb.append("&nbsp; ");                            
 	                    }	else { // take a guess.

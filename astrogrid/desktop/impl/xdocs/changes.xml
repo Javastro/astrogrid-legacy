@@ -14,6 +14,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2008.1.beta5" date="2008-03-25">
+<action dev="nw" type="update">
+Upgraded parser to handle SSAP v0.4 resource schema
+</action>
 <action dev="nw" type="fix">
 FileExplorer: fixed handling of spaces in filepath.
 </action>
@@ -29,6 +33,7 @@ Provide better info when sending vizier tables via plastic.
 <action dev="nw" type="fix">
 Improved filenames generated when downloading vizier tables.
 </action>
+</release>
 <release version="2008.1.beta4" date="2008-03-17">
 <action dev="jl" type="fix" issue="2639">
     Tables should not be case sensitive in ADQL.

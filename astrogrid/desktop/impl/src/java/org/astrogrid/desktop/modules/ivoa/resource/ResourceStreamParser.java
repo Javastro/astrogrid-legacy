@@ -82,9 +82,7 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.Query;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkyPos;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
-import org.astrogrid.acr.ivoa.resource.SsapCapability.BandParam;
 import org.astrogrid.acr.ivoa.resource.SsapCapability.PosParam;
-import org.astrogrid.acr.ivoa.resource.SsapCapability.TimeParam;
 import org.astrogrid.contracts.StandardIds;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
@@ -451,7 +449,6 @@ public final class ResourceStreamParser implements Iterator {
         List ssapDataSource = null;
         List ssapCreationType = null;
         List ssapSupportedFrame = null;
-        List ssapSupports = null;
         
         if (StringUtils.contains(xsiType,"Harvest")  
                 && StandardIds.REGISTRY_1_0.equals(standardID)) {
@@ -470,12 +467,12 @@ public final class ResourceStreamParser implements Iterator {
                 || StandardIds.SIAP_1_0.equals(standardID)) {
             c = new SiapCapability();            
         } else if (StringUtils.contains(xsiType,"SimpleSpectralAccess")
+                || StringUtils.contains(xsiType,"ProtoSpectralAccess")
                 ||StandardIds.SSAP_1_0.equals(standardID)) {
             c = new SsapCapability();
             ssapDataSource = new ArrayList(3);
             ssapCreationType = new ArrayList(3);
             ssapSupportedFrame = new ArrayList(3);
-            ssapSupports = new ArrayList(3);            
         } else if (StringUtils.contains(xsiType,"SimpleTimeAccess") //@todo replace with contracts
                 || StandardIds.STAP_1_0.equals(standardID)) {
             c = new StapCapability();
@@ -587,7 +584,7 @@ public final class ResourceStreamParser implements Iterator {
                     ssapDataSource.add(in.getElementText());
                 } else if (elementName.equals("creationType") && c instanceof SsapCapability) {
                     ssapCreationType.add(in.getElementText());
-                } else if (elementName.equals("maxSearchRadius") && c instanceof SsapCapability) {
+                } else if (elementName.equals("maxSearchRadius") && c instanceof SsapCapability) {                    
                     try {
                         ((SsapCapability)c).setMaxSearchRadius(Double.parseDouble(in.getElementText()));
                     } catch (NumberFormatException e) {
@@ -605,14 +602,10 @@ public final class ResourceStreamParser implements Iterator {
                     } catch (NumberFormatException e) {
                         logger.debug("capability - maxAperture",e);
                     }                    
-                } else if (elementName.equals("supportedFrame") && c instanceof SsapCapability) {
-                        try {
-                            ssapSupportedFrame.add(new URI(in.getElementText()));
-                        } catch (URISyntaxException x) {
-                            logger.debug("URISyntaxException",x);                            
-                        }                                       
-                } else if (elementName.equals("supports") && c instanceof SsapCapability) {
-                    ssapSupports.add(in.getElementText());
+                } else if (elementName.equals("supportedFrame") && c instanceof SsapCapability) {                        
+                            ssapSupportedFrame.add(in.getElementText());    
+                } else if (elementName.equals("dataModel") && c instanceof SsapCapability) {
+                    // dataModel only occurs in the ProtoSpectralAccess capability - so just ignore it.
       // fallback                
                 } else {
                     // this design won't scale, but will do for now.
@@ -639,9 +632,8 @@ public final class ResourceStreamParser implements Iterator {
             SsapCapability s = (SsapCapability)c;
             s.setDataSources((String[])ssapDataSource.toArray(new String[ssapDataSource.size()]));
             s.setCreationTypes((String[])ssapCreationType.toArray(new String[ssapCreationType.size()]));
-            s.setSupportedFrames((URI[])ssapSupportedFrame.toArray(new URI[ssapSupportedFrame.size()]));
-            s.setSupports((String[])ssapSupports.toArray(new String[ssapSupports.size()]));
-        }
+            s.setSupportedFrames((String[])ssapSupportedFrame.toArray(new String[ssapSupportedFrame.size()]));
+            }
         return c;
     }
     
@@ -759,12 +751,8 @@ public final class ResourceStreamParser implements Iterator {
                         } catch (NumberFormatException e) {
                             logger.debug("ssap query - size",e);
                         }  
-                    } else if (elementName.equals("band")) {
-                        q.setBand(parseBandParam());
-                    } else if (elementName.equals("time")) {      
-                        q.setTime(parseTimeParam());
-                    } else if(elementName.equals("extras")) {
-                        q.setExtras(in.getElementText());
+                    } else if (elementName.equals("queryDataCmd")) {
+                        q.setQueryDataCmd(in.getElementText());
                     } else {
                         logger.debug("Unknown element" + elementName);
                     }
@@ -778,70 +766,7 @@ public final class ResourceStreamParser implements Iterator {
         } // end        
         return q;
     }
-    /**
-     * @return
-     */
-    private TimeParam parseTimeParam() {
-        TimeParam tp = new TimeParam();
-        try {
-            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("time")); in.next()){
-                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
-                    try {
-                    final String elementName = in.getLocalName();
-                    if (elementName.equals("earliest")) {
-                        tp.setEarliest(in.getElementText());
-                    } else if (elementName.equals("latest")) {
-                            tp.setLatest(in.getElementText());                        
-                    } else {
-                        logger.debug("Unknown element" + elementName);
-                    }                    
-                    } catch (XMLStreamException e) {
-                        logger.debug("TimeParam ",e);
-                    }                           
-                }
-            }
-        } catch (XMLStreamException x) {
-            logger.debug("TimeParam - XMLStreamException",x);
-        } // end
-        return tp;
-    }
-    /** part of a ssap test query
-     * @return
-     */
-    private BandParam parseBandParam() {
-        BandParam bp = new BandParam();
-        try {
-            for (in.next(); !( in.isEndElement() && in.getLocalName().equals("band")); in.next()){
-                if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
-                    try {
-                    final String elementName = in.getLocalName();
-                    if(elementName.equals("min")) {
-                            try {
-                                bp.setMin(Double.parseDouble(in.getElementText()));
-                            } catch (RuntimeException e) {                           // oh well
-                            }                        
-                    } else if(elementName.equals("max")) {
-                        try {
-                            bp.setMax(Double.parseDouble(in.getElementText()));
-                        } catch (RuntimeException e) {                           // oh well
-                        }
-                    } else if (elementName.equals("restFrame")) {
-                        bp.setRestFrame(in.getElementText());
-                    } else if (elementName.equals("name")) {
-                        bp.setName(in.getElementText());
-                    } else {
-                        logger.debug("Unknown element" + elementName);
-                    }                    
-                    } catch (XMLStreamException e) {
-                        logger.debug("bandParam ",e);
-                    }                           
-                }
-            }
-        } catch (XMLStreamException x) {
-            logger.debug("bandParam - XMLStreamException",x);
-        } // end
-        return bp;
-    }
+    
     /** part of a ssap test query
      * @return
      */
