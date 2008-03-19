@@ -189,7 +189,17 @@ public void writeComment( XmlObject parent ) {
 }
 
 public static String prepareComment( String comment ) {
-    return "+" + comment.replaceAll( "--", "" ) + "+" ;
+    String c = comment.trim();
+    if( c.startsWith( "--") ) {
+        return c.replaceAll( "--", "" ) ;
+    }
+    else if( c.startsWith( "//") ) {
+        return c.replaceAll( "//", "" ) ;
+    }
+    else if( c.startsWith( "/*" ) ) {
+        return c.replaceAll( "/\\*", "" ).replaceAll( "\\*/", "" ) ;
+    }
+    return c ;
 }
 
 public Tracker getTracker() {

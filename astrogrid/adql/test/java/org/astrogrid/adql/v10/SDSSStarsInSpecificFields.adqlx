@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+ 
- Give me the PSF colors of all stars brighter than g=20 that have PSP_STATUS = 2.
- Another simple multi-table query.
-+-->
-<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<!--Give me the PSF colors of all stars brighter than g=20 that have PSP_STATUS = 2.
+ Another simple multi-table query.-->
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
     <v1:SelectionList>
-        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="psfMag_g"/>
-        <!--+ 	 or whatever you want from each object
-+-->
-        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="run"/>
-        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="camCol"/>
-        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="rerun"/>
-        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="field"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="psfMag_g" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <!--or whatever you want from each object-->
+        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="run" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="camCol" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="rerun" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="field" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:SelectionList>
     <v1:From>
-        <v1:Table xsi:type="v1:tableType" Name="Star" Alias="s"/>
-        <v1:Table xsi:type="v1:tableType" Name="Field" Alias="f"/>
+        <v1:Table xsi:type="v1:tableType" Name="Star" Alias="s" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Table xsi:type="v1:tableType" Name="Field" Alias="f" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:From>
     <v1:Where>
-        <v1:Condition xsi:type="v1:intersectionSearchType">
+        <v1:Condition xsi:type="v1:intersectionSearchType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <v1:Condition xsi:type="v1:comparisonPredType" Comparison="=">
                 <v1:Arg xsi:type="v1:columnReferenceType" Table="s" Name="fieldID"/>
                 <v1:Arg xsi:type="v1:columnReferenceType" Table="f" Name="fieldID"/>

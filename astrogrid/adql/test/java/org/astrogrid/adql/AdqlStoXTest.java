@@ -1,4 +1,5 @@
-/*$Id: AdqlStoXTest.java,v 1.15 2008/02/04 17:47:30 jl99 Exp $
+
+/*$Id: AdqlStoXTest.java,v 1.16 2008/03/19 20:53:21 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -99,6 +100,8 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_BADthreeWayJoinAcrossArchives() throws Exception { execTest() ; }
     public void testOf_v10_BADtop() throws Exception { execTest() ; }
     public void testOf_v10_ceilingFunction() throws Exception { execTest() ; }
+    public void testOf_v10_comments01_C_style() throws Exception { execTest() ; }
+    public void testOf_v10_comments01_CPP_style() throws Exception { execTest() ; }
     public void testOf_v10_comments01() throws Exception { execTest() ; }
     public void testOf_v10_comments02() throws Exception { execTest() ; }
     public void testOf_v10_comments03() throws Exception { execTest() ; }
@@ -136,6 +139,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void _testOf_v10_SDSSUnclassifiedSpectraWILLFAIL() throws Exception { execTest() ; }
     public void testOf_v10_SDSSGalaxiesWithMultipleCriteria() throws Exception { execTest() ; }
     public void testOf_v10_SDSSSpatialUnitVectors() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSCataclysmicVariablesUsingColors_C_style() throws Exception { execTest() ; }
     public void testOf_v10_SDSSCataclysmicVariablesUsingColors() throws Exception { execTest() ; }
     // Has bit processing which will fail...
     public void testOf_v10_SDSSDataSubSampleWILLFAIL() throws Exception { execTest() ; }
@@ -699,9 +703,15 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.15  2008/02/04 17:47:30  jl99
- * Merge of branch adql-jl-2504
+ * Revision 1.16  2008/03/19 20:53:21  jl99
+ * Merge of branch adql-jl2650
  *
+/* Revision 1.15.2.1  2008/03/19 19:28:31  jl99
+/* Improved comment processing.
+/*
+/* Revision 1.15  2008/02/04 17:47:30  jl99
+/* Merge of branch adql-jl-2504
+/*
 /* Revision 1.14.2.3  2008/02/01 09:56:52  jl99
 /* Removed 2 tests for full outer join syntax.
 /*

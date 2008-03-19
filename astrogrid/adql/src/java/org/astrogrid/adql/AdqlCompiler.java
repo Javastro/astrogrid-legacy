@@ -43,6 +43,8 @@ public class AdqlCompiler {
          "Unknown table: " ;
     public static final String COLUMN_NOT_KNOWN_IN_THIS_TABLE =
         "Column not known in this table: " ;
+    public static final String PREMATURE_EOF_WHILST_IN_SELECTION_LIST =
+        "premature end of query whilst searching selection list." ;
     
 	public static final String SELECT_ELEMENT = "Select" ;
 	public static final String SELECTION_ELEMENT = "selection" ;
@@ -1136,7 +1138,7 @@ public class AdqlCompiler {
                 buffer.append( UNEXPECTED_REMAINDER ) ;
                 ListIterator iterator = rTokens.listIterator() ;
                 while( iterator.hasNext() ) {
-                    buffer.append( ((Token)iterator.next()).image ) ;
+                    buffer.append( ((Token)iterator.next()).image ).append( ' ' ) ;                   
                 }
                 throw new ParseException( buffer.toString() ) ;
             }
@@ -1268,11 +1270,17 @@ public class AdqlCompiler {
          }
          else {
             buffer = initUtilityBuffer( pex.getMessage() );
+            buffer.append( ' ' ) ;
          }
          Token t = parser.getToken(1) ;
          log.debug( "syntax error on: " + t.image ) ;    
-           do {    
-                 buffer.append( t.image ) ;
+           do {  
+                 if( t.kind == AdqlStoXConstants.EOF ) {
+                     buffer.append( PREMATURE_EOF_WHILST_IN_SELECTION_LIST ) ;
+                 }
+                 else {
+                     buffer.append( t.image ) ;
+                 }                 
                  if( !t.image.equals( " " ) )
                     buffer.append( ' ' ) ;      
                  if( first && t.kind == AdqlStoXConstants.COMMA ) {
@@ -1282,8 +1290,8 @@ public class AdqlCompiler {
                     }
                  }
                  if( t.kind == AdqlStoXConstants.FROM ) {  
-                     parser.tracker.setError( buffer.toString() ) ;             
-                    throw new ParseException( buffer.toString() ) ;
+                     break ;
+//                    throw new ParseException( buffer.toString() ) ;
                  }
                t = parser.getNextToken();
                if( t.kind == AdqlStoXConstants.EOF )
@@ -1291,6 +1299,7 @@ public class AdqlCompiler {
                t = parser.getToken(1) ;
            } while (t.kind != AdqlStoXConstants.COMMA );
            parser.tracker.setError( buffer.toString() ) ;
+                  
       }
       finally {
          if( log.isTraceEnabled() ) exitTrace ( "selectSublistError()" ) ;

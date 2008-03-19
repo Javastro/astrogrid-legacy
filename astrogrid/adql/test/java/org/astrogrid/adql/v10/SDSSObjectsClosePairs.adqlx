@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+ 
- Find all objects within 30 arcseconds of one another
+<!--Find all objects within 30 arcseconds of one another
  that have very similar colors: that is where the color ratios
- u-g, g-r, r-I are less than 0.05m.
-+-->
-<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ u-g, g-r, r-I are less than 0.05m.-->
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
     <v1:Restrict Top="10"/>
     <v1:SelectionList>
-        <v1:Item xsi:type="v1:columnReferenceType" Table="P" Name="ObjID"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="P" Name="ObjID" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:SelectionList>
-    <!--+  distinct cases
-+-->
+    <!--distinct cases-->
     <v1:From>
-        <v1:Table xsi:type="v1:tableType" Name="PhotoPrimary" Alias="P"/>
-        <!--+  P is the primary object
-+-->
-        <v1:Table xsi:type="v1:tableType" Name="Neighbors" Alias="N"/>
-        <!--+  N is the neighbor link 
-+-->
-        <v1:Table xsi:type="v1:tableType" Name="PhotoPrimary" Alias="L"/>
+        <v1:Table xsi:type="v1:tableType" Name="PhotoPrimary" Alias="P" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <!--P is the primary object-->
+        <v1:Table xsi:type="v1:tableType" Name="Neighbors" Alias="N" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <!--N is the neighbor link-->
+        <v1:Table xsi:type="v1:tableType" Name="PhotoPrimary" Alias="L" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:From>
-    <!--+  L is the lens candidate of P 
-+-->
+    <!--L is the lens candidate of P-->
     <v1:Where>
-        <v1:Condition xsi:type="v1:intersectionSearchType">
+        <v1:Condition xsi:type="v1:intersectionSearchType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <v1:Condition xsi:type="v1:comparisonPredType" Comparison="=">
                 <v1:Arg xsi:type="v1:columnReferenceType" Table="P" Name="ObjID"/>
                 <v1:Arg xsi:type="v1:columnReferenceType" Table="N" Name="ObjID"/>

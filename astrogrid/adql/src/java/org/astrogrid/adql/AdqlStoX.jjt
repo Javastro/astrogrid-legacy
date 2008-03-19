@@ -1,6 +1,6 @@
-/*$Id: AdqlStoX.jjt,v 1.37 2008/02/04 17:47:30 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.38 2008/03/19 20:53:21 jl99 Exp $*/
 
-// 
+//  
 // High-level JavaDoc comments are present in this file.
 // There is little point in placing any here. 
 // At this point they are ignored by the JavaCC processors. 
@@ -116,11 +116,16 @@ PARSER_END(AdqlStoX)
 SPECIAL_TOKEN : /* COMMENTS */
 { 
 // There are shortcomings in this definition to do with
-// multiple line comments that do not start at the
-// beginning of a line; ie: a comment where there is
-// white space at the start of lines.
-   < COMMENT : ( <SINGLE_LINE_COMMENT> )+ >
-|  < #SINGLE_LINE_COMMENT: ("\n"|"\r"|"\r\n"|" "|"\t")* "--" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+// comments (-- or // style) stretching over more than one line that do not start at the
+// beginning of a line; ie: a comment where there is white space at the start of lines.
+   < COMMENT : ( <SINGLE_LINE_COMMENT> )+ | ( <MULTI_LINE_COMMENT> )+ >
+   
+//
+// Single line comment delineated by -- or //
+|  < #SINGLE_LINE_COMMENT: ("\n"|"\r"|"\r\n"|" "|"\t")* ("--"|"//") (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+//
+// Standard C comment; ie: /* this is a comment */
+|  < #MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/" ("\n"|"\r"|"\r\n")? >
 }
 
 SKIP :
@@ -3161,7 +3166,7 @@ void select_sublist_A( boolean first ) #SelectSublist :
     try {
 	   (derived_column_S() { compiler.selectSublistEnsureCommaOrFrom() ; } )
 	   |
-	   { compiler.selectSublistError( first, new ParseException( "select_sublist error" ) ) ; }
+	   { compiler.selectSublistError( first, new ParseException( "Error within selection list." ) ) ; }
     }    catch( ParseException pex ) {       compiler.selectSublistError( first, pex ) ;	    }
     finally {
        tracker.pop() ;
@@ -3186,11 +3191,13 @@ void derived_column_S() #DerivedColumn :
 	if( log.isTraceEnabled() ) enterTrace ( "derived_column_S()" ) ;
 }
 {
-	//S:
-	// <derived_column> ::= <value_expression> [ <as_clause> ]
-	// <as_clause> ::= [ AS ] <column_name>
-	( value_expression_A() [ [ <AS> ] column_name_S() ] ) 
-	{ 
+	try {
+		//S:
+		// <derived_column> ::= <value_expression> [ <as_clause> ]
+		// <as_clause> ::= [ AS ] <column_name>
+		( value_expression_A() [ [ <AS> ] column_name_S() ] ) 
+	}
+	finally { 
 		if( log.isTraceEnabled() ) exitTrace ( "derived_column_S()" ) ;
 	}	
 }
@@ -3975,6 +3982,13 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.38  2008/03/19 20:53:21  jl99
+Merge of branch adql-jl2650
+
+Revision 1.37.2.1  2008/03/18 15:51:42  jl99
+Improved comment processing (C/C++ style comments accommodated)
+Improved sub list error processing.
+
 Revision 1.37  2008/02/04 17:47:30  jl99
 Merge of branch adql-jl-2504
 
