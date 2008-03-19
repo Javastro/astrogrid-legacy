@@ -31,18 +31,11 @@ import ca.odell.glazedlists.matchers.Matcher;
 
 /** Filter of 'system' resources. Some ad-hoc rules to identify uninteresting resources here..
  * 
- * @future encourage a more uniform way of denoting and detecting 'system' resources. - maybe all have a relationship to a 'systemKind' ?
- * @future will need to be more careful if many v1.0 resources have multiple capabilities.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 17, 200710:39:37 PM
  */
 public final class SystemFilter implements Matcher {
-    /* unused now
-	public static final URI FILESTORE_KIND = URI.create("ivo://org.astrogrid/FileStoreKind");
-	public static final URI FILEMANAGER_KIND = URI.create("ivo://org.astrogrid/FileManagerKind");
-	public static final URI MYSPACE_KIND = URI.create("ivo://org.astrogrid/MySpaceKind");
-	public static final URI COMMUNITY_KIND = URI.create("ivo://org.astrogrid/CommunityServerKind");	
-*/
+
 	public boolean matches(Object arg0) {
 		Resource r = (Resource)arg0;
 		
