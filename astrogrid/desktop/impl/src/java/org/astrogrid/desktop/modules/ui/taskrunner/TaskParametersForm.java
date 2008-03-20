@@ -376,14 +376,21 @@ private Dimension preservedPreferredSize = null ;
             // We do this just for the sake of resizing the ADQL editor,
             // where we need to set the preferred size to recapture screen real estate.
             Dimension curr = getSize();
-            double diffH = curr.getHeight() - previousSize.getHeight();
-            double diffW = curr.getWidth() - previousSize.getWidth() ;
-            previousSize = curr;
-            // now alter the size of the component.
-            curr = adqlEditor.getPreferredSize();                   
-            Dimension nu = new Dimension((int)(curr.getWidth()+diffW),(int)(curr.getHeight() + diffH));
-            adqlEditor.setPreferredSize(nu) ; 
-            preservedPreferredSize = nu ;
+            if( previousSize != null ) {
+                double diffH = curr.getHeight() - previousSize.getHeight() ;
+                double diffW = curr.getWidth() - previousSize.getWidth() ;
+                previousSize = curr ;
+                // now alter the size of the component.
+                curr = adqlEditor.getPreferredSize() ;                   
+                Dimension nu = new Dimension((int)(curr.getWidth()+diffW),(int)(curr.getHeight() + diffH));
+                adqlEditor.setPreferredSize(nu) ; 
+                preservedPreferredSize = nu ;
+            }
+            else {
+                previousSize = curr ;
+                preservedPreferredSize = getPreferredSize() ;
+            }
+                          
     }
   
 	
@@ -645,7 +652,8 @@ private Dimension preservedPreferredSize = null ;
             if( previousSize == null && preservedPreferredSize == null ) {
                 //
                 // This is for the initial display of the ADQL editor...
-                adqlEditor.setPreferredSize(new Dimension(895,450));
+                preservedPreferredSize = new Dimension(895,450) ;
+                adqlEditor.setPreferredSize(new Dimension(895,450));                
             }
             else {
                 //

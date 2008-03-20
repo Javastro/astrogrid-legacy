@@ -21,6 +21,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.AdqlCompiler;
 import org.astrogrid.adql.ParseException;
 import org.astrogrid.adql.AdqlException;
+import org.astrogrid.adql.SimpleNode;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
@@ -77,7 +78,7 @@ public class EditCommand extends AbstractCommand {
                 // Otherwise we use the preserved comment if there is one...
                 if( comments[0] != null ) {
                     if( comments[0].length() > 0 ) {
-                        sto.setStartComment( comments[0].replaceAll( "-- |--", "" ) ) ;
+                        sto.setStartComment( SimpleNode.prepareComment( comments[0] ) ) ;
                     }
                     else if( preservedComment != null ) {
                         sto.setStartComment( preservedComment ) ;

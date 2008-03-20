@@ -597,15 +597,20 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
 
     private void findTabulaData() {
         if (targetApplication != null) {
-            ceaApplicationURI = targetApplication.getId();
-            Content content = targetApplication.getContent();
-            Relationship[] rels = content.getRelationships();
-            ResourceName[] rns = rels[0].getRelatedResources();
+            
             try {
+                ceaApplicationURI = targetApplication.getId();
+                Content content = targetApplication.getContent();
+                Relationship[] rels = content.getRelationships();
+                ResourceName[] rns = rels[0].getRelatedResources();
                 tabulaDataURI = new URI(rns[0].getValue());
-            } catch (URISyntaxException uex) {
-                tabulaDataURI = null;
             }
+            catch( Exception ex ) {
+                tabulaDataURI = null;
+                log.error( "Failed to acquire tabula metadata for: "
+                         + ceaApplicationURI, ex ) ;
+            }
+                    
         }
         if (log.isDebugEnabled()) {
 
@@ -619,15 +624,17 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
 
                 Content content = targetApplication.getContent();
                 Relationship[] rels = content.getRelationships();
-                for (int i = 0; i < rels.length; i++) {
-                    b.append(rels[i].getRelationshipType()).append('\n');
-                    ResourceName[] rns = rels[i].getRelatedResources();
-                    for (int j = 0; j < rns.length; j++) {
-                        b.append(rns[j].getId()).append('\n');
-                        b.append(rns[j].getValue()).append('\n');
+                if( rels != null ) {
+                    for (int i = 0; i < rels.length; i++) {
+                        b.append(rels[i].getRelationshipType()).append('\n');
+                        ResourceName[] rns = rels[i].getRelatedResources();
+                        for (int j = 0; j < rns.length; j++) {
+                            b.append(rns[j].getId()).append('\n');
+                            b.append(rns[j].getValue()).append('\n');
+                        }
+                        b.append("===");
                     }
-                    b.append("===");
-                }
+                }              
                 log.debug(b.toString());
             }
 
@@ -1110,8 +1117,8 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
                 if (command.execute() != CommandExec.FAILED) {
                     DefaultTreeModel model = (DefaultTreeModel) adqlTree
                             .getModel();
-                    model.nodeStructureChanged(command.getParentEntry());
-                    adqlTree.ensureSomeNodeSelected(command);
+                    model.nodeStructureChanged(command.getParentEntry());    
+                    adqlTree.ensureSomeNodeSelected(command);                
                     adqlTree.repaint();
                 }
             } finally {
@@ -1698,8 +1705,8 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             }
             this.setLayout(new BorderLayout());
             this.add(scrollContent, BorderLayout.CENTER);
-            owner.addTab("Description", IconHelper.loadIcon(INFO_ICON), this,
-                    "Enter a description for the query");
+            owner.addTab("Comment", IconHelper.loadIcon( EDIT_ICON ), this,
+                    "Enter an overall comment describing the query");
             textPane.addFocusListener(this);
         }
 

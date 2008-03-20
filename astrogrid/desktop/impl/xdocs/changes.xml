@@ -14,6 +14,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2649">
+    Another minor fix to the sizing of Query Builder.
+    Renamed the comment tab in QB to Comment rather than Information plus icon change.
+    Slightly more tasteful failure if tabular metadata not found.
+    Improved comment processing. (added C and C++ style)
+</action>
 <release version="2008.1.beta5" date="2008-03-25">
 <action dev="nw" type="add">
 Display test queries in resources, and allow them to be executed.
