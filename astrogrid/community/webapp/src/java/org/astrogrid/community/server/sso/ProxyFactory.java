@@ -35,6 +35,7 @@ import org.globus.gsi.proxy.ext.ProxyCertInfoExtension;
 import org.globus.gsi.proxy.ext.ProxyPolicy;
 
 /**
+ * A factory for making proxy certificates from long-term credentials.
  *
  * @author Guy Rixon
  */
@@ -366,7 +367,7 @@ public class ProxyFactory {
                          issuerDN;
         
         certGen.setSubjectDN(new X500Principal(proxyDn));
-        certGen.setIssuerDN(issuerCert.getIssuerX500Principal());
+        certGen.setIssuerDN(issuerCert.getSubjectX500Principal());
 
         certGen.setSerialNumber(serialNum);
         certGen.setPublicKey(publicKey);
