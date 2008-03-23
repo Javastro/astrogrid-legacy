@@ -389,6 +389,30 @@
           <war.bundle>true</war.bundle>
         </properties>
       </dependency>
+      <dependency>
+        <artifactId>cog-puretls</artifactId>
+        <groupId>globus</groupId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <artifactId>cog-cryptix</artifactId>
+        <groupId>globus</groupId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <artifactId>cog-cryptix32</artifactId>
+        <groupId>globus</groupId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <artifactId>cog-cryptix-asn1</artifactId>
+        <groupId>globus</groupId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
       
       <!-- Self testing in the deployed web-app. -->
       <dependency>
