@@ -6,7 +6,7 @@
 
     <id>astrogrid-community</id>
     <name>Community Web Application</name>
-    <currentVersion>2008.0</currentVersion>
+    <currentVersion>2008.0.01</currentVersion>
     <shortDescription>Community web-application</shortDescription>
   <description>Community is a AstroGrid web application to manage user accounts.</description>
 
