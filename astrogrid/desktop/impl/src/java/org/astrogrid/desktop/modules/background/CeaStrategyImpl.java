@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.31 2008/03/10 18:08:45 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.32 2008/03/26 03:47:21 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,7 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -128,7 +129,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         public void start(URI server) throws ServiceException, NotFoundException{
                 Service[] arr;
                 try {
-                    arr = apps.listServersProviding(app.getId());
+                    arr = apps.listServersProviding(app.getId()); 
                 } catch (InvalidArgumentException x) {
                     error("Unable to start application",x);
                     throw new NotFoundException(x);
@@ -178,7 +179,17 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         
         // actually set the process running.
         private void invoke(CeaService target) throws ServiceException {
-            
+            //check whether we need to login first.
+            if (! community.isLoggedIn()) {
+                Interface[] interfaces = target.findCeaServerCapability().getInterfaces();
+                for (int i = 0; i < interfaces.length; i++) {
+                    Interface ifa = interfaces[i];
+                    if (ifa.getSecurityMethods().length > 0) { //assume for now that any kind of security will require login
+                        community.guiLogin();
+                        break;
+                    }
+                }
+            }
             try {
             JobIdentifierType jid = new JobIdentifierType(target.getId().toString());
             delegate = ceaHelper.createCEADelegate(target);                                   
@@ -643,6 +654,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.32  2008/03/26 03:47:21  nw
+Complete - task 353: add 'requires login' to taskrunner & resource formatter.
+
 Revision 1.31  2008/03/10 18:08:45  nw
 moved computation inside conditional
 

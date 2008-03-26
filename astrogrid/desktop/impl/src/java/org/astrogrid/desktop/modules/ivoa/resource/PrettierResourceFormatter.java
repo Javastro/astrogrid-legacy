@@ -51,6 +51,7 @@ import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
 import org.astrogrid.acr.ivoa.resource.ConeCapability.Query;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactoryImpl;
@@ -645,16 +646,23 @@ public final class PrettierResourceFormatter {
 	            sb.appendTitledObjectNoBR("Role",iface.getRole());
 	            sb.appendTitledObjectNoBR("Version",iface.getVersion());
 	            final SecurityMethod[] securityMethods = iface.getSecurityMethods();
+	            if (securityMethods.length >0) { // just notify the user that security is required
+	                sb.br().append("<img src='classpath:/org/astrogrid/desktop/icons/lock16.png'>&nbsp;This service requires Community Login");
+	                sb.br();
+	                    
+	            }
+	            /* don't think the user will ever want to see the details.
 	            if (securityMethods.length > 0) {
 	                sb.appendLabel("Security");
 	                for (int k = 0; k < securityMethods.length; k++) {
 	                    if (k > 0) {
-	                        sb.append(", ");
+	                        sb.append(", ");	                        
 	                    }
 	                    SecurityMethod sm = securityMethods[k];
-	                    sb.append(sm.getStandardID());
+	                    sb.appendURI(sm.getStandardID());
 	                }
 	            }
+	            */
 	            final AccessURL[] accessUrls = iface.getAccessUrls();
 	            if (accessUrls != null) {
 	                if (accessUrls.length == 1) {
