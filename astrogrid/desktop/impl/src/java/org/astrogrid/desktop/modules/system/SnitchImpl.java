@@ -91,7 +91,8 @@ public class SnitchImpl implements SnitchInternal {
 		(new BackgroundWorker(ui,"Reporting usage",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
 
 		protected Object construct() throws Exception {
-			StrBuilder sb = new StrBuilder(base);
+			StrBuilder sb = new StrBuilder(64);
+			sb.append(base);
 			sb.append(message).append('?');			
 			for (Iterator i = params.entrySet().iterator(); i.hasNext(); ) {
 				Map.Entry e = (Map.Entry)i.next();

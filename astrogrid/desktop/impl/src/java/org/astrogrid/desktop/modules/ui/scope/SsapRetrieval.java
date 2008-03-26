@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.17 2008/02/25 13:25:48 mbt Exp $
+/*$Id: SsapRetrieval.java,v 1.18 2008/03/26 10:35:14 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -258,7 +258,7 @@ public class SsapRetrieval extends Retriever {
                 logger.warn(service.getId() + " : Unable to parse url in service response - skipping row",e);
             }           
         }
-        private final StrBuilder filenameBuilder = new StrBuilder();
+        private final StrBuilder filenameBuilder = new StrBuilder(64);
         //3 different formats, for the various formats seen 'in the wild'.
         // "1998-01-31 11:26:00.792"
         // 1995-03-13 19:50:17
@@ -315,6 +315,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.18  2008/03/26 10:35:14  nw
+checked configuraiton of html builder and strbuilder
+
 Revision 1.17  2008/02/25 13:25:48  mbt
 Add subnames to node tooltips as appropriate
 

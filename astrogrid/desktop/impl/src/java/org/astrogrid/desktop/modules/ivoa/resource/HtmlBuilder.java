@@ -18,16 +18,18 @@ import org.astrogrid.acr.ivoa.resource.ResourceName;
 public class HtmlBuilder extends StrBuilder {
 
 	public HtmlBuilder() {
-		super("<html>");
+		super(256); // fix related to 2640
+		append("<html>");
 	}
-
-	public HtmlBuilder(int arg0) {
-		super(arg0);
-	}
-
-	public HtmlBuilder(String arg0) {
-		super(arg0);
-	}
+	// allocate more space at a time.
+	public StrBuilder ensureCapacity(int capacity) {
+        if (capacity > buffer.length) {
+            char[] old = buffer;
+            buffer = new char[(int) (capacity * 1.5)];
+            System.arraycopy(old, 0, buffer, 0, size);
+        }
+        return this;
+    }
 
 	public HtmlBuilder h2(String text) {
 		append("<h2>").append(text).append("</h2>");

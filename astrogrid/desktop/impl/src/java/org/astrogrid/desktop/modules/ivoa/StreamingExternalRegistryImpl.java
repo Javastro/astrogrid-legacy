@@ -496,7 +496,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	}
     protected String prependProlog(String xquery) {
         String[][] ns = XPathHelper.listDefaultNamespaces();
-        StrBuilder sb = new StrBuilder();
+        StrBuilder sb = new StrBuilder(ns.length * 50);
  
         for (int i = 0; i < ns.length; i++) {
             sb.append("declare namespace ")

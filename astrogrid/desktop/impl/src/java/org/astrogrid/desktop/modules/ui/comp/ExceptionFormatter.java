@@ -78,7 +78,7 @@ public class ExceptionFormatter {
         return instance.format(ex,strategy);
     }
     
-    private final StrBuilder sb = new StrBuilder();
+    private final StrBuilder sb = new StrBuilder(128);
     
     /** format an exception, according to the provided strategy */
     public String format(Throwable ex,int strategy) {
@@ -93,7 +93,7 @@ public class ExceptionFormatter {
                 }
                 return formatSingle(ex);
             default:
-                StrBuilder hb = new StrBuilder();
+                StrBuilder hb = new StrBuilder(128);
             do {
                 hb.append(formatSingle(ex));
                 hb.append("<br>");

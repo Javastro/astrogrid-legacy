@@ -50,7 +50,7 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 		try {
 			URL u = new URL(getSource().toString() + "?url=" + r.getId());
 			in = fac.createXMLStreamReader(u.openStream());
-			StrBuilder sb = new StrBuilder();
+			StrBuilder sb = new StrBuilder(64);
 			while (in.hasNext()) {
 				in.next();
 				if (in.isStartElement()) {

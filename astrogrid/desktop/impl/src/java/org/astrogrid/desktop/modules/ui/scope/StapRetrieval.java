@@ -309,7 +309,7 @@ public class StapRetrieval extends Retriever {
 
 
 		}
-		private final StrBuilder filenameBuilder = new StrBuilder();
+		private final StrBuilder filenameBuilder = new StrBuilder(64);
 
 		public DefaultTreeNode createValueNode() {
 		    return new FileProducingTreeNode();

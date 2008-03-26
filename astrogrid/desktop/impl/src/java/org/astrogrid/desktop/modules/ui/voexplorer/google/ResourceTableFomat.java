@@ -83,7 +83,7 @@ public class ResourceTableFomat extends ModularTableFormat {
         });
 
         columnList.add(new StringColumn(LABEL_NAME) {
-            final StrBuilder result = new StrBuilder();
+            final StrBuilder result = new StrBuilder(64);
             public String getValue(Resource res) {
                 if (res == null) {
                     return "";

@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.29 2008/03/13 07:17:57 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.30 2008/03/26 10:35:14 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -667,7 +667,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
                 saveState();
             }
             private void saveState() {
-                prefs.put(COLUMNS_KEY, new StrBuilder().appendWithSeparators(colModel.getVisibleColumnsByName(), "\t").toString());
+                prefs.put(COLUMNS_KEY, new StrBuilder(64).appendWithSeparators(colModel.getVisibleColumnsByName(), "\t").toString());
             }
         });
         return colModel;
@@ -956,6 +956,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.30  2008/03/26 10:35:14  nw
+checked configuraiton of html builder and strbuilder
+
 Revision 1.29  2008/03/13 07:17:57  nw
 doesn't appear to be case sensitive after all.
 
