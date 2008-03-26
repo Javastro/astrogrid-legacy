@@ -14,6 +14,16 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="nw" type="fix" issue="2640">
+    Altered initial capacity settings of HtmlBuilder and reviewed instances of StrBuilder
+</action>
+<action dev="nw" type="add" >
+    Added tooltip of login information - including DN - to login indicator.
+</action>
+<action dev="nw" type="add">
+Improved display of security info in voexplorer, and force login when trying to execute
+a secured service in taskrunner.
+</action>
 <action dev="jl" type="fix" issue="2673">
     Minor fix to style sheets to correct Group By error in ADQL.
 </action>
