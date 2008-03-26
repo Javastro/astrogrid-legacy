@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2673">
+    Minor fix to style sheets to correct Group By error in ADQL.
+</action>
 <action dev="jl" type="fix" issue="2649">
     Another minor fix to the sizing of Query Builder.
     Renamed the comment tab in QB to Comment rather than Information plus icon change.

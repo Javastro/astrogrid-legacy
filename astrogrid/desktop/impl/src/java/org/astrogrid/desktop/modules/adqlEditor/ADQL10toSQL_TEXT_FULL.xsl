@@ -46,7 +46,7 @@
 	
 	<!-- the "main" elements -->
 	
-	<xsl:template match="ad:SelectionList">
+	<xsl:template match="ad:SelectionList">	  
 		<xsl:variable name="list">
 			<xsl:for-each select="ad:Item">
 				<xsl:apply-templates select="."/>
@@ -289,7 +289,7 @@
 		<xsl:apply-templates select="ad:Arg"/>
 	</xsl:template>
 	
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'columnReferenceType'] | *[@xsi:type = 'columnReferenceType']">
+	<xsl:template match="*[substring-after(@xsi:type, ':') = 'columnReferenceType'] | *[@xsi:type = 'columnReferenceType'] | ad:Column">
 		<xsl:value-of select="@Table"/>
 		<xsl:text>.</xsl:text>
 		<xsl:value-of select="@Name"/>
@@ -411,11 +411,6 @@
 	</xsl:template>
 	
 	<!-- Jeff's additions end here -->
-	
-	
-	
-	
-	
 	
 	<xsl:template match="text()"/>
 	
