@@ -37,6 +37,7 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.comparators.FixedOrderComparator;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
@@ -162,6 +163,7 @@ public class UIContextImpl implements UIContext{
 		windowsView = GlazedLists.readOnlyList(windows);
 		
 		loggedInState = new DefaultButtonModel();
+		loggedInState.setActionCommand("Not logged in"); // hack - am using 'action command' to store a tooltip.
 		loggedInState.setEnabled(false);
 		throbbingState = new DefaultButtonModel();
 		throbbingState.setEnabled(false);
@@ -234,7 +236,7 @@ public class UIContextImpl implements UIContext{
 	}
 	
 	public void setLoggedIn(boolean b) {
-		loggedInState.setEnabled(b);
+        loggedInState.setEnabled(b);
 	}
 	//  - hivemind ensures this is always on EDT
 	public void setStatusMessage(final String arg0) {

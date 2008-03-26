@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.9 2008/03/12 11:37:36 nw Exp $
+/*$Id: CommunityImpl.java,v 1.10 2008/03/26 13:21:40 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.SecurityException;
@@ -32,6 +34,7 @@ import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.registry.RegistryException;
@@ -79,6 +82,7 @@ public class CommunityImpl implements CommunityInternal {
         userInformation = null;
         notifyListeners(false);
         ui.setStatusMessage("Not Logged In");
+        ui.getLoggedInModel().setActionCommand("Not logged in");        
         ui.setLoggedIn(false);
     }
     
@@ -110,8 +114,21 @@ public class CommunityImpl implements CommunityInternal {
             this.guard = env.getSecurityGuard();
             this.userInformation = proposed;
            ui.findMainWindow().showTransientMessage("Logged in", "as " + userInformation.getId());
-           ui.setLoggedIn(true);
+           //want to produce a tooltip from the authentication information when logged in
+           // however, donn't want to build this for all views - prefer to build it once in the model.
+           // however, there's no place to pass this info back to the views - so using a hack by stuffing it in 'actionCommand'
+           // of the login model.
+           System.err.println(guard.getIdentityCertificate());
+           ui.getLoggedInModel().setActionCommand("<html>Logged in as" 
+                       + "<br>User: " +userInformation.getName()
+                       + "<br>Community: " + userInformation.getCommunity()
+                       +  "<br>DN: " + 
+                           (guard != null && guard.getX500Principal()!= null
+                           ? guard.getX500Principal().getName(X500Principal.CANONICAL)
+                           : "not available")
+                       );
            // snitch now they've successfully logged in.
+           ui.setLoggedIn(true);
            Map m = new HashMap();
            m.put("username",userInformation.getCommunity() + "/" + userInformation.getName());
            snitch.snitch("LOGIN",m);           
@@ -129,6 +146,7 @@ public class CommunityImpl implements CommunityInternal {
         } finally {
             if (!isLoggedIn()) {
                 ui.setStatusMessage("");
+                ui.getLoggedInModel().setActionCommand("Not logged in");
                 ui.setLoggedIn(false);
             }
         } 
@@ -190,6 +208,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.10  2008/03/26 13:21:40  nw
+ add display of login certificate
+
 Revision 1.9  2008/03/12 11:37:36  nw
 Complete - task 270: improve error message when login fails.
 

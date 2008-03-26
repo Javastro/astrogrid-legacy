@@ -10,6 +10,8 @@ import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
@@ -29,6 +31,8 @@ import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -204,12 +208,24 @@ public final class UIComponentAssist {
     
     private JComponent getLogin() {
         if (login == null) {
-            login = new JButton();
-            login.setModel(parent.getContext().getLoggedInModel());
-            login.setText("");
-            login.setDisabledIcon(IconHelper.loadIcon("connect_no16.png"));
-            login.setIcon(IconHelper.loadIcon("connect_established16.png"));
-            login.setToolTipText("Indicates login status");
+            login = new JButton() {
+                {
+                    setModel(parent.getContext().getLoggedInModel());
+                    setText("");
+                    setDisabledIcon(IconHelper.loadIcon("connect_no16.png"));
+                    setIcon(IconHelper.loadIcon("connect_established16.png"));
+                    setBorderPainted(false);
+                    // hack - text for tooltip is stuffed in ActionCommand of model. changes between enabled / disabled.
+                    setToolTipText(getModel().getActionCommand());
+                    addChangeListener(new ChangeListener() {
+                        public void stateChanged(ChangeEvent e) {
+                            setToolTipText(getModel().getActionCommand());
+                        }
+                        
+                    });
+                }
+                
+            };
         }
         return login;
     }
