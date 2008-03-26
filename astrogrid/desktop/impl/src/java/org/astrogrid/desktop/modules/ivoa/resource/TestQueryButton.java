@@ -54,7 +54,7 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
             (new BackgroundWorker(uiParent,"Running test query") {
 
                 protected Object construct() throws Exception {
-                    boolean b = displayPane.getTester().testCapability(cap);
+                    boolean b = displayPane.getCapabilityTester().testCapability(cap);
                     return Boolean.valueOf(b);
                     
                 }

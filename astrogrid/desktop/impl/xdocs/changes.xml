@@ -14,6 +14,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="nw" type="add">
+    Added button to fire an availability query from voexplorer
+</action>
 <action dev="nw" type="fix" issue="2640">
     Altered initial capacity settings of HtmlBuilder and reviewed instances of StrBuilder
 </action>

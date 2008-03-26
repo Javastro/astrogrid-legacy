@@ -6,6 +6,7 @@ import javax.swing.JEditorPane;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.modules.ivoa.VosiAvailability;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 
@@ -18,17 +19,19 @@ import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
  * @since Jul 11, 20072:22:46 PM
  */
 public class ResourceDisplayPane extends JEditorPane {
-	private final CapabilityTester tester;
+	private final CapabilityTester capTester;
+    private final VosiAvailability vosiTester;
 	
 	/** construct a display pane with additional support for following hyperlinks */
-	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, CapabilityTester tester) {
-		setContentType("text/html");
+	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, CapabilityTester capTester, VosiAvailability vosiTester) {
+		this.vosiTester = vosiTester;
+        setContentType("text/html");
 		setBorder(null);
 		setEditable(false);
 		putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
 		setFont(UIConstants.SANS_FONT);
 		setName(ResourceDisplayPane.class.getName());
-        this.tester = tester;
+        this.capTester = capTester;
 		addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
 	}
 	
@@ -52,8 +55,13 @@ public class ResourceDisplayPane extends JEditorPane {
     public final Resource getCurrentResource() {
         return this.currentResource;
     }
-
-    public final CapabilityTester getTester() {
-        return this.tester;
+    
+    /** get a compoent to run test queries for capabilities */
+    public final CapabilityTester getCapabilityTester() {
+        return this.capTester;
+    }
+    /** get a component to fetch vosi availability infomation.*/
+    public final VosiAvailability getAvailabilityTester() {
+        return this.vosiTester;
     }
 }

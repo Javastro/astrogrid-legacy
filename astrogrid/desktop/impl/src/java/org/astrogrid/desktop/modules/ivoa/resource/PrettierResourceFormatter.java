@@ -607,7 +607,15 @@ public final class PrettierResourceFormatter {
                                 sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize());
                                 sb.appendTitledObjectNoBR("Query",sc.getTestQuery().getQueryDataCmd());
                                 sb.br();
-                            }                            
+                            }            
+	                    } else if (c.getStandardID() != null && StringUtils.containsIgnoreCase(c.getStandardID().toString(),"availability")) { // loose rule for availability.
+                            sb.append("This resource provides a <b>Service&nbsp;Availability&nbsp;Check</b>");
+                            sb.br();
+                            sb.append("<object classid='")
+                            .append(TestAvailabilityButton.class.getName())
+                            .append("'>")
+                            .append("</object>"); 
+                            sb.br();
 	                    }	else { // take a guess.
 	                        String capType = c.getType();
 	                        String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
