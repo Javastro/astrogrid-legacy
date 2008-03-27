@@ -355,9 +355,10 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			vals.add(new DescribedValue("TableService",""));
 			vals.add(new DescribedValue("CatalogService",""));
 			vals.add(new DescribedValue("Registry",""));
-			//vals.add(new DescribedValue("Service","Other services"));	
 			vals.add(new DescribedValue("Authority",""));
 			vals.add(new DescribedValue("Organisation",""));
+			vals.add(new DescribedValue("CeaCapability","Offline application server (CEA)"));
+			vals.add(new DescribedValue("Service","All services"));	
 		}}
 
 		// @future also to add - validation-level 
