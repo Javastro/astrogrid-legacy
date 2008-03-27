@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.32 2008/03/26 03:47:21 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.33 2008/03/27 10:03:46 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -211,7 +211,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 }
             } catch (CEADelegateException x) {
                 error("Failed to execute application ",x);
-                throw new ServiceException(x);
+                Throwable e = x; // get to the core of the problem - too much wrapping here.
+                while (e.getCause() != null) {
+                    e = e.getCause();
+                }
+                throw new ServiceException(e.getMessage()); 
             } catch (InvalidArgumentException x) {
                 error("Failed to execute application ",x);
                 throw new ServiceException(x);
@@ -654,6 +658,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.33  2008/03/27 10:03:46  nw
+improved error reporting when trying to run a secured app without logging in.
+
 Revision 1.32  2008/03/26 03:47:21  nw
 Complete - task 353: add 'requires login' to taskrunner & resource formatter.
 
