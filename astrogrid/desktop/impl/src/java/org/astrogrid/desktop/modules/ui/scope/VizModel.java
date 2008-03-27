@@ -180,13 +180,13 @@ public  final class VizModel {
 	}
 
 	/** add a result into the results direcotry. 
-	 * 
+	 * bz 2665 - was getting concurrent modification exceptions here, so made this method synchronized.
 	 * @param retriever the retriever to add a result for
 	 * @param name the name of the result
 	 * @param result the file object that contains the contents of the result.
 	 * @param the tree node to cache the freshly created file object in.
 	 */
-	public void addResultFor(Retriever retriever,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
+	public synchronized void addResultFor(Retriever retriever,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
 	        final String retDir = mkFileName(retriever);
 	        int renameCount = 0;	        
 	        final String prefix = StringUtils.substringBeforeLast(name,".");
@@ -199,9 +199,9 @@ public  final class VizModel {
 	                } else {
 	                    fullName = retDir + "/" + prefix + "-" + renameCount + "." + suffix;
 	                }
-	                synchronized(resultsFS) {
+	               // synchronized(resultsFS) {
 	                    candidate = resultsFS.resolveFile(fullName);
-	                }
+	                //}
 	                renameCount++;
 	            } while (candidate != null && candidate.exists());
 	            // ok, found a candidate that doesn't yet exist.
