@@ -32,7 +32,7 @@ public class XQueryListEditingPanel extends EditingPanel implements ActionListen
     public final void showExample() {
         text.setText("(:example query - list all cone searches:)\n"
                 + "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] \n"
-                + "where $r/@xsi:type  &=  '*ConeSearch' \n"
+                + "where $r/@xsi:type  &=  '*DataCollection' \n"
                 + "return $r");
     }
     
