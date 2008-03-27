@@ -2,11 +2,14 @@ package org.astrogrid.community.resolver ;
 
 import java.net.URI;
 import java.net.URL;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertPath;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import javax.security.auth.Subject;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -20,7 +23,9 @@ import org.astrogrid.community.common.exception.CommunitySecurityException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 import org.astrogrid.community.resolver.exception.CommunityResolverException ;
 import org.astrogrid.registry.client.query.v1_0.RegistryService;
+import org.globus.gsi.bc.BouncyCastleUtil;
 import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+import org.globus.gsi.proxy.ProxyPathValidator;
 import org.globus.myproxy.MyProxy;
 import org.ietf.jgss.GSSCredential;
 
@@ -217,6 +222,7 @@ public class CommunityPasswordResolver {
       CertificateFactory factory = CertificateFactory.getInstance("X509");
       CertPath certPath = factory.generateCertPath(certList);
       subject.getPublicCredentials().add(certPath);
+      recordX500Principal(subject);
       log.info(name + " has logged in using MyProxy.");
       return subject;
     }
@@ -266,7 +272,36 @@ public class CommunityPasswordResolver {
     // Get and return the credentials.
     SsoClient client = new SsoClient(endpoint.toString());
     Subject s = client.authenticate(userName, password, lifetime, trustAnchors);
+    recordX500Principal(s);
     log.info(userName + " has logged in using the community accounts protocol.");
     return s;
+  }
+
+  /**
+   * Finds the user's X500Principal in the certificate chain and
+   * records it. This records successful authentication.
+   */
+  protected void recordX500Principal(Subject subject) {
+    Set s = subject.getPublicCredentials(CertPath.class);
+    CertPath path = (CertPath) (s.iterator().next());
+    if (path != null) {
+      ProxyPathValidator v = new ProxyPathValidator();
+      List l = path.getCertificates();
+      X509Certificate[] a = new X509Certificate[l.size()];
+      for (int i = 0; i < l.size(); i++) {
+        a[i] = (X509Certificate)(l.get(i));
+      }
+      try {
+        X509Certificate identity = BouncyCastleUtil.getIdentityCertificate(a);
+        if (identity != null) {
+          subject.getPrincipals().add(identity.getSubjectX500Principal());
+        }
+      }
+      catch (CertificateException e) {
+        // This shouldn't happen, given that the MyProxy and accounts clients
+        // always produce proper certificate chains.
+        throw new RuntimeException("Can't find the EEC in the certificate chain", e);
+      }
+    }
   }
 }
