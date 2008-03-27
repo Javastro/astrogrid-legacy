@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2008.1.rc1" date="2008-03-27">
+<action dev="mbt" type="fix" issue="2609">
+    VOExplorer left-right resizing now works properly.
+</action>
 <action dev="nw" type="update" issue="2677">
     Updated to latest browser-control library
 </action>
