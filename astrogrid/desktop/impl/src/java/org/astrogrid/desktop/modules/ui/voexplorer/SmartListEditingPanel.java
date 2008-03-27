@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
@@ -70,7 +71,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		text.setLineWrap(true);
 		text.setWrapStyleWord(true);
 		text.getDocument().addDocumentListener(this);
-		builder.add(text,cc.xyw(2,row,7));
+		builder.add(new JScrollPane(text),cc.xyw(2,row,7));
 		row++;
 		sizing = new QuerySizeIndicator(parent,sizer);
 		builder.add(sizing,cc.xyw(2,row,4));
