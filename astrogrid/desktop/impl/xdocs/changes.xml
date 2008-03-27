@@ -14,7 +14,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.1" date="2008-03-28">
+<release version="2008.1.rc1" date="2008-03-27">
+<action dev="nw" type="update" issue="2677">
+    Updated to latest browser-control library
+</action>
+<action dev="nw" type="fix" issue="2665">
+    Improved synchroniation to prevent concurrent modification exceptions in helio/astroscope.
+</action>
 <action dev="nw" type="fix" issue="2675">
     Added preference to enable chunking of transfers to filestore.
 </action>

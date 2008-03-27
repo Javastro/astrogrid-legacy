@@ -300,11 +300,11 @@
  	<dependency>
  		<artifactId>BrowserLauncher2</artifactId>
  		<groupId>BrowserLauncher2</groupId>
- 		<version>10</version>
+ 		<version>1_3</version> <!--  was '10' - upgraded to fix problem on sunos. -->
  		<url>http://browserlaunch2.sourceforge.net/</url>
  		<properties>
  			<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>			
+ 			<strip>false</strip><!--  just for now, don't strip - so we're sure the code for all platforms is included. -->			
  		</properties>
  	</dependency>
   

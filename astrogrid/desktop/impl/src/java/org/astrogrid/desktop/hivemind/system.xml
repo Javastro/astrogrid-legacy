@@ -117,6 +117,7 @@ System module.
 	<service-point id="browser" interface="BrowserControl">
 	Controls the webbrowser
 	</service-point>
+    <!--  never happens - we don't run under webstart anynmore.
 	<implementation service-id="browser" if="(class javax.jnlp.ServiceManager) and (not (property system.browser.disabled))">
 		<invoke-factory>
 		<construct class="org.astrogrid.desktop.modules.system.WebstartBrowserControl">
@@ -125,6 +126,7 @@ System module.
 		</construct>
 		</invoke-factory>
 	</implementation>
+     -->
 
 	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and  (class edu.stanford.ejalbert.BrowserLauncher) and (not (property system.browser.disabled))">
 		<invoke-factory>
@@ -135,6 +137,7 @@ System module.
 		</invoke-factory>		
 	</implementation>
 
+<!--  only happens in ASR -->
 	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and (not (class edu.stanford.ejalbert.BrowserLauncher)) and (not (property system.browser.disabled)) ">
 		<invoke-factory>
 		<construct class="org.astrogrid.desktop.alternatives.FallbackBrowserControl">
