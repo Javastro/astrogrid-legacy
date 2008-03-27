@@ -14,6 +14,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2008.1" date="2008-03-28">
 <action dev="nw" type="add">
     Added button to fire an availability query from voexplorer
 </action>
@@ -36,6 +37,7 @@ a secured service in taskrunner.
     Slightly more tasteful failure if tabular metadata not found.
     Improved comment processing. (added C and C++ style)
 </action>
+</release>
 <release version="2008.1.beta5" date="2008-03-25">
 <action dev="nw" type="add">
 Display test queries in resources, and allow them to be executed.
