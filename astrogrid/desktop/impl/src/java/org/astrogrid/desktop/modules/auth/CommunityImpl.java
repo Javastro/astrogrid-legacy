@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.10 2008/03/26 13:21:40 nw Exp $
+/*$Id: CommunityImpl.java,v 1.11 2008/03/27 10:06:17 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -118,7 +118,6 @@ public class CommunityImpl implements CommunityInternal {
            // however, donn't want to build this for all views - prefer to build it once in the model.
            // however, there's no place to pass this info back to the views - so using a hack by stuffing it in 'actionCommand'
            // of the login model.
-           System.err.println(guard.getIdentityCertificate());
            ui.getLoggedInModel().setActionCommand("<html>Logged in as" 
                        + "<br>User: " +userInformation.getName()
                        + "<br>Community: " + userInformation.getCommunity()
@@ -208,6 +207,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.11  2008/03/27 10:06:17  nw
+ add display of login certificate
+
 Revision 1.10  2008/03/26 13:21:40  nw
  add display of login certificate
 
