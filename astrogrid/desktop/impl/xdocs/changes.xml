@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2008.1" date="2008-03-28">
+<action dev="nw" type="fix" issue="2675">
+    Added preference to enable chunking of transfers to filestore.
+</action>
 <action dev="nw" type="add">
     Added button to fire an availability query from voexplorer
 </action>

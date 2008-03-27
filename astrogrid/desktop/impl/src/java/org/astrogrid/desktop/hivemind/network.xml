@@ -54,8 +54,19 @@ Other Network Settings
       </description>
       <units>boolean</units>
     </preference>
-  </contribution>
 
+<!--  vospace file transfer configuration -->
+    <preference name="org.astrogrid.filestore.chunked.send"
+                default-value="enabled"
+                advanced="true"
+                propagate-to-config="true"
+                requires-restart="true">
+      <ui-name>Filestore Chunking</ui-name>
+      <description>transfer data to filestore in chunks, without buffering in memory first</description>
+      <option>enabled</option>
+      <option>disabled</option>
+    </preference>
+  </contribution>
 <!--
 ================================
 NETWORK CONFIGURATION
