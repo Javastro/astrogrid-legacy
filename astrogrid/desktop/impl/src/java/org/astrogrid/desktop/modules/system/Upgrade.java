@@ -41,7 +41,7 @@ public class Upgrade implements Runnable {
 		if (upgradedVersion == null || upgradedVersion.compareTo("2007.3.0") < 0) { // corrects bugs in 2007.3. alphas
 				//was going to add in a resourceList upgrade here, but too far in the past - shan't bother now.
 		}
-		if (upgradedVersion == null || upgradedVersion.compareTo("2008.2") <= 0) { //sets the registry endpoints to the correct settings.
+		if (upgradedVersion == null || upgradedVersion.compareTo("2008.1") <= 0 || upgradedVersion.startsWith("2008.1.beta")) { //sets the registry endpoints to the correct settings.
 		    // do this for every interim release upto and including the big 2008.2.		    
 		    Preference reg = conf.find("org.astrogrid.registry.query.endpoint");
 		    reg.setValue(reg.getDefaultValue());
