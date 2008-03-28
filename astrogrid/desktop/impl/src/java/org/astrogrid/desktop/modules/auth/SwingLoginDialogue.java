@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.16 2008/03/28 13:09:01 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.17 2008/03/28 13:21:12 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      * @throws MalformedURLException 
      * @throws ServiceException 
      */
-    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
+    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String defaultCommunity) throws MalformedURLException, ServiceException {
         super(coxt,"Virtual Observatory Login","dialog.login");
         this.comm = comm;
     	this.defaultCommunity = defaultCommunity;
@@ -125,7 +125,6 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         passField_ = new JPasswordField();
         pb.add(passField_,cc.xy(4,8));
 
-        final URL registerURL = new URL(registerLink);
 
         JButton registerButton = new JLinkButton("Click here to register..");
         registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");
@@ -135,7 +134,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         	    new BackgroundWorker(SwingLoginDialogue.this,"Opening registration page") {
 
                     protected Object construct() throws Exception {
-                        browser.openURL(registerURL);
+                        getContext().getHelpServer().showHelpForTarget("dialog.login.register");
                         return null;
                     }
         	    }.start();
@@ -308,6 +307,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.17  2008/03/28 13:21:12  nw
+converted register to a help link.
+
 Revision 1.16  2008/03/28 13:09:01  nw
 help-tagging
 

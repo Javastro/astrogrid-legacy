@@ -134,7 +134,6 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 	</contribution>
 
 <contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="astrogrid.community.register" value="mailto:astrogrid_signup@star.le.ac.uk?subject=New%20Account%20Request&amp;body=Name:%0D%0AInstitute:"/>
 		<default symbol="astrogrid.community.defaultCommunity" value="uk.ac.le.star" />
 	</contribution>	
 
@@ -181,7 +180,6 @@ LOGIN DIALOGUE -->
                 <service>system.browser</service>
                 <service>ivoa.registry</service>
                 <service>community</service>
-                <string>${astrogrid.community.register}</string>
                 <string>${astrogrid.community.defaultCommunity}</string>
             </construct>
 		</invoke-factory>
