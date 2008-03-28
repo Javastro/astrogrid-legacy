@@ -127,6 +127,9 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		    caps.set(ix++, code < 1);
 		    // cea apps with an adql interface.
 		    caps.set(ix++,code >= 0);
+		} else if (r instanceof CatalogService && r instanceof CeaService) { // it's a catalog service with build in CEA - i.e. it's a DSA.
+		    caps.set(ix++,false);
+		    caps.set(ix++,true);
 		} else {
 		    ix +=2;
 		}
