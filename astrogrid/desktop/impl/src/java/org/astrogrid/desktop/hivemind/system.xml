@@ -954,7 +954,7 @@ MAC SETUP
 				<service>ui</service>
 				<service>plastic.hub</service>
 				<string>${system.ui.title}</string>
-				<string>http://www.astrogrid.org/desktop</string>
+				<string>http://help.astrogrid.org</string>
 				<configuration>plasticMessageHandlers</configuration>
 				<service>plasticList</service>
 			</construct>

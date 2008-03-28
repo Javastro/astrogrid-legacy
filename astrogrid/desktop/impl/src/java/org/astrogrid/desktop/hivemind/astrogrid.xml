@@ -379,7 +379,7 @@ CERTIFICATE INSTALLER
 	
 	<!-- contributions to existing configurations -->
 	<contribution configuration-id="certificateLists">
-	  	<url>http://wiki.astrogrid.org/pub/Astrogrid/TrustAnchorList/trust-anchor-list.xml</url>
+	  	<url>http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/trust-anchor-list.xml</url>
 	  	<!--  fallback list - unsure whether I should check this or not 
 	  	<url>classpath:/org/astrogrid/desktop/hivemind/fallback-anchorlist.xml</url>
 	  	-->

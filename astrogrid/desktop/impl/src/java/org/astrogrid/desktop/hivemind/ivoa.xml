@@ -106,10 +106,11 @@
                 <alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://rakaposhi.star.le.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
-   <!-- remove the following for public release -->
+   <!-- remove the following for public release 
 				<alternative>http://msslxt.mssl.ucl.ac.uk:8080/astrogrid-regtest-1_0/services/RegistryQueryv1_0</alternative>
                 <alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://casx019-zone1.ast.cam.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
+                -->
 				<units>url</units>
 		</preference>
 		<preference name="org.astrogrid.registry.query.altendpoint"
@@ -121,10 +122,11 @@
                 <alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://rakaposhi.star.le.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
-   <!-- remove the following for public release -->
+   <!-- remove the following for public release 
                 <alternative>http://msslxt.mssl.ucl.ac.uk:8080/astrogrid-regtest-1_0/services/RegistryQueryv1_0</alternative>
                 <alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://casx019-zone1.ast.cam.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
+                -->
 				<units>url</units>
 		</preference>
 		<preference name="ivo.registry.cacheLife" requires-restart="true"

@@ -80,7 +80,7 @@ ANNOTATION SERVICE
 
 <contribution configuration-id="annotationSources">
 	<object name="ag" class="org.astrogrid.desktop.modules.votech.AnnotationSource">
-		<inject object="literal:string:http://wiki.astrogrid.org/pub/Astrogrid/VoExplorerAnnotations/sample-annotations.xml" />
+		<inject object="literal:string:http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/ag-annotations.xml" />
 		<inject object="literal:string:AG Science Team" />
 	</object>
 	

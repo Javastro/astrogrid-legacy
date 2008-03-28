@@ -46,7 +46,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 
 	
 	
-	private static final String ICON_URL = "http://www.astrogrid.org/image/AGlogo"; 
+	private static final String ICON_URL = "http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/AGlogo.png"; 
 	private static final String AR_IVORN = "ivo://org.astrogrid/ar";
 	/**
 	 * 
