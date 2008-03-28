@@ -12,6 +12,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /**
  *  static button class that attempts to flip tabs
@@ -33,6 +34,7 @@ public class ShowMetadataButton extends ResourceDisplayPaneEmbeddedButton implem
            setText("Show Table Metadata");
            setIcon(IconHelper.loadIcon("table16.png"));           
            addActionListener(this);
+           CSH.setHelpIDString(this,"reg.display.table");           
     }
 
     public void actionPerformed(ActionEvent e) {

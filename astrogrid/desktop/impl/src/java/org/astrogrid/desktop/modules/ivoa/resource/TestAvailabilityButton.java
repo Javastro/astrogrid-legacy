@@ -10,6 +10,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.VosiAvailabilityBean;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
@@ -28,6 +29,7 @@ public class TestAvailabilityButton extends ResourceDisplayPaneEmbeddedButton im
         setIcon(IconHelper.loadIcon("unknown_thing16.png"));        
         setToolTipText("Check the availability of the service to verify that it is functioning");
         addActionListener(this);
+        CSH.setHelpIDString(this,"reg.test.availability");        
     }
 
     public void actionPerformed(ActionEvent e) {

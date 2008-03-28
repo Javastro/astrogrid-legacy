@@ -19,6 +19,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.util.DomHelper;
 
 /** static button class that displays coverage in some way.
@@ -34,6 +35,7 @@ public class ShowCoverageButton extends ResourceDisplayPaneEmbeddedButton implem
     public ShowCoverageButton() {
         setText("Show Coverage");
            addActionListener(this);
+           CSH.setHelpIDString(this,"reg.display.coverage");
     }
 
 

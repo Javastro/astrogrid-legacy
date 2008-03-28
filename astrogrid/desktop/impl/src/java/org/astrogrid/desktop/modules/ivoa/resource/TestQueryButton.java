@@ -14,6 +14,7 @@ import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
@@ -35,6 +36,7 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
         setIcon(IconHelper.loadIcon("unknown_thing16.png"));
         setToolTipText("Run the test query to verify that this service is functioning correctly");
         addActionListener(this);
+        CSH.setHelpIDString(this,"reg.test.query");        
     }
     
     public void actionPerformed(ActionEvent e) {
