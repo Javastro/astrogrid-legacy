@@ -37,6 +37,7 @@ public class SaveResourceActivity extends AbstractResourceActivity implements Ac
 	 */
 	public SaveResourceActivity(UIContext cxt,ResourceChooserInternal chooser, RegistryInternal reg,FileSystemManager vfs) {
 		this.chooser = chooser;
+		setHelpID("activity.save");
 		this.vfs = vfs;
 		this.reg = reg;
 		this.cxt = cxt;

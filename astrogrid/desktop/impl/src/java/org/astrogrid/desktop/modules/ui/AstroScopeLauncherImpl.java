@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.81 2008/03/13 05:25:00 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.82 2008/03/28 13:09:01 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,6 +64,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -141,7 +142,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			,Sesame ses
 			,SnitchInternal snitch
 			,IconFinder iconFinder)  {
-		super(context,"All-VO Astroscope","scope.intro");
+		super(context,"All-VO Astroscope","window.scope");
 		this.history = history;
 		this.snitch = snitch;
 		this.protocols = new DalProtocolManager();
@@ -367,6 +368,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		
 		// done building the left side.
 		final JPanel searchPanel = builder.getPanel();
+		CSH.setHelpIDString(searchPanel,"scope.searchPanel");
 		KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
 		final String CMD = "pressButton";
 		searchPanel.getInputMap(searchPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, CMD);
@@ -972,6 +974,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	protected class ClearSelectionAction extends AbstractAction {
 		public ClearSelectionAction() {
 			super("Clear Selection");//,IconHelper.loadIcon("editclear32.png"));
+			CSH.setHelpIDString(this,"scope.clear");
 			this.putValue(SHORT_DESCRIPTION,"Clear the node selection");
 			this.setEnabled(false);           
 		}
@@ -1041,6 +1044,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		public TopAction() {
 			super("Go To Top"); //,IconHelper.loadIcon("top32.png"));
 			this.putValue(SHORT_DESCRIPTION,"Focus display to 'Search Results'");
+			CSH.setHelpIDString(this,"scope.top");
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_T,UIComponentMenuBar.MENU_KEYMASK));
 			this.setEnabled(false);
 		}
@@ -1054,6 +1058,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	        public UpAction() {
 	            super("Up"); //,IconHelper.loadIcon("top32.png"));
 	            this.putValue(SHORT_DESCRIPTION,"Focus display on the parent of the currently focussed node'");
+	            CSH.setHelpIDString(this,"scope.up");	            
 	            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.MENU_KEYMASK));
 	            this.setEnabled(false);
 	        }
@@ -1069,6 +1074,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	        */
 	       public ClearHistoryAction() {
 	           super("Clear History");
+	          
 	       }
 	       public void actionPerformed(ActionEvent e) {
 	           ConfirmDialog.newConfirmDialog(AstroScopeLauncherImpl.this,"Clear History","All history entries will be lost - continue?"

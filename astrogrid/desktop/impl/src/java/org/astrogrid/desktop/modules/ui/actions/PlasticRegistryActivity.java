@@ -28,6 +28,7 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 	}
 	public PlasticRegistryActivity(final PlasticApplicationDescription descr, PlasticScavenger scav) {
 		super();
+		setHelpID("activity.plastic.resource");
 		this.plas = descr;
         this.scav = scav;
 		PlasticScavenger.configureActivity("resource descriptions",this,plas);

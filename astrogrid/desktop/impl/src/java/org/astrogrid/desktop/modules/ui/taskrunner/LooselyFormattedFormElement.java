@@ -18,6 +18,7 @@ import javax.swing.text.JTextComponent;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /** abstract class for elements which probably impose some
  * formatting requirements on their input.
@@ -36,6 +37,7 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 		super(pval, pdesc,chooser);
 		this.format = format;
 		disableIndirect(); // never allow indirectionn for these primitive types.
+		CSH.setHelpIDString(getEditor(),"task.form.formatted");
 	}
 
 	protected final JComponent createEditor() {

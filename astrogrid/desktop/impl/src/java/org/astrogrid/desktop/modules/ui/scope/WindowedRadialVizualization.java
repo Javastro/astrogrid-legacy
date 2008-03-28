@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import javax.swing.JPopupMenu;
 
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
@@ -78,7 +79,7 @@ public class WindowedRadialVizualization extends Vizualization {
             if (display == null) {
         ItemRegistry registry = getItemRegistry();
          display = new Display(registry);
-        
+        CSH.setHelpIDString(display,"scope.viz.radial");
             graphLayout = new ActionList(registry);
             
             // two different types of filter - only vary in window size.

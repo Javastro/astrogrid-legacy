@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
 
@@ -37,6 +38,7 @@ public class RadiusFormElement extends AbstractTaskFormElement implements Proper
         this.isExternalToggle = true;
         this.toggle = externalToggle;
         disableIndirect();
+        CSH.setHelpIDString(getEditor(),"task.form.radius");
     }
     
     /** create a new form, which creates and displays it's own
@@ -50,6 +52,7 @@ public class RadiusFormElement extends AbstractTaskFormElement implements Proper
         super(pval, pdesc, fileChooser);
         this.toggle = new DecSexToggle();
         this.isExternalToggle = false;
+        CSH.setHelpIDString(getEditor(),"task.form.radius");
     }
     
     private final DecSexToggle toggle;

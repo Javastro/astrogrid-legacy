@@ -83,7 +83,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
      * 
      */
     public FileExplorerDialog(UIContext context, TypesafeObjectBuilder builder) {
-        super(context,"File Chooser","ui.filechooser");
+        super(context,"File Chooser","dialog.file");
         // based on code reading...
         this.okButton = getOkButton();
         ActivitiesManager acts = new NullActivitiesManager();

@@ -37,6 +37,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.JPromptingTextField;
@@ -87,6 +88,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		indirectToggle.setToolTipText("Load this input from a file");
 		indirectToggle.setSelected(pval.getIndirect());
 		indirectToggle.addItemListener(this);
+		CSH.setHelpIDString(indirectToggle,"task.indirect");
 		
 		label =  new PinnableLabel(StringUtils.abbreviate(pdesc.getUiName(),50));
 		label.setToolTipText("Click to pin the documentation for this parameter");	
@@ -110,6 +112,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
         
         pb.add(Box.createVerticalGlue(),cc.xyw(1,2,2));
         indirectPanel = pb.getPanel();
+        CSH.setHelpIDString(indirectPanel,"task.indirect");
 	}
 	
 	/** customization method, for use by subclasses

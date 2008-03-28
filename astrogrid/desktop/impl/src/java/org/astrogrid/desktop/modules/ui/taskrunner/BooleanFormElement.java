@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /** editor for a boolean element.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -26,6 +27,7 @@ public class BooleanFormElement extends AbstractTaskFormElement {
 	public BooleanFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal fileChooser) {
 		super(pval, pdesc,fileChooser);
 		disableIndirect();
+        CSH.setHelpIDString(getEditor(),"task.form.boolean");		
 	}
 
 	

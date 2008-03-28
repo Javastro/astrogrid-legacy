@@ -193,7 +193,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
          * @throws HeadlessException
          */
         public SelfTestDisplay(UIContext context) throws HeadlessException {
-            super(context,"Self Tests","ui.selftest");
+            super(context,"Self Tests","window.selftest");
             context.unregisterWindow(this); // registered by parent, don't want it.
             
             // a table component, based on the testResults, where all updates occur on the EDT
@@ -218,7 +218,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             JPanel pane = getMainPanel();
             pane.add(new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),BorderLayout.CENTER);
             retest = new JButton("Re-run self tests");
-            JButton helpButton = context.getHelpServer().createHelpButton("ui.selftest");
+            JButton helpButton = context.getHelpServer().createHelpButton("window.selftest");
             Box topPanel = new Box(BoxLayout.X_AXIS);
             topPanel.add(retest);
             topPanel.add(Box.createHorizontalGlue());

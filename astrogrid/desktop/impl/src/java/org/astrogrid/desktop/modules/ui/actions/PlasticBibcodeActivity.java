@@ -35,6 +35,7 @@ public class PlasticBibcodeActivity extends AbstractResourceActivity {
 	
 	public PlasticBibcodeActivity(final PlasticApplicationDescription descr, PlasticScavenger scav) {
 		super();
+		setHelpID("activity.plastic.bibcode");
 		this.plas = descr;
         this.scav = scav;
 		PlasticScavenger.configureActivity("bibcode",this,plas);

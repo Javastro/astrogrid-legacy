@@ -37,6 +37,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 	 * 
 	 */
 	public SaveXoXoListActivity(ResourceChooserInternal chooser,FileSystemManager vfs) {
+	    setHelpID("activity.xoxo");
 		this.chooser = chooser;
 		this.vfs = vfs;
 		setText("Export Abbreviated XML"+ UIComponentMenuBar.ELLIPSIS);

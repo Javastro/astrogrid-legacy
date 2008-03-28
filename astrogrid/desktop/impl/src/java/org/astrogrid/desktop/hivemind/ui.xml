@@ -137,7 +137,7 @@ ASTROSCOPE
 			<inject object="service:astrogrid.stap" />
 		</object>		
 	</contribution>
-
+<!-- 
 		<contribution configuration-id="system.helpmap">
 		<item id="userInterface.astroscopeLauncher" url="http://www2.astrogrid.org/science/documentation/data-explore/astroscope" />
 		<item id="astroscope.menu.science" url="http://www2.astrogrid.org/science/documentation/data-explore/astroscope" />
@@ -145,6 +145,7 @@ ASTROSCOPE
 
 	</contribution>
 
+ -->
 <!--  
 ==============================
 HELIOSCOPE
@@ -357,11 +358,14 @@ Query Builder
 		<window name="Query Builder">service:queryBuilder</window>
 	</contribution>
 		-->
+        
+        <!-- 
 		<contribution configuration-id="system.helpmap">
-		<!-- TODO: fix these urls. -->
+
 		<item id="userInterface.queryBuilder" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
 		<item id="queryBuilder.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
 	</contribution>	
+         -->
 	
 	<!-- 
 	==================================
@@ -628,7 +632,7 @@ ACTIONS
          
 	</contribution>
 		
-	<!--  help links -->
+	<!--  help links 
 		<contribution configuration-id="system.helpmap">
 		<item id="voexplorer.intro" url="http://wiki.astrogrid.org/pub/Astrogrid/VOExpDesignMeeting/registry-intro.pdf" />
 		<item id="userInterface.voexplorer" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
@@ -653,6 +657,7 @@ ACTIONS
 		<item id="resouceFolders.buttons" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
 	</contribution>	
 
+    -->
 
 	
 	<!--  =====================================

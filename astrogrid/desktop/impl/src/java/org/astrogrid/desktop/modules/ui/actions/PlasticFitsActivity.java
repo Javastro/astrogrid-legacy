@@ -76,6 +76,7 @@ private final PlasticScavenger scav;
 	 */
 	public PlasticFitsActivity(PlasticApplicationDescription plas, PlasticScavenger scav) {
 		super();
+		setHelpID("activity.plastic.fits");
 		this.plas = plas;
         this.scav = scav;
 		PlasticScavenger.configureActivity("FITS",this,plas);

@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /** editor for any type with an enumeration
  * @author Noel.Winstanley@manchester.ac.uk
@@ -25,6 +26,7 @@ public class EnumerationFormElement extends AbstractTaskFormElement {
 	public EnumerationFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
 		disableIndirect();
+        CSH.setHelpIDString(getEditor(),"task.form.enumeration");		
 	}
 
 	protected JComponent createEditor() {

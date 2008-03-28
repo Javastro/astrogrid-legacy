@@ -34,6 +34,7 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.TableDataType;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.ui.comp.TextAreaRenderer;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
@@ -69,6 +70,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	 * 
 	 */
 	public TabularMetadataViewer() {
+	    CSH.setHelpIDString(this,"table.metadata");
 		catalogues = new BasicEventList();
 		tables = new BasicEventList();
 		columns = new BasicEventList();

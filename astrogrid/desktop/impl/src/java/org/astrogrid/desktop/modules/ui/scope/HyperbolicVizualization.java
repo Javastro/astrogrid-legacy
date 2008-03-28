@@ -12,6 +12,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.JPopupMenu;
 
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
@@ -79,7 +80,7 @@ public class HyperbolicVizualization extends Vizualization {
             actmap = new ActivityMap();
             ItemRegistry registry = getItemRegistry();
             display = new Display();
-
+             CSH.setHelpIDString(display,"scope.viz.hyperbolic");
 
            // create a null renderer for use when no label should be shown
            NullRenderer nodeRenderer2 = new NullRenderer();

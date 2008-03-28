@@ -14,7 +14,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.1.rc1" date="2008-03-27">
+<release version="2008.1.rc1" date="2008-03-28">
+<action dev="nw" type="fix">
+added to, and made uniform, UI help tags.
+</action>
 <action dev="nw" type="fix" issue="2640">
     Freshened all example resource lists. Made the examples location a preference
 </action>

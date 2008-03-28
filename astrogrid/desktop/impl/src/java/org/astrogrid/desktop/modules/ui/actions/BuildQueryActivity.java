@@ -35,7 +35,7 @@ public final class BuildQueryActivity extends AbstractFileOrResourceActivity {
  */
 public BuildQueryActivity(QueryBuilderInternal t) {
 	this.t = t;
-	CSH.setHelpIDString(this, "resourceTask.buildQuery");		
+	setHelpID("activity.adql");	
 	setText("Build ADQL");
 	setIcon(IconHelper.loadIcon("db16.png"));
 	setToolTipText("Construct an ADQL query against the selected table descriptions");

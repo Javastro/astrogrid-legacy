@@ -48,6 +48,7 @@ import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessEvent;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -137,6 +138,7 @@ public class ExecutionTracker implements ListSelectionListener{
 
 		// layout this list of beans of components to a panel
 		panel = new JEventListPanel(observing, new TrackerFormat());
+		CSH.setHelpIDString(panel,"task.executionTracker");
 		panel.setElementColumns(1);
 
 

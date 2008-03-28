@@ -49,6 +49,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -207,6 +208,7 @@ private Dimension preservedPreferredSize = null ;
 		// help pane - create early, as it listens to various other components.
 		infoPane = builder.createParametersInfoPane(model,allElements);
 		infoPane.setBorder(BorderFactory.createEmptyBorder());
+		CSH.setHelpIDString(infoPane,"task.info");
 		final JScrollPane infoScroll = new JScrollPane(infoPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		infoScroll.setBorder(MyTitledBorder.createLined("Information")); 
 		infoScroll.setPreferredSize(new Dimension(100,100));
@@ -223,6 +225,7 @@ private Dimension preservedPreferredSize = null ;
 		interfaceChooser.setToolTipText("Change the set of parameters required to call this task");
 		interfaceChooser.setEditable(false);
 		interfaceChooser.addItemListener(this);
+		CSH.setHelpIDString(interfaceChooser,"task.interfaceChooser");
 		
 		resourceLabel = new PinnableLabel("No task selected");
 		resourceLabel.setToolTipText("Click to pin the overview documentation");
@@ -666,6 +669,7 @@ private Dimension preservedPreferredSize = null ;
 			// standard sized editor...
 			// button to enable one editor or the other.
 			final ExpandCollapseButton ep = new ExpandCollapseButton(bottomPanel);
+	        CSH.setHelpIDString(ep,"task.form.adql");  
 			ep.setToolTipText("Open full editor for this parameter");
 			adqlElement.setOptionalButton(ep);
 			// ep already shows / hides the fiull editor. now just need to make it do the same with the standard editor
@@ -850,6 +854,7 @@ private Dimension preservedPreferredSize = null ;
 			optionalButton.setSelected(true);
 			optionalButton.setToolTipText("This is an optional parameter: check to enable it");
 			optionalButton.setActionCommand("optional");
+			CSH.setHelpIDString(optionalButton,"task.form.optional");
 			optionalButton.addActionListener(this);
 			el.setOptionalButton(optionalButton);
 		}
@@ -859,6 +864,7 @@ private Dimension preservedPreferredSize = null ;
 			JButton removeButton = new JButton(IconHelper.loadIcon("editremove16.png"));
 			removeButton.setToolTipText("Remove this parameter");
 			removeButton.setActionCommand("remove");
+            CSH.setHelpIDString(removeButton,"task.form.remove");			
 			removeButton.addActionListener(this);
 			el.setRemoveButton(removeButton);
 		}		
@@ -869,6 +875,7 @@ private Dimension preservedPreferredSize = null ;
 			JButton addButton = new JButton(IconHelper.loadIcon("editadd16.png"));
 			addButton.setToolTipText("Repeat this parameter");
 			addButton.setActionCommand("add");
+            CSH.setHelpIDString(addButton,"task.form.add");			
 			addButton.addActionListener(this);
 			el.setAddButton(addButton);
 		}

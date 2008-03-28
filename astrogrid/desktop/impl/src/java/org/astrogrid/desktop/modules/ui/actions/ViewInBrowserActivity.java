@@ -40,6 +40,7 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 		super();
 		this.browser = browser;
         this.vfs = vfs;
+        setHelpID("activity.open");
 		setText("View");
 		setIcon(IconHelper.loadIcon("browser16.png"));		
 		setToolTipText("View with the default application on your computer");

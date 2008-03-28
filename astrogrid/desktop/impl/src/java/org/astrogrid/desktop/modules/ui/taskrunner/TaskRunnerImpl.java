@@ -74,6 +74,7 @@ import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.ui.RetriableBackgroundWorker;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -134,7 +135,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	        ,RemoteProcessManagerInternal rpmi,ResourceChooserInternal rci
 	        ,RegistryGoogle regChooser,TypesafeObjectBuilder builder
 	        ,VoMonInternal vomon) throws HeadlessException {
-		super(context,"Task Runner","userInterface.taskRunner");
+		super(context,"Task Runner","window.taskrunner");
 		logger.info("Constructing new TaskRunner");
         this.rpmi = rpmi;
 		this.fileChooser = rci;
@@ -518,6 +519,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                ,new FunctionList(executionServers, fn),false);
 	        execButton.setEnabled(false);
 	        execButton.getMainButton().setToolTipText("Execute the task: Press to execute on the first suitable server, or click the arrow to manually choose a server");
+	        CSH.setHelpIDString(execButton,"task.execute");
 	        executionServers.addListEventListener(this);
 	        builder.add(execButton,cc.xy(8,1));     
 	    }

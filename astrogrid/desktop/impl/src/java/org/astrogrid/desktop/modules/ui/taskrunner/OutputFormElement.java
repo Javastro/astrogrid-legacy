@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /** Form element for an output parameter.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -26,6 +27,7 @@ public class OutputFormElement extends AbstractTaskFormElement {
 		indirectToggle.setToolTipText("Toggle whether to store this output in cache or write it to your VO Workspace");
 		chooserButton.setText("Choose Location..");
 		chooserButton.setToolTipText("Select the location in VO Workspace that this output parameter will be saved to");
+	      CSH.setHelpIDString(getEditor(),"task.form.output");
 	}
 
 	protected JComponent createEditor() {

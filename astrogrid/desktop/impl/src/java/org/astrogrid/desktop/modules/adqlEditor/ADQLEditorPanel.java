@@ -130,6 +130,7 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.StandardInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.TableInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory.UndoManager;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.TabularMetadataViewer;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -350,6 +351,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
         new ContextMenuAssistant(this, parent.getContextMenu());
         if (log.isTraceEnabled())
             exitTrace("ADQLEditorPanel()");
+        CSH.setHelpIDString(this,"adql.editor");
     }
 
     /**
@@ -760,6 +762,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
 
     private void formatDiagnosticsTab() {        
         JPanel dp = new JPanel() ;
+        CSH.setHelpIDString(dp,"adql.diagnostics");
         dp.setLayout( new BorderLayout() ) ;        
         diagnostics = new JTextPane();
         diagnostics.setBorder(BorderFactory.createEmptyBorder());
@@ -819,6 +822,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
         hscrContent.setColumnHeaderView(buttonView);
 
         history = new JTextPane();
+        CSH.setHelpIDString(history,"adql.history");
         history.setBorder(BorderFactory.createEmptyBorder());
         hscrContent.setViewportView(history);
         tabbedBottomPane.addTab("History stack", IconHelper
@@ -1708,6 +1712,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             owner.addTab("Comment", IconHelper.loadIcon( EDIT_ICON ), this,
                     "Enter an overall comment describing the query");
             textPane.addFocusListener(this);
+            CSH.setHelpIDString(this,"adql.comment");
         }
 
         /*
@@ -1780,6 +1785,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             adqlTree.setSelectionToTopSelectNode();
             adqlTree.setBorder(BorderFactory.createEmptyBorder());
             adqlTree.openBranches() ;
+            CSH.setHelpIDString(adqlTree,"adql.tree");
             
             final JScrollPane scrTree = new JScrollPane(adqlTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);            
             scrTree.addComponentListener ( 
@@ -1895,7 +1901,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             addFocusListener(this);
 //            initKeyProcessing();
             displayText();
-
+            CSH.setHelpIDString(this,"adql.stringView");
             this.originalBorder = getBorder();
             this.warnBorder = BorderFactory.createLineBorder(Color.RED);
         }

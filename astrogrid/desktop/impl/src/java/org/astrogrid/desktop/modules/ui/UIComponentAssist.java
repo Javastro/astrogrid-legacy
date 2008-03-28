@@ -37,6 +37,7 @@ import javax.swing.event.ChangeListener;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.comp.EventListPopupMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
@@ -197,6 +198,7 @@ public final class UIComponentAssist {
     private JButton getContextSensitiveHelpButton() {
         if (helpButton == null) {
             helpButton = new JButton(IconHelper.loadIcon("contexthelp18.png"));
+            CSH.setHelpIDString(helpButton,"ui.contextHelp");
             helpButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             helpButton.setBorder(BorderFactory.createEtchedBorder());            
             helpButton.setToolTipText("<html><b>Click this button</b>, and then <b>click on another window component</b> for help about that component.<br> or press <b>'F1'</b> for overview help</html>");
@@ -226,6 +228,7 @@ public final class UIComponentAssist {
                 }
                 
             };
+            CSH.setHelpIDString(login,"ui.login");
         }
         return login;
     }
@@ -257,6 +260,7 @@ public final class UIComponentAssist {
                 }
             });
             
+            CSH.setHelpIDString(plasticList,"ui.plasticList");
         }
         return plasticList;
     }
@@ -295,7 +299,7 @@ public final class UIComponentAssist {
                     tasksButton.setEnabled(! fl.isEmpty());                    
                 }
             });
-      
+            CSH.setHelpIDString(tasksButton,"ui.tasks");
         }
         return tasksButton;
     }
@@ -309,6 +313,7 @@ public final class UIComponentAssist {
             // throbber.setIcon(IconHelper.loadIcon("loader.gif"));
             throbber.setDisabledIcon(IconHelper.loadIcon("idle16.png"));   
             throbber.setToolTipText("Indicates when the application is communicating with VO services");
+            CSH.setHelpIDString(throbber,"ui.throbber");
         }
         return throbber;
     }

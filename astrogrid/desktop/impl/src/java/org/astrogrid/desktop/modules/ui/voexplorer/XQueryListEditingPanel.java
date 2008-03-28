@@ -15,6 +15,7 @@ import jedit.SQLTokenMarker;
 import jedit.Token;
 
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
@@ -37,6 +38,7 @@ public class XQueryListEditingPanel extends EditingPanel implements ActionListen
     }
     
 	public XQueryListEditingPanel(UIComponent parent,QuerySizer sizer) {
+        CSH.setHelpIDString(this,"reg.edit.xquery");	    
 		FormLayout layout = new FormLayout(
 				"2dlu,right:d,1dlu,max(30dlu;d):grow,4dlu,d,1dlu,d,3dlu" // cols
 				,"d,d,max(30dlu;d),d,1dlu:grow,d" // rows

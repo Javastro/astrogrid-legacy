@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.30 2008/03/26 10:35:14 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.31 2008/03/28 13:08:58 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -473,7 +473,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		// prelims
 		//this.setSize(new Dimension(500,800));
 		setLayout(new BorderLayout());
-		CSH.setHelpIDString(this, "reg.general");
 		
 	//DATAPIPELINE
 		// create datamodel.
@@ -527,6 +526,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		builder.add(filterField,cc.xy(3, 1));
 		this.systemToggleButton = mPipeline.getSystemToggleButton();
 		final JToggleButton expandButton = mPipeline.getExpandButton();		
+		CSH.setHelpIDString(expandButton,"reg.showFilters");
         builder.add(expandButton,cc.xy(5, 1));
         this.expandAction = expandButton.getAction();
 		toolbar = builder.getPanel();
@@ -956,6 +956,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.31  2008/03/28 13:08:58  nw
+help-tagging
+
 Revision 1.30  2008/03/26 10:35:14  nw
 checked configuraiton of html builder and strbuilder
 

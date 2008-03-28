@@ -1,502 +1,57 @@
-<html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="../hivemind.css" type="text/css" rel="stylesheet">
-<title>HiveMind Registry -  Configuration Point framework.acrServices</title>
-</head>
-<body>
-<div class="title"> Module <a href="../module/framework.html">framework</a>
-</div>
-<div class="center-nav">
-<a href="../index.html">Back to master index</a>
-</div>
-<hr>
-<table cellspacing="0" class="top-level-object">
-<tr>
-<th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"> Configuration Point framework.acrServices</th><th>Occurs:</th><td> unbounded </td>
-</tr>
-<tr>
-<td colspan="3" class="description">Map of known ACR components / services.</td>
-</tr>
-<tr>
-<th class="section" colspan="3">Schema</th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<table cellspacing="0" class="nested-object">
-<tr>
-<th class="object-id" colspan="3"> Element &lt;acrService&gt; </th>
-</tr>
-<tr>
-<td colspan="3" class="description">Describes a single acr service.</td>
-</tr>
-<tr>
-<th class="sub-id">Attribute id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">qualified-id</a></td>
-</tr>
-<tr>
-<td colspan="3" class="description">The service id of the component</td>
-</tr>
-<tr>
-<th class="sub-id">Attribute interface (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td>
-</tr>
-<tr>
-<td colspan="3" class="description">The public interface class of the component (may be a superclass of the
-					interface class used in definition of the service)</td>
-</tr>
-<tr>
-<th class="section" colspan="3">Conversion Rules</th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Configuration Point framework.acrServices</title></head><body><div class="title"> Module <a href="../module/framework.html">framework</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div><hr/><table cellspacing="0" class="top-level-object"><tr><th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"/> Configuration Point framework.acrServices</th><th>Occurs:</th><td> unbounded </td></tr><tr><td colspan="3" class="description">Map of known ACR components / services.</td></tr><tr><th class="section" colspan="3">Schema</th></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="nested-object"><tr><th class="object-id" colspan="3"> Element &lt;acrService&gt; </th></tr><tr><td colspan="3" class="description">Describes a single acr service.</td></tr><tr><th class="sub-id">Attribute id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">qualified-id</a></td></tr><tr><td colspan="3" class="description">The service id of the component</td></tr><tr><th class="sub-id">Attribute interface (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">class</a></td></tr><tr><td colspan="3" class="description">The public interface class of the component (may be a superclass of the
+					interface class used in definition of the service)</td></tr><tr><th class="section" colspan="3">Conversion Rules</th></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;create-object
          
         <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.hivemind.ServiceBean</span>"
-       /&gt; <br>
+       /&gt; <br/>
      &lt;read-attribute
          
         <span class="attribute">attribute</span>="<span class="attribute-value">id</span>"
       
          
         <span class="attribute">property</span>="<span class="attribute-value">id</span>"
-       /&gt; <br>
+       /&gt; <br/>
      &lt;read-attribute
          
         <span class="attribute">attribute</span>="<span class="attribute-value">interface</span>"
       
          
         <span class="attribute">property</span>="<span class="attribute-value">interface</span>"
-       /&gt; <br>
+       /&gt; <br/>
      &lt;set-module
          
         <span class="attribute">property</span>="<span class="attribute-value">module</span>"
-       /&gt; <br>
+       /&gt; <br/>
      &lt;invoke-parent
          
         <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
-       /&gt; </div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/astrogrid.html">astrogrid</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; </div></td></tr></table></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/builtin.html">builtin</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;acrService
          
-        <span class="attribute">id</span>="<span class="attribute-value">registry</span>"
+        <span class="attribute">id</span>="<span class="attribute-value">sessionManager</span>"
       
          
-        <span class="attribute">interface</span>="<span class="attribute-value">Registry</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">myspace</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Myspace</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">community</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Community</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">applications</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Applications</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">jobs</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Jobs</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">processManager</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">RemoteProcessManager</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">stap</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Stap</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/builtin.html">builtin</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+        <span class="attribute">interface</span>="<span class="attribute-value">SessionManager</span>"
+       /&gt; <br/>
      &lt;acrService
          
         <span class="attribute">id</span>="<span class="attribute-value">shutdown</span>"
       
          
         <span class="attribute">interface</span>="<span class="attribute-value">Shutdown</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/cds.html">cds</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">sesame</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Sesame</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">vizier</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">VizieR</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">coordinate</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Coordinate</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">ucd</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">UCD</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">glu</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Glu</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/dialogs.html">dialogs</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">resourceChooser</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">ResourceChooser</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">toolEditor</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">ToolEditor</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">registryChooser</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">RegistryChooser</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">registryGoogle</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">RegistryGoogle</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/ivoa.html">ivoa</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">ssap</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Ssap</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">siap</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Siap</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">cone</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Cone</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">skyNode</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">SkyNode</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">adql074</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Adql074</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">registry</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Registry</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">externalRegistry</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">ExternalRegistry</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/nvo.html">nvo</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">cone</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Cone</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/plastic.html">plastic</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">hub</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">PlasticHubListener</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/system.html">system</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">help</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">HelpServer</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">browser</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">BrowserControl</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">configuration</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Configuration</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">ui</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">UI</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">webserver</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">WebServer</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">apihelp</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">ApiHelp</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">rmi</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">RmiServer</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/test.html">test</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; </div></td></tr><tr><th class="section" colspan="3"> Contribution from module <a href="../module/test.html">test</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;acrService
          
         <span class="attribute">id</span>="<span class="attribute-value">transporttest</span>"
       
          
         <span class="attribute">interface</span>="<span class="attribute-value">TransportTest</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/ui.html">ui</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; <br/>
      &lt;acrService
          
-        <span class="attribute">id</span>="<span class="attribute-value">astroscope</span>"
+        <span class="attribute">id</span>="<span class="attribute-value">sessiontest</span>"
       
          
-        <span class="attribute">interface</span>="<span class="attribute-value">AstroScope</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">helioscope</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">HelioScope</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">lookout</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Lookout</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">parameterizedWorkflows</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">ParameterizedWorkflowLauncher</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">applicationLauncher</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">ApplicationLauncher</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">workflowBuilder</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">WorkflowBuilder</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">myspaceBrowser</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">MyspaceBrowser</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">jobMonitor</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">JobMonitor</span>"
-       /&gt; <br>
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">registryBrowser</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">RegistryBrowser</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/util.html">util</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">tables</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">Tables</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="section" colspan="3"> Contribution from module <a href="../module/votech.html">votech</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
-     &lt;acrService
-         
-        <span class="attribute">id</span>="<span class="attribute-value">vomon</span>"
-      
-         
-        <span class="attribute">interface</span>="<span class="attribute-value">VoMon</span>"
-       /&gt; </div>
-</td>
-</tr>
-</table>
-<hr>
-<div class="title"> Module <a href="../module/framework.html">framework</a>
-</div>
-<div class="center-nav">
-<a href="../index.html">Back to master index</a>
-</div>
-</body>
-</html>
+        <span class="attribute">interface</span>="<span class="attribute-value">SessionTest</span>"
+       /&gt; </div></td></tr></table><hr/><div class="title"> Module <a href="../module/framework.html">framework</a></div><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>

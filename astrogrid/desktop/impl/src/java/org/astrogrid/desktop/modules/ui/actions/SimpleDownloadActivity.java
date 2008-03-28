@@ -59,6 +59,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 
 	public SimpleDownloadActivity(final FileSystemManager vfs, ResourceChooserInternal chooser) {
 		super();
+		setHelpID("activity.download");
         this.vfs = vfs;
         this.chooser = chooser;
 		setText("Download" + UIComponentMenuBar.ELLIPSIS);

@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /** form editor for binary objects. all we can do here is just show the 
  * indirection dialogue.
@@ -24,6 +25,7 @@ public class BinaryFormElement extends AbstractTaskFormElement {
 	public BinaryFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal chooser) {
 		super(pval, pdesc, chooser);
 		getEditor().show(INDIRECT);
+		CSH.setHelpIDString(getEditor(),"task.form.binary");
 		pval.setIndirect(true);
 		indirectToggle.setEnabled(false); // flip to indirect mode, and stay there.
 		indirectToggle.setVisible(false);

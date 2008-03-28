@@ -52,6 +52,7 @@ public class SaveActivity extends AbstractFileActivity {
 	
 	public SaveActivity(final ResourceChooserInternal chooser, final MyspaceInternal ms) {
 		super();
+		setHelpID("activity.file.save");
 		this.chooser = chooser;
 		this.myspace = ms;
 		setText("Save");

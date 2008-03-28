@@ -38,6 +38,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
 public class InfoActivity extends AbstractFileOrResourceActivity implements Activity.Info, Activity.NoContext{
 
 public InfoActivity() {
+    setHelpID("activity.selection");
 	typeField = new JTextArea();
 	typeField.setRows(1);
 	typeField.setEditable(false);

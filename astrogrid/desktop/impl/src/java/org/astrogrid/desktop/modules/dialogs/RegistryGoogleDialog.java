@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.17 2007/12/12 13:54:15 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.18 2008/03/28 13:09:01 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
      * @throws java.awt.HeadlessException
      */
     public RegistryGoogleDialog( UIContext context, TypesafeObjectBuilder builder) throws HeadlessException {
-        super(context,"Registry Resource Chooser","ui.registryChooserDialogue");
+        super(context,"Registry Resource Chooser","dialog.registry");
         this.chooserPanel = builder.createGooglePanel(this);
         this.okButton = getOkButton();
         this.okButton.setEnabled(false);
@@ -134,6 +134,9 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.18  2008/03/28 13:09:01  nw
+help-tagging
+
 Revision 1.17  2007/12/12 13:54:15  nw
 astroscope upgrade, and minor changes for first beta release
 

@@ -43,6 +43,7 @@ public class FurtherInfoActivity extends AbstractResourceActivity implements Act
 	 * 
 	 */
 	public FurtherInfoActivity(BrowserControl browser) {
+	    setHelpID("activity.furtherinfo");
 		this.browser = browser;
 		setIcon(IconHelper.loadIcon("help16.png"));
 		//setText("Publisher's web page"); 

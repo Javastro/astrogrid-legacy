@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.14 2008/03/18 08:34:12 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.15 2008/03/28 13:09:01 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 
 	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
 			,TypesafeObjectBuilder uiBuilder) {
-        super(context,"File Explorer","fileexplorer.intro");
+        super(context,"File Explorer","window.fileexplorer");
  
         this.setSize(800, 600);    
         	

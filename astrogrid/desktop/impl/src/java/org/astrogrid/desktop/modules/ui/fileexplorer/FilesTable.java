@@ -17,6 +17,7 @@ import javax.swing.table.TableColumnModel;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.system.CSH;
 
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventTableModel;
@@ -34,7 +35,7 @@ public class FilesTable extends JTable {
 
         // setup the model.
         setModel(new EventTableModel(files,new StorageTableFormat(icons)));     
-
+        CSH.setHelpIDString(this,"files.table");
 
         // setup the behaviour
         setPreferredScrollableViewportSize(new Dimension(300,300));

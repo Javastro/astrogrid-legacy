@@ -31,7 +31,7 @@ public final class QueryScopeActivity extends AbstractResourceActivity {
  * 
  */
 public QueryScopeActivity(AstroScopeInternal ai) {
-	CSH.setHelpIDString(this, "resourceTask.query");	
+    setHelpID("activity.query");	
 	this.ai = ai;
 	setText("Query");
 	setIcon(IconHelper.loadIcon("scope16.png"));

@@ -41,6 +41,7 @@ import javax.swing.border.Border;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
@@ -72,7 +73,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 
 
 		public PreferenceEditorDialogue(PreferencesArranger arranger, Preference advancedPreference, UIContext cxt) {
-
+		    CSH.setHelpIDString(this,"dialog.preference");
 			this.showAdvancedPreference = advancedPreference;
 			this.cxt = cxt;
 			setBorder(null);

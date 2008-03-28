@@ -231,7 +231,7 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         context.getHelpServer().enableHelpKey(this.getRootPane(),helpId);
     }
     private static final String title = "Background Processes";
-    private static final String helpId = "ui.backgroundProcesses";
+    private static final String helpId = "window.processes";
     
 /** layout for the tasks list */
     private static class MonitorFormat extends JEventListPanel.AbstractFormat {

@@ -13,6 +13,7 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
@@ -37,6 +38,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class SmartListEditingPanel extends EditingPanel implements ActionListener, ListEventListener, DocumentListener {
 
 	public SmartListEditingPanel(UIComponent parent,QuerySizer sizer) {
+	    CSH.setHelpIDString(this,"reg.edit.smart");
 		FormLayout layout= new FormLayout(
 				"2dlu, right:d, 1dlu, max(30dlu;d):grow, 4dlu, d, 1dlu, d, 3dlu" // cols
 				,"d,top:d:grow,d,max(30dlu;d),d" // rows

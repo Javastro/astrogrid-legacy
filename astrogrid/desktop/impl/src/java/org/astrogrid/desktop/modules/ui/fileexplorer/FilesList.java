@@ -49,7 +49,7 @@ public class FilesList extends JList {
         super();
         setModel(new EventListModel(files));
         
-        CSH.setHelpIDString(this,"files.list");
+        CSH.setHelpIDString(this,"files.icons");
         setLayoutOrientation(JList.HORIZONTAL_WRAP);
         setVisibleRowCount(-1);
             

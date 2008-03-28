@@ -59,6 +59,7 @@ System module.
 		<load service-id="executor" />
 		<load service-id="configuration" />
 		<load service-id="tupperware" />
+        <load service-id="help" /> <!--  load eager, so it starts downloading the helpmap. -->
 	</contribution>
 
 	
@@ -70,7 +71,9 @@ System module.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.HelpServerImpl">
 				<service>browser</service>
-				<configuration>helpmap</configuration>
+		<!-- previously the helpmap was inlined - now external		<configuration>helpmap</configuration> -->
+                <string>${helpmap.url}</string>
+                <service>ui</service>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -78,7 +81,13 @@ System module.
 	<implementation service-id="help" if="(property system.help.disabled) or (property system.browser.disabled)">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-
+    
+    <contribution configuration-id="hivemind.FactoryDefaults">                  
+        <default symbol="helpmap.url" value="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/helpmap.xml"/> 
+    </contribution>
+    
+<!--  unused
+ 
 	<configuration-point id="helpmap">
 		<schema>
 			<element name="item" key-attribute="id">
@@ -95,11 +104,10 @@ System module.
 	</configuration-point>
 	
 	<contribution configuration-id="helpmap">
-		<!--  front page - changed again
 		<item id="top" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc/vod2008b-IndexPage" />
-        -->
+        
         <item id="top" url="http://www.astrogrid.org/help-intro" />
-		<!--  contents / index -->
+	
 		<item id="contents" url="http://www2.astrogrid.org/sitemap" />
 		<item id="gettingStarted" url="http://www2.astrogrid.org/science/getting-started/" />
 		<item id="tutorial.dataAccess" url="http://www2.astrogrid.org/science/data-access/data-access-worksheet" />
@@ -108,7 +116,7 @@ System module.
 		<item id="tutorial.stars" url="http://www2.astrogrid.org/science/science-examples-stars" />
 		<item id="tutorial.cosmology" url="http://www2.astrogrid.org/science/science-cosmology" />
 	</contribution>
-	
+-->	
 	<!--  
 	================================
 	BROWSER CONTROL

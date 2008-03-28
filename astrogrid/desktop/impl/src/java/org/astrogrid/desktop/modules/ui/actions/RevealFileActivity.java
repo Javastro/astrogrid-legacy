@@ -33,6 +33,7 @@ public class RevealFileActivity extends AbstractFileActivity {
 
 	public RevealFileActivity(final FileSystemManager vfs, FileManagerFactory mgr) {
 		super();
+		setHelpID("activity.reveal");
         this.vfs = vfs;
         this.mgr = mgr;
 		setText("Show in File Explorer");

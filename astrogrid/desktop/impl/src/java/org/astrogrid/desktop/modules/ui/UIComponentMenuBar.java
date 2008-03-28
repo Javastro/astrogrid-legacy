@@ -40,6 +40,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.hivemind.ApplicationRuntimeException;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
@@ -348,8 +349,8 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             menu.add(contents);
         */
             separator();
-            menu.add(new HyperlinkMenuItem("VO Desktop Help", "http://www.astrogrid.org/help/")); // NWW - removed 'Online' - rather redundant.
-            menu.add(new HyperlinkMenuItem("AstroGrid Helpdesk", "http://www.astrogrid.org/support/"));
+            menu.add(new HelpMenuItem(uiParent.getContext().getHelpServer(),"VO Desktop Help", "vodesktop.help")); 
+            menu.add(new HelpMenuItem(uiParent.getContext().getHelpServer(),"AstroGrid Helpdesk", "ag.helpdesk"));
         }
         
         public JMenu create() {
@@ -372,39 +373,24 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         
     }    
    
-    /** simple menu item that opens a url in a browser
-     * url is provided as a string for programmatic convenience.
+    /** simple menu item that opens a help ID in the browser
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 5, 20073:02:11 PM
      */
-    public class HyperlinkMenuItem extends JMenuItem {
-        private final URL url;
-        public HyperlinkMenuItem(String text, Icon icon,String urlString) {
-            super(text, icon);
-            try {
-                url = new URL(urlString);
-            } catch (MalformedURLException x) {
-                throw new ApplicationRuntimeException("Invalid url",x);
-            }
-        }
+    public static class HelpMenuItem extends JMenuItem {
 
-        public HyperlinkMenuItem(String text,String urlString) {
+        private final String helpID;
+        private final HelpServer help;
+        public HelpMenuItem(HelpServer help,String text,String helpID) {
             super(text);
-            try {
-                url = new URL(urlString);
-            } catch (MalformedURLException x) {
-                throw new ApplicationRuntimeException("Invalid url",x);
-            }
+            this.help = help;
+            this.helpID = helpID;
+           
         }
         {
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
-                    try {
-                        uiParent.getContext().getBrowser().openURL(url);
-                    } catch (ACRException x) {
-                       uiParent.showTransientError("Unable to open browser",ExceptionFormatter.formatException(x));
-                    }
+                    help.showHelpForTarget(helpID);              
                 }                   
             });
         }
@@ -559,13 +545,8 @@ public abstract class UIComponentMenuBar extends JMenuBar {
      */
     public  static JMenuItem createApplicationHelpMenuItem(final UIContext context,String applicationName,
             final String helpKey) {
-        final JMenuItem appHelp = new JMenuItem(applicationName + " Help");
-        appHelp.addActionListener(new ActionListener() {
+        final JMenuItem appHelp = new HelpMenuItem(context.getHelpServer(),applicationName + " Help",helpKey);
 
-            public void actionPerformed(ActionEvent e) {
-                context.getHelpServer().showHelpForTarget(helpKey);                    
-            }
-        });
         appHelp.setAccelerator(KeyStroke.getKeyStroke(new Character('?'),UIComponentMenuBar.MENU_KEYMASK));
         return appHelp;
     }

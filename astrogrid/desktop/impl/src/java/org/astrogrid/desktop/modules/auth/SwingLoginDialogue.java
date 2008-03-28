@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.15 2008/03/18 08:34:13 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.16 2008/03/28 13:09:01 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      * @throws ServiceException 
      */
     public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
-        super(coxt,"Virtual Observatory Login","ui.login");
+        super(coxt,"Virtual Observatory Login","dialog.login");
         this.comm = comm;
     	this.defaultCommunity = defaultCommunity;
     	final MutableComboBoxModel model = new DefaultComboBoxModel();
@@ -308,6 +308,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.16  2008/03/28 13:09:01  nw
+help-tagging
+
 Revision 1.15  2008/03/18 08:34:13  nw
 Complete - task 308: improve appearance on windows.
 

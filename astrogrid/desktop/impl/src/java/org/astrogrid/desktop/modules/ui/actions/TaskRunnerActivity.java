@@ -29,7 +29,7 @@ public class TaskRunnerActivity extends AbstractFileOrResourceActivity {
  * 
  */
 public TaskRunnerActivity(TaskRunnerInternal t) {
-	CSH.setHelpIDString(this, "resourceActivity.taskRunner");		
+    setHelpID("activity.taskRunner");		
 	this.t = t;
 	setText("Execute Task");
 	setIcon(IconHelper.loadIcon("exec16.png"));

@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.14 2007/06/18 17:00:13 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.15 2008/03/28 13:09:01 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,12 +16,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +35,8 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 /** Implementation of the help server.
  * 
@@ -43,6 +51,8 @@ import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
  * <li> no multiple help sets, 
  * <li> no support for awt, only swing
  * <li>display help in external browser.
+ * <p>
+ * changed once again to externalize the help map - this can then be modified and improved after release.
  * </ul> 
  * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Jun-2005
@@ -54,17 +64,61 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
      */
     private static final Log logger = LogFactory.getLog(HelpServerImpl.class);
 
-    /** Construct a new HelpServerImpl
+    /** Construct a new HelpServerImpl by providing a mapping (e.g. from hivemind config.)
      * 
-     * @param helpMapping a mapping between helpIDs (string) and help resources (URL)
+     * @param helpMapping a mapping between helpIDs (string) and help resources (URL) (actually id's to helpItemContribution).
      */
         
     public HelpServerImpl(BrowserControl browser,Map helpMapping) {
     	this.browser = browser;
     	this.helpMapping = helpMapping;
     }
+    /** construct a new helpserverImpl by providing a URL to a help mapping file 
+     * @throws MalformedURLException */
+    public HelpServerImpl(BrowserControl browser, String mapURL, UIContext context) throws MalformedURLException {
+        this.browser = browser;
+        final URL u = new URL(mapURL); // if it's faulty, fail-fast here.
+        (new BackgroundWorker(context,"Fetching help-map", Thread.MIN_PRIORITY) { // load the help bap on a background thread.
 
-    private final Map helpMapping;
+            protected Object construct() throws Exception {
+                final XMLInputFactory fac = XMLInputFactory.newInstance();
+                XMLStreamReader in = null;
+                try {
+                    in = fac.createXMLStreamReader(u.openStream());
+                    while(in.hasNext()) {
+                        in.next();
+                        if (in.isStartElement()) {
+                            final String localName = in.getLocalName();
+                            if ("item".equals(localName)) {
+                                HelpItemContribution nu = new HelpItemContribution();
+                                nu.setId(in.getAttributeValue(null,"id"));
+                                try {
+                                nu.setUrl(in.getAttributeValue(null,"url"));
+                                helpMapping.put(nu.getId(),nu);
+                                } catch (MalformedURLException e) { // discard this one, but continue.
+                                    logger.warn("Malformed url for HelpID '" + nu.getId() + "' discarding");
+                                }
+                            }
+                        }
+                    } // end while.
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (XMLStreamException e) {
+                            // ignored
+                        }
+                    }
+                }                
+                return null;
+            }
+            protected void doError(Throwable ex) {
+                logger.warn("Failed to download helpmap",ex);
+            }
+        }).start();
+    }
+    
+    private Map helpMapping = new HashMap();
     private final BrowserControl browser;
 
     
@@ -74,7 +128,7 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
     
     public void showHelpForTarget(String target) {
     	if (target == null) {
-    		logger.error("Null help target - ignoring");
+    		logger.warn("Null help target - ignoring");
     		return;
     	}
     	HelpItemContribution item = (HelpItemContribution) helpMapping.get(target);
@@ -215,6 +269,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.15  2008/03/28 13:09:01  nw
+help-tagging
+
 Revision 1.14  2007/06/18 17:00:13  nw
 javadoc fixes.
 

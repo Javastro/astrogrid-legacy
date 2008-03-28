@@ -1,76 +1,211 @@
-<html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="../hivemind.css" type="text/css" rel="stylesheet">
-<title>HiveMind Registry -  Module builtin</title>
-</head>
-<body>
-<div class="title">Module builtin</div>
-<div class="center-nav">
-<a href="../index.html">Back to master index</a>
-</div>
-<table cellspacing="0" class="top-level-object">
-<tr>
-<th class="object-id">Module builtin</th><th>Version:</th><td>1.0.0</td>
-</tr>
-<tr>
-<th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.builtin</td>
-</tr>
-<tr>
-<td colspan="3" class="description">Builtin Components</td>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<table cellspacing="0" class="layout">
-<tr>
-<td></td><td>
-<table cellspacing="0" class="summary">
-<tr>
-<th>Service Points</th>
-</tr>
-<tr>
-<td><a href="../service/builtin.acr.html">builtin.acr</a></td>
-</tr>
-<tr>
-<td><a href="../service/builtin.shutdown.html">builtin.shutdown</a></td>
-</tr>
-</table>
-<div class="info">2 service points
-      </div>
-</td><td></td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<html><head><link href="../hivemind.css" type="text/css" rel="stylesheet"/><title>HiveMind Registry -  Module builtin</title></head><body><div class="title">Module builtin</div><div class="center-nav"><a href="../index.html">Back to master index</a></div><table cellspacing="0" class="top-level-object"><tr><th class="object-id">Module builtin</th><th>Version:</th><td>1.0.0</td></tr><tr><th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.builtin</td></tr><tr><td colspan="3" class="description">Builtin Components</td></tr><tr><td class="container" colspan="3"><table cellspacing="0" class="layout"><tr><td/><td><table cellspacing="0" class="summary"><tr><th>Service Points</th></tr><tr><td><a href="../service/builtin.acr.html">builtin.acr</a></td></tr><tr><td><a href="../service/builtin.sessionManager.html">builtin.sessionManager</a></td></tr><tr><td><a href="../service/builtin.shutdown.html">builtin.shutdown</a></td></tr></table><div class="info">3 service points
+      </div></td><td/></tr></table></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">sessionManager</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">SessionManager</span>"
+       /&gt; <br/>
      &lt;acrService
          
         <span class="attribute">id</span>="<span class="attribute-value">shutdown</span>"
       
          
         <span class="attribute">interface</span>="<span class="attribute-value">Shutdown</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;acr-module
          
         <span class="attribute">description</span>="<span class="attribute-value">intrinsic services that all others depend upon.</span>"
       
          
         <span class="attribute">name</span>="<span class="attribute-value">builtin</span>"
-       &gt; <ul>
-<li>
+       &gt; <ul><li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Service that creates new user sessions.
+ 
+ There's one default user session - this is the one who's connection 
+ properties are described in ~/.astrogrid-properties  (for XMLRPC &amp; HTTP) 
+ and to which RMI clients connect to automatically using the Finder.
+ 
+ However, this service allows a client connected to the default user session to 
+ create a new session - which will not share state such as authentication,
+ login information, etc with the default session. This is useful in a multi-user 
+ or server-side settings.
+ 
+ Once a session has been created, call the {@link #findHttpSession(String)}, {@link #findXmlRpcSession(String)}
+ or {@link Finder#findSession(String)}
+ 
+ Note however, that this session manager does not make any strong guarantees about
+ security - the purpose of this feature is to enable multiple user identities within the same AR -
+ not to enforce strict isolation between users of the same AR. In particular, all 
+ clients of the AR must first use the default user session to create a new one, 
+ and it may also be possible to determine how to connect to other sessions - hence
+ it is recommended that all clients connecting to the AR are mutually trusting.</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.builtin.SessionManager</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sessionManager</span>"
+       &gt; <ul><li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">create a new session.
+ 
+ Create a new session that will be available for at least the specified 
+ number of minutes, after which it will be disposed and inaccessible.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">createNewSession</span>"
+       &gt; <ul><li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a sessionId - an identifier for the newly created session.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li><li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"/>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">leaseMinutes</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">long</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">long</span>"
+       /&gt; </li></ul> &lt;/method&gt; </li><li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">check whether a session exists and is accessible</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">exists</span>"
+       &gt; <ul><li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"/>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li><li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"/>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sessionId</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li></ul> &lt;/method&gt; </li><li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">dispose of a session
+ 
+ Once disposed of, a session cannot be connected to.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">dispose</span>"
+       &gt; <ul><li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"/>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li><li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a sessionId that currently exists.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sessionId</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li></ul> &lt;/method&gt; </li><li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">connect to an session using XML-RPC</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">findXmlRpcSession</span>"
+       &gt; <ul><li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a full URL that an XML-RPC client should connect to to work with this session. No further manipulation  of this URL is required.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li><li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">an existing sessionId</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sessionId</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li></ul> &lt;/method&gt; </li><li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">connect to an session using Http</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">findHttpSession</span>"
+       &gt; <ul><li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a URL that should be used as  the &lt;b&gt;base&lt;/b&gt; for HTTP invocations of the services in this session.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li><li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">an existing sessionId</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sessionId</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li></ul> &lt;/method&gt; </li></ul> &lt;/component&gt; </li><li>
      &lt;component
          
         <span class="attribute">description</span>="<span class="attribute-value">Component that shutsdown the AR.</span>"
@@ -80,8 +215,7 @@
       
          
         <span class="attribute">name</span>="<span class="attribute-value">shutdown</span>"
-       &gt; <ul>
-<li>
+       &gt; <ul><li>
      &lt;method
          
         <span class="attribute">description</span>="<span class="attribute-value">bring the whole AR system to a graceful halt. 
@@ -91,20 +225,17 @@
       
          
         <span class="attribute">name</span>="<span class="attribute-value">halt</span>"
-       &gt; <ul>
-<li>
+       &gt; <ul><li>
      &lt;return
          
-        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+        <span class="attribute">description</span>="<span class="attribute-value"/>"
       
          
         <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
       
          
         <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
-       /&gt; </li>
-</ul> &lt;/method&gt; </li>
-<li>
+       /&gt; </li></ul> &lt;/method&gt; </li><li>
      &lt;method
          
         <span class="attribute">description</span>="<span class="attribute-value">bring the ACR to a graceful halt, not giving clients chance to object.
@@ -114,91 +245,51 @@
       
          
         <span class="attribute">name</span>="<span class="attribute-value">reallyHalt</span>"
-       &gt; <ul>
-<li>
+       &gt; <ul><li>
      &lt;return
          
-        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+        <span class="attribute">description</span>="<span class="attribute-value"/>"
       
          
         <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
       
          
         <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
-       /&gt; </li>
-</ul> &lt;/method&gt; </li>
-</ul> &lt;/component&gt; </li>
-</ul> &lt;/acr-module&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>class javax.jnlp.ServiceManager</td>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; </li></ul> &lt;/method&gt; </li></ul> &lt;/component&gt; </li></ul> &lt;/acr-module&gt; </div></td></tr><tr><th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>class javax.jnlp.ServiceManager</td></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;default
          
         <span class="attribute">symbol</span>="<span class="attribute-value">builtin.shutdown.exit</span>"
       
          
         <span class="attribute">value</span>="<span class="attribute-value">true</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;load
          
         <span class="attribute">service-id</span>="<span class="attribute-value">acr</span>"
-       /&gt; <br>
+       /&gt; <br/>
      &lt;load
          
         <span class="attribute">service-id</span>="<span class="attribute-value">shutdown</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;default
          
         <span class="attribute">symbol</span>="<span class="attribute-value">builtin.shutdown.exit</span>"
       
          
         <span class="attribute">value</span>="<span class="attribute-value">true</span>"
-       /&gt; </div>
-</td>
-</tr>
-<tr>
-<th class="object-id" colspan="3"> Contribution to <a href="../config/system.rmiListenerInterfaces.html">system.rmiListenerInterfaces</a></th>
-</tr>
-<tr>
-<td class="container" colspan="3">
-<div class="xml">
+       /&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/.html"/></th></tr><tr><td class="container" colspan="3"><div class="xml">
      &lt;service
          
         <span class="attribute">id</span>="<span class="attribute-value">shutdown</span>"
-       &gt; <ul>
-<li>
+       &gt; <ul><li>
      &lt;listener
          
         <span class="attribute">interface</span>="<span class="attribute-value">org.astrogrid.acr.builtin.ShutdownListener</span>"
-       /&gt; </li>
-</ul> &lt;/service&gt; </div>
-</td>
-</tr>
-</table>
-<hr>
-<div class="center-nav">
-<a href="../index.html">Back to master index</a>
-</div>
-</body>
-</html>
+       /&gt; </li></ul> &lt;/service&gt; </div></td></tr><tr><th class="object-id" colspan="3"> Contribution to <a href="../config/.html"/></th></tr><tr><td class="container" colspan="3"><div class="xml">
+     &lt;attribute
+         
+        <span class="attribute">name</span>="<span class="attribute-value">session-manager</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:sessionManager</span>"
+       /&gt; </div></td></tr></table><hr/><div class="center-nav"><a href="../index.html">Back to master index</a></div></body></html>

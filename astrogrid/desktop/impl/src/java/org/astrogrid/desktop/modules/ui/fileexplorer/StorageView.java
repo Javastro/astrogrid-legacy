@@ -49,6 +49,7 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -107,6 +108,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private class RefreshAction extends AbstractAction {
 		public RefreshAction() {
 			super("Refresh",IconHelper.loadIcon("reload22.png"));
+			CSH.setHelpIDString(this,"files.refresh");
 			putValue(Action.SHORT_DESCRIPTION,"Refresh: reload information about the current folder");
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_R,UIComponentMenuBar.MENU_KEYMASK));
 			setEnabled(false);
@@ -132,6 +134,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private class OpenLocationAction extends AbstractAction {
 	    public OpenLocationAction() {
 	        super("Go to Location"+UIComponentMenuBar.ELLIPSIS);
+            CSH.setHelpIDString(this,"files.openLocation");	        
 	        putValue(SHORT_DESCRIPTION,"Navigate to a provided URI");
 	        putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));	        
 	    }
@@ -145,6 +148,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 
         public OpenFolderAction() {
             super("Go to Local Folder"+UIComponentMenuBar.ELLIPSIS);
+            CSH.setHelpIDString(this,"files.openFolder");            
             putValue(SHORT_DESCRIPTION,"Select and open a local folder");     
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.SHIFT_MENU_KEYMASK));                        
         }
@@ -180,6 +184,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private class IconsAction extends AbstractAction {
 		public IconsAction() {
 			super("as Icons");
+	         CSH.setHelpIDString(this,"files.icons");
 			putValue(Action.SMALL_ICON,IconHelper.loadIcon("iconview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Icons View: show items as icons");
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
@@ -195,6 +200,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private class ListAction extends AbstractAction {
 		public ListAction() {
 			super("as List");
+	         CSH.setHelpIDString(this,"files.table");
 			putValue(Action.SMALL_ICON,IconHelper.loadIcon("listview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"List View: show items as a list");
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));
@@ -210,6 +216,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private class BookmarkAction extends AbstractAction {
 		public BookmarkAction() {
 			super("Bookmark this Folder", IconHelper.loadIcon("addbookmark22.png"));
+			CSH.setHelpIDString(this,"files.bookmark");
 			putValue(Action.SHORT_DESCRIPTION,"Bookmark the current location");
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_K,UIComponentMenuBar.MENU_KEYMASK));
 			setEnabled(false);
@@ -236,6 +243,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
          */
         public UploadAction() {
             super("Upload"+UIComponentMenuBar.ELLIPSIS);
+            CSH.setHelpIDString(this,"files.upload");
             putValue(Action.SHORT_DESCRIPTION,"Upload local files to this folder");
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
             setEnabled(true);
@@ -352,6 +360,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         }
         public  NewFolderAction() {
 	        super("New Folder"+UIComponentMenuBar.ELLIPSIS, IconHelper.loadIcon("foldernew16.png"));
+            CSH.setHelpIDString(this,"files.newFolder");
 	        putValue(Action.SHORT_DESCRIPTION,"Create a new folder in the current location");
 	        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.MENU_KEYMASK));
 	        setEnabled(true);
@@ -394,7 +403,8 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             iconsMenuItem.setSelected(true);
             
     		// core model.
-            SearchField filter = new SearchField("Filter files");		
+            SearchField filter = new SearchField("Filter files");	
+            CSH.setHelpIDString(filter,"files.filter");
             MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
             navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
             comm.addUserLoginListener(this);
@@ -416,21 +426,25 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    RangeList historyRange = new RangeList(navigator.getPreviousList());
     	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
     	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
+            CSH.setHelpIDString(back,"files.back");
     	    back.getMainButton().setToolTipText("Back: See folders you viewed previously");
     	    builder.add(back,cc.xy(r++,c));
     	    // next button.
     	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),navigator.getNextList(),true);
     	    forward.getMainButton().setToolTipText("Forward: See folders you viewed previously");
+            CSH.setHelpIDString(forward,"files.forward");
     	    builder.add(forward,cc.xy(r++,c));
     	    r++;
     	    up = new EventListDropDownButton(new JButton(IconHelper.loadIcon("up22.png")),navigator.getUpList(),false);
     	    up.getMainButton().setToolTipText("Up: navigate to the parent of the current folder");
+            CSH.setHelpIDString(up,"files.up");
     	    builder.add(up,cc.xy(r++,c));
     	    r++;
     	    builder.addLabel("Location",cc.xy(r++,c));
     	    r++;
     	    //@todo later - maybe add autocomplete support for this?
     	    location = new JTextField();
+    	    CSH.setHelpIDString(location,"files.location");
     	    location.requestFocusInWindow();
     	    location.setToolTipText("<html>Enter a URL or file location. Supported Schemes:"
     	    		+ "<br> [<b>file</b>://] absolute-path"
@@ -450,6 +464,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    builder.add(location,cc.xy(r++,c));
     	    r++;
     		goButton = new BiStateButton(go,stop,true);
+    		CSH.setHelpIDString(goButton,"files.go");
     		configureButton(goButton);
     	    builder.add(goButton,cc.xy(r++,c));
     	    builder.add(createMainButton(refresh),cc.xy(r++,c));

@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.21 2008/03/18 08:34:13 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.22 2008/03/28 13:08:58 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -49,6 +49,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -98,7 +99,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	        , TypesafeObjectBuilder builder
 			, TreeModel folderModel, QuerySizer sizer
             ,ResourceChooserInternal chooser,  XmlPersist persister) {
-		super(context,"VO Explorer","userInterface.voexplorer");
+		super(context,"VO Explorer","window.voexplorer");
         this.chooser = chooser;
         this.persister = persister;
 		logger.info("Constructing new VOExplorer");
@@ -238,6 +239,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		
             
         this.foldersButton = new BiStateButton(resourceLists.getAddSmart(),stopAction);
+        CSH.setHelpIDString(foldersButton,"reg.button");
         foldersPanel.add(foldersButton,BorderLayout.SOUTH);
 
 		// assemble folders and tasks into LHS 

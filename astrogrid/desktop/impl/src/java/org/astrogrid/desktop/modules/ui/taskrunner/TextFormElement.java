@@ -12,6 +12,7 @@ import javax.swing.text.JTextComponent;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /** Form element for a simple text element.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -25,6 +26,7 @@ public class TextFormElement extends AbstractTaskFormElement implements Document
 	 */
 	public TextFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
+	      CSH.setHelpIDString(getEditor(),"task.form.text");
 	}
 
 	protected final JComponent createEditor() {

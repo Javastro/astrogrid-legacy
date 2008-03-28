@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
 
@@ -81,6 +82,7 @@ public class StaticListEditingPanel extends EditingPanel implements ActionListen
 				"2dlu,right:d,1dlu,max(30dlu;d):grow,4dlu,d,1dlu,d,3dlu" // cols
 				,"d,d,d,1dlu:grow,d" // rows
 				);
+        CSH.setHelpIDString(this,"reg.edit.static");		
 		PanelBuilder builder = new PanelBuilder(layout,this);
 		CellConstraints cc = new CellConstraints();
 		int row = 1;

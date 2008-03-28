@@ -55,17 +55,15 @@ public class ActivityFactoryImpl implements ActivityFactory {
         }
         JTaskPane tasks = new JTaskPane();
         JPopupMenu popup = new JPopupMenu();
-        CSH.setHelpIDString(tasks, "tasks.intro");
+        CSH.setHelpIDString(tasks, "activity.intro");
         final MyTaskPaneGroup infoPane= new MyTaskPaneGroup() {{
             setTitle("About");
             setIconName("info16.png");
-            setHelpId("resourceActions.info");
             setSpecial(true);
         }};
         final MyTaskPaneGroup usePane = new MyTaskPaneGroup() {{
             setTitle("Actions");
             setIconName("run16.png");
-            setHelpId("resourceActions.invoke");
             //setSpecial(true);
         }};
         tasks.add(usePane);

@@ -23,6 +23,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
@@ -68,6 +69,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 		        ,vomon, iconFac,annServer,pref);
         this.astroscope = parent;		
 		summary.setTitle("Query Results");
+		CSH.setHelpIDString(this,"scope.viz.services");
 	} 
 
 	protected static  ResourceViewer[] createServicesListViews(AstroScopeLauncherImpl parent, TypesafeObjectBuilder uiBuilder, ActivitiesManager acts) {

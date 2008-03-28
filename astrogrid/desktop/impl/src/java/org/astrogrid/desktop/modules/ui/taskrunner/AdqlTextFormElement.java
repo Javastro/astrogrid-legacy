@@ -18,6 +18,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -42,7 +43,7 @@ public class AdqlTextFormElement extends AbstractTaskFormElement implements Mous
         this.adqls = adqled.new AdqlsView(false);
         adqls.addMouseListener(this);
         adqls.addFocusListener(this);
-        
+        CSH.setHelpIDString(getEditor(),"task.form.adql");  
     }
     
 

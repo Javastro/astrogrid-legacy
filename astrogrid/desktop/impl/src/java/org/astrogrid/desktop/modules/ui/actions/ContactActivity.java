@@ -45,6 +45,7 @@ public class ContactActivity extends AbstractResourceActivity implements Activit
  * 
  */
 public ContactActivity(BrowserControl browser) {
+    setHelpID("activity.contact");
 	this.browser = browser;
 	setIcon(IconHelper.loadIcon("person16.png"));
 	setToolTipText("Email the contact responsible for this resouce");

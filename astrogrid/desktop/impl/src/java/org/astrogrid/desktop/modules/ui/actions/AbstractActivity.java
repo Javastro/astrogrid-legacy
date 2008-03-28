@@ -20,6 +20,7 @@ import javax.swing.KeyStroke;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
@@ -47,6 +48,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	}
 
 	protected final UIComponentBodyguard uiParent = new UIComponentBodyguard();
+    private String helpID;
 	public final void setUIParent(UIComponent up) {
 		uiParent.set(up);
 	}	
@@ -73,8 +75,11 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	public void setToolTipText(String s) {
 		putValue(Action.SHORT_DESCRIPTION,s);
 	}
-	
-	
+	/** supply a help id for this activity */
+	public void setHelpID(String id) {
+	    CSH.setHelpIDString(this,id);
+	    this.helpID = id;
+	}
 	/**
 	 * Logger for this class
 	 */
@@ -88,6 +93,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 				setVisible(b);
 			}			
 		};
+		CSH.setHelpIDString(l,helpID);
 		return l;
 	}
 	

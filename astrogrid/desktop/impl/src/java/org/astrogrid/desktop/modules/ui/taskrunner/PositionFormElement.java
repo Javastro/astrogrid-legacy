@@ -18,6 +18,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
@@ -52,6 +53,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
         this.ses = ses;
 
            disableIndirect();
+           CSH.setHelpIDString(getEditor(),"task.form.position");           
     }
 
     protected JComponent createEditor() {

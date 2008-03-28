@@ -82,6 +82,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	 */
 	public PlasticVotableActivity(PlasticApplicationDescription plas, PlasticScavenger scav) {
 		super();
+		setHelpID("activity.plastic.votable");
 		this.plas = plas;
         this.scav = scav;
 		PlasticScavenger.configureActivity("tables",this,plas);

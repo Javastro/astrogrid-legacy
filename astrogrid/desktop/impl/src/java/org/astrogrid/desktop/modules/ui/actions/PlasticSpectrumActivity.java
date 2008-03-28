@@ -78,6 +78,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 	 */
 	public PlasticSpectrumActivity(PlasticApplicationDescription plas,PlasticScavenger scav) {
 		super();
+		setHelpID("activity.plastic.spectrum");
 		this.plas = plas;
         this.scav = scav;
 		PlasticScavenger.configureActivity("spectra",this,plas);

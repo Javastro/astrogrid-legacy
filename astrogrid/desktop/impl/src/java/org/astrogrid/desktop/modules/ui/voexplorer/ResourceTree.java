@@ -177,7 +177,7 @@ public class ResourceTree extends JTree {
         this.parent = parent;
         this.chooser = chooser;
         this.persister = persister;
-        CSH.setHelpIDString(this, "resourceTree");
+        CSH.setHelpIDString(this, "reg.resourceTree");
 
         // Install a handler for dragging'n'dropping.
         setTransferHandler(new TreeTransferHandler());

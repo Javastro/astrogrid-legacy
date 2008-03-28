@@ -12,6 +12,7 @@ import javax.swing.event.DocumentListener;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 
 /** Form element for large text objects.
  * indirect by default - to encourage referencing external files.
@@ -29,6 +30,7 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 		if (pdesc.getType().equalsIgnoreCase("votable") || pdesc.getType().equalsIgnoreCase("anyxml")){
 		    indirectToggle.doClick(); // causes layout to flip.
 		}
+	      CSH.setHelpIDString(getEditor(),"task.form.largeText");
 	}
 
 

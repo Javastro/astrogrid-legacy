@@ -36,6 +36,7 @@ public class DuplicateActivity extends AbstractFileActivity {
 
     public DuplicateActivity(FileSystemManager vfs) {
         super();
+        setHelpID("activity.duplicate");
         this.vfs = vfs;
         setText("Duplicate");
         setToolTipText("Make a copy of the selected files");

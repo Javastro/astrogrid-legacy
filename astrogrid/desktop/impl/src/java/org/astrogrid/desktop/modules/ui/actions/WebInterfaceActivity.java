@@ -36,7 +36,7 @@ public class WebInterfaceActivity extends AbstractResourceActivity {
  * 
  */
 public WebInterfaceActivity(BrowserControl browser) {
-	CSH.setHelpIDString(this, "resourceTask.web");		
+    setHelpID("activity.web");
 	this.browser = browser;
 	setText("Web interface");
 	setIcon(IconHelper.loadIcon("browser16.png"));

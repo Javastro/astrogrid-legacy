@@ -51,6 +51,7 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 
 	public DeleteFilesActivity(final FileSystemManager vfs) {
 		super();
+		setHelpID("activity.delete");
         this.vfs = vfs;
 		setText("Delete");
 		setIcon(IconHelper.loadIcon("editdelete16.png"));		

@@ -89,7 +89,7 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
 	public StorageFoldersList(EventList folderList, UIComponent parent,FileSystemManager vfs) {
 		this.parent = parent;
         this.vfs = vfs;
-		CSH.setHelpIDString(this,"storageFolders");
+		CSH.setHelpIDString(this,"files.bookmarks");
 		this.folderList = folderList;
 		this.delete = new DeleteBookmarkAction();
 		this.edit = new EditBookmarkAction();

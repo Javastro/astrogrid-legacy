@@ -149,6 +149,7 @@ public class RenameActivity extends AbstractFileActivity {
 
 	public RenameActivity(final FileSystemManager vfs) {
 		super();
+		setHelpID("activity.rename");
         this.vfs = vfs;
 		setText("Rename"+UIComponentMenuBar.ELLIPSIS);
 		//setIcon(IconHelper.loadIcon("browser16.png"));		

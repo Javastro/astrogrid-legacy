@@ -58,10 +58,11 @@ TOOL EDITOR
 	<implementation service-id="toolEditor" if="property dialogs.toolEditor.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-		
+	<!-- 
 	<contribution configuration-id="system.helpmap">
 		<item id="userInterface.taskEditor" url="http://www2.astrogrid.org/science" />
 	</contribution>	
+     -->	
 
 <!--  
 ============================
@@ -113,7 +114,7 @@ REGISTRY GOOGLE
 	</implementation>		
 	
 	
-	<!--  help keys for registry panel - they're pointing to the wiki for now. -->
+	<!--  help keys for registry panel - they're pointing to the wiki for now.
 	<contribution configuration-id="system.helpmap">
 		<item id="reg.general" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer" />
 		<item id="reg.search" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Search_Field" />
@@ -124,6 +125,7 @@ REGISTRY GOOGLE
 		<item id="reg.xml" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resource_XML" />
 		
 	</contribution>
+     -->
 
 
 

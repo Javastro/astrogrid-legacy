@@ -19,6 +19,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 
 /**
@@ -41,7 +42,7 @@ public class SubscriptionEditingPanel extends EditingPanel {
      * @param  chooser  chooser for browsing subscription locations
      */
     public SubscriptionEditingPanel(final ResourceChooserInternal chooser) {
-
+        CSH.setHelpIDString(this,"reg.edit.subscription");
         nameField = new JTextField();
         urlField = new JTextField();
         urlField.addCaretListener(new CaretListener() {
