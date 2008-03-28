@@ -1,0 +1,33 @@
+<list>
+<!-- commented out for now - waiting on silvia to decide on some
+  <annotation resourceId="ivo://org.astrogrid/HyperZ" >
+    <note><![CDATA[
+    Example note:
+    You must be logged into the 
+    	<a href="ivo://wfau.roe.ac.uk/WFAU">ukidss.roe.ac.uk community</a> to use this service.
+    	]]></note>
+  </annotation>
+  <annotation resourceId="ivo://nasa.heasarc/skyview/dss2">
+  	<alternativeTitle>HyperLeda FITS Spectrum Archive</alternativeTitle>
+  </annotation>
+  <annotation resourceId="ivo://wfau.roe.ac.uk/sdssdr5-dsa/cone">
+  	<tag>sdss</tag>
+  </annotation>
+  <annotation resourceId="ivo://nasa.heasarc/skyview/sdss">
+  	<tag>sdss</tag>
+  	<tag>sample tag</tag>
+  </annotation>  
+  
+    <annotation resourceId="ivo://org.astrogrid/Starburst99">
+  	<tag>sample tag</tag>
+  		<note><![CDATA[
+  		Note with <b>formatted text</b> and <a href="http://www.astrogrid.org">hyperlinks</a>
+  		<ul>
+  		<li>point one
+  		<li>point two
+  		</ul>
+  		]]>
+  		</note>
+  </annotation> 
+  -->
+</list>

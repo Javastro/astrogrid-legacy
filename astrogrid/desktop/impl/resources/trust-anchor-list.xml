@@ -1,0 +1,26 @@
+<index>
+
+	<!-- /C=UK/O=AstroGrid/OU=IoA Cambridge/OU=AG test/CN=CA -->
+	<item>
+		http://ag01.ast.cam.ac.uk:8081/astrogrid.cam-community/certificates/6d90c226.0
+	</item>
+	
+	<!-- UK e-Science CA -->
+	<item>
+		http://ag01.ast.cam.ac.uk:8081/astrogrid.cam-community/certificates/8175c1cd.0
+	</item>
+	<item>
+		http://ag01.ast.cam.ac.uk:8081/astrogrid.cam-community/certificates/adcbc9ef.0
+	</item>
+	
+	<!-- UKIDSS Community-->
+	<item>
+		http://hempriggs.roe.ac.uk/ukidss-community/certificates/fc3426d1.0
+	</item>
+
+	<!-- /O=Grid/OU=GlobusTest/OU=simpleCA-monet.ncsa.uiuc.edu/CN=Globus Simple CA -->
+	<item>
+		http://ag01.ast.cam.ac.uk:8081/astrogrid.cam-community/certificates/00f7bc32.0
+	</item>
+	
+</index>

@@ -1,0 +1,10 @@
+<!--
+expect a single <release> block, containing details of the latest release.
+if <version> is different to user's current version, update prompt will be displayed.
+-->
+<release>
+       <date>2008-03-28</date>
+       <version>2008.1.rc1</version>
+       <download>http://help.astrogrid.org</download>
+       <description>Release Candidate</description>
+</release>

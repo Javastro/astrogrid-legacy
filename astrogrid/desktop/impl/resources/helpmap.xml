@@ -1,0 +1,388 @@
+<helpmap>
+<!--
+mapping between help IDs (defined in program code and attached to various UI components, 
+and URLs to display when help is requested on that component.
+
+contents of the <item> tag is just development documentation.
+
+
+at minimum, links for all the overview, top level windows and dialogues should be provided.
+
+-->
+
+
+<!-- overview stuff -->
+<item id="top" 
+url="http://help.astrogrid.org">
+Top-level help item (defaults to this if nothing else available)</item>
+<item id="vodesktop.help"
+url="http://help.astrogrid.org">
+vo desktop help menu item</item>
+<item id="ag.helpdesk" 
+url="http://www.astrogrid.org/support/">
+AstroGrid Helpdesk menu item</item>
+
+<!-- 
+top level windows
+=========================
+-->
+<item id="window.processes"
+url="">
+background processes window</item>
+
+<item id="window.scope"
+url="">
+astroscope / heliooscope</item>
+
+<item id="window.fileexplorer"
+url="">
+file explorer</item>
+
+<item id="window.selftest"
+url="">
+self tester</item>
+
+<item id="adql.editor"
+url="">
+the entire adql editor</item>
+
+<item id="window.taskrunner"
+url="">
+task runner window</item>
+
+<item id="window.voexplorer"
+url="">
+voexplorer main window</item>
+
+<!-- dialogs -->
+<item id="dialog.file"
+url="">
+file chooser dialog</item>
+<item id="dialog.registry"
+url="">
+registry chooser dialog</item>
+<item id="dialog.login"
+url="">
+login dialogue</item>
+<item id="dialog.login.register"
+url="mailto:astrogrid_signup@star.le.ac.uk?subject=New%20Account%20Request&amp;body=Name:%0D%0AInstitute:">
+registration link on login dialogue</item>
+
+
+<item id="dialog.tool"
+url="">
+tool editor dialog</item>
+<item id="dialog.preference"
+url="">
+preferences dialogu</item>
+
+<!-- furniture in all windows -->
+<item id="ui.contextHelp"
+url="">
+context-sensitive help button</item>
+<item id="ui.login"
+url="">
+login indicator</item>
+<item id="ui.plasticList"
+url="">
+connected plastic applications display</item>
+<item id="ui.tasks"
+url="">
+running tasks indicator / button</item>
+<item id="ui.throbber"
+url="">
+vo service communication indicator</item>
+
+<!-- MUST SUPPLY ALL URLS DOWN TO THIS POINT -->
+
+
+<!-- components of voexplorer -->
+<item id="reg.resourceTree"
+url="">
+Tree of resource lists</item>
+<item id="reg.table"
+url="">
+Table of matching resources</item>
+<item id="reg.details"
+url="">
+Details pane in voexplorer</item>
+<item id="reg.xml"
+url="" >
+XML view in viexplorer </item>
+<item id="table.metadata"
+url="">
+Tabular metadata viewer in voexplorer (and QueryBuilder)</item>
+<item id="reg.filter"
+url="">
+incremental filter field</item>
+<item id="reg.filters"
+url="">
+search wheels</item>
+<item id="reg.showFilters"
+url="">
+button to show / hide search wheels</item>
+<item id="reg.button"
+url="">
+button to stop current search / create new smart folder</item>
+<item id="reg.edit.smart"
+url="">
+smart list editing panel</item>
+<item id="reg.edit.xquery"
+url="">
+xquery editing panel</item>
+<item id="reg.edit.static"
+url="">
+static list editing panel</item>
+<item id="reg.edit.subscription"
+url="">
+subscription editing panel</item>
+<item id="reg.display.coverage"
+url="">
+show coverage button</item>
+<item id="reg.display.table"
+url="">
+show tabular metadata button</item>
+<item id="reg.test.availability"
+url="">
+availability test button</item>
+<item id="reg.test query"
+url="">
+test query button</item>
+
+<!-- components of file explorer -->
+<item id="files.icons"
+url="">
+icon display of files</item>
+<item id="files.table"
+url="">
+tabular display of files</item>
+<item id="files.bookmarks"
+url="">
+left-hand list of bookmarked file locations</item>
+<item id="files.refresh"
+url="">
+refresh view operation</item>
+<item id="files.go"
+url="">
+ go / stop button</item>
+<item id="files.openLocation"
+url="">
+go to  remote location</item>
+<item id="files.openFolder"
+url="">
+go to local folder</item>
+<item id="files.bookmark"
+url="">
+add bookmark</item>
+<item id="files.upload"
+url="">
+upload files</item>
+<item id="files.newFolder"
+url="">
+create new folder</item>
+<item id="files.filter"
+url="">
+incremental search field for files</item>
+<item id="files.back"
+url="">
+back button</item>
+<item id="files.forward"
+url="">
+forward button</item>
+<item id="files.forward"
+url="">
+forward button</item>
+<item id="files.up"
+url="">
+up button</item>
+<item id="files.location"
+url="">
+location field</item>
+
+<!-- components of task runner -->
+<item id="task.executionTracker"
+url="">
+right hand panel that tracks executing tasks.</item>
+<item id="task.execute"
+url="">
+execute button</item>
+<item id="task.info"
+url="">
+the information / documentation pane</item>
+<item id="task.interfaceChooser"
+url="">
+drop-down chooser for interface</item>
+<item id="task.indirect"
+url="">
+'load paramter from storage' toggle button, and indirect url form</item>
+<item id="task.form.binary"
+url="">
+input field for binary data</item>
+<item id="task.form.boolean"
+url="">
+input field for a boolean</item>
+<item id="task.form.enumeration"
+url="">
+input field for an enumeration</item>
+<item id="task.form.largeText"
+url="">
+input field for a large block of text</item>
+<item id="task.form.output"
+url="">
+output field</item>
+<item id="task.form.position"
+url="">
+input field for a position</item>
+<item id="task.form.radius"
+url="">
+input field for a radius</item>
+<item id="task.form.text"
+url="">
+input field for a text value</item>
+<item id="task.form.adql"
+url="">
+input field for an adql query</item>
+<item id="task.form.formatted"
+url="">
+input field for a formatted value - e.g. number</item>
+<item id="task.form.optional"
+url="">
+button for an optional parameter</item>
+<item id="task.form.add"
+url="">
+button to add a parameter</item>
+<item id="task.form.remove"
+url="">
+button to remove a parameter
+</item>
+
+<!-- components of query builder -->
+<item id="adql.stringView"
+url="">
+adql/s view</item>
+<item id="adql.comment"
+url="">
+adql comment editor</item>
+<item id="adql.tree"
+url="">
+tree view</item>
+<item id="adql.diagnostics"
+url="">
+diagnostics panel</item>
+<item id="adql.history"
+url="">
+history panel</item>
+
+<!-- components of astroscope -->
+<item id="scope.clear"
+url="">
+clear current selection </item>
+<item id="scope.top"
+url="">
+go to top </item>
+<item id="scope.up"
+url="">
+move view up </item>
+<item id="scope.viz.radial"
+url="">
+radial vizualization </item>
+<item id="scope.viz.hyperbolic"
+url="">
+hyperbolic vizualization </item>
+<item id="scope.viz.services"
+url="">
+services list view </item>
+<item id="scope.searchPanel"
+url="">
+left-hand panel of search controls </item>
+ 
+<!-- 
+activities
+===============================
+-->
+<item id="activity.intro"
+url="">
+Introduction to activities pane, and description of different activities</item>
+
+<item id="activity.selection"
+url="">
+information about the current selection</item>
+
+
+<!-- registry activities -->
+<item id="activity.xoxo"
+url="">
+Export abbreviated XML of resource</item>
+
+<item id="activity.save"
+url="">
+Export resource xml</item>
+<item id="activity.contact"
+url="">
+Emaul curator</item>
+
+<item id="activity.query"
+url="">
+'Qeury' astroscope qctivity</item>
+
+<item id="activity.adql"
+url="">
+Help for the 'build ADQL' activity'</item>
+
+<item id="activity.taskRunner" url="">Help for the 'execute task'
+activity</item>
+
+<item id="activity.web"
+url="">
+Help for the 'open the providers own web interface' activity</item>
+
+<item id="activity.furtherinfo"
+url="">
+Further Info</item>
+
+<!-- plastic activities -->
+<item id="activity.plastic.resource"
+url="">
+Send Rsource xml over plastic</item>
+<item id="activity.plastic.bibcode"
+url="">
+Send Rsource bibcode over plastic</item>
+<item id="activity.plastic.votable"
+url="">
+Send votable over plastic</item>
+<item id="activity.plastic.fits"
+url="">
+Send fits over plastic</item>
+<item id="activity.plastic.spectrum"
+url="">
+Send spectra over plastic</item>
+
+
+<!-- fiule activities -->
+<item id="activity.download"
+url="">
+Download files / vizier tables</item>
+<item id="activity.delete"
+url="">
+delete files</item>
+<item id="activity.duplicate"
+url="">
+duplicate files</item>
+<item id="activity.rename"
+url="">
+rename files</item>
+<item id="activity.reveal"
+url="">
+(In task runner results) show in file explorer</item>
+<item id="activity.open"
+url="">
+View - open file in system browser.</item>
+
+
+
+<!-- preferences
+=====================================================
+-->
+<!-- could name and provide documentation for individual preferences.. leave for now.-->
+
+</helpmap>

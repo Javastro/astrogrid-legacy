@@ -1,0 +1,107 @@
+<branch>
+      <node class="resource-branch" fixed="false" subscription="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists.xml" name="Examples" iconName="myspace16.png"/>
+      <children>
+        <xquery-list fixed="true" name="Recent Changes" iconName="smartfolder16.png">
+          <query>let $thresh := current-dateTime() - xs:dayTimeDuration(&apos;P10D&apos;)
+let $dthresh := current-date() - xs:dayTimeDuration(&apos;P10D&apos;)
+for $r in //vor:Resource[not (@status=&apos;inactive&apos; or @status=&apos;deleted&apos;)]
+where  ($r/@updated castable as xs:dateTime and xs:dateTime($r/@updated) &gt; $thresh)
+or ($r/@updated castable as xs:date and xs:date($r/@updated) &gt; $dthresh)
+or ($r/@created castable as xs:dateTime and xs:dateTime($r/@created) &gt; $thresh)
+or ($r/@created castable as xs:date and xs:date($r/@created) &gt; $dthresh)
+return $r</query>
+        </xquery-list>
+        <resource-list fixed="true" name="VO taster list" iconName="doc16.png">
+          <resource>ivo://org.astrogrid/MERLINImager</resource>
+          <resource>ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa</resource>
+          <resource>ivo://irsa.ipac/2MASS-PSC</resource>
+          <resource>ivo://wfau.roe.ac.uk/xmm_dsa/wsa</resource>
+          <resource>ivo://stecf.euro-vo/SSA/HST/FOS</resource>
+          <resource>ivo://wfau.roe.ac.uk/schlegeldustmaps</resource>
+          <resource>ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey</resource>
+          <resource>ivo://stecf.euro-vo/siap/hst/preview</resource>
+          <resource>ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR</resource>
+          <resource>ivo://uk.ac.starlink/stilts</resource>
+          <resource>ivo://nasa.heasarc/skyview/sdss</resource>
+          <resource>ivo://nasa.heasarc/rc3</resource>
+          <resource>ivo://wfau.roe.ac.uk/ssa-dsa/ssa</resource>
+          <resource>ivo://mast.stsci/siap-cutout/goods.hst</resource>
+          <resource>ivo://uk.ac.cam.ast/IPHAS/images/SIAP</resource>
+        </resource-list>
+        <resource-list fixed="true" name="Cone search examples" iconName="doc16.png">
+          <resource>ivo://wfau.roe.ac.uk/6df-dsa/cone</resource>
+          <resource>ivo://fs.usno/cat/usnob</resource>
+          <resource>ivo://irsa.ipac/2MASS-PSC</resource>
+          <resource>ivo://wfau.roe.ac.uk/first-dsa/cone</resource>
+          <resource>ivo://wfau.roe.ac.uk/sdssdr5-dsa/cone</resource>
+          <resource>ivo://nasa.heasarc/iraspsc</resource>
+          <resource>ivo://irsa.ipac/2MASS-XSC</resource>
+          <resource>ivo://wfau.roe.ac.uk/ssa-dsa/cone</resource>
+          <resource>ivo://nasa.heasarc/rc3</resource>
+          <resource>ivo://wfau.roe.ac.uk/rosat-dsa/cone</resource>
+        </resource-list>
+        <resource-list fixed="true" name="Image access examples" iconName="doc16.png">
+          <resource>ivo://org.astrogrid/MERLINImager</resource>
+          <resource>ivo://nasa.heasarc/skyview/dss2</resource>
+          <resource>ivo://nasa.heasarc/skyview/rass</resource>
+          <resource>ivo://nasa.heasarc/skyview/first</resource>
+          <resource>ivo://nasa.heasarc/skyview/halpha</resource>
+          <resource>ivo://nasa.heasarc/skyview/sdss</resource>
+          <resource>ivo://org.astrogrid/HDFImager</resource>
+          <resource>ivo://irsa.ipac/2MASS-ASKYW-AT</resource>
+          <resource>ivo://nasa.heasarc/skyview/nvss</resource>
+          <resource>ivo://uk.ac.cam.ast/IPHAS/images/SIAP</resource>
+          <resource>ivo://mast.stsci/siap-cutout/goods.hst</resource>
+        </resource-list>
+        <smart-list name="Spectrum access examples" iconName="smartfolder16.png" fixed="true">
+          <query>type = spectral</query>
+        </smart-list>
+        <smart-list name="Remote applications" iconName="smartfolder16.png" fixed="true">
+          <query>type = ceaapplication</query>
+        </smart-list>
+        <resource-list fixed="true" name="Queryable database examples" iconName="doc16.png">
+          <resource>ivo://wfau.roe.ac.uk/iras-dsa/wsa</resource>
+          <resource>ivo://uk.ac.ucl.star/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED</resource>
+          <resource>ivo://wfau.roe.ac.uk/ukidssDR3-v1/wsa</resource>
+          <resource>ivo://uk.ac.cam.ast/INT-WFS/merged-object-catalogue/INT_WFS_Merged_Object_catalogue</resource>
+          <resource>ivo://wfau.roe.ac.uk/first-dsa/wsa</resource>
+          <resource>ivo://wfau.roe.ac.uk/6df-dsa/wsa</resource>
+          <resource>ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey</resource>
+          <resource>ivo://wfau.roe.ac.uk/rosat-dsa/wsa</resource>
+          <resource>ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR</resource>
+          <resource>ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa</resource>
+          <resource>ivo://uk.ac.cam.ast/INT-WFS/observation-catalogue/INT_WFS_DQC</resource>
+          <resource>ivo://wfau.roe.ac.uk/glimpse-dsa/wsa</resource>
+          <resource>ivo://wfau.roe.ac.uk/twomass-dsa/wsa</resource>
+          <resource>ivo://wfau.roe.ac.uk/ssa-dsa/ssa</resource>
+        </resource-list>
+        <smart-list name="IR redshift" iconName="smartfolder16.png" fixed="true">
+          <query>(ucd = redshift) AND (waveband = infrared)</query>
+        </smart-list>
+        <smart-list name="Solar services" iconName="smartfolder16.png" fixed="true">
+          <query>subject = solar</query>
+        </smart-list>
+        <resource-list fixed="true" name="SWIFT follow up" iconName="doc16.png">
+          <resource>ivo://fs.usno/cat/usnob</resource>
+          <resource>ivo://CDS/VizieR/I/267/out</resource>
+          <resource>ivo://nasa.heasarc/rassbsc</resource>
+          <resource>ivo://nasa.heasarc/rassvars</resource>
+          <resource>ivo://sdss.jhu/openskynode/PSCZ</resource>
+          <resource>ivo://wfau.roe.ac.uk/sdssdr5-dsa/TDB</resource>
+          <resource>ivo://nasa.heasarc/rassfsc</resource>
+          <resource>ivo://ned.ipac/Basic_Data_Near_Position</resource>
+          <resource>ivo://nasa.heasarc/xmmssc</resource>
+          <resource>ivo://wfau.roe.ac.uk/ssa-dsa/cone</resource>
+        </resource-list>
+        <smart-list name="Radio images" iconName="smartfolder16.png" fixed="true">
+          <query>(waveband = radio) AND (type = image)</query>
+        </smart-list>
+        <smart-list name="Vizier AGN tables" iconName="smartfolder16.png" fixed="true">
+          <query>(publisher = vizier) AND (subject = agn)</query>
+        </smart-list>
+        <smart-list name="VOEvent services" iconName="smartfolder16.png" fixed="true">
+          <query>default = voevent</query>
+        </smart-list>
+      </children>
+</branch>
+    
