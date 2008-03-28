@@ -2,6 +2,7 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -127,6 +128,7 @@ public class BulkCopyWorker extends BackgroundWorker {
         reportProgress((saveToMyspace ? "VOSpace " : "" ) + "Save location validated");
         setProgress(++progress,tasksCount);
         // go through each file in turn.
+        List destList = new ArrayList();
         for (int i  = 0; i < this.cmds.length; i++ ) {
                 CopyCommand cmd = cmds[i];
                 FileObject src =cmd.resolveSourceFileObject(vfs);
@@ -158,6 +160,7 @@ public class BulkCopyWorker extends BackgroundWorker {
                     // good. now got a non-existent destination file                    
                     dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
                     cmd.recordSuccess(dest.getName());
+                    destList.add(dest);
                 } catch (FileSystemException x) {
                     cmd.recordError(x);
                     reportProgress("Copy from " + src.getName().getBaseName() + " failed");
@@ -171,7 +174,11 @@ public class BulkCopyWorker extends BackgroundWorker {
     //    if (saveTarget != null) {
             FileSystem fs = saveTarget.getFileSystem();
             if (fs instanceof AbstractFileSystem) {
-                ((AbstractFileSystem)fs).fireFileChanged(saveTarget);
+                AbstractFileSystem afs = (AbstractFileSystem) fs;
+                afs.fireFileChanged(saveTarget);
+                for (Iterator it = destList.iterator(); it.hasNext();) {
+                    ((FileObject) it.next()).refresh();
+                }
             }
       //  }
         return cmds; // results have been recorded in here.
