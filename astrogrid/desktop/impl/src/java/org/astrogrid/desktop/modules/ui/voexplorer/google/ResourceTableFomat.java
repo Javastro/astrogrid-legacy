@@ -96,7 +96,9 @@ public class ResourceTableFomat extends ModularTableFormat {
                 for (Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
                     Annotation a = (Annotation)i.next();
                     String t = StringUtils.trimToNull(a.getAlternativeTitle());
-                    if (t != null && a.getSource().getSortOrder() <= titleLevel) {
+                    // am getting an odd NPE from the next line - think it might be a race condition.
+                    // will check for a.getSource() != null too.
+                    if (t != null && a.getSource() != null && a.getSource().getSortOrder() <= titleLevel) {
                         title = t;
                         titleLevel = a.getSource().getSortOrder();
                     }
