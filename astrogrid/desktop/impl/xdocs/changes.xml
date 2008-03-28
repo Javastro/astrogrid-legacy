@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2008.1.rc1" date="2008-03-27">
+<action dev="nw" type="fix" issue="2640">
+    Freshened all example resource lists. Made the examples location a preference
+</action>
 <action dev="mbt" type="fix" issue="2609">
     VOExplorer left-right resizing now works properly.
 </action>

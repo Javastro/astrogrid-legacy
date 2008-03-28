@@ -416,10 +416,23 @@ Query Builder
             <construct class="org.astrogrid.desktop.modules.ui.folders.ResourceTreeProvider">
                 <service>system.ui</service>
                 <object>preference:astrogrid.workdir</object>
+                <object>preference:resourcetree.examples.location</object>
                 <service>system.xmlPersist</service>
             </construct>
         </invoke-factory>
     </service-point>
+
+
+    <contribution configuration-id="framework.preferences">
+        <preference name="resourcetree.examples.location"
+            advanced="true"
+            requires-restart="true"
+            default-value="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/exampleResourceLists.xml">
+            <ui-name>VoExplorer Example Lists</ui-name>
+            <description>A location containing example resource lists</description>
+            <units>url</units>
+        </preference>
+    </contribution>
 
 	<!--  makes the registryBrowser dsplay on startup if we've not got a system tray -->
     <!-- 

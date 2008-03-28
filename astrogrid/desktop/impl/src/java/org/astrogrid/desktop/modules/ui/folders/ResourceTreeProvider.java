@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
@@ -24,6 +26,14 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
  */
 public class ResourceTreeProvider extends PersistentTreeProvider {
 
+    /**
+     * previously used subscription location. unused.
+     */
+  //  private static final String OLD_SUBSCRIPTION_LOCATION = "http://wiki.astrogrid.org/pub/Astrogrid/VoExplorerSubscriptions/exampleResourceLists.xml";
+    /** new subscription location - supplied by preference.
+     * 
+     */
+    private final String examplesLocation;
     private static final String EXAMPLES_NODE_NAME = "Examples";
 
     /**
@@ -33,12 +43,14 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      * @param    workdirPreference   directory for persistence
      * @param    persister   XML persistence implementation
      */
-    public ResourceTreeProvider(UIContext parent, Preference workdirPreference,
+    public ResourceTreeProvider(UIContext parent, Preference workdirPreference, Preference examplesPreference,
                                 XmlPersist persister) {
         super(parent, new File(new File(workdirPreference.getValue()),
                                         "resourceLists.xml"), persister);
         logger.info("Resource folders will be read from/written to " +
                     getStorageLocation());
+        this.examplesLocation = examplesPreference.getValue();
+        logger.info("Examples will be read from " +this.examplesLocation);
         init(new ResourceTreeModel(parent, persister));
     }
 
@@ -53,8 +65,15 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
     public DefaultMutableTreeNode load() throws IOException, ServiceException {
         DefaultMutableTreeNode root = super.load();
         if (root != null && root.getAllowsChildren()) {
-            if (! hasExamples(root)) {
+            DefaultMutableTreeNode examplesNode = findExamples(root);
+            if (examplesNode == null) { // no examples node
                 root.insert(createExamplesNode(), 0);
+            } else { // an obsolete examples note - either no subscription, or pointing to a different location than current preference.
+                ResourceFolder examplesFolder = (ResourceFolder) examplesNode.getUserObject();                
+                if (examplesFolder.getSubscription() == null || ! examplesLocation.equals(examplesFolder.getSubscription())) {
+                root.remove(examplesNode);
+                root.insert(createExamplesNode(),0);
+                }
             }
         }
         return root;
@@ -70,12 +89,11 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
     /**
      * Generates a list of example folders.
      */
-    private static DefaultMutableTreeNode createExamplesNode() {
+    private DefaultMutableTreeNode createExamplesNode() {
         ResourceBranch examplesBranch = new ResourceBranch(EXAMPLES_NODE_NAME);
 
         // Subscribe to central updating examples file
-        //@todo move this to a more stable location.
-        examplesBranch.setSubscription("http://wiki.astrogrid.org/pub/Astrogrid/VoExplorerSubscriptions/exampleResourceLists.xml");
+        examplesBranch.setSubscription(examplesLocation);
         examplesBranch.setIconName("myspace16.png");
         DefaultMutableTreeNode examplesNode =
             new DefaultMutableTreeNode(examplesBranch, true);
@@ -90,35 +108,36 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
      * Determines whether the given node has an Examples element as a child.
      *
      * @param  node  node to test
-     * @return  true iff node contains an examples folder
+     * @return  the MutableTreeNode containing the examples resource folder, or null if not present
      */
-    private static boolean hasExamples(DefaultMutableTreeNode node) {
+    private DefaultMutableTreeNode findExamples(DefaultMutableTreeNode node) {
         if (node.getAllowsChildren()) {
             for (Enumeration en = node.children(); en.hasMoreElements();) {
                 DefaultMutableTreeNode child =
                     (DefaultMutableTreeNode) en.nextElement();
                 ResourceFolder folder = (ResourceFolder) child.getUserObject();
-                if (folder instanceof ResourceBranch &&
-                    EXAMPLES_NODE_NAME.equals(folder.getName())) {
-                    return true;
+                if (folder instanceof ResourceBranch 
+                    && EXAMPLES_NODE_NAME.equals(folder.getName())
+                    ) {
+                    return child;
                 }
             }
         }
-        return false;
+        return null;
     }
 
-   
-
+  
     /**
      * Returns an array of canned defaults for populating the tree.
+     * the subscribed version will take precedence over these, if available.
      */
     private static ResourceFolder[] getExampleFolders() {
         ResourceFolder[] folders;
         try {
             folders = new ResourceFolder[] {
                     new XQueryList("Recent Changes",
-                            "let $thresh := current-dateTime() - xs:dayTimeDuration('P30D')\n" // month
-                            + "let $dthresh := current-date() - xs:dayTimeDuration('P30D')\n" // month
+                            "let $thresh := current-dateTime() - xs:dayTimeDuration('P10D')\n" // 10 days
+                            + "let $dthresh := current-date() - xs:dayTimeDuration('P10D')\n" // 10 days
                             + "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')]\n"
                             + "where  ($r/@updated castable as xs:dateTime and xs:dateTime($r/@updated) > $thresh)\n"
                             + "or ($r/@updated castable as xs:date and xs:date($r/@updated) > $dthresh)\n"
@@ -129,19 +148,22 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                     // I suppose default cache is 3 days - that's not too bad.
                     , new StaticList("VO taster list", new String[]{
                             "ivo://irsa.ipac/2MASS-PSC"
-                                ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/ceaApplication"
-                                ,"ivo://nasa.heasarc/skyview/dss2"
-                                ,"ivo://mast.stsci/siap-cutout/goods.hst"
-                                ,"ivo://stecf.euro-vo/SSA/HST/FOS"
-                                ,"http://leda.univ-lyon1.fr" //URRRK?
-                                ,"ivo://org.astrogrid/HyperZ"
-                                ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/cone"
-                                ,"ivo://wfau.roe.ac.uk/schlegeldustmaps"
-                                ,"ivo://nasa.heasarc/skyview/sdss"
-                                ,"ivo://org.astrogrid/Starburst99"
-                                ,"ivo://wfau.roe.ac.uk/ssa-dsa/ceaApplication"
-                                ,"ivo://nasa.heasarc/rc3"
-                                ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/ceaApplication"                              
+                            ,"ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
+                                ,"ivo://mast.stsci/siap-cutout/goods.hst" //??
+                              //  ,"ivo://wfau.roe.ac.uk/ukidssWorld-dsa/wsa"
+                              // Richard's amendment  
+                                ,"ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa" // check
+                                ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
+                                ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
+                                ,"ivo://uk.ac.cam.ast/IPHAS/images/SIAP"
+                                ,"ivo://stecf.euro-vo/siap/hst/preview"
+                                ,"ivo://wfau.roe.ac.uk/schlegeldustmaps"    //?  
+                                ,"ivo://nasa.heasarc/skyview/sdss"            
+                                ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
+                                ,"ivo://org.astrogrid/MERLINImager" 
+                                ,"ivo://uk.ac.starlink/stilts"
+                                ,"ivo://stecf.euro-vo/SSA/HST/FOS"//?
+                                ,"ivo://nasa.heasarc/rc3"                                                        
                     })
                     // examples by service type
                     , new StaticList("Cone search examples", new String[]{
@@ -153,7 +175,6 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                                 , "ivo://wfau.roe.ac.uk/rosat-dsa/cone"
                                 , "ivo://wfau.roe.ac.uk/sdssdr5-dsa/cone"
                                 , "ivo://wfau.roe.ac.uk/ssa-dsa/cone"
-                                , "ivo://ned.ipac/Basic_Data_Near_Position"
                                 , "ivo://nasa.heasarc/rc3"
                                 , "ivo://fs.usno/cat/usnob"  
                     })
@@ -167,20 +188,26 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                                 ,"ivo://nasa.heasarc/skyview/nvss"
                                 ,"ivo://nasa.heasarc/skyview/rass"
                                 ,"ivo://nasa.heasarc/skyview/sdss"
+                                ,"ivo://org.astrogrid/HDFImager"
+                                ,"ivo://org.astrogrid/MERLINImager"
                     })
                     , new SmartList("Spectrum access examples","type = Spectral")
                     ,new SmartList("Remote applications","type = CeaApplication")
                     ,new StaticList("Queryable database examples",new String[]{
-                            "ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/ceaApplication"
-                                ,"ivo://wfau.roe.ac.uk/6df-dsa/ceaApplication"
-                                ,"ivo://dev2.star.le.ac.uk/mysql-first-roe/ceaApplication"
-                                ,"ivo://wfau.roe.ac.uk/iras-dsa/ceaApplication"
-                                ,"ivo://wfau.roe.ac.uk/rosat-dsa/ceaApplication"
-                                ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/ceaApplication"
-                                ,"ivo://uk.ac.cam.ast/SWIRE/Catalogue/ceaApplication"
-                                ,"ivo://wfau.roe.ac.uk/ssa-dsa/ceaApplication"
-                                ,"ivo://wfau.roe.ac.uk/twomass-dsa/ceaApplication"
-                                ,"ivo://wfau.roe.ac.uk/ukidssDR2-dsa/ceaApplication"                        
+                            "ivo://uk.ac.cam.ast/2dFGRS/object-catalogue/Object_catalogue_2dF_Galaxy_Redshift_Survey"
+                                ,"ivo://wfau.roe.ac.uk/6df-dsa/wsa"
+                                ,"ivo://wfau.roe.ac.uk/ukidssDR3-v1/wsa"
+                                ,"ivo://wfau.roe.ac.uk/iras-dsa/wsa"
+                                ,"ivo://wfau.roe.ac.uk/rosat-dsa/wsa"
+                                ,"ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR"
+                                ,"ivo://wfau.roe.ac.uk/sdssdr5-dsa/dsa"
+                                ,"ivo://wfau.roe.ac.uk/ssa-dsa/ssa"
+                                ,"ivo://wfau.roe.ac.uk/twomass-dsa/wsa"
+                                ,"ivo://uk.ac.ucl.star/newhipparcos-dsa-catalog/HIPPARCOS_NEWLY_REDUCED"
+                                ,"ivo://uk.ac.cam.ast/INT-WFS/observation-catalogue/INT_WFS_DQC"
+                                ,"ivo://uk.ac.cam.ast/INT-WFS/merged-object-catalogue/INT_WFS_Merged_Object_catalogue"
+                                ,"ivo://wfau.roe.ac.uk/glimpse-dsa/wsa"
+                                ,"ivo://wfau.roe.ac.uk/first-dsa/wsa"              
                     })
                     
                     // examples by wavelength / field.
