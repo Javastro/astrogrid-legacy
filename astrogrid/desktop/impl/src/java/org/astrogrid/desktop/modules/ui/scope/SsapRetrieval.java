@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.18 2008/03/26 10:35:14 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.19 2008/03/30 18:02:54 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.text.StrBuilder;
@@ -36,10 +37,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-
+/**
+ * 
+ * complies with SSAP spec v1.04
+ */
 public class SsapRetrieval extends Retriever {
     public SsapRetrieval(Service service,SsapCapability cap,URI acurl,NodeSocket socket,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
         super(service,cap,socket,model,ra,dec);
@@ -81,17 +86,30 @@ public class SsapRetrieval extends Retriever {
     }
     //constants used with tablehandler.
     // the keys are UCDs - this makes it simpler to pass all metadata onto another app via plastic.
+    
+    // the Attribute keys are also used as constants for the UCDS to search for.
+    // latest SSA spec has replaced useage of UCD by utype - but is poorly implemented at present
+    // so keeping both systems at present.
+    // only implemented a partial list of the utypes for now - even less than for the ucd.
     public static final String SPECTRA_URL_ATTRIBUTE = "DATA_LINK";
+    public static final String SPECTRA_URL_UTYPE = "Access.Reference";
     public static final String SPECTRA_TITLE_ATTRIBUTE = "VOX:Image_Title";
+    public static final String SPECTRA_TITLE_UTYPE = "Target.Name";
     public static final String SPECTRA_AXES_ATTRIBUTE = "VOX:Spectrum_axes";
-    public static final String SPECTRA_DIMEQ_ATTRIBUTE = "VOX:Spectrum_dimeq";
+    public static final String SPECTRA_DIMEQ_ATTRIBUTE = "VOX:Spectrum_dimeq"; 
+    public static final String SPECTRA_DIMEQ_UTYPE = "Dime.Q";
     public static final String SPECTRA_SCALEQ_ATTRIBUTE ="VOX:Spectrum_scaleq";
+    public static final String SPECTRA_SCALEQ_UTYPE = "Scale.Q";
     public static final String SPECTRA_FORMAT_ATTRIBUTE = "VOX:Spectrum_Format";
+    public static final String SPECTRA_FORMAT_UTYPE = "Access.Format";   
+    //utype  Access.Size - estimated size - not seen in wild.
     public static final String SPECTRA_UNITS_ATTRIBUTE = "VOX:Spectrum_units";
     public static final String SPECTRA_START_TIME_ATTRIBUTE = "VOX:OBS_START_TIME";
+    public static final String SPECTRA_START_TIME_UTYPE = "Char.TimeAxis.Coverage.Bounds.Start";
     public static final String SPECTRA_END_TIME_ATTRIBUTE = "VOX:OBS_END_TIME";
+    public static final String SPECTRA_END_TIME_UTYPE = "Char.TimeAxis.Coverage.Bounds.Stop";
     public static final String SPECTRA_OBS_ID_ATTRIBUTE = "OBS_ID";
-    
+    //utype ssa:Query.LName - why the prefix??
     public class SsapTableHandler extends BasicTableHandler {
 
 
@@ -133,10 +151,30 @@ public class SsapRetrieval extends Retriever {
         }
        
         
-        protected void startTableExtensionPoint(int col, ColumnInfo columnInfo) {
+        protected void startTableExtensionPoint(int col, ColumnInfo columnInfo) {            
             super.startTableExtensionPoint(col, columnInfo);
+            DescribedValue utypeDV = columnInfo.getAuxDatumByName("utype");
+            if (utypeDV != null) {
+                String utype = utypeDV.getValueAsString(300);
+                if (StringUtils.isNotBlank(utype)) {
+                    // use 'contains' as they sometimes seem to come with a 'ssa:' prefix
+                    if (StringUtils.containsIgnoreCase(utype,SPECTRA_URL_UTYPE)) {
+                        urlCol = col;
+                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_TITLE_UTYPE)) {
+                        titleCol = col;
+                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_DIMEQ_UTYPE)) {
+                        spectrumDimeqCol = col;
+                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_SCALEQ_UTYPE)) {
+                        spectrumScaleqCol = col;
+                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_FORMAT_UTYPE)) {
+                        formatCol = col;
+                    }
+                    //if utype was provided, don't even bother looking at ucd.
+                    return;
+                }
+            }
             String ucd  = columnInfo.getUCD();
-            if (ucd == null) {
+            if (StringUtils.isBlank(ucd)) {
                 return;
             }
             if (ucd.equalsIgnoreCase(SPECTRA_URL_ATTRIBUTE)) {
@@ -152,7 +190,7 @@ public class SsapRetrieval extends Retriever {
             } else if (ucd.equalsIgnoreCase(SPECTRA_SCALEQ_ATTRIBUTE)) {
                 spectrumScaleqCol = col;
             } else if (ucd.equalsIgnoreCase(SPECTRA_UNITS_ATTRIBUTE)){
-            	spectrumUnitsCol = col;
+                spectrumUnitsCol = col;
             } else if (ucd.equalsIgnoreCase(SPECTRA_OBS_ID_ATTRIBUTE)) {
                 obsIdCol = col;
             } else if (ucd.equalsIgnoreCase(SPECTRA_START_TIME_ATTRIBUTE)) {
@@ -194,7 +232,7 @@ public class SsapRetrieval extends Retriever {
                 }
                 
                 if (spectrumScaleqCol > -1) {                 
-                    StringBuffer sb = new StringBuffer();
+                    StrBuilder sb = new StrBuilder();
                     Object o = row[spectrumScaleqCol];
                     // sometimes seems to be a string, sometimes a double array
                     if (o.getClass().isArray() && o.getClass().getComponentType() == Double.TYPE) {
@@ -217,16 +255,17 @@ public class SsapRetrieval extends Retriever {
                 try {
                     // construct a time, in order of preference.
                     Date parse = null;
-                    if (endTimeCol != -1) {
-                            parse = dfA.parse(row[endTimeCol].toString(),new ParsePosition(0));
+                    if (endTimeCol != -1 ) {
+                            //ObjectUtils.toString handles nulls by returning the empty string.
+                            parse = dfA.parse(ObjectUtils.toString(row[endTimeCol]),new ParsePosition(0));
                             if (parse == null) {
-                                parse = dfB.parse(row[endTimeCol].toString(),new ParsePosition(0));
+                                parse = dfB.parse(ObjectUtils.toString(row[endTimeCol]),new ParsePosition(0));
                             }
                     }
                     if (parse == null && startTimeCol != -1) {
-                        parse = dfA.parse(row[startTimeCol].toString(),new ParsePosition(0));
+                        parse = dfA.parse(ObjectUtils.toString(row[startTimeCol]),new ParsePosition(0));
                         if (parse == null) {
-                            parse = dfB.parse(row[startTimeCol].toString(),new ParsePosition(0));
+                            parse = dfB.parse(ObjectUtils.toString(row[startTimeCol]),new ParsePosition(0));
                         }                       
                     }
                     if (parse == null) {
@@ -256,7 +295,7 @@ public class SsapRetrieval extends Retriever {
                 }
             }catch (MalformedURLException e) {
                 logger.warn(service.getId() + " : Unable to parse url in service response - skipping row",e);
-            }           
+            }
         }
         private final StrBuilder filenameBuilder = new StrBuilder(64);
         //3 different formats, for the various formats seen 'in the wild'.
@@ -315,6 +354,10 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.19  2008/03/30 18:02:54  nw
+FIXED - bug 2689: upgrade to handle latest ssa standard.
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2689
+
 Revision 1.18  2008/03/26 10:35:14  nw
 checked configuraiton of html builder and strbuilder
 

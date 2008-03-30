@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.13 2008/03/10 14:14:01 nw Exp $
+/*$Id: SsapImpl.java,v 1.14 2008/03/30 18:02:19 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /** implementation of a component that does ssap queries.
+ * complies with v1.04 of the SSAP spec.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  */
 public class SsapImpl extends DALImpl implements Ssap {
@@ -92,10 +93,13 @@ public class SsapImpl extends DALImpl implements Ssap {
      */
     public URL constructQuery(URI service, double ra, double dec, double size)
             throws InvalidArgumentException, NotFoundException {
-        return addOption(
+        return addOption(addOption(
                 addOption(
                         resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
-                    ,"SIZE",Double.toString(size));
+                    ,"SIZE",Double.toString(size)
+                    ),"REQUEST","queryData"
+        
+        );
     }
 
     /**
@@ -108,9 +112,12 @@ public class SsapImpl extends DALImpl implements Ssap {
         } else {
             String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
             return addOption(
+            addOption(
                     addOption(
                             resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
-                        ,"SIZE",sizeStr);
+                        ,"SIZE",sizeStr
+                        ),"REQUEST","queryData"
+            );
         }
     }
   
@@ -120,6 +127,10 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.14  2008/03/30 18:02:19  nw
+FIXED - bug 2689: upgrade to handle latest ssa standard.
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2689
+
 Revision 1.13  2008/03/10 14:14:01  nw
 fixed fallthough case statements.
 

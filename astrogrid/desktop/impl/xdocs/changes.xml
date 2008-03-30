@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2008.1.rc2" date="2008-03-30">   
+    <action dev="nw" type="fix" issue="2689">
+    Improved SSAP handling in astroscope
+    </action>
     <action dev="nw" type="fix">
         Fixed race condition at startup of fetching helpmap (as seen by Dave).
     </action>
