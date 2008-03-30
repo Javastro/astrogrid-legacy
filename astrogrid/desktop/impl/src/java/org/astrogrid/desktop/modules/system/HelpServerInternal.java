@@ -1,4 +1,4 @@
-/*$Id: HelpServerInternal.java,v 1.7 2007/06/18 17:00:13 nw Exp $
+/*$Id: HelpServerInternal.java,v 1.8 2008/03/30 14:44:28 nw Exp $
  * Created on 11-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,12 +18,15 @@ import javax.swing.AbstractButton;
 import javax.swing.JButton;
 
 import org.astrogrid.acr.system.HelpServer;
+import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 
 /** Internal interface for the help server component
+ * 
+ * implementation of DelayedContinuation is just an implementation detail
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Oct-2005
  *
  */
-public interface HelpServerInternal extends HelpServer{
+public interface HelpServerInternal extends HelpServer, DelayedContinuation{
     /** call on the rootPane of a JFrame to trap all 'F1' key presses. and display help.
      * <p>
      * if object with current focus has a helpId, this is displayed, otherwise the defaultHelpId is displayed 
@@ -79,6 +82,9 @@ public interface HelpServerInternal extends HelpServer{
 
 /* 
 $Log: HelpServerInternal.java,v $
+Revision 1.8  2008/03/30 14:44:28  nw
+Complete - task 363: race condition at startup.
+
 Revision 1.7  2007/06/18 17:00:13  nw
 javadoc fixes.
 

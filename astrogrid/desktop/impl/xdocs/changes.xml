@@ -14,7 +14,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.1.rc2" date="2008-03-30">
+<release version="2008.1.rc2" date="2008-03-30">   
+    <action dev="nw" type="fix">
+        Fixed race condition at startup of fetching helpmap (as seen by Dave).
+    </action>
     <action dev="nw" type="fix" issue="2681">
         fixed code error in content-type filter.
     </action>

@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.14 2008/03/05 10:57:59 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.15 2008/03/30 14:44:28 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,11 +64,14 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         if (tasks != null) {
         for (Iterator i = tasks.iterator(); i.hasNext(); ) {
            Object o = i.next();
-           if (! (o instanceof ScheduledTask)) {
-               logger.error("List of services to schedule contains something that isn't a ScheduledTask - " + o);
-           } else {
+           if (o instanceof DelayedContinuation ) {
+               DelayedContinuation d = (DelayedContinuation)o;
+               this.schedule(d);
+           } else if (o instanceof ScheduledTask){
                ScheduledTask st = (ScheduledTask)o;
                this.schedule(st);
+           } else {
+               logger.error("List of services to schedule contains something that isn't a ScheduledTask or DelayedContinuation " + o);
            }
         }          
         }
@@ -145,6 +148,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.15  2008/03/30 14:44:28  nw
+Complete - task 363: race condition at startup.
+
 Revision 1.14  2008/03/05 10:57:59  nw
 fix to handle stricter compiler in new eclipse.
 

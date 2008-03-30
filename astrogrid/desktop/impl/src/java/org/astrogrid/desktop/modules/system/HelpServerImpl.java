@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.15 2008/03/28 13:09:01 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.16 2008/03/30 14:44:28 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -63,59 +65,15 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(HelpServerImpl.class);
-
-    /** Construct a new HelpServerImpl by providing a mapping (e.g. from hivemind config.)
-     * 
-     * @param helpMapping a mapping between helpIDs (string) and help resources (URL) (actually id's to helpItemContribution).
-     */
-        
-    public HelpServerImpl(BrowserControl browser,Map helpMapping) {
-    	this.browser = browser;
-    	this.helpMapping = helpMapping;
-    }
+    private final UIContext context;
+    private final URL helpMapURL;
     /** construct a new helpserverImpl by providing a URL to a help mapping file 
      * @throws MalformedURLException */
     public HelpServerImpl(BrowserControl browser, String mapURL, UIContext context) throws MalformedURLException {
         this.browser = browser;
-        final URL u = new URL(mapURL); // if it's faulty, fail-fast here.
-        (new BackgroundWorker(context,"Fetching help-map", Thread.MIN_PRIORITY) { // load the help bap on a background thread.
-
-            protected Object construct() throws Exception {
-                final XMLInputFactory fac = XMLInputFactory.newInstance();
-                XMLStreamReader in = null;
-                try {
-                    in = fac.createXMLStreamReader(u.openStream());
-                    while(in.hasNext()) {
-                        in.next();
-                        if (in.isStartElement()) {
-                            final String localName = in.getLocalName();
-                            if ("item".equals(localName)) {
-                                HelpItemContribution nu = new HelpItemContribution();
-                                nu.setId(in.getAttributeValue(null,"id"));
-                                try {
-                                nu.setUrl(in.getAttributeValue(null,"url"));
-                                helpMapping.put(nu.getId(),nu);
-                                } catch (MalformedURLException e) { // discard this one, but continue.
-                                    logger.warn("Malformed url for HelpID '" + nu.getId() + "' discarding");
-                                }
-                            }
-                        }
-                    } // end while.
-                } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (XMLStreamException e) {
-                            // ignored
-                        }
-                    }
-                }                
-                return null;
-            }
-            protected void doError(Throwable ex) {
-                logger.warn("Failed to download helpmap",ex);
-            }
-        }).start();
+        this.context = context;        
+        helpMapURL = new URL(mapURL);
+       
     }
     
     private Map helpMapping = new HashMap();
@@ -261,6 +219,59 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 		this.enableHelpOnButton(b, id);
 		return b;
 	}
+	
+	
+	// the delayedContinuation interface - used to fetch the helpmap, avoiding a race condition.
+    public DelayedContinuation execute() {
+        (new BackgroundWorker(context,"Fetching help-map", Thread.MIN_PRIORITY) { // load the help bap on a background thread.
+
+            protected Object construct() throws Exception {
+                final XMLInputFactory fac = XMLInputFactory.newInstance();
+                XMLStreamReader in = null;
+                try {
+                    in = fac.createXMLStreamReader(helpMapURL.openStream());
+                    while(in.hasNext()) {
+                        in.next();
+                        if (in.isStartElement()) {
+                            final String localName = in.getLocalName();
+                            if ("item".equals(localName)) {
+                                HelpItemContribution nu = new HelpItemContribution();
+                                nu.setId(in.getAttributeValue(null,"id"));
+                                try {
+                                nu.setUrl(in.getAttributeValue(null,"url"));
+                                helpMapping.put(nu.getId(),nu);
+                                } catch (MalformedURLException e) { // discard this one, but continue.
+                                    logger.info("Malformed url for HelpID '" + nu.getId() + "' discarding");
+                                }
+                            }
+                        }
+                    } // end while.
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (XMLStreamException e) {
+                            // ignored
+                        }
+                    }
+                }                
+                return null; 
+            }
+            protected void doError(Throwable ex) {
+                logger.warn("Failed to download helpmap",ex);
+            }
+        }).start();
+        return null; // no more repititions for this task.
+    }
+    public long getDelay() {
+        return 0; // as soon as possible
+    }
+    public Principal getPrincipal() {
+        return null;
+    }
+    public String getTitle() {
+        return "Fetching Helpmap";
+    }
     
     
     
@@ -269,6 +280,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.16  2008/03/30 14:44:28  nw
+Complete - task 363: race condition at startup.
+
 Revision 1.15  2008/03/28 13:09:01  nw
 help-tagging
 
