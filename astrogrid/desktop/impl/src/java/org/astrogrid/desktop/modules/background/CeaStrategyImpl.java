@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.33 2008/03/27 10:03:46 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.34 2008/03/30 09:42:47 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -184,7 +184,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 Interface[] interfaces = target.findCeaServerCapability().getInterfaces();
                 for (int i = 0; i < interfaces.length; i++) {
                     Interface ifa = interfaces[i];
-                    if (ifa.getSecurityMethods().length > 0) { //assume for now that any kind of security will require login
+                    if (ifa.getSecurityMethods().length != 0) { //assume for now that any kind of security will require login
                         community.guiLogin();
                         break;
                     }
@@ -658,6 +658,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.34  2008/03/30 09:42:47  nw
+minor tweak
+
 Revision 1.33  2008/03/27 10:03:46  nw
 improved error reporting when trying to run a secured app without logging in.
 
