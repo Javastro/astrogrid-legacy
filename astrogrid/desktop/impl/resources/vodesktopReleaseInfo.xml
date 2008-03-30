@@ -3,8 +3,8 @@ expect a single <release> block, containing details of the latest release.
 if <version> is different to user's current version, update prompt will be displayed.
 -->
 <release>
-       <date>2008-03-28</date>
-       <version>2008.1.rc1</version>
-       <download>http://help.astrogrid.org</download>
-       <description>Release Candidate</description>
+       <date>2008-03-31</date>
+       <version>2008.1.rc2</version>
+       <download>http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridSnapshots</download>
+       <description>Final Release Candidate</description>
 </release>
