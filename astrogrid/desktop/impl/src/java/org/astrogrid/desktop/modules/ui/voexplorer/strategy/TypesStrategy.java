@@ -26,12 +26,12 @@ public class TypesStrategy extends PipelineStrategy {
 			public boolean matches(Object arg0) {
 				Resource r = (Resource)arg0;
 				final Content content = r.getContent();
-				if (content == null || content.getSubject() == null || content.getSubject().length == 0) {
+				if (content == null || content.getType() == null || content.getType().length == 0) {
 					return selected.contains(NONE_PROVIDED.get(0));
 				}
-				String[] subjects = content.getType();
-				for (int i = 0; i < subjects.length; i++) {
-					String subj = subjects[i];
+				String[] types = content.getType();
+				for (int i = 0; i < types.length; i++) {
+					String subj = types[i];
 					if (selected.contains(subj)) {
 						return true;
 					}

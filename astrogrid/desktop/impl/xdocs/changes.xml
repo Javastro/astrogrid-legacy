@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2008.1.rc2" date="2008-03-30">
+    <action dev="nw" type="fix" issue="2681">
+        fixed code error in content-type filter.
+    </action>
     <action dev="nw" type="fix">
         Increased defensive coding in resource parser. This will fix problems seen when doing reg query through AR
      </action>
