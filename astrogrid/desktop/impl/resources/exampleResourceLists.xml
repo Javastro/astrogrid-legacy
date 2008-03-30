@@ -74,6 +74,8 @@ return $r</query>
           <resource>ivo://wfau.roe.ac.uk/glimpse-dsa/wsa</resource>
           <resource>ivo://wfau.roe.ac.uk/twomass-dsa/wsa</resource>
           <resource>ivo://wfau.roe.ac.uk/ssa-dsa/ssa</resource>
+          <resource>ivo://wfau.roe.ac.uk/xmm_dsa/wsa</resource>
+          <resource>ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa</resource>
         </resource-list>
         <smart-list name="IR redshift" iconName="smartfolder16.png" fixed="true">
           <query>(ucd = redshift) AND (waveband = infrared)</query>

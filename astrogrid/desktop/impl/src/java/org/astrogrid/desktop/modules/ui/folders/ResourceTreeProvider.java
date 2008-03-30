@@ -207,7 +207,9 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
                                 ,"ivo://uk.ac.cam.ast/INT-WFS/observation-catalogue/INT_WFS_DQC"
                                 ,"ivo://uk.ac.cam.ast/INT-WFS/merged-object-catalogue/INT_WFS_Merged_Object_catalogue"
                                 ,"ivo://wfau.roe.ac.uk/glimpse-dsa/wsa"
-                                ,"ivo://wfau.roe.ac.uk/first-dsa/wsa"              
+                                ,"ivo://wfau.roe.ac.uk/first-dsa/wsa" 
+                                ,"ivo://wfau.roe.ac.uk/xmm_dsa/wsa"
+                                ,"ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa"
                     })
                     
                     // examples by wavelength / field.
