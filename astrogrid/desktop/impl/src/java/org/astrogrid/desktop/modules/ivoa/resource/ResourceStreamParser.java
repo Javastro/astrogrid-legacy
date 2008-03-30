@@ -206,7 +206,7 @@ public final class ResourceStreamParser implements Iterator {
 		final String xsiType = in.getAttributeValue(XSI_NS,"type");  // xsi:type
 		m.put("getType",xsiType);
 		// add interfaces for the type this registry entry claims to be.
-		if (xsiType != null) {
+		if (StringUtils.isNotBlank(xsiType)) {
 			if (StringUtils.contains(xsiType,"Authority")) {
 				ifaces.add(Authority.class);
 			
@@ -282,7 +282,7 @@ public final class ResourceStreamParser implements Iterator {
 					m.put("getShortName",in.getElementText());
 				} else if (elementName.equals("identifier")) {
 				    String id = in.getElementText();
-				    if (id != null) {
+				    if (StringUtils.isNotBlank(id)) {
 				        m.put("getId",new URI(id));
 				    }
 				} else if (elementName.equals("curation")) {
@@ -298,7 +298,7 @@ public final class ResourceStreamParser implements Iterator {
 					instruments.add(parseResourceName());
 				} else if (elementName.equals("rights")) {
 				    String right = in.getElementText();
-				    if (right != null) {
+				    if (StringUtils.isNotBlank(right)) {
 				        rights.add(right.toLowerCase());
 				    }
 					// service interface
@@ -364,7 +364,10 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("table")) { 
 					tables.add( parseTable());
 				} else if (elementName.equals("managedAuthority")) { // Registry
-				    managedAuthorities.add(in.getElementText());
+				    String s = in.getElementText();
+				    if (StringUtils.isNotBlank(s)) {
+				        managedAuthorities.add(s);
+				    }
 				} else if (elementName.equals("full") && ifaces.contains(RegistryService.class)) {
 	                m.put("isFull",Boolean.valueOf(in.getElementText()));
 				} else {
@@ -481,7 +484,7 @@ public final class ResourceStreamParser implements Iterator {
             c = new Capability();
         }
         c.setType(xsiType);
-        if (standardID != null) {
+        if (StringUtils.isNotBlank(standardID)) {
             try {
                 c.setStandardID(new URI(standardID));
             }catch (URISyntaxException e) {
@@ -542,7 +545,10 @@ public final class ResourceStreamParser implements Iterator {
                     }
      // registry specific
                 } else if (elementName.equals("optionalProtocol")  && c instanceof SearchCapability) {
-                    optionalProtols.add(in.getElementText());
+                    String s = in.getElementText();
+                    if (StringUtils.isNotBlank(s)) {
+                        optionalProtols.add(s);
+                    }
                 } else if (elementName.equals("extensionSearchSupport") && c instanceof SearchCapability){
                     ((SearchCapability)c).setExtensionSearchSupport(in.getElementText());
       // cone specific
@@ -576,14 +582,23 @@ public final class ResourceStreamParser implements Iterator {
                 } else if (elementName.equals("supportPositioning") && c instanceof StapCapability) {
                     ((StapCapability)c).setSupportPositioning(Boolean.valueOf(in.getElementText()).booleanValue());
                 } else if (elementName.equals("supportedFormats") && c instanceof StapCapability) {
-                    stapFormats.add(StringUtils.lowerCase(in.getElementText()));
+                    String s = in.getElementText();
+                    if (StringUtils.isNotBlank(s)) {
+                        stapFormats.add(StringUtils.lowerCase(s));
+                    }
         // ssap specific
                 } else if (elementName.equals("complianceLevel") && c instanceof SsapCapability) {
                     ((SsapCapability)c).setComplianceLevel(in.getElementText());
                 } else if (elementName.equals("dataSource") && c instanceof SsapCapability) {
-                    ssapDataSource.add(in.getElementText());
+                    String s= in.getElementText();
+                    if (StringUtils.isNotBlank(s)) {
+                        ssapDataSource.add(s);
+                    }
                 } else if (elementName.equals("creationType") && c instanceof SsapCapability) {
-                    ssapCreationType.add(in.getElementText());
+                    String s= in.getElementText();
+                    if (StringUtils.isNotBlank(s)) {
+                        ssapCreationType.add(s);
+                    }
                 } else if (elementName.equals("maxSearchRadius") && c instanceof SsapCapability) {                    
                     try {
                         ((SsapCapability)c).setMaxSearchRadius(Double.parseDouble(in.getElementText()));
@@ -602,8 +617,11 @@ public final class ResourceStreamParser implements Iterator {
                     } catch (NumberFormatException e) {
                         logger.debug("capability - maxAperture",e);
                     }                    
-                } else if (elementName.equals("supportedFrame") && c instanceof SsapCapability) {                        
-                            ssapSupportedFrame.add(in.getElementText());    
+                } else if (elementName.equals("supportedFrame") && c instanceof SsapCapability) {
+                    String s= in.getElementText();
+                    if (StringUtils.isNotBlank(s)) {
+                            ssapSupportedFrame.add(s);
+                    }
                 } else if (elementName.equals("dataModel") && c instanceof SsapCapability) {
                     // dataModel only occurs in the ProtoSpectralAccess capability - so just ignore it.
       // fallback                
@@ -924,7 +942,7 @@ public final class ResourceStreamParser implements Iterator {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("waveband")) {
 					    String wb = in.getElementText();
-					    if (wb != null) {					        
+					    if (StringUtils.isNotBlank(wb)) {					        
 					        wavebands.add(wb.toLowerCase());
 					    }
 					} else if (elementName.equals("footprint")) {
@@ -970,7 +988,7 @@ public final class ResourceStreamParser implements Iterator {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("subject")) {	
 					    String subj = in.getElementText();
-					    if (subj != null) {
+					    if (StringUtils.isNotBlank(subj)) {
 					        subject.add(subj.toLowerCase());
 					    }
 					} else if (elementName.equals("description")) {
@@ -980,7 +998,7 @@ public final class ResourceStreamParser implements Iterator {
 					} else if (elementName.equals("referenceURL")) {
 						try {
 						    String ref = in.getElementText();
-						    if (ref != null) {
+						    if (StringUtils.isNotBlank(ref)) {
 						        c.setReferenceURI(new URI(ref));
 						    }
 						} catch (URISyntaxException e) {
@@ -988,12 +1006,12 @@ public final class ResourceStreamParser implements Iterator {
 						}							
 					} else if (elementName.equals("type")) {
 					    String ty = in.getElementText();
-					    if (ty != null) {
+					    if (StringUtils.isNotBlank(ty)) {
 							type.add(ty.toLowerCase());
 					    }
 					} else if (elementName.equals("contentLevel")) {
 					    String cont = in.getElementText();
-					    if (cont != null) {
+					    if (StringUtils.isNotBlank(cont)) {
 							contentLevel.add(cont.toLowerCase());
 					    }
 					} else if (elementName.equals("relationship")) {
@@ -1100,7 +1118,7 @@ public final class ResourceStreamParser implements Iterator {
 		final ResourceName rn = new ResourceName();
 		try {
 			final String attributeValue = in.getAttributeValue(null,"ivo-id");
-			if (attributeValue != null) {
+			if (StringUtils.isNotBlank(attributeValue)) {
 				rn.setId(new URI(attributeValue));
 			}
 		} catch (URISyntaxException x) {
@@ -1135,7 +1153,7 @@ public final class ResourceStreamParser implements Iterator {
 				if (elementName.equals("logo")) {
 					try {
 						String url = in.getElementText();
-						if (url != null) {
+						if (StringUtils.isNotBlank(url)) {
 						    c.setLogoURI(new URI(url));
 						}
 					} catch (URISyntaxException x) {
@@ -1191,7 +1209,7 @@ public final class ResourceStreamParser implements Iterator {
 		final Validation v = new Validation();
 		try {
 			final String attributeValue = in.getAttributeValue(null,"validatedBy");
-			if (attributeValue != null) {
+			if (StringUtils.isNotBlank(attributeValue)) {
 				v.setValidatedBy(new URI(attributeValue));
 			}
 		} catch (URISyntaxException e) {
@@ -1234,7 +1252,7 @@ public final class ResourceStreamParser implements Iterator {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("ApplicationReference")) {
 						String s = (in.getElementText());
-						if (s != null) {
+						if (StringUtils.isNotBlank(s)) {
 						try {
 							URI u = new URI(s);
 							result.add(u);
@@ -1395,7 +1413,7 @@ public final class ResourceStreamParser implements Iterator {
 	    pb.setId(in.getAttributeValue(null,"id"));
 	    pb.setType(in.getAttributeValue(null,"type"));
 	    String arrSz = in.getAttributeValue(null,"array");
-	    if (arrSz != null) {
+	    if (StringUtils.isNotBlank(arrSz)) {
 	        pb.setArraysize(arrSz);
 	    }
 		List options = new ArrayList(3);
@@ -1418,9 +1436,15 @@ public final class ResourceStreamParser implements Iterator {
 					} else if (elementName.equals("mimeType")) {
 					    pb.setMimeType(in.getElementText());					
 					} else 	if (elementName.equals("defaultValue")) {
-					    defValues.add(in.getElementText());
+					    String s= in.getElementText(); // additional armour, to defend against kevin's stylesheet.
+					    if (StringUtils.isNotBlank(s)) {
+					        defValues.add(s);
+					    }
 					} else if (elementName.equals("optionVal")) {
-						options.add(in.getElementText());
+					    String s = in.getElementText();
+					    if (StringUtils.isNotBlank(s)) {
+					        options.add(s);
+					    }
 					} else if (elementName.equals("optionList")) {
 					    // ignored.
 					} else {
@@ -1460,9 +1484,9 @@ public final class ResourceStreamParser implements Iterator {
 					    description = in.getElementText();
 					} else if (elementName.equals("pref")) {
 						final String maxString = in.getAttributeValue(null,"maxOccurs");
-						int max =  maxString == null ? 1 : Integer.parseInt(maxString);
+						int max =  StringUtils.isNotBlank(maxString) ?  Integer.parseInt(maxString) : 1;
 						final String minString = in.getAttributeValue(null,"minOccurs");
-						int min =  minString == null ? 1 : Integer.parseInt(minString);
+						int min =  StringUtils.isNotBlank(minString) ?  Integer.parseInt(minString) : 1;
 						String ref =  in.getAttributeValue(null,"ref");
 						
 						ParameterReferenceBean pref =
@@ -1527,7 +1551,7 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("wsdlURL") && iface instanceof WebServiceInterface) {
 			        try {
 			            final String element = in.getElementText();
-			            if (element != null) {
+			            if (StringUtils.isNotBlank(element)) {
 			                wsdlURLs.add(new URI(element));
 			            }
 			        } catch (Exception e) {
@@ -1600,7 +1624,7 @@ public final class ResourceStreamParser implements Iterator {
 		url.setUse(in.getAttributeValue(null,"use"));
 		try {
 			final String element = in.getElementText();
-			if (element != null) {
+			if (StringUtils.isNotBlank(element)) {
 				url.setValueURI(new URI(element));
 			}
 		} catch (Exception e) {
@@ -1612,7 +1636,7 @@ public final class ResourceStreamParser implements Iterator {
 	private Format parseFormat() {
 		Format f = new Format();
 		String s= in.getAttributeValue(null,"isMIMEType");
-		if (s != null) {
+		if (StringUtils.isNotBlank(s)) {
 			try {
 				boolean b = Boolean.valueOf(s).booleanValue();
 				f.setMimeType(b);
@@ -1622,7 +1646,7 @@ public final class ResourceStreamParser implements Iterator {
 		}
 		try {
 		    String fmt = in.getElementText();
-		    if (fmt != null) {		        
+		    if (StringUtils.isNotBlank(fmt)) {		        
 		        f.setValue(fmt.toLowerCase());
 		    }
 		} catch (XMLStreamException x) {
@@ -1635,7 +1659,7 @@ public final class ResourceStreamParser implements Iterator {
 		final SecurityMethod s = new SecurityMethod();
 		try {
 			final String attributeValue = in.getAttributeValue(null,"standardID");
-			if (attributeValue != null) {
+			if (StringUtils.isNotBlank(attributeValue)) {
 				s.setStandardID(new URI(attributeValue));
 			}
 		} catch (URISyntaxException e) {
