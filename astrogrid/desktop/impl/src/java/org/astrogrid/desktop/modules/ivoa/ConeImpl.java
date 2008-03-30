@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.11 2008/03/10 14:14:01 nw Exp $
+/*$Id: ConeImpl.java,v 1.12 2008/03/30 18:05:06 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
-/**
+/** Complies with Cone spec v1.03 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  *
  */
@@ -140,6 +140,10 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.12  2008/03/30 18:05:06  nw
+checked the implementations against the latest standards,
+noted in code comments what version of the standard is supported.
+
 Revision 1.11  2008/03/10 14:14:01  nw
 fixed fallthough case statements.
 
