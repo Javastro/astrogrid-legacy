@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -62,11 +63,13 @@ public void actionPerformed(ActionEvent e) {
 
 			protected Object construct() throws Exception {
 				OutputStream os = null;
+                FileObject fo = null;
 				int max = l.size() + 2;
 				int count = 0;
 				setProgress(count,max);
 				try {
-				    os = vfs.resolveFile(u.toString()).getContent().getOutputStream();
+                    fo = vfs.resolveFile(u.toString());
+				    os = fo.getContent().getOutputStream();
 				    setProgress(++count,max);
 				    if (l.size() > 1) {
 				        os.write("<resources>\n".getBytes());
@@ -85,6 +88,7 @@ public void actionPerformed(ActionEvent e) {
 					if (os != null) {
 						try {
 							os.close();
+                            fo.refresh();
 						} catch (IOException e) {
 							// ignored
 						}

@@ -828,8 +828,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
                        protected Object construct() throws Exception {
                            Writer w = null;
+                           FileObject fo = null;
                            try {
-                               final FileObject fo = vfs.resolveFile(u.toString());
+                               fo = vfs.resolveFile(u.toString());
                                reportProgress("Resolved file");
                             w = new OutputStreamWriter(fo.getContent().getOutputStream());
                             reportProgress("Opened file for writing");
@@ -841,6 +842,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                                if (w != null) {
                                    try {
                                        w.close();
+                                       fo.refresh();
                                    } catch (IOException ignored) {
                                        //meh
                                    }

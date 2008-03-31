@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
@@ -60,11 +61,13 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 		(new BackgroundWorker(uiParent.get(),"Exporting summaries",BackgroundWorker.LONG_TIMEOUT) {
 			protected Object construct() throws Exception {
 				PrintWriter out = null;
+                FileObject fo = null;
 				int max = rs.size() + 2;
 				int count = 0;
 				setProgress(count,max);
 				try {
-				    out = new PrintWriter(new java.io.OutputStreamWriter(vfs.resolveFile(u.toString()).getContent().getOutputStream()));
+                    fo = vfs.resolveFile(u.toString());
+				    out = new PrintWriter(new java.io.OutputStreamWriter(fo.getContent().getOutputStream()));
 				    setProgress(++count,max);
 					out.print("<ul class='xoxo'>");
 					out.println("<!-- See http://microformats.org/wiki/xoxo for details of XoXo format -->");
@@ -119,6 +122,7 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 				} finally {
 					if (out != null) {
 						out.close();
+                        fo.refresh();
 					}
 	                   setProgress(++count,max);
 				}
