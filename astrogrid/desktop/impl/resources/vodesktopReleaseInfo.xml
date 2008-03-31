@@ -4,7 +4,7 @@ if <version> is different to user's current version, update prompt will be displ
 -->
 <release>
        <date>2008-03-31</date>
-       <version>2008.1.rc2</version>
-       <download>http://wiki.astrogrid.org/bin/view/Astrogrid/DesktopAstroGridSnapshots</download>
-       <description>Final Release Candidate</description>
+       <version>2008.1</version>
+       <download>http://help.astrogrid.org/wiki/Install/Downloads</download>
+       <description>First public release</description>
 </release>
