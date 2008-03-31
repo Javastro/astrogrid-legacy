@@ -14,6 +14,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2008.1" date="2008-03-31" >
+    <action dev="mbt" type="fix" issue="2679">
+    force update of vospace filesizes.
+    </action>
+</release>
 <release version="2008.1.rc2" date="2008-03-30">   
     <action dev="nw" type="fix" issue="2689">
     Improved SSAP handling in astroscope
