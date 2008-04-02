@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.16 2007/10/17 09:58:21 clq2 Exp $
+ * $Id: SqlResults.java,v 1.17 2008/04/02 14:20:43 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -101,6 +101,7 @@ public class SqlResults extends TableResults {
    {
       int unknownCount = 1;
       int dummyColIndex = 1;
+      boolean tableIsOpen = false;
 
       try
       {
@@ -108,7 +109,6 @@ public class SqlResults extends TableResults {
                Query.MAX_RETURN_KEY, -1);
          long queryLimit = querier.getQuery().getLimit();
          
-         tableWriter.open();
          
          //Get the actual DBMS metadata from the JDBC resultset.
          //This will refer to databases, tables and columns using
@@ -317,6 +317,8 @@ public class SqlResults extends TableResults {
             }
          }
          // Now that we have the metadata, we can start processing the table.
+         tableWriter.open();
+         tableIsOpen = true;
          tableWriter.startTable(cols);
 
          int row = 0;
@@ -372,11 +374,23 @@ public class SqlResults extends TableResults {
       }
       catch (SQLException sqle)
       {
+         if (!tableIsOpen) {
+            tableWriter.writeErrorTable(sqle.getMessage());
+         }
+         else  {
+            tableWriter.close();
+         }
          log.error(sqle+" reading results",sqle);
          throw new DatacenterException(sqle+", reading results", sqle);
       }
       catch (QueryException qe )
       {
+         if (!tableIsOpen) {
+            tableWriter.writeErrorTable(qe.getMessage());
+         }
+         else  {
+            tableWriter.close();
+         }
          log.error(qe+" processing query metadata", qe);
          throw new DatacenterException(qe+", processing query metadata", qe);
       }
@@ -398,6 +412,12 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.17  2008/04/02 14:20:43  clq2
+ KEA_PAL2654
+
+ Revision 1.16.20.1  2008/03/31 17:15:38  kea
+ Fixes for conesearch error reporting.
+
  Revision 1.16  2007/10/17 09:58:21  clq2
  PAL_KEA-2314
 

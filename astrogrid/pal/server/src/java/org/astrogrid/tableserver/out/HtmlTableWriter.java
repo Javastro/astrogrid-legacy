@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.9 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: HtmlTableWriter.java,v 1.10 2008/04/02 14:20:44 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,6 +52,18 @@ public class HtmlTableWriter extends AsciiTableSupport {
       this.comment = aComment;
    }
    
+   public void writeErrorTable(String errorDesc) throws IOException {
+      printOut.println("<HTML>");
+      printOut.println("<HEAD>");
+      printOut.println("<TITLE>ERROR</TITLE>");
+      printOut.println("</HEAD>");
+      printOut.println("<BODY>");
+      printOut.println("<H1>Error</H1>");
+      printOut.println("<p>" + errorDesc + "</p>");
+      printOut.println("</BODY>");
+      printOut.println("</HTML>");
+   }
+
    public void open() throws IOException {
       printOut.println("<HTML>");
       
@@ -231,6 +243,12 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.10  2008/04/02 14:20:44  clq2
+ KEA_PAL2654
+
+ Revision 1.9.22.1  2008/03/31 17:15:38  kea
+ Fixes for conesearch error reporting.
+
  Revision 1.9  2007/09/07 09:30:52  clq2
  PAL_KEA_2235
 

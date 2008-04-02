@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.9 2007/03/02 13:43:45 kea Exp $
+ * $Id: XsvTableWriter.java,v 1.10 2008/04/02 14:20:44 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,6 +45,10 @@ public class XsvTableWriter extends AsciiTableSupport {
       separator = variableSeperator;
    }
    
+   public void writeErrorTable(String errorDesc) throws IOException {
+      printOut.print("ERROR: " + errorDesc);
+   }
+
    public void open() {
    }
    
@@ -179,6 +183,12 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.10  2008/04/02 14:20:44  clq2
+ KEA_PAL2654
+
+ Revision 1.9.32.1  2008/03/31 17:15:38  kea
+ Fixes for conesearch error reporting.
+
  Revision 1.9  2007/03/02 13:43:45  kea
  Added proper error checking to PrintWriter output stream writers in these
  classes;  failures were going undetected as PrintWriters do not throw

@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.12 2007/06/08 13:16:12 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.13 2008/04/02 14:20:44 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,6 +68,20 @@ public class VoTableWriter implements TableWriter {
    {
       bufferedOut.write(toPrint, 0, toPrint.length());
       bufferedOut.write("\n",0,1); //TOFIX USE SYSTEM-SPECIFIC EOLN?
+   }
+
+   public void writeErrorTable(String errorDesc) throws IOException {
+      errorDesc = errorDesc.replaceAll("&", "&amp;");
+      errorDesc = errorDesc.replaceAll("<", "&lt;");
+      errorDesc = errorDesc.replaceAll(">", "&gt;");
+
+      println("<?xml version='1.0' encoding='UTF-8'?>");
+      println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");
+      println("<VOTABLE version=\"1.0\">");
+      println("<DESCRIPTION>Error processing query</DESCRIPTION>");
+      println("<INFO ID=\"Error\" name=\"Error\" value=\"" + 
+            errorDesc + "\"/>");
+      println("</VOTABLE>");
    }
 
    public void open() throws IOException {
@@ -253,6 +267,12 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.13  2008/04/02 14:20:44  clq2
+ KEA_PAL2654
+
+ Revision 1.12.30.1  2008/03/31 17:15:38  kea
+ Fixes for conesearch error reporting.
+
  Revision 1.12  2007/06/08 13:16:12  clq2
  KEA-PAL-2169
 

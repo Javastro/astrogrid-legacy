@@ -1,9 +1,10 @@
 /*
- * $Id: SubmitCone.java,v 1.13 2008/01/09 16:57:06 kea Exp $
+ * $Id: SubmitCone.java,v 1.14 2008/04/02 14:20:44 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
+import org.astrogrid.io.mime.MimeTypes;
 
 
 /**
@@ -55,7 +57,7 @@ public class SubmitCone extends DefaultServlet {
         // Conesearch is not enabled, so throw an exception
          IOException ioe =  new IOException(
              "Conesearch interface is disabled in config");
-         doError(response, 
+         doTypedError(request, response, 
            "Conesearch interface is disabled in DSA/catalog configuration", ioe);
          throw ioe;
       }
@@ -145,7 +147,7 @@ public class SubmitCone extends DefaultServlet {
              ", radius = " + Double.toString(radius),
              th);
 
-         doError(response, 
+         doTypedError(request, response, 
              "conesearching table '" +tableName +"' in catalog '" +
              catalogName +"' with RA = " + Double.toString(ra) + 
              ", Dec = " + Double.toString(dec) + 
@@ -167,7 +169,34 @@ public class SubmitCone extends DefaultServlet {
           
       LogFactory.getLog(request.getContextPath()).error( ex+errorResponseString,ex);
 
-      doError(response, errorResponseString, ex);
+      doTypedError(request, response, errorResponseString, ex);
    }
 
+   protected void doTypedError(HttpServletRequest request, HttpServletResponse response, String title, Throwable th) throws IOException {
+      String format = request.getParameter("Format");
+      if ( (format == null) || (format.trim() == "") ||
+         (format.toLowerCase().equals("votable")) ) {
+         try {
+           response.setContentType(MimeTypes.VOTABLE);
+         }
+         catch (RuntimeException re) {
+         }
+         String error = th.getMessage();
+         error = error.replaceAll("&", "&amp;"); 
+         error = error.replaceAll("<", "&lt;");
+         error = error.replaceAll(">", "&gt;");
+
+         PrintWriter writer = response.getWriter();
+         writer.println("<?xml version='1.0' encoding='UTF-8'?>");
+         writer.println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");
+         writer.println("<VOTABLE version=\"1.0\">");
+         writer.println("<DESCRIPTION>Error processing query</DESCRIPTION>");
+         writer.println("<INFO ID=\"Error\" name=\"Error\" value=\"" +
+              error + "\"/>");
+         writer.println("</VOTABLE>");
+      }
+      else {
+         doError(response, title, th);
+      }
+   }
 }

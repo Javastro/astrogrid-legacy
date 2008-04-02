@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableBinaryWriter.java,v 1.3 2007/03/02 13:43:45 kea Exp $
+ * $Id: VoTableBinaryWriter.java,v 1.4 2008/04/02 14:20:44 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -71,6 +71,10 @@ public class VoTableBinaryWriter implements TableWriter {
       tempOutputStream = new java.io.BufferedOutputStream(tempOutputStream);
 
       voTableWriter = new VoTableWriter(tempOutputStream, title, user);
+   }
+
+   public void writeErrorTable(String errorDesc) throws IOException {
+     voTableWriter.writeErrorTable(errorDesc);
    }
 
    public void open() throws IOException {

@@ -1,5 +1,5 @@
 /*
- * $Id: TableWriter.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: TableWriter.java,v 1.3 2008/04/02 14:20:44 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,6 +43,9 @@ public interface TableWriter {
    
    /** Returns the mime type that this writer produces */
    public String getMimeType();
+
+   /** Writes a table wrapping error output */ 
+   public void writeErrorTable(String errorMessage) throws IOException;
 }
 
 
