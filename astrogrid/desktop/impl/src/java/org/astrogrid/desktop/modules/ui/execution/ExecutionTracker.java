@@ -660,6 +660,10 @@ public final ProcessMonitor getMoitor() {
                         pm.refresh();
                         return null;
                     }
+
+                    protected void doAlways() {
+                        populateStatusLabel();
+                    }
                 }).start();                
             }
         }
