@@ -14,6 +14,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2008.1.1" date="unreleased">
+    <action dev="nw" type="fix" issue="2724">
+        Fixed obscure race-condition in astroscope.
+    </action>
+</release>
 <release version="2008.1" date="2008-03-31" >
     <action dev="mbt" type="fix" issue="2679">
     force update of vospace filesizes.

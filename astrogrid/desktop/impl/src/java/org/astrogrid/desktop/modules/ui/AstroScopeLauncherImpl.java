@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.82 2008/03/28 13:09:01 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.83 2008/04/09 08:41:47 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -347,13 +347,11 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		builder.add(submitButton,cc.xyw(2,row,3));
 		
 		row++;
-		JButton reFocusTopButton = new JButton(topAction);		
 		final FocusSet sel = vizModel.getSelectionFocusSet();
 		sel.addFocusListener(this);
 		
-		JButton clearButton = new JButton(clearAction);
-		builder.add(reFocusTopButton,cc.xy(2,row));
-		builder.add(clearButton,cc.xy(4,row));
+		builder.add(new JButton(topAction),cc.xy(2,row));
+		builder.add(new JButton(clearAction),cc.xy(4,row));
 
 		// start of activities panel.
 		row++;
@@ -474,7 +472,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	private final EventList history;
 	private List resourceList;
 	private final SnitchInternal snitch;
-	final BiStateButton submitButton;
+	private final BiStateButton submitButton;
 	final ActivitiesManager acts;	
 	protected final VizualizationsPanel flip;
 
@@ -485,7 +483,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	protected final DalProtocolManager protocols;
 	protected final RadiusTextField regionText;
 	protected final Sesame ses;
-	protected final Action topAction = new TopAction();
+	private final Action topAction = new TopAction();
 	protected final Action upAction = new UpAction();
 	protected final VizModel vizModel;
 	protected final VizualizationController vizualizations;
@@ -669,7 +667,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	protected void haltQuery() {
 		for (Iterator i = getContext().getTasksList().iterator(); i.hasNext(); ) {
 		    BackgroundWorker w = (BackgroundWorker)i.next();
-		    // halts all retrievers and list-services queries - leaving other tasks (e.g. downloads, plastic interactions) untouched.
+		    // halts all retrievers and list-services queries for this window - leaving other tasks (e.g. downloads, plastic interactions) untouched.
 		   
 		    if (w.parent == this &&
 		            (w instanceof Retriever  || w instanceof ListServicesRegistryQuerier) ) {
@@ -770,7 +768,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 28, 20075:30:43 PM
      */
-    private final class ListServicesRegistryQuerier extends BackgroundOperation {
+    public final class ListServicesRegistryQuerier extends BackgroundOperation {
         /**
          * 
          */

@@ -22,6 +22,7 @@ import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl.ListServicesRegistryQuerier;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
@@ -420,13 +421,30 @@ public abstract class Retriever extends BackgroundWorker {
     }
     
 
+    //bz 2724 - not always true. In all-voscope, if the queries for all siaps complete before reg query to list all cones completes, this gets triggered.
+    // can't determine that we're the last ever retriever by checking progressvalue alone.
+    // check the tasklist too, and verify that we're the last task - there's no other retrievers or queriers still in the queue.
     protected final void doAlways() {
        parent.setProgressValue(parent.getProgressValue() + 1); 
-       if (parent.getProgressMax() <= parent.getProgressValue()) { // we've finished
+       if (parent.getProgressMax() <= parent.getProgressValue() && isLastQueryWorker()) {
            parent.setProgressMax(0);
            model.getParent()// same as this.parent, but saves casting..
                .getSubmitButton().enableA(); // flip the button back again,
        }
+    }
+    
+    /** returns true if there's no other query tasks but us for this window on the task queue */
+    private final boolean isLastQueryWorker() {
+        for (Iterator i =parent.getContext().getTasksList().iterator(); i.hasNext(); ) {
+            BackgroundWorker w = (BackgroundWorker)i.next();
+            if (w.getParent() == parent // belongs to this scope 
+                    && w != this // not this retriever
+                    && 
+                    (w instanceof Retriever  || w instanceof ListServicesRegistryQuerier) ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     protected void doFinished(Object result) {        
