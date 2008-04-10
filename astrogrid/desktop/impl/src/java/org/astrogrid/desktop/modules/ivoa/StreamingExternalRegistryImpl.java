@@ -181,9 +181,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		
 		} 
 	}
-	// v0.10
-	//public static final String REG_NS = "http://www.ivoa.net/schemas/services/QueryRegistry/wsdl";
-	// for version 1.0
+
 	public static final String REG_NS = "http://www.ivoa.net/wsdl/RegistrySearch/v1.0";
 
 	static final  DocumentBuilderFactory fac= DocumentBuilderFactory.newInstance();
@@ -193,7 +191,6 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 
 	private final Service serv;
 	private final Transport transport;
-	private final URI rorEndpoint;
 
     private final AdqlInternal adql;
 
@@ -208,7 +205,6 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		this.serv = this.osf.create(RegistryQuery.class, "RegistryQuery","http://www.ivoa.net/wsdl/RegistrySearch",null);
 		this.transport = new SoapHttpTransport();
 		this.inputFactory = XMLInputFactory.newInstance();
-		this.rorEndpoint = null;
 	}
 	
 	public Resource[] adqlsSearch(URI arg0, String arg1)
@@ -338,8 +334,9 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		}
 	}
 	
+	// deprecated method.
 	public URI getRegistryOfRegistriesEndpoint() {
-		return rorEndpoint;
+		return null;
 	}
 
 	public Resource getResource(URI endpoint, URI ivorn) throws NotFoundException,
