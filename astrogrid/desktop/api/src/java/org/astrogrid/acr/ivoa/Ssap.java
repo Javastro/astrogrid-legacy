@@ -1,4 +1,4 @@
-/*$Id: Ssap.java,v 1.6 2007/03/08 17:48:06 nw Exp $
+/*$Id: Ssap.java,v 1.7 2008/04/14 09:40:30 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 
 /** Querying for Spectra from Simple Spectral Access Protool (SSAP) Services.
- * <b>NB:</b> working, but based on unfinished IVOA specification - interface may need to change to follow specificaiton.
+ 
  * @service ivoa.ssap
  * @since 2.0
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
@@ -51,6 +51,9 @@ public interface Ssap extends Dal {
 
 /* 
 $Log: Ssap.java,v $
+Revision 1.7  2008/04/14 09:40:30  nw
+documentation tweak.
+
 Revision 1.6  2007/03/08 17:48:06  nw
 tidied.
 

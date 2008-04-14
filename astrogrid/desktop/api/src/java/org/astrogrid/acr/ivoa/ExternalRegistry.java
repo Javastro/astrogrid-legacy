@@ -207,7 +207,7 @@ public interface ExternalRegistry {
 	/** convenience function - build an array of resouce objects from an xml document */
 	Resource[] buildResources(Document doc)  throws ServiceException;
 
-	/** returns the service endpoint of the standard IVOA registry of registries
+	/**
 	 * @deprecated registry of registries does not provide a search interface
 	 * @return always null
 	 */
