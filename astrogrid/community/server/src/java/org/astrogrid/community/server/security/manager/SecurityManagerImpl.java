@@ -61,150 +61,69 @@ public class SecurityManagerImpl
         {
         super(parent) ;
         }
-
-    /**
-     * Set an Account password.
-     * @param account  The account ident.
-     * @param password The account password.
-     * @return True if the password was set.
-     * @throws CommunitySecurityException If the password change fails.
-     * @throws CommunityServiceException If there is an internal error in service.
-     * @throws CommunityIdentifierException If the account identifier is invalid.
-     * @todo Check Account is local.
-     *
-     */
-    public boolean setPassword(String account, String password)
-        throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("SecurityManagerImpl.setPassword()") ;
-        log.debug("  Account : " + account) ;
-        log.debug("  Value   : " + password) ;
-        //
-        // Check for null account.
-        if (null == account)
-            {
-            throw new CommunityIdentifierException(
-                "Null account"
-                ) ;
-            }
-        //
-        // Check for null password.
-        if (null == password)
-            {
-            throw new CommunityIdentifierException(
-                "Null password"
-                ) ;
-            }
-        //
-        // Get the Account ident.
-        CommunityIvornParser ident = new CommunityIvornParser(
-            account
-            ) ;
-        //
-        // Set the response to false.
-        boolean result = false ;
-        //
-        // Try update the database.
-        Database database = null ;
-        try {
-            //
-            // Open our database connection.
-            database = this.getDatabase() ;
-            //
-            // Begin a new database transaction.
-            database.begin();
-            
-            // Try loading the PasswordData.
-            String primaryKey = primaryKey(ident);
-            System.out.println("Loading PasswordData with JDO identity " + primaryKey);
-            PasswordData data = null;
-            try {
-                data = (PasswordData) database.load(PasswordData.class, primaryKey);
-                }
-            //
-            // Don't worry if it isn't there.
-            catch (ObjectNotFoundException ouch)
-                {
-                logExpectedException(ouch, "SecurityManagerImpl.setPassword()") ;
-                }
-            //
-            // If we found the PasswordData.
-            if (null != data)
-                {
-                log.debug("  PASS : found password") ;
-                log.debug("    Account  : " + data.getAccount()) ;
-                log.debug("    Password : " + data.getPassword()) ;
-                //
-                // Change the password value.
-                data.setPassword(password) ;
-                data.setEncryption(PasswordData.NO_ENCRYPTION) ;
-                log.debug("  PASS : changed password") ;
-                log.debug("    Account  : " + data.getAccount()) ;
-                log.debug("    Password : " + data.getPassword()) ;
-                }
-            //
-            // If we didn't find the password.
-            else {
-                log.debug("  PASS : missing password") ;
-                //
-                // Try to create a new PasswordData in the database.
-                data = new PasswordData(primaryKey, password) ;
-                database.create(data) ;
-                log.debug("  PASS : created password") ;
-                log.debug("    Account  : " + data.getAccount()) ;
-                log.debug("    Password : " + data.getPassword()) ;
-                }
-            //
-            // Commit the database transaction.
-            database.commit() ;
-            //
-            // Set the response to true.
-            result = true ;
-            }
-        //
-        // If anything went bang.
-        catch (Exception ouch)
-            {
-            //
-            // Log the exception.
-            logException(
-                ouch,
-                "SecurityManagerImpl.setPassword()"
-                ) ;
-            //
-            // Cancel the database transaction.
-            rollbackTransaction(database) ;
-            //
-            // Throw a new Exception.
-            throw new CommunityServiceException(
-                "Database transaction failed",
-                ident.toString(),
-                ouch
-                ) ;
-            }
-        //
-        // Close our database connection.
-        finally
-            {
-            closeConnection(database) ;
-            }
-        return result ;
-        }
     
   /**
-   * Derives from the account IVORN the primary key for the DB tables.
-   * This key is an old form of account IVORN in which the account name
-   * is the whole of the resource key.
+   * Sets the password for an account.
+   * The password is written to the secrets table of the community DB.
+   *
+   * @param userName The user name (plain; not in an IVORN).
+   * @param password The account password.
+   * @throws CommunitySecurityException If the password change fails.
+   * @throws CommunityServiceException If there is an internal error in service.
    */
-  protected String primaryKey(CommunityIvornParser parser) {
-    return "ivo://" + 
-           parser.getIvorn().toUri().getHost() +
-           "/" +
-           parser.getAccountName();
+  public boolean setPassword(String userName, 
+                             String password) throws CommunityServiceException, 
+                                                     CommunitySecurityException {
+    assert(userName != null);
+    assert(password != null);
+    String primaryKey = primaryKey(userName);
+    log.debug("Setting the password for user " + userName + ", primary key " + primaryKey);
+
+    // Update the password in the database.
+    // This makes a new connection and runs a transaction. The error handling
+    // ensures that the transaction is either committed or rolled back and that
+    // the connection is always closed before the end of the method.
+    // In the transaction, an attempt is made to read and update an existing
+    // record. If this fails, a new record is created.
+    Database database = null ;
+    try {
+      database = this.getDatabase();
+      database.begin();
+      PasswordData data = null;
+      try {
+        data = (PasswordData) database.load(PasswordData.class, primaryKey);
+      }
+      catch (ObjectNotFoundException ouch) {
+        // This is OK: it means we're setting the password for the first time.
+      }
+      if (null != data) {
+        log.debug("This user already has a password, which shall be changed.");
+        data.setPassword(password);
+        data.setEncryption(PasswordData.NO_ENCRYPTION);
+      }
+      else {
+        log.debug("This user doesn't have a password yet.");
+        data = new PasswordData(primaryKey, password);
+        database.create(data);
+      }
+      database.commit();
+    }
+    catch (Exception ouch) {
+      log.error("Password change failed: " + ouch);
+      rollbackTransaction(database);
+      throw new CommunityServiceException("Password change failed",
+                                          userName,
+                                          ouch);
+    }
+    finally {
+      closeConnection(database) ;
+    }
+    
+    // This is pointless - the method either returns true or throws - but the
+    // interface definition requires it.
+    return true;
   }
-  
+
   /**
    * Derives the primary key for the DB tables from the user name and
    * configured community name.

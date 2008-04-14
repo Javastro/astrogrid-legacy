@@ -61,7 +61,7 @@ public class NewAccountServlet extends HttpServlet {
     
     try {
       SecurityManagerImpl smi = new SecurityManagerImpl();
-      smi.setPassword(ad.getIdent(), password);
+      smi.setPassword(userName.trim(), password);
     }
     catch (Exception ex) {
       ex.printStackTrace();

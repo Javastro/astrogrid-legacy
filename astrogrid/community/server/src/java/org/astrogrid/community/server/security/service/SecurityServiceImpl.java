@@ -73,7 +73,7 @@ public class SecurityServiceImpl
      * @param account The Account ident.
      * @throws CommunityIdentifierException If the identifiers are not valid.
      * @throws CommunityServiceException If the local Community identifier is not set.
-     *
+     * @deprecated
      */
     protected SecurityToken createToken(CommunityIvornParser account)
         throws CommunityServiceException, CommunityIdentifierException

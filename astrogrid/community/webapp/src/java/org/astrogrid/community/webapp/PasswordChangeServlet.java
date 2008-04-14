@@ -70,15 +70,12 @@ public class PasswordChangeServlet extends HttpServlet {
     else {
       String verdict = null;
       try {
+        userName = userName.trim();
         SecurityServiceImpl ss = new SecurityServiceImpl();
         SecurityManagerImpl sm = new SecurityManagerImpl();
-        String account = "ivo://" + 
-                         userName +
-                         "@" +
-                         CommunityIvornParser.getLocalIdent();
-        System.out.println("Changing password for " + account);
-        ss.checkPassword(account, oldPassword);
-        sm.setPassword(account, newPassword);
+        System.out.println("Changing password for " + userName);
+        ss.authenticate(userName, oldPassword);
+        sm.setPassword(userName, newPassword);
         verdict = "Your password has been changed.";
       } 
       catch (Exception ex) {
