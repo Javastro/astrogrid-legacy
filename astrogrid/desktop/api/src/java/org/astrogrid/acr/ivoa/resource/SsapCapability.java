@@ -13,10 +13,11 @@ import java.util.Arrays;
  */
 public class SsapCapability extends Capability {
 
+
     /**
      * 
      */
-    private static final long serialVersionUID = 2987452535146656209L;
+    private static final long serialVersionUID = -6409405290279095376L;
 
     private static int hashCode(Object[] array) {
         final int prime = 31;
@@ -42,10 +43,9 @@ public class SsapCapability extends Capability {
     private String[] creationType;
     private double maxSearchRadius;
     private int maxRecords;
-    private int defaultFaxRecords;
+    private int defaultMaxRecords;
     private double maxApeture;
     private String[] supportedFrames;
-    private String[] supports;
     private int maxFileSize;
     private Query testQuery;
     
@@ -247,10 +247,10 @@ public class SsapCapability extends Capability {
                         return when the MAXREC parameter not specified
                         in the query input.*/
     public final int getDefaultMaxRecords() {
-        return this.defaultFaxRecords;
+        return this.defaultMaxRecords;
     }
     public final void setDefaultMaxRecords(int defaultFaxRecords) {
-        this.defaultFaxRecords = defaultFaxRecords;
+        this.defaultMaxRecords = defaultFaxRecords;
     }
     /**The largest aperture that can be supported upon 
                         request via the APERTURE input parameter by a 
@@ -270,14 +270,7 @@ public class SsapCapability extends Capability {
     public final void setSupportedFrames(String[] supportedFrames) {
         this.supportedFrames = supportedFrames;
     }
-    /**lists optional named features that that the
-                        server supports. The vocabulary of the content*/
-    public final String[] getSupports() {
-        return this.supports;
-    }
-    public final void setSupports(String[] supports) {
-        this.supports = supports;
-    }
+
     /** The maximum image file size in bytes.*/
     public final int getMaxFileSize() {
         return this.maxFileSize;
@@ -306,7 +299,7 @@ public class SsapCapability extends Capability {
                         .hashCode());
         result = prime * result + SsapCapability.hashCode(this.creationType);
         result = prime * result + SsapCapability.hashCode(this.dataSource);
-        result = prime * result + this.defaultFaxRecords;
+        result = prime * result + this.defaultMaxRecords;
         long temp;
         temp = Double.doubleToLongBits(this.maxApeture);
         result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -315,7 +308,6 @@ public class SsapCapability extends Capability {
         temp = Double.doubleToLongBits(this.maxSearchRadius);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + SsapCapability.hashCode(this.supportedFrames);
-        result = prime * result + SsapCapability.hashCode(this.supports);
         result = prime * result
                 + ((this.testQuery == null) ? 0 : this.testQuery.hashCode());
         return result;
@@ -337,7 +329,7 @@ public class SsapCapability extends Capability {
             return false;
         if (!Arrays.equals(this.dataSource, other.dataSource))
             return false;
-        if (this.defaultFaxRecords != other.defaultFaxRecords)
+        if (this.defaultMaxRecords != other.defaultMaxRecords)
             return false;
         if (Double.doubleToLongBits(this.maxApeture) != Double
                 .doubleToLongBits(other.maxApeture))
@@ -350,8 +342,6 @@ public class SsapCapability extends Capability {
                 .doubleToLongBits(other.maxSearchRadius))
             return false;
         if (!Arrays.equals(this.supportedFrames, other.supportedFrames))
-            return false;
-        if (!Arrays.equals(this.supports, other.supports))
             return false;
         if (this.testQuery == null) {
             if (other.testQuery != null)
