@@ -5,12 +5,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.AccessControlException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -23,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.openssl.PasswordFinder;
 
 /**
@@ -108,6 +112,48 @@ public class CredentialStore {
     } catch (Exception ex) {
       ex.printStackTrace();
       throw new AccessControlException("Can't read the certificates for " + userName);
+    }
+  }
+  
+  /**
+   * Changes the password protecting a private key.
+   */
+  public void changeKeyPassword(String userName,
+                                String oldPassword,
+                                String newPassword) throws AccessControlException {
+    
+    // Find the key on disc.
+    String keyFileName = this.storeLocation + "/" + userName + "/key.pem";
+    FileInputStream fis = null;
+    try {
+      fis = new FileInputStream(keyFileName);
+    }
+    catch (FileNotFoundException e) {
+      log.info(e);
+      return;
+    }
+    
+    // Read the key file.
+    Password p = new Password(oldPassword);
+    PEMReader pr = new PEMReader(new InputStreamReader(fis), p);
+    KeyPair keys = null;
+    try {
+      keys = (KeyPair) (pr.readObject());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      throw new AccessControlException("Can't read the private key for " + userName);
+    }
+    
+    // Write out the key, protecting it with the new password.
+    try {
+      FileWriter fos = new FileWriter(keyFileName);
+      PEMWriter pw = new PEMWriter(fos);
+      pw.writeObject(keys.getPrivate(), "DESede", newPassword.toCharArray(), new SecureRandom());
+      pw.close();
+    }
+    catch (Exception e) {
+      throw new AccessControlException("Failed to change the password on the private key: " + e);
     }
   }
   

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 import org.astrogrid.community.server.security.manager.SecurityManagerImpl;
 import org.astrogrid.community.server.security.service.SecurityServiceImpl;
+import org.astrogrid.community.server.sso.CredentialStore;
 
 /**
  * A servlet to respond to password-change requests.
@@ -73,7 +74,9 @@ public class PasswordChangeServlet extends HttpServlet {
         userName = userName.trim();
         SecurityServiceImpl ss = new SecurityServiceImpl();
         SecurityManagerImpl sm = new SecurityManagerImpl();
+        CredentialStore     cs = new CredentialStore();
         System.out.println("Changing password for " + userName);
+        cs.changeKeyPassword(userName, oldPassword, newPassword);
         ss.authenticate(userName, oldPassword);
         sm.setPassword(userName, newPassword);
         verdict = "Your password has been changed.";
