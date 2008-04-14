@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.9 2007/03/08 17:46:56 nw Exp $
+/*$Id: Jobs.java,v 1.10 2008/04/14 09:39:45 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ import org.w3c.dom.Document;
  * @see org.astrogrid.acr.astrogrid.ExecutionInformation
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.jobs
- * @deprecated JES is no longer supported.
+ * @deprecated JES is no longer supported, and this interface is no longer provided by AR
  */
 public interface Jobs {
     /**
@@ -156,6 +156,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.10  2008/04/14 09:39:45  nw
+ removed obsolete interface.
+
  Revision 1.9  2007/03/08 17:46:56  nw
  removed deprecated interfaces.
 
