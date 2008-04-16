@@ -14,6 +14,7 @@ import org.astrogrid.adql.v1_0.beans.* ;
 import org.w3c.dom.Node ;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.SchemaType;
 
 
 public class AdqlCompiler {
@@ -1071,8 +1072,18 @@ public class AdqlCompiler {
 
 	            cursor = parent.newCursor() ;
 	            cursor.toEndToken() ;
-	            String comment = commentLinkedToken.specialToken.image ;          
-	            cursor.insertComment( SimpleNode.prepareComment( comment ) ) ;      
+//	            String comment = commentLinkedToken.specialToken.image ;          
+//	            cursor.insertComment( SimpleNode.prepareComment( comment ) ) ;     
+                
+                Token tmpToken = commentLinkedToken.specialToken ;
+                while( tmpToken.specialToken != null ) tmpToken = tmpToken.specialToken;
+                  // The above line walks back the special token chain until it
+                  // reaches the first special token after the previous regular
+                  // token.
+                while (tmpToken != null) {
+                    cursor.insertComment( SimpleNode.prepareComment( tmpToken.image ) ) ;
+                  tmpToken = tmpToken.next;
+                }
 
 	        }
 
@@ -1418,4 +1429,92 @@ public class AdqlCompiler {
         this.semanticProcessing = semanticProcessing;
     }
     
+    public static void RemoveProcessingInstruction( SelectDocument doc, String name ) {
+        XmlCursor cursor = doc.newCursor() ;
+        try {
+            while( !cursor.toNextToken().isNone() ) {
+                if( cursor.isProcinst() ) {
+                    if( cursor.getName().getLocalPart().equals( name ) )  {
+                        cursor.removeXml() ;
+                        break ;
+                    }
+                }
+                else if( cursor.isStart()
+                         &&
+                         cursor.getObject().schemaType() == SelectionListType.type ) {
+                    //
+                    // None found by the time SelectionList encountered...
+                    break ;               
+                }
+            } // end while
+        }
+        finally {
+            cursor.dispose();
+        }      
+    }
+    
+    public static void WriteProcessingInstruction( SelectDocument doc, String name, String content ) {
+        if( log.isTraceEnabled() ) log.trace( "enter: WriteProcessingInstruction()" ) ;
+        
+        String mangledContent = content.replaceAll( ">", "&gt_;" ).replaceAll( "<", "&lt_;" ) ;
+        XmlCursor cursor = doc.newCursor() ;
+        try {
+            while( !cursor.toNextToken().isNone() ) {
+                if( cursor.isProcinst() ) {
+                    if( cursor.getName().getLocalPart().equals( name ) )  {
+                       // OK. There's already one here. We'll use it...
+                        cursor.setTextValue( content ) ;
+                        return ;
+                    }
+                }
+                else if( cursor.isStart() ) {
+                    
+                    SchemaType type = cursor.getObject().schemaType() ;
+                    //
+                    // Preference is to write before the SELECT
+                    if( type == SelectType.type ) {
+                        //
+                        // Remember where the SELECT is located...
+                        cursor.push() ;
+                    }
+                    //
+                    // But we search for existing ones down to the SelectionList...
+                    else if( type == SelectionListType.type ) {                       
+                        break ;  
+                    }
+                }          
+            } // end while
+            cursor.pop() ;
+            cursor.insertProcInst( name, mangledContent ) ;
+        }
+        finally {
+            cursor.dispose();
+            if( log.isTraceEnabled() ) log.trace( "exit: WriteProcessingInstruction()" ) ;
+        }      
+    } // end of writeProcessingInstruction
+    
+    public static String ReadProcessingInstruction( SelectDocument doc, String name ) {
+        String content = null ;
+        XmlCursor cursor = doc.newCursor() ;
+        try {
+            while( !cursor.toNextToken().isNone() ) {
+                if( cursor.isProcinst() ) {
+                    if( cursor.getName().getLocalPart().equals( name ) )  {
+                       // Found it...
+                        content = cursor.getTextValue().replaceAll( "&gt_;", ">" ).replaceAll( "&lt_;", "<" ) ;
+                        break ;
+                    }
+                }
+                else if( cursor.isStart()
+                         &&
+                         cursor.getObject().schemaType() == SelectionListType.type ) {
+                    break ;               
+                }
+            } // end while
+            return content ;
+        }
+        finally {
+            cursor.dispose();
+        }      
+    } // end of readProcessingInstruction
 }

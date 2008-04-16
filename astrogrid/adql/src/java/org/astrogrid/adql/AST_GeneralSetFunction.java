@@ -17,17 +17,6 @@ public class AST_GeneralSetFunction extends SimpleNode {
     public AST_GeneralSetFunction(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-//        AggregateFunctionType afType = AggregateFunctionType.Factory.newInstance() ;
-//        ScalarExpressionType seType = (ScalarExpressionType)children[0].getGeneratedObject() ;
-//        afType.setName( AggregateFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
-//        SelectionItemType[] argArray = new SelectionItemType[1] ;
-//        argArray[0] = seType ;
-//        afType.setArgArray( argArray ) ;
-//        children[0].exchangeGeneratedObject( afType.getArgArray()[0] ) ;
-//        setGeneratedObject( afType ) ;
-    }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_GeneralSetFunction.buildXmlTree()" ) ; 

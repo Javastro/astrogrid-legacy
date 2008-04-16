@@ -11,6 +11,10 @@
 		Version 1.0 - first release - July 8, 2005
 		Aurelien STEBE - ESAC - ESA
 		Aurelien.Stebe@sciops.esa.int
+		 
+		Special version amended by Jeff Lusted as a tool used
+		within the Astrogrid Query Builder. June, 2006.
+		jl99@star.le.ac.uk
 	 -->
 	
     <xsl:output method="text" indent="no"/>
@@ -42,7 +46,7 @@
 	
 	<!-- the "main" elements -->
 	
-	<xsl:template match="ad:SelectionList">
+	<xsl:template match="ad:SelectionList">	  
 		<xsl:variable name="list">
 			<xsl:for-each select="ad:Item">
 				<xsl:apply-templates select="."/>
@@ -91,10 +95,6 @@
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'tableType'] | *[@xsi:type = 'tableType']">
-      <xsl:if test="@Archive">
-         <xsl:value-of select="@Archive"/>
-         <xsl:text>.</xsl:text>
-      </xsl:if>
 		<xsl:value-of select="@Name"/>
 		<xsl:if test="@Alias">
 			<xsl:text> as </xsl:text>
@@ -168,22 +168,16 @@
 	<!-- the 'searchType' templates -->
 	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'intersectionSearchType'] | *[@xsi:type = 'intersectionSearchType']">    
-      <xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[1]"/>
-      <xsl:text>) </xsl:text>
 		<xsl:text> And </xsl:text>
-      <xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[2]"/>
-      <xsl:text>) </xsl:text>
+		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'unionSearchType'] | *[@xsi:type = 'unionSearchType']">
-      <xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[1]"/>
-      <xsl:text>) </xsl:text>
 		<xsl:text> Or </xsl:text>
-      <xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[2]"/>
-      <xsl:text>) </xsl:text>
+        <xsl:value-of select="$spaceCharacter"/>		
 	</xsl:template>
 	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'likePredType'] | *[@xsi:type = 'likePredType']">
@@ -243,9 +237,10 @@
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'closedSearchType'] | *[@xsi:type = 'closedSearchType']">
 		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition"/>
-      <xsl:text>) </xsl:text>
+		<xsl:text> )</xsl:text>
+		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'comparisonPredType'] | *[@xsi:type = 'comparisonPredType']">
+	<xsl:template match="*[substring-after(@xsi:type, ':') = 'comparisonPredType'] | *[@xsi:type = 'comparisonPredType'] | *[@Comparison]">
 		<xsl:apply-templates select="ad:Arg[1]"/>
 		<xsl:value-of select="@Comparison"/>
 		<xsl:apply-templates select="ad:Arg[2]"/>
@@ -279,24 +274,14 @@
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'closedExprType'] | *[@xsi:type = 'closedExprType']">
 		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Arg"/>
-		<xsl:text>) </xsl:text>
+		<xsl:text> )</xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	
-   <!-- KEA: 
-       - Added brackets around binary expressions to ensure correct
-          precendence
-       - Put spaces around operator to avoid issues with e.g. subtracting
-          a negated arg. (SQLServer doesn't like doubled - with no spaces)
-   -->
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'binaryExprType'] | *[@xsi:type = 'binaryExprType']">
-		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Arg[1]"/>
-      <xsl:value-of select="$spaceCharacter"/>
 		<xsl:value-of select="@Oper"/>
-      <xsl:value-of select="$spaceCharacter"/>
 		<xsl:apply-templates select="ad:Arg[2]"/>
-		<xsl:text>) </xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'unaryExprType'] | *[@xsi:type = 'unaryExprType']">
@@ -304,7 +289,7 @@
 		<xsl:apply-templates select="ad:Arg"/>
 	</xsl:template>
 	
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'columnReferenceType'] | *[@xsi:type = 'columnReferenceType']">
+	<xsl:template match="*[substring-after(@xsi:type, ':') = 'columnReferenceType'] | *[@xsi:type = 'columnReferenceType'] | ad:Column">
 		<xsl:value-of select="@Table"/>
 		<xsl:text>.</xsl:text>
 		<xsl:value-of select="@Name"/>
@@ -340,19 +325,33 @@
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'trigonometricFunctionType'] | *[@xsi:type = 'trigonometricFunctionType']">
 		<xsl:value-of select="@Name"/>
 		<xsl:text>(</xsl:text>
-		<xsl:apply-templates select="ad:Allow"/>
-		<xsl:apply-templates select="ad:Arg"/>
+		<xsl:variable name="list">
+			<xsl:for-each select="ad:Arg">
+				<xsl:apply-templates select="."/>
+				<xsl:text>,</xsl:text>
+				<xsl:value-of select="$spaceCharacter"/>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>		
 		<xsl:text>)</xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
+	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'mathFunctionType'] | *[@xsi:type = 'mathFunctionType']">
 		<xsl:value-of select="@Name"/>
 		<xsl:text>(</xsl:text>
-		<xsl:apply-templates select="ad:Allow"/>
-		<xsl:apply-templates select="ad:Arg"/>
+		<xsl:variable name="list">
+			<xsl:for-each select="ad:Arg">
+				<xsl:apply-templates select="."/>
+				<xsl:text>,</xsl:text>
+				<xsl:value-of select="$spaceCharacter"/>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
 		<xsl:text>)</xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
+	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'aggregateFunctionType'] | *[@xsi:type = 'aggregateFunctionType']">
 		<xsl:value-of select="@Name"/>
 		<xsl:text>(</xsl:text>
@@ -361,56 +360,6 @@
 		<xsl:text>)</xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'userDefinedFunctionType'] | *[@xsi:type = 'userDefinedFunctionType']">
-	    <xsl:value-of select="$spaceCharacter"/>
-		<xsl:value-of select="ad:Name"/>
-		<xsl:text>(</xsl:text>
-		<xsl:if test="ad:Params">
-			<xsl:variable name="list">
-				<xsl:for-each select="ad:Params">
-					<xsl:apply-templates select="."/>
-					<xsl:text>,</xsl:text>
-					<xsl:value-of select="$spaceCharacter"/>
-				</xsl:for-each>
-			</xsl:variable>
-			<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
-		</xsl:if>
-		<xsl:text>)</xsl:text>
-		<xsl:value-of select="$spaceCharacter"/>
-	</xsl:template>
-	
-	<!-- Jeff's additions start here -->
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'regionSearchType'] | *[@xsi:type = 'regionSearchType']"> 
-		<xsl:text>Region( </xsl:text>
-		<xsl:apply-templates select="ad:Region"/>
-		<xsl:text> )</xsl:text>
-		<xsl:value-of select="$spaceCharacter"/>
-	</xsl:template>
-	
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'circleType'] | *[@xsi:type = 'circleType']">
-	    <xsl:value-of select="$spaceCharacter"/>
-		<xsl:text>'Circle  J2000  </xsl:text>
-		<xsl:apply-templates select="stc:Center"/>
-		<xsl:text>  </xsl:text>
-		<xsl:apply-templates select="stc:Radius"/>
-		<xsl:text>'</xsl:text>
-		<xsl:value-of select="$spaceCharacter"/>
-	</xsl:template>
-	
-	<xsl:template match="stc:Center">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
-	<xsl:template match="stc:Radius">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
-	<!-- Jeff's additions end here -->
-	
-	
-	
-	
-	
 	
 	<xsl:template match="text()"/>
 	

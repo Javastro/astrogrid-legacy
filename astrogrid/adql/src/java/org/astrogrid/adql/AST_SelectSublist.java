@@ -33,7 +33,7 @@ public class AST_SelectSublist extends SimpleNode {
 //            at.setLiteral( st ) ;   
             this.generatedObject = at ;   
         }
-        super.buildXmlTree( xo ) ;
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_SelectSublist.buildXmlTree()" ) ; 
     }
     

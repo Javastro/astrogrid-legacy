@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.10 2008/02/04 17:47:30 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.11 2008/04/16 11:04:23 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory ;
 import java.io.* ;
 import java.util.*;
 import java.text.MessageFormat;
-/**
+/** 
  * BnfExtractor
  * 
  * Extracts bnf statements from an annotated javacc file.
@@ -676,6 +676,13 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.11  2008/04/16 11:04:23  jl99
+Merge of branch adql-jl-2731
+
+Revision 1.10.6.1  2008/04/15 14:09:57  jl99
+(1) ROUND and TRUNCATE functions have changed cardinality.
+(2) Some improvements to comment processing.
+
 Revision 1.10  2008/02/04 17:47:30  jl99
 Merge of branch adql-jl-2504
 

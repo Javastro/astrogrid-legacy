@@ -15,7 +15,7 @@ public class AST_MathFunction extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_MathFunction.class ) ;
     
-    private Object arg2 ;
+    private Object arg2 = null ;
 
     public AST_MathFunction(AdqlStoX p, int id) {
         super(p, id);
@@ -56,6 +56,32 @@ public class AST_MathFunction extends SimpleNode {
             IntegerType intType = IntegerType.Factory.newInstance() ;
             intType.setValue( ((Long)arg2).longValue() ) ;
             atomType.setLiteral( intType ) ;
+        }
+        //
+        // ROUND and TRUNCATE are functions with one or two arguments.
+        // We impose two arguments, defaulting to 0 for the second
+        // if this happens to be missing.
+        // This means we are backward compatible. Previously,
+        // in error, we were only supporting one argument. 
+        else if( firstToken.kind == AdqlStoXConstants.ROUND
+                 ||
+                 firstToken.kind == AdqlStoXConstants.TRUNCATE ) {
+            children[0].buildXmlTree( mfType.addNewArg() ) ; 
+            AtomType atomType = (AtomType)mfType.addNewArg().changeType( AtomType.type ) ;
+            IntegerType intType = IntegerType.Factory.newInstance() ;
+            if( arg2 != null ) {                
+                intType.setValue( ((Long)arg2).longValue() ) ;             
+            }
+            else {
+                intType.setValue( 0 ) ;    
+            }
+            atomType.setLiteral( intType ) ;       
+        }
+        // RAND has an optional argument...
+        else if( firstToken.kind == AdqlStoXConstants.RAND ) {
+            if( jjtGetNumChildren() == 1 ) {
+                children[0].buildXmlTree( mfType.addNewArg() ) ;
+            }
         }
         //
         // And all the rest have only one argument...

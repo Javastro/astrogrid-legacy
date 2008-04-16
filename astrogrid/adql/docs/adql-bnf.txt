@@ -236,9 +236,9 @@ The select statement is found under <query_specification>
 	  | SQUARE <left_paren> <numeric_value_expression> <right_paren> 
 	  | SQRT <left_paren> <numeric_value_expression> <right_paren> 
 	  | LOG10 <left_paren> <numeric_value_expression> <right_paren> 
-	  | RAND <left_paren> [ <numeric_value_expression> ] <right_paren> 
-	  | ROUND <left_paren> <numeric_value_expression> <right_paren> 
-	  | TRUNCATE <left_paren> <numeric_value_expression> <right_paren> 
+	  | RAND <left_paren> [ <unsigned_integer> ] <right_paren> 
+	  | ROUND <left_paren> <numeric_value_expression> [ <comma> <signed_integer> ] <right_paren> 
+	  | TRUNCATE <left_paren> <numeric_value_expression> [ <comma> <signed_integer> ] <right_paren> 
 
  <minus_sign> ::= -
 

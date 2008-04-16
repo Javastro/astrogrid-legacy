@@ -1,5 +1,5 @@
 
-/*$Id: AdqlStoXTest.java,v 1.16 2008/03/19 20:53:21 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.17 2008/04/16 11:04:23 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -12,7 +12,7 @@ package org.astrogrid.adql;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileReader; 
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -100,8 +100,8 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_BADthreeWayJoinAcrossArchives() throws Exception { execTest() ; }
     public void testOf_v10_BADtop() throws Exception { execTest() ; }
     public void testOf_v10_ceilingFunction() throws Exception { execTest() ; }
-    public void testOf_v10_comments01_C_style() throws Exception { execTest() ; }
-    public void testOf_v10_comments01_CPP_style() throws Exception { execTest() ; }
+    public void testOf_v10_comments01Cstyle() throws Exception { execTest() ; }
+    public void testOf_v10_comments01CPPstyle() throws Exception { execTest() ; }
     public void testOf_v10_comments01() throws Exception { execTest() ; }
     public void testOf_v10_comments02() throws Exception { execTest() ; }
     public void testOf_v10_comments03() throws Exception { execTest() ; }
@@ -273,7 +273,7 @@ public class AdqlStoXTest extends XMLTestCase {
                     getCompiler( source ).compileToXmlBeans();
                     goodCount++ ;
                 } 
-                catch ( AdqlException aex ) {               
+                catch ( AdqlException aex ) {                
                     if( i%2 != 0 ) {
                         System.out.println( "testMemoryUsageWithReinit produced: " + aex.getClass().getName() ) ;
                         String[] ms = aex.getMessages() ;
@@ -703,9 +703,23 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.16  2008/03/19 20:53:21  jl99
- * Merge of branch adql-jl2650
+ * Revision 1.17  2008/04/16 11:04:23  jl99
+ * Merge of branch adql-jl-2731
  *
+/* Revision 1.16.4.1  2008/04/15 14:09:56  jl99
+/* (1) ROUND and TRUNCATE functions have changed cardinality.
+/* (2) Some improvements to comment processing.
+/*
+/* Revision 1.16.2.2  2008/04/10 14:58:36  jl99
+/* Removed redundant templates.
+/* Updated maths and trig function templates.
+/*
+/* Revision 1.16.2.1  2008/04/08 11:40:01  jl99
+/* Changed names of some comment tests
+/*
+/* Revision 1.16  2008/03/19 20:53:21  jl99
+/* Merge of branch adql-jl2650
+/*
 /* Revision 1.15.2.1  2008/03/19 19:28:31  jl99
 /* Improved comment processing.
 /*

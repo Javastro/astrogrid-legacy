@@ -29,31 +29,6 @@ public class AST_Factor extends SimpleNode {
     public boolean isSetSign() {
         return signToken != null ;
     }
-
-//    public Object generatedObject() {
-//        int childCount = jjtGetNumChildren() ;
-//        UnaryExprType ueType = null ;
-//        ScalarExpressionType numericPrimary = null ;
-//        Object child = null ;
-//        for( int i=0; i<childCount; i++ ) {
-//            child = children[i].generateObject() ;
-//            if( child instanceof String ) {
-//                ueType = UnaryExprType.Factory.newInstance() ;
-//                ueType.setOper( UnaryOperatorType.Enum.forString( (String)child ) ) ;    
-//            }
-//            else {
-//                numericPrimary = (ScalarExpressionType)child ; 
-//            }
-//        }
-//        if( ueType != null ) {
-//            ueType.setArg( numericPrimary ) ; 
-//            this.generatedObject = ueType ;
-//        }
-//        else {
-//            this.generatedObject = numericPrimary ;
-//        }       
-//        return super.generateObject() ;
-//    }
     
     public void jjtClose() {
         if( isSetSign() ) {

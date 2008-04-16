@@ -20,6 +20,7 @@ public class AST_AllSelectionItem extends SimpleNode {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_AllSelectionItem.buildXmlTree()" ) ; 
         AllSelectionItemType allSelection = (AllSelectionItemType)xo.changeType( AllSelectionItemType.type ) ;
         setGeneratedObject( allSelection ) ;
+        super.buildXmlTree( allSelection ) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_AllSelectionItem.buildXmlTree()" ) ; 
     }
 

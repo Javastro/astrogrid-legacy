@@ -80,6 +80,7 @@ public class Interactive {
     private static StringBuffer queryBuffer ;
     private static Interactive interactive ;
     private static String fragmentName ;
+    private static AdqlTransformer TRANSFORMER ;
     
     
     public static final String WELCOME = 
@@ -92,18 +93,37 @@ public class Interactive {
         "        from: from catalogA as a inner join catalogB as b on a.col1 = b.col1;\n" +
         "        Select/Column: a.ra;\n" +
         "        Select/Item[@type=\"aggregateFunctionType\"]/Arg: * ; \n\n" +
-        "        To return to compiling full queries, switch by typing \"compile_full\"." ;
+        "        To return to compiling full queries, switch by typing \"compile_full\".\n" +
+        " COMMAND LINE OPTIONS: \n" +
+        "        -s=<style sheet file name> \n" +
+        "           Will attempt to load style sheet from the classpath.\n" +
+        "           The style sheet is used to echo back to the user the output XML\n" +
+        "           after it has been passed through the style sheet. Can be used to\n" +
+        "           check the translation to some variant of SQL." ;
     
     public Interactive() {
         
     }
     
 	 public static void main(String args[]) {
+         
          interactive = new Interactive() ;
+         
+         if( args.length > 0 ) {
+             if( args[0].startsWith( "-s=" )
+                 &&
+                 args[0].length() > 3 ) {
+                 TRANSFORMER = new AdqlTransformer( args[0].substring(3) ) ;
+             }
+         }
+         
 		 // AdqlStoX compiler = new AdqlStoX(System.in);
          String queryXml = null ;
             
          print( WELCOME );
+         if( TRANSFORMER != null ) {
+             print( "Using style sheet " + args[0].substring(3) ) ;
+         }
          while( true ) {
              initQueryBuffer() ;
              print("\nEnter an SQL-like expression :");	
@@ -113,7 +133,11 @@ public class Interactive {
                  if( bFullMode == true ) {
                      queryXml = getCompiler( source ).compileToXmlText() ; 
                      print( "\nCompilation produced:" ) ;
-                     print( "\n" + queryXml ) ;         
+                     print( "\n" + queryXml ) ;
+                     if( TRANSFORMER != null ) {
+                         print( "\n\nTransformer produced:" ) ;
+                         print( "\n" + TRANSFORMER.transformToAdqls( queryXml ) ) ;
+                     }                    
                  }
                  else {
                      print( "\nfragment name: " + fragmentName ) ;
@@ -151,7 +175,7 @@ public class Interactive {
                      print( "Switching to compiling fragments..." ) ;
                      bFullMode = false ;
                  }
-             }
+             } 
              catch( AdqlException adlqException ) {
                  print( "\nCompilation failed:" ) ;
                  String[] messages = adlqException.getMessages() ;
@@ -225,7 +249,7 @@ public class Interactive {
      
      private static AdqlCompiler getCompiler( StringReader source) {
          if( COMPILER == null ) {
-             COMPILER = new AdqlCompiler( source ); 
+             COMPILER = new AdqlCompiler( source );
          }
          else {
              COMPILER.ReInit( source ) ;

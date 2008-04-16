@@ -233,9 +233,9 @@ See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar p
 	  | SQUARE &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt; 
 	  | SQRT &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt; 
 	  | LOG10 &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt; 
-	  | RAND &lt;<a href="#left_paren">left_paren</a>&gt; [ &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; ] &lt;<a href="#right_paren">right_paren</a>&gt; 
-	  | ROUND &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt; 
-	  | TRUNCATE &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; &lt;<a href="#right_paren">right_paren</a>&gt; 
+	  | RAND &lt;<a href="#left_paren">left_paren</a>&gt; [ &lt;<a href="#unsigned_integer">unsigned_integer</a>&gt; ] &lt;<a href="#right_paren">right_paren</a>&gt; 
+	  | ROUND &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; [ &lt;<a href="#comma">comma</a>&gt; &lt;<a href="#signed_integer">signed_integer</a>&gt; ] &lt;<a href="#right_paren">right_paren</a>&gt; 
+	  | TRUNCATE &lt;<a href="#left_paren">left_paren</a>&gt; &lt;<a href="#numeric_value_expression">numeric_value_expression</a>&gt; [ &lt;<a href="#comma">comma</a>&gt; &lt;<a href="#signed_integer">signed_integer</a>&gt; ] &lt;<a href="#right_paren">right_paren</a>&gt; 
 
  <a name="minus_sign">&lt;minus_sign&gt;</a> ::= -
 

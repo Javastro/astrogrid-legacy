@@ -339,61 +339,39 @@
 	<!-- the 'functionType' templates -->
 	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'trigonometricFunctionType'] | *[@xsi:type = 'trigonometricFunctionType']">
-      <xsl:choose>
-     <!-- Deal with ATAN2 as special case -->
-         <xsl:when test="@Name = 'ATAN2'">
-            <xsl:value-of select="@Name"/>
-            <xsl:text>(</xsl:text>
-            <xsl:apply-templates select="ad:Allow"/>
-            <xsl:apply-templates select="ad:Arg[1]"/>
-            <xsl:text>, </xsl:text>
-            <xsl:apply-templates select="ad:Arg[2]"/>
-            <xsl:text>)</xsl:text>
-            <xsl:value-of select="$spaceCharacter"/>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:value-of select="@Name"/>
-            <xsl:text>(</xsl:text>
-            <xsl:apply-templates select="ad:Allow"/>
-            <xsl:apply-templates select="ad:Arg"/>
-            <xsl:text>)</xsl:text>
-            <xsl:value-of select="$spaceCharacter"/>
-         </xsl:otherwise>
-      </xsl:choose>
+		<xsl:value-of select="@Name"/>
+		<xsl:text>(</xsl:text>
+		<xsl:variable name="list">
+			<xsl:for-each select="ad:Arg">
+				<xsl:apply-templates select="."/>
+				<xsl:text>,</xsl:text>
+				<xsl:value-of select="$spaceCharacter"/>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>	
+		<xsl:text>)</xsl:text>
+		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
+	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'mathFunctionType'] | *[@xsi:type = 'mathFunctionType']">
       <xsl:choose>
          <!-- This is a custom action for SQUARE function (not supported) -->
          <xsl:when test="@Name = 'SQUARE'">
            <xsl:text>(</xsl:text>
            <xsl:text>(</xsl:text>
-           <xsl:apply-templates select="ad:Allow"/>
            <xsl:apply-templates select="ad:Arg"/>
            <xsl:text>)</xsl:text>
            <xsl:text>*</xsl:text>
            <xsl:text>(</xsl:text>
-           <xsl:apply-templates select="ad:Allow"/>
            <xsl:apply-templates select="ad:Arg"/>
            <xsl:text>)</xsl:text>
            <xsl:text>)</xsl:text>
-           <xsl:value-of select="$spaceCharacter"/>
-         </xsl:when>
-         <!-- This is a custom action for TRUNCATE function (takes 2 args) -->
-         <xsl:when test="@Name = 'TRUNCATE'">
-           <xsl:text>TRUNCATE(</xsl:text>
-           <xsl:apply-templates select="ad:Allow"/>
-           <xsl:apply-templates select="ad:Arg"/>
-           <xsl:text>,0)</xsl:text>
            <xsl:value-of select="$spaceCharacter"/>
          </xsl:when>
          <xsl:otherwise>
            <!-- This is the default action for maths functions -->
            <xsl:value-of select="@Name"/>
            <xsl:text>(</xsl:text>
-           <xsl:apply-templates select="ad:Allow"/>
-
-           <!-- Jeff's change to accommodate function argument cardinalities -->
-           <!-- xsl:apply-templates select="ad:Arg"/ -->
            <xsl:variable name="list">
              <xsl:for-each select="ad:Arg">
                <xsl:apply-templates select="."/>
@@ -402,13 +380,12 @@
              </xsl:for-each>
            </xsl:variable>
            <xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
-           <!-- end of Jeff's change -->
-
            <xsl:text>)</xsl:text>
            <xsl:value-of select="$spaceCharacter"/>
          </xsl:otherwise>
       </xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'aggregateFunctionType'] | *[@xsi:type = 'aggregateFunctionType']">
 		<xsl:value-of select="@Name"/>
 		<xsl:text>(</xsl:text>
@@ -417,57 +394,7 @@
 		<xsl:text>)</xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'userDefinedFunctionType'] | *[@xsi:type = 'userDefinedFunctionType']">
-	    <xsl:value-of select="$spaceCharacter"/>
-		<xsl:value-of select="ad:Name"/>
-		<xsl:text>(</xsl:text>
-		<xsl:if test="ad:Params">
-			<xsl:variable name="list">
-				<xsl:for-each select="ad:Params">
-					<xsl:apply-templates select="."/>
-					<xsl:text>,</xsl:text>
-					<xsl:value-of select="$spaceCharacter"/>
-				</xsl:for-each>
-			</xsl:variable>
-			<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
-		</xsl:if>
-		<xsl:text>)</xsl:text>
-		<xsl:value-of select="$spaceCharacter"/>
-	</xsl:template>
-	
-	<!-- Jeff's additions start here -->
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'regionSearchType'] | *[@xsi:type = 'regionSearchType']"> 
-		<xsl:text>Region( </xsl:text>
-		<xsl:apply-templates select="ad:Region"/>
-		<xsl:text> )</xsl:text>
-		<xsl:value-of select="$spaceCharacter"/>
-	</xsl:template>
-	
-	<xsl:template match="*[substring-after(@xsi:type, ':') = 'circleType'] | *[@xsi:type = 'circleType']">
-	    <xsl:value-of select="$spaceCharacter"/>
-		<xsl:text>'Circle  J2000  </xsl:text>
-		<xsl:apply-templates select="stc:Center"/>
-		<xsl:text>  </xsl:text>
-		<xsl:apply-templates select="stc:Radius"/>
-		<xsl:text>'</xsl:text>
-		<xsl:value-of select="$spaceCharacter"/>
-	</xsl:template>
-	
-	<xsl:template match="stc:Center">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
-	<xsl:template match="stc:Radius">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
-	<!-- Jeff's additions end here -->
-	
-	
-	
-	
-	
-	
+		
 	<xsl:template match="text()"/>
 	
 </xsl:stylesheet>

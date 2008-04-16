@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.38 2008/03/19 20:53:21 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.39 2008/04/16 11:04:22 jl99 Exp $*/
 
 //  
 // High-level JavaDoc comments are present in this file.
@@ -9,7 +9,7 @@
 //
    
 options {
-  JDK_VERSION="1.4";
+  JDK_VERSION="1.4";   
   STATIC=false;
   MULTI=true;
   VISITOR=false;
@@ -742,10 +742,10 @@ TOKEN : // miscellaneous SQL92
         | 
         ( <PERIOD> <UNSIGNED_INTEGER> ) >
 |   < #MANTISSA : <EXACT_NUMERIC_LITERAL> >
-|   < #EXPONENT : <SIGNED_INTEGER> >        
-|	< #SIGNED_INTEGER : <SIGN> <UNSIGNED_INTEGER> >
-|   < #E : ["E", "e"] >
+|   < #EXPONENT : <SIGNED_INTEGER> > 
+|   < #SIGNED_INTEGER : ( <SIGN> )? <UNSIGNED_INTEGER> >       
 |   < #SIGN : <PLUS_SIGN> | <MINUS_SIGN> >
+|   < #E : ["E", "e"] >
 
 }
 
@@ -779,10 +779,22 @@ void actual_identifier_S() #ActualIdentifier :
 	}
 }
 
-void signed_integer_S() : {}
+Long signed_integer_S() : 
 {
-	(<PLUS_SIGN> | <MINUS_SIGN>) <UNSIGNED_INTEGER> 
+	Token tSign = null ;
+	Token tInteger = null ;
+
 }
+{
+	[ tSign=<PLUS_SIGN> | tSign=<MINUS_SIGN> ] tInteger=<UNSIGNED_INTEGER>     
+    {       if( tInteger != null ) {
+      	  Long l = new Long( tInteger.image ) ;
+      	  if( tSign != null ) {
+      	  	 if( tSign.image.startsWith( "-" ) ) {
+      	  	 	l = new Long( -l.longValue() ) ;
+      	  	 }	
+      	  }
+      	  return l ;        }    }}
 
 /**
  * between_predicate_A
@@ -2045,9 +2057,9 @@ void match_predicate_S() : {}
  *	  | SQUARE <left_paren> <numeric_value_expression> <right_paren> 
  *	  | SQRT <left_paren> <numeric_value_expression> <right_paren> 
  *	  | LOG10 <left_paren> <numeric_value_expression> <right_paren> 
- *	  | RAND <left_paren> [ <numeric_value_expression> ] <right_paren> 
- *	  | ROUND <left_paren> <numeric_value_expression> <right_paren> 
- *	  | TRUNCATE <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | RAND <left_paren> [ <unsigned_integer> ] <right_paren> 
+ *	  | ROUND <left_paren> <numeric_value_expression> [ <comma> <signed_integer> ] <right_paren> 
+ *	  | TRUNCATE <left_paren> <numeric_value_expression> [ <comma> <signed_integer> ] <right_paren> 
  * bnf-end
  *
  */
@@ -2055,6 +2067,7 @@ void math_function_A() #MathFunction :
 {
 	if( log.isTraceEnabled() ) enterTrace ( "math_function_A()" ) ;
     Token arg2 = null ;
+    Long signedLong ;
     tracker.setType( MathFunctionType.type ) ;
 }
 {
@@ -2129,11 +2142,13 @@ void math_function_A() #MathFunction :
 		( <ROUND> 
 		     <LEFT_PAREN> 
 		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		        [ <COMMA> signedLong=signed_integer_S() { jjtThis.setArg2( signedLong ) ; } ]
 		     <RIGHT_PAREN> )
 		|
 		( <TRUNCATE> 
 		     <LEFT_PAREN> 
 		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		        [ <COMMA> signedLong=signed_integer_S() { jjtThis.setArg2( signedLong ) ; } ]
 		     <RIGHT_PAREN> )
 	)
 	{
@@ -3982,6 +3997,13 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.39  2008/04/16 11:04:22  jl99
+Merge of branch adql-jl-2731
+
+Revision 1.38.4.1  2008/04/15 14:09:55  jl99
+(1) ROUND and TRUNCATE functions have changed cardinality.
+(2) Some improvements to comment processing.
+
 Revision 1.38  2008/03/19 20:53:21  jl99
 Merge of branch adql-jl2650
 

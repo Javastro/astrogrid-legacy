@@ -138,7 +138,7 @@ public void writeCommentsForChildren() {
                 if( this.isCommentPresent() ) {
                     //
                     // Check to see that they are not the same comment...
-                    if( node.firstToken.specialToken == this.firstToken.specialToken )
+                    if( node.firstToken.specialToken.image.equals( this.firstToken.specialToken.image ) )
                         continue ;
                 }
                 //
@@ -156,11 +156,55 @@ public void writeComment( XmlObject parent ) {
     try {
         XmlObject xo = null ;
         XmlObject go = (XmlObject)this.generatedObject ;
+        cursor = go.newCursor() ;
+        String comment = firstToken.specialToken.image ;
+        parser.lastCommentWritten = firstToken ;
+        if( log.isDebugEnabled() ) {
+            log.debug( "go.schemaType: " + go.schemaType().getName() ) ;
+            log.debug( "comment.length(): " + comment.length() ) ;
+            log.debug( "Writing comment: " + comment ) ;
+            log.debug( go.toString() ) ;
+        }  
+        
+//        if( !cursor.toChild(0) ) {
+//            cursor.toEndToken() ;
+//        }
+
+        Token tmpToken = firstToken.specialToken ;
+        while( tmpToken.specialToken != null ) tmpToken = tmpToken.specialToken;
+          // The above line walks back the special token chain until it
+          // reaches the first special token after the previous regular
+          // token.
+        while (tmpToken != null) {
+            cursor.insertComment( SimpleNode.prepareComment( tmpToken.image ) ) ;
+          tmpToken = tmpToken.next;
+        }
+      
+    }
+    catch( Exception ex ) {
+        log.debug( "Problem encountered whilst writing a comment.", ex ) ;
+    }
+    finally {
+        if( cursor != null )
+            cursor.dispose();
+    }
+
+    if( log.isTraceEnabled() ) { exitTrace( log, "writeComment()" ) ; }   
+}
+
+public void _writeComment( XmlObject parent ) {
+    if( log.isTraceEnabled() ) { enterTrace( log, "writeComment()"); }
+   
+    XmlCursor cursor = null ;
+    try {
+        XmlObject xo = null ;
+        XmlObject go = (XmlObject)this.generatedObject ;
         cursor = parent.newCursor() ;
         String comment = firstToken.specialToken.image ;
         parser.lastCommentWritten = firstToken ;
         if( log.isDebugEnabled() ) {
             log.debug( "go.schemaType: " + go.schemaType().getName() ) ;
+            log.debug( "comment.length(): " + comment.length() ) ;
             log.debug( "Writing comment: " + comment ) ;
             log.debug( go.toString() ) ;
         }    
@@ -191,15 +235,15 @@ public void writeComment( XmlObject parent ) {
 public static String prepareComment( String comment ) {
     String c = comment.trim();
     if( c.startsWith( "--") ) {
-        return c.replaceAll( "--", "" ) ;
+        return comment.replaceAll( "--", "" ) ;
     }
     else if( c.startsWith( "//") ) {
-        return c.replaceAll( "//", "" ) ;
+        return comment.replaceAll( "//", "" ) ;
     }
     else if( c.startsWith( "/*" ) ) {
-        return c.replaceAll( "/\\*", "" ).replaceAll( "\\*/", "" ) ;
+        return comment.replaceAll( "/\\*", "" ).replaceAll( "\\*/", "" ) ;
     }
-    return c ;
+    return comment ;
 }
 
 public Tracker getTracker() {
