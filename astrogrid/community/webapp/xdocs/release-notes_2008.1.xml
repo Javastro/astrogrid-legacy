@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Release notes: version 2008.1</title>
+    </properties>
+    <body>
+    <section name="Release notes">
+      
+      <p>
+        These are differences between version 2008.1 and version 2008.0.01.
+      </p>
+      
+        <subsection name="Password and credential problems">
+          <p>
+            In the previous version, there were three major problems with 
+            passwords and credentials:
+          </p>
+          <ul>
+            <li>a user couldn't log in until he had reset his password 
+            (<a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2694">Bugzilla ticket 2694</a>);</li>
+            <li>credentials for new accounts were created with wrong
+              passwords and were therefore unavailable to users
+            (<a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2686">Bugzilla ticket 2694</a>);</li>
+            <li>passwords on credentials were not being changed by the
+              password-reset pages for either the user or community
+            administrator (no ticket issued).</li>
+          </ul>
+          <p>
+            These issues are all related and have been fixed by an emergency
+            patch in the current version. This quick solution is imperfect and
+            may give further problems as follows.
+          </p>
+          <p>
+            A user's password is held in two places: in the community database
+            and in the user's private-key file (in the community's credentials
+            directory). These two passwords should have the same value, but a
+            failed password-change could leave them with different values. 
+            In this case, the user will
+            probably be unable to log in and the password-change buttons
+            won't work for either the user or the community administrator.
+            If an account gets into this state, the administrator should:
+          </p>
+          <ol>
+            <li>resissue the user's credentials;</li>
+            <li>reset the user's password to a temporary value;</li>
+            <li>contact the user, tell him the temporary password and ask him
+            to change his password to his preferred value.</li>
+          </ol>
+          <p>
+            (The first step synchronizes the passwords in the database and
+            key file.)
+          </p>
+          <p>
+            A better solution for password handling is known but will take
+            some time to develop. It will be included in version 2008.2.
+          </p>
+       </subsection>
+    </section>
+    </body>
+</document>
