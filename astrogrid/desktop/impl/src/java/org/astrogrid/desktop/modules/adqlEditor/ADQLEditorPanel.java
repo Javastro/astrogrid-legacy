@@ -111,6 +111,7 @@ import org.astrogrid.acr.ivoa.resource.*;
 import org.astrogrid.adql.AdqlException;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
+import org.astrogrid.adql.AdqlCompiler; 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree.EditPromptAction;
@@ -2014,8 +2015,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
                                     // containing all the adqls.
                     adqlTree.setSelectionToTopSelectNode();
                 }
-                AdqlNode node = (AdqlNode) adqlTree
-                        .getLastSelectedPathComponent();
+                AdqlNode node = (AdqlNode) adqlTree.getLastSelectedPathComponent();
 
                 if (node == null) {
                     maintainHistory(null, image);
@@ -2051,10 +2051,16 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
                                 .append('\n');
                     }
                     diagnostics.setText(buffer.toString());
+                    String lastCompile = node.getElementContextPath() + "=" + image ;
+                    AdqlCompiler.WriteProcessingInstruction( (SelectDocument)getRoot()
+                                                           , "ag-qb-lastCompile"
+                                                           , lastCompile ) ;
                 } else {
                     setDiagnosticsIcon(true);
                     diagnostics.setText("");
-                    setBorder(originalBorder);
+                    setBorder(originalBorder);                   
+                    AdqlCompiler.RemoveProcessingInstruction( (SelectDocument)getRoot()
+                                                            , "ag-qb-lastCompile" ) ;
                     // Refresh tree...
                     // NB: Cosmetically this requires improvement.
                     // Refreshing using the child entry is cosmetically better,
@@ -2070,7 +2076,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
                     // editCommand.getChildEntry() ) ;
                     ((DefaultTreeModel) adqlTree.getModel())
                             .nodeStructureChanged(editCommand.getParentEntry());
-
+                    adqlTree.reestablishTablesCollection() ;
                     editCommand.adjustBranches();
 
                     //
@@ -2083,12 +2089,19 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
                     adqlTree.ensureSomeNodeSelected(editCommand);
                     adqlTree.repaint();
                 }
-                maintainHistory(null, image);
+                maintainHistory(null, image);              
+                refreshDebugView() ;
+                
             } finally {
                 if (log.isTraceEnabled()) {
                     exitTrace("AdqlMainView.executeEditCommand()");
                 }
             }
+        }
+        
+        private void refreshDebugView() {
+            if (adqlXmlView != null)
+                adqlXmlView.refreshFromModel();
         }
 
     }

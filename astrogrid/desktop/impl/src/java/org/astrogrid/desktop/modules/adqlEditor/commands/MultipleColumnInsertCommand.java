@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.adqlEditor.commands;
 import java.util.ArrayList;
 
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeNode;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -21,6 +22,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlCursor;
+import org.astrogrid.adql.SimpleNode;
+import org.astrogrid.adql.v1_0.beans.*;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
@@ -43,6 +47,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     protected ColumnBean[] columns ;
     protected String tableAlias ;
     protected MCIUndoManager internalUndoManager ;
+    protected boolean joinRelated = false ;
     
    
     /**
@@ -146,11 +151,22 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         // The column reference must be within the remit of 
         // either a FROM clause within a normal SELECT statement,
         // or a tables' array within a JOIN TABLE clause...
-        if( isJoinTableBound() ) {
-            result = maintainArrayOfJoinTables() ;
+        TreePath current = adqlTree.getSelectionPath() ;
+        //
+        // Are we inserting column refs within a join condition...
+        if( joinRelated == true ) {
+           AdqlNode joinNode = findJoinTableNodeFromBelow( current ) ;
+           result = maintainArrayOfJoinTables( joinNode ) ;
         }
         else {
-            result = maintainFromTables( adqlTree.getSelectionPath() ) ;
+            //
+            // It is insertion of a column outside of an explicit join
+            // but could still be for a table within an explicit join.
+            // We search for any suitable table with the same name.
+            // If we find one we use it, otherwise we create one in a FROM...           
+            if( !findSuitableExistingTable() ) {
+                result = maintainFromTables( current ) ;
+            }        
         }
         //
         // At last we are in a position to include the user's chosen columns for this table...
@@ -173,31 +189,90 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         	                                 , getParentEntry()
         	                                 , childType
         	                                 , null ) ;
-    //can't be null    if( command != null ) {
-            command.setTable( table ) ;
-            command.setTableAlias( tableAlias ) ;
-            ColumnInsertCommand cic = null ;
-            for( int i=0; i<columns.length; i++ ) {
-                // We must shallow copy a command for each column.
-                // Else the undo facility will not work.
-                if( cic == null ) {
-                    cic = command ;
-                }
-                else {
-                    cic = new ColumnInsertCommand( command ) ;
-                }                   
-                cic.setColumnName( columns[i].getName() ) ;
-                result = cic.execute() ;
-                if( result == CommandExec.FAILED || result == CommandExec.ERROR )
-                    break ;
+        command.setTable( table ) ;
+        command.setTableAlias( tableAlias ) ;
+        ColumnInsertCommand cic = null ;
+        for( int i=0; i<columns.length; i++ ) {
+            // We must shallow copy a command for each column.
+            // Else the undo facility will not work.
+            if( cic == null ) {
+                cic = command ;
             }
-        //}       
+            else {
+                cic = new ColumnInsertCommand( command ) ;
+            }                   
+            cic.setColumnName( columns[i].getName() ) ;
+            result = cic.execute() ;
+            if( result == CommandExec.FAILED || result == CommandExec.ERROR )
+                break ;
+        }     
         return result ;  
     }
     
     
-    private Result maintainArrayOfJoinTables() {
-        return CommandExec.ERROR ;
+    private Result maintainArrayOfJoinTables( AdqlNode joinNode  ) {
+        Result result = CommandExec.ERROR ;
+        //
+        // Locate the table array...
+        AdqlNode[] children = joinNode.getChildren() ;
+        AdqlNode fromTables = null ;
+        for( int i=0; i<children.length; i++ ) {
+            if( children[i].getSchemaType() == ArrayOfFromTableType.type ) {
+                fromTables = children[i] ;
+            }
+        }
+        //
+        // If there is no table array, create one...
+        if( fromTables == null ) {
+            StandardInsertCommand
+            sic = new StandardInsertCommand( adqlTree
+                                           , internalUndoManager
+                                           , joinNode
+                                           , ArrayOfFromTableType.type
+                                           , null ) ;
+            result = sic.execute() ;  
+            if( result == CommandExec.ERROR || result == CommandExec.FAILED ) {
+                return result ;
+            }
+            fromTables = sic.getChildEntry() ;
+        }
+        //
+        // 
+        AdqlNode[] tables = fromTables.getChildren() ;
+        TableType tab = null ;
+        AdqlNode tableEntry = null ;
+        for( int i=0; i<tables.length; i++ ) {
+
+            tab = (TableType)(tables[i].getXmlObject()) ;
+            // NB: This does not currently cater for a table being quoted twice
+            // using a different alias. This is a viable situation...
+            if( tab.getName().equalsIgnoreCase( this.table.getName() ) ) {
+                tableEntry = children[i] ;
+                if( tab.isSetAlias() ) {
+                    tableAlias = tab.getAlias() ;
+                }
+                break ;
+            }
+
+        }
+        //  
+        // If we haven't found an entry in the table array that corresponds to
+        // the table from which the user wishes to include column references,
+        // Then we auto-include an appropriate entry...
+        if( tableEntry == null ) {
+            TableInsertCommand
+                tic = new TableInsertCommand( adqlTree
+                                            , internalUndoManager
+                                            , fromTables
+                                            , TableType.type
+                                            , null ) ;
+            tic.setTableName( table.getName() ) ;
+            result = tic.execute() ;    
+            if( result == CommandExec.OK || result == CommandExec.WARNING ) {
+                tableAlias = tic.getAllocatedAlias() ;
+            }
+        }
+        return result ;
     }
     
     private Result maintainFromTables( TreePath path )  {
@@ -290,6 +365,100 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         return entry ;
     }
     
+    private AdqlNode findJoinTableNode( TreePath current ) {
+        //
+        // First look for a Join above the current...
+        AdqlNode node = findJoinTableNodeFromBelow( current ) ;
+        //
+        // If find one, 
+        // Look for a JOIN within a FROM clause below the enclosing SELECT...
+        if( node == null ) {
+            node = findJoinTableNodeFromAbove( current ) ;
+        }
+        return node ;
+    }
+    
+    private AdqlNode findJoinTableNodeFromAbove( TreePath current ) {        
+        //
+        // Look for a JOIN within a FROM clause below the enclosing SELECT...
+        AdqlNode node = (AdqlNode) findParentSelect( current ).getLastPathComponent() ;
+        //
+        // Find all the child elements of the SELECT clause...
+        AdqlNode childEntries[] = node.getChildren() ;
+        //
+        // Go through the children of the SELECT clause looking for the FROM clause...
+        AdqlNode fromNode = null ;
+        SchemaType fromType = getFromType() ;
+        for( int i=0; i<childEntries.length; i++ ) {
+            if( childEntries[i].getSchemaType().getName().equals( fromType.getName() ) ) {
+                fromNode = childEntries[i] ;
+                break ;
+            }
+        }
+        //
+        // Found a FROM?
+        // If yes, search for a JOIN...
+        if( fromNode != null ) {
+            AdqlNode[] nodes = fromNode.getChildren() ;           
+            for( int i=0; i<nodes.length; i++ ) {
+                if( nodes[i].getSchemaType() == JoinTableType.type) {                   
+                    return nodes[i] ;
+                }
+            } 
+        }
+        //
+        // OK. We have not found a JOIN...
+        return null ;
+    }
+    
+    private AdqlNode findJoinTableNodeFromBelow( TreePath current ) {
+        //
+        // Look for a Join above the current...
+        TreePath path = current.getParentPath() ;
+        Object[] objs = path.getPath() ;
+        AdqlNode node = null ;
+        for( int i=objs.length-1; i>=0; i-- ) {
+            node = (AdqlNode)objs[i] ;
+            if( node.getSchemaType() == JoinTableType.type) {
+                return node ;
+            }
+            if( node.getSchemaType() == SelectType.type ) {
+                break ;
+            }
+        }  
+        //
+        // OK. We have not found a JOIN...
+        return null ;
+    }
+    
+    private boolean findSuitableExistingTable() {
+        boolean found = false ;
+        XmlCursor cursor = adqlTree.getRootNode().getXmlObject().newCursor() ;
+        XmlObject xo ;
+        SchemaType type ;
+        String tableName = this.table.getName() ;
+        do {
+            if( cursor.isStart() ) {
+                xo = cursor.getObject() ; 
+                type = xo.schemaType() ;
+                if( type == TableType.type || type == FromTableType.type ) {
+                    TableType t = (TableType)xo ;
+                    if( t.getName().equalsIgnoreCase( tableName ) ) {
+                        if( t.isSetAlias() ) {
+                            this.tableAlias = t.getAlias() ;
+                            found = true ;
+                            break ;
+                        }
+                    }
+                }
+                
+            }
+        } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ; 
+        
+        return found ;
+    }
+    
+  
     
     public AdqlNode findTablesHolder( TreePath path ) {
         //
@@ -315,10 +484,6 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
             // ? Still to do 
         }       
         return entry ;
-    }
-    
-    private boolean isJoinTableBound() {
-        return false ;
     }
     
     private SchemaType getFromType() {
@@ -426,31 +591,80 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
      * @see org.astrogrid.desktop.modules.adqlEditor.commands.AbstractCommand#isChildEnabled()
      */
     public boolean isChildEnabled() {
-            boolean enabled = false ;
-            XmlObject o = getParentEntry().getXmlObject() ;
-            String e = getChildElementName() ;
-            if( isChildOptionalSingleton() ) {
-                enabled = !AdqlUtils.isSet( o, e ) ;
-                if( enabled == true && columns != null && columns.length != 1 ) {
-                    enabled = false ;
-                }
+        boolean enabled = false ;       
+        //
+        // First we test for normal range of cardinalities...
+        AdqlNode target = getParentEntry() ;
+        XmlObject o = target.getXmlObject() ;
+        String e = getChildElementName() ;
+        if( isChildOptionalSingleton() ) {
+            enabled = !AdqlUtils.isSet( o, e ) ;
+            if( enabled == true && columns != null && columns.length != 1 ) {
+                enabled = false ;
             }
-            else if( isChildMandatorySingleton() ) {
-                enabled = ( AdqlUtils.get( o, e ) == null ) ;
-                if( enabled == true && columns != null && columns.length != 1 ) {
-                    enabled = false ;
-                }
+        }
+        else if( isChildMandatorySingleton() ) {
+            enabled = ( AdqlUtils.get( o, e ) == null ) ;
+            if( enabled == true && columns != null && columns.length != 1 ) {
+                enabled = false ;
             }
-            else if( isChildHeldInArray() ) {
-                if( maxOccurs == -1 ) {
+        }
+        else if( isChildHeldInArray() ) {
+            if( maxOccurs == -1 ) {
+                enabled = true ;
+            }
+            else if( columns != null ) {
+                if( maxOccurs - AdqlUtils.sizeOfArray( o, e ) >= columns.length )
                     enabled = true ;
-                }
-                else if( columns != null ) {
-                    if( maxOccurs - AdqlUtils.sizeOfArray( o, e ) >= columns.length )
-                        enabled = true ;
-                }
             }
-            return enabled ;
+        } 
+        
+        if( enabled == true ) {
+            //
+            // Establish whether it is associated with an explicit join... 
+            TreeNode[] tnodes = target.getPath() ;
+            TreePath path = new TreePath( tnodes ) ;
+            AdqlNode joinNode = findJoinTableNodeFromBelow( path ) ;
+            if( joinNode !=  null ) {
+                //
+                // OK. We know it is a JOIN construct.
+                // Find the array of tables in the join...
+                AdqlNode[] nodes = joinNode.getChildren() ;
+                AdqlNode arrayNode = null ;
+                for( int i=0; i<nodes.length; i++ ) {
+                     if( nodes[i].getSchemaType() == ArrayOfFromTableType.type ) {
+                         arrayNode = nodes[i] ;
+                     }
+                }
+                //
+                // The criterion for being enabled is two fold:
+                // (1) If the array is not full (or doesn't exist), there is space for the target table.
+                // (2) If the array is full, then one of its tables must be the target table.
+                if( arrayNode != null ) {
+                    ArrayOfFromTableType tableArray = (ArrayOfFromTableType)arrayNode.getXmlObject() ;
+                    if( tableArray.sizeOfFromTableTypeArray() == 2 ) {
+                        //
+                        // Assume this will fail...
+                        enabled = false ;
+                        FromTableType[] tables = tableArray.getFromTableTypeArray() ;
+                        for( int i=0; i<tables.length; i++ ) {
+                            if( ((TableType)tables[i]).getName().equalsIgnoreCase( this.table.getName() ) ) {
+                                enabled = true ;
+                                this.joinRelated = true ;
+                                break ;
+                            }
+                        }
+                    }
+                    else {
+                        this.joinRelated = true ;
+                    }
+                }
+                else {
+                    this.joinRelated = true ;
+                }
+            }            
+        }
+        return enabled ;
     }  
     
 }

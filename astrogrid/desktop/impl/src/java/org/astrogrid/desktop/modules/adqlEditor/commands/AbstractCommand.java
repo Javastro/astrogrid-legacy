@@ -22,6 +22,7 @@ import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlString;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
@@ -47,11 +48,18 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     protected Integer childToken ;
     protected SchemaProperty childElement ;
     protected SchemaType childType ;
+    protected SchemaType parentType ;
     protected int minOccurs ;
     protected int maxOccurs ;
     
     private String[] messages ;
     private boolean initializedStatusGood = false ;
+    
+    private static int NOT_ALLOWED = 0 ;
+    private static int OPTIONAL_SINGLETON = 1 ;
+    private static int MANDATORY_SINGLETON = 2 ;
+    private static int HELD_IN_ARRAY = 3 ;
+    private int heldAsFlag = NOT_ALLOWED ;
     
     
     /**
@@ -62,9 +70,11 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         this.adqlTree = adqlTree ;
         this.undoManager = undoManager ;
         this.childToken = addToEditStore( child ) ;
-        this.parentToken = addToEditStore( (AdqlNode)child.getParent() ) ;
+        AdqlNode parent = (AdqlNode)child.getParent() ;
+        this.parentToken = addToEditStore( parent ) ;
+        this.parentType = parent.getSchemaType() ;
         this.childType = child.getSchemaType() ;
-        initializeElementInfo() ;
+        initializeElementInfo( parent ) ;
     }
     
     public AbstractCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode parent, SchemaType childType, SchemaProperty childElement ) {
@@ -72,18 +82,19 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         this.undoManager = undoManager ;
         this.parentToken = addToEditStore( parent ) ;
         this.childType = childType ;
+        this.parentType = parent.getSchemaType() ;
         this.childElement = childElement ;
-        initializeElementInfo() ;
+        initializeElementInfo( parent ) ;
     }
     
     protected AbstractCommand() { }
     
-    private void initializeElementInfo() {
+    private void initializeElementInfo( AdqlNode parent ) {
         try {
             if( childElement == null ) {
                 if( childToken != null ) {
                     String elementName = AdqlUtils.extractElementLocalName( getChildObject() ) ;
-                    SchemaProperty[] elements = getParentEntry().getElementProperties() ;
+                    SchemaProperty[] elements = parent.getElementProperties() ;
                     for( int i=0; i<elements.length; i++ ) {
                         if( elements[i].getName().getLocalPart().equals( elementName ) ) {
                             this.childElement = elements[i] ;
@@ -92,7 +103,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
                     }
                 }
                 else {
-                    SchemaProperty[] elements = getParentEntry().getElementProperties() ;
+                    SchemaProperty[] elements = parent.getElementProperties() ;
                     for( int i=0; i<elements.length; i++ ) {
                         if( elements[i].getType().isAssignableFrom( childType ) ) {
                             this.childElement = elements[i] ;
@@ -101,19 +112,43 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
                     }
                 }
             }
-            if( getParentEntry() instanceof NestingNode ) {
+            if( parent instanceof NestingNode ) {
                 minOccurs = childElement.getMinOccurs().intValue() ;
                 maxOccurs = -1 ;
+                heldAsFlag = HELD_IN_ARRAY ;
+            }
+            else if( AdqlUtils.isFunctionType( parentType )
+                     &&
+                     childElement.getName().getLocalPart().equalsIgnoreCase( "Arg" ) ) {
+                Integer[] cardinalities = AdqlUtils.getFunctionCardinalities( parent.getXmlObject() ) ;
+                minOccurs = cardinalities[0].intValue() ;
+                maxOccurs = cardinalities[1].intValue() ;
+                if( minOccurs == 0 & maxOccurs == 0 ) {
+                    heldAsFlag = NOT_ALLOWED ;
+                }
+                else {
+                    heldAsFlag = HELD_IN_ARRAY ;
+                }               
             }
             else if( AdqlUtils.isCardinalityImposed( childElement ) ) {
                 Integer[] cardinalities = AdqlUtils.getImposedCardinality( childElement ) ;
                 minOccurs = cardinalities[0].intValue() ;
                 maxOccurs = cardinalities[1].intValue() ;
+                heldAsFlag = HELD_IN_ARRAY ;
             }
             else {
                 minOccurs = childElement.getMinOccurs().intValue() ;
                 BigInteger biMaxOccurs = childElement.getMaxOccurs() ;
                 maxOccurs = ( biMaxOccurs == null ? -1 : biMaxOccurs.intValue() ) ;
+                if( minOccurs == 0 && maxOccurs == 1 ) {
+                    heldAsFlag = OPTIONAL_SINGLETON ;
+                }
+                else if( minOccurs == 1 && maxOccurs == 1 ) {
+                    heldAsFlag = MANDATORY_SINGLETON ;
+                }
+                else {
+                    heldAsFlag = HELD_IN_ARRAY ;
+                }
             } 
             initializedStatusGood = true ;
         }
@@ -230,27 +265,28 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
                 AdqlUtils.sizeOfArray( o, e ) < maxOccurs )
             	enabled = true ;
         }
+        else if ( isChildDisallowed() ) {
+            enabled = false ;
+        }
         else {
             log.debug( "Problems with element cardinality in AbstractCommand.isChildEnabled()" ) ;
         }
         return enabled ;
     }
     
+    public boolean isChildDisallowed() {
+        return heldAsFlag == NOT_ALLOWED ;
+    }
+    
     public boolean isChildMandatorySingleton() {
-        if( minOccurs != 1  ||  maxOccurs == -1  ||  maxOccurs != 1 )
-            return false ;
-        return true ;
+        return heldAsFlag == MANDATORY_SINGLETON ;
     }
     public boolean isChildOptionalSingleton() {
-        if( minOccurs > 0  ||  maxOccurs == -1  ||  maxOccurs > 1 )
-            return false ;
-        return true ;
+        return heldAsFlag == OPTIONAL_SINGLETON ;
     }
     
     public boolean isChildHeldInArray() {
-        if( maxOccurs == -1  ||  maxOccurs > 1 )
-            return true ;
-        return false ;
+        return heldAsFlag == HELD_IN_ARRAY ;
     }
     
      

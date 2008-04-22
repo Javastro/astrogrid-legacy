@@ -14,6 +14,17 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2733">
+    ROUND and TRUNCATE fixed.
+</action>
+<action dev="jl" type="fix" issue="2735">
+    Fixed cardinalities for Maths and Trig functions.
+</action>
+<action dev="jl" type="fix" issue="2736">
+    Explicit joins are now carried out more tastefully.
+    The join condition is checked for tables. If required, tables
+    are included automatically.
+</action>
 <release version="2008.1.1" date="unreleased">
     <action dev="nw" type="fix" issue="2724">
         Fixed obscure race-condition in astroscope.

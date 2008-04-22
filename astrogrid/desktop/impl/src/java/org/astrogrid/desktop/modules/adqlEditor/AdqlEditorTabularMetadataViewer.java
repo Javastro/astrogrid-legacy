@@ -187,10 +187,7 @@ public class AdqlEditorTabularMetadataViewer extends TabularMetadataViewer {
 	        }
             command.setTable( (TableBean)tableCombo.getSelectedItem() ) ;
             command.setColumns( columnBeans ) ;
-            if( command.isChildEnabled() == false ) {
-                return false ;
-            }	        
-	        return true ;
+            return command.isChildEnabled() ;
 	        
 	    }
 	       

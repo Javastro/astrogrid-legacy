@@ -56,6 +56,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.*;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
+import org.astrogrid.adql.AdqlCompiler;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
@@ -382,54 +383,19 @@ public final class AdqlTree extends JTree
     }
     
     private void retrieveAdqlSchemaVersion() {
-        String piName = null ;
-        String piValue = null ;
-        adqlSchemaVersion = null ;
-        StringBuffer buffer = null ;
-        XmlCursor cursor = getRoot().newCursor() ;
-        if( log.isDebugEnabled() ) {
-            buffer = new StringBuffer() ;
-            buffer.append( "Searching for schema version PI..." ) ;
+        adqlSchemaVersion = AdqlCompiler.ReadProcessingInstruction( (SelectDocument)getRoot()
+                                                                  , AdqlData.PI_ADQL_SCHEMA_VERSION_TAG ) ;
+        if( adqlSchemaVersion == null ) {
+            AdqlCompiler.WriteProcessingInstruction( (SelectDocument)getRoot()
+                                                   , AdqlData.PI_ADQL_SCHEMA_VERSION_TAG 
+                                                   , AdqlData.PI_ADQL_SCHEMA_VERSION_VALUE ) ;
         }
-        try {
-            while( !cursor.toNextToken().isNone() ) {
-                if( cursor.isStart()
-                    &&
-                    cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
-                        cursor.push() ; // remember where the actual Select statement is.
-                }
-                else if( cursor.isProcinst() ) {
-                    piName = cursor.getName().getLocalPart() ;
-                    if( piName.equals( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG ) )  {
-                        if( log.isDebugEnabled() ) {
-                            buffer.append( "\nPI name: " + cursor.getName() ) ;
-                            buffer.append( "\nPI text: " + cursor.getTextValue() ) ;                          
-                        }
-                        piValue = cursor.getTextValue().trim() ;
-                        adqlSchemaVersion = piValue ;
-                        break ;
-                    }           
-                }
-            } // end while
-            if( adqlSchemaVersion == null ) {
-                cursor.pop() ; // position on the Select statement.
-                // We write a version PI to track the version of the ADQL schema used...
-                // This places it immediately before the Select statement.
-                cursor.insertProcInst( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG, AdqlData.PI_ADQL_SCHEMA_VERSION_VALUE ) ;
-            }
-        }
-        finally {
-            if( log.isDebugEnabled() ) {
-                log.debug( buffer ) ;
-            }
-            cursor.dispose();
-        }  
         // OK. This is a placeholder for future processing, when some action will be
         // required to accommodate changes in ADQL between versions.
     }
     
     
-    private void reestablishTablesCollection() {
+    protected void reestablishTablesCollection() {
         XmlString xTableName = null ;
         XmlString xAlias = null ;
         String alias = null ;

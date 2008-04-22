@@ -45,9 +45,12 @@ import org.apache.xmlbeans.XmlString;
 import org.apache.xmlbeans.XmlUnsignedInt;
 import org.apache.xmlbeans.XmlUnsignedLong;
 import org.apache.xmlbeans.XmlUnsignedShort;
+import org.astrogrid.adql.v1_0.beans.AggregateFunctionType;
 import org.astrogrid.adql.v1_0.beans.ArrayOfFromTableType;
 import org.astrogrid.adql.v1_0.beans.JoinTableType;
+import org.astrogrid.adql.v1_0.beans.MathFunctionType;
 import org.astrogrid.adql.v1_0.beans.SelectType;
+import org.astrogrid.adql.v1_0.beans.TrigonometricFunctionType;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CopyHolder;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
@@ -577,6 +580,24 @@ public final class AdqlUtils {
     
     public static Integer[] getImposedCardinality( SchemaProperty schemaProperty ) {
         return getImposedCardinality( schemaProperty.getName().getLocalPart() ) ;
+    }
+    
+    public static boolean isFunctionType( SchemaType schemaType ) {
+        boolean answer = false ;
+        if( schemaType == MathFunctionType.type 
+            ||
+            schemaType == TrigonometricFunctionType.type
+            ||
+            schemaType == AggregateFunctionType.type ) {
+            answer = true ;
+        }
+        return answer ;
+    }
+    
+    public static Integer[] getFunctionCardinalities( XmlObject func ) {
+        XmlString functionName = (XmlString)AdqlUtils.get( func, "Name" ) ;
+        String name = functionName.getStringValue() ;
+        return (Integer[])AdqlData.FUNCTION_CARDINALITIES.get( name ) ;
     }
     
     static public String extractDisplayName( String name ) {

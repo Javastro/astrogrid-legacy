@@ -48,7 +48,9 @@ public class EnumeratedElementInsertCommand extends StandardInsertCommand {
     
     public EnumeratedElementInsertCommand( EnumeratedElementInsertCommand eic ) {
         super( eic.adqlTree, eic.undoManager, eic.getParentEntry(), eic.childType, eic.childElement ) ;
-}
+    }
+    
+    protected EnumeratedElementInsertCommand() {}
     
     public void setSelectedValue( String value ) {
         this.value = value ;

@@ -69,6 +69,7 @@ public class AdqlData {
     public static final String UNION_SEARCH_TYPE = "unionSearchType" ;
     public static final String ALIAS_SELECTION_ITEM_TYPE = "aliasSelectionItemType" ;
     
+    
     // NB: The literal is almost certainly a typo in the schema and should read
     // "joinTableQualifierType". Make any future changes/corrections easier by 
     // using this definition.
@@ -390,6 +391,40 @@ public class AdqlData {
         IMPOSED_CARDINIALITIES.put( ELEMENT_FROM_TABLE_TYPE, new Integer[]{ new Integer(2), new Integer(2) } ) ;
     }
     
+    public static final Hashtable FUNCTION_CARDINALITIES ;
+    static {
+        FUNCTION_CARDINALITIES = new Hashtable() ;
+        FUNCTION_CARDINALITIES.put( "SIN", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "COS", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "TAN", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "COT", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "ASIN", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "ACOS", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "ATAN", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "ATAN2", new Integer[]{ new Integer(2), new Integer(2) } ) ;
+        FUNCTION_CARDINALITIES.put( "ABS", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "CEILING", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "DEGREES", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "EXP", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "FLOOR", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "LOG", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "PI", new Integer[]{ new Integer(0), new Integer(0) } ) ;
+        FUNCTION_CARDINALITIES.put( "POWER", new Integer[]{ new Integer(2), new Integer(2) } ) ;
+        FUNCTION_CARDINALITIES.put( "RADIANS", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "SQRT", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "SQUARE", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "LOG10", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "RAND", new Integer[]{ new Integer(0), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "ROUND", new Integer[]{ new Integer(1), new Integer(2) } ) ;
+        FUNCTION_CARDINALITIES.put( "TRUNCATE", new Integer[]{ new Integer(1), new Integer(2) } ) ;
+        FUNCTION_CARDINALITIES.put( "AVG", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "MIN", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "MAX", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "SUM", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+        FUNCTION_CARDINALITIES.put( "COUNT", new Integer[]{ new Integer(1), new Integer(1) } ) ;
+    }
+  
+    
     public static final Hashtable DERIVED_DEFAULTS ;
     static {
         DERIVED_DEFAULTS = new Hashtable() ;
@@ -464,11 +499,11 @@ public class AdqlData {
     
     public static final String NEW_QUERY =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<?" + PI_ADQL_SCHEMA_VERSION_TAG + " " + PI_ADQL_SCHEMA_VERSION_VALUE + " ?>" +
         "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
         "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
         "        xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"" +
-        "        xsi:type=\"selectType\"> " +
-        "    <?" + PI_ADQL_SCHEMA_VERSION_TAG + " " + PI_ADQL_SCHEMA_VERSION_VALUE + " ?>" +    
+        "        xsi:type=\"selectType\"> " +    
         "    <SelectionList xsi:type=\"selectionListType\"> " +
         "        <Item xsi:type=\"allSelectionItemType\"/> " +
         "    </SelectionList> " +

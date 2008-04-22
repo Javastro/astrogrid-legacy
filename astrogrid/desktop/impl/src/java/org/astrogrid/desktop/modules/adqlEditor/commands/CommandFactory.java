@@ -240,11 +240,13 @@ public class CommandFactory {
     public EnumeratedElementInsertCommand newEnumeratedElementInsertCommand( AdqlNode parent
                                                                            , SchemaType childType
                                                                            , SchemaProperty childElement ) { 
-        return new EnumeratedElementInsertCommand( adqlTree
-                , undoManager
-                , parent
-                , childType
-                , childElement ) ;
+//        return new EnumeratedElementInsertCommand( adqlTree
+//                , undoManager
+//                , parent
+//                , childType
+//                , childElement ) ;
+        
+          return new JoinInsertCommand( adqlTree, undoManager, parent, childType, childElement ) ;
     }
     
    
@@ -316,6 +318,9 @@ public class CommandFactory {
             if( o instanceof MultipleColumnInsertCommand.MCIUndoManager ) {              
                 return (AbstractCommand)((MultipleColumnInsertCommand.MCIUndoManager)o).getOwner() ;
             }
+            else if( o instanceof JoinInsertCommand.InternalUndoManager ) {
+                return (AbstractCommand)((JoinInsertCommand.InternalUndoManager)o).getOwner() ;
+            }
             return (AbstractCommand)o;
         }
         
@@ -323,6 +328,9 @@ public class CommandFactory {
             Object o = super.editToBeUndone() ;
             if( o instanceof MultipleColumnInsertCommand.MCIUndoManager ) {              
                 return (AbstractCommand)((MultipleColumnInsertCommand.MCIUndoManager)o).getOwner() ;
+            }
+            else if( o instanceof JoinInsertCommand.InternalUndoManager ) {
+                return (AbstractCommand)((JoinInsertCommand.InternalUndoManager)o).getOwner() ;
             }
             return (AbstractCommand)o;
         }

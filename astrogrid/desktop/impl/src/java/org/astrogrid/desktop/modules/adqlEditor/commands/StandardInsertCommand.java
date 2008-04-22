@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -62,6 +63,7 @@ public class StandardInsertCommand extends AbstractCommand {
         Result result = _execute() ;
         if( result != CommandExec.FAILED ) {
             undoManager.addEdit( this ) ;
+            adqlTree.expandPath( new TreePath( this.getChildEntry().getPath() ) ) ;
         }
         return result ;
     }
