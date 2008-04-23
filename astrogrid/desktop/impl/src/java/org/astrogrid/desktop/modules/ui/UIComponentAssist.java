@@ -3,9 +3,13 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -66,6 +70,12 @@ import com.l2fprod.common.swing.StatusBar;
  * @since Oct 12, 200712:01:08 PM
  */
 public final class UIComponentAssist {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(UIComponentAssist.class);
+
     /** construct a new uicomponentassist
      * 
      * @param parent the uicomponent which 'owns' and is 'delagating'
@@ -145,17 +155,21 @@ public final class UIComponentAssist {
      * @throws HeadlessException
      */
     public void showError(final String s) {
-        BaseDialog bd = BaseDialog.newBaseDialog(parent.getComponent());
-        bd.setModal(false);
-        bd.setTitle("An Error Occurred");
-        bd.getBanner().setTitle("An Error Occurred");
-        bd.getBanner().setSubtitle(s);
-        bd.getBanner().setIcon(UIManager.getIcon("OptionPane.errorIcon"));
-        bd.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        bd.setDialogMode(BaseDialog.CLOSE_DIALOG);        
-        bd.pack();
-        bd.setLocationRelativeTo(parent.getComponent());
-        bd.setVisible(true);
+        if (GraphicsEnvironment.isHeadless()) {
+            logger.error(s);
+        } else {
+            BaseDialog bd = BaseDialog.newBaseDialog(parent.getComponent());
+            bd.setModal(false);
+            bd.setTitle("An Error Occurred");
+            bd.getBanner().setTitle("An Error Occurred");
+            bd.getBanner().setSubtitle(s);
+            bd.getBanner().setIcon(UIManager.getIcon("OptionPane.errorIcon"));
+            bd.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            bd.setDialogMode(BaseDialog.CLOSE_DIALOG);        
+            bd.pack();
+            bd.setLocationRelativeTo(parent.getComponent());
+            bd.setVisible(true);
+        }
       }
     /** display a well-formatted error message in a popup dialogue.
      * 

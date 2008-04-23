@@ -27,40 +27,11 @@
 	
 	<!--  
 	========================
-	flavour-specific configuration -->
+	flavour-specific configuration - only applies to workbench now.-->
 
-<!--  as PLASTIC HUB -->
-	<contribution configuration-id="hivemind.ApplicationDefaults" if="property hub.mode">
-		<default symbol="system.ui.title" value="AstroGrid PLASTIC Hub" />
-		<default symbol="system.rmi.disableConnectionFile" value="true" /> <!-- as we've not got acr running, and plastic records connection details in it's own way -->
-		<default symbol="system.webserver.disableConnectionFile" value="true" />
-		<default symbol="app.mode" value="hub" />
-	</contribution>
-	<contribution configuration-id="preferenceClass" if="property hub.mode">
-		<class>org.astrogrid.PlasticHub</class>
-	</contribution>
-	
-	<!--  as ASR -->
-	<contribution configuration-id="hivemind.ApplicationDefaults" if="property asr.mode">
-		<default symbol="app.mode" value="asr" />
-		<default symbol="system.ui.title" value="Astro Runtime" />		
-	</contribution>
-	<contribution configuration-id="preferenceClass" if="property asr.mode">
-		<class>org.astrogrid.HeadlessAstroRuntime</class>
-	</contribution>	
-	
-	<!--  as ACR -->
-	<contribution configuration-id="hivemind.ApplicationDefaults" if="property acr.mode">
-		<default symbol="app.mode" value="acr" />
-		<default symbol="system.ui.title" value="Astro Runtime" />		
-	</contribution>
-	<contribution configuration-id="preferenceClass" if="property acr.mode">
-		<class>org.astrogrid.AstroRuntime</class>
-	</contribution>	
-	
 	<!--  as Workbench -->
 	<contribution configuration-id="hivemind.ApplicationDefaults" if="property workbench.mode">
-			<default symbol="app.mode" value="workbench" />
+			<default symbol="app.mode" value="workbench" /><!--  unused? -->
 	</contribution>
 	<contribution configuration-id="preferenceClass" if="property workbench.mode">
 		<class>org.astrogrid.Workbench</class>
@@ -68,7 +39,7 @@
 	
 <!--  default -->
 	<contribution configuration-id="hivemind.FactoryDefaults">	
-		<default symbol="system.ui.title" value="AstroGrid Workbench" />
+		<default symbol="system.ui.title" value="AstroGrid VO Desktop" />
 	</contribution>	
 		
 	

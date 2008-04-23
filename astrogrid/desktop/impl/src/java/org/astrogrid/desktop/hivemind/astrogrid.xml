@@ -12,7 +12,6 @@
 			<acrService id="myspace" interface="Myspace" />
 			<acrService id="community" interface="Community" />
 			<acrService id="applications" interface="Applications" />
-			<acrService id="jobs" interface="Jobs" />
 			<acrService id="processManager" interface="RemoteProcessManager" />
 			<acrService id="stap" interface="Stap"/>
 	</contribution>
@@ -172,6 +171,15 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 LOGIN DIALOGUE -->
 
 	<service-point id="loginDialogue"  visibility="private" interface="org.astrogrid.desktop.modules.auth.LoginDialogue">
+	<!-- duff implementation of the login dialogue, when running in headless mode -->
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.auth.HeadlessLoginDialogue">
+                <string>LOGIN</string>
+            </construct>
+        </invoke-factory>
+    </service-point>
+    
+    <implementation service-id="loginDialogue" if="(not(property astrogrid.loginDialogue.disabled)) and (not (property java.awt.headless))">    
         <interceptor service-id="system.edtInvoke" />	
         <invoke-factory model="session"><!--  privacy fix - else input field values are shared. -->
             <construct  class="org.astrogrid.desktop.modules.auth.SwingLoginDialogue" >
@@ -183,16 +191,8 @@ LOGIN DIALOGUE -->
                 <string>${astrogrid.community.defaultCommunity}</string>
             </construct>
 		</invoke-factory>
-	</service-point>
-    
-	<!-- alternative implementation of the login dialogue, when running in headless mode -->
-	<implementation service-id="loginDialogue" if="property astrogrid.loginDialogue.disabled">
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.auth.HeadlessLoginDialogue">
-				<string>LOGIN</string>
-			</construct>
-		</invoke-factory>
 	</implementation>
+
 <!-- 
 =========================
 STAP
@@ -263,36 +263,7 @@ APPLICATIONS
 		/>
 	</contribution>
 
-<!-- 
-=============================
-JOBS
- -->
-	<service-point id="jobs" interface="org.astrogrid.desktop.modules.ag.JobsInternal">
-		Workflow client
-        <interceptor service-id="system.deprecation" />        
-        <interceptor service-id="system.edt" />
-		<interceptor service-id="system.throbber" />		
-		<interceptor service-id="hivelock.core.authorization">
-			<method pattern="*" roles="loggedin" />
-		</interceptor>
-		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.ag.JobsImpl" >
-				<service>community</service>
-				<service>processManager</service>
-				<event-listener service-id="community" />				
-			</construct>
-		</invoke-factory>	
-	</service-point>
-	
-	<implementation service-id="jobs" if="property astrogrid.jobs.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>		
 
-    <contribution configuration-id="hivemind.FactoryDefaults">
-        <default symbol="jes.job.controller.endpoint"
-                value="http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService"
-                />
-    </contribution>	
 <!-- 
 ===========================
 REMOTE PROCESS MANAGER
@@ -358,22 +329,7 @@ CERTIFICATE INSTALLER
 			</element>
 		</schema>
 	</configuration-point>	
-		
-		
-<!-- previous schema -  this is now the expected file content.
-		<schema>
-			<element name="index">
-				just a container - ignored
-				<element name="item">
-					Gives the url of a certificate
-					<rules>
-						<push-content />
-						<invoke-parent method="addElement" />
-					</rules>
-				</element>
-			</element>
-		</schema>
-		-->
+
 	
 	<!-- contributions to existing configurations -->
 	<contribution configuration-id="certificateLists">
@@ -414,8 +370,6 @@ TRANSFORMERS (object -> stirng) for types introduced by this module
 	</contribution>
 	
 	<contribution configuration-id="framework.rpcResultTransformers">
-		<strategy class="org.astrogrid.workflow.beans.v1.execution.JobURN" 
-			object="instance:org.astrogrid.desktop.modules.ag.transformers.JobURNTransformer" />
 		<strategy class="org.astrogrid.store.Ivorn"
 			object="service:toStringTransformer" />
 		<strategy class="org.astrogrid.filemanager.common.Ivorn"
@@ -435,8 +389,7 @@ CONVERTORS (String-> object) for types introduced by this module
 	<contribution configuration-id="framework.converters">
 		<register output="org.astrogrid.workflow.beans.v1.Workflow" converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor" />
 		<register output="org.astrogrid.workflow.beans.v1.Tool" converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor" />
-		<register output="org.astrogrid.workflow.beans.v1.execution.JobURN" converter="instance:org.astrogrid.desktop.modules.ag.converters.JobURNConverter" />
-	</contribution>
+		</contribution>
 	
 	
  </module>

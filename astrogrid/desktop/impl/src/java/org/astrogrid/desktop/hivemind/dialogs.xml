@@ -25,6 +25,10 @@ RESOURCE (FILE) CHOOSER
  -->
 	<service-point id="resourceChooser" interface="org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal">
 		Select a local or myspace file
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</service-point>
+
+	<implementation service-id="resourceChooser" if="(not (property dialogs.resourceChooser.disabled)) and (not (property java.awt.headless))">
   	    <interceptor service-id="system.edtInvoke" />
     	<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl" >
@@ -32,37 +36,28 @@ RESOURCE (FILE) CHOOSER
                 <service>ui.UiBuilder</service>		
 			</construct>
 		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="resourceChooser" if="property dialogs.resourceChooser.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
 <!-- 
 ===========================
 TOOL EDITOR
- -->
-	<!-- todo: make non-singleton? -->			
+ -->	
 	<service-point id="toolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
 		Edit a remote application invocation.
-            <interceptor service-id="system.edtInvoke" />        
-		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
-				<service>system.ui</service>
-                <service>ui.UiBuilder</service>
-				<service>astrogrid.applications</service>						
-			</construct>
-		</invoke-factory>	
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+     
 	</service-point>
 
-	<implementation service-id="toolEditor" if="property dialogs.toolEditor.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>
-	<!-- 
-	<contribution configuration-id="system.helpmap">
-		<item id="userInterface.taskEditor" url="http://www2.astrogrid.org/science" />
-	</contribution>	
-     -->	
+	<implementation service-id="toolEditor" if="(not(property dialogs.toolEditor.disabled)) and (not(property java.awt.headless))">
+       <interceptor service-id="system.edtInvoke" />        
+        <invoke-factory model="session">
+            <construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
+                <service>system.ui</service>
+                <service>ui.UiBuilder</service>
+                <service>astrogrid.applications</service>                       
+            </construct>
+        </invoke-factory>   	
+    </implementation>
 
 <!--  
 ============================
@@ -70,6 +65,11 @@ REGISTRY GOOGLE
  -->
 	<service-point id="registryGoogle" interface="RegistryGoogle">
 		Select a registry resource
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
+	</service-point>
+    
+        
+    <implementation service-id="registryGoogle" if="(not(property dialogs.registryGoogle.disabled)) and (not(property java.awt.headless))">
             <interceptor service-id="system.edtInvoke" />        
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
@@ -77,7 +77,7 @@ REGISTRY GOOGLE
                 <service>ui.UiBuilder</service>
 			</construct>
 		</invoke-factory>	
-	</service-point>
+    </implementation>   
 
 	<contribution configuration-id="ui.UiBuilderObjects">
 		Describes how to build a new registry google panel.
@@ -108,26 +108,6 @@ REGISTRY GOOGLE
 			class="org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactoryImpl"
 			/>
 	</service-point>
-	
-	<implementation service-id="registryGoogle" if="property dialogs.registryGoogle.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>		
-	
-	
-	<!--  help keys for registry panel - they're pointing to the wiki for now.
-	<contribution configuration-id="system.helpmap">
-		<item id="reg.general" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer" />
-		<item id="reg.search" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Search_Field" />
-		<item id="reg.filter" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Filter_Field" />
-		<item id="reg.filters" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Filters_Table" />
-		<item id="reg.table" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resources_List" />
-		<item id="reg.details" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resource_Details" />
-		<item id="reg.xml" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resource_XML" />
-		
-	</contribution>
-     -->
-
-
 
 <!--  lists of available resource viewers -->
 <contribution configuration-id="ui.UiBuilderObjects">

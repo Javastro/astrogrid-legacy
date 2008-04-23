@@ -16,7 +16,6 @@
 			<acrService id="ssap" interface="Ssap" />
 			<acrService id="siap" interface="Siap" />
 			<acrService id="cone" interface="Cone" />
-			<acrService id="skyNode" interface="SkyNode"/>
 			<acrService id="adql" interface="Adql" />
 			<acrService id="registry" interface="Registry" />
 			<acrService id="externalRegistry" interface="ExternalRegistry" />
@@ -103,9 +102,6 @@
 				<ui-name>Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
                 <alternative>http://alt.registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0</alternative>
-                <!-- mark H fix
-                <alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
-                 -->
                  <alternative>http://alt.registry.astrogrid.org/astrogrid-registry_v1_0/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://rakaposhi.star.le.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
@@ -119,9 +115,6 @@
 		<preference name="org.astrogrid.registry.query.altendpoint"
 			advanced="false" requires-restart="true" propagate-to-config="true"
             default-value="http://alt.registry.astrogrid.org/astrogrid-registry_v1_0/services/RegistryQueryv1_0">		
-        <!-- Mark H fix
-            default-value="http://alt.registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0">
-         --> 
 				<ui-name>Fallback Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
                 <alternative>http://registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0</alternative>
@@ -163,10 +156,10 @@
 	
 
 	
+<!-- 
 	<contribution configuration-id="hivemind.FactoryDefaults">
 		<default symbol="ivoa.registry.of.registries.endpoint" value="http://FILL.ME.IN" />	
 	</contribution>	
-<!-- 
 =========================
 SSAP
  -->
@@ -186,22 +179,7 @@ SSAP
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 
-<!-- 
-==========================
-SKYNODE
- -->			
-		<service-point id="skyNode" interface="SkyNode">
-			Skynode (unfinished)
-        <interceptor service-id="system.edt" />            
-		<interceptor service-id="system.throbber" />			
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ivoa.SkyNodeImpl"/>
-		</invoke-factory>			
-	</service-point>
-	
-	<implementation service-id="skyNode" if="property ivoa.skynode.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>
+
 <!-- 
 ====================
 SIAP
@@ -274,9 +252,6 @@ RESULT CACHE
 				</attribute>
 				<attribute name="diskPersistent" translator="boolean">
 				For caches that overflow to disk, whether the disk cache persists between CacheManager instances.				
-				</attribute>
-				<attribute name="eternal" translator="boolean">
-				 Sets whether elements are eternal.
 				</attribute>
 				<attribute name="maxElementsInMemory">
 				the maximum objects to be held in the MemoryStore.

@@ -1,14 +1,5 @@
 <?xml version="1.0"?><module id="background" version="1.0.0" 
-	package="org.astrogrid.desktop.modules.background">Module of background services	<dependency module-id="system" />	<dependency module-id="astrogrid"/>		<!-- 
- =============================
-JES EXECUTION STRATEGY
- -->	<service-point id="jesStrategy"  interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">		Strategy for executing remote workflows		<invoke-factory>			<construct class="JesStrategyImpl" >				<service>astrogrid.community</service>				<service>astrogrid.applications</service>
-                <service>system.vfs</service>
-				<service>builtin.sessionManager</service>				<service>system.scheduler</service>							</construct>		</invoke-factory>		</service-point>	<implementation service-id="jesStrategy" if="property background.jesStrategy.disabled">		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />				</implementation>
-	
-	<contribution configuration-id="astrogrid.processStrategies">
-		<object>service:jesStrategy</object>
-	</contribution>	<!--  
+	package="org.astrogrid.desktop.modules.background">Module of background services	<dependency module-id="system" />	<dependency module-id="astrogrid"/>			<!--  
 ===============================
 CEA EXECUTION STRATEGY
  -->	<service-point id="ceaStrategy" interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">		Strategy for executing remote cea applications.		<invoke-factory>			<construct class="CeaStrategyImpl" >				<service>tasks</service>				<service>ivoa.registry</service>

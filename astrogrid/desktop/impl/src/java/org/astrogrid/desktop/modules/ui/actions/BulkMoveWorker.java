@@ -1,5 +1,9 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,8 +30,14 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
  * @future upgrade this to use the CopyCommands instead.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 25, 20074:49:51 PM
+ * @TEST unit test
  */
 public final class BulkMoveWorker extends BackgroundWorker {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(BulkMoveWorker.class);
+
     /**
      * 
      */
@@ -148,16 +158,19 @@ public final class BulkMoveWorker extends BackgroundWorker {
             Map.Entry err = (Map.Entry) i.next();
             FileObject f = (FileObject)err.getKey();
             Throwable e = (Throwable)err.getValue();
+            logger.warn(f.getName().getPath(),e);
             msgBuilder.append(f.getName().getPath()).append("<br>");
             msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
             msgBuilder.append("<p>");
         }
-        ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
-        rd.getBanner().setVisible(true);
-        rd.getBanner().setTitle("Errors encountered while moving files");
-        rd.getBanner().setSubtitleVisible(false);
-        rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));      
-        rd.pack();
-        rd.show();
+        if (!GraphicsEnvironment.isHeadless()) {
+            ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+            rd.getBanner().setVisible(true);
+            rd.getBanner().setTitle("Errors encountered while moving files");
+            rd.getBanner().setSubtitleVisible(false);
+            rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));      
+            rd.pack();
+            rd.show();
+        }
     }
 }

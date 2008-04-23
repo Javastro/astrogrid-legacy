@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.18 2007/12/12 13:54:14 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.19 2008/04/23 11:11:45 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
@@ -20,17 +21,12 @@ import java.util.Observable;
 
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
 
-import org.apache.hivemind.ApplicationRuntimeException;
-import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
-import org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitorImpl;
+import junit.framework.Assert;
+
 import org.astrogrid.desktop.modules.system.ui.ProgressDialogue;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-
-import com.l2fprod.common.swing.BaseDialog;
 
 import EDU.oswego.cs.dl.util.concurrent.Callable;
 import EDU.oswego.cs.dl.util.concurrent.FutureResult;
@@ -135,6 +131,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         public final class Control {
             /** show a progress dialogue - must be called on the EDT */
             public final void showSingleDialogue() {
+                if (GraphicsEnvironment.isHeadless()) {
+                    return; // don't even create the dialogue if it's headless
+                }
                 if (progressDialogue == null) {
                     progressDialogue= ProgressDialogue.newProgressDialogue(BackgroundWorker.this);
                 }
@@ -218,9 +217,11 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             long tout = 5 * timeout.factor;
             if (parent.getContext() != null && parent.getContext().getConfiguration() != null) {
                 String val = parent.getContext().getConfiguration().getKey("performance.timeoutFactor");
-                try {
-                    tout = Long.parseLong(val) * timeout.factor;
-                } catch (NumberFormatException e) { 
+                if (val != null) {
+                    try {
+                        tout = Long.parseLong(val) * timeout.factor;
+                    } catch (NumberFormatException e) { 
+                    }
                 }
             }
             this.timeout = tout;
@@ -524,6 +525,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.19  2008/04/23 11:11:45  nw
+adaptations for headless
+
 Revision 1.18  2007/12/12 13:54:14  nw
 astroscope upgrade, and minor changes for first beta release
 

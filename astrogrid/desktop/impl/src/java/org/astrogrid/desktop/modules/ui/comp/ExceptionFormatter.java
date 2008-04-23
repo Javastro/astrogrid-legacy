@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
@@ -168,7 +169,10 @@ public class ExceptionFormatter {
      * @todo hide visibility altogether, or add suitable replacement code elsehwere.
      */
     public static final void showError(final Component parent,String msg, final Throwable e) {
-
+        if (GraphicsEnvironment.isHeadless()) {
+            logger.error(msg,e);
+        }
+        
         final BaseDialog bd = BaseDialog.newBaseDialog(parent);
 
         bd.setModal(false);

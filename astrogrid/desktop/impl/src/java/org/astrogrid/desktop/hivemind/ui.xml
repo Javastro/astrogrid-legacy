@@ -42,7 +42,11 @@ ASTROSCOPE
 		</construct>
 		</invoke-factory>	
 	</service-point>
-
+    <implementation service-id="astroscope"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>
+    
 	<contribution configuration-id="system.windowFactories">
 		<window name="All-VO Astroscope">service:astroscope</window>
 	</contribution>
@@ -137,15 +141,7 @@ ASTROSCOPE
 			<inject object="service:astrogrid.stap" />
 		</object>		
 	</contribution>
-<!-- 
-		<contribution configuration-id="system.helpmap">
-		<item id="userInterface.astroscopeLauncher" url="http://www2.astrogrid.org/science/documentation/data-explore/astroscope" />
-		<item id="astroscope.menu.science" url="http://www2.astrogrid.org/science/documentation/data-explore/astroscope" />
-		<item id="astroscope.menu.reference" url="http://www2.astrogrid.org/science" />
 
-	</contribution>
-
- -->
 <!--  
 ==============================
 HELIOSCOPE
@@ -162,7 +158,10 @@ HELIOSCOPE
         </construct>
         </invoke-factory>   
     </service-point>
-
+    <implementation service-id="helioscope"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>
     <contribution configuration-id="system.windowFactories">
         <window name="All-VO Helioscope">service:helioscope</window>
     </contribution>
@@ -184,7 +183,11 @@ HELIOSCOPE
 			</construct>
 		</invoke-factory>	
 	</service-point>
-	
+    
+	    <implementation service-id="applicationLauncher"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>
 	<contribution configuration-id="system.windowFactories">
 		<window name="Task Runner">service:applicationLauncher</window>
 	</contribution>
@@ -337,6 +340,10 @@ Query Builder
             </construct>
         </invoke-factory>   
     </service-point>
+        <implementation service-id="queryBuilder"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>
 
 
         <contribution configuration-id="UiBuilderObjects">
@@ -358,14 +365,7 @@ Query Builder
 		<window name="Query Builder">service:queryBuilder</window>
 	</contribution>
 		-->
-        
-        <!-- 
-		<contribution configuration-id="system.helpmap">
 
-		<item id="userInterface.queryBuilder" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
-		<item id="queryBuilder.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
-	</contribution>	
-         -->
 	
 	<!-- 
 	==================================
@@ -393,11 +393,16 @@ Query Builder
 		</invoke-factory>	
 	</service-point>
 	
+    <implementation service-id="registryBrowser"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>
+    
 	<contribution configuration-id="system.windowFactories">
 		<window name="VO Explorer">service:registryBrowser</window>
 	</contribution>
 	
-	<contribution configuration-id="system.plasticMessageHandlers">
+	<contribution configuration-id="system.plasticMessageHandlers" if="not(property java.awt.headless)">
 		<object>service:registryBrowser</object>
 	</contribution>
 	
@@ -438,13 +443,6 @@ Query Builder
         </preference>
     </contribution>
 
-	<!--  makes the registryBrowser dsplay on startup if we've not got a system tray -->
-    <!-- 
-	<contribution configuration-id="hivemind.Startup" if="not (class java.awt.SystemTray)">
-		<startup object="service:registryBrowser" />
-	</contribution>
-    -->
-
 <!-- 
 =====================================
 FILE EXPLORER
@@ -469,12 +467,16 @@ FILE EXPLORER
 			</construct>
 		</invoke-factory>	
  	</service-point>
+    <implementation service-id="fileManager"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>    
  	
 	<contribution configuration-id="system.windowFactories">
 		<window name="File Explorer">service:fileManager</window>
 	</contribution>
 	<!-- doesn't handle any message at the moment - implement later
-	<contribution configuration-id="system.plasticMessageHandlers">
+	<contribution configuration-id="system.plasticMessageHandlers" if="not (property java.awt.headless)">
 		<object>service:fileManager</object>
 	</contribution>	
      -->
@@ -632,33 +634,6 @@ ACTIONS
          
 	</contribution>
 		
-	<!--  help links 
-		<contribution configuration-id="system.helpmap">
-		<item id="voexplorer.intro" url="http://wiki.astrogrid.org/pub/Astrogrid/VOExpDesignMeeting/registry-intro.pdf" />
-		<item id="userInterface.voexplorer" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="voexplorer.hierarchies" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc"/>
-
-		<item id="voexplorer.actions" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceActions.invoke"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceActions.info"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceActions.seeAlso"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceActions.metadata"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		
-		<item id="resourceTask.astroscope"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceTask.buildQuery"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceTask.cea"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceTask.cone"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceTask.script"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceTask.siap"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceTask.ssap" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resourceTask.web" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		
-		<item id="resouceFolders"  url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-		<item id="resouceFolders.buttons" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc" />
-	</contribution>	
-
-    -->
-
 	
 	<!--  =====================================
 	Query size estimation

@@ -70,7 +70,6 @@ System module.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.HelpServerImpl">
 				<service>browser</service>
-		<!-- previously the helpmap was inlined - now external		<configuration>helpmap</configuration> -->
                 <string>${helpmap.url}</string>
                 <service>ui</service>
 			</construct>
@@ -89,37 +88,6 @@ System module.
         <object>service:help</object><!--  fetches the helpmap from the server. only occurs once, but triggered as a scheduled task to avoid a race condition with UIContext -->
     </contribution>
     
-<!--  unused
- 
-	<configuration-point id="helpmap">
-		<schema>
-			<element name="item" key-attribute="id">
-			  defines a single help page.
-				<attribute name="id" required="true" unique="true">
-					The abstract id of the page
-				</attribute>
-				<attribute name="url" required="true">
-					The URL this id points to
-				</attribute>
-				<conversion class="org.astrogrid.desktop.modules.system.contributions.HelpItemContribution" />
-			</element>
-		</schema>
-	</configuration-point>
-	
-	<contribution configuration-id="helpmap">
-		<item id="top" url="http://beta.astrogrid.org/trac.cgi/wiki/VODesktop2008beta-doc/vod2008b-IndexPage" />
-        
-        <item id="top" url="http://www.astrogrid.org/help-intro" />
-	
-		<item id="contents" url="http://www2.astrogrid.org/sitemap" />
-		<item id="gettingStarted" url="http://www2.astrogrid.org/science/getting-started/" />
-		<item id="tutorial.dataAccess" url="http://www2.astrogrid.org/science/data-access/data-access-worksheet" />
-		<item id="tutorial.solar" url="http://www2.astrogrid.org/science/solar-system" />
-		<item id="tutorial.galactic" url="http://www2.astrogrid.org/science/science-examples-galaxies" />
-		<item id="tutorial.stars" url="http://www2.astrogrid.org/science/science-examples-stars" />
-		<item id="tutorial.cosmology" url="http://www2.astrogrid.org/science/science-cosmology" />
-	</contribution>
--->	
 	<!--  
 	================================
 	BROWSER CONTROL
@@ -127,37 +95,16 @@ System module.
 	
 	<service-point id="browser" interface="BrowserControl">
 	Controls the webbrowser
-	</service-point>
-    <!--  never happens - we don't run under webstart anynmore.
-	<implementation service-id="browser" if="(class javax.jnlp.ServiceManager) and (not (property system.browser.disabled))">
-		<invoke-factory>
-		<construct class="org.astrogrid.desktop.modules.system.WebstartBrowserControl">
-			<service>webserver</service>
-			<service>ui</service>
-		</construct>
-		</invoke-factory>
-	</implementation>
-     -->
-
-	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and  (class edu.stanford.ejalbert.BrowserLauncher) and (not (property system.browser.disabled))">
 		<invoke-factory>
 		<construct class="org.astrogrid.desktop.modules.system.BrowserLauncherBrowserControl">
 			<service>webserver</service>
 			<service>ui</service>
 		</construct>
 		</invoke-factory>		
-	</implementation>
+	</service-point>
 
-<!--  only happens in ASR -->
-	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and (not (class edu.stanford.ejalbert.BrowserLauncher)) and (not (property system.browser.disabled)) ">
-		<invoke-factory>
-		<construct class="org.astrogrid.desktop.alternatives.FallbackBrowserControl">
-	<service>webserver</service>
-		</construct>
-		</invoke-factory>		
-	</implementation>	
 		
-	<implementation service-id="browser"  if="property system.browser.disabled">
+	<implementation service-id="browser"  if="(property system.browser.disabled) or (property java.awt.headless)">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>	
 	
@@ -278,6 +225,7 @@ System module.
 <!--
 ============================
  Background workers §tor
+ 
  -->
     <service-point id="workersMonitor" interface="org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitor">
         Monitor ui for background workers
@@ -288,7 +236,11 @@ System module.
             </construct>
         </invoke-factory>        
     </service-point>
-
+    
+    <implementation service-id="workersMonitor"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>  
 	<!-- 
 	====================
 	WEBSERVER
@@ -415,15 +367,16 @@ SYSTEM TRAY
  -->
 	<service-point id="systray" interface="org.astrogrid.desktop.modules.system.SystemTrayInternal">		
 	System Tray
-                <interceptor service-id="system.edtInvoke" />               
+               
 	</service-point>
     
 	 <contribution configuration-id="hivemind.Startup" >
         <startup object="service:systray" />
     </contribution>
     
-	<implementation service-id="systray" if="class java.awt.SystemTray">
+	<implementation service-id="systray" if="(class java.awt.SystemTray) and not(property java.awt.headless)">
         Adaptable UI, when JVM offers a system tray (yet this may not be supported under this particular OS / Window manager)
+        <interceptor service-id="system.edtInvoke" />
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.BestSuitableSystemTray">
 				<service>system.ui</service>
@@ -432,8 +385,9 @@ SYSTEM TRAY
 		</invoke-factory>
 	</implementation>
 
-    <implementation service-id="systray" if="not (class java.awt.SystemTray)">
+    <implementation service-id="systray" if="not (class java.awt.SystemTray) and not (property java.awt.headless)">
         Minimalistic UI, when no system tray provided by JVM
+        <interceptor service-id="system.edtInvoke" />        
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.system.FallbackSystemTray">
                 <service>system.ui</service>
@@ -441,7 +395,7 @@ SYSTEM TRAY
         </invoke-factory>
     </implementation>
 
-	<implementation service-id="systray"  if="(property system.systray.disabled)">
+	<implementation service-id="systray"  if="(property system.systray.disabled) or (property java.awt.headless)">
         Non-UI - just logs.
 		<invoke-factory>
 			<construct class='org.astrogrid.desktop.alternatives.LoggingSystemTray'>
@@ -564,6 +518,7 @@ SYSTEM TRAY
 	
 	<!--  ===========================
 	VFS
+    NB: is the following vfs config is changed, ensure that org.astrogrid.Fixture.createVFS() is altered to match.
 	 -->
 	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
 		Uniform access to all filesystems.
@@ -793,57 +748,30 @@ SYSTEM TRAY
 	</contribution>		
 	
 
-<!-- ==========================
-SINGLE INSTANCE LISTENER 
-- TODO - remove. obsolete. we never run under webstart now.
- -->
-	<service-point id="singleInstanceListener" visibility="private" interface="java.lang.reflect.InvocationHandler">
-	Hook into webstart system, and will display ui if app is webstarted repeatedly.
-	</service-point>		
-	
-	<implementation service-id="singleInstanceListener" if="class javax.jnlp.ServiceManager">
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.SingleInstanceListener">
-				<service>ui</service>
-			</construct>
-		</invoke-factory>		
-	</implementation>
-	
-	<implementation service-id="singleInstanceListener"  if="not (class javax.jnlp.ServiceManager)">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
-	</implementation>		
-	
-	<!-- start this eager if running under webstart -->
-	<contribution configuration-id="hivemind.EagerLoad" if="class javax.jnlp.ServiceManager">
-		<load service-id="singleInstanceListener" />
-	</contribution>
 <!--  =============================
 MAC SETUP
  -->
 	<service-point id="macSetup" visibility="private" interface="java.lang.reflect.InvocationHandler">
 	Hook into OSX UI.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />
 	</service-point>
 	
-	<implementation service-id="macSetup" if="class com.apple.eawt.Application">
+	<implementation service-id="macSetup" if="(class com.apple.eawt.Application) and (not(property java.awt.headless)) ">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.MacSetup">
 				<service>ui</service>
 			</construct>
 		</invoke-factory>		
 	</implementation>
+
 	
-	<implementation service-id="macSetup"  if="not (class com.apple.eawt.Application)">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
-	</implementation>		
-	
-	<!-- start this eager if running on a mac -->
-	<contribution configuration-id="hivemind.EagerLoad" if="class com.apple.eawt.Application" >
+	<contribution configuration-id="hivemind.EagerLoad" >
 		<load service-id="macSetup" />
 	</contribution>
 	
 		
 	<!-- RELATED - when running in workbench mode, tweak the ui up -->
-	<contribution configuration-id="hivemind.Startup" if="property workbench.mode">
+	<contribution configuration-id="hivemind.Startup" if="not(property java.awt.headless)">
 		<startup object="instance:org.astrogrid.desktop.modules.system.SwingSetup" />
 	</contribution>
 		
@@ -853,8 +781,9 @@ MAC SETUP
 	 -->
 	<service-point id="throbber" interface="org.apache.hivemind.ServiceInterceptorFactory">
 		Causes UI to throb to indicate calls to remote services.
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</service-point>
-	<implementation service-id="throbber"  if="not ((property system.ui.disabled) and (property system.systray.disabled))" >
+	<implementation service-id="throbber"  if="not ((property java.awt.headless) or (property system.ui.disabled) or (property system.systray.disabled))" >
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.ThrobberInterceptorFactory">
 				<service>ui</service>
@@ -863,13 +792,11 @@ MAC SETUP
 			</construct>
 		</invoke-factory>		
 	</implementation>
-	
-	<implementation service-id="throbber"  if="(property system.ui.disabled) and (property system.systray.disabled)" >
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
-	</implementation>	
+
 	<!--  ============================
     EDT invoker 
     -->
+    
     <service-point id="edtInvoke"
      interface="org.apache.hivemind.ServiceInterceptorFactory"
         parameters-schema-id="hivemind.MethodFilter"      >
@@ -881,9 +808,7 @@ MAC SETUP
         </invoke-factory>   
     </service-point>
     
-    <implementation service-id="throbber"  if="(property system.ui.disabled) and (property system.systray.disabled)" >
-        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
-    </implementation>       
+
     
 	<!--  ===========================
 	SNITCH
@@ -1003,6 +928,12 @@ XML Persistence -->
  		</invoke-factory>
  	</service-point>
  	
+    <implementation service-id="configDialogue"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>    
+    
+    
  	<service-point id="preferencesArranger" interface="org.astrogrid.desktop.modules.system.pref.PreferencesArranger">
  		Helper component that sorts preferences into structures for ui work.
  		<invoke-factory>
@@ -1055,7 +986,11 @@ XML Persistence -->
         </construct>
     </invoke-factory>
  </service-point>
- 		
+ 
+ 		    <implementation service-id="aboutDialogue"  if="property java.awt.headless">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>    
 
 <!--  ======================
 PLASTIC LIST MODEL -->
@@ -1069,12 +1004,11 @@ PLASTIC LIST MODEL -->
 <!-- 
 ================================
 UPDATE CHECKER
+ 
  -->
 <service-point id="update" visibility="private" interface="java.lang.Runnable">
  version checker
-</service-point>
 
-	<implementation service-id="update" if="not ((class javax.jnlp.ServiceManager) or (property system.update.disabled) or (property asr.mode))">
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.system.UpdateChecker">
 				<service>ui</service>
@@ -1082,11 +1016,17 @@ UPDATE CHECKER
 				<string>${astrogrid.desktop.version}</string>
                 <string>${update.release.info.url}</string>
 				<object>preference:system.checkForUpdates</object>
-			</construct>
-		</invoke-factory>		
-	</implementation>
+			</construct>	
+           </invoke-factory>
+</service-point>
+
+    <implementation service-id="update"  if="(property java.awt.headless) or (property system.update.disabled)">
+        When running headless, replace ui with an empty placeholder.
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>    
 	
-	<contribution configuration-id="framework.preferences" if="not(class javax.jnlp.ServiceManager)"> 
+
+	<contribution configuration-id="framework.preferences"> 
 		<preference name="system.checkForUpdates" default-value="true">
 			<ui-name>Check for updates on startup</ui-name>
 			<description></description>
@@ -1097,13 +1037,10 @@ UPDATE CHECKER
         <contribution configuration-id="hivemind.FactoryDefaults">          
         <default symbol="update.release.info.url" value="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/vodesktopReleaseInfo.xml" />
     </contribution>     
-	
-	
-	<implementation service-id="update"  if="(class javax.jnlp.ServiceManager) or (property system.update.disabled) or (property asr.mode)">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
-	</implementation>		
 
-	<contribution configuration-id="hivemind.Startup" if="not (property asr.mode)">
+
+
+	<contribution configuration-id="hivemind.Startup">
 		<startup object="service:update" />
 	</contribution>
 

@@ -26,13 +26,25 @@ ANNOTATION SERVICE
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.votech.AnnotationServiceImpl">
 				<object>cache:annotate</object>
-				<service>system.ui</service>
-				<service>annotationSourcesFactory</service>
-				<object>preference:astrogrid.workdir</object>
-                <service>system.xmlPersist</service>                      
+                <service>system.ui</service>                   
+                <service>annotateIO</service>                    
 			</construct>
 		</invoke-factory>
 	</service-point>	
+    
+    <service-point id="annotateIO" visibility="private" 
+        interface="org.astrogrid.desktop.modules.votech.AnnotationIO">
+        Supporting component that takes care of persisting and reading anotations.
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.votech.AnnotationIOImpl">
+                <object>preference:astrogrid.workdir</object>
+                <service>annotationSourcesFactory</service>                
+                <service>system.xmlPersist</service>  
+                <service>annotate</service>  
+                <service>system.ui</service>                              
+            </construct>
+        </invoke-factory>
+    </service-point>
 	
 	<contribution configuration-id="ivoa.caches">
 		cache of annotations

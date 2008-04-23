@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -106,7 +107,7 @@ public class UIContextImpl implements UIContext{
 	
 
 	
-	//convenience constructor used while testing.
+	//convenience constructor used while testing oter parts of system.
 	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser) {
 		this(configuration,executor,help,browser,null,null,null,null,null,null,null, new BasicEventList(),new HashMap(),null);
 	}
@@ -403,7 +404,7 @@ public class UIContextImpl implements UIContext{
                     }
                 });
                 exitDialog.setModal(true);
-                exitDialog.setVisible(true);                
+                exitDialog.setVisible(true);
             } else if (cmd.equals(UIContext.PREF)) {
                 showPreferencesDialog();
             } else if (cmd.equals(UIContext.HELP)) {
@@ -419,7 +420,7 @@ public class UIContextImpl implements UIContext{
             } else if (cmd.equals(UIContext.PROCESSES)) {
                 monitor.showAll();
                 
-            } else if (cmd.equals(UIContext.RESET)) {
+            } else if (cmd.equals(UIContext.RESET)) { // only called in headful mode.
                 new ConfirmDialog("Reset Configuration","All user settings will be lost. Continue?",new Runnable() {
                     public void run() {
                         try {
@@ -429,7 +430,7 @@ public class UIContextImpl implements UIContext{
                         }
                     }
                 }).setVisible(true);                                          
-            } else if (cmd.equals(UIContext.CLEAR_CACHE)) {
+            } else if (cmd.equals(UIContext.CLEAR_CACHE)) { // only called in headful mode.
                 new ConfirmDialog("Clear Cache","All cached data will be removed. Continue?",new Runnable() {                   
                     public void run() {
                         cache.flush();

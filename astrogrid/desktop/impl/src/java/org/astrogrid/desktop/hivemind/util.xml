@@ -51,6 +51,10 @@ good place to put functionality and coding tests - which should be part of the m
  -->
  
     <service-point id="selftest" interface="org.astrogrid.desktop.modules.util.SelfTester">
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> <!-- implement a headless selftester?? -->
+    </service-point>
+        
+    <implementation service-id="selftest" if="property java.awt.headless">
         <interceptor service-id="system.edtInvoke" />
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.util.SelfTesterImpl">
@@ -62,7 +66,7 @@ good place to put functionality and coding tests - which should be part of the m
                 <boolean>${util.selftest.runAtStartup}</boolean>
             </construct>
         </invoke-factory>
-    </service-point>
+    </implementation>   
     
     <contribution configuration-id="framework.preferences">
             <preference name="util.selftest.runAtStartup" 
@@ -97,7 +101,8 @@ good place to put functionality and coding tests - which should be part of the m
  
     <contribution configuration-id="selftest" >
         <object>instance:org.astrogrid.desktop.modules.util.ConnectivityTests</object>
-        <object>instance:org.astrogrid.desktop.modules.util.MemoryTests</object>        
+        <object>instance:org.astrogrid.desktop.modules.util.MemoryTests</object> 
+        <object>instance:org.astrogrid.desktop.modules.util.VersionTests</object>                
     </contribution>
 
  </module>

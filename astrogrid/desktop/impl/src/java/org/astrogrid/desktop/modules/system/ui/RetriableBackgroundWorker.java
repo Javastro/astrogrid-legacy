@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import java.awt.GraphicsEnvironment;
+
 import javax.swing.UIManager;
 
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
@@ -59,6 +61,9 @@ public abstract class RetriableBackgroundWorker extends BackgroundWorker {
     
     protected final void doError(Throwable ex) {
         final String t = "An error occurred while " + workerTitle.toLowerCase();
+        if (GraphicsEnvironment.isHeadless()) {
+            return; // don't show dialogue if we're headless.
+        }
         // give user the option to retry
         ConfirmDialog cd = ConfirmDialog.newConfirmDialog(parent.getComponent(),"An Error Occurred","<html>" + ExceptionFormatter.formatException(ex),new Runnable() {
             public void run() {
