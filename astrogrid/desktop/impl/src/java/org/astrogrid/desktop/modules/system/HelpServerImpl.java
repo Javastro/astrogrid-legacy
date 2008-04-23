@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.16 2008/03/30 14:44:28 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.17 2008/04/23 10:57:34 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,7 +56,6 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
  * <p>
  * changed once again to externalize the help map - this can then be modified and improved after release.
  * </ul> 
- * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Jun-2005
  *
  */
@@ -107,6 +106,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
     public void enableHelpKey(Component comp, String id) {
     	if (id == null) {
     	    throw new IllegalArgumentException("id");
+    	}
+    	if (comp == null) {
+    	    throw new IllegalArgumentException("comp");
     	}
     	CSH.setHelpIDString(comp, id);
     	if (comp instanceof JComponent) {
@@ -280,6 +282,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.17  2008/04/23 10:57:34  nw
+changes cominfg from unit testing.
+
 Revision 1.16  2008/03/30 14:44:28  nw
 Complete - task 363: race condition at startup.
 
