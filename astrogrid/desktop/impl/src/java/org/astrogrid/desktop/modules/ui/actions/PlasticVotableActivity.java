@@ -15,6 +15,8 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 
+import static org.apache.commons.io.IOUtils.*;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
@@ -213,7 +215,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 					reportProgress("Sent plastic message");
 					return null;
 				} finally {
-				    IOUtils.closeQuietly(is);
+				    closeQuietly(is);
 				}
 			}
 			protected void doFinished(Object result) {
