@@ -66,28 +66,22 @@
 		<attainGoal name="xmlrpcdoc"/>
 	</preGoal>	
 <!-- hack for xsl purposes -->
-<!-- jdk 1.5 
    ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
-   -->
-<!-- jdk 1.4 -->
-   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
 
- 
 	
-	<!-- generate xmlrpc documentation -->
+	<!-- generate xmlrpc documentation and descriptiors -->
 	<goal name="xmlrpcdoc" description="extract xml description of api, then process into module descriptors and xmlrpc documentation">		
 		<j:set var="maven.javadoc.doclet" value="com.jeldoclet.JELDoclet" />
 		<mkdir dir="${basedir}/target/xmlrpcdoc" />
 		<j:set var="maven.javadoc.additionalparam" value="-d ${basedir}/target/xmlrpcdoc" />
 		<j:set var="maven.javadoc.docletpath" value="${pom.getDependencyPath('jeldoclet')}" />
 		<attainGoal name="javadoc" />
-		<!-- hack from mailing list to fix Maven XLST bug -->
-				
+        <!--  run the stylesheet -->			
 		<xslt style="${basedir}/xmlrpcdoc.xsl" 
 		      in="${basedir}/target/xmlrpcdoc/jel.xml"
 		      out="${basedir}/target/generated-xdocs/xmlrpc.xml" 
 		      force="true"
-		      >
+		      >          
 			<outputproperty name="method" value="xml"/>			
 			<outputproperty name="standalone" value="yes"/>
   			<outputproperty name="indent" value="yes"/>

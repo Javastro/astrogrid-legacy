@@ -8,6 +8,7 @@ Used to provide in-program api documentation within the workbench implementation
   xmlns:redirect="http://xml.apache.org/xalan/redirect"
   extension-element-prefixes="redirect"
   >
+
   <xsl:output omit-xml-declaration="yes" indent="yes"/>
   <xsl:preserve-space elements="*" />
   <xsl:param name="outputDir"/>
@@ -35,7 +36,7 @@ Used to provide in-program api documentation within the workbench implementation
  		<xsl:with-param name="marker" select="'.'" />
  	</xsl:call-template>
 	</xsl:variable>
-	<redirect:write select="concat($outputDir,$packageName,'-descriptors.xml')" >
+    <redirect:write file="{concat($outputDir,$packageName,'-descriptors.xml')}" >
 	   <xsl:apply-templates select="$services[@package=$curr]">
 		<xsl:sort select="@type" />
 	    </xsl:apply-templates>
