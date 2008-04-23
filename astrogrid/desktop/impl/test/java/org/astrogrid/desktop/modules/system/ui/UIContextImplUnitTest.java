@@ -4,18 +4,26 @@
 package org.astrogrid.desktop.modules.system.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
+import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.easymock.MockControl;
+import org.astrogrid.desktop.modules.util.SelfTester;
 
+import static org.easymock.EasyMock.*;
+
+import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 
 import junit.framework.TestCase;
@@ -28,11 +36,28 @@ public class UIContextImplUnitTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		conf = (Configuration)MockControl.createNiceControl(Configuration.class).getMock();
-		exec = (BackgroundExecutor)MockControl.createNiceControl(BackgroundExecutor.class).getMock();
-		help = (HelpServerInternal)MockControl.createNiceControl(HelpServerInternal.class).getMock();
-		browser = (BrowserControl)MockControl.createNiceControl(BrowserControl.class).getMock();
-		cxt = new UIContextImpl(conf,exec,help,browser);
+		conf = createNiceMock(Configuration.class);
+		exec = createNiceMock(BackgroundExecutor.class);
+		help =createNiceMock(HelpServerInternal.class);
+		browser = createNiceMock(BrowserControl.class);
+		
+		monitor = createNiceMock(BackgroundWorkersMonitor.class);
+        config = createNiceMock(Runnable.class); // expect these in test.
+        about = createNiceMock(Runnable.class);
+        windowFactories = new HashMap();        
+        plasticList = new BasicEventList();
+        cxt = new UIContextImpl(conf,exec,help,browser
+		        , createNiceMock(CacheFactory.class)
+		        ,createNiceMock(Community.class)
+		        ,createNiceMock(org.astrogrid.acr.builtin.Shutdown.class)
+		        ,createNiceMock(SelfTester.class)
+		        ,monitor
+		        ,config
+		        ,about
+		        ,plasticList
+		        ,windowFactories
+		        ,"test"
+		);
 	}
 
 	private Configuration conf;
@@ -40,6 +65,11 @@ public class UIContextImplUnitTest extends TestCase {
 	private HelpServerInternal help;
 	private BrowserControl browser;
 	private UIContext cxt;
+    private BackgroundWorkersMonitor monitor;
+    private Runnable config;
+    private Runnable about;
+    private HashMap windowFactories;
+    private BasicEventList plasticList;
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
@@ -65,6 +95,43 @@ public class UIContextImplUnitTest extends TestCase {
 	public void testGetBrowser() {
 		assertSame(browser,cxt.getBrowser());
 	}
+	
+	public void testGetTasksList() throws Exception {
+        assertNotNull(cxt.getTasksList());
+        assertTrue(cxt.getTasksList().isEmpty());
+    }
+
+	   
+	public void testGetBackgroundWorkersMonitor() throws Exception {
+        assertNotNull(cxt.getWorkersMonitor());
+        assertSame(monitor,cxt.getWorkersMonitor());
+    }
+	
+    public void testGetPlasticList() throws Exception {
+        assertSame(plasticList,cxt.getPlasticList());
+    }
+    
+    
+	
+	public void testWindowFactories() throws Exception {
+	    Map map = cxt.getWindowFactories();
+	    assertNotNull(map);
+	    assertTrue(map.isEmpty());
+    }
+	
+	public void testShowAbout() throws Exception {
+        about.run();
+        replay(about);
+        cxt.showAboutDialog();
+        verify(about);
+    }
+	
+	   public void testShowPreferences() throws Exception {
+	        config.run();
+	        replay(config);
+	        cxt.showPreferencesDialog();
+	        verify(config);
+	    }
 
 	public void testGetLoggedInModel() {
 		ButtonModel model = cxt.getLoggedInModel();
@@ -112,13 +179,10 @@ public class UIContextImplUnitTest extends TestCase {
 
 	
 	public void testGetVisibleModelWithWindows() {
-		MockControl w1Mock = MockControl.createControl(UIComponent.class);
-		UIComponent w1 = (UIComponent)w1Mock.getMock();
+		UIComponent w1 = createMock(UIComponent.class);
 		w1.setVisible(true);
-		w1Mock.setVoidCallable(1);
 		w1.setVisible(false);
-		w1Mock.setVoidCallable(1);
-		w1Mock.replay();
+		replay(w1);
 		
 		cxt.registerWindow(w1);
 		ButtonModel visibleModel = cxt.getVisibleModel();
@@ -130,7 +194,7 @@ public class UIContextImplUnitTest extends TestCase {
 		edtWait();
 		assertFalse(visibleModel.isEnabled());
 		
-		w1Mock.verify();
+		verify(w1);
 	}	
 	
 	// twst we're getting a view on the model - and we can't change it ourselves.
@@ -146,43 +210,36 @@ public class UIContextImplUnitTest extends TestCase {
 		// just check it doesn't crap out.
 	}
 	public void testStatusMessageWithWindow() throws Exception {
-		MockControl w1Mock = MockControl.createControl(UIComponent.class);
-		UIComponent w1 = (UIComponent)w1Mock.getMock();
+        UIComponent w1 = createMock(UIComponent.class);
 		w1.setStatusMessage("foo");
-		w1Mock.setVoidCallable(1);
-		w1Mock.replay();
+		replay(w1);
 		cxt.registerWindow(w1);
 		assertSame(w1,cxt.findMainWindow());
 		
 		cxt.setStatusMessage("foo");
 		edtWait();
-		w1Mock.verify();
+		verify(w1);
 	}
 
 	// test that status only goes to the first in the list.
 	public void testStatusMessageWithWindows() throws Exception {
-		MockControl w1Mock = MockControl.createControl(UIComponent.class);
-		UIComponent w1 = (UIComponent)w1Mock.getMock();
+
+	      UIComponent w1 = createMock(UIComponent.class);
 		w1.setStatusMessage("foo");
-		w1Mock.setVoidCallable(1);
-		w1Mock.replay();
 		cxt.registerWindow(w1);
-		
-		MockControl w2Mock = MockControl.createControl(UIComponent.class);
-		UIComponent w2 = (UIComponent)w1Mock.getMock();		
-		w2Mock.replay();
+        UIComponent w2 = createMock(UIComponent.class);	
+        replay(w1,w2);
 		cxt.registerWindow(w2);
 		
 		cxt.setStatusMessage("foo");
 		edtWait();
 		
-		w1Mock.verify();
-		w2Mock.verify();
+		verify(w1,w2);
 	}	
 	
 	public void testGetWindowList() {
 		assertEquals(0,cxt.getWindowList().size());
-		UIComponent comp = (UIComponent)MockControl.createNiceControl(UIComponent.class).getMock();
+		UIComponent comp = createNiceMock(UIComponent.class);
 		cxt.registerWindow(comp);
 		assertEquals(1,cxt.getWindowList().size());
 		assertSame(comp,cxt.getWindowList().get(0));
@@ -213,7 +270,7 @@ public class UIContextImplUnitTest extends TestCase {
 		assertNotNull(found);
 		assertTrue(found instanceof HeadlessUIComponent);
 		// register a real window.
-		UIComponent comp = (UIComponent)MockControl.createNiceControl(UIComponent.class).getMock();
+		UIComponent comp =createNiceMock(UIComponent.class);
 		cxt.registerWindow(comp);
 		assertEquals(1,cxt.getWindowList().size());		
 		found = cxt.findMainWindow();
