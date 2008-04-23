@@ -18,7 +18,7 @@ import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.util.DomHelper;
-import org.custommonkey.xmlunit.XMLAssert;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -72,15 +72,15 @@ public class SesameSystemTest extends InARTestCase {
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.cds.SesameDynamicImpl.sesame(String, String)'
 	 */
-	public void testSesame() throws ServiceException, ParserConfigurationException, SAXException, IOException, TransformerException {
+	public void testSesame() throws  Exception {
 		String result = sesame.sesame("m32","x");
 		assertNotNull(result);
 		// doesn't validate against published DTD - as has xsi:schemalocation, etc in.
 		///	AstrogridAssert.assertDTDValid(result,"Sesame",dtdURL);
 		DomHelper.newDocument(result); // checks is well-formed xml
 		// 2 attributes used by us.
-		XMLAssert.assertXpathExists("/Sesame/Resolver/jradeg",result);
-		XMLAssert.assertXpathExists("/Sesame/Resolver/jdedeg",result);		
+		assertXpathExists("/Sesame/Resolver/jradeg",result);
+		assertXpathExists("/Sesame/Resolver/jdedeg",result);		
 
 	}
 
@@ -92,23 +92,23 @@ public class SesameSystemTest extends InARTestCase {
 
 	}	
 	
-	public void testSesameUnknown() throws ServiceException, ParserConfigurationException, SAXException, IOException, TransformerException {
+	public void testSesameUnknown() throws Exception {
 		String result = sesame.sesame("notKnownObject","x");
 		assertNotNull(result);
 		DomHelper.newDocument(result); // checks is well-formed xml
-		XMLAssert.assertXpathNotExists("/Sesame/Resolver/jradeg",result);
-		XMLAssert.assertXpathExists("/Sesame/Resolver",result);
+		assertXpathNotExists("/Sesame/Resolver/jradeg",result);
+		assertXpathExists("/Sesame/Resolver",result);
 
 	}	
 	
 
 	
-	public void testSesameEmpty() throws ServiceException, TransformerException, ParserConfigurationException, IOException, SAXException {
+	public void testSesameEmpty() throws  Exception {
 		String result = sesame.sesame("","x");
 		assertNotNull(result);
 		DomHelper.newDocument(result); // checks is well-formed xml
-		XMLAssert.assertXpathNotExists("/Sesame/Resolver",result);
-		XMLAssert.assertXpathExists("/Sesame",result);
+		assertXpathNotExists("/Sesame/Resolver",result);
+		assertXpathExists("/Sesame",result);
 	}
 	
 	public void testSesameInvalidResultType() throws ServiceException, ParserConfigurationException, SAXException, IOException, TransformerException {
@@ -142,17 +142,17 @@ public class SesameSystemTest extends InARTestCase {
 //
 //	}
 	
-	public void testSesameChooseServiceNone() throws ServiceException, ParserConfigurationException, SAXException, IOException, TransformerException {
+	public void testSesameChooseServiceNone() throws  Exception {
 		String result = sesame.sesameChooseService("m32","x",true,"");
 		assertNotNull(result);
 		// doesn't validate against published DTD - as has xsi:schemalocation, etc in.
 		///	AstrogridAssert.assertDTDValid(result,"Sesame",dtdURL);
 		DomHelper.newDocument(result); // checks is well-formed xml
 		// 2 attributes used by us.
-		XMLAssert.assertXpathExists("/Sesame/Resolver/jradeg",result);
-		XMLAssert.assertXpathExists("/Sesame/Resolver/jdedeg",result);
+		assertXpathExists("/Sesame/Resolver/jradeg",result);
+		assertXpathExists("/Sesame/Resolver/jdedeg",result);
 		// if service name is unspecified - falls back to Simbad.
-		XMLAssert.assertXpathEvaluatesTo("Simbad","/Sesame/Resolver/@name",result);
+		assertXpathEvaluatesTo("Simbad","/Sesame/Resolver/@name",result);
 		//System.out.println(result);
 	}
 	
