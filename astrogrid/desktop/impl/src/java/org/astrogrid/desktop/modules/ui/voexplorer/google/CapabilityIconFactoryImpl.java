@@ -43,6 +43,7 @@ import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
  * I don't want to slow things down.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 200712:33:42 AM
+ * @TEST try to test this in some way
  */
 public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 

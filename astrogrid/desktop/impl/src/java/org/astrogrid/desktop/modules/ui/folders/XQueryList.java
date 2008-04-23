@@ -8,7 +8,10 @@ import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
-/** folder populated by a full xquery */
+/** folder populated by a full xquery 
+ * 
+ * @TEST mock out calls to voexp
+ * */
 public class XQueryList extends ResourceFolder {
 	/**
 	 * Logger for this class

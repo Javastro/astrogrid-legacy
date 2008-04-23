@@ -1,6 +1,5 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -8,19 +7,13 @@ import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
-import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -31,7 +24,7 @@ import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** task that retrives, parses and adds to the display results of one siap service
- * 
+ * @TEST
  *  Implements query and parsing of result in line with v1.00 of the draft spec. (24/5/2004)
  * */
 public class SiapRetrieval extends Retriever {

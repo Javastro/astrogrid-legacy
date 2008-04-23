@@ -404,6 +404,7 @@ private Dimension preservedPreferredSize = null ;
 	 * togehter with some state-manipulating methods.
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Aug 3, 20071:05:22 AM
+	 * @TEST
 	 */
 	public class Model {
 	    
@@ -777,6 +778,7 @@ private Dimension preservedPreferredSize = null ;
 	/** additional logic that manages an optional / repeated / multiple parameter 
 	 * it's this class's responsibility to provide the correct add/remove buttons.
 	 * Each instancee of this class manages one optional/repeated parameter
+	 * @TEST
 	 */
 	private static abstract class FiddlyParameterManager implements ActionListener {
 		private final Param p;

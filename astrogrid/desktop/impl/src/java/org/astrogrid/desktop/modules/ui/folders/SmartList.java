@@ -8,6 +8,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
 
 /** represents a smart / dynamic folder of resouces 
  *  defined by a filter expression
+ *  @TEST mock out display, edit, equals.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 2, 20075:29:27 PM
  */

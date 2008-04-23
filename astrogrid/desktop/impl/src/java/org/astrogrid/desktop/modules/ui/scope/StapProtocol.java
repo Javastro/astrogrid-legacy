@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.13 2008/02/22 17:03:35 mbt Exp $
+/*$Id: StapProtocol.java,v 1.14 2008/04/23 11:17:53 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/**
+/** @TEST
  * @author Kevin Benson
  * @author Mark Taylor
  *
@@ -100,6 +100,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.14  2008/04/23 11:17:53  nw
+marked as needing test.
+
 Revision 1.13  2008/02/22 17:03:35  mbt
 Merge from branch mbt-desktop-2562.
 Basically, Retrievers rather than Services are now the objects (associated

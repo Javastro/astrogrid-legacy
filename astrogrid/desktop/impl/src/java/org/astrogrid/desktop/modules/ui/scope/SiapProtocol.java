@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.12 2008/02/22 17:03:35 mbt Exp $
+/*$Id: SiapProtocol.java,v 1.13 2008/04/23 11:17:53 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  * @author Mark Taylor
- *
+ *@TEST
  */
 public class SiapProtocol extends SpatialDalProtocol {
 
@@ -101,6 +101,9 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.13  2008/04/23 11:17:53  nw
+marked as needing test.
+
 Revision 1.12  2008/02/22 17:03:35  mbt
 Merge from branch mbt-desktop-2562.
 Basically, Retrievers rather than Services are now the objects (associated

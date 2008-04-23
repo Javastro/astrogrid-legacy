@@ -32,6 +32,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** 
  * task that retrives, parses and adds to the display results of one siap service 
+ * @TEST
  * */
 public class StapRetrieval extends Retriever {
 	/**

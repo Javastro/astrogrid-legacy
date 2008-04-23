@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.16 2008/03/18 14:38:19 mbt Exp $
+/*$Id: DalProtocol.java,v 1.17 2008/04/23 11:17:53 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * encapsulation of an entire data access protocol - name, listing services in registry,
  * querying them, and adding results to a subtree of the display.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
- *
+ * @TEST
  */
 public abstract class DalProtocol {
 
@@ -213,6 +213,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.17  2008/04/23 11:17:53  nw
+marked as needing test.
+
 Revision 1.16  2008/03/18 14:38:19  mbt
 Fallback for missing description
 

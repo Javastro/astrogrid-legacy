@@ -17,6 +17,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * takes care of merging parameter values, refs and descriptions
  * into a single list of containers - saves a lot of search and iteration 
  * throughout the code to do it all once upfront/
+ * @TEST
  * */
 public final class ParamBuilder {
     /** a struct containing the parameter, descirpitn and reference.*/

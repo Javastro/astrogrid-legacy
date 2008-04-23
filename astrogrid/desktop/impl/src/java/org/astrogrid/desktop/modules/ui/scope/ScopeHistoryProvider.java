@@ -52,7 +52,8 @@ public class ScopeHistoryProvider extends AbstractListProvider{
         // no init needed
     }
 
-    /** represents a search position. */
+    /** represents a search position.
+     * @TEST comparisons. */
 	public static class PositionHistoryItem implements Comparable {
 		private DoubleDimension radius;
 		private SesamePositionBean position;

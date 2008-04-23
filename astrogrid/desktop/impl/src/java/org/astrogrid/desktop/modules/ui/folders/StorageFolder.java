@@ -18,6 +18,8 @@ import org.apache.commons.vfs.FileObject;
  * @todo merge with resourceFolder later.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 200710:53:04 PM
+ * @TEST can this be serialized better by xstream now?
+ * @TEST get description
  */
 public class StorageFolder extends Folder {
 	

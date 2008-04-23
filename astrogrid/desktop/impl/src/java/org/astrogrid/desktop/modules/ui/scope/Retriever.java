@@ -41,7 +41,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  *   extensible for siap, cone, ssap, etc by implementing the abstract {@link #construct} method. This method should
  *   return an instance of {@link AstroscopeTableHandler} that containis the parsed results of 
  *   querying this service.
- *  
+ *  @TEST
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Oct-2005
  *
  */

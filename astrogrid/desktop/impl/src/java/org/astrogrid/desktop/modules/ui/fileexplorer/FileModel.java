@@ -47,6 +47,7 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 30, 20073:45:32 PM
+ * @TEST think about testing this.
  */
 public class Filemodel implements ListSelectionListener{
 

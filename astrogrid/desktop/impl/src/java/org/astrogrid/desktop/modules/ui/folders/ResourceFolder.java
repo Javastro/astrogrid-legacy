@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ui.folders;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 /** representation of a resource folder
- * 
+ * @TEST mock out voexp.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 2, 20075:26:08 PM
  */

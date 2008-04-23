@@ -23,6 +23,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
  * manipulat objects thather than primitives itself.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 27, 200711:18:35 AM
+ * @TEST
  */
 public class QuerySizerImpl implements QuerySizer {
 	private final RegistryInternal reg;

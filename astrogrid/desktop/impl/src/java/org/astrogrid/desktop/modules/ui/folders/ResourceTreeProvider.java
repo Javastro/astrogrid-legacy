@@ -19,7 +19,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
  * resource folders.  Every node in the tree is a 
  * {@.ink javax.swing.tree.DefaultMutableTreeNode} with a user object
  * which is a {@link org.astrogrid.desktop.modules.ui.folders.ResourceFolder}.
- *
+ *@TEST
  * @author   Noel Winstanley
  * @author   Mark Taylor
  * @since    6 Sep 2007

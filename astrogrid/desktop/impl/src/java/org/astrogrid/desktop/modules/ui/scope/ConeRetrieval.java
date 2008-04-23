@@ -20,6 +20,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** taks that retreives, parses and adds to the display the results of one cone service 
  *  implements parsing of response suitable for simple cone search v1.03
+ *  @TEST
  * */
 public class ConeRetrieval extends Retriever {
     

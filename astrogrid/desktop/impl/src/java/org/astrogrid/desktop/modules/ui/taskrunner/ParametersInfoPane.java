@@ -34,7 +34,7 @@ import ca.odell.glazedlists.FunctionList;
  * for that parameter.
  * 
  * also manages 'pinning' of data.
- * 
+ * @TEST
  * Also allows the user to 'pin' the help.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 2, 200710:31:37 AM

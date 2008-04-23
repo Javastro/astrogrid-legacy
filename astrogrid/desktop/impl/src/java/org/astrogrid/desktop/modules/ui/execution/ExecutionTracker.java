@@ -90,6 +90,7 @@ import com.l2fprod.common.swing.JTaskPane;
  * allows one or more components to register as ShowDetailsListeners - when the user presses the 'show details' button for a process, this event is fired.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 16, 20072:06:17 PM
+ * @TEST where possible
  */
 public class ExecutionTracker implements ListSelectionListener{
     private final static DateFormat df = SimpleDateFormat.getDateTimeInstance();

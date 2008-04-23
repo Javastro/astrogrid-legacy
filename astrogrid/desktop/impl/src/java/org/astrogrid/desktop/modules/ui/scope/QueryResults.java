@@ -6,7 +6,9 @@ import java.util.Map;
 import org.apache.commons.vfs.FileObject;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** class that keeps a summary of the query result of each retriever */
+/** class that keeps a summary of the query result of each retriever
+ * @TEST
+ *  */
 public final class QueryResults {
     private final Map m = new HashMap();
     private final Map nodeMap = new HashMap();

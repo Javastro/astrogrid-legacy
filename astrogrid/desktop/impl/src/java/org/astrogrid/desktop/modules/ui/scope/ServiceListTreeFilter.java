@@ -28,6 +28,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  *  - only removes children of service node - services still visible.
  *  - doesn't remove children of serrvices created before filtering
  *      (probably need to issue a repaint for this).
+ *      @TEST
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Dec 10, 200711:47:44 PM
  */

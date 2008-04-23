@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.18 2008/03/07 12:55:25 nw Exp $
+/*$Id: ConeProtocol.java,v 1.19 2008/04/23 11:17:53 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  * @author Mark Taylor
- *
+ *@TEST
  */
 public class ConeProtocol extends SpatialDalProtocol {
 
@@ -137,6 +137,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.19  2008/04/23 11:17:53  nw
+marked as needing test.
+
 Revision 1.18  2008/03/07 12:55:25  nw
 labelling fix for andy.
 

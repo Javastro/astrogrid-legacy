@@ -50,6 +50,7 @@ import ca.odell.glazedlists.matchers.MatcherEditor;
  * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 10, 20074:45:27 PM
+ * @TEST this model
  */
 public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current, FileListener{
     

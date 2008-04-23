@@ -38,6 +38,7 @@ import uk.ac.starlink.util.URLDataSource;
 /** Implementation of the tables utility.
  * @author Noel Winstanley
  * @since Aug 25, 20061:31:28 AM
+ * @TEST convertToFile
  */
 public class TablesImpl implements Tables {
 

@@ -44,7 +44,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 /** represents the internal model of the vizualization - a tree of results, plus selections, etc.
  * model is shared between all vizualizations.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
- *
+ *@TEST fileObject stuff
  */
 public  final class VizModel {
     private final TreeNode rootNode;

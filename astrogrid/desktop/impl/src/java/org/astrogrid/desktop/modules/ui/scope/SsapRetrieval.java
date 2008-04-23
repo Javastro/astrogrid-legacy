@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.19 2008/03/30 18:02:54 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.20 2008/04/23 11:17:53 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 /**
  * 
  * complies with SSAP spec v1.04
+ * @TEST
  */
 public class SsapRetrieval extends Retriever {
     public SsapRetrieval(Service service,SsapCapability cap,URI acurl,NodeSocket socket,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
@@ -354,6 +355,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.20  2008/04/23 11:17:53  nw
+marked as needing test.
+
 Revision 1.19  2008/03/30 18:02:54  nw
 FIXED - bug 2689: upgrade to handle latest ssa standard.
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2689

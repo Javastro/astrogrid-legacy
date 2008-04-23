@@ -53,6 +53,7 @@ import ca.odell.glazedlists.swing.JEventListPanel;
  * Based on a list of clauses, each of which is formed from one clausetemplate.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 24, 20071:20:52 PM
+ * @TEST lots in there - split up and test a bit.
  */
 public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementList.Connector, ActionListener {
 

@@ -11,7 +11,9 @@ import java.util.Set;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
-/** represents a classical / static folder of resources */
+/** represents a classical / static folder of resources
+ * 
+ *  @TEST mock out calls to voexp, etc.*/
 public class StaticList extends ResourceFolder  {
 
 	public StaticList() {

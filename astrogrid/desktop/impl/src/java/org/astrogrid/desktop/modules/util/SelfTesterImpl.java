@@ -54,6 +54,7 @@ import junit.framework.TestSuite;
 /** implementation of the self tester.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 22, 20073:23:23 PM
+ * @TEST
  */
 public class SelfTesterImpl implements SelfTester, Runnable {
     /**

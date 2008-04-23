@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.11 2008/02/22 17:03:35 mbt Exp $
+/*$Id: SsapProtocol.java,v 1.12 2008/04/23 11:17:53 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,11 @@ import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-
+/**
+ * @TEST
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Apr 17, 20089:20:37 PM
+ */
 public class SsapProtocol extends SpatialDalProtocol {
 
     public SsapProtocol(Registry reg, Ssap ssap) {
@@ -88,6 +92,9 @@ public class SsapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.12  2008/04/23 11:17:53  nw
+marked as needing test.
+
 Revision 1.11  2008/02/22 17:03:35  mbt
 Merge from branch mbt-desktop-2562.
 Basically, Retrievers rather than Services are now the objects (associated
