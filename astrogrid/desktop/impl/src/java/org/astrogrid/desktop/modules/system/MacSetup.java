@@ -44,19 +44,12 @@ public class MacSetup implements InvocationHandler {
 		Class eventClass= Class.forName("com.apple.eawt.ApplicationEvent");
 		handledMethod = ReflectionHelper.getMethodByName(eventClass,"setHandled");
 		
-		Method m = ReflectionHelper.getMethodByName(applicationClass,"getApplication");
-		application = m.invoke(null,null);
-		
-		m = ReflectionHelper.getMethodByName(applicationClass,"setEnabledAboutMenu");
-		m.invoke(application,new Object[]{Boolean.TRUE});
-		
-		m = ReflectionHelper.getMethodByName(applicationClass,"setEnabledPreferencesMenu");
-		m.invoke(application,new Object[]{Boolean.TRUE});
-		
+		application = ReflectionHelper.callStatic(applicationClass,"getApplication");
+		ReflectionHelper.call(application,"setEnabledAboutMenu",true);
+		ReflectionHelper.call(application,"setEnabledPreferencesMenu",true);	
+        
 		Object listener = Proxy.newProxyInstance(this.getClass().getClassLoader(),new Class[]{listenerClass}, this);
-		
-		m = ReflectionHelper.getMethodByName(applicationClass,"addApplicationListener");
-		m.invoke(application,new Object[]{listener});
+        ReflectionHelper.call(application,"addApplicationListener",listener);		
 		
 		// finally, set up the methods we're to be listening for..
 		aboutMethod = ReflectionHelper.getMethodByName(listenerClass,"handleAbout");
@@ -78,10 +71,10 @@ public class MacSetup implements InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		if (method.equals(aboutMethod)) {
 		    ui.actionPerformed(new ActionEvent(this,0,UIContext.ABOUT));
-			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});			
+			handledMethod.invoke(args[0],true);			
 		} else if (method.equals(preferencesMethod)) {
 		    ui.actionPerformed(new ActionEvent(this,0,UIContext.PREF));
-			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});			
+			handledMethod.invoke(args[0],true);			
 		} else if (method.equals(quitMethod)) {
 	        // Workaround for 2868805:  show modal dialogs in a separate thread.
 	        // This encapsulation is not necessary in 10.2, 
@@ -101,7 +94,7 @@ public class MacSetup implements InvocationHandler {
 		//	handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});
 		} else if (method.equals(reopenMethod)) {
 			ui.show(); // opens all ui.
-			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});
+			handledMethod.invoke(args[0],true);
 		}
 		return null;		
 	}

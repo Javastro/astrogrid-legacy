@@ -65,7 +65,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         String tooltip = "VO Desktop";
         PopupMenu menu = createPopupMenu();
         trayIcon = trayConstructor.newInstance(new Object[]{defaultImage,tooltip,menu});
-        ReflectionHelper.call(trayIcon,"setImageAutoSize",Boolean.TRUE);
+        ReflectionHelper.call(trayIcon,"setImageAutoSize",true);
         // if we get this far, java6 is looking ok.
         java6Failed = false; 
 	}
