@@ -55,7 +55,9 @@ public class CopyCommand {
         this.src = src;
     }
     
-    /** format the source as a string */
+    /** format the source as a string
+     * - gives variable results depending on what was passed in,
+     * but is a private method only used in reporting - so no worry */
     private String srcToString() {
         if (src instanceof FileObject) {
             return ((FileObject)src).getName().getURI();
@@ -68,6 +70,8 @@ public class CopyCommand {
     public final String formatResult() {
         if (_failed) {
             return srcToString() + "<br>" + ExceptionFormatter.formatException(exception,ExceptionFormatter.ALL);           
+        } else if (destination == null) {
+            return srcToString() + "<br> not copied";
         } else {
             return srcToString() + "<br> copied to <br>" + destination.getURI();
         }

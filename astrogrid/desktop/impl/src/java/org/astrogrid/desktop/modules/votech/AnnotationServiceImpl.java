@@ -34,6 +34,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 /** Implementaiton of a service that provides additional metadata - annotaitons - about registry resources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:12:26 PM
+ * @TEST
  */
 public class AnnotationServiceImpl implements AnnotationService{
 	/**
@@ -48,14 +49,14 @@ public class AnnotationServiceImpl implements AnnotationService{
 	private final Ehcache cache;
 	protected final UIContext ui;
 	private final AnnotationSource userSource;
-	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, IterableObjectBuilder sources,Preference workDir, XmlPersist xml) {
+	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, AnnotationIO io) {
 		super();
-		this.io = new AnnotationIO(workDir, sources,xml,this); 
+		this.io = io;
 		this.cache = cache;
 		this.ui = ui;
 		
 		// populate the annotation source list.
-		this.annotationSources = io.loadAnnotationSourceList();
+		this.annotationSources = io.getSourcesList();
 		// this file load runs on startup thread, but at least it's local
 		userSource = io.getUserSource();
 		run();
