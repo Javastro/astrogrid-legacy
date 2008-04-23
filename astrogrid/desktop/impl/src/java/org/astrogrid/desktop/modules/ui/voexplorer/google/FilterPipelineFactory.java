@@ -341,7 +341,7 @@ public class FilterPipelineFactory   {
 	/** customized version of glazed lists's EventSelectionModel, that changes behaviour 
 	 * to allow selections to be more easily toggled.
 	 * 
-	 * it's not quite perfect - strange behaviour with 'shift', but will do for now.
+	 *@todo  it's not quite perfect - strange behaviour with 'shift', but will do for now.
 	 * 
 	 * Although I just want to override a single method of this class, I can't, as it's final.
 	 * Instead, here I create a wrapper that delegates calls to a wraped EventSelectionModel. ho hum

@@ -42,7 +42,6 @@ import ca.odell.glazedlists.swing.EventTableModel;
 
 
 /** A table for displaying resource titles
- * @todo add cut,copy,paste support later.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 12, 20077:33:02 PM
  */
