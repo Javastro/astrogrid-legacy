@@ -10,8 +10,7 @@ import junit.framework.TestCase;
 
 import org.apache.hivemind.ShutdownCoordinator;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.easymock.MockControl;
-
+import static org.easymock.EasyMock.*;
 /** unit test of shutdown.
  * disables the confirmation dialog - so not tested completely.
  * @author Noel Winstanley
@@ -24,26 +23,20 @@ public class ShutdownImplUnitTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		coordControl = MockControl.createNiceControl(ShutdownCoordinator.class);
-		coord = (ShutdownCoordinator)coordControl.getMock();
-		shutdown = new ShutdownImpl(coord,false);
+		coord = createMock("coordinator",ShutdownCoordinator.class);
+		shutdown = new ShutdownImpl(coord,false);		
 		shutdown.setConfirmIfObjections(false);
-		listenerControl = MockControl.createNiceControl(ShutdownListener.class);
-		listener = (ShutdownListener)listenerControl.getMock();
+		listener = createMock("listener",ShutdownListener.class);
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		coordControl = null;
 		coord = null;
-		listenerControl = null;
 		listener = null;
 		shutdown = null;
 	}
 	
-	protected MockControl coordControl;
 	protected ShutdownCoordinator coord;
-	protected MockControl listenerControl;
 	protected ShutdownListener listener;
 	protected ShutdownImpl shutdown;
 	
@@ -52,53 +45,38 @@ public class ShutdownImplUnitTest extends TestCase {
 	 * Test method for 'org.astrogrid.desktop.framework.ShutdownImpl.halt()'
 	 */
 	public void testHalt() {
-		listener.lastChance();
-		listenerControl.setReturnValue(null);
+		expect(listener.lastChance()).andReturn(null);
 		listener.halting();
-		listenerControl.setDefaultVoidCallable();
-		listenerControl.replay();
 		coord.shutdown();
-		coordControl.replay();
+		replay(listener,coord);
 		shutdown.addShutdownListener(listener);
 		shutdown.addShutdownListener(listener);
 		shutdown.halt();
-		
-		listenerControl.verify();
-		coordControl.verify();		
+		verify(listener,coord);	
 
 	}
 	
 	public void testHaltObjection() {
-		listener.lastChance();
-		listenerControl.setReturnValue("I object!!");
-		listener.halting();
-		listenerControl.setDefaultVoidCallable();		
-		listenerControl.replay();
+		expect(listener.lastChance()).andReturn("I object!!");
+		listener.halting();	
 		coord.shutdown();
-		coordControl.replay();
+		replay(listener,coord);
 		shutdown.addShutdownListener(listener);
 		shutdown.addShutdownListener(listener);
 		shutdown.halt();
-		
-		listenerControl.verify();
-		coordControl.verify();		
+		verify(listener,coord);
 
 	}
 	/** any listener that throws - shutdown isn't interrupted */
 	public void testHaltException() {
-		listener.lastChance();
-		listenerControl.setThrowable(new RuntimeException("Expected exception thrown during testing"));
-		listener.halting();
-		listenerControl.setDefaultVoidCallable();		
-		listenerControl.replay();
+		expect(listener.lastChance()).andThrow(new RuntimeException("Expected exception thrown during testing"));
+		listener.halting();	
 		coord.shutdown();
-		coordControl.replay();
+		replay(listener,coord);
 		shutdown.addShutdownListener(listener);
 		shutdown.addShutdownListener(listener);
 		shutdown.halt();
-		
-		listenerControl.verify();
-		coordControl.verify();		
+        verify(listener,coord);
 
 	}
 
@@ -107,44 +85,36 @@ public class ShutdownImplUnitTest extends TestCase {
 	 */
 	public void testReallyHalt() {
 		listener.halting();
-		listenerControl.replay();
-		
 		coord.shutdown();
-		coordControl.replay();
+		replay(listener,coord);
 		shutdown.addShutdownListener(listener);
 		shutdown.addShutdownListener(listener);
 		shutdown.reallyHalt();
-		
-		listenerControl.verify();
-		coordControl.verify();		
+		verify(listener,coord);
 	}
 	
 	public void testReallyHaltException() {
 		listener.halting();
-		listenerControl.setThrowable(new RuntimeException("Expected exception thrown during testing"));		
-		listenerControl.replay();
+		expectLastCall().andThrow(new RuntimeException("Expected exception thrown during testing"));		
 		coord.shutdown();
-		coordControl.replay();
+        replay(listener,coord);
 		shutdown.addShutdownListener(listener);
 		shutdown.addShutdownListener(listener);
 		shutdown.reallyHalt();
-		
-		listenerControl.verify();
-		coordControl.verify();			
+        verify(listener,coord);		
 	}
 
 
 	public void testAddRemoveListener() {
-		listenerControl.replay();
-		coordControl.replay();
+	    coord.shutdown();
+	    expectLastCall().asStub();
+        replay(listener,coord);
 		shutdown.addShutdownListener(listener);
 		shutdown.removeShutdownListener(listener);
 		
 		shutdown.addShutdownListener(null);
 		shutdown.removeShutdownListener(null);
-		
-		listenerControl.verify();
-		coordControl.verify();
+        verify(listener,coord);
 	}
 	
 	public void testFmtEmpty() throws Exception {
