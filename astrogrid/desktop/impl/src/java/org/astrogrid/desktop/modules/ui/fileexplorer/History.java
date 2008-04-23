@@ -13,7 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 
-/** models the browsing history */
+/** models the browsing history 
+*/
 public class History  {
 	
 	/** an event fired when current location changes. */
@@ -179,7 +180,7 @@ public class History  {
 		return nextStack.getEventList();
 	}
 	/** returns true if there's a previousl location in the hisotry */
-	public boolean hasPrevious() {
+	public final boolean hasPrevious() {
 	    return previousStack.getEventList().size() > 1;
 	}
 	
@@ -199,7 +200,7 @@ public class History  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Previous:" + previousStack.getEventList() + "\n" + nextStack.getEventList());
 		}
-		if (previousStack.getEventList().size() < 2) {
+		if (! hasPrevious()) {
 			throw new IllegalStateException("No previous in history");
 		}
 		nextStack.push(previousStack.pop());
@@ -212,7 +213,7 @@ public class History  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Next:" + previousStack.getEventList() + "\n" + nextStack.getEventList());
 		}			
-		if (nextStack.isEmpty()) {
+		if (! hasNext()) {
 			throw new IllegalStateException("No next in history");
 		}
 		previousStack.push(nextStack.pop());
