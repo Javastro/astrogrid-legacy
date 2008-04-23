@@ -183,7 +183,7 @@ public class ScopeServicesList extends RegistryGooglePanel
                     } else if (arg1 instanceof String) {
                         return 1;
                     } else {
-                        return ((Integer)arg0).compareTo(arg1);
+                        return ((Integer)arg0).compareTo((Integer)arg1);
                     }
                 }
             }){
