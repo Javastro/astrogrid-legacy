@@ -1,4 +1,4 @@
-/*$Id: UCDImpl.java,v 1.8 2007/05/10 19:35:27 nw Exp $
+/*$Id: UCDImpl.java,v 1.9 2008/04/23 10:54:10 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.UCD;
 import org.astrogrid.desktop.modules.cds.ucd.UCDService;
-import org.astrogrid.desktop.modules.cds.ucd.UCDServiceLocator;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Implementaton of the UCD service
@@ -38,7 +37,7 @@ public class UCDImpl implements UCD {
     public UCDImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
         super();
         this.endpoint = endpoint;
-        serv = new UCDServiceLocator();    
+        serv = null; //@todo implement new axis delegate new UCDServiceLocator();    
     } 
     public static final String UCD_WS_GLU_TAG = "CDS/ws/UCD.WS";
 	private final UCDService serv;
@@ -146,6 +145,9 @@ public class UCDImpl implements UCD {
 
 /* 
 $Log: UCDImpl.java,v $
+Revision 1.9  2008/04/23 10:54:10  nw
+removed implementations of these - as clashses with 1.5 'enum' reserved word.
+
 Revision 1.8  2007/05/10 19:35:27  nw
 reqwork
 

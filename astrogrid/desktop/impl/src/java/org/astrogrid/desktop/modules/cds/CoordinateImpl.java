@@ -1,4 +1,4 @@
-/*$Id: CoordinateImpl.java,v 1.7 2007/04/18 15:47:05 nw Exp $
+/*$Id: CoordinateImpl.java,v 1.8 2008/04/23 10:54:09 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Coordinate;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCoo;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooService;
-import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooServiceLocator;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Implementation of the Coordinate service
@@ -38,7 +37,7 @@ public class CoordinateImpl implements Coordinate {
      */
     public CoordinateImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
         super();
-        serv = new AstroCooServiceLocator();
+        serv = null; //@fixme - impelemnt a new axis delegate new AstroCooServiceLocator();
         this.endpoint = endpoint;
     }
     private final Preference endpoint;
@@ -97,6 +96,9 @@ public class CoordinateImpl implements Coordinate {
 
 /* 
 $Log: CoordinateImpl.java,v $
+Revision 1.8  2008/04/23 10:54:09  nw
+removed implementations of these - as clashses with 1.5 'enum' reserved word.
+
 Revision 1.7  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

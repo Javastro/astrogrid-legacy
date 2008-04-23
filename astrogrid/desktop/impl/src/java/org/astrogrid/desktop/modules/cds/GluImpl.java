@@ -1,4 +1,4 @@
-/*$Id: GluImpl.java,v 1.7 2007/04/18 15:47:06 nw Exp $
+/*$Id: GluImpl.java,v 1.8 2008/04/23 10:54:10 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Glu;
 import org.astrogrid.desktop.modules.cds.jglu.Jglu;
 import org.astrogrid.desktop.modules.cds.jglu.JgluService;
-import org.astrogrid.desktop.modules.cds.jglu.JgluServiceLocator;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Implementation of the GLU service
@@ -36,7 +35,7 @@ public class GluImpl implements Glu {
      */
     public GluImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {
         super();
-        serv = new JgluServiceLocator();    
+        serv = null; //@fixme implement new axis delegate. new JgluServiceLocator();    
         this.endpoint = endpoint;
 
     }
@@ -67,6 +66,9 @@ public class GluImpl implements Glu {
 
 /* 
 $Log: GluImpl.java,v $
+Revision 1.8  2008/04/23 10:54:10  nw
+removed implementations of these - as clashses with 1.5 'enum' reserved word.
+
 Revision 1.7  2007/04/18 15:47:06  nw
 tidied up voexplorer, removed front pane.
 

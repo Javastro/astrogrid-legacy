@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.7 2007/04/18 15:47:05 nw Exp $
+/*$Id: VizieRImpl.java,v 1.8 2008/04/23 10:54:09 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.VizieR;
 import org.astrogrid.desktop.modules.cds.vizier.VizieRService;
-import org.astrogrid.desktop.modules.cds.vizier.VizieRServiceLocator;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.w3c.dom.Document;
 
@@ -43,7 +42,7 @@ public class VizieRImpl implements VizieR {
      */
     public VizieRImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {        
         super();
-        serv = new VizieRServiceLocator();
+        serv = null; //@fixme implement new delegate new VizieRServiceLocator();
         this.endpoint = endpoint;
     }
     public static final String VIZIER_WS_GLU_TAG= "CDS/ws/VizieR.WS";
@@ -127,6 +126,9 @@ public class VizieRImpl implements VizieR {
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.8  2008/04/23 10:54:09  nw
+removed implementations of these - as clashses with 1.5 'enum' reserved word.
+
 Revision 1.7  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 
