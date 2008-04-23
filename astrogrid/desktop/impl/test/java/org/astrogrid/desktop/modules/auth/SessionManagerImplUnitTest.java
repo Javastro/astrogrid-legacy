@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.auth;
 import org.astrogrid.desktop.alternatives.SingleSessionManagerUnitTest;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -14,20 +14,15 @@ import org.easymock.MockControl;
  */
 public class SessionManagerImplUnitTest extends SingleSessionManagerUnitTest {
 
-	protected MockControl commControl;
 	protected CommunityInternal comm;
-	protected MockControl schedControl;
 	protected SchedulerInternal sched;
 
 	protected void setUp() throws Exception {
-		this.commControl = MockControl.createNiceControl(CommunityInternal.class);
-		comm = (CommunityInternal)commControl.getMock();
+		comm = createNiceMock(CommunityInternal.class);
 		
-		this.schedControl = MockControl.createNiceControl(SchedulerInternal.class);
-		sched = (SchedulerInternal)schedControl.getMock();
+		sched = createNiceMock(SchedulerInternal.class);
+		replay(sched);
 		
-		
-		schedControl.replay();
 		super.setUp();
 	}
 

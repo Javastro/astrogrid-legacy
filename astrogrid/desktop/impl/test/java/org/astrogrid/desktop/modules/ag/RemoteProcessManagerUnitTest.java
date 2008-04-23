@@ -17,12 +17,15 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
-import org.easymock.MockControl;
+import  static org.easymock.EasyMock.*;
 import org.w3c.dom.Document;
 
+
+import static org.astrogrid.Fixture.*;
 /** 
  * @author Noel Winstanley
  * @since Jun 13, 20067:01:00 PM
+ * @TEST extend to covermore of abstract process monitor.
  */
 public class RemoteProcessManagerUnitTest extends TestCase {
 
@@ -33,15 +36,11 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 		super.setUp();
 		strats = new ArrayList();
 		strats.add(new TestRemoteProcessStrategy());
-		MockControl snitchControl = MockControl.createNiceControl(SnitchInternal.class);
-		SnitchInternal snitch = (SnitchInternal)snitchControl.getMock();
-		rpm = new RemoteProcessManagerImpl(strats,VFS.getManager(),snitch);
+		SnitchInternal snitch = createNiceMock("snitch",SnitchInternal.class);
+		rpm = new RemoteProcessManagerImpl(strats,createVFS(),snitch);
 		
-		snitchControl.replay();
-		
-		MockControl docControl = MockControl.createControl(Document.class);
-		mocdoc = (Document)docControl.getMock();
-		docControl.replay();
+		mocdoc = createMock("document",Document.class);
+		replay(snitch,mocdoc);
 	}
  protected void tearDown() throws Exception {
 	super.tearDown();

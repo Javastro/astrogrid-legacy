@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** Test for the Headless UI alternative.
  * @author Noel Winstanley
@@ -22,12 +22,11 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 
 	protected void setUp() {
 		be = new InThreadExecutor();
-		MockControl m = MockControl.createNiceControl(UIContext.class);
-		UIContext cxt= (UIContext)m.getMock();
-		cxt.getExecutor();
-		m.setDefaultReturnValue(be);
-		m.replay();		
+		UIContext cxt = createNiceMock(UIContext.class);
+		expect(cxt.getExecutor()).andReturn(be);
+		replay(cxt);		
 		ui = new HeadlessUIComponent("test",cxt);
+		
 	}
 	
 	protected BackgroundExecutor be;
@@ -39,9 +38,8 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 	 * Test method for 'org.astrogrid.desktop.alternatives.HeadlessUI.addBackgroundWorker(BackgroundWorker)'
 	 */
 	public void testAddBackgroundWorker() {
-		MockControl rControl = MockControl.createControl(Runnable.class);
-		Runnable r = (Runnable)rControl.getMock();
-		rControl.replay();		
+	    Runnable r = createMock(Runnable.class);
+		replay(r);		
 		BackgroundWorker bw = new BackgroundWorker(ui,"test") {
 
 			protected Object construct() throws Exception {
@@ -51,7 +49,7 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 		ui.addBackgroundWorker(bw);
 		ui.removeBackgroundWorker(bw);
 		ui.removeBackgroundWorker(bw);
-		rControl.verify();
+		verify(r);
 	}
 
 	/*
@@ -107,5 +105,29 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 		ui.showError("Error",null);
 		ui.showError(null,null);
 	}
+	
+	public void testGetComponent() throws Exception {
+	    assertNull(ui.getComponent());
+        
+    }
+	
+	public void testGetTitile() throws Exception {
+        assertNull(ui.getTitle());
+    }
+	
+	public void testGetMainPanel() throws Exception {
+        assertNull(ui.getMainPanel());
+    }
 
+	public void testProgeress() throws Exception {
+        assertEquals(0,ui.getProgressValue());
+        assertEquals(0,ui.getProgressMax());
+        ui.setProgressValue(42);
+        assertEquals(42,ui.getProgressValue());
+        assertEquals(0,ui.getProgressMax());
+        ui.setProgressValue(10);
+        ui.setProgressMax(42);
+        assertEquals(10,ui.getProgressValue());
+        assertEquals(42,ui.getProgressMax());        
+    }
 }

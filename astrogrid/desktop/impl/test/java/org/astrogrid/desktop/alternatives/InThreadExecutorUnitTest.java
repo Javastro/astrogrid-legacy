@@ -9,7 +9,7 @@ import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** test for the in thread executor.
  * @author Noel Winstanley
@@ -23,12 +23,10 @@ public class InThreadExecutorUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.be = new InThreadExecutor();
-		rControl = MockControl.createControl(Runnable.class);
-		r = (Runnable)rControl.getMock();
+		r = createMock("runnable",Runnable.class);
 	}
 	
 	protected BackgroundExecutor be;
-	protected MockControl rControl;
 	protected Runnable r;
 	
 	
@@ -37,12 +35,8 @@ public class InThreadExecutorUnitTest extends TestCase {
 	 */
 	public void testExecuteWorker() {
 		r.run();
-		rControl.replay();
-		MockControl m = MockControl.createNiceControl(UIContext.class);
-		UIContext cxt= (UIContext)m.getMock();
-		cxt.getExecutor();
-		m.setDefaultReturnValue(be);
-		m.replay();				
+		UIContext cxt= createNiceMock("context",UIContext.class);
+		replay(cxt,r);
 		UIComponent parent = new HeadlessUIComponent("testing",cxt);
 		BackgroundWorker bw = new BackgroundWorker(parent,"test") {
 
@@ -52,16 +46,16 @@ public class InThreadExecutorUnitTest extends TestCase {
 			}
 		};
 		be.executeWorker(bw);
-		rControl.verify();
+		verify(cxt,r);
 	}
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.alternatives.InThreadExecutor.interrupt(Runnable)'
 	 */
 	public void testInterrupt() {
-		rControl.replay();		
+	    replay(r);		
 		be.interrupt(r);
-		rControl.verify();
+		verify(r);
 		
 	}
 
@@ -70,17 +64,17 @@ public class InThreadExecutorUnitTest extends TestCase {
 	 */
 	public void testExecute() throws InterruptedException {
 		r.run();
-		rControl.replay();			
+		replay(r);		
 		be.execute(r);
-		rControl.verify();
+		verify(r);
 	}
 	
 	public void testExecuteThrows() throws InterruptedException {
 		r.run();
-		rControl.setThrowable(new RuntimeException("designed to fail"));
-		rControl.replay();			
+		expectLastCall().andThrow(new RuntimeException("designed to fail"));
+		replay(r);			
 		be.execute(r);
-		rControl.verify();
+		verify(r);
 	}
 	
 

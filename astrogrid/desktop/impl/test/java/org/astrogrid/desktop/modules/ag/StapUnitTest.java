@@ -10,11 +10,12 @@ import junit.framework.TestCase;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ivoa.SiapUnitTest;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** 
  * @author Noel Winstanley
  * @since Jun 13, 20067:02:10 PM
+ * @TEST extend
  */
 public class StapUnitTest extends TestCase {
 
@@ -23,12 +24,9 @@ public class StapUnitTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		regControl = MockControl.createControl(Registry.class);
-		msControl = MockControl.createControl(MyspaceInternal.class);
-		mockReg = (Registry)regControl.getMock();
-		mockMs = (MyspaceInternal)msControl.getMock();
-		regControl.replay(); // don't expect any calls to either mock.
- 		msControl.replay();	
+		mockReg =createMock(Registry.class);
+		mockMs = createMock(MyspaceInternal.class);
+		replay(mockReg,mockMs);
 		stap = new StapImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
@@ -36,17 +34,13 @@ public class StapUnitTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		mockReg = null;
-		regControl = null;
 		mockMs = null;
-		msControl = null;
 		stap = null;
 		url = null;
 	}
 	
 	protected Registry mockReg;
-	protected MockControl regControl;
 	protected MyspaceInternal mockMs;
-	protected MockControl msControl;
 	protected Stap stap;
 	protected URL url;
 

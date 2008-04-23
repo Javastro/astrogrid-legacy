@@ -18,10 +18,10 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl.MonitorMap;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 import junit.framework.TestCase;
-
+import static org.astrogrid.Fixture.*;
 /** Test for the monitor map - datastructure within the remote process manager.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 12, 20073:08:55 PM
@@ -31,7 +31,7 @@ public class MonitorMapUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.mm = new RemoteProcessManagerImpl.MonitorMap();
-		FileSystemManager vfs = VFS.getManager(); // use static initialized here in tests.
+		FileSystemManager vfs = createVFS();
 		this.rpm1 = new TestRemoteProcessMonitor(vfs);
 		this.rpm2 = new TestRemoteProcessMonitor(vfs);
 		rpm1.start();
@@ -96,12 +96,11 @@ public class MonitorMapUnitTest extends TestCase {
 	
 	public void testWildcardListening() throws Exception {
 		// first, create a mock ...
-		MockControl m = MockControl.createControl(RemoteProcessListener.class);
-		RemoteProcessListener rpl = (RemoteProcessListener)m.getMock();
+		RemoteProcessListener rpl =createMock(RemoteProcessListener.class);
 		// specify what methods we expect to be called, with what parameters.
 		rpl.statusChanged(rpm1.getId(),"hi");
 		rpl.resultsReceived(rpm2.getId(),new HashMap());
-		m.replay();
+		replay(rpl);
 		// test listening to existing processes.
 		mm.add(rpm1);
 		mm.addWildcardListener(rpl);
@@ -116,21 +115,21 @@ public class MonitorMapUnitTest extends TestCase {
 		rpm1.fireResultsReceived(null); // not expected
 		rpm2.fireStatusChanged("ello");
 		
-		m.verify();
+		verify(rpl);
 	}
 	
 	
 	// while we're here, test RemoteProcessMonitor too.
 	public void testRemoteProcessMonitor() throws Exception {
 		// first, create a mock ...
-		MockControl m = MockControl.createControl(RemoteProcessListener.class);
-		RemoteProcessListener rpl = (RemoteProcessListener)m.getMock();
+	    
+		RemoteProcessListener rpl = createMock(RemoteProcessListener.class);
 		// specify what methods we expect to be called, with what parameters.
 		rpl.statusChanged(rpm1.getId(),"hi");
 		rpl.resultsReceived(rpm1.getId(),new HashMap());
 		ExecutionMessage execMessage = new ExecutionMessage("foo","bar","stat",new Date(),"wibble");
 		rpl.messageReceived(rpm1.getId(),execMessage);
-		m.replay();
+		replay(rpl);
 		
 		// now do the test.
 		
@@ -147,7 +146,7 @@ public class MonitorMapUnitTest extends TestCase {
 		rpm1.fireStatusChanged("ugh"); // not expected.
 		
 		
-		m.verify();
+		verify(rpl);
 		
 	}
 	

@@ -12,27 +12,24 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** Unit test for cea helper.
  * @author Noel Winstanley
  * @since Jun 13, 20064:37:12 PM
+ * @TEST complete.
  */
 public class CeaHelperUnitTest extends TestCase {
 
 	protected void setUp() throws Exception {
-		regControl = MockControl.createControl(Registry.class);
-		reg = (Registry)regControl.getMock();
-		communityControl = MockControl.createControl(CommunityInternal.class);
-		community = (CommunityInternal)communityControl.getMock();
+		reg = createMock(Registry.class);
+		community = createMock(CommunityInternal.class);
 		cea = new CeaHelper(reg,community);
 		serverId = new URI("ivo://wibble/bing");
 		endpoint = new URL("http://www.slashdot.org");
 	}
 	
-	protected MockControl communityControl;
 	protected CommunityInternal community;
-	protected MockControl regControl;
 	protected Registry reg;
 	protected CeaHelper cea;
 	protected URI serverId;
@@ -40,7 +37,6 @@ public class CeaHelperUnitTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		regControl = null;
 		reg = null;
 		cea = null;
 		serverId = null;
