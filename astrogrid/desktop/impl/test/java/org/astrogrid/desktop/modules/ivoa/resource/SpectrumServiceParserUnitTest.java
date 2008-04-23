@@ -57,7 +57,6 @@ public class SpectrumServiceParserUnitTest extends AbstractTestForParser {
         assertEquals(2000,scap.getMaxRecords());
         assertEquals(1.1,scap.getMaxSearchRadius(),0.001);
         assertEmpty(scap.getSupportedFrames());
-        assertEmpty(scap.getSupports());
         assertNull(scap.getTestQuery());
         
         Interface i = cap.getInterfaces()[0];
