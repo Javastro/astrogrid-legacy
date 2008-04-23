@@ -1,4 +1,4 @@
-/*$Id: AllAstrogridSystemTests.java,v 1.7 2007/10/23 09:26:00 nw Exp $
+/*$Id: AllAstrogridSystemTests.java,v 1.8 2008/04/23 11:23:16 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,9 +34,7 @@ public class AllAstrogridSystemTests {
 //        suite.addTestSuite(MyspaceSystemTest.class);     
        suite.addTestSuite(ApplicationsSystemTest.class); 
        suite.addTestSuite(StapSystemTest.class);
-        // deprecated - don't care about it enoug anymore
-       // riun the test by hand if important. 
-       //suite.addTestSuite(JobsSystemTest.class);
+
 
         return new ARTestSetup(suite,true);       
     }
@@ -45,6 +43,9 @@ public class AllAstrogridSystemTests {
 
 /* 
 $Log: AllAstrogridSystemTests.java,v $
+Revision 1.8  2008/04/23 11:23:16  nw
+removed obsolete tests.
+
 Revision 1.7  2007/10/23 09:26:00  nw
 RESOLVED - bug 2189: How to query stap services
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2189
