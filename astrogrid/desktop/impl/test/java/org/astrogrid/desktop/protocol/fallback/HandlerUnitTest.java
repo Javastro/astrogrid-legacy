@@ -23,13 +23,10 @@ public class HandlerUnitTest extends TestCase {
 				
 		super.setUp();
 		
-		http1 = new URL("http://www.astrogrid.org");
+		// just get a reference to ourselves.
+		file = this.getClass().getResource("HandlerUnitTest.class");
+		assertNotNull(file);
 
-		httpclient1 = new URL("httpclient://www.astrogrid.org");
-		httpclient2 = new URL("httpclient://wiki.astrogrid.org/");
-		
-		httpclientNone1 = new URL("httpclient://www.astrogrid.org/notexists.txt");
-		httpclientNone2 = new URL("httpclient://www.unknownDomain/nothing.txt");
 		
 		classpath1 = new URL("classpath:/org/astrogrid/desktop/protocol/classpath/Handler.class");
 		classpath2 = new URL("classpath:/org/astrogrid/desktop/protocol/fallback/Handler.class");
@@ -39,12 +36,8 @@ public class HandlerUnitTest extends TestCase {
 		
 	}
 
-	URL http1;
-	
-	URL httpclient1;
-	URL httpclient2;
-	URL httpclientNone1;
-	URL httpclientNone2;
+	URL file;
+
 	
 	URL classpath1;
 	URL classpath2;
@@ -53,11 +46,7 @@ public class HandlerUnitTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		http1 = null;
-		httpclient1 = null;
-		httpclient2 = null;
-		httpclientNone1 = null;
-		httpclientNone2 = null;
+		file = null;
 		classpath1 = null;
 		classpath2 = null;
 		classpathNone1 = null;
@@ -66,7 +55,7 @@ public class HandlerUnitTest extends TestCase {
 	
 	
 	public void testIndividualOKURLS() throws Exception{
-		URL[] oks = new URL[] {http1, httpclient1,httpclient2, classpath1, classpath2};
+		URL[] oks = new URL[] {file,classpath1, classpath2};
 		for (int i = 0; i < oks.length; i++) {
 			assertNotNull(oks[i]);
 			URLConnection conn = oks[i].openConnection();
@@ -76,7 +65,7 @@ public class HandlerUnitTest extends TestCase {
 	}
 	
 	public void testIndividualBadURLS() {
-		URL[] oks = new URL[] {httpclientNone1,httpclientNone2, classpathNone1, classpathNone2};
+		URL[] oks = new URL[] { classpathNone1, classpathNone2};
 		for (int i = 0; i < oks.length; i++) {
 			assertNotNull(oks[i]);
 			try {
@@ -88,56 +77,6 @@ public class HandlerUnitTest extends TestCase {
 			}
 		}
 	}
-	
-	////////////////////HTTP - fails
-	
-	public void testHttpClientHttp() throws Exception{
-		try {
-		URL u = new URL("fallback:" + httpclient1.toString() + "," + http1.toString());
-		URLConnection conn = u.openConnection();
-		fail("expected to chuck");
-		} catch (MalformedURLException e) {
-			// ok
-		}
-	}
-	
-	public void testHttpHttpClient() throws Exception{
-	try {
-		URL u = new URL("fallback:" + http1.toString() + "," + httpclient2.toString());
-		URLConnection conn = u.openConnection();
-		fail("expected to chuck");
-	} catch (MalformedURLException e) {
-		// ok
-	}	
-	}
-
-/////////////////////////////////// HTTP CLIENT
-	public void testHttpCLientHttpClient1() throws Exception{
-		URL u = new URL("fallback:" + httpclient1.toString() + "," + httpclient2.toString());
-		URLConnection conn = u.openConnection();
-		assertNotNull(conn);
-		conn.getInputStream().close();
-	}
-	
-	public void testHttpClientHttpClient2() throws Exception{
-		URL u = new URL("fallback:" + httpclientNone1.toString() + "," + httpclient2.toString());
-		URLConnection conn = u.openConnection();
-		assertNotNull(conn);
-		conn.getInputStream().close();		
-	}
-	
-	public void testHttpClientHttpClientNeither() throws Exception{
-		try {
-		URL u = new URL("fallback:" + httpclientNone1.toString() + "," + httpclientNone2.toString());
-		URLConnection conn = u.openConnection();
-		assertNotNull(conn);
-		conn.getInputStream().close();
-		fail("expected to chuck");
-		} catch (FileNotFoundException e) {
-			// ok.
-		}
-	}
-
 	
 	////// classpath
 	public void testClasspathClasspath1() throws Exception{
@@ -166,34 +105,5 @@ public class HandlerUnitTest extends TestCase {
 		}
 	}
 	
-	// mixed http client, classpath usage.
-	
-	
-	
-	public void testHttpClientClasspath1() throws Exception {
-		URL u = new URL("fallback:" + httpclient1.toString() + "," + classpath1.toString());
-		URLConnection conn = u.openConnection();
-		assertNotNull(conn);
-		conn.getInputStream().close();		
-	}
-	
-	public void testHttpClientClasspath2() throws Exception {
-		URL u = new URL("fallback:" + httpclientNone1.toString() + "," + classpath1.toString());
-		URLConnection conn = u.openConnection();
-		assertNotNull(conn);
-		conn.getInputStream().close();		
-	}
-	
-	public void testHttpClientClasspathNeither() throws Exception {
-		try {
-		URL u = new URL("fallback:" + httpclientNone1.toString() + "," + classpathNone1.toString());
-		URLConnection conn = u.openConnection();
-		assertNotNull(conn);
-		conn.getInputStream().close();
-		fail("expected to chuck");
-		} catch (FileNotFoundException e) {
-			// ok
-		}
-	}
 	
 }

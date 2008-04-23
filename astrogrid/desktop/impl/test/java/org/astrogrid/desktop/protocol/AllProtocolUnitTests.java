@@ -18,8 +18,7 @@ public class AllProtocolUnitTests {
 		TestSuite suite = new TestSuite(
 				"Unit Tests for url protocol handlers");
 		suite.addTestSuite(HandlerUnitTest.class);
-	//@todo TEMPORARILY REMOVED - wasn't working	suite.addTestSuite(org.astrogrid.desktop.protocol.fallback.HandlerUnitTest.class);
-		suite.addTestSuite(org.astrogrid.desktop.protocol.httpclient.HandlerUnitTest.class);
+		suite.addTestSuite(org.astrogrid.desktop.protocol.fallback.HandlerUnitTest.class);
 		return suite;
 	}
 
