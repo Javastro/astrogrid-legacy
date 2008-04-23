@@ -20,7 +20,7 @@ public class VODesktop1 {
 	    // now get on with the parsing.
 		CmdLineParser parser = new CmdLineParser();
 		Launcher l = parser.parse(args,"vodesktop");  
-		configureLauncherAsVOExplorer(l);
+		configureLauncherAsVODesktop(l);
      	parser.processCommandLine(l);    	
     	l.run();
 	}
@@ -28,7 +28,7 @@ public class VODesktop1 {
 	/**
 	 * @param l
 	 */
-	public static void configureLauncherAsVOExplorer(Launcher l) {
+	public static void configureLauncherAsVODesktop(Launcher l) {
 		// we're packaging log4j in this release, so configure clogging to use it.
     	System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.Log4JLogger");
   		
@@ -39,7 +39,7 @@ public class VODesktop1 {
     	l.addModuleByName("dialogs");
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
-    	l.addModuleByName("voevent");  
+    	//l.addModuleByName("voevent"); nothing in it.  
     	l.addModuleByName("votech");    
     	l.addModuleByName("nvo");	
     	l.addModuleByName("cds");

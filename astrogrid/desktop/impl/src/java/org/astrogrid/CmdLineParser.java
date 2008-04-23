@@ -106,6 +106,8 @@ class CmdLineParser {
         								"Don't forget a space between the -D and opt=value" )
         						.create( "D" ));
 		*/
+		o.addOption(OptionBuilder.withDescription("Run in Headless AR-only mode (no user interface)")
+		            .create("headless"));
 		o.addOption(OptionBuilder.withArgName("properties file")
 						.hasArg()
 						.withDescription("file location of properties file")
@@ -144,6 +146,9 @@ class CmdLineParser {
 		final BasicParser parser = new BasicParser();
 		try {
 			commandLine = parser.parse(options,args);
+			if (commandLine.hasOption("headless")) {
+			    System.setProperty("java.awt.headless","true");
+			}
 			if (commandLine.hasOption("help")) {
 				return new ShowHelp(usage);
 			} else if (commandLine.hasOption("hivedoc")) {

@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.9 2008/03/05 10:55:43 nw Exp $
+/*$Id: Main.java,v 1.10 2008/04/23 10:49:55 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.desktop;
 
-import org.astrogrid.Workbench;
+import org.astrogrid.VODesktop;
 
 /** @deprecated use one of the entry points in package <tt>org.astrogrid</tt>
  * instead.
@@ -32,7 +32,7 @@ public class Main  {
     		e.printStackTrace();
     	}
     	*/
-    	Workbench.main(args);
+    	VODesktop.main(args);
     }
 
 
@@ -41,6 +41,9 @@ public class Main  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.10  2008/04/23 10:49:55  nw
+removed obsolete entrypoints.
+
 Revision 1.9  2008/03/05 10:55:43  nw
 added progress reporting to splashscreen
 

@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.9 2007/09/21 16:35:16 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.10 2008/04/23 10:50:09 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,31 +51,12 @@ public class BuildInprocessACR  {
 		Class main;
 		Method m;
 		try {
-			main = Class.forName("org.astrogrid.Workbench1");
-			m = ReflectionHelper.getMethodByName(main, "configureLauncherAsWorkbench");
-			logger.info("Starting as Workbench");
+			main = Class.forName("org.astrogrid.VODesktop1");
+			m = ReflectionHelper.getMethodByName(main, "configureLauncherAsVODesktop");
+			logger.info("Starting VODesktop");
 		} catch (Exception e) {
-			try {
-				main = Class.forName("org.astrogrid.AstroRuntime1");
-				m = ReflectionHelper.getMethodByName(main, "configureLauncherAsACR");
-				logger.info("Starting as Astro Runtime");
-			} catch (Exception f) {
-				try {
-					main = Class.forName("org.astrogrid.HeadlessAstroRuntime");
-					m = ReflectionHelper.getMethodByName(main, "configureLauncherAsASR");					
-					logger.info("Starting as Headless Astro Runtime");
-				} catch(Exception g) {
-					try {
-						main = Class.forName("org.astrogrid.PlasticHub1");
-
-						m = ReflectionHelper.getMethodByName(main, "configureLauncherAsHub");						
-						logger.info("Starting as Plastic Hub");
-					} catch (Exception h) {
-						logger.fatal("Failed to find any AR main classes on classpath");
-						return;
-					}
-				} 
-			}
+						logger.fatal("Failed to find AR main class on classpath");
+						return;					
 		}
 		if (main == null || m == null) { // double check.
 			logger.fatal("Failed to find any AR main class on the classpath");
@@ -83,7 +64,7 @@ public class BuildInprocessACR  {
 		}
 		
 		try {
-			m.invoke(null, new Object[] {launcher});
+			m.invoke(null, launcher);
 		} catch (Exception x) {
 			logger.fatal("Failed to configure launcher",x);
 		} 

@@ -1,4 +1,4 @@
-/*$Id: Workbench.java,v 1.7 2008/03/27 16:23:30 nw Exp $
+/*$Id: Workbench.java,v 1.8 2008/04/23 10:49:39 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid;
 import org.astrogrid.desktop.SplashWindow;
 
 /** Entry point for launching the workbench.
+ * @deprecated just kept for a little backwards compatability.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Jul-2005
  */
 public class Workbench {
@@ -36,6 +37,9 @@ public class Workbench {
 
 /* 
 $Log: Workbench.java,v $
+Revision 1.8  2008/04/23 10:49:39  nw
+removed obsolete entrypoints.
+
 Revision 1.7  2008/03/27 16:23:30  nw
 tarted up the spashscreen
 
