@@ -17,6 +17,7 @@ public class AllVotechUnitTests {
 				"Unit tests for VoTech module");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(VoMonImplUnitTest.class);
+		suite.addTestSuite(AnnotationIOImplUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}
