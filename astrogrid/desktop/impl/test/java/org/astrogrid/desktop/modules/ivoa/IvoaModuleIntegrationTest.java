@@ -13,7 +13,6 @@ import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SkyNode;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
@@ -56,11 +55,6 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 	}
 	
 
-	public void testSKyNode() throws Exception {
-		SkyNode sn  = (SkyNode)assertServiceExists(SkyNode.class,"ivoa.skyNode");
-		sn.getRegistryXQuery(); // forces service instantiation.
-	}
-	
 	public void testCOne() throws Exception {
 		Cone c = (Cone)assertServiceExists(Cone.class,"ivoa.cone");
 		c.getRegistryXQuery(); 

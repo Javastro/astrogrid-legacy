@@ -33,13 +33,6 @@ public class BackgroundModuleIntegrationTest extends InARTestCase {
 		}
 	}
 	
-	public void testJesStrategy() throws Exception {
-		RemoteProcessStrategy s = (RemoteProcessStrategy)assertComponentExists(RemoteProcessStrategy.class, "background.jesStrategy");
-		try {
-		s.canProcess((URI)null);
-		} catch (NullPointerException e) {
-		}
-	}
 	public void testTasks() throws Exception {
 		TasksInternal i = (TasksInternal)assertComponentExists(TasksInternal.class, "background.tasks");
 		assertNotNull(i.getAppLibrary());
