@@ -19,6 +19,7 @@ public class AllAlternativesUnitTests {
 		suite.addTestSuite(InThreadExecutorUnitTest.class);
 		suite.addTestSuite(LoggingSystemTrayUnitTest.class);
 		suite.addTestSuite(SingleSessionManagerUnitTest.class);
+		suite.addTestSuite(HeadlessUIComponentUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}
