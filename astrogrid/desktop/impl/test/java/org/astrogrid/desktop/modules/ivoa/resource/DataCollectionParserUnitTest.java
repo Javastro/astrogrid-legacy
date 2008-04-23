@@ -8,7 +8,6 @@ import java.net.URI;
 import net.sourceforge.jwebunit.WebTester;
 
 import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.Contact;
@@ -17,18 +16,10 @@ import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Date;
 import org.astrogrid.acr.ivoa.resource.Format;
-import org.astrogrid.acr.ivoa.resource.Organisation;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.acr.ivoa.resource.Source;
-import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
-import org.astrogrid.acr.ivoa.resource.TabularDB;
-import org.astrogrid.util.DomHelper;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /** unit tests for data collection resources, and deprecated subclass TabularDB.
  * @author Noel.Winstanley@manchester.ac.uk
