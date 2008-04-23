@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.25 2008/03/06 12:03:55 nw Exp $
+/*$Id: Launcher.java,v 1.26 2008/04/23 10:51:04 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,8 +66,6 @@ public class Launcher implements Runnable {
 				return new org.astrogrid.desktop.protocol.classpath.Handler();
 			} else if ("fallback".equals(protocol)) {
 				return new org.astrogrid.desktop.protocol.fallback.Handler();
-			} else if ("httpclient".equals(protocol)) {
-				return new org.astrogrid.desktop.protocol.httpclient.Handler();
 			} else {
 				if (followOn == null) {
 					return null; // defers back to system protocol handers.
@@ -249,6 +247,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.26  2008/04/23 10:51:04  nw
+removed unused protocol handler.
+
 Revision 1.25  2008/03/06 12:03:55  nw
 Complete - task 330: recategorize preferences.
 disabled jackdaw by default.
