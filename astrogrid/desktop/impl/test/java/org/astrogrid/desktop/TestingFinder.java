@@ -22,7 +22,11 @@ import org.astrogrid.acr.builtin.ACR;
  * @since Jan 23, 20076:49:55 PM
  */
 public class TestingFinder extends Finder {
-
+/**
+ * 
+ */
+public TestingFinder() {
+}
 	// default find action is to fail fast, without prompting.
 	public synchronized ACR find() throws ACRException {
 		return super.find(false,false); //
