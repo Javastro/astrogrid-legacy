@@ -38,13 +38,13 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jan 26, 200712:54:26 PM
 	 */
-	public static class PreferenceComparator implements Comparator {
-		public int compare(Object arg0, Object arg1) {
-			Preference a = (Preference) arg0;
-			Preference b = (Preference) arg1;
-			return a.getName().compareTo(b.getName());
-		}
-	}
+//	public static class PreferenceComparator implements Comparator {
+//		public int compare(Object arg0, Object arg1) {
+//			Preference a = (Preference) arg0;
+//			Preference b = (Preference) arg1;
+//			return a.getName().compareTo(b.getName());
+//		}
+//	}
 	/** sorts modules into categories.
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jan 26, 200712:44:14 PM
