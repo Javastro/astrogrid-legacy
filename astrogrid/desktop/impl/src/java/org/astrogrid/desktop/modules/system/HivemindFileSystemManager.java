@@ -30,7 +30,12 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	private static final Log logger = LogFactory
 			.getLog(HivemindFileSystemManager.class);
 
-	/**
+	/** no-args constructor used in testing */
+	public HivemindFileSystemManager() {
+	    
+	}
+	
+	/** constructor used by hivemnind
 	 * @throws FileSystemException 
 	 * 
 	 */

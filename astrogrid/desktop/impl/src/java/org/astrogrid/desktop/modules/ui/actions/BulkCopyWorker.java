@@ -1,5 +1,9 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -37,6 +41,10 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
  * @since Jul 25, 20074:49:51 PM
  */
 public class BulkCopyWorker extends BackgroundWorker {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(BulkCopyWorker.class);
     
     /**
      * 
@@ -207,15 +215,20 @@ public class BulkCopyWorker extends BackgroundWorker {
             if (! cmd.failed()) {
                 continue;
             }
-            msgBuilder.append(cmd.formatResult());
+            String string = cmd.formatResult();
+            logger.warn(string);
+            msgBuilder.append(string);
             msgBuilder.append("<p>");
         }
-        ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
-        rd.getBanner().setVisible(true);
-        rd.getBanner().setTitle("Errors encountered while copying files");
-        rd.getBanner().setSubtitleVisible(false);
-        rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));
-        rd.pack();
-        rd.show();
+        
+        if (!GraphicsEnvironment.isHeadless() && ! Boolean.getBoolean("unit.testing")) {           
+            ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+            rd.getBanner().setVisible(true);
+            rd.getBanner().setTitle("Errors encountered while copying files");
+            rd.getBanner().setSubtitleVisible(false);
+            rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));
+            rd.pack();
+            rd.show();
+        }
     }
 }
