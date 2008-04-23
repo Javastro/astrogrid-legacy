@@ -1,0 +1,24 @@
+<helpmap>
+<item id="top" 
+url="http://help.astrogrid.org">
+Top-level help item (defaults to this if nothing else available)</item>
+
+    <item id="missingURL">
+        an item with a missing URL.
+    </item>
+
+
+    <item id="malformedURL" url="hfdsd://malformedURL">
+        an item with a malformed url URL.
+    </item>
+    
+    <item url="http://www.google.com">
+        an item with no id.
+    </item>
+    
+    
+    <item id="ag.helpdesk" 
+url="http://www.astrogrid.org/support/">
+AstroGrid Helpdesk menu item</item>
+    
+</helpmap>

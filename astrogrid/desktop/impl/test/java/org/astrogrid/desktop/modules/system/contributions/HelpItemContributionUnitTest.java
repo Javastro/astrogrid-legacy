@@ -64,5 +64,18 @@ public class HelpItemContributionUnitTest extends TestCase {
 				assertEquals(url,i.getUrlObject());
 			}	
 		}
+		
+		public void testEquals() throws Exception {
+            assertTrue(i.equals(i));
+            HelpItemContribution j  = new HelpItemContribution();
+            j.setId("fink");
+            assertFalse(i.equals(j));
+            
+            // run toString
+            assertNotNull(i.toString());
+            assertNotNull(j.toString());
+            assertTrue(i.hashCode() != 0);
+           
+        }
 
 }
