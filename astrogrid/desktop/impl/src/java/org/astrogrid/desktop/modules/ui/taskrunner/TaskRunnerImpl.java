@@ -12,13 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -29,7 +25,6 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,14 +32,11 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -52,11 +44,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.ListUtils;
-import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
@@ -96,7 +86,7 @@ import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEv
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.core.exceptions.CastorException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
@@ -488,7 +478,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             JButton appButton = new JButton(chooseAppAction);
             // show icon only.
             appButton.setText(null);
-            //FIXME - temporarily set to invisible, as not implemented.
+            //@future - temporarily set to invisible, as not implemented.
             appButton.setVisible(chooseAppAction.isEnabled());
             int col = 2;
             builder.add(appButton,cc.xy(col++,1));
