@@ -31,8 +31,14 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal, PropertyChangeListener {
 
 	private final CacheManager manager;
-	private final List registrySensitiveCacheNames = new ArrayList();
-	
+	private final List<String> registrySensitiveCacheNames = new ArrayList<String>();
+	/**
+	 * Construct a new cache factory
+	 * @param workingDir directory to store caches in.
+	 * @param caches list of cache configuraiton objets.
+	 * @param endpointA a preference to listen to, and flush all registry-sensitve caches when it changes
+	 * @param endpointB same as A.
+	 */
 	public CacheFactoryImpl(String workingDir, List caches, Preference endpointA,Preference endpointB) {
 		Configuration conf = new Configuration();
 		DiskStoreConfiguration diskStore = new DiskStoreConfiguration();
@@ -72,13 +78,6 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
 	}
 	
 	public void halting() {
-//		List keys = manager.getCache(RESOURCES_CACHE).getKeys();
-//		System.out.println(keys.size());
-//		Set s = new TreeSet(keys);
-//		System.out.println(s.size());
-//		for (Iterator i = s.iterator(); i.hasNext(); ) {
-//			System.out.println(i.next());
-//		}
 		manager.shutdown();
 	}
 
@@ -87,14 +86,8 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
 	}
 
 
-	public void flush() { // don't flush eternal caches. - don't think any are eternal now..
-		String[] cacheNames = manager.getCacheNames();
-		for (int i = 0; i < cacheNames.length; i++) {
-            Cache cache = manager.getCache(cacheNames[i]);
-            if (! cache.isEternal()) {
-                cache.removeAll();
-            }
-        }
+	public void flush() { 
+	    getManager().clearAll();
 	}
 
 	/** returns a matching ehcache instance, or null if not found */
@@ -110,8 +103,8 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
 
 	// listen for changes to preferences - and if one heard, flush the cache.
     public void propertyChange(PropertyChangeEvent evt) {
-        for (Iterator i = registrySensitiveCacheNames.iterator(); i.hasNext(); ) {
-            Cache cache = manager.getCache((String)i.next());
+        for (Iterator<String> i = registrySensitiveCacheNames.iterator(); i.hasNext(); ) {
+            Cache cache = manager.getCache(i.next());
             cache.removeAll();
         }       
     }
