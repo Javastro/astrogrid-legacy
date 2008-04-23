@@ -16,7 +16,7 @@ import org.astrogrid.common.namegen.InMemoryNameGen;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -112,10 +112,9 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             
         };
         
-		MockControl m = MockControl.createNiceControl(UIContext.class);
-		UIContext cxt= (UIContext)m.getMock();
-		m.replay();		
-        String version = "test";
+		UIContext cxt= createNiceMock("uicontext",UIContext.class);
+		replay(cxt);
+		String version = "test";
         
         Preference notifyPreference = new Preference();
         PlasticHubImpl impl = new PlasticHubImpl(version, cxt, executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), notifyPreference);

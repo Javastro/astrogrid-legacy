@@ -14,7 +14,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.custommonkey.xmlunit.XMLAssert;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import org.w3c.dom.Document;
 
 /** System tests for Keyword Search part of  External Registry Component.
@@ -98,17 +98,17 @@ public class ExternalRegistryKeywordSystemTest extends InARTestCase {
 	public void testKeywordSearchXML() throws Exception{
 		Document doc = ex.keywordSearchXML(endpoint,"heao",false); 
 		assertNotNull(doc);
-		XMLAssert.assertXpathEvaluatesTo("VOResources","local-name(/*)",doc); // root is a VOResources
-		XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*/*)",doc); // it contains a resource
-		XMLAssert.assertXpathNotExists("/*/*[local-name() != 'Resource']",doc); // only contains resources
+		assertXpathEvaluatesTo("VOResources","local-name(/*)",doc); // root is a VOResources
+		assertXpathEvaluatesTo("Resource","local-name(/*/*)",doc); // it contains a resource
+		assertXpathNotExists("/*/*[local-name() != 'Resource']",doc); // only contains resources
 	}
 	
 	
 	public void testKeywordSearchXMLNone() throws Exception {
 		Document doc = ex.keywordSearchXML(endpoint,"unknownsearchelement",false); 
 		assertNotNull(doc);
-		XMLAssert.assertXpathEvaluatesTo("VOResources","local-name(/*)",doc); // root is a VOResources
-		XMLAssert.assertXpathNotExists("/*/*",doc); // VOResouces is empty
+		assertXpathEvaluatesTo("VOResources","local-name(/*)",doc); // root is a VOResources
+		assertXpathNotExists("/*/*",doc); // VOResouces is empty
 	}
 
 

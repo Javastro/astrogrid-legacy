@@ -17,7 +17,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** Unit test for siap interface.
  * @author Noel Winstanley
@@ -30,28 +30,21 @@ public class SiapUnitTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		regControl = MockControl.createControl(Registry.class);
-		msControl = MockControl.createControl(MyspaceInternal.class);
-		mockReg = (Registry)regControl.getMock();
-		mockMs = (MyspaceInternal)msControl.getMock();
-		regControl.replay(); // don't expect any calls to either mock.
- 		msControl.replay();	
+		mockReg = createMock(Registry.class);
+		mockMs = createMock(MyspaceInternal.class);
+		replay(mockReg,mockMs);
 		siap = new SiapImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		mockReg = null;
-		regControl = null;
 		mockMs = null;
-		msControl = null;
 		siap = null;
 		url = null;
 	}
 	protected Registry mockReg;
-	protected MockControl regControl;
 	protected MyspaceInternal mockMs;
-	protected MockControl msControl;
 	protected Siap siap;
 	protected URL url;
 	/*

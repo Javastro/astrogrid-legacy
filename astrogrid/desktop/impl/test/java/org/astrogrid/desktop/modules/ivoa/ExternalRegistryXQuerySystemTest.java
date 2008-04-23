@@ -16,7 +16,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.util.DomHelper;
-import org.custommonkey.xmlunit.XMLAssert;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import org.w3c.dom.Document;
 
 /** System tests for XQuery part of  External Registry Component.
@@ -139,14 +139,14 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	/** test xpath returning string embedded in a template */
 	public void testScalarReturningTemplateXquerySearchXML() throws Exception{
 		Document d = ex.xquerySearchXML(endpoint,SCALAR_XPATH_TEMPLATE_XQUERY);
-		XMLAssert.assertXpathEvaluatesTo("result","local-name(/*)",d); // root is a result tag
-		XMLAssert.assertXpathNotExists("/*/*",d); // no child tags
-		XMLAssert.assertXpathEvaluatesTo("true","/result",d);
+		assertXpathEvaluatesTo("result","local-name(/*)",d); // root is a result tag
+		assertXpathNotExists("/*/*",d); // no child tags
+		assertXpathEvaluatesTo("true","/result",d);
 	}
 	/** try an xpath returning a single resouce document */
 	public void testSingleResourceXquerySearchXML() throws Exception{
 		Document d = ex.xquerySearchXML(endpoint,SINGLE_RESOURCE_XQUERY);
-		XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource tag
+		assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource tag
 		// feed throug document parser
 		Resource[] res = ex.buildResources(d);
 		assertNotNull(res);
@@ -157,7 +157,7 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	/** try an xpath returning a single resouce document within a template. */
 	public void testSingleResourceTemplateXquerySearchXML() throws Exception{
 		Document d = ex.xquerySearchXML(endpoint,"<result>{//vor:Resource[identifier='ivo://nasa.heasarc/ASD']}</result>");
-		XMLAssert.assertXpathEvaluatesTo("result","local-name(/*)",d); // root is a some arbitrary tag
+		assertXpathEvaluatesTo("result","local-name(/*)",d); // root is a some arbitrary tag
 		// feed throug document parser
 		Resource[] res = ex.buildResources(d);
 		assertNotNull(res);
@@ -171,7 +171,7 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	 * */
 	public void testMultipleResourceXquerySearchXML() throws Exception{
 		Document d = ex.xquerySearchXML(endpoint,MULTIPLE_RESOURCE_XQUERY);
-		XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource tag
+		assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource tag
 		// feed throug document parser
 		Resource[] res = ex.buildResources(d);
 		assertNotNull(res);
@@ -181,7 +181,7 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	/** same xpath in a template - gets us back a set of results.*/
 	public void testMultipleResourceTemplateXquerySearchXML() throws Exception{
 		Document d = ex.xquerySearchXML(endpoint,"<result>{//vor:Resource[@xsi:type &= '*:Authority']}</result>");
-		XMLAssert.assertXpathEvaluatesTo("result","local-name(/*)",d); // root is a Resource tag
+		assertXpathEvaluatesTo("result","local-name(/*)",d); // root is a Resource tag
 		// feed throug document parser
 		Resource[] res = ex.buildResources(d);
 		assertNotNull(res);

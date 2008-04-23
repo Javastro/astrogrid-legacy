@@ -24,8 +24,9 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
-import org.easymock.AbstractMatcher;
-import org.easymock.MockControl;
+import org.easymock.IArgumentMatcher;
+
+import static org.easymock.EasyMock.*;
 import org.w3c.dom.Document;
 
 /**
@@ -39,10 +40,8 @@ public class DalUnitTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		myspaceControl = MockControl.createControl(MyspaceInternal.class);
-		registryControl = MockControl.createControl(Registry.class);
-		mockMs = (MyspaceInternal)myspaceControl.getMock();
-		mockReg = (Registry)registryControl.getMock();
+		mockMs =createMock(MyspaceInternal.class);
+		mockReg = createMock(Registry.class);
 		dal = new TestDAL(mockReg,mockMs);
 		u = new URL("http://www.slashdot.org/foo/");	
 		localSiapURL = TablesImplUnitTest.class.getResource("siap.vot");
@@ -51,8 +50,6 @@ public class DalUnitTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		myspaceControl = null;
-		registryControl = null;
 		mockMs = null;
 		mockReg = null;
 		dal = null;
@@ -60,8 +57,6 @@ public class DalUnitTest extends TestCase {
 		localSiapURL = null;
 		nonCompliantSiapService = null;
 	}
-	private MockControl myspaceControl;
-	private MockControl registryControl;
 	private MyspaceInternal mockMs;
 	private Registry mockReg;
 	private DALImpl dal;
@@ -70,8 +65,7 @@ public class DalUnitTest extends TestCase {
 	private URL nonCompliantSiapService;
 
 	public void testResolveEndpointURL() throws InvalidArgumentException, NotFoundException, URISyntaxException {
-		myspaceControl.replay();
-		registryControl.replay();
+	    replay(mockMs,mockReg);
 		URL resolved = dal.resolveEndpoint(new URI(u.toString()));
 		assertEquals(resolved,u);
 	}
@@ -89,11 +83,9 @@ public class DalUnitTest extends TestCase {
 	*/
 	
 	public void testResolveEndpointIVOUnknown() throws NotFoundException, ServiceException, URISyntaxException, InvalidArgumentException {
-		myspaceControl.replay();
 		URI uri = new URI("ivo://wibble");
-		mockReg.getResource(uri);
-		registryControl.setThrowable(new NotFoundException());
-		registryControl.replay();
+		expect(mockReg.getResource(uri)).andThrow(new NotFoundException());
+		replay(mockMs,mockReg);
 		try {
 			URL resolved = dal.resolveEndpoint(uri);
 			fail("expected to fail");
@@ -103,8 +95,7 @@ public class DalUnitTest extends TestCase {
 	}
 	
 	public void testResolveEndpointUnknownScheme() throws NotFoundException, URISyntaxException {
-		myspaceControl.replay();
-		registryControl.replay();
+        replay(mockMs,mockReg);
 		try {
 			dal.resolveEndpoint(new URI("isbn:1023456"));
 			fail("expected to fail");
@@ -121,8 +112,7 @@ public class DalUnitTest extends TestCase {
 	 */
 	public void testAddOption() throws InvalidArgumentException{
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();
+        replay(mockMs,mockReg);
 
 		URL u1 = dal.addOption(u,"page","foo 32");
 		assertNotNull(u1);
@@ -135,8 +125,7 @@ public class DalUnitTest extends TestCase {
 	
 	public void testAddOptionToExistingOptions() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();		
+        replay(mockMs,mockReg);
 		URL url1 = dal.addOption(u,"page","foo 32");
 		URL url2 = dal.addOption(url1,"length","32");
 		assertNotNull(url2);
@@ -145,8 +134,7 @@ public class DalUnitTest extends TestCase {
 	
 	public void testAddOptionThatIsAlreadyPresent() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();		
+        replay(mockMs,mockReg);
 		URL url1 = dal.addOption(u,"page","foo 32");
 		URL url2 = dal.addOption(url1,"page","foo 32");
 		assertNotNull(url2);
@@ -155,8 +143,7 @@ public class DalUnitTest extends TestCase {
 
 	public void testAddOptionNulls() {
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();		
+        replay(mockMs,mockReg);	
 		try {
 			dal.addOption(null,"foo","bar");
 			fail("expected to fail");
@@ -174,8 +161,7 @@ public class DalUnitTest extends TestCase {
 
 	public void testAddNullOptionValue() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();		
+        replay(mockMs,mockReg);	
 		URL u1 = dal.addOption(u,"page",null);
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
@@ -187,8 +173,7 @@ public class DalUnitTest extends TestCase {
 
 	public void testAddEmptyOptionValue() throws InvalidArgumentException {
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();	
+        replay(mockMs,mockReg);
 		URL u1 = dal.addOption(u,"page","");
 		assertNotNull(u1);
 		assertEquals(u.getHost(),u1.getHost());
@@ -203,8 +188,7 @@ public class DalUnitTest extends TestCase {
 	 * @throws InvalidArgumentException */
 	public void testAddOptionTrailingQuestionMark() throws MalformedURLException, InvalidArgumentException {
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();
+        replay(mockMs,mockReg);
 		// constrcut an odd url
 		u = new URL(u.toString() + "?");
 		// url class reports that it does have a query.
@@ -222,8 +206,7 @@ public class DalUnitTest extends TestCase {
 	
 	public void testAddOptionTrailingAmpersand() throws MalformedURLException, InvalidArgumentException {
 		// expect no calls on myspace or reg.
-		myspaceControl.replay();
-		registryControl.replay();
+        replay(mockMs,mockReg);
 		// constrcut an odd url
 		u = new URL(u.toString() + "?foo=bar&");
 		// url class reports that it does have a query.
@@ -241,8 +224,7 @@ public class DalUnitTest extends TestCase {
 	
 	public void testExecute() throws Exception {
 		assertNotNull(localSiapURL);
-		myspaceControl.replay();
-		registryControl.replay();
+        replay(mockMs,mockReg);
 		Map[] r = dal.execute(localSiapURL);
 		assertNotNull(r);
 		assertTrue(r.length > 0);
@@ -270,8 +252,7 @@ public class DalUnitTest extends TestCase {
 	
 	public void testExecuteVotable() throws ServiceException {
 		assertNotNull(localSiapURL);
-		myspaceControl.replay();
-		registryControl.replay();
+        replay(mockMs,mockReg);
 		Document d = dal.executeVotable(localSiapURL);
 		assertNotNull(d);
 	}
@@ -291,11 +272,9 @@ public class DalUnitTest extends TestCase {
 	public void testExecuteAndSaveIvo() throws URISyntaxException, NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
 		URI location = new URI("ivo://org.astrogrid/test#storage/foo/result.vot");
 		mockMs.copyURLToContent(localSiapURL,location);
-		myspaceControl.replay();
-		registryControl.replay();
+        replay(mockMs,mockReg);
 		dal.executeAndSave(localSiapURL,location);
-		myspaceControl.verify();
-		registryControl.verify();
+        verify(mockMs,mockReg);
 	}
 	
 	/** not easy to test - and any point??
@@ -305,49 +284,26 @@ public class DalUnitTest extends TestCase {
 	
 	public void testSaveDatasetsIvo() throws Exception {
 		final URI location = new URI("ivo://org.astrogrid/test#storage/foo");
-		mockMs.copyURLToContent(localSiapURL,location); // expected values are ignored in this case - just need to tbe the correct type.
-		// args to the this method must match as follows..
-		myspaceControl.setMatcher(new AbstractMatcher() {
-			protected boolean argumentMatches(Object expected, Object actual) {
-				if (actual instanceof URI) {
-					return actual.toString().startsWith(location.toString() + "/");
-				} else if (actual instanceof URL) {
-					return true;
-				} else {
-					return false;
-				}
-			}			
-		});
-		
+		mockMs.copyURLToContent(
+		        (URL)anyObject()
+		        ,saveLocation(location)
+		        ); // expected values are ignored in this case - just need to tbe the correct type.
+	
 		// find size of the dataset.
 		int resultSize = dal.execute(localSiapURL).length;
-		
 		// call this method as many times as the dataset size.
-		myspaceControl.setVoidCallable(resultSize);
-		myspaceControl.replay();
-		registryControl.replay();
+		expectLastCall().times(resultSize);
+        replay(mockMs,mockReg);
 		dal.saveDatasets(localSiapURL,location);
-		myspaceControl.verify();
-		registryControl.verify();
+        verify(mockMs,mockReg);
 
 	}
 	
 	public void testSaveSubsetDatasetsIvo() throws Exception {
 		final URI location = new URI("ivo://org.astrogrid/test#storage/foo");
-		mockMs.copyURLToContent(localSiapURL,location); // expected values are ignored in this case - just need to tbe the correct type.
-		// args to the this method must match as follows..
-		myspaceControl.setMatcher(new AbstractMatcher() {
-			protected boolean argumentMatches(Object expected, Object actual) {
-				if (actual instanceof URI) {
-					return actual.toString().startsWith(location.toString() + "/");
-				} else if (actual instanceof URL) {
-					return true;
-				} else {
-					return false;
-				}
-			}			
-		});
-		
+		mockMs.copyURLToContent((URL)anyObject(),
+		        saveLocation(location)); // expected values are ignored in this case - just need to tbe the correct type.
+				
 		// find size of the dataset.
 		int resultSize = dal.execute(localSiapURL).length;
 		List subset = new ArrayList();
@@ -356,13 +312,37 @@ public class DalUnitTest extends TestCase {
 		subset.add(new Integer(resultSize / 2));
 		subset.add(new Integer( 1));
 		// call this method as many times as the dataset size.
-		myspaceControl.setVoidCallable(subset.size());
-		myspaceControl.replay();
-		registryControl.replay();
+        expectLastCall().times(subset.size());
+        replay(mockMs,mockReg);
 		dal.saveDatasetsSubset(localSiapURL,location,subset);
-		myspaceControl.verify();
-		registryControl.verify();
+        verify(mockMs,mockReg);
 
+	}
+	public static URI saveLocation(URI in) {
+	    reportMatcher(new SaveLocationMatcher(in));
+	    return null;
+	}
+	private static class SaveLocationMatcher implements IArgumentMatcher {
+	    private final Object location;
+	    
+        public void appendTo(StringBuffer sb) {
+            sb.append("saveLocation(")
+            .append(location)
+            .append(")");
+        }
+
+        public boolean matches(Object actual) {
+            if (actual != null && actual instanceof URI ) {
+                return actual.toString().startsWith(location.toString() + "/");            
+            } else {
+                return false;
+            }           
+        }
+
+        public SaveLocationMatcher(Object location) {
+            super();
+            this.location = location;
+        }
 	}
 	
 	/** concrete implementatio - jst so we can test bits */

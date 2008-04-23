@@ -14,7 +14,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** Unit test for ssap interface.
  * @author Noel Winstanley
@@ -27,28 +27,21 @@ public class SsapUnitTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		regControl = MockControl.createControl(Registry.class);
-		msControl = MockControl.createControl(MyspaceInternal.class);
-		mockReg = (Registry)regControl.getMock();
-		mockMs = (MyspaceInternal)msControl.getMock();
-		regControl.replay(); // don't expect any calls to either mock.
- 		msControl.replay();	
+		mockReg = createMock(Registry.class);
+		mockMs = createMock(MyspaceInternal.class);
+		replay(mockReg,mockMs);
 		ssap = new SsapImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		mockReg = null;
-		regControl = null;
 		mockMs = null;
-		msControl = null;
 		ssap = null;
 		url = null;
 	}
 	protected Registry mockReg;
-	protected MockControl regControl;
 	protected MyspaceInternal mockMs;
-	protected MockControl msControl;
 	protected Ssap ssap;
 	protected URL url;
 	/*
@@ -58,7 +51,7 @@ public class SsapUnitTest extends TestCase {
 		URL u1 = ssap.constructQuery(new URI(url.toString()),1.0,2.0,3.0);
 		assertEquals(url.getHost(),u1.getHost());
 		assertEquals(url.getPath(),u1.getPath());
-		assertEquals("POS=1.0%2C2.0&SIZE=3.0",u1.getQuery());
+		assertEquals("POS=1.0%2C2.0&SIZE=3.0&REQUEST=queryData",u1.getQuery());
 	}
 
 
@@ -70,7 +63,7 @@ public class SsapUnitTest extends TestCase {
 		URL u1 = ssap.constructQueryS(new URI(url.toString()),1.0,2.0,3.0,4.0);
 		assertEquals(url.getHost(),u1.getHost());
 		assertEquals(url.getPath(),u1.getPath());
-		assertEquals("POS=1.0%2C2.0&SIZE=3.0%2C4.0",u1.getQuery());
+		assertEquals("POS=1.0%2C2.0&SIZE=3.0%2C4.0&REQUEST=queryData",u1.getQuery());
 	}
 
 

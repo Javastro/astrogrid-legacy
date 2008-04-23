@@ -18,7 +18,7 @@ import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.pref.PreferenceManagerImpl;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Noel Winstanley
@@ -41,8 +41,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		javaPrefs.removeNode();
 		javaPrefs.flush();
 		root.add(clazz);
-		symbolsControl = MockControl.createControl(SymbolSource.class);
-		symbols = (SymbolSource)symbolsControl.getMock();
+		symbols = createMock(SymbolSource.class);
 		
 	}
 
@@ -53,7 +52,6 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		pref2 = null;
 		root = null;
 		symbols= null;
-		symbolsControl = null;
 		if (pMan != null) { 
 			pMan.preferenceRegistry.removeNode(); // clean up any props left.
 			pMan = null;
@@ -64,7 +62,6 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 	protected Preference pref2;
 	protected Map prefs;
 	protected List root;
-	protected MockControl symbolsControl;
 	protected SymbolSource symbols;
 	
 	public void testInitialization() throws Exception {
@@ -72,7 +69,6 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		assertNotNull(pref2);
 		assertNotNull(prefs);
 		assertNotNull(root);
-		assertNotNull(symbolsControl);
 		assertNotNull(symbols);
 		
 	}
@@ -125,16 +121,15 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		prefs.put(pref1.getName(), pref1);
 		// not populated with a value.
 		// so, create expectation that symbol source will be consulted.
-		symbols.valueForSymbol(pref1.getName());
-		symbolsControl.setReturnValue("x"); // we'll find it here
-		symbolsControl.replay();
+		expect(symbols.valueForSymbol(pref1.getName())).andReturn("x");
+		replay(symbols);
 		
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);
 		Preference candidate = pMan.find(pref1.getName());
 		assertSame(pref1,candidate);
 		assertNotNull(candidate.getValue());
 		assertEquals("x",candidate.getValue());
-		symbolsControl.verify();
+		verify(symbols);
 		
 		// as we've set it all up already, just check this last stage here.		
 		assertEquals("x",pMan.valueForSymbol(pref1.getName()));
@@ -145,9 +140,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		prefs.put(pref1.getName(), pref1);
 		// not populated with a value.
 		// so, create expectation that symbol source will be consulted.
-		symbols.valueForSymbol(pref1.getName());
-		symbolsControl.setReturnValue( null); // won't fiond it here.
-		symbolsControl.replay();
+		expect(symbols.valueForSymbol(pref1.getName())).andReturn(null);// won't fiond it here.
+		replay(symbols);
 
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);		
 		Preference candidate = pMan.find(pref1.getName());
@@ -155,7 +149,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		assertNotNull(candidate.getValue());
 		assertEquals(candidate.getDefaultValue(),candidate.getValue());
 		
-		symbolsControl.verify();
+		verify(symbols);
 		
 		// as we've set it all up already, just check this last stage here.		
 		assertEquals(candidate.getDefaultValue(),pMan.valueForSymbol(pref1.getName()));		
@@ -166,9 +160,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		// not populated with a value.
 		
 		// so, create expectation that symbol source will be consulted.
-		symbols.valueForSymbol(pref1.getName());
-		symbolsControl.setReturnValue( null); // won't fiond it here.
-		symbolsControl.replay();
+	    expect(symbols.valueForSymbol(pref1.getName())).andReturn(null);// won't fiond it here.
+		replay(symbols);
 
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);		
 		// and place a value waiting in the preferenceStore.
@@ -180,7 +173,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		assertNotNull(candidate.getValue());
 		assertEquals("q",candidate.getValue());
 		
-		symbolsControl.verify();
+		verify(symbols);
 		// as we've set it all up already, just check this last stage here.		
 		assertEquals("q",pMan.valueForSymbol(pref1.getName()));		
 	}
@@ -204,9 +197,9 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		} catch (PropertyNotFoundException e) {
 			// ok
 		}
-		symbols.valueForSymbol(pref1.getName());		
-		symbolsControl.setDefaultReturnValue(null);
-		symbolsControl.replay();
+		expect(symbols.valueForSymbol(pref1.getName())).andReturn(null);
+        expect(symbols.valueForSymbol(pref2.getName())).andReturn(null);		
+		replay(symbols);
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);
 		
 		// verify it contains the propagated prefernece, but not the other one.
@@ -247,9 +240,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		// every created, but lets slip in a preference - not looked up yet.
 		prefs.put(pref1.getName(), pref1);
 
-		symbols.valueForSymbol(pref1.getName());		
-		symbolsControl.setDefaultReturnValue("sys");
-		symbolsControl.replay();
+		expect(symbols.valueForSymbol(pref1.getName())).andReturn("sys");	
+		replay(symbols);
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);
 		
 		assertEquals("sys",pref1.getValue()); // value is being grabbed from sys.
@@ -281,9 +273,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		// not populated with a value.
 		
 		// so, create expectation that symbol source will be consulted.
-		symbols.valueForSymbol(pref1.getName());
-		symbolsControl.setReturnValue( "sys");
-		symbolsControl.replay();
+		expect(symbols.valueForSymbol(pref1.getName())).andReturn("sys");
+		replay(symbols);
 
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);	
 		
@@ -306,7 +297,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		// as we've set it all up already, check same is seen through the lower-level api too		
 		assertEquals(pref1.getDefaultValue(),pMan.getKey(pref1.getName()));			
 		
-		symbolsControl.verify();	
+		verify(symbols);	
 	}
 	
 	public void testList() throws Exception {
@@ -314,9 +305,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		// not populated with a value.
 		
 		// so, create expectation that symbol source will be consulted.
-		symbols.valueForSymbol(pref1.getName());
-		symbolsControl.setReturnValue( "sys");
-		symbolsControl.replay();
+		expect(symbols.valueForSymbol(pref1.getName())).andReturn("sys");
+		replay(symbols);
 
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);	
 		
@@ -335,7 +325,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		assertEquals(pref1.getValue(),m.get(pref1.getName()));
 		assertTrue(m.containsKey("key"));
 		assertEquals("value",m.get("key"));
-		symbolsControl.verify();
+		verify(symbols);
 		
 		// while we're at it, test list keys too.		
 		String[] keys = pMan.listKeys();
@@ -347,9 +337,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		// not populated with a value.
 		
 		// so, create expectation that symbol source will be consulted.
-		symbols.valueForSymbol(pref1.getName());
-		symbolsControl.setReturnValue( "sys");
-		symbolsControl.replay();
+		expect(symbols.valueForSymbol(pref1.getName())).andReturn("sys");
+		replay(symbols);
 
 		pMan = new PreferenceManagerImpl(prefs,root,symbols);	
 		
@@ -375,7 +364,7 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		assertEquals("sys",pref1.getValue());
 		assertEquals(pref1.getValue(),pMan.getKey(pref1.getName()));		
 			
-		symbolsControl.verify();
+		verify(symbols);
 	}
 	
 	public void testPropertyUnknowns() throws Exception {

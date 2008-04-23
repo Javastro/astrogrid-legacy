@@ -26,8 +26,8 @@ import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.ag.XPathHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.util.DomHelper;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
 /** System tests for Basic parts of the External Registry Component.
  * @author Noel Winstanley
@@ -113,7 +113,7 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 	public void testGetIdentityXML() throws Exception {
 		Document d = ex.getIdentityXML(endpoint);
 		assertNotNull(d);
-		XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource
+		assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource
 		Resource[] arr = ex.buildResources(d); // check we can parse it.
 		assertEquals(1,arr.length);
 	}
@@ -181,7 +181,7 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 		Document d= ex.getResourceXML(endpoint,id);
 		
 		
-		XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource
+		assertXpathEvaluatesTo("Resource","local-name(/*)",d); // root is a Resource
 		Resource[] arr = ex.buildResources(d); // check we can parse it.
 		assertEquals(1,arr.length);
 		assertEquals(id,arr[0].getId());
@@ -194,7 +194,7 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
         URI id = new URI("ivo://nasa.heasarc/ASD");
 		Document d= ex.getResourceXML(endpoint,id);
 		DomHelper.DocumentToStream(d,System.out);
-		XMLAssert.assertXpathEvaluatesTo(XPathHelper.VOR_NS,"namespace-uri(/*)",d);
+		assertXpathEvaluatesTo(XPathHelper.VOR_NS,"namespace-uri(/*)",d);
 
 	}
 	

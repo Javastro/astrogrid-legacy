@@ -14,7 +14,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** unit test for cone search interface
  * @author Noel Winstanley
@@ -27,12 +27,10 @@ public class ConeUnitTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		regControl = MockControl.createControl(Registry.class);
-		msControl = MockControl.createControl(MyspaceInternal.class);
-		mockReg = (Registry)regControl.getMock();
-		mockMs = (MyspaceInternal)msControl.getMock();
-		regControl.replay(); // don't expect any calls to either mock.
- 		msControl.replay();		
+		mockReg = createMock(Registry.class);
+		mockMs = createMock(MyspaceInternal.class);
+		replay(mockReg,mockMs); // don't expect any calls to either mock.
+	
  		
 		cone = new ConeImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");
@@ -40,16 +38,12 @@ public class ConeUnitTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		mockReg = null;
-		regControl = null;
 		mockMs = null;
-		msControl = null;
 		cone = null;
 		url = null;
 	}
 	protected Registry mockReg;
-	protected MockControl regControl;
 	protected MyspaceInternal mockMs;
-	protected MockControl msControl;
 	protected Cone cone;
 	protected URL url;
 	/*

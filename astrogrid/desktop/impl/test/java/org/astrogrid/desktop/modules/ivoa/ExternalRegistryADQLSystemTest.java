@@ -3,10 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
-import java.io.IOException;
 import java.net.URI;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -19,11 +16,9 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.oldquery.sql.Sql2Adql;
 import org.astrogrid.util.DomHelper;
-import org.custommonkey.xmlunit.XMLAssert;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /** System tests for ADQL querying part of External Registry Component.
  * @author Noel Winstanley
@@ -135,9 +130,9 @@ public class ExternalRegistryADQLSystemTest extends InARTestCase {
 		Document d = ex.adqlsSearchXML(endpoint,ADQLS_QUERY_STRING,false);
 		assertNotNull(d);
 		
-		XMLAssert.assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources
-		XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*/*)",d); // it contains a resource
-		XMLAssert.assertXpathNotExists("/*/*[local-name() != 'Resource']",d); // only contains resources
+		assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources
+		assertXpathEvaluatesTo("Resource","local-name(/*/*)",d); // it contains a resource
+		assertXpathNotExists("/*/*[local-name() != 'Resource']",d); // only contains resources
 
 		
 		// feed it through the parser.
@@ -150,9 +145,9 @@ public class ExternalRegistryADQLSystemTest extends InARTestCase {
 	public void testAdqlsSearchXMLIdentifiersOnly() throws Exception{
 		Document d = ex.adqlsSearchXML(endpoint,ADQLS_QUERY_STRING,true);
 		assertNotNull(d);
-        XMLAssert.assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources
-        XMLAssert.assertXpathEvaluatesTo("identifier","local-name(/*/*)",d); 
-        XMLAssert.assertXpathNotExists("/*/*[local-name() != 'identifier']",d); 
+        assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources
+        assertXpathEvaluatesTo("identifier","local-name(/*/*)",d); 
+        assertXpathNotExists("/*/*[local-name() != 'identifier']",d); 
 
 	}
 
@@ -170,7 +165,7 @@ public class ExternalRegistryADQLSystemTest extends InARTestCase {
         // test that implementation doesnt corrupt the nput query.
        Document control =  DomHelper.newDocument(ADQLX_QUERY_STRING);
        assertNotNull(control);
-        XMLAssert.assertXMLEqual(control,doc);
+        assertXMLEqual(control,doc);
 	    
 	}
    
@@ -203,9 +198,9 @@ public class ExternalRegistryADQLSystemTest extends InARTestCase {
         Document d = ex.adqlxSearchXML(endpoint,doc,false);
         assertNotNull(d);
         
-        XMLAssert.assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources
-        XMLAssert.assertXpathEvaluatesTo("Resource","local-name(/*/*)",d); // it contains a resource
-        XMLAssert.assertXpathNotExists("/*/*[local-name() != 'Resource']",d); // only contains resources
+        assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources
+        assertXpathEvaluatesTo("Resource","local-name(/*/*)",d); // it contains a resource
+        assertXpathNotExists("/*/*[local-name() != 'Resource']",d); // only contains resources
 
         
         // feed it through the parser.
@@ -222,8 +217,8 @@ public class ExternalRegistryADQLSystemTest extends InARTestCase {
     Document d = ex.adqlxSearchXML(endpoint,doc,false);
     assertNotNull(d);
     
-    XMLAssert.assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources   
-    XMLAssert.assertXpathNotExists("/*/*[local-name() = 'Resource']",d); // contains no resources
+    assertXpathEvaluatesTo("VOResources","local-name(/*)",d); // root is a VOResources   
+    assertXpathNotExists("/*/*[local-name() = 'Resource']",d); // contains no resources
 
     
     // feed it through the parser.

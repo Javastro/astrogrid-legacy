@@ -11,7 +11,7 @@ import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** test the basic functionality of background executor - that we can run, timeout and interrupt processes.
  * Also verifies behaviour of BackgroundWorker - as both classes cooperate quite closely.
@@ -31,8 +31,8 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 		 * @param msg
 		 * @param msecs
 		 */
-		public TestWorker(UIContext parent, TimeoutEnum enum) {
-			super(parent, "test worker",enum);
+		public TestWorker(UIContext parent, TimeoutEnum enumeration) {
+			super(parent, "test worker",enumeration);
 		}
 		public int construct;
 		public int always;
@@ -123,14 +123,13 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.system.BackgroundExecutorImpl.execute(Runnable)'
 	 */
 	public void testExecute() throws InterruptedException {
-		MockControl rControl = MockControl.createControl(Runnable.class);
-		Runnable r = (Runnable)rControl.getMock();
+		Runnable r =createMock(Runnable.class);
 		r.run();
-		rControl.replay();
+		replay(r);
 		
 		exec.execute(r);
 		Thread.sleep(5000);
-		rControl.verify();
+		verify(r);
 
 	}
 	

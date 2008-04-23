@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.util.DomHelper;
-import org.custommonkey.xmlunit.XMLAssert;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import org.w3c.dom.Document;
 
 import junit.framework.TestCase;
@@ -54,7 +54,7 @@ public class RegistryClientLiteLibraryTest extends TestCase {
         assertNotNull(doc);
         Document doc1 = service.getResourceByIdentifier("ivo://nasa.heasarc/SKYVIEW/Dss2");
         assertNotNull(doc1);
-        XMLAssert.assertXMLEqual(doc,doc1);
+        assertXMLEqual(doc,doc1);
     }
 
 }
