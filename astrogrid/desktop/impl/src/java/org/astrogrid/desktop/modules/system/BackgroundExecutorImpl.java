@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.15 2007/12/12 13:54:15 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.16 2008/04/23 11:10:19 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,7 @@ import EDU.oswego.cs.dl.util.concurrent.WaiterPreferenceSemaphore;
  * Provides a thread pool (configurable with keys) that processes new background tasks. Appears to be much faster - UI more responsive - than
  * creating a new background thread for each task.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Nov-2005
+ * @TEST write unit tests.
  */
 public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownListener{
     /**
@@ -435,6 +436,9 @@ and has an 'express' slot which bypasses all others. */
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.16  2008/04/23 11:10:19  nw
+marked as needing test.
+
 Revision 1.15  2007/12/12 13:54:15  nw
 astroscope upgrade, and minor changes for first beta release
 

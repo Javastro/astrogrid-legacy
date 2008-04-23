@@ -30,6 +30,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 26, 20073:18:32 PM
+ * @TEST how things are getting assembled.
  */
 public class ActivityFactoryImpl implements ActivityFactory {
 	/** task pane with a few additional functions */

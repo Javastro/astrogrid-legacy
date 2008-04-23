@@ -32,6 +32,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 /** delete one or more files.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
+ * @TEST unit test where possibl.
  */
 public class DeleteFilesActivity extends AbstractFileActivity {
 

@@ -33,6 +33,7 @@ import com.l2fprod.common.swing.BaseDialog;
 /** Activity to rename a single file.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
+ * @TEST
  */
 public class RenameActivity extends AbstractFileActivity {
 

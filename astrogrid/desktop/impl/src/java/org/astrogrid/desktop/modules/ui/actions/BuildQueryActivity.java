@@ -28,6 +28,7 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 /** build a query from a selected resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20074:13:13 PM
+ * @TEST unit test where possible.
  */
 public final class BuildQueryActivity extends AbstractFileOrResourceActivity {
 /**

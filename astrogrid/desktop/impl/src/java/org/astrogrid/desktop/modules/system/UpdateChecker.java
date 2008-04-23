@@ -44,6 +44,7 @@ import com.l2fprod.common.swing.BaseDialog;
  * 
  * @author Noel Winstanley
  * @since Jun 27, 20067:35:22 PM
+ * @TEST unit test for parser and reasoning logic.
  */
 public class UpdateChecker implements Runnable {
 	/**

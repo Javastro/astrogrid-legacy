@@ -44,6 +44,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 /**  Implementation of persistence using xstream.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 31, 20073:54:35 PM
+ * @TEST unit test
  */
 public class XStreamXmlPersist implements XmlPersist {
     /**

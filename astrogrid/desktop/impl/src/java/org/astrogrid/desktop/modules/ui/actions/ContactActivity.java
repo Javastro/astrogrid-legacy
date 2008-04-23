@@ -20,6 +20,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 /** contac the curator person for a resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200711:56:23 AM
+ * @TEST
  */
 public class ContactActivity extends AbstractResourceActivity implements Activity.Info {
 

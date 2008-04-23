@@ -17,6 +17,7 @@ import org.apache.commons.vfs.FileObject;
  * implementation based on commons.io.CountingInputStream
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 27, 200712:45:39 PM
+ * @TEST unit test this.
  */
 public class MonitoringInputStream  extends ProxyInputStream {
 

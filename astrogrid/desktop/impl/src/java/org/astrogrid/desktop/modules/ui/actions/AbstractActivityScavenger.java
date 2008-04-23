@@ -26,6 +26,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
  * to the list of activities it manages.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 17, 20071:41:47 AM
+ * @TEST unit test
  */
 public  abstract class AbstractActivityScavenger extends AbstractActivity{
 

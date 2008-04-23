@@ -59,6 +59,7 @@ import ca.odell.glazedlists.swing.JEventListPanel;
  * unlike everything else, this is _not_ a UIComponent.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 23, 20072:37:30 PM
+ * @TEST see what I can isolate to unit test in this.
  */
 public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWorkersMonitor{
 

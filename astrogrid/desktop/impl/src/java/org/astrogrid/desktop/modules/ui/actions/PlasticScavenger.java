@@ -26,6 +26,7 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 
 /** * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20071:29:37 PM
+ * @TEST this.
  */
 public final class PlasticScavenger extends AbstractActivityScavenger implements Model{
 

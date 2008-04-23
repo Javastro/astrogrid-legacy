@@ -25,6 +25,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 /** saves formatted details of the selection as a list to disk.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200711:54:38 AM
+ * @TEST
  */
 public class SaveXoXoListActivity extends AbstractResourceActivity 
     implements Activity.NoContext, Activity.NoTask{

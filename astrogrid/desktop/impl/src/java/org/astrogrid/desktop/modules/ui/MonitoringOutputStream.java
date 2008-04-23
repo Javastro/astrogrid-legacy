@@ -15,6 +15,7 @@ import org.apache.commons.io.output.ProxyOutputStream;
  * implementation based on commons.io CountingOutputStreams
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 27, 20071:17:07 PM
+ * @TEST unit test this.
  */
 public class MonitoringOutputStream extends ProxyOutputStream {
     public static final long ONE_KB = FileUtils.ONE_KB;
