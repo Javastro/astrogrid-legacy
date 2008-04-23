@@ -3,24 +3,17 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.io.File;
-import java.net.URI;
-
 import junit.framework.TestCase;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileUtil;
 import org.apache.commons.vfs.VFS;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
-import org.easymock.MockControl;
 
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
+import static org.easymock.EasyMock.*;
 
 /** Test some of the behaviour of the vizModel.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -30,14 +23,10 @@ public class VizModelUnitTest extends TestCase {
 
 
     private DalProtocolManager dal;
-    private MockControl queryMock;
     private QueryResultCollector query;
     private FileSystemManager vfs;
-    private MockControl serviceMock;
     private Service service;
-    private MockControl handlerMock;
     private AstroscopeTableHandler handler;
-    private MockControl finderMock;
     private IconFinder finder;
 
     protected void setUp() throws Exception {
@@ -45,48 +34,34 @@ public class VizModelUnitTest extends TestCase {
 
         dal = new DalProtocolManager();
         
-        queryMock = MockControl.createControl(QueryResultCollector.class);
-        query = (QueryResultCollector)queryMock.getMock();
+        query = createMock(QueryResultCollector.class);
         
         vfs = VFS.getManager();
         
         // useful for testing.
-        serviceMock = MockControl.createControl(Service.class);
-        service = (Service)serviceMock.getMock();
+        service = createMock(Service.class);
         
-        handlerMock = MockControl.createControl(AstroscopeTableHandler.class);
-        handler = (AstroscopeTableHandler)handlerMock.getMock();
+        handler = createMock(AstroscopeTableHandler.class);
         
-        finderMock = MockControl.createControl(IconFinder.class);
-        finder = (IconFinder)finderMock.getMock();
+        finder = createMock(IconFinder.class);
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
 
         dal = null;
-        queryMock = null;
         query = null;
         vfs = null;
-        serviceMock = null;
         service = null;
-        handlerMock = null;
         handler = null;
         finder = null;
-        finderMock = null;
     }
     private void replayAll() {
-        queryMock.replay();
-        serviceMock.replay();
-        handlerMock.replay();
-        finderMock.replay();
+        replay(query,service,handler,finder);
     }
     
     private void verifyAll() {
-        queryMock.verify();
-        serviceMock.verify();
-        handlerMock.verify();
-        finderMock.verify();
+        verify(query,service,handler,finder);        
     }
     
     private VizModel createModel() {

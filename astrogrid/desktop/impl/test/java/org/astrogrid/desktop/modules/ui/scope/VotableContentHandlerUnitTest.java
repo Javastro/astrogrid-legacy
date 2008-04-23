@@ -4,14 +4,12 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.io.InputStream;
-import java.util.Arrays;
 
 import javax.xml.parsers.SAXParserFactory;
 
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
-import org.easymock.ArgumentsMatcher;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -25,28 +23,13 @@ import junit.framework.TestCase;
  */
 public class VotableContentHandlerUnitTest extends TestCase {
 
-    /**
-     * @author Noel.Winstanley@manchester.ac.uk
-     * @since Nov 28, 20071:17:56 PM
-     */
-    private final class NonNullArgument implements ArgumentsMatcher {
-        public boolean matches(Object[] expected, Object[] actual) {
-            return actual.length == 1 && actual[0] != null;
-        }
-
-        public String toString(Object[] arg0) {
-          return  arg0[0].toString();
-        }
-    }
 
     private VotableHandler h;
-    private MockControl m;
     private XMLReader parser;
 
     protected void setUp() throws Exception {
         super.setUp();
-        m = MockControl.createStrictControl(VotableContentHandler.VotableHandler.class);
-        h = (VotableContentHandler.VotableHandler)m.getMock();
+        h = createStrictMock(VotableHandler.class);
         
         parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
         VotableContentHandler votHandler = new VotableContentHandler(false);
@@ -57,7 +40,6 @@ public class VotableContentHandlerUnitTest extends TestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        m = null;
         h = null;
         parser = null;
     }
@@ -70,12 +52,12 @@ public class VotableContentHandlerUnitTest extends TestCase {
         
         expectDataTable();
                        
-        m.replay();
+        replay(h);
         InputStream is = TablesImplUnitTest.class.getResourceAsStream("siap.vot");
         assertNotNull("siap.vot not found",is);
         InputSource src = new InputSource(is);
         parser.parse(src);
-        m.verify();
+        verify(h);
     }
     
     /** example with no data, checking that nested resources get detected */
@@ -86,12 +68,12 @@ public class VotableContentHandlerUnitTest extends TestCase {
         h.resource("nested",null,"meta");
         
                        
-        m.replay();
+        replay(h);
         InputStream is = this.getClass().getResourceAsStream("resources.vot");
         assertNotNull("resources.vot not found",is);
         InputSource src = new InputSource(is);
         parser.parse(src);
-        m.verify();
+        verify(h);
     }
     
     /** full complex example - nesting, data
@@ -116,12 +98,12 @@ public class VotableContentHandlerUnitTest extends TestCase {
         expectDataTable();
         h.info("a","b","c");        
                        
-        m.replay();
+        replay(h);
         InputStream is = this.getClass().getResourceAsStream("infos.vot");
         assertNotNull("resources.vot not found",is);
         InputSource src = new InputSource(is);
         parser.parse(src);
-        m.verify();        
+        verify(h);        
     }
     
     /** test that we're getting the desired results when parsing 
@@ -136,17 +118,17 @@ public class VotableContentHandlerUnitTest extends TestCase {
         
         h.resource("FOV Extensions","FOV","meta");
         h.resource("HST WFPC2 Field of View","HST_WFPC2_FOV","results");
-        anotherTable();
-        anotherTable();
-        anotherTable();
-        anotherTable();        
-        m.replay();
+        expectDataTable();
+        expectDataTable();
+        expectDataTable();
+        expectDataTable();    
+        replay(h);
         
         InputStream is =this.getClass().getResourceAsStream("bz1729.votable");
         assertNotNull("siap.vot not found",is);
         InputSource src = new InputSource(is);
         parser.parse(src);
-        m.verify();
+        verify(h);
     }
 
     /**
@@ -154,23 +136,10 @@ public class VotableContentHandlerUnitTest extends TestCase {
      */
     private void expectDataTable() throws SAXException {
         // once call to start table - don't care about args
-        h.startTable(null);
-        m.setMatcher(new NonNullArgument());        
+        h.startTable((StarTable)notNull());     
         // at least one row - don't care about args
-        h.rowData(null);
-        m.setMatcher(new NonNullArgument());
-        m.setVoidCallable(  MockControl.ONE_OR_MORE);        
-        // one call to end table
-        h.endTable();
-    }
-    
-    //necessaery as yoou can't set a matcher more than once for a method, it seems.
-    private void anotherTable() throws SAXException {
-        // once call to start table - don't care about args
-        h.startTable(null);     
-        // at least one row - don't care about args
-        h.rowData(null);
-        m.setVoidCallable(  MockControl.ONE_OR_MORE);        
+        h.rowData((Object[])notNull());
+        expectLastCall().atLeastOnce();       
         // one call to end table
         h.endTable();
     }

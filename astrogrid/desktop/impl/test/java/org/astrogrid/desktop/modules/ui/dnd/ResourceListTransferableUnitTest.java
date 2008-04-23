@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** test for resource lists.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -27,17 +27,12 @@ public class ResourceListTransferableUnitTest extends TestCase {
 		u = new URI("ivo://wibble/pling");
 		u1 = new URI("ivo://wiblle/plong");
 		
-		MockControl m = MockControl.createNiceControl(Resource.class);
-		r = (Resource)m.getMock();
-		r.getId();
-		m.setDefaultReturnValue(u);
-		m.replay();
+		r =createNiceMock(Resource.class);
+		expect(r.getId()).andStubReturn(u);
 		
-		MockControl m1 = MockControl.createNiceControl(Resource.class);
-		r1 = (Resource)m1.getMock();
-		r1.getId();
-		m1.setDefaultReturnValue(u1);
-		m1.replay();
+		r1 = createNiceMock(Resource.class);
+        expect(r1.getId()).andStubReturn(u1);		
+		replay(r,r1);
 		
 		l = new ArrayList();
 		l.add(r);

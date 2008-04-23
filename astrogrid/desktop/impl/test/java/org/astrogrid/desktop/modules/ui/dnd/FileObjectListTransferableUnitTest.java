@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -26,39 +26,28 @@ public class FileObjectListTransferableUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		MockControl m = MockControl.createNiceControl(FileObject.class);
-		f1 = (FileObject)m.getMock();
+		f1 = createNiceMock(FileObject.class);
 
-		MockControl mn1 = MockControl.createNiceControl(FileName.class);
-		FileName n1 = (FileName)mn1.getMock();
+		FileName n1 = createNiceMock(FileName.class);
 		
 		u1 = new URI("http://www.astrogrid.org");
 		
 		//stitch it all together.
-		f1.getName();
-		m.setDefaultReturnValue(n1);
-		n1.getURI();
-		mn1.setDefaultReturnValue(u1.toString());
-		m.replay();
-		mn1.replay();
+		expect(f1.getName()).andStubReturn(n1);
+		expect(n1.getURI()).andStubReturn(u1.toString());
+		replay(f1,n1);
+
 
 		/// same again for second fille object.
 
-		MockControl m2 = MockControl.createNiceControl(FileObject.class);
-		f2 = (FileObject)m2.getMock();
-
-		MockControl mn2 = MockControl.createNiceControl(FileName.class);
-		FileName n2 = (FileName)mn2.getMock();
-		
+		f2 = createNiceMock(FileObject.class);
+		FileName n2 = createNiceMock(FileName.class);
 		u2 = new URI("http://www.nowhere.org");
-		
-		//stitch it all together.
-		f2.getName();
-		m2.setDefaultReturnValue(n2);
-		n2.getURI();
-		mn2.setDefaultReturnValue(u2.toString());
-		m2.replay();
-		mn2.replay();		
+
+
+        expect(f2.getName()).andStubReturn(n2);
+        expect(n2.getURI()).andStubReturn(u2.toString());
+        replay(f2,n2);		
 		
 		// now build a list, and the transferable.
 		l = new ArrayList();

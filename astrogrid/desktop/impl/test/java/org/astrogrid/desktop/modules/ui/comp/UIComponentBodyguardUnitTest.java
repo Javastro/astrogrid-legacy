@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ui.comp;
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -17,8 +17,7 @@ public class UIComponentBodyguardUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		ucb = new UIComponentBodyguard();
-		MockControl mc = MockControl.createControl(UIComponent.class);
-		ui = (UIComponent)mc.getMock();
+		ui = createMock(UIComponent.class);
 	}
 UIComponentBodyguard ucb;
 UIComponent ui;

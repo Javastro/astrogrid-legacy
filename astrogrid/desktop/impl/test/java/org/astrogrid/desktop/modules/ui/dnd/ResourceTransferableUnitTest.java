@@ -11,7 +11,7 @@ import java.net.URI;
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** test behaviour of resource transfewrable.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -22,11 +22,9 @@ public class ResourceTransferableUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		u = new URI("ivo://wibble/pling");
-		MockControl m = MockControl.createNiceControl(Resource.class);
-		r = (Resource)m.getMock();
-		r.getId();
-		m.setDefaultReturnValue(u);
-		m.replay();
+		r = createNiceMock(Resource.class);
+		expect(r.getId()).andStubReturn(u);
+		replay(r);
 		t = new ResourceTransferable(r);
 	}
 	URI u;

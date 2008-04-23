@@ -4,23 +4,23 @@ package org.astrogrid.desktop.modules.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
-
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.vfs.VFS;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
-import org.astrogrid.test.AstrogridAssert;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.easymock.MockControl;
-import org.xml.sax.SAXException;
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.DifferenceConstants;
+import org.custommonkey.xmlunit.DifferenceListener;
+import org.w3c.dom.Node;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
 /**
  * @author Noel Winstanley
  * @since Aug 25, 20061:34:48 AM
@@ -71,16 +71,19 @@ public class TablesImplUnitTest extends TestCase {
 	
 	// more advanced. check we can stream through, from votable to votable.
 	// then compare results.
-	public void dontTestConvert1() throws Exception {
+	public void testConvert1() throws Exception {
 		File of = File.createTempFile(this.getClass().getName(),".vot");
 		of.deleteOnExit();
 		tables.convertFiles(new URI(input.toString()),"votable",new URI(of.toString()),"votable");
-		// only works with DTD-based
-		//AstrogridAssert.assertVotable(input.openStream());
+
 		// doesn't work - as stil outputs a votable1.1, while input is a v1.0
-//		XMLAssert.assertXMLEqual("input and output aren't the same"
-//				,new InputStreamReader(input.openStream())
-//				,new FileReader(of));
+//
+//		Diff diff = new Diff(new InputStreamReader(input.openStream())
+//            ,new FileReader(of));
+//		diff.overrideDifferenceListener(new IgnoreDoctypeAndNamespace());
+//		DetailedDiff ddiff = new DetailedDiff(diff);
+//		assertTrue(ddiff.toString(),ddiff.similar());
 	}
 
+	
 }

@@ -16,7 +16,7 @@ import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.impl.DefaultFileContentInfo;
-import org.easymock.MockControl;
+import static org.easymock.EasyMock.*;
 
 /** unit test for the fileobject transferable.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -26,34 +26,23 @@ public class FileObjectTransferableUnitTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		MockControl m = MockControl.createNiceControl(FileObject.class);
-		f1 = (FileObject)m.getMock();
+		f1 = createNiceMock(FileObject.class);
 
-		MockControl mn1 = MockControl.createNiceControl(FileName.class);
-		FileName n1 = (FileName)mn1.getMock();
+		FileName n1 = createNiceMock(FileName.class);
 		
-		MockControl mc1 = MockControl.createNiceControl(FileContent.class);
-		FileContent fc1 = (FileContent)mc1.getMock();
+		FileContent fc1 =createNiceMock(FileContent.class);
 		
 		u1 = new URI("http://www.astrogrid.org");
 		
 		//stitch it all together.
-		f1.getName();
-		m.setDefaultReturnValue(n1);
-		n1.getURI();
-		mn1.setDefaultReturnValue(u1.toString());
+		expect(f1.getName()).andStubReturn(n1);
+		expect(n1.getURI()).andStubReturn(u1.toString());		
+		expect(f1.getContent()).andStubReturn(fc1);
 		
-		f1.getContent();
-		m.setDefaultReturnValue(fc1);
-		
-		fc1.getContentInfo();
-		mc1.setDefaultReturnValue(new DefaultFileContentInfo(MIME,""));
-		fc1.getInputStream();
-		mc1.setDefaultReturnValue(new ByteArrayInputStream("".getBytes()));
-		
-		m.replay();
-		mn1.replay();		
-		mc1.replay();
+		expect(fc1.getContentInfo()).andStubReturn(new DefaultFileContentInfo(MIME,""));
+		expect(fc1.getInputStream()).andStubReturn(new ByteArrayInputStream("".getBytes()));
+
+		replay(f1,n1,fc1);
 		
 		trans = new FileObjectTransferable(f1,false);
 	}
