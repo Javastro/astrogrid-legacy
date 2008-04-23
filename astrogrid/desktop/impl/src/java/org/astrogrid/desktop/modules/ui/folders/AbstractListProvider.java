@@ -156,6 +156,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
     protected abstract void initializeFolderList() ;
 
     // legacy methods - keep these around for a little while for backwards compatability..
+    //@fixme - delete.
     private void loadOldXmlDecoder(File f, java.util.List target) {
         if (! f.exists()) {
             return;
