@@ -31,6 +31,7 @@ import org.astrogrid.desktop.InARTestCase;
 /** test that vfs, as integrated into AR, is doing what it says on the tin
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 20075:11:16 PM
+ * @TEST refactor into integration and system tests.
  */
 public class VfsSystemTest extends InARTestCase {
 

@@ -8,11 +8,13 @@ import java.net.URI;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
+import org.easymock.EasyMock;
 import org.easymock.MockControl;
 
 /** unit test for storage folder.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 27, 20077:23:37 PM
+ * @TEST removal of links on logout.
  */
 public class StorageFolderUnitTest extends FolderUnitTest {
 
@@ -50,8 +52,7 @@ public class StorageFolderUnitTest extends FolderUnitTest {
 	public void testSetFile() {
 		StorageFolder s = (StorageFolder)f;
 		assertNull(s.getFile());
-		MockControl m = MockControl.createNiceControl(FileObject.class);
-		FileObject fo = (FileObject)m.getMock();
+		FileObject fo = EasyMock.createNiceMock(FileObject.class);
 		s.setFile(fo);
 		assertSame(fo,s.getFile());
 	}
