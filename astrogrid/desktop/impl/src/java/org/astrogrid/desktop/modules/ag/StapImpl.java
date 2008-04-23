@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.13 2008/03/10 14:14:08 nw Exp $
+/*$Id: StapImpl.java,v 1.14 2008/04/23 10:52:21 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.astrogrid.desktop.modules.ivoa.DALImpl;
 /** Implementaiton of a component that does stap queries.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  * @modified Noel Winstanley changed from using Calendar to using Date.
- *
+ *@TEST
  */
 public class StapImpl extends DALImpl implements Stap {
 
@@ -181,6 +181,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.14  2008/04/23 10:52:21  nw
+marked as needing test.
+
 Revision 1.13  2008/03/10 14:14:08  nw
 fixed fallthough case statements.
 

@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.13 2008/03/10 18:08:45 nw Exp $
+/*$Id: CeaHelper.java,v 1.14 2008/04/23 10:51:44 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,6 +60,7 @@ import org.xml.sax.DocumentHandler;
  * <P>
  * tries to hid difference between local and remote cea apps.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Oct-2005
+ * @TEST
  */
 public class CeaHelper {
   

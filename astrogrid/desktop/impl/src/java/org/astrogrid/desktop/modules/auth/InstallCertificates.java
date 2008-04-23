@@ -29,6 +29,7 @@ import org.astrogrid.io.Piper;
  * never overwrites a certificate which is already there. 
  * @author Noel Winstanley
  * @since Sep 7, 200611:27:55 AM
+ * @TEST factor out parsing steps and unit-test them.
  */
 public class InstallCertificates implements Runnable {
 	/**

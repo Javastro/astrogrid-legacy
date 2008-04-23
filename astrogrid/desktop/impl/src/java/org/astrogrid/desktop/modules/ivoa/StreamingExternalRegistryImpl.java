@@ -74,7 +74,8 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	
 	/** processor that builds a DOM document
 	 * optionally may cut-out a subdocument from the response, or
-	 * may create a document fro the entire response. */
+	 * may create a document fro the entire response.
+	 * @TEST unit test this */
 	public static class DocumentBuilderStreamProcessor implements StreamProcessor {
 		protected Document doc;
         private final boolean cutoutSingleResource;
@@ -130,7 +131,9 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	
 
 
-	/** build an array of resource information objects from the input stream */
+	/** build an array of resource information objects from the input stream 
+	 * 
+	 * @TEST unit test this*/
 	public static class ResourceArrayBuilder implements StreamProcessor {
 		protected Resource[] rs;
 		public Resource[] getResult() {
@@ -142,7 +145,11 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		
 		}
 	}
-	
+	/**
+	 * @TEST unit test this.
+	 * @author Noel.Winstanley@manchester.ac.uk
+	 * @since Apr 17, 20085:25:23 PM
+	 */
 	public static class KnowledgeAddingResourceArrayBuilder implements StreamProcessor {
 		protected Resource[] rs;
 		public Resource[] getResult() {

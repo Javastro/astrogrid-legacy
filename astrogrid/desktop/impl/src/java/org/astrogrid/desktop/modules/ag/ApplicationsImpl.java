@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.30 2008/03/13 07:19:17 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.31 2008/04/23 10:51:44 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,6 +67,7 @@ import org.xml.sax.SAXException;
 /** Application service.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  * * @todo refine exception reporting.
+ * @TEST mock up the underpinnings of this class.
  */
 public class ApplicationsImpl implements ApplicationsInternal {
     /**
@@ -623,6 +624,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.31  2008/04/23 10:51:44  nw
+marked as needing test.
+
 Revision 1.30  2008/03/13 07:19:17  nw
 fix for 2632
 

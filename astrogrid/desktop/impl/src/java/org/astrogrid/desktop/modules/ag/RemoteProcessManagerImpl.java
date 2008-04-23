@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.18 2007/09/21 16:35:14 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.19 2008/04/23 10:52:20 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * 
  *  - kind of a central clearing house - delegates to appropriate strategy based on uri / document type.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
- *
+ *@TEST extend testing.
  */
 public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 	
@@ -326,6 +326,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.19  2008/04/23 10:52:20  nw
+marked as needing test.
+
 Revision 1.18  2007/09/21 16:35:14  nw
 improved error reporting,
 various code-review tweaks.

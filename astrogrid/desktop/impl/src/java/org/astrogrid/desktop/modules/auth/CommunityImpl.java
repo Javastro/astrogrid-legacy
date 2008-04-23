@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.11 2008/03/27 10:06:17 nw Exp $
+/*$Id: CommunityImpl.java,v 1.12 2008/04/23 10:53:05 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,8 @@ import org.astrogrid.security.SecurityGuard;
 
 /** Community Service implementation
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
+ * @TEST needs a unit test writing- but authentication mechanism needs to be isolated first, so it can be mocked out
+ * and just the event-firing, ui notifiying parts vierfied. will wait until after the expected a&A cleanup.
  */
 public class CommunityImpl implements CommunityInternal {
     /**
@@ -207,6 +209,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.12  2008/04/23 10:53:05  nw
+marked as needing test.
+
 Revision 1.11  2008/03/27 10:06:17  nw
  add display of login certificate
 

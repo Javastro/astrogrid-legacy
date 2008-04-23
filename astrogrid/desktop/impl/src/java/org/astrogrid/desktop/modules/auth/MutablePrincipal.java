@@ -6,6 +6,7 @@ import java.security.Principal;
  * who later can be replaced by logged in credientials
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 20, 20072:53:37 PM
+ * @TEST equals.
  */
 public class MutablePrincipal implements Principal {
 	/**

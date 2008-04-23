@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.17 2008/03/30 18:05:06 nw Exp $
+/*$Id: SiapImpl.java,v 1.18 2008/04/23 10:56:23 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import uk.ac.starlink.table.StarTable;
 /** Implementaiton of a component that does siap queries.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  *complies with 1.0 draft of SIAP spec. (24/5/2004)
+ *@TEST
  */
 public class SiapImpl extends DALImpl implements Siap {
 
@@ -155,6 +156,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.18  2008/04/23 10:56:23  nw
+marked as needing test.
+
 Revision 1.17  2008/03/30 18:05:06  nw
 checked the implementations against the latest standards,
 noted in code comments what version of the standard is supported.
