@@ -60,7 +60,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 /** generic table metadata viewer.
  * @author Noel.Winstanley@manchester.ac.uk
- *  * @FIXME fine-tune resizing - at the moment the table slides away, rather than shrinking.
  * 
  * @todo add datatips for columns.
  * @since Jul 18, 20072:22:45 PM

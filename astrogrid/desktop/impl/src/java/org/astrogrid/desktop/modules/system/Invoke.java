@@ -6,7 +6,9 @@ import org.apache.hivemind.ApplicationRuntimeException;
 
 import java.lang.reflect.Method;
 
-/** classes that encapsulates a single method invocation as a runnable */
+/** classes that encapsulates a single method invocation as a runnable
+* used from within one of the interceptors.
+*/
 public class Invoke implements Runnable {
     /**
      * Logger for this class
