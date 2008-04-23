@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.7 2007/09/04 18:50:50 nw Exp $
+/*$Id: ARTestSetup.java,v 1.8 2008/04/23 11:21:27 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -132,6 +132,7 @@ public class ARTestSetup extends TestSetup{
     		logger.info("Creating AR fixture");			
     		System.setProperty("builtin.shutdown.exit", "false");
     		System.setProperty(AllPlasticIntegrationTests.NOTIFICATION_KEY,"false");
+    		System.setProperty("java.awt.headless","true"); // headless.
 			fixture = new BuildInprocessWorkbench();
 			//if needed add furtyher config in here - e.g. different java.util.properties base class,
 			// custom system properties, etc.
@@ -153,6 +154,9 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.8  2008/04/23 11:21:27  nw
+configure to run headless.
+
 Revision 1.7  2007/09/04 18:50:50  nw
 Event Dispatch thread related fixes.
 
