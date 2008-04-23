@@ -14,6 +14,16 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2008.1.1" date="unreleased">
+<action dev="nw" type="update">
+    Checked all dependent libraries for updates.
+</action>
+<action dev="nw" type="update">
+updated build and source to work with Java 1.5 (and start to take advantage of it)
+</action>
+<action dev="nw" type="remove">
+Removed separate builds for asr, hub, etc.
+</action>
 <action dev="jl" type="fix" issue="2733">
     ROUND and TRUNCATE fixed.
 </action>
@@ -25,7 +35,6 @@
     The join condition is checked for tables. If required, tables
     are included automatically.
 </action>
-<release version="2008.1.1" date="unreleased">
     <action dev="nw" type="fix" issue="2724">
         Fixed obscure race-condition in astroscope.
     </action>

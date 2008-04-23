@@ -1,18 +1,706 @@
-<?xml version="1.0"?>
-<!-- extension maven script -->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml" >
+<?xml version="1.0" ?>
+<project xmlns:j="jelly:core" xmlns:define="jelly:define"  
+    xmlns:artifact="artifact" xmlns:u="jelly:util" xmlns:x="jelly:xml">
 
-	<!--  indicates we're building the workbench -->
-	  	<goal name="setup">
-			<j:set var="ifBuildingASR" value="java.lang.Object" />
-			<j:set var="ifBuildingACR" value="java.lang.Object" />			
-		</goal>
-	
-	<!--  generates an anouncement.txt after all other things have been built -->
-	<postGoal name="dist:build-bin">
-		<attainGoal name="announcement:generate" />
-	</postGoal>
+<!--  hooks -->
+    
+    <!-- record version infromation.-->
+    <postGoal name="java:jar-resources">
+        <attainGoal name="record-version" />
+    </postGoal>
+    
+  <goal name="record-version">
+        <tstamp />
+        <j:set var="maven.jar.manifest.attribute.BuildDate" value="${DSTAMP}_${TSTAMP}" />
+        <j:invokeStatic className="java.net.InetAddress" method="getLocalHost" var="maven.jar.manifest.attribute.BuildLocation" />
+    <j:set var="versionFile" value="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/version.xml" />
+    <echo>Writing Version Information out to ${versionFile}...</echo>   
+    <echo file="${versionFile}">
+        <default symbol="astrogrid.desktop.version" value="${astrogrid.desktop.version}" />
+        <default symbol="astrogrid.build.date" value="${maven.jar.manifest.attribute.BuildDate}" />
+        <default symbol="astrogrid.build.location" value="${maven.jar.manifest.attribute.BuildLocation}" />
+        <default symbol="astrogrid.build.by" value="${user.name}" />
+        <default symbol="astrogrid.build.jdk" value="${java.version}" />
+    </echo> 
+</goal>
+    
+    <postGoal name="site:run-reports">
+            <!--  run AR app to produce more documentation.-->
+            <attainGoal name="java:compile" />
+            <attainGoal name="java:jar-resources" />
+            <attainGoal name="hivedoc" />                
+            <attainGoal name="listConfig" />    
+    </postGoal>
+    
+    <postGoal name="dist:prepare-bin-filesystem">
+            <echo>Copying dependencies marked as 'dist.bundle' in project.xml into distribution</echo>
+            <j:new var="bundled" className="java.util.ArrayList" />
+                <copy todir="${maven.dist.bin.assembly.dir}" verbose="false">
+                      <j:forEach var="lib" items="${pom.artifacts}">
+                            <j:set var="dep" value="${lib.dependency}"/>
+                                    <j:if test="${dep.getProperty('dist.bundle')=='true'}">
+                                        <j:set var="ignored" value="${bundled.add(lib.name)}" /> <!--  IDIOM - just for side effects  -->
+                                          <fileset file="${lib.path}" />
+                                    </j:if>
+                    </j:forEach>
+                    </copy>
+       <echo>Copied jars: ${bundled}</echo>             
+    </postGoal>     
+    
+    <goal name="astrogrid-build-artifact" prereqs="dist:build-bin"
+    description="Build the artifacts and leave in the target directory"
+    />  
+    
+
+            
+<!--  all the libs are now in maven.dist.bin.assembly.dir -here we list all the other things we're going to do with them-->
+<postGoal name="dist:build-bin">
+<echo>Built the distribution - now strip and bundle it</echo>
+<!--  strip surplus classes -->
+    <attainGoal name="jar-strip" />
+<!--  package as a jar file -->
+    <attainGoal name="app-jar" />
+    <!-- smoke-test -->
+    <attainGoal name="smoke-test" />
+    <!--  generate announcement -->
+        <attainGoal name="announcement:generate" />
+</postGoal>
 
 
+    
+  <!--==================================
+    Supporting goals
+    -->
+
+<!--  
+    real packaging routine. - hangs off back of 'dist' goal-
+-->
+
+<!--  makes an all-in-one executable jar -->
+  <goal name="app-jar"
+  description="build an all-in-one executable jar: depends on dist:build-bin">
+  <echo>Building Application Jar: ${maven.final.name}-app.jar</echo>
+  <!--  first extract the existing manifest -->
+    <echo>Extracting the existing manifest</echo>
+    <unjar src="${maven.dist.bin.assembly.dir}/${maven.final.name}.jar"
+        dest="${maven.dist.bin.assembly.dir}">
+        <patternset>
+            <include name="META-INF/MANIFEST.MF" />
+        </patternset>
+    </unjar>
+    <!-- then merge all jars together, splicing in the previously extracted manifest, 
+    and a main-class attribute. -->
+    <echo>Merging jars together</echo>
+    <jar destfile="${maven.build.dir}/${maven.final.name}-app.jar"
+        filesetmanifest="skip" update="false" duplicate="preserve"
+        manifest="${maven.dist.bin.assembly.dir}/META-INF/MANIFEST.MF">
+        <!--  generate a zipfileset for each jar in the folder - necessary to do it this way so I can specify excludes for 'within' the zipfileset-->
+        <u:file var="d" name="${maven.dist.bin.assembly.dir}" />
+        <j:forEach var="j" items="${d.listFiles()}">
+            <j:if test="${j.getAbsolutePath().endsWith('.jar')}">
+                <zipfileset src="${j.getAbsolutePath()}" 
+                excludes="META-INF/*.SF META-INF/*.RSA META-INF/*.DSA META-INF/INDEX.LIST doc/** **/*.wsdl **/*.xsd **/*.txt **/*.html log4j.properties simplelog.properties" />
+            </j:if>
+        </j:forEach>
+        <manifest>
+            <attribute name="Main-Class" value="${astrogrid.application.mainclass}" />
+        </manifest>
+    </jar>  
+  </goal>   
+
+<!--  try running stripped - testing / development only -->
+<goal name="run" 
+    description="run the application from within the dist/bin directory - useful as part of testing to verify that stripping has worked. Depends on dist:build-bin"
+    >
+    <echo>Running ${astrogrid.application.mainclass} from the dist/bin directory</echo>
+    <java classname="${astrogrid.application.mainclass}"
+        fork="true">
+        <classpath>
+            <fileset dir="${maven.dist.bin.assembly.dir}" >
+                <include name="*.jar" />
+            </fileset>
+        </classpath>
+    </java>
+</goal>
+
+<goal name="run-app-jar"
+    description="run the (stripped) application jar- useful for testing stripping. Depends on app-jar"
+    >
+    <echo>Running ${astrogrid.application.mainclass} from the app.jar file</echo>
+    <java classname="${astrogrid.application.mainclass}"
+        fork="true">
+        <classpath>
+            <pathelement location="${maven.build.dir}/${maven.final.name}-app.jar" />
+        </classpath>
+    </java>
+</goal>
+
+<goal name="hivedoc"
+    description="generate hivemind documentation" >
+            <echo>Generating Hivedoc</echo>
+    <java classname="${astrogrid.application.mainclass}" outputproperty="ignored"
+        fork="true" dir="${maven.build.dir}/docs" >
+        <classpath>
+            <path refid="maven.dependency.classpath" />
+            <pathelement path="${maven.build.dir}/classes" />
+        </classpath>
+                <arg value="-hivedoc" />
+            </java>
+    <echo>Hivedoc written to    ${maven.build.dir}/docs/hivedoc</echo>
+</goal>
+
+<goal name="listConfig"
+    description="generate documentation of available config keys" >
+            <echo>Generating Configuration documentation</echo>
+    <java classname="${astrogrid.application.mainclass}"
+        fork="true" output="${maven.build.dir}/docs/config.txt" >
+        <classpath>
+            <path refid="maven.dependency.classpath" />
+            <pathelement path="${maven.build.dir}/classes" />
+        </classpath>
+                <arg value="-list" />
+            </java> 
+    <echo>Config documentation written to ${maven.build.dir}/docs/config.txt</echo>
+</goal>
+
+<goal name="run-now" prereqs="java:compile,java:jar-resources"
+    description="just compile the code and run it now.">
+    <echo>Running ${astrogrid.application.mainclass} from sources</echo>
+    <java classname="${astrogrid.application.mainclass}" fork="true">
+        <classpath>
+            <path refid="maven.dependency.classpath" />
+            <pathelement path="${maven.build.dir}/classes" />
+        </classpath>
+    </java> 
+</goal>
+
+<goal name="dep-jar" prereqs="java:compile,java:jar-resources"
+      description="write jar file with a Class-Path including all dependencies">
+    <property name="dependencies.jar"
+              value="${maven.build.dir}/dependencies.jar"/>
+    <pathconvert property="dependencies.path" pathsep=" ">
+        <path>
+            <path refid="maven.dependency.classpath"/>
+        </path>
+    </pathconvert>
+    <jar destfile="${dependencies.jar}">
+        <manifest>
+            <attribute name="Class-Path" value="${dependencies.path}"/>
+            <attribute name="Main-Class" value="${astrogrid.application.mainclass}"/>
+        </manifest>
+    </jar>
+</goal>
+
+    <!--  parses all the hivemind descriptors, and extracts a list of classes referenced by them.
+        this result is left in a variable 'hivemindRequiredClasses' in the parent scope.
+     -->
+    <goal name="scanDescriptors">
+        <echo>Scanning hivemind descriptors to extract a list of referenced classes</echo>
+            <!--  define a set of results. -->
+            <j:new var="classSet" className="java.util.HashSet" />
+            <j:new var="descriptorList" className="java.util.ArrayList" />
+            <echo>computing the list of descriptors</echo>
+            <u:file var="d" name="${maven.build.dest}/org/astrogrid/desktop/hivemind" />
+            <j:forEach var="f" items="${d.listFiles()}"> 
+                <!--  a file called *.xml, but not hivemind*.xml or fallback*.xml -->
+                <j:set var="fname" value="${f.getName()}" />    
+                <j:if test="${fname.endsWith('.xml') &amp;&amp; ! fname.startsWith('hivemind') &amp;&amp; ! fname.startsWith('fallback') &amp;&amp; ! fname.startsWith('version')}">        
+                    <j:set var="ignored" value="${descriptorList.add(fname)}" /><!--  idoom - just used for side effect. -->
+                    <!-- load the file, and filter oout the entity references that maven can't handle
+                    within the files included via entity references there's no references to classes that we don't already know about 
+                    (as this is the AR api).
+                    -->
+                    <loadfile property="${fname}" srcFile="${f}"><!--  this ant task assigns to a write-once property - so need to use a new property each iteration. -->
+                        <filterchain>
+                            <linecontainsregexp >
+                                <regexp pattern="^(?!.*ENTITY)" /> <!--  regexps are horrible. this means 'lines not matching ENTITY' -->
+                                <regexp pattern="^.*&amp;lt;|^.*&amp;amp;|^(?!.*&amp;\w+;)" /> <!-- 
+                        here I'm trying to say:  'pass any lines  not containing an entity reference apart from lt; and amp;' 
+                        however,all I can manage is 'pass any lines containing amp;, or lt; or no-other entity reference.
+                        not quite equiuvalent, but does the job
+                        -->                     
+                            </linecontainsregexp>
+                        </filterchain>
+                    </loadfile>
+                    <!--  now parse the filtered file  - need to double dereference fname -->
+                    <x:parse var="hd" validate="false" text="${context.findVariable(fname)}" />
+                    
+                    <!--  use xpath to search for referecned classes within the parsed descriptor -->
+                    <x:set var="pkg" select="$hd/module/@package" />                    
+                    <x:set var="classes" select="
+                          $hd//@class
+                        | $hd//@servletClass
+                        | $hd//@interface[not(starts-with(.,'org.astrogrid.acr'))]
+                        | $hd//@*[starts-with(.,'instance:')]
+                        | $hd//text()[starts-with(.,'instance:')]
+                        " />
+                    <!--  append classes we found in this descriptor to the set -->
+                    <j:forEach var="i" items="${classes}">
+                        <j:set var="classname" value="${i.getStringValue()}" />
+                         <j:choose>
+                            <j:when test="${classname.startsWith('instance:')}">
+                                <!--  only interested in side-effect - j:set just used to prevent lots of output to console -->
+                                <j:set var="ignored" value="${classSet.add(classname.substring(9))}" />
+                            </j:when>
+                            <j:when test="${classname.indexOf('.') == (0 - 1)}"><!--  unqualified classname -->
+                                <j:new  var="sb" className="java.lang.StringBuffer" />
+                                <j:invoke method="append" on="${sb}">
+                                    <j:arg value="${pkg[0].getStringValue()}"/>
+                                </j:invoke>
+                                <j:invoke method="append" on="${sb}">
+                                    <j:arg value="."/>
+                                </j:invoke>
+                                <j:invoke method="append" on="${sb}">
+                                    <j:arg value="${classname}"/>
+                                </j:invoke>
+                                <j:set var="ignored"    value="${classSet.add(sb.toString())}"/>                            
+                            </j:when>
+                            <j:otherwise>
+                                <j:set var="ignored"    value="${classSet.add(classname)}"/>
+                            </j:otherwise>
+                        </j:choose>
+                    </j:forEach>
+                </j:if>
+            </j:forEach>
+            <j:set scope="parent" var="hivemindRequiredClasses" value="${classSet}" />
+            <echo>Scanned descriptors: ${descriptorList} </echo>
+    </goal>
+    
+    <!--  helper goal, that lists extracted descriptors-->
+    <goal name="listDescriptors" prereqs="scanDescriptors" description="Debugging goal - lists all classes referenced in hivemind descriptors">
+        <echo>The following classes are referenced in the hivemind descriptors</echo>
+        <j:forEach var="i" items="${hivemindRequiredClasses}">
+            <echo>${i}</echo>
+        </j:forEach>
+    </goal>
+    
+    
+    <!-- strip unused classes, and optimize the rest
+    
+    load of rules here 
+    
+    to re-run this step alone, use 'maven dist:build-setup jar-strip'
+    
+    
+    -->
+<goal name="jar-strip"
+    description="strip and optimize the jars. depends on dist:build-bin" prereqs="scanDescriptors">
+    <echo>Stripping Jar: ${maven.final.name}-app.jar</echo>
+    <!-- optimization seems to introduce errors, so just strip. -->
+    <proguard  printseeds="false"
+        skipnonpubliclibraryclasses="false"
+        skipnonpubliclibraryclassmembers="false"
+        allowaccessmodification="false"
+         forceprocessing="true"
+        ignorewarnings="true" 
+        warn="false" note="false"
+        verbose="true"
+        shrink="true" optimize="false" obfuscate="false"
+         >
+        -injars ${maven.build.dir}/${maven.final.name}.jar      
+        <j:forEach var="lib" items="${pom.artifacts}">
+            <j:set var="dep" value="${lib.dependency}"/>
+            <j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') == 'true'}" trim="false">
+            -injars "${lib.path}" 
+        </j:if>
+        </j:forEach>   
+        -outjars ${maven.dist.bin.assembly.dir}
+        <!--  list of libs to preserve -->
+        <j:forEach var="lib" items="${pom.artifacts}">
+            <j:set var="dep" value="${lib.dependency}" />
+            <!--  libraries that avoid the stripping process, but will be bundled in later -->
+            <j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') != 'true'}" trim="false">
+            <echo>Excluding lib: ${lib.name} from stripping</echo>
+             -libraryjars ${lib.path} 
+            </j:if>
+            <!--  libraries that don't get bundled, but are used in testing process. -->
+            <j:if test="${dep.getProperty('testing.jar')=='true'}" trim="false">
+              -libraryjars ${lib.path}
+            </j:if>
+        </j:forEach>
+            <!--  system libraries -->
+            <j:set var="tmpVar" value="${os.name}" />           
+            <j:choose>
+                <j:when test="${tmpVar == 'Mac OS X'}" trim="false"> <!--  for OSX -->
+                -libraryjars ${java.home}/../Classes/classes.jar
+                </j:when>
+                <j:otherwise trim="false"><!--  for other os. -->
+                -libraryjars ${java.home}/lib/rt.jar 
+                </j:otherwise>
+            </j:choose>
+    <!-- 
+    =============
+    ROOTS - which classes to keep
+     -->
+     
+    <!--  various start classes-->
+    -keep public class org.astrogrid.* {
+        public static void main(java.lang.String[]);
+        public protected *;
+        }     
+        
+    <!--  keep all classes referenced from hivemind visibly the same. -->   
+    <j:forEach var="cl" items="${hivemindRequiredClasses}" trim="false">
+        -keep class ${cl} {
+            public protected *;
+            }
+    </j:forEach>
+
+    <!--  referred to only by text in interceptor-->
+    -keep class org.astrogrid.desktop.modules.system.Invoke {
+        public protected *;
+        }
+
+    <!--  class dynamically instantiated -->
+    -keep class org.astrogrid.desktop.modules.system.BackgroundExecutorImpl** {
+        public protected *;
+        }
+    <!--  seems to get missed. -->
+    -keep class org.astrogrid.desktop.modules.util.Selftest {
+        public protected *;
+        }     
+    <!--  inner interface that's just passed to xfire, but never invoked -->    
+     -keep class org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl** {
+        public protected *;
+     }   
+  
+    <!--  preserve handlers-->
+    -keep class org.astrogrid.desktop.protocol.** {
+        public protected *;
+        }
+
+    <!-- smoke-testing  entry point -->
+        -keep class org.astrogrid.desktop.BuildInprocessWorkbench {
+            public protected *;
+            }
+            
+        <!--  Dynamically checked by the Finder class see bug JDT1845  -->
+        -keep class org.astrogrid.desktop.BuildInprocessACR {
+            public protected *;
+            }
+            
+    <!--  required to make security work - these are some kind of data beans   -->                
+    -keep class org.astrogrid.community.common.*.data** { 
+        public protected *;
+    }
+    <!-- keep  xml beans for tool doc in workflow objects
+        second rule could be narrowed a little more
+     -->
+    -keep class org.astrogrid.workflow.beans.v1.*Descriptor     {
+        public protected *;
+        public static *;
+        }  
+    -keep class org.astrogrid.applications.beans.v1.**Descriptor {
+        public protected *;
+        public static *;
+        }          
+
+    <!--  other rules for ag codebase, based on proguard warnings 
+    probably not needed
+    -keep class * implements org.astrogrid.applications.component.CEAComponentManager {
+        public *;
+    }
+    -->     
+    <!-- 
+    =================== 
+    How to preserve classes that are kept.
+    -->
+        <!--  preserve naming and serialization code  , in any serializable classes that are required -->
+    -keepclassmembers class * implements java.io.Serializable {
+            *;
+            static final long serialVersionUID;
+            private void writeObject(java.io.ObjectOutputStream);
+            private void readObject(java.io.ObjectInputStream);
+            java.lang.Object writeReplace();
+            java.lang.Object readResolve();                        
+        }       
+        
+    <!-- 
+    =================
+    Supporting libraries
+     -->    
+        <!--  preserve UI look and feel - always dynamically loaded-->          
+    -keep class * extends javax.swing.plaf.ComponentUI {
+        public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
+    }    
+    <!--   commons logging  -->
+    -keep class org.apache.commons.logging.impl.LogFactoryImpl {
+        public *;
+        }
+    -keep class org.apache.commons.logging.impl.Log4JLogger {
+        public *;
+        }
+    -keep class org.apache.commons.logging.Log {
+        public  *;
+    }   
+ <!--  stilts - uses a plugin discovery mechanism.-->
+    -keep class * implements uk.ac.starlink.table.StarTableWriter {
+        public *;
+    }
+    -keep class * implements uk.ac.starlink.table.TableBuilder {
+        public *;
+    }    
+     -keepclassmembers class * {
+        public uk.ac.starlink.table.StarTableWriter[] getStarTableWriters(); 
+     }     
+
+   <!--  castor  - need to keep all - narrower stripping gives 
+   an unfixable error. At least treating it as a lib means we can optimize it,
+   and strip a little off the jars it depends upon. 
+   previous attempted rules for castor.
+   -keep class org.exolab.castor.builder.FieldInfoFactory {
+        public protected *;
+        }
+   -keep class org.exolab.castor.xml.UnmarshalHandler {
+        public protected *;
+        }    
+   -->
+   -keep class org.exolab.castor.** {
+        public protected *;
+        }   
+   -keep class * implements org.apache.xml.serialize.Serializer {
+        public protected *;
+        }     
+   <!--  jx path -->
+   -keep class org.apache.commons.jxpath.ri.JXPathContextFactoryReferenceImpl {
+        public *;
+        }
+   -keep class org.apache.commons.jxpath.JXPathContext {
+        public *;
+        }
+     -keep class org.apache.commons.jxpath.ri.JXPathContextReferenceImpl {
+        public *;
+        }
+    -keep class * implements org.apache.commons.jxpath.ri.model.NodePointerFactory {
+        public *;
+        }
+    <!-- xstream -->
+    -keep class com.thoughtworks.xstream.converters.**Converter {
+        public protected *;
+    }
+
+    <!-- xmlbeans  keep the adql beans unchanged - FUTURE if STC or STC/REGION are used, need to add rules for these too. -->
+    -keep class org.astrogrid.adql.v1_0.** {
+        *;
+        }
+    -keep class org.apache.xmlbeans.impl.schema.SchemaTypeLoaderImpl {
+        public *;
+        }
+    -keep class org.apache.xmlbeans.impl.schema.BuiltinSchemaTypeSystem {
+        public *;
+        }   
+    -keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemCompiler {
+        public *;
+    }
+    -keep class org.apache.xmlbeans.impl.store.Locale {
+        public *;
+        }
+    -keep class org.apache.xmlbeans.impl.schema.PathResourceLoader {
+        public *;
+        }   
+    -keep class org.apache.xmlbeans.impl.store.Path {
+        public *;
+        }
+    -keep class org.apache.xmlbeans.impl.store.Query {
+        public *;
+        }   
+    -keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl {
+        public *;
+        }
+
+    <!-- resolver library: SSL breaks when stripping this? -->
+    -keep class org.astrogrid.community.resolver.GullibleX509TrustManager {
+        public *;
+        }
+          
+      <!--  xalan - resources -->
+      -keep class org.apache.xml.res.* {
+        public *;
+        }
+    <!-- security - can't get to strip successfully. need to find a config for astrogrid-security first.
+    cryptix.provider.elgamal.BaseElGamalKeyPairGenerator calls '(cryptix.provider.elgamal.GenericElGamalParameterSet)Class.forName(variable).newInstance()'
+ cryptix.asn1.encoding.BaseCoder calls '(cryptix.asn1.encoding.CoderOperations)Class.forName(variable).newInstance()'
+ 
+     -->
+
+    <!--  sftp part of vfs -->
+    -keep class com.jcraft.jsch.jce.Random {
+        public *;
+        }
+    <!-- 
+    =================
+    Additional library rules based on proguard warnings. -->
+
+    -keep class * implements ca.odell.glazedlists.util.concurrent.LockFactory {
+        public *;
+        }
+     -keep class * implements org.mortbay.http.handler.NotFoundHandler {
+        public *;
+        }
+
+    <!-- 
+    ====================================
+    OLD AFTER THIS -->
+
+    <!--  complains that it can't find javax.xml.rpc.Service.createCall() - so make it a root 
+     -keep class org.astrogrid.applications.delegate.impl.CommonExecutionConnectorDelegateImpl {
+        *;
+        }
+     -keep class javax.xml.rpc.Service {
+        public protected *;
+     }
+     -keep class * implements javax.xml.rpc.Service {
+        public protected *;
+        }
+    -->
+
+    <!--  log4j code- althrough we're not stripping log4j at the moment
+    -keep class org.apache.log4j.ConsoleAppender {
+        public *;
+        }
+    -keep class org.apache.log4j.RollingFileAppender {
+        public *;
+        }
+    -keep class org.apache.log4j.PatternLayout {
+        public *;
+        }       
+    -keep class org.apache.log4j.Category {
+        public *;
+    }       
+    -->
+    <!--  security
+    -keep class org.globus.myproxy.MyProxy {
+        public *;
+        }   
+    -keep class org.globus.gsi.gssapi.GlobusGSSManagerImpl {
+        public *;
+        }           
+    -keep class org.globus.gsi.gssapi.net.impl.GSIGssSocketFactory {
+        public *;
+        }
+     -->
+    <!--  later - should whittle this down further later 
+    -keep public class cryptix.** {
+        public *;
+        }
+    -keep public class org.apache.xml.security.** {
+        public *;
+        }
+    -->
+    <!--  not enough - meh. 
+    -keep class org.apache.xml.security.Init {
+        public *;
+        }  
+    -keep class * implements org.apache.xml.security.keys.keyresolver.KeyResolverSpi {
+        public *;
+        }
+    -keep class * implements org.apache.xml.security.utils.resolver.ResourceResolverSpi {
+        public *;
+        }
+    -keep class  org.apache.xml.security.algorithms.SignatureAlgorithm {
+        public *;
+        }
+    -keep class org.apache.xml.security.algorithms.implementations.SignatureBaseRSA {
+        public *;
+        }
+        -->
+        <!--  
+    -keep public class org.bouncycastle.** {
+        public *;
+        }   
+    -keep public class org.apache.ws.security.**.* {
+        public *;
+        }
+        --> 
+    
+    <!--  axis, and dependent jars
+    -keep class org.apache.axis.transport.http.HTTPSender {
+        public *;
+        }
+    -keep class org.apache.axis.transport.local.LocalSender {
+        public *;
+    }
+    -keep class org.apache.axis.transport.java.JavaSender {
+        public *;
+    }
+    -keep class * implements org.apache.axis.EngineConfiguration{
+        public *;
+    }
+    -keep class org.apache.axis.configuration.DefaultEngineConfigurationFactory {
+        public *;
+    }
+    -keep class org.apache.axis.configuration.EngineConfigurationFactoryDefault {
+        public *;
+    }
+    -keep class * implements org.apache.axis.components.net.SocketFactory {
+        public *;
+    }
+    --> 
+
+    </proguard> 
+    <echo>Stripping completed</echo>
+    </goal>
+    
+    <!-- smoke test: defintion from wikipedia (fount of all my knowledge ;)
+    
+        It refers to the first test made after repairs or first assembly to provide some 
+        assurance that a device, plumbing, woodwind instrument, or software will not 
+        catastrophically fail. After a smoke test proves that the pipes will not leak, 
+        the keys seal properly, the circuit will not burn, or the software will not crash 
+        outright, the assembly is ready for more stressful testing.
+    
+    -->
+    <goal name="smoke-test" description="Run a 'smoke test' that verifies that stripped packaged jar is minimally functional. depends on app-jar">
+        <echo>Assembling Smoke Tests</echo>
+        <attainGoal name="test:eclipse" /><!-- for some reason, necessary before I can taskdef the next op -->
+          <taskdef
+            name="junit"
+            classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+          />  
+         <j:set var="testJar" value="${maven.build.dir}/${maven.final.name}-tests.jar" />
+         <jar destfile="${testJar}" basedir="${maven.test.dest}" />
+
+        <!--  based on maven test plugin. -->
+        <mkdir dir="${maven.build.dir}/smoke-test-reports" />
+        <echo>Running Smoke Tests: ${smoke.tests}</echo>
+        <junit printsummary="${maven.junit.printSummary}"          failureProperty="maven.test.failure"
+             fork="${maven.junit.fork}" dir="${maven.junit.dir}"
+            haltonerror="true" >
+            <u:tokenize var="listOfProperties" delim=" ">${maven.junit.sysproperties}</u:tokenize>
+                <j:forEach var="someProperty" items="${listOfProperties}">
+                    <sysproperty key="${someProperty}" value="${context.getVariable(someProperty)}"/>
+                </j:forEach>    
+                <formatter type="xml" />
+                <formatter type="${maven.junit.format}" usefile="${maven.junit.usefile}"/>
+                <classpath>
+                    <pathelement location="${pom.getDependencyPath('junit')}" /> <!-- must come first, before any stripped version in the app jar -->
+                    <pathelement location="${maven.build.dir}/${maven.final.name}-app.jar" />               
+                    <pathelement location="${testJar}" />
+                    <j:forEach var="lib" items="${pom.artifacts}">
+                        <j:set var="dep" value="${lib.dependency}"/>
+                        <j:if test="${dep.getProperty('testing.jar')=='true'}">
+                            <pathelement path="${lib.path}" />
+                        </j:if>
+                    </j:forEach> 
+                </classpath>
+            <u:tokenize var="tList" delim=" ">${smoke.tests}</u:tokenize>
+            <j:forEach var="t" items="${tList}">
+                <test name="${t}" todir="${maven.build.dir}/smoke-test-reports" />
+            </j:forEach>
+        </junit>
+          <j:if test="${maven.test.failure}">
+            <j:if test="${context.getVariable('maven.test.failure.ignore') != 'true'}">
+              <fail message="There were failures in the smoke test"/>
+            </j:if>
+          </j:if>   
+    </goal>
+
+
+<!--  definitions of custom ant tasks. -->  
+          
+    <!--  strips unused classes and methods from a jar -->
+    <taskdef resource="proguard/ant/task.properties"
+      classpathref="maven.dependency.classpath"/>
+     
 </project>
 

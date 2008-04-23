@@ -1,181 +1,1265 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<extend>${basedir}/acr/project.xml</extend>
-	<artifactId>vodesktop</artifactId>
-	<name>VODesktop</name>
-	<description>AstroGrid VODesktop</description>
-	<shortDescription>
-		VODesktop - Explore the Virtual Observatory
-	</shortDescription>
-
-	<!--  simple hack to allow cvs report-generation to work  -->
-	<repository>
-		<!--  not available any longer.
-			<connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</connection>
-		-->
-		<!--  a clone, doesn't seem to work
-			<connection>scm:cvs:pserver:anonymous@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid.name}</connection> 
-		-->
-		<connection>
-			scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}
-		</connection>
-		<developerConnection>
-			scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}
-		</developerConnection>
-		<url>
-			http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/
-		</url>
-	</repository>
-	<!-- groups the implementation javadoc -->
-	<packageGroups>
-		<packageGroup>
-			<title>ACR Framework</title>
-			<packages>
-				org.astrogrid.desktop.framework*:org.astrogrid.desktop:org.astrogrid.acr.builtin
-			</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>System Module</title>
-			<packages>org.astrogrid.desktop.modules.system*</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>VO Modules</title>
-			<packages>
-				org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*:org.astrogrid.modules.vo*
-			</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>UI Modules</title>
-			<packages>
-				org.astrogrid.desktop.modules.dialogs*:org.astrogrid.desktop.modules.ui*:org.astrogrid.desktop.icons:org.astrogrid.desktop.modules.adqlEditor*
-			</packages>
-		</packageGroup>
-	</packageGroups>
-	<build>
-		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-		<unitTest>
-			<includes>
-				<!--  
-					<include>**/*UnitTest.java</include>		
-					<include>**/*IntegrationTest.java</include>					
-				-->
-			<!-- NWW - too broken, due to get upgrade. just run uni tests for now. 
-             	<include>**/AllRepeatableTests.java</include>
-             -->
+    <extend>${basedir}/../template/project-template.xml</extend>
+    <pomVersion>1</pomVersion>
+    <artifactId>vodesktop</artifactId>
+    <name>VODesktop</name>
+    <groupId>vodesktop</groupId>
+    <organization />
+    <description>AstroGrid VODesktop</description>
+    <shortDescription>VODesktop - Explore the Virtual Observatory</shortDescription>
+    <repository>
+        <connection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/desktop/impl</connection>
+        <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/desktop/impl</developerConnection>
+        <url>http://www.astrogrid.org/viewcvs/astrogrid/desktop/impl/</url>
+    </repository>
+    <packageGroups>
+        <packageGroup>
+            <title>ACR Framework</title>
+            <packages>org.astrogrid.desktop.framework*:org.astrogrid.desktop:org.astrogrid.acr.builtin:org.astrogrid.desktop.hivemind:org.astrogrid.desktop.protocol*</packages>
+        </packageGroup>
+        <packageGroup>
+            <title>System Modules</title>
+            <packages>org.astrogrid.desktop.modules.system*:org.astrogrid.desktop.modules.util:org.astrogrid.desktop.modules.background:org.astrogrid.desktop.modules.auth</packages>
+        </packageGroup>
+        <packageGroup>
+            <title>VO Modules</title>
+            <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*:org.astrogrid.desktop.modules.vo*</packages>
+        </packageGroup>
+        <packageGroup>
+            <title>UI Modules</title>
+            <packages>org.astrogrid.desktop.modules.dialogs*:org.astrogrid.desktop.modules.ui*:org.astrogrid.desktop.icons:org.astrogrid.desktop.modules.adqlEditor*</packages>
+        </packageGroup>
+    </packageGroups>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <!--  
+                    <include>**/*UnitTest.java</include>		
+                    <include>**/*IntegrationTest.java</include>					
+                -->
+                <!-- NWW - too broken, due to get upgrade. just run uni tests for now. 
+                    <include>**/AllRepeatableTests.java</include>
+                -->
                 <include>**/AllUnitTests.java</include>
-			</includes>
+            </includes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/test/java</directory>
+                    <includes>
+                        <include>**/*.properties</include>
+                        <include>**/*.xml</include>
+                        <include>**/*.xsl</include>
+                        <include>**/*.dtd</include>
+                        <include>**/*.xsd</include>
+                        <include>**/*.vot</include>
+                    </includes>
+                    <filtering>false</filtering>
+                </resource>
+            </resources>
+        </unitTest>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/java</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>**/hivedoc/*.*</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.png</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.html</include>
+                    <include>**/*.xsl</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.dtd</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.list</include>
+                    <!--  ucd list -->
+                    <include>**/*.py</include>
+                    <!-- script templates -->
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+    <!-- small set of reports to run when generating project docs
+    -->
+    <reports>
+        <report>maven-changes-plugin</report>
+        <report>maven-javadoc-plugin</report>
+        <report>maven-jxr-plugin</report>
+    </reports>
+    <dependencies>
+    <!-- 
+    
+    I'm using some addtional property tags to manage things. some are used within
+    the build, and others are just for documentation.
+    
+    Used in build:
+    dist.bundle - boolean - indicates whether to include this jar in the final app.
+    strip - boolean - indicates whether this jar should be stripped / compressed
+    testing.jar - boolean - indicates that this jar is justused for testing.
+    
+    Documentation:
+    version-held - date - date that version was checked, newer version found, and decision to hold at this version was made.
+    version-checked - date - date that version was checked (and no newer version found)
+    part-of - indicates that this jar is a dependency of some other lib (and indicate required version)
+    upgraded - date - date when version was checked, new version found, and upgraded to
+     -->
+        <!--
+        ***************************
+          apis -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>acr-interface</artifactId>
+            <version>${astrogrid.desktop.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <!--  public interface - although these could be sliced, think it's best to leave all unchanged -->
+            </properties>
+        </dependency>
+        <!--  plastic support libraries. -->
+        <dependency>
+            <groupId>org.votech.ds6.plastic</groupId>
+            <artifactId>plastic</artifactId>
+            <version>0.6.1</version>
+            <type>jar</type>
+            <url>http://plastic.sourceforge.net</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <version-held>2008-04-14</version-held>   
+            </properties>
+        </dependency>
+        <!--
+        *******************************
+         container system - hivemind     -->
+        <!--  don't plan to strip these - too important - and all used.-->
+        <dependency>
+            <groupId>hivemind</groupId>
+            <artifactId>hivemind</artifactId>
+            <version>1.1.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <version-checked>2008-04-14</version-checked>                   
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>hivemind</groupId>
+            <artifactId>hivemind-lib</artifactId>
+            <version>1.1.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <part-of>hivemind - 1.1.1</part-of>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.0</version>
+            <type>jar</type>
+            <properties>
+                <strip>false</strip>
+                <dist.bundle>true</dist.bundle>
+                <part-of>hivemind - 3.0</part-of>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>oro</groupId>
+            <artifactId>oro</artifactId>
+            <version>2.0.8</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <part-of>hivemind - 2.0.6</part-of>
+                <part-of>vfs - 2.0.8</part-of>      
+                <part-of>castor - 2.0.8</part-of>                                           
+            </properties>            
+        </dependency>
+        <dependency>
+            <groupId>hiveutils</groupId>
+            <artifactId>hiveutils</artifactId>
+            <url>http://hivetranse.sourceforge.net/web/index.html</url>
+            <type>jar</type>
+            <version>0.6.2</version>
+            <properties>
+                <strip>false</strip>
+                <dist.bundle>true</dist.bundle>
+                <version-held>2008-04-14</version-held>                   
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>hiveutils</groupId>
+            <artifactId>hivelock.core</artifactId>
+            <url>http://hivetranse.sourceforge.net/web/index.html</url>
+            <type>jar</type>
+            <version>0.6.2</version>
+            <properties>
+                <strip>false</strip>
+                <dist.bundle>true</dist.bundle>
+                <version-held>2008-04-14</version-held>   
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>hiveutils</groupId>
+            <artifactId>hivelock.shared</artifactId>
+            <url>http://hivetranse.sourceforge.net/web/index.html</url>
+            <type>jar</type>
+            <version>0.6.2</version>
+            <properties>
+                <strip>false</strip>
+                <dist.bundle>true</dist.bundle>
+                <version-held>2008-04-14</version-held>                   
+            </properties>
+        </dependency>
+        <!-- 
+        ***********************************
+        Access to AR API
+         -->
+        <dependency>
+            <groupId>jetty</groupId>
+            <artifactId>org.mortbay.jetty</artifactId>
+            <version>5.1.12</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <version-held>2008-04-14</version-held>                
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>servletapi</artifactId>
+            <type>jar</type>
+            <groupId>servletapi</groupId>
+            <version>2.3</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>jetty - 2.3</part-of>
+                <part-of>xmlrpc - 2.2</part-of>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>rmi-lite</artifactId>
+            <type>jar</type>
+            <groupId>rmilite</groupId>
+            <version>1.0</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <!--small and perfectly formed -->
+                <version-checked>2008-04-14</version-checked>                
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xmlrpc</groupId>
+            <artifactId>xmlrpc</artifactId>
+            <version>1.2-b1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <version-held>2008-04-14</version-held>                
+            </properties>
+        </dependency>
+        <!--  ****************************
+        ASTROGRID LIBRARIES
+         -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${astrogrid.common.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency><!--  is this used? -->
+            <artifactId>astrogrid-xml</artifactId>
+            <type>jar</type>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.xml.stable}</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <type>jar</type>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.filemanager.version}</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <type>jar</type>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.filemanager.frozen.version}</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <type>jar</type>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.registry.version}</version>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <type>jar</type>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.registry.version}</version>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency> <!--  remove this maybe? -->
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-oldquery</artifactId>
+            <version>${astrogrid.pal.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <!-- does anyone use this? -->
+            <artifactId>astrogrid-utils</artifactId>
+            <type>jar</type>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.utils.stable}</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-contracts</artifactId>
+            <type>jar</type>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.contracts.version}</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>   
+    <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-scripting</artifactId>
+            <!--  refactor login so that this is not required anymore -->
+            <version>${astrogrid.scripting.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-cea-server</artifactId>
+            <version>${astrogrid.applications.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>  
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-cea-client</artifactId>
+            <version>${astrogrid.applications.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>  
+        <dependency>
+            <groupId>org.astrogrid</groupId> <!--  contains CEA objects , but also obsolete jes ones, which need to be stripped. -->
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <version>${astrogrid.workflowobjects.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>           
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-security</artifactId>
+            <version>${astrogrid.security.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>                
 
-			<resources>
-				<resource>
-					<directory>${basedir}/test/java</directory>
-					<includes>
-						<include>**/*.properties</include>
-						<include>**/*.xml</include>
-						<include>**/*.xsl</include>
-						<include>**/*.dtd</include>
-						<include>**/*.xsd</include>
-						<include>**/*.vot</include>
-					</includes>
-				</resource>
-			</resources>
-		</unitTest>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/java</directory>
-				<includes>
-					<include>*.properties</include>
-					<include>**/hivedoc/*.*</include>
-					<include>**/*.xml</include>
-					<include>**/*.png</include>
-					<include>**/*.jpg</include>
-					<include>**/*.html</include>
-					<include>**/*.xsl</include>
-					<include>**/*.gif</include>
-					<include>**/*.dtd</include>
-					<include>**/*.xsd</include>
-					<include>**/*.list</include><!--  ucd list -->
-					<include>**/*.py</include><!-- script templates -->
-				</includes>
-			</resource>
+    <!--  ADQL -->
+        <dependency>
+            <!-- This is the Adql/s to Adql/x compiler  -->
+            <artifactId>astrogrid-adqlstox</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.adqlstox.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <!-- These are the generated beans for adql -->
+            <artifactId>astrogrid-adql_v1_0a2</artifactId>
+            <!--  should the last fragment of this name be in the version instead? -->
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.adql_v1_0a2.version}</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency> 
 
-		</resources>
-	</build>
-
-	<!-- small set of reports to run when generating project docs
-	-->
-	<reports>
-		<report>maven-changes-plugin</report>
-		<report>maven-changelog-plugin</report>
-		<report>maven-developer-activity-plugin</report>
-		<report>maven-file-activity-plugin</report>
-		<report>maven-javadoc-plugin</report>
-		<report>maven-jxr-plugin</report>
-	</reports>
-
-	<dependencies>
-
-		<!-- libraries needed for workbench gui -->
-		<dependency>
-			<groupId>prefuse</groupId>
-			<artifactId>prefuse</artifactId>
-			<version>1.0-alpha</version>
-			<type>jar</type>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>true</strip>
-			</properties>
-		</dependency>
-
-		<dependency>
-			<artifactId>jcalendar</artifactId>
-			<groupId>flib</groupId>
-			<version>1.1.1</version>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>true</strip>
-			</properties>
-		</dependency>
-
-		<!-- wizards -->
-		<dependency>
-			<artifactId>wizard</artifactId>
-			<groupId>wizard</groupId>
-			<url>https://wizard.dev.java.net/</url>
-			<version>1.0</version>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>true</strip>
-			</properties>
-		</dependency>
-		<!--  for templating - not using at the moment
-		<dependency>
-			<artifactId>groovy-all</artifactId>
-			<groupId>groovy</groupId>
-			<version>1.0-beta-10</version> 
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>false</strip>
-			</properties>
-		</dependency>
+        <!--  Starlink --> 
+        <dependency>
+            <groupId>starlink</groupId>
+            <artifactId>stil</artifactId>
+            <version>2.6-7</version>
+            <type>jar</type>
+            <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <upgraded>2008-04-14</upgraded>                
+            </properties>
+        </dependency>                    
+        <dependency>
+            <groupId>starlink</groupId>
+            <artifactId>stilt_astrogrid_convert</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>          
+        <!--  *******************************
+        Jakarta commons
+         -->
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <type>jar</type>
+            <groupId>commons-logging</groupId>
+            <version>1.1.1</version>
+            <url>http://jakarta.apache.org/commons/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>xfire - 1.0.4</part-of>
+                <part-of>axis - 1.0.4</part-of>
+                <part-of>hivemind - 1.0.3</part-of>
+                <part-of>vfs - 1.0.2</part-of> 
+                <upgraded>2008-04-14</upgraded>                                  
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-collections</artifactId>
+            <type>jar</type>
+            <groupId>commons-collections</groupId>
+            <version>3.2</version>
+            <url>http://jakarta.apache.org/commons/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <version-checked>2008-04-14</version-checked>
+                <part-of>vfs - 3.1</part-of>
+                <part-of>jxpath(1.2) - 2.0</part-of>                                 
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-beanutils</artifactId>
+            <groupId>commons-beanutils</groupId>
+            <version>1.6</version>
+            <type>jar</type>
+            <properties>
+                <part-of>jxpath(1.2) - 1.4</part-of>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-lang</artifactId>
+            <groupId>commons-lang</groupId>
+            <version>2.4</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <upgraded>2008-04-14</upgraded>                   
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-cli</artifactId>
+            <type>jar</type>
+            <groupId>commons-cli</groupId>
+            <version>1.1</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <upgraded>2008-04-14</upgraded>                
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>xfire - 3.0</part-of>
+                <part-of>vfs (released) - 2.0 (released),(hand-compiled) 3.0</part-of>                 
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.3</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>xfire - 1.3</part-of>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <upgraded>2008-04-14</upgraded>
+            </properties>
+        </dependency>   
+        
+        <!-- commons  vfs --> 
+        <dependency>
+            <groupId>commons-vfs</groupId>
+            <artifactId>commons-vfs</artifactId>
+            <version>1.1-20070724</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>1.4.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>vfs - 1.4.1</part-of>                 
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jsch</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.32</version>
+            <type>jar</type>
+            <url>http://www.jcraft.com/jsch/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <part-of>vfs - 0.1.32</part-of>                 
+            </properties>
+        </dependency>                
+        <!-- **********************************
+        Gui libraries
+         -->
+        <dependency>
+            <groupId>l2fprod</groupId>
+            <artifactId>l2fprod-common-all</artifactId>
+            <version>7.3</version>
+            <type>jar</type>
+            <properties>
+                <upgraded>2008-04-14</upgraded>              
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>forms</artifactId>
+            <type>jar</type>
+            <groupId>jgoodies</groupId>
+            <version>1.0.7</version>
+            <url>http://forms.dev.java.net/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>glazedlists</groupId>
+            <artifactId>glazedlists</artifactId>
+            <version>1.7.0_java15</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <upgraded>2008-04-14</upgraded>                
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>jedit</groupId>
+            <artifactId>jedit-syntax</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <version-checked>2008-04-14</version-checked>
+            </properties>
+        </dependency>
+            
+        <dependency>
+            <groupId>prefuse</groupId>
+            <artifactId>prefuse</artifactId>
+            <version>1.0-alpha</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <version-held>2008-04-14</version-held>                   
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>jcalendar</artifactId>
+            <type>jar</type>
+            <groupId>flib</groupId>
+            <version>1.1.1</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency> 
+          <dependency>
+            <artifactId>BrowserLauncher2</artifactId>
+            <type>jar</type>
+            <groupId>BrowserLauncher2</groupId>
+            <version>1_3</version>
+            <url>http://browserlaunch2.sourceforge.net/</url>
+            <properties>
+               <upgraded>2008-04-14</upgraded>                
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <!--  just for now, don't strip - so we're sure the code for all platforms is included. -->
+            </properties>
+        </dependency>                 
+        <!-- ****************************
+        Other Core Libraries
+         -->
+        <dependency>
+            <artifactId>concurrent</artifactId>
+            <type>jar</type>
+            <groupId>concurrent</groupId>
+            <version>1.3.4</version>
+            <url>http://g.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>junit</artifactId><!--  junit is included in app, as used for self-tests -->
+            <type>jar</type>
+            <groupId>junit</groupId>
+            <version>3.8</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>   
+       <dependency>
+            <groupId>log4j</groupId> <!--  don't really want this, but required by globus. -->
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
+            <properties>
+                <version-held>22-4-2008</version-held>             
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>1.4.1</version>
+            <type>jar</type>
+            <properties>
+               <upgraded>2008-04-14</upgraded>              
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>     
+        <dependency>
+            <!--  only to be used by eh cache. use java.util.concurrent or doug lea's concurrent in other cases. -->
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>3.0</version>
+            <properties>
+                <part-of>ehcache - 3.0</part-of>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>        
+    <!--
+    ************************  
+    XML Marshalling 
+    -->
+    <!--  xbeans
+            used in adql parser -->
+            <!-- This is the minimum required for xmlbeans.
+                If we expand usage (eg: use of xpath) more jars will be required -->
+          <dependency>
+            <artifactId>xbean</artifactId>
+            <groupId>xmlbeans</groupId>
+            <version>2.3.0</version>
+            <type>jar</type>
+            <properties>
+               <upgraded>2008-04-14</upgraded>              
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>        
+          <dependency>
+            <artifactId>jsr173</artifactId>
+            <groupId>xmlbeans</groupId>
+            <version>1.0_api</version>
+            <type>jar</type>
+            <properties>
+                <part-of>xmlbeans - 1.0_api</part-of>        
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>               
+        <!--  castor
+            used for CEA  objects -->
+        <dependency>
+            <artifactId>commons-jxpath</artifactId>
+            <type>jar</type>
+            <groupId>commons-jxpath</groupId>
+            <url>http://jakarta.apache.org/commons/</url>
+            <!-- 
+             <version>1.1-patched</version>
+             -->
+             <version>1.2</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>castor</artifactId>
+            <type>jar</type>
+            <groupId>castor</groupId>
+            <version>1.2-xml</version>             
+            <url>http://castor.exolab.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>regexp</groupId>
+            <artifactId>regexp</artifactId>
+            <version>1.3</version>
+            <type>jar</type>
+            <url>http://jakarta.apache.org/commons/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>castor - 1.3</part-of>
+            </properties>
+        </dependency>
+    <!--  XStream
+    used to serialize ui objects - resource lists, etc. 
         -->
-		<dependency>
-			<artifactId>xpp3_min</artifactId>
-			<groupId>xpp3</groupId>
-			<version>1.1.3.4.O</version>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>false</strip> 
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>xstream</artifactId>
-			<groupId>xstream</groupId>
-			<version>1.2.2</version>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>false</strip><!-- fails at the moment -->
-			</properties>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <artifactId>xpp3_min</artifactId>
+            <type>jar</type>
+            <groupId>xpp3</groupId>
+            <version>1.1.4c</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <part-of>xstream</part-of>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>xstream</artifactId>
+            <type>jar</type>
+            <groupId>xstream</groupId>
+            <!-- <version>1.2.2</version>-->
+            <version>1.3</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip><!-- todo give this a go -->
+                <upgraded>2008-04-14</upgraded>                    
+            </properties>
+        </dependency>
+        <!--******************************** 
+         XML Parsing
+          -->
+        <!-- 
+        <dependency>
+            <artifactId>jaxp</artifactId>
+            <groupId>jaxp</groupId>
+            <version>1.4-20050623</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+            <version>2.4.0-patched</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                as these object get serialized in AR-RMI, and it's not worth the hassle
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.0</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+            <version>2.7.0</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2-patched</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+         -->
+        
+        <!--  pull-parsing-->
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <part-of>xfire - 1.0.1</part-of>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <part-of>xfire - 3.0.1</part-of>
+            </properties>
+        </dependency>
+              
+        <!--  ***********************
+        WEB Services -->
+        <!--  Axis -->
+        <dependency>
+            <groupId>axis</groupId>
+            <type>jar</type>
+            <artifactId>axis</artifactId>
+            <version>1.3</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+                <version-held>2008-04-14</version-held>                  
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <type>jar</type>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.5.1</version>
+            <properties>
+                <strip>false</strip>
+                <dist.bundle>true</dist.bundle>
+                <version-held>2008-04-14</version-held>                  
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <type>jar</type>
+            <artifactId>axis-saaj</artifactId>
+            <version>1.3</version>
+            <properties>
+                <strip>false</strip>
+                <dist.bundle>true</dist.bundle>
+                <version-held>2008-04-14</version-held>                  
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <type>jar</type>
+            <artifactId>axis-jaxrpc</artifactId>
+            <version>1.3</version>
+            <properties>
+                <strip>false</strip>
+                <!-- was seeing oddities about missing statics -->
+                <dist.bundle>true</dist.bundle>
+                <version-held>2008-04-14</version-held>                  
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <type>jar</type>
+            <artifactId>commons-discovery</artifactId>
+            <version>0.2</version>
+            <properties>
+                <strip>false</strip>
+                <!--  causes evil errors - related to missing static methods -->
+                <dist.bundle>true</dist.bundle>
+                <part-of>axis - 0.2</part-of>                
+            </properties>
+        </dependency>
+        <!--  XFire -->
+ <dependency>
+            <groupId>xfire</groupId>
+            <artifactId>xfire-core</artifactId>
+            <version>1.2.6</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <upgraded>2008-04-14</upgraded>                
+            </properties>
+        </dependency>
+        <dependency><!-- check if xfire really requires this -->
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>xfire - 1.0</part-of>
+                <part-of>jxpath(1.2) - 1.0</part-of>
+            </properties>
+        </dependency>    
+        <dependency> 
+            <groupId>activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.0.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+                <part-of>xfire -1.0.2+</part-of>                
+            </properties>
+        </dependency>              
+     <!-- ========================
+     SECURITY -->
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-jglobus</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-jgss</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-puretls</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-cryptix</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-cryptix32</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-cryptix-asn1</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xmlsec</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>1.3.0</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk14</artifactId>
+            <version>129</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>false</strip>
+            </properties>
+        </dependency>
+      
+        <!-- 
+        ***********************
+        Libraries only used within the build.
+         -->        
+        <dependency>
+            <groupId>proguard</groupId>
+            <artifactId>proguard</artifactId>
+            <version>4.2</version>
+            <type>jar</type>
+            <properties>
+                <upgraded>2008-04-14</upgraded>    
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-jsl</artifactId>
+            <version>20030211.143151</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-xml</artifactId>
+            <version>20030211.142705</version>
+            <type>jar</type>
+            <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+        </dependency>
+        <!--  libraries used for testing -->
+        <dependency>
+            <artifactId>plastic</artifactId>
+            <type>jar</type>
+            <groupId>starlink</groupId>
+            <version>20060808-unsigned</version>
+            <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
+            <properties>
+                <testing.jar>true</testing.jar>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
+            <properties>
+                <testing.jar>true</testing.jar>
+                <upgraded>2008-04-14</upgraded>                   
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.3</version>
+            <type>jar</type>
+            <url>http://www.easymock.org/</url>
+            <properties>
+                <upgraded>2008-04-14</upgraded>              
+                <testing.jar>true</testing.jar>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>httpunit</groupId>
+            <artifactId>httpunit</artifactId>
+            <version>1.5.4</version>
+            <type>jar</type>
+            <url>http://httpunit.sourceforge.net/</url>
+            <properties>
+                <part-of>jwebunit - 1.5.4</part-of>
+                <testing.jar>true</testing.jar>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jwebunit</groupId>
+            <artifactId>jwebunit</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <url>http://jwebunit.sourceforge.net/</url>
+            <properties>
+                <version-held>22-4-2008</version-held>
+                <testing.jar>true</testing.jar>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>rhino</groupId>
+            <artifactId>js</artifactId>
+            <version>1.5R4.1</version>
+            <type>jar</type>
+            <properties>
+                <part-of>jwebunit -1.5R4.1</part-of> 
+                <testing.jar>true</testing.jar>
+            </properties>
+        </dependency>
+        <!--  alternative parser that can be used by httpunit (nekohtml had a hard dep on xerces -->
+        <dependency>
+            <groupId>jtidy</groupId>
+            <artifactId>jtidy</artifactId>
+            <version>4aug2000r7-dev</version>
+            <properties>
+                <part-of>jwebunit</part-of>
+                <testing.jar>true</testing.jar>
+            </properties>            
+        </dependency>
+
+    </dependencies>
 </project>
+
