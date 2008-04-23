@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.34 2008/03/30 09:42:47 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.35 2008/04/23 10:53:37 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,11 +24,9 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -53,9 +51,9 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
+import org.astrogrid.desktop.modules.ag.AbstractProcessMonitor;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.CeaHelper;
-import org.astrogrid.desktop.modules.ag.AbstractProcessMonitor;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
 import org.astrogrid.desktop.modules.ag.TimerDrivenProcessMonitor;
@@ -63,12 +61,9 @@ import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
-import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.core.exceptions.CastorException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.votech.VoMon;
@@ -594,7 +589,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         try {
             Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
             return t.getName();
-        } catch (CastorException e) {
+        } catch(org.exolab.castor.core.exceptions.CastorException e) {
             return null;
         }         
     }
@@ -658,6 +653,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.35  2008/04/23 10:53:37  nw
+fix to get castor working under 1.5
+
 Revision 1.34  2008/03/30 09:42:47  nw
 minor tweak
 
