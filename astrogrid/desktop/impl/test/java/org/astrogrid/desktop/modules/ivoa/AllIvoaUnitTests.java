@@ -21,6 +21,7 @@ public class AllIvoaUnitTests {
 		suite.addTestSuite(SsapUnitTest.class);
 		suite.addTestSuite(ConeUnitTest.class);
 		suite.addTestSuite(AdqlUnitTest.class);
+		suite.addTestSuite(CacheFactoryUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}
