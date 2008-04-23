@@ -56,7 +56,7 @@ public class AdqlImpl implements AdqlInternal {
         }
     }
     
-//@todo - implement and add to public interface.
+//@future - implement and add to public interface.
 	public String x2s(Document arg0) {
 		return null;
 	}
