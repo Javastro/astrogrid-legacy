@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,17 +23,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Status;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -42,7 +36,6 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
