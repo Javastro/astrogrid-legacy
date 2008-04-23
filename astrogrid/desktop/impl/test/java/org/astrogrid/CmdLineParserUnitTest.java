@@ -13,6 +13,7 @@ import org.astrogrid.desktop.hivemind.ListProperties;
 /** test for the commandline parser.
  * @author Noel Winstanley
  * @since Jun 6, 20062:18:22 PM
+ * @TEST loading properties and modules from file and url.
  */
 public class CmdLineParserUnitTest extends TestCase {
 

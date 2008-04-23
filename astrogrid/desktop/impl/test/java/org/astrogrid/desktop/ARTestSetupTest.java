@@ -45,6 +45,7 @@ public class ARTestSetupTest extends TestCase {
 		assertNotNull(s.currentSession());
 		assertEquals(principal,s.currentSession());
 	}
+	/** @TEST work out what's appropriate to test here - check for login, but remove dep on extenal services? */
 	public void testLoggedIn() throws Exception {
 		// expect us to be logged in at this point too..
 		Community comm = (Community)ARTestSetup.fixture.getACR().getService(Community.class);

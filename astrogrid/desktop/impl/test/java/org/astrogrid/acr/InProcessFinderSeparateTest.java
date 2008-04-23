@@ -1,4 +1,4 @@
-/*$Id: InProcessFinderSeparateTest.java,v 1.4 2007/01/29 10:38:40 nw Exp $
+/*$Id: InProcessFinderSeparateTest.java,v 1.5 2008/04/23 11:32:43 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.desktop.TestingFinder;
  * is a 'separate test' - can't be run in conjunction with other integration tests (although that's what it really is)
  * because this test needs to create and destroy it's own acr instance.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Jul-2005
- *
+ *@TEST get this working.
  */
 public class InProcessFinderSeparateTest extends TestCase {
 
@@ -117,6 +117,9 @@ public class InProcessFinderSeparateTest extends TestCase {
 
 /* 
 $Log: InProcessFinderSeparateTest.java,v $
+Revision 1.5  2008/04/23 11:32:43  nw
+marked as needing tests.
+
 Revision 1.4  2007/01/29 10:38:40  nw
 documentation fixes.
 

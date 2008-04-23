@@ -1,4 +1,4 @@
-/*$Id: LooselyTypedFunctionCallIntegrationTest.java,v 1.2 2007/01/29 10:42:28 nw Exp $
+/*$Id: LooselyTypedFunctionCallIntegrationTest.java,v 1.3 2008/04/23 11:32:43 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,8 +27,8 @@ import org.astrogrid.desktop.InARTestCase;
 
 /** test the function call part of the apihelp interface.
  * 
- * in this package, as requires a variant of the ar which has 
- * a component which takes a complex type as an argument.
+ * @TEST reconsider what this is doing, and why it's in ApiHelp. re-implement to use a method that doesn't call external services.
+ * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
@@ -198,6 +198,9 @@ public class LooselyTypedFunctionCallIntegrationTest extends InARTestCase {
 
 /* 
 $Log: LooselyTypedFunctionCallIntegrationTest.java,v $
+Revision 1.3  2008/04/23 11:32:43  nw
+marked as needing tests.
+
 Revision 1.2  2007/01/29 10:42:28  nw
 tidied.
 

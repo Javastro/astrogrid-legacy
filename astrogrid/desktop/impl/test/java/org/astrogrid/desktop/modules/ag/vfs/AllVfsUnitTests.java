@@ -9,6 +9,7 @@ import junit.framework.TestSuite;
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 3, 200712:50:21 PM
+ * @TEST extend to cover more of ag.vfs and ag.vfs.myspace
  */
 public class AllVfsUnitTests {
 

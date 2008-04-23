@@ -9,6 +9,7 @@ import junit.framework.TestSuite;
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 22, 20072:55:36 PM
+ * @TEST extend unit coverage, and work on integraiton tests.
  */
 public class AllAuthUnitTests {
 
