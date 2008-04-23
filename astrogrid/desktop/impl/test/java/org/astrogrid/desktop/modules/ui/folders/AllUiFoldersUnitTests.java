@@ -24,8 +24,7 @@ public class AllUiFoldersUnitTests {
 		suite.addTestSuite(AbstractListProviderUnitTest.class);
 		suite.addTestSuite(StorageFoldersProviderUnitTest.class);
         suite.addTestSuite(BranchBeanUnitTest.class);
-        //NWW commmented out - won't compile at the moment.
-        //suite.addTestSuite(PersistentTreeProviderUnitTest.class);
+        suite.addTestSuite(PersistentTreeProviderUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}
