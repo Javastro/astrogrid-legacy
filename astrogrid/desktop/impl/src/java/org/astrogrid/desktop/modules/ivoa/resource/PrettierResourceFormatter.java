@@ -589,7 +589,6 @@ public final class PrettierResourceFormatter {
                             }
                             sb.br();                            
                             sb.appendTitledSequence("Supported&nbsp;Frames",sc.getSupportedFrames());
-                            sb.appendTitledSequence("Supports",sc.getSupports());
                             sb.append("&nbsp; ");      
                             if (sc.getTestQuery() != null) {
                                 sb.br();
