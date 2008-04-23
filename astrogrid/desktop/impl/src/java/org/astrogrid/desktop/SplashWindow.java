@@ -15,6 +15,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.MediaTracker;
@@ -187,7 +188,7 @@ public class SplashWindow extends Window {
      * @param image The splash image.
      */
     public static void splash(Image image) {
-        if (instance == null && image != null) {
+        if (!GraphicsEnvironment.isHeadless() && instance == null && image != null) {
             Frame f = new Frame();
             
             // Create the splash image

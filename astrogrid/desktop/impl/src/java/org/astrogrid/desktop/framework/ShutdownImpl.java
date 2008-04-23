@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.8 2007/01/09 16:22:47 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.9 2008/04/23 10:50:48 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.framework;
 
+import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -80,7 +81,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
             }
         }
         // go ahead if we've no objections, otherwise prompt the user.       
-        if (objections.size() ==0 || ! confirmIfObjections || JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,fmt(objections),"Shutting down ACR - are you sure?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE)) {
+        if (objections.size() ==0 || ! confirmIfObjections || GraphicsEnvironment.isHeadless() || JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,fmt(objections),"Shutting down ACR - are you sure?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE)) {
             reallyHalt();
         }
         
@@ -189,6 +190,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.9  2008/04/23 10:50:48  nw
+added code for headless mode.
+
 Revision 1.8  2007/01/09 16:22:47  nw
 minor
 

@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.7 2008/02/15 13:09:02 mbt Exp $
+/*$Id: ResultDialog.java,v 1.8 2008/04/23 10:54:38 nw Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,9 @@ public class ResultDialog extends BaseDialog {
     private JEditorPane resultDisplay;
 
     public static ResultDialog newResultDialog(Component parent, Object message) {
+        if (parent == null) {
+            return new ResultDialog(message);
+        }
         Window window = parent instanceof Window
                       ? (Window) parent
                       : SwingUtilities.getWindowAncestor(parent);
@@ -100,6 +103,9 @@ public class ResultDialog extends BaseDialog {
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.8  2008/04/23 10:54:38  nw
+added code for headless mode.
+
 Revision 1.7  2008/02/15 13:09:02  mbt
 Replace use of SwingUtilities.getAncestorOfClass(Window.class,comp) with
 an idiom which does what that method ought to, viz. returns comp itself
