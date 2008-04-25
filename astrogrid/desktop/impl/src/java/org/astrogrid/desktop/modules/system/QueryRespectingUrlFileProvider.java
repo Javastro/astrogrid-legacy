@@ -24,7 +24,6 @@ import org.apache.commons.vfs.provider.url.UrlFileSystem;
 /** extended  url file provider that respects the ?query part of a url. 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Dec 9, 200712:03:09 PM
- * @TEST unit test this.
  */
 public class QueryRespectingUrlFileProvider extends UrlFileProvider {
 

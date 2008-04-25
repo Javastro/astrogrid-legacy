@@ -83,7 +83,6 @@ public class Preference {
 	/** list all possible alternative values, based on alternatives, default and current
 	 * values
 	 * @return an array of suggestions, no duplicates,where first one will be the current value
-	 * @TEST
 	 */
 	public String[] getAllAlternatives() {
 		Set s= new HashSet(); // use a set to merge recommendations, current, default.

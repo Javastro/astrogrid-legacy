@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.13 2008/03/10 18:52:19 nw Exp $
+/*$Id: HtmlServlet.java,v 1.14 2008/04/25 08:58:04 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,10 +70,10 @@ public class HtmlServlet extends AbstractReflectionServlet {
             out.println("</dd>");
         }
         out.println("</dl>");
-        out.println("<a href='./preferences'><h1>Preferences</h1></a>");
+        out.println("<h1><a href='./preferences'>Preferences</a></h1>");
         out.println("View and edit the configuration settings for this AR<p/>");
         out.println("<a href='./system/configuration/reset'>Reset configuration to factory settings</a>");
-        out.println("<a href='./xmlrpc'<h1>XML-RPC interface</h1></a>");
+        out.println("<a href='./xmlrpc'><h1>XML-RPC interface</h1></a>");
         out.println("Endpoint for the XML-RPC interface to this AR");
         footer(out);
     }
@@ -294,6 +294,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.14  2008/04/25 08:58:04  nw
+tested
+
 Revision 1.13  2008/03/10 18:52:19  nw
 used sets in place of lists.
 

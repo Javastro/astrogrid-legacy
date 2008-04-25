@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.14 2008/04/23 10:51:44 nw Exp $
+/*$Id: CeaHelper.java,v 1.15 2008/04/25 08:57:50 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,6 @@ import org.xml.sax.DocumentHandler;
  * <P>
  * tries to hid difference between local and remote cea apps.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Oct-2005
- * @TEST
  */
 public class CeaHelper {
   
@@ -104,7 +103,7 @@ public class CeaHelper {
       Capability[] caps = server.getCapabilities();   
       for (int i = 0; i < caps.length; i++) {
          URI standardID = caps[i].getStandardID(); 
-         if (StandardIds.CEA_1_0.equals(standardID.toString())) {
+         if (standardID != null && StandardIds.CEA_1_0.equals(standardID.toString())) {
             // We've found a CEA capability
             Interface[] ints = caps[i].getInterfaces();
             if (ints.length == 0) {
