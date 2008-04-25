@@ -44,7 +44,7 @@
                 <!-- NWW - too broken, due to get upgrade. just run uni tests for now. 
                     <include>**/AllRepeatableTests.java</include>
                 -->
-                <include>**/AllUnitTests.java</include>
+                <include>**/AbsolutelyAllUnitTests.java</include>
             </includes>
             <resources>
                 <resource>
@@ -56,6 +56,8 @@
                         <include>**/*.dtd</include>
                         <include>**/*.xsd</include>
                         <include>**/*.vot</include>
+                        <include>**/*.votable</include>                        
+                        <include>**/test-resources/*</include>
                     </includes>
                     <filtering>false</filtering>
                 </resource>
@@ -789,7 +791,17 @@
                 <dist.bundle>true</dist.bundle>
                 <strip>true</strip>
             </properties>
-        </dependency>     
+        </dependency>   
+        <dependency>
+            <groupId>ehcache</groupId>
+            <artifactId>jsr107cache</artifactId>
+            <version>1.0</version>
+            <properties>
+                <part-of>ehcache - 3.0</part-of>            
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>            
+        </dependency>  
         <dependency>
             <!--  only to be used by eh cache. use java.util.concurrent or doug lea's concurrent in other cases. -->
             <groupId>backport-util-concurrent</groupId>
@@ -1216,6 +1228,16 @@
                 <upgraded>2008-04-14</upgraded>              
                 <testing.jar>true</testing.jar>
             </properties>
+        </dependency>
+        <dependency>
+              <groupId>hamcrest</groupId>
+              <artifactId>hamcrest-all</artifactId>
+              <version>1.1</version>
+              <type>jar</type>
+            <properties>
+                <upgraded>2008-04-14</upgraded>              
+                <testing.jar>true</testing.jar>
+            </properties>              
         </dependency>
         <dependency>
             <groupId>httpunit</groupId>
