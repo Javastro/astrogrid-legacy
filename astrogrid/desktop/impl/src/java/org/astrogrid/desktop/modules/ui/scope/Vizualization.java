@@ -1,4 +1,4 @@
-/*$Id: Vizualization.java,v 1.8 2007/12/12 13:54:12 nw Exp $
+/*$Id: Vizualization.java,v 1.9 2008/04/25 08:59:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,9 +41,9 @@ public abstract class Vizualization extends GraphEventAdapter {
             TextImageTreeNodeRenderer renderer = new TextImageTreeNodeRenderer(vizs.getVizModel().getNodeSizingMap()) ;
             renderer.setMaxTextWidth(150);
             renderer.setRoundedCorner(8,8);
-            renderer.setTextAttributeName(Retriever.LABEL_ATTRIBUTE);
-            renderer.setSizeAttributeName(Retriever.RESULT_COUNT);
-            renderer.setImageAttributeName(Retriever.SERVICE_LOGO_ATTRIBUTE);
+            renderer.setTextAttributeName(AbstractRetriever.LABEL_ATTRIBUTE);
+            renderer.setSizeAttributeName(AbstractRetriever.RESULT_COUNT);
+            renderer.setImageAttributeName(AbstractRetriever.SERVICE_LOGO_ATTRIBUTE);
             renderer.setMaxImageDimensions(20,20);
             renderer.setAbbrevType(StringAbbreviator.TRUNCATE);
             renderer.setImageFactory(vizs.getImageFactory());
@@ -59,7 +59,7 @@ public abstract class Vizualization extends GraphEventAdapter {
             itemRegistry.getFocusManager().putFocusSet(FocusManager.SELECTION_KEY,vizs.getVizModel().getSelectionFocusSet());
             
             DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer();
-            edgeRenderer.setWeightAttributeName(Retriever.WEIGHT_ATTRIBUTE);
+            edgeRenderer.setWeightAttributeName(AbstractRetriever.WEIGHT_ATTRIBUTE);
             edgeRenderer.setWeightType(DefaultEdgeRenderer.WEIGHT_TYPE_LINEAR);
             itemRegistry.setRendererFactory(new DefaultRendererFactory(getTextRenderer(), edgeRenderer));            
         }
@@ -75,6 +75,9 @@ public abstract class Vizualization extends GraphEventAdapter {
 
 /* 
 $Log: Vizualization.java,v $
+Revision 1.9  2008/04/25 08:59:36  nw
+extracted interface from retriever, to ease unit testing.
+
 Revision 1.8  2007/12/12 13:54:12  nw
 astroscope upgrade, and minor changes for first beta release
 

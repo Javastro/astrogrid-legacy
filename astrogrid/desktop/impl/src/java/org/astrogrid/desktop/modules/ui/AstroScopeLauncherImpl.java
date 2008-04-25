@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.83 2008/04/09 08:41:47 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.84 2008/04/25 08:59:36 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,6 +86,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
+import org.astrogrid.desktop.modules.ui.scope.AbstractRetriever;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
@@ -517,7 +518,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		String ndVal = null;  
 		String posVal = null;
 		boolean foundOffset = false;
-		if((ndVal = nd.getAttribute(Retriever.OFFSET_ATTRIBUTE)) != null) {
+		if((ndVal = nd.getAttribute(AbstractRetriever.OFFSET_ATTRIBUTE)) != null) {
 			foundOffset = true;
 			double val;
 			if(fromDegrees) {
@@ -525,19 +526,19 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			} else {
 				val = Double.parseDouble(ndVal);
 			}
-			nd.setAttribute(Retriever.LABEL_ATTRIBUTE,nf.format(val));
-			nd.setAttribute(Retriever.TOOLTIP_ATTRIBUTE,String.valueOf(val));
+			nd.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,nf.format(val));
+			nd.setAttribute(AbstractRetriever.TOOLTIP_ATTRIBUTE,String.valueOf(val));
 			for(int i = 0;i < nd.getChildCount();i++) {
 				TreeNode childNode = nd.getChild(i);
 				//should be a position string.
-				ndVal = childNode.getAttribute(Retriever.LABEL_ATTRIBUTE);
+				ndVal = childNode.getAttribute(AbstractRetriever.LABEL_ATTRIBUTE);
 				if(fromDegrees) {
 					posVal = PositionUtils.getRASexagesimal(ndVal) + "," + PositionUtils.getDECSexagesimal(ndVal);
 				}else {
 					posVal = nf.format(PositionUtils.getRADegrees(ndVal)) + "," + nf.format(PositionUtils.getDECDegrees(ndVal));
 				}
-				childNode.setAttribute(Retriever.LABEL_ATTRIBUTE,posVal);
-				childNode.setAttribute(Retriever.TOOLTIP_ATTRIBUTE,posVal);
+				childNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,posVal);
+				childNode.setAttribute(AbstractRetriever.TOOLTIP_ATTRIBUTE,posVal);
 			}
 		}//if
 		for(int i = 0;i < nd.getChildCount();i++) {
@@ -600,7 +601,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                 if (!rootNode.isChild(p.getPrimaryNode())) {
                     DefaultEdge edge = new DefaultEdge(rootNode,p.getPrimaryNode());
                     //blemish - code coopied verbatim from vizModel
-                    edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");                  
+                    edge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE,"3");                  
                     rootNode.addChild(edge);
                 }
             }
@@ -818,7 +819,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
             if (this.p instanceof SpatialDalProtocol) {
                 SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
                 for (int i = 0; i < services.length; i++) {
-                    Retriever[] retrievers = spatial.createRetrievers(services[i],this.ra,this.dec,this.radius,this.radius);
+                    AbstractRetriever[] retrievers = spatial.createRetrievers(services[i],this.ra,this.dec,this.radius,this.radius);
                     rList.addAll(Arrays.asList(retrievers));
                 }
             } else if (this.p instanceof TemporalDalProtocol) {
@@ -826,7 +827,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                 Date start = startCal.getDate();
                 Date end = endCal.getDate();
                 for (int i = 0; i < services.length; i++) {
-                    Retriever[] retrievers;
+                    AbstractRetriever[] retrievers;
                     if (noPosition.isSelected()) { // zero out the positional fields
                         retrievers = temporal.createRetrievers(services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN);
                     } else {
@@ -835,7 +836,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                     rList.addAll(Arrays.asList(retrievers));
                 }
             }
-            Retriever[] retrievers = (Retriever[]) rList.toArray(new Retriever[0]);
+            AbstractRetriever[] retrievers = (AbstractRetriever[]) rList.toArray(new Retriever[0]);
             vizModel.getSummarizer().addAll(retrievers);
             parent.showTransientMessage(retrievers.length + " " + this.p.getName().toLowerCase() + " services to query", "");
             setProgressMax(getProgressMax() + retrievers.length);

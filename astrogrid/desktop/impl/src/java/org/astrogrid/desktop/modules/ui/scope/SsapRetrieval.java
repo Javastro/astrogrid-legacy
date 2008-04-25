@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.20 2008/04/23 11:17:53 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.21 2008/04/25 08:59:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * complies with SSAP spec v1.04
  * @TEST
  */
-public class SsapRetrieval extends Retriever {
+public class SsapRetrieval extends AbstractRetriever {
     public SsapRetrieval(Service service,SsapCapability cap,URI acurl,NodeSocket socket,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
         super(service,cap,socket,model,ra,dec);
         this.accessUrl = acurl;
@@ -355,6 +355,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.21  2008/04/25 08:59:36  nw
+extracted interface from retriever, to ease unit testing.
+
 Revision 1.20  2008/04/23 11:17:53  nw
 marked as needing test.
 

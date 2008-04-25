@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.14 2008/04/23 11:17:53 nw Exp $
+/*$Id: StapProtocol.java,v 1.15 2008/04/25 08:59:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class StapProtocol extends TemporalDalProtocol {
         return result;        
     } 
 
-	public Retriever[] createRetrievers(Service service, Date start, Date end, double ra, double dec, double raSize, double decSize) {
+	public AbstractRetriever[] createRetrievers(Service service, Date start, Date end, double ra, double dec, double raSize, double decSize) {
         Capability[] capabilities = service.getCapabilities();
         List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
@@ -64,18 +64,18 @@ public class StapProtocol extends TemporalDalProtocol {
         }
         StapCapability[] staps = (StapCapability[]) cList.toArray(new StapCapability[0]);
         int nstap = staps.length;
-        final Retriever[] retrievers;
+        final AbstractRetriever[] retrievers;
         if (nstap == 0) {
-            retrievers = new Retriever[0];
+            retrievers = new AbstractRetriever[0];
         }
         else if (nstap == 1) {
-            retrievers = new Retriever[] {
+            retrievers = new AbstractRetriever[] {
                 new StapRetrieval(service, staps[0], findParamUrl(staps[0]), getDirectNodeSocket(), getVizModel(), stap, start, end, ra, dec, raSize, decSize, null),
             };
         }
         else {
             NodeSocket socket = createIndirectNodeSocket(service);
-            retrievers = new Retriever[nstap];
+            retrievers = new AbstractRetriever[nstap];
             for (int i = 0; i < nstap; i++) {
                 retrievers[i] = new StapRetrieval(service, staps[i], findParamUrl(staps[i]), socket, getVizModel(), stap, start, end, ra, dec, raSize, decSize, null);
             }
@@ -100,6 +100,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.15  2008/04/25 08:59:36  nw
+extracted interface from retriever, to ease unit testing.
+
 Revision 1.14  2008/04/23 11:17:53  nw
 marked as needing test.
 

@@ -7,15 +7,19 @@ import org.apache.commons.vfs.FileObject;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** class that keeps a summary of the query result of each retriever
- * @TEST
+
  *  */
 public final class QueryResults {
     private final Map m = new HashMap();
     private final Map nodeMap = new HashMap();
+    
     public QueryResults.QueryResult getResult(Retriever r) {
         return (QueryResults.QueryResult) m.get(r);
     }
     void addResult(QueryResults.QueryResult qr) {
+        if (qr == null) {
+            throw new IllegalArgumentException("null query result");
+        }
         m.put(qr.retriever,qr);
     }
 
@@ -43,8 +47,18 @@ public final class QueryResults {
      * @param serviceNode
      */
     public void associateNode(QueryResults.QueryResult qr, TreeNode node) {
-        nodeMap.put(node,qr.retriever);
-        qr.node = node;
+        if (qr == null) {
+            throw new IllegalArgumentException("null query result");
+        }
+        if (node == null) {
+            throw new IllegalArgumentException("null node");
+        }        
+        if (m.containsKey(qr.retriever)) {
+            nodeMap.put(node,qr.retriever);
+            qr.node = node;
+        } else {
+            throw new IllegalArgumentException("Unknown query result");
+        }
     }
 /** structure representing a single query result */
 public static final class QueryResult {

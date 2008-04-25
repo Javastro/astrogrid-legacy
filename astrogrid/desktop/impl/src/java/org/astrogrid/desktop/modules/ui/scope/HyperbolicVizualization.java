@@ -96,7 +96,7 @@ public class HyperbolicVizualization extends Vizualization {
             };
            edgeRenderer.setEdgeType(DefaultEdgeRenderer.EDGE_TYPE_CURVE);
            edgeRenderer.setRenderType(ShapeRenderer.RENDER_TYPE_DRAW);
-           edgeRenderer.setWeightAttributeName(Retriever.WEIGHT_ATTRIBUTE);
+           edgeRenderer.setWeightAttributeName(AbstractRetriever.WEIGHT_ATTRIBUTE);
            edgeRenderer.setWeightType(DefaultEdgeRenderer.WEIGHT_TYPE_LINEAR);               
             
             // set the renderer factory
@@ -114,7 +114,7 @@ public class HyperbolicVizualization extends Vizualization {
            display.addMouseMotionListener(dragger);
            display.addControlListener(new ZoomControl());
            display.addControlListener(new DoubleClickMultiSelectFocusControl(vizs));
-           display.addControlListener(new ToolTipControl(Retriever.TOOLTIP_ATTRIBUTE));
+           display.addControlListener(new ToolTipControl(AbstractRetriever.TOOLTIP_ATTRIBUTE));
     //@todo renable       display.addControlListener(new SendToMenuControl(menu,parent));
             
            // initialize repaint list

@@ -27,7 +27,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @TEST
  *  Implements query and parsing of result in line with v1.00 of the draft spec. (24/5/2004)
  * */
-public class SiapRetrieval extends Retriever {
+public class SiapRetrieval extends AbstractRetriever {
 
 
     public SiapRetrieval(Service service, SiapCapability cap, URI acurl, NodeSocket socket,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {

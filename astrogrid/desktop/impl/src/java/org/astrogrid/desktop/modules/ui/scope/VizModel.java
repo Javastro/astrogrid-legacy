@@ -67,9 +67,9 @@ public  final class VizModel {
         this.nodeSizingMap = new NodeSizingMap();
         this.selectionFocusSet = new DefaultFocusSet();       
         rootNode = new ImageTreeNode(IconHelper.loadIcon("scope16.png").getImage());
-        rootNode.setAttribute(Retriever.LABEL_ATTRIBUTE,"Search Results");
+        rootNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,"Search Results");
         Font ft = new Font(null,Font.BOLD,14);
-        rootNode.setAttribute(Retriever.FONT_ATTRIBUTE,ft.toString());
+        rootNode.setAttribute(AbstractRetriever.FONT_ATTRIBUTE,ft.toString());
         
         createResultsFilesystem();
                 
@@ -78,7 +78,7 @@ public  final class VizModel {
             p.setVizModel(this);
             TreeNode primary = p.getPrimaryNode();
             DefaultEdge primaryEdge = new DefaultEdge(rootNode,primary);
-            primaryEdge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");
+            primaryEdge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE,"3");
             rootNode.addChild(primaryEdge);            
         }
  
@@ -181,13 +181,13 @@ public  final class VizModel {
 
 	/** add a result into the results direcotry. 
 	 * bz 2665 - was getting concurrent modification exceptions here, so made this method synchronized.
-	 * @param retriever the retriever to add a result for
+	 * @param abstractRetriever the retriever to add a result for
 	 * @param name the name of the result
 	 * @param result the file object that contains the contents of the result.
 	 * @param the tree node to cache the freshly created file object in.
 	 */
-	public synchronized void addResultFor(Retriever retriever,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
-	        final String retDir = mkFileName(retriever);
+	public synchronized void addResultFor(Retriever abstractRetriever,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
+	        final String retDir = mkFileName(abstractRetriever);
 	        int renameCount = 0;	        
 	        final String prefix = StringUtils.substringBeforeLast(name,".");
 	        final String suffix = StringUtils.substringAfterLast(name,".");
@@ -229,12 +229,12 @@ public  final class VizModel {
 	}
 	
 	/** create a results directory for this retriever.
-	 * @param retriever
+	 * @param abstractRetriever
 	 * @return
 	 * @throws FileSystemException 
 	 */
-	public FileObject createResultsDirectory(Retriever retriever) throws FileSystemException {
-	    String name = mkFileName(retriever);
+	public FileObject createResultsDirectory(Retriever abstractRetriever) throws FileSystemException {
+	    String name = mkFileName(abstractRetriever);
 	    FileObject fo= resultsFS.resolveFile(name);	    
 	    return fo;
      

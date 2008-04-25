@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.19 2008/04/23 11:17:53 nw Exp $
+/*$Id: ConeProtocol.java,v 1.20 2008/04/25 08:59:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,7 @@ public class ConeProtocol extends SpatialDalProtocol {
         return result;
     }
 
-    public Retriever[] createRetrievers(Service service,double ra, double dec, double raSize, double decSize) {
+    public AbstractRetriever[] createRetrievers(Service service,double ra, double dec, double raSize, double decSize) {
         Capability[] capabilities = service.getCapabilities();
         List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
@@ -65,18 +65,18 @@ public class ConeProtocol extends SpatialDalProtocol {
         }
         ConeCapability[] cones = (ConeCapability[]) cList.toArray(new ConeCapability[0]);
         int ncone = cones.length;
-        final Retriever[] retrievers;
+        final AbstractRetriever[] retrievers;
         if (ncone == 0) {
-            retrievers = new Retriever[0];
+            retrievers = new AbstractRetriever[0];
         }
         else if (ncone == 1) {
-            retrievers = new Retriever[] {
+            retrievers = new AbstractRetriever[] {
                 new CatalogTerminalConeRetrieval(service, cones[0], findParamUrl(cones[0]), getDirectNodeSocket(), getVizModel(), cone, ra, dec, raSize),
             };
         }
         else {
             NodeSocket socket = createIndirectNodeSocket(service);
-            retrievers = new Retriever[ncone];
+            retrievers = new AbstractRetriever[ncone];
             for (int i = 0; i < ncone; i++) {
                 retrievers[i] = new CatalogTerminalConeRetrieval(service, cones[i], findParamUrl(cones[i]), socket, getVizModel(), cone, ra, dec, raSize);
             }
@@ -137,6 +137,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.20  2008/04/25 08:59:36  nw
+extracted interface from retriever, to ease unit testing.
+
 Revision 1.19  2008/04/23 11:17:53  nw
 marked as needing test.
 

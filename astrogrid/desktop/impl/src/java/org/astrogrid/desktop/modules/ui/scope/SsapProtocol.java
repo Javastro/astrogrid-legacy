@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.12 2008/04/23 11:17:53 nw Exp $
+/*$Id: SsapProtocol.java,v 1.13 2008/04/25 08:59:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class SsapProtocol extends SpatialDalProtocol {
         return result;
     }
 
-	public Retriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
+	public AbstractRetriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
         Capability[] capabilities = service.getCapabilities();
         List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
@@ -56,18 +56,18 @@ public class SsapProtocol extends SpatialDalProtocol {
         }
         SsapCapability[] ssaps = (SsapCapability[]) cList.toArray(new SsapCapability[0]);
         int nssap = ssaps.length;
-        final Retriever[] retrievers;
+        final AbstractRetriever[] retrievers;
         if (nssap == 0) {
-            retrievers = new Retriever[0];
+            retrievers = new AbstractRetriever[0];
         }
         else if (nssap == 1) {
-            retrievers = new Retriever[] {
+            retrievers = new AbstractRetriever[] {
                 new SsapRetrieval(service, ssaps[0], findParamUrl(ssaps[0]), getDirectNodeSocket(), getVizModel(), ssap, ra, dec, raSize, decSize),
             };
         }
         else {
             NodeSocket socket = createIndirectNodeSocket(service);
-            retrievers = new Retriever[nssap];
+            retrievers = new AbstractRetriever[nssap];
             for (int i = 0; i < nssap; i++) {
                 retrievers[i] = new SsapRetrieval(service, ssaps[i], findParamUrl(ssaps[i]), socket, getVizModel(), ssap, ra, dec, raSize, decSize);
             }
@@ -92,6 +92,9 @@ public class SsapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.13  2008/04/25 08:59:36  nw
+extracted interface from retriever, to ease unit testing.
+
 Revision 1.12  2008/04/23 11:17:53  nw
 marked as needing test.
 

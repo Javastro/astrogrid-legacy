@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.17 2008/04/23 11:17:53 nw Exp $
+/*$Id: DalProtocol.java,v 1.18 2008/04/25 08:59:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,7 @@ public abstract class DalProtocol {
         super();
         this.name = name;
         this.primaryNode = new ImageTreeNode();
-        primaryNode.setAttribute(Retriever.LABEL_ATTRIBUTE,name);
+        primaryNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,name);
         primaryNode.setImage(img);
         this.checkBox = new JCheckBox(name);
         this.checkBox.putClientProperty(OWNER,this);
@@ -110,7 +110,7 @@ public abstract class DalProtocol {
             directNodeSocket = new NodeSocket() {
                 public void addNode(TreeNode child) {
                     DefaultEdge edge = new DefaultEdge(primaryNode, child);
-                    edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE, "2");
+                    edge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE, "2");
                     vizModel.getTree().addChild(edge);
                 }
                 public boolean isService() {
@@ -140,14 +140,14 @@ public abstract class DalProtocol {
                     if (baseLabel == null || baseLabel.trim().length() == 0) {
                         baseLabel = service.getTitle();
                     }
-                    serviceNode.setAttribute(Retriever.LABEL_ATTRIBUTE, baseLabel);
-                    serviceNode.setAttribute(Retriever.SERVICE_ID_ATTRIBUTE, service.getId().toString());
+                    serviceNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE, baseLabel);
+                    serviceNode.setAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE, service.getId().toString());
                     StringBuffer tbuf = new StringBuffer()
                         .append("<html>")
                         .append(service.getTitle())
                         .append("<br>ID: ")
                         .append(service.getId());
-                    serviceNode.setAttribute(Retriever.TOOLTIP_ATTRIBUTE, tbuf.toString());
+                    serviceNode.setAttribute(AbstractRetriever.TOOLTIP_ATTRIBUTE, tbuf.toString());
                     getDirectNodeSocket().addNode(serviceNode);
                 }
                 return serviceNode;
@@ -155,9 +155,9 @@ public abstract class DalProtocol {
             public void addNode(TreeNode child) {
                 nChild++;
                 TreeNode servNode = getServiceNode();
-                servNode.setAttribute(Retriever.LABEL_ATTRIBUTE, baseLabel + " - " + nChild + ((nChild == 1) ? " search" : " searches"));
+                servNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE, baseLabel + " - " + nChild + ((nChild == 1) ? " search" : " searches"));
                 DefaultEdge edge = new DefaultEdge(servNode, child);
-                edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE, "2");
+                edge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE, "2");
                 vizModel.getTree().addChild(edge);
             }
             public boolean isService() {
@@ -213,6 +213,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.18  2008/04/25 08:59:36  nw
+extracted interface from retriever, to ease unit testing.
+
 Revision 1.17  2008/04/23 11:17:53  nw
 marked as needing test.
 

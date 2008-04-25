@@ -101,16 +101,16 @@ public class ScopeServicesList extends RegistryGooglePanel
 	public void addAll(Retriever[] retrievers) {
 	    VizModel model = astroscope.getVizModel(); // can only access this now, not in the construct, as it's not yet been initialized at this point.
 	    for (int i = 0; i < retrievers.length; i++) {
-            Retriever retriever = retrievers[i];
+            Retriever abstractRetriever = retrievers[i];
 	        // eagerly create this, and hang onto it - else it tends to get GC'd and we
 	        // lost the results tree
 	        FileObject fo = null;
 	        try {
-	            fo = model.createResultsDirectory(retriever);
+	            fo = model.createResultsDirectory(abstractRetriever);
 	        } catch (FileSystemException e) {
-	            logger.warn("Inable to create results directory for " + retriever.getLabel());
+	            logger.warn("Inable to create results directory for " + abstractRetriever.getLabel());
 	        }
-	        QueryResult qr = new QueryResult(retriever,fo);
+	        QueryResult qr = new QueryResult(abstractRetriever,fo);
 	        queryResults.addResult(qr);
 	    }
 	    items.getReadWriteLock().writeLock().lock();
@@ -140,11 +140,11 @@ public class ScopeServicesList extends RegistryGooglePanel
         notifyServiceUpdated(ri);
     }
     
-    private void notifyServiceUpdated(Retriever retriever) {        
+    private void notifyServiceUpdated(Retriever abstractRetriever) {        
         // Creating a new RetrieverService here will not give an object which
         // is actually in the table alredy, but it will have the correct
         // equivalence relations (equals()/hashCode()).
-        Service ri = new RetrieverService(retriever);
+        Service ri = new RetrieverService(abstractRetriever);
 
         int ix = items.indexOf(ri);
         if (ix != -1) {

@@ -24,20 +24,20 @@ import org.astrogrid.acr.ivoa.resource.Validation;
  */
 public class RetrieverService implements Service {
 
-    private final Retriever retriever;
+    private final Retriever abstractRetriever;
     private final Service service;
 
-    public RetrieverService(Retriever retriever) {
-        this.retriever = retriever;
-        this.service = retriever.getService();
+    public RetrieverService(Retriever abstractRetriever) {
+        this.abstractRetriever = abstractRetriever;
+        this.service = abstractRetriever.getService();
     }
 
     public Retriever getRetriever() {
-        return retriever;
+        return abstractRetriever;
     }
 
     public Capability[] getCapabilities() {
-        return new Capability[] {retriever.getCapability()};
+        return new Capability[] {abstractRetriever.getCapability()};
     }
 
     public String[] getRights() {
@@ -91,7 +91,7 @@ public class RetrieverService implements Service {
         if (o instanceof RetrieverService) {
             RetrieverService other = (RetrieverService) o;
             return other.service.equals(this.service)
-                && other.retriever.equals(this.retriever);
+                && other.abstractRetriever.equals(this.abstractRetriever);
         }
         else {
             return false;
@@ -99,6 +99,6 @@ public class RetrieverService implements Service {
     }
 
     public int hashCode() {
-        return service.hashCode() + retriever.hashCode();
+        return service.hashCode() + abstractRetriever.hashCode();
     }
 }

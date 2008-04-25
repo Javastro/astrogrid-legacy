@@ -12,7 +12,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.BasicTableHandler;
+import org.astrogrid.desktop.modules.ui.scope.AbstractRetriever.BasicTableHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -22,7 +22,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  *  implements parsing of response suitable for simple cone search v1.03
  *  @TEST
  * */
-public class ConeRetrieval extends Retriever {
+public class ConeRetrieval extends AbstractRetriever {
     
     public ConeRetrieval(Service service, ConeCapability cap, URI acurl, NodeSocket socket, VizModel model, Cone cone, double ra, double dec, double sz)  {
         super(service,cap,socket,model,ra,dec);

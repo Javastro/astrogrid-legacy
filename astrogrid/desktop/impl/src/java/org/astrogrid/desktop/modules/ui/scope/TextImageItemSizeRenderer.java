@@ -1,4 +1,4 @@
-/*$Id: TextImageItemSizeRenderer.java,v 1.7 2007/05/03 19:20:42 nw Exp $
+/*$Id: TextImageItemSizeRenderer.java,v 1.8 2008/04/25 08:59:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,8 +32,8 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
     
     protected Shape getRawShape(VisualItem item) {
         //System.out.println("getRawShape called and nodsizing size = " + nodeSizingMap.size());
-        String offset = item.getAttribute(Retriever.OFFSET_ATTRIBUTE);
-        String font = item.getAttribute(Retriever.FONT_ATTRIBUTE);
+        String offset = item.getAttribute(AbstractRetriever.OFFSET_ATTRIBUTE);
+        String font = item.getAttribute(AbstractRetriever.FONT_ATTRIBUTE);
         if(font != null) {
             item.setFont(Font.decode(font));
         }
@@ -87,6 +87,9 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 
 /* 
 $Log: TextImageItemSizeRenderer.java,v $
+Revision 1.8  2008/04/25 08:59:36  nw
+extracted interface from retriever, to ease unit testing.
+
 Revision 1.7  2007/05/03 19:20:42  nw
 removed helioscope.merged into uberscope.
 

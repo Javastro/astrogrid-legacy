@@ -86,7 +86,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
          case FocusEvent.FOCUS_ADDED:
              Entity[] added = arg0.getAddedFoci();
              for (int i = 0; i < added.length; i++) {
-                 if (added[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
+                 if (added[i].getAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
                      Retriever r = queryResults.findRetriever((TreeNode)added[i]);
                      if (r != null) {
@@ -101,7 +101,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
          case FocusEvent.FOCUS_REMOVED:
              Entity[] removed = arg0.getRemovedFoci();
              for (int i = 0; i < removed.length; i++) {
-                 if (removed[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
+                 if (removed[i].getAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
                      Retriever r = queryResults.findRetriever((TreeNode)removed[i]);
                      if (r != null) {
@@ -117,7 +117,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
              tableSelected.clear();
              for (Iterator i = arg0.getFocusSet().iterator(); i.hasNext();) {
                  TreeNode t = (TreeNode)i.next();
-                 if (t.getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
+                 if (t.getAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
                      Retriever r = queryResults.findRetriever(t);
                      if (r != null) {
