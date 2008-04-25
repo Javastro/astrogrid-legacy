@@ -15,8 +15,10 @@ import java.net.URI;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -50,12 +52,16 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.impl.values.XmlValueDisconnectedException ;
 import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.*;
+import org.astrogrid.adql.v1_0.beans.ColumnReferenceType;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
+import org.astrogrid.adql.v1_0.beans.TableType;
 import org.astrogrid.adql.AdqlCompiler;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
@@ -64,6 +70,9 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.EditEnumeratedAttribute
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditEnumeratedElementCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditSingletonTextCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditTupleTextCommand;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CutCommand;
+import org.astrogrid.desktop.modules.adqlEditor.commands.MultipleColumnInsertCommand;
+import org.astrogrid.desktop.modules.adqlEditor.commands.StandardInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.NestingNode;
@@ -92,6 +101,7 @@ public final class AdqlTree extends JTree
     private String title ;
     
     private HashMap fromTables = new HashMap() ;
+    private HashMap fromTablesUsingAlias = new HashMap() ;
     
     private int availableWidth ;
     private CommandFactory commandFactory ;
@@ -424,9 +434,17 @@ public final class AdqlTree extends JTree
                         log.debug( "table name: " + xTableName.getStringValue() 
                                  + " with alias: "
                                  + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;
-                    }                           
-                    fromTables.put( xTableName.getStringValue()
-                                  , new TableData( findTableBean( xTableName.getStringValue()), alias ) ) ;
+                    }  
+                    if( alias != null ) {
+                        TableData td = (TableData)fromTables.get( tableName ) ;
+                        if( td != null ) {
+                            td.addAlias( alias ) ;
+                        }
+                        else {
+                            fromTables.put( tableName
+                                          , new TableData( findTableBean( tableName ), alias ) ) ;
+                        }
+                    } 
                 }
             } // end while
         }
@@ -1018,11 +1036,13 @@ public final class AdqlTree extends JTree
     public class TableData {
         
         public TableBean table ;
-        public String alias ;
+//        public String alias ;
+        public ArrayList aliases = new ArrayList() ;
         
         public TableData( TableBean table, String alias ) {
             this.table = table ;
-            this.alias = alias ;            
+//            this.alias = alias ; 
+            this.aliases.add( alias ) ;
         }
         
         public TableBean getTable() {
@@ -1033,15 +1053,28 @@ public final class AdqlTree extends JTree
         /**
          * @return Returns the alias.
          */
-        public String getAlias() {
-            return alias;
+//        public String getAlias() {
+//            return alias;
+//        }
+//        /**
+//         * @param alias The alias to set.
+//         */
+//        public void setAlias(String alias) {
+//            this.alias = alias;
+//        }
+        
+        public void addAlias( String alias ) {
+            this.aliases.add( alias ) ;
         }
-        /**
-         * @param alias The alias to set.
-         */
-        public void setAlias(String alias) {
-            this.alias = alias;
+        
+        public boolean removeAlias( String alias ) {
+            return this.aliases.remove( alias ) ;
         }
+        
+        public String[] getAliases() {
+            return (String[])aliases.toArray( new String[aliases.size() ] ) ;
+        }
+        
     }
     
     private class AliasStack {
@@ -1134,50 +1167,42 @@ public final class AdqlTree extends JTree
     }
     
     protected void ensureSomeNodeSelected( CommandInfo ci ) {
+        ensureSomeNodeSelected( ci, false ) ;       
+    }
+    
+    protected void ensureSomeNodeSelected( CommandInfo ci, boolean bUndo ) {
       
         if( this.isSelectionEmpty() ) {
             
             TreeNode[] nodes = null ;
-
-            for( int i=0; i<3; i++ ) {
-                try {
-                    switch(i) {
-                    case 0: // First try the last child node in an edit 
-                        nodes = ci.getChildEntry().getPath() ;
-                        break;
-                    case 1: // If that fails, try the parent node
-                        nodes = ci.getParentEntry().getPath();
-                        break;
-                    default: // And if that fails, try the top select node
-                        AdqlNode root = (AdqlNode)this.getModel().getRoot() ;
-                        Object[] childArray = root.getChildren() ;
-                        for( int j=0; i<childArray.length; i++ ) {
-                            XmlObject xo = ((AdqlNode)childArray[j]).getXmlObject() ;
-                            if( xo.schemaType() == SelectType.type ) {
-                                nodes = ((AdqlNode)childArray[j]).getPath() ;
-                                break ;
-                            }
-                        } // end  inner for
-                    } // end switch
-                    if( nodes != null ) {
-                        this.setSelectionPath( new TreePath( nodes ) ) ;
-                        if( this.isSelectionEmpty() == false ) {
-                            break ;
-                        }
-                        else {
-                            nodes = null ;
-                        }
-                    }
+            
+            if( ci instanceof CutCommand ) {
+                if( bUndo ) {
+                    nodes = ci.getChildEntry().getPath() ;
                 }
-                catch( Exception ex ) {
-                    ; // do nothing
+                else {
+                    nodes = ci.getParentEntry().getPath();
+                }                
+            }
+            else if( ci instanceof StandardInsertCommand 
+                     ||
+                     ci instanceof MultipleColumnInsertCommand ) {
+                if( bUndo ) {
+                    nodes = ci.getParentEntry().getPath();
                 }
-            } // end outer for
-          
+                else {
+                    nodes = ci.getChildEntry().getPath() ;
+                }               
+            }
+            else {
+                nodes = ci.getChildEntry().getPath() ;
+            }
+            this.setSelectionPath( new TreePath( nodes ) ) ;
+         
         } // end if
 
     } // end of ensureSomeNodeSelected()
-
+    
     /* (non-Javadoc)
      * @see javax.swing.JTree#getToolTipText(java.awt.event.MouseEvent)
      */
@@ -1189,12 +1214,32 @@ public final class AdqlTree extends JTree
             return null ;
         AdqlNode node = (AdqlNode)path.getLastPathComponent() ;
         XmlObject xo = node.getXmlObject() ;
-        if( xo.schemaType() == SelectType.type ) {
+        SchemaType type = xo.schemaType() ;
+        if( type == SelectType.type ) {
             SelectType st = (SelectType)xo ;
             if( st.isSetStartComment() ) {
                 return "<HTML>" + st.getStartComment().replaceAll( "\n", "<BR>" ) ;
             }
-        }       
+        } 
+        else if( type == ColumnReferenceType.type ) {
+            ColumnReferenceType crt = (ColumnReferenceType)xo ;
+            TableData td = (TableData)getFromTablesUsingAlias().get( crt.getTable() ) ;
+            if( td == null )
+                return null ;
+            ColumnBean[] cbs = td.getTable().getColumns() ;
+            for( int i=0; i<cbs.length; i++ ) {
+                if( cbs[i].getName().equalsIgnoreCase( crt.getName() ) ) {
+                    return "<HTML>" + cbs[i].getDescription().replaceAll( "\n", "<BR>" ) ;
+                }
+            }           
+        }
+        else if( type == TableType.type ) {
+            TableType tt = (TableType)xo ;
+            TableData td = (TableData)fromTables.get( tt.getName() ) ;
+            if( td == null )
+                return null ;
+            return  "<HTML>" + td.getTable().getDescription().replaceAll( "\n", "<BR>" ) ;
+        }
         return null ;
     }
 
@@ -1203,6 +1248,25 @@ public final class AdqlTree extends JTree
      */
     public String getTitle() {
         return title;
+    }
+    
+    //
+    // This method is relatively inefficient,
+    // although there should not be that many tables in a query
+    // (even for LEDAS)...
+    private HashMap getFromTablesUsingAlias() {
+        fromTablesUsingAlias.clear() ;
+        Iterator it = fromTables.values().iterator() ;
+        while( it.hasNext() ) {
+            TableData td = (TableData)it.next() ;
+            fromTablesUsingAlias.put( td.getTable().getName(), td) ;
+            String[] aliases = td.getAliases() ;
+            for( int i=0; i<aliases.length; i++ ) {
+                fromTablesUsingAlias.put( aliases[i], td ) ;
+            }               
+        }
+
+        return fromTablesUsingAlias ;
     }
     
 } // end of class AdqlTree

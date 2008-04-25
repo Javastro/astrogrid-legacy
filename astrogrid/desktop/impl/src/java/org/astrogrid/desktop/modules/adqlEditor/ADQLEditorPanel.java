@@ -1417,7 +1417,7 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
                     DefaultTreeModel model = (DefaultTreeModel) adqlTree
                             .getModel();
                     model.nodeStructureChanged(ci.getParentEntry());
-                    adqlTree.ensureSomeNodeSelected(ci);
+                    adqlTree.ensureSomeNodeSelected(ci, true ) ;
                     adqlTree.repaint();
                 }
             } finally {
@@ -1472,43 +1472,17 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
                 command.setSelectedValue(e.getActionCommand());
                 CommandExec.Result result = command.execute();
 
-                // if( newEntry.isBottomLeafEditable() ) {
-                // String typeName =
-                // newEntry.getSchemaType().getName().getLocalPart() ;
-                // String attributeName = (String)AdqlData.EDITABLE.get(
-                // typeName ) ;
-                // if( attributeName != null && attributeName.length() > 0 ) {
-                // this.setDefaultValueForAttributeDrivenElement() ;
-                // }
-                // else {
-                // this.setDefaultValueForElement() ;
-                // }
-                // }
-
                 if (result != CommandExec.FAILED) {
                     adqlTree.getCommandFactory()
                             .retireOutstandingMultipleInsertCommands();
                     DefaultTreeModel model = (DefaultTreeModel) adqlTree
                             .getModel();
                     model.nodeStructureChanged(command.getParentEntry());
-                    // path = path.pathByAddingChild( command.getChildEntry() )
-                    // ;
-                    // adqlTree.scrollPathToVisible( path ) ;
                     adqlTree.ensureSomeNodeSelected(this.command);
                     adqlTree.repaint();
 
                 }
 
-                // Switch to edit for a newly created bottom leaf...
-                // This needs reviewing where multiple inserts are required...
-                // if( newEntry.isBottomLeafEditable() ) {
-                // adqlTree.setEditingActive( true ); // is this required?
-                // adqlTree.startEditingAtPath( path ) ;
-                // adqlTree.setEditingActive( false ); // is this required?
-                // model.nodeChanged( newEntry ) ;
-                // }
-
-                // setAdqlParameter() ;
             } finally {
                 if (log.isTraceEnabled()) {
                     exitTrace("InsertAction.actionPerformed()");
@@ -1549,7 +1523,6 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             validateEditButton = new JButton("Validate Edit");
             validateEditButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    // validateEditButton.setEnabled( false ) ;
                     ADQLEditorPanel.this.adqlMainView.executeEditCommand();
                 }
             });
@@ -1613,14 +1586,18 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
             try {
                 TableBean table = tableData.getTable();
                 cicForTable.setTable(table);
-                cicForTable.setTableAlias(tableData.alias);
+                cicForTable.setTableAlias(tableData.getAliases()[0]);
                 JMenu tableMenu = new JMenu(table.getName());
                 insertMenu.add(tableMenu);
                 ColumnBean[] columns = table.getColumns();
                 Arrays.sort(columns, colComparator);
                 for (int j = 0; j < columns.length; j++) {
-                    tableMenu.add(new InsertAction(columns[j].getName(),
-                            cicForTable));
+                    InsertAction ia = new InsertAction(columns[j].getName(),cicForTable) ;                           
+                    String d = columns[j].getDescription() ;
+                    if( d != null ) {
+                        ia.putValue( Action.SHORT_DESCRIPTION, d ) ;
+                    }          
+                    tableMenu.add( ia );          
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
                 continue;
@@ -1632,10 +1609,14 @@ public class ADQLEditorPanel extends JPanel implements TreeModelListener,
     private JMenu getInsertTableMenu(StandardInsertCommand command) {
         JMenu insertMenu = new JMenu(command.getChildDisplayName());
         TableBean[] tables = adqlTree.getCatalogService().getTables();
-        Arrays.sort(tables,
-                new org.astrogrid.acr.astrogrid.TableBeanComparator());
+        Arrays.sort(tables, new org.astrogrid.acr.astrogrid.TableBeanComparator() ) ;
         for (int i = 0; i < tables.length; i++) {
-            insertMenu.add(new InsertAction(tables[i].getName(), command));
+            InsertAction ia = new InsertAction(tables[i].getName(), command) ;
+            String d = tables[i].getDescription() ;
+            if( d != null ) {
+                ia.putValue( Action.SHORT_DESCRIPTION, d ) ;
+            }          
+            insertMenu.add( ia ) ;            
         }
         return insertMenu;
     }

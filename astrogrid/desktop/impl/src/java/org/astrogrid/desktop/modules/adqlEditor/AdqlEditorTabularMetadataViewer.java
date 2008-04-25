@@ -199,10 +199,11 @@ public class AdqlEditorTabularMetadataViewer extends TabularMetadataViewer {
 	        CommandExec.Result result = command.execute()  ;   
 	       	        
 	        if( result != CommandExec.FAILED ) {
-              DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
-  	        model.nodeStructureChanged( command.getParentEntry() ) ;
-  	        model.nodeStructureChanged( command.findFromClause( path ) ) ;
-              adqlTree.repaint() ;
+	            DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+	            model.nodeStructureChanged( command.getParentEntry() ) ;
+	            model.nodeStructureChanged( command.findFromClause( path ) ) ;
+                adqlTree.ensureSomeNodeSelected( command ) ;
+	            adqlTree.repaint() ;
           }	        
 	    }
 	        

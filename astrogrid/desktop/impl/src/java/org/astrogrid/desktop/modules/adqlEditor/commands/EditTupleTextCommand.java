@@ -212,7 +212,59 @@ private class UpdateControls {
     public void die() {
         super.die();
     }
+    
+    
     public void redo() throws CannotRedoException {
+        super.redo();
+        try {
+            UpdateControls uc = null ;
+            ListIterator it = getUpdates().listIterator() ;
+            while( it.hasNext() ) {
+                uc = (UpdateControls)it.next() ;
+                if( uc.newValue == null || uc.newValue.length()==0 ) {
+                    AdqlUtils.unset( adqlTree.getCommandFactory().getEditStore().get( uc.token ).getXmlObject()
+                                   , uc.attributeName ) ;
+                }
+                else {
+                    AdqlUtils.set( adqlTree.getCommandFactory().getEditStore().get( uc.token ).getXmlObject()
+                                 , uc.attributeName
+                                 , XmlString.Factory.newValue( uc.newValue ) ) ;
+                }
+            }
+            if( references != null ) {
+                ColumnReference cr = null ;
+                it = getReferences().listIterator() ;
+                while( it.hasNext() ) {
+                    cr = (ColumnReference)it.next() ;  
+                    if( cr.newValue == null || cr.newValue.length()==0 ) {               
+                        AdqlUtils.set( adqlTree.getCommandFactory().getEditStore().get( cr.token ).getXmlObject()
+                                , cr.attributeName
+                                , XmlString.Factory.newValue( cr.tableName ) ) ;    
+                    }
+                    else {
+                        AdqlUtils.set( adqlTree.getCommandFactory().getEditStore().get( cr.token ).getXmlObject()
+                                , cr.attributeName
+                                , XmlString.Factory.newValue( cr.newValue ) ) ;   
+                    }
+                }
+                if( cr.newValue == null || cr.newValue.length()==0 ) {
+//                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
+                }
+                else {
+                    ((TableData)fromTables.get( cr.tableName ) ).addAlias( cr.newValue ) ;
+                }   
+            }           
+        }
+        catch( Exception ex ) {
+            log.debug( "EditTupleTextCommand.redo() failed.", ex ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
+            throw new CannotRedoException() ;
+        }
+    }
+    
+    public void _redo() throws CannotRedoException {
         super.redo();
         try {
             UpdateControls uc = null ;
@@ -239,10 +291,10 @@ private class UpdateControls {
                                  , XmlString.Factory.newValue( cr.newValue ) ) ;    
                 }
                 if( cr.newValue == null || cr.newValue.length()==0 ) {
-                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
+//                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
                 }
                 else {
-                    ((TableData)fromTables.get( cr.tableName ) ).alias = cr.newValue ;
+                    ((TableData)fromTables.get( cr.tableName ) ).addAlias( cr.newValue ) ;
                 }   
             }           
         }
@@ -276,16 +328,23 @@ private class UpdateControls {
                 ColumnReference cr = null ;
                 it = getReferences().listIterator() ;
                 while( it.hasNext() ) {
-                    cr = (ColumnReference)it.next() ;         
-                    AdqlUtils.set( adqlTree.getCommandFactory().getEditStore().get( cr.token ).getXmlObject()
-                                 , cr.attributeName
-                                 , XmlString.Factory.newValue( cr.oldValue ) ) ;    
+                    cr = (ColumnReference)it.next() ;     
+                    if( cr.oldValue == null || cr.oldValue.length()==0 ) {
+                        AdqlUtils.set( adqlTree.getCommandFactory().getEditStore().get( cr.token ).getXmlObject()
+                                , cr.attributeName
+                                , XmlString.Factory.newValue( cr.tableName ) ) ;  
+                    }
+                    else {
+                        AdqlUtils.set( adqlTree.getCommandFactory().getEditStore().get( cr.token ).getXmlObject()
+                                , cr.attributeName
+                                , XmlString.Factory.newValue( cr.oldValue ) ) ;  
+                    }
                 }
                 if( cr.oldValue == null || cr.oldValue.length()==0 ) {
-                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
+//                    ((TableData)fromTables.get( cr.tableName ) ).alias = null ;
                 }
                 else {
-                    ((TableData)fromTables.get( cr.tableName ) ).alias = cr.oldValue ;
+                    ((TableData)fromTables.get( cr.tableName ) ).addAlias( cr.oldValue ) ;
                 }               
             }            
         }
@@ -403,7 +462,7 @@ private class UpdateControls {
                 }
             }
         }       
-        ((TableData)fromTables.get( tableName )).alias = null ;
+        ((TableData)fromTables.get( tableName )).removeAlias( oldValue ) ;
     }
     
     
@@ -430,8 +489,9 @@ private class UpdateControls {
                                                             , tableName ) ) ;
                 }
             }
-        }    
-        ((TableData)fromTables.get( tableName )).alias = newAliasValue ;
+        } 
+        ((TableData)fromTables.get( tableName )).removeAlias( oldAliasValue ) ;
+        ((TableData)fromTables.get( tableName )).addAlias( newAliasValue ) ;
     }
     
     
@@ -459,7 +519,7 @@ private class UpdateControls {
                 }
             }
         }    
-        ((TableData)fromTables.get( tableName )).alias = newAliasValue ;
+        ((TableData)fromTables.get( tableName )).addAlias( newAliasValue ) ;
     }
     
     

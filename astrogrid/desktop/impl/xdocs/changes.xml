@@ -15,6 +15,12 @@
 	</head>
 <body>
 <release version="2008.1.1" date="unreleased">
+<action dev="jl" type="fix" issue="2756">
+    Cures loss of focus after certain edits in QB
+</action>
+<action dev="jl" type="fix" issue="2757">
+    Tool tips for columns and tables in menus and tree view
+</action>
 <action dev="nw" type="update">
     Checked all dependent libraries for updates.
 </action>

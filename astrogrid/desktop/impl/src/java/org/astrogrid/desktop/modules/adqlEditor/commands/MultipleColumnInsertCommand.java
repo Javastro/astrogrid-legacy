@@ -203,8 +203,12 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
             }                   
             cic.setColumnName( columns[i].getName() ) ;
             result = cic.execute() ;
-            if( result == CommandExec.FAILED || result == CommandExec.ERROR )
+            if( result == CommandExec.FAILED || result == CommandExec.ERROR ) {
                 break ;
+            }
+            else if( i==0 ){
+                this.childToken = cic.childToken ;
+            }               
         }     
         return result ;  
     }
