@@ -12,6 +12,11 @@ import junit.framework.TestCase;
 import org.astrogrid.desktop.hivemind.ServiceBeanUnitTest;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.integration.EasyMock2Adapter.*;
 /**
  * @author Noel Winstanley
  * @since Jan 5, 200712:15:47 AM
@@ -47,6 +52,15 @@ public class PreferenceUnitTest extends TestCase {
 		pref.setAdvanced(false);
 		assertFalse(pref.isAdvanced());		
 	}
+	
+	public void testPropagateToConfig() throws Exception {
+	    assertFalse(pref.isPropagateToConfig());
+	    pref.setPropagateToConfig(true);
+	    assertTrue(pref.isPropagateToConfig());
+	    pref.setPropagateToConfig(false);
+	    assertFalse(pref.isPropagateToConfig());
+        
+    }
 
 	/**
 		 * Test method for {@link org.astrogrid.desktop.modules.system.pref.Preference#getDescription()}.
@@ -97,10 +111,54 @@ public class PreferenceUnitTest extends TestCase {
 	 * Test method for {@link org.astrogrid.desktop.modules.system.pref.Preference#getValue()}.
 	 */
 	public void testGetValue() {
+	    final String value = "fred";
+	    PropertyChangeListener l = createMock(PropertyChangeListener.class);
+	    l.propertyChange((PropertyChangeEvent)anyObject());
+// setting a value causes event to be fired.	    
+	    replay(l);
+	    pref.addPropertyChangeListener(l);
 		assertNull(pref.getValue());
-		pref.setValue("fred");
-		assertEquals("fred",pref.getValue());
+        pref.setValue(value);
+		assertEquals(value,pref.getValue());
+		verify(l);
+// setting to null has no effect.		
+		reset(l);
+		replay(l);
+		pref.setValue(null); // null mmakes no change.
+        assertEquals(value,pref.getValue());
+        verify(l);
+//setting to same value has no effect - no event is fired.     
+        reset(l);
+        replay(l);
+        pref.setValue(value); 
+        assertEquals(value,pref.getValue());
+        verify(l);        
 	}
+	
+	public void testPropertyChangeListener() throws Exception {
+	    final String value = "fred";
+        PropertyChangeListener l = createMock(PropertyChangeListener.class);
+         l.propertyChange((PropertyChangeEvent) notNull());
+         expectLastCall().times(2);
+         
+// setting a value causes event to be fired.        
+        replay(l);
+        pref.addPropertyChangeListener(l);
+        assertNull(pref.getValue());
+        pref.setValue(value);
+        assertEquals(value,pref.getValue());
+// test for removing a listener
+        pref.removePropertyChangeListener(l);
+        pref.setValue("1"); 
+
+     // test for removing a listener that's not listening.
+        pref.removePropertyChangeListener(l);
+        pref.setValue("2"); // null mmakes no change.        
+
+// can also trigger an event by 'initialize through listener.
+        pref.initializeThroughListener(l);
+        verify(l);                
+    }
 
 	/**
 	 * Test method for {@link org.astrogrid.desktop.modules.system.pref.Preference#toString()}.
@@ -119,21 +177,6 @@ public class PreferenceUnitTest extends TestCase {
 	 */
 	public void testEqualsObject() {
 		assertTrue(pref.equals(pref));
-	}
-
-	/**
-	 * Test method for {@link org.astrogrid.desktop.modules.system.pref.Preference#addPropertyChangeListener(java.beans.PropertyChangeListener)}.
-	 */
-	public void testPropertyChangeListener() {
-		PropertyChangeListener l = new PropertyChangeListener() {
-
-			public void propertyChange(PropertyChangeEvent evt) {
-			}
-		};
-		pref.addPropertyChangeListener(l);
-		pref.removePropertyChangeListener(l);
-		// should be fine if I remove it twice.
-		pref.removePropertyChangeListener(l);
 	}
 
 
@@ -157,6 +200,17 @@ public class PreferenceUnitTest extends TestCase {
 		assertTrue(Arrays.equals(new String[] {"foo","bar"}, alts));
 	}
 	
+	public void testGetAllAlternatives() throws Exception {
+        pref.setValue("foo");
+        pref.setDefaultValue("nar");
+        assertThat(pref.getAllAlternatives(),equalTo(new String[] {"foo","nar"}));
+        pref.addAlternative("foo");
+        pref.addAlternative("nar");
+        pref.addAlternative("bing");
+        assertThat(pref.getAllAlternatives(),equalTo(new String[] {"foo","nar","bing"}));
+        
+	}
+	
 	public void testOptions() throws Exception {
 		String[] opts = pref.getOptions();
 		assertNotNull(opts);
@@ -173,7 +227,12 @@ public class PreferenceUnitTest extends TestCase {
 		pref.setModule(m);
 		String s = pref.getModuleName();
 		assertNotNull(s);
+		pref.setModuleName("fred");
+		assertEquals("fred",pref.getModuleName());
 	}
+	
+	
+
 	
 	public void testAsBoolean() throws Exception {
 		assertFalse(pref.asBoolean());

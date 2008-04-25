@@ -96,8 +96,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
     /** if nothing to copy, it still proceeds correctly */
     public void testNullCopy() throws Exception {
        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[0]);
-       worker.start(); 
-       waitForEDT();       
+       worker.start();     
        assertTrue(saveDir.exists());
        assertEquals(0,saveDir.list().length);
     }
@@ -108,8 +107,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         saveDir.delete();
         assertFalse(saveDir.exists());
         BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[0]);
-        worker.start();
-        waitForEDT();        
+        worker.start();  
         assertTrue(saveDir.exists());
      }
     
@@ -119,8 +117,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
        BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                fileCommand
        });
-       worker.start();       
-       waitForEDT();
+       worker.start();   
        assertTrue(saveDir.exists());
        assertEquals(1,saveDir.list().length);
        validateFileWritten();
@@ -157,8 +154,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 fileCommand
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();   
         assertTrue(saveDir.exists());
         assertTrue(saveDir.isFile());               
         // check that the command records the correct info.
@@ -177,8 +173,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,vfs.resolveFile(saveDir,"."),new CopyCommand[]{
                 fileCommand
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();   
         assertTrue(saveDir.exists());
         assertEquals(1,saveDir.list().length);        
         validateFileWritten();
@@ -188,8 +183,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir.toURI(),new CopyCommand[]{
                 fileCommand
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();   
         assertTrue(saveDir.exists());
         assertEquals(1,saveDir.list().length);        
         validateFileWritten();
@@ -200,8 +194,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 nonexistentCommand
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();   
         assertTrue(saveDir.exists());
         assertEquals(0,saveDir.list().length);
         
@@ -216,8 +209,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 dirCommand
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();     
         assertTrue(saveDir.exists());
         assertEquals(1,saveDir.list().length);
         
@@ -255,8 +247,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
                 nonexistentCommand
                 , fileCommand
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();  
         assertTrue(saveDir.exists());
         assertEquals(1,saveDir.list().length);
         validateFileWritten();
@@ -266,8 +257,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
                 fileCommand
                 ,nonexistentCommand
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();  
         assertTrue(saveDir.exists());
         assertEquals(1,saveDir.list().length);
         validateFileWritten();
@@ -283,8 +273,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
                 fileCommand
                 , fileCommand1
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();   
         assertTrue(saveDir.exists());
         assertEquals(2,saveDir.list().length);
         // check that the command records the correct info.
@@ -317,8 +306,7 @@ public class BulkCopyWorkerUnitTest extends TestCase {
                 fileCommand
                 , fileCommand1
         });
-        worker.start();       
-        waitForEDT();
+        worker.start();   
         assertTrue(saveDir.exists());
         assertEquals(2,saveDir.list().length);
         // check that the command records the correct info.

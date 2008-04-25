@@ -152,15 +152,6 @@ public class Fixture {
         FileUtils.forceDeleteOnExit(bd);       
         return bd;
 	}
-	
-	/** wait for the AWT event queue to clear. 
-	 * 
-	 * necessary after running a background worker, to ensure it's completely finished
-	 * @throws InvocationTargetException 
-	 * @throws InterruptedException 
-	 */
-	public static void waitForEDT() throws InterruptedException, InvocationTargetException {
-	       SwingUtilities.invokeAndWait(createNiceMock(Runnable.class));	    
-	}
+
 
 }

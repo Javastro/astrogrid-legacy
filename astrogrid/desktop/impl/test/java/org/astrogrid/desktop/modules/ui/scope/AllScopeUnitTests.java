@@ -20,6 +20,7 @@ public class AllScopeUnitTests {
         suite.addTestSuite(VotableContentHandlerUnitTest.class);
         suite.addTestSuite(AstroscopeFileObjectUnitTest.class);
         suite.addTestSuite(VizModelUnitTest.class);
+        suite.addTestSuite(QueryResultsUnitTest.class);
         //$JUnit-END$
         return suite;
     }

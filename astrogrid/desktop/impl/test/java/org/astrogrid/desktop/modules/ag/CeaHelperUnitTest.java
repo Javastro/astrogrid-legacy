@@ -5,35 +5,56 @@ package org.astrogrid.desktop.modules.ag;
 
 import java.net.URI;
 import java.net.URL;
+import java.security.PrivateKey;
 
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.AccessURL;
+import org.astrogrid.acr.ivoa.resource.Authority;
+import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.delegate.CEADelegateException;
+import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
+import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.util.DomHelper;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
+
 import static org.easymock.EasyMock.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 /** Unit test for cea helper.
  * @author Noel Winstanley
  * @since Jun 13, 20064:37:12 PM
- * @TEST complete.
  */
 public class CeaHelperUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+
+    protected void setUp() throws Exception {
 		reg = createMock(Registry.class);
 		community = createMock(CommunityInternal.class);
 		cea = new CeaHelper(reg,community);
 		serverId = new URI("ivo://wibble/bing");
-		endpoint = new URL("http://www.slashdot.org");
+		endpoint = new URI("http://www.slashdot.org");
+        service = createMock(CeaService.class);
 	}
 	
 	protected CommunityInternal community;
 	protected Registry reg;
 	protected CeaHelper cea;
 	protected URI serverId;
-	protected URL endpoint;
+	protected URI endpoint;
+    private CeaService service;
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
@@ -43,64 +64,252 @@ public class CeaHelperUnitTest extends TestCase {
 		endpoint = null;
 	}
 	
-	/* @todo 
+	private void replayAll() {
+	    replay(reg,community,service);
+	}
+
+	   private void verifyAll() {
+	        verify(reg,community,service);
+	    }
 	
-	public void testCreateDelegate() throws MalformedURLException {
-		ResourceInformation ri = new ResourceInformation(serverId,null,null,endpoint,null);
-		CommonExecutionConnectorClient c = cea.createCEADelegate(ri);
-		assertNotNull(c);
-		assertEquals(endpoint.toString(),c.getTargetEndPoint());
-	}
-	*/
-	public void testCreateDelegateNoAccessURL() throws Exception{
-		try {
-			cea.createCEADelegate((CeaService)null);
-			fail("expected to chuck");
-		} catch (IllegalArgumentException e) {
-		}
-		/* todo
-		ResourceInformation ri = new ResourceInformation(serverId,null,null,null,null);
-		try {
-			cea.createCEADelegate(ri);
-			fail("expected to chuck");
-		} catch (IllegalArgumentException e) {
-		}		
-		*/
-	}
+	   /** test all cases that the resource passed in could be faulty */
+	   public void testCreateDelegateFaultyInput() throws Exception {
+	       // null input
+        try {
+            cea.createCEADelegate((CeaService)null);
+            fail("expected to fail");
+        } catch (IllegalArgumentException e) {
+            //ok
+        }
+        // serice with no capabilties
+        doTestAndExpectToFail(new Capability[]{});
+
+        //no cea capabilities
+        doTestAndExpectToFail(new Capability[]{
+                    new Capability()
+            });
+       
+        // cea capability with no interfaces
+
+        doTestAndExpectToFail(new Capability[]{
+                new Capability() {{
+                    setStandardID(URI.create(StandardIds.CEA_1_0));
+                    setInterfaces(new Interface[]{                            
+                    });
+                }}
+        });           
+        // no accessurl
+        doTestAndExpectToFail(new Capability[]{
+                new Capability() {{
+                    setStandardID(URI.create(StandardIds.CEA_1_0));
+                    setInterfaces(new Interface[]{
+                            new Interface() {{
+                                setAccessUrls(new AccessURL[]{
+                                });
+                            }}
+                    });
+                }}
+        });        
+        // no value for accessURL
+        doTestAndExpectToFail(new Capability[]{
+                new Capability() {{
+                    setStandardID(URI.create(StandardIds.CEA_1_0));
+                    setInterfaces(new Interface[]{
+                            new Interface() {{
+                                setAccessUrls(new AccessURL[]{
+                                        new AccessURL() 
+                                });
+                            }}
+                    });
+                }}
+        });
+          
+    }
+	   
+	   private void doTestAndExpectToFail(Capability[] caps) throws CEADelegateException {
+	       reset(service);
+	       expect(service.getCapabilities()).andStubReturn(caps);
+	       replay(service);
+	       try {
+	           cea.createCEADelegate(service);            
+	           fail("expected to fail");
+	       } catch (IllegalArgumentException e) {
+	           //ok
+	       }      	    
+	   }
+	   
+	public void testCreateDelegate() throws Exception {
+	    // a guard that should fail.
+	    SecurityGuard sec1 = new SecurityGuard() {
+	        public java.security.cert.X509Certificate[] getCertificateChain() {
+	            throw new RuntimeException("e");
+	        }
+	    };
+	    // a guard that should succeed - returns anything.
+        SecurityGuard sec2 = new SecurityGuard() {
+            public java.security.cert.X509Certificate[] getCertificateChain() {
+               return null;
+            }
+            @Override
+            public PrivateKey getPrivateKey() {
+                return null;
+            }
+        };        
+        expect(community.isLoggedIn()).andReturn(false); // at first we're not logged in.
+        expect(community.isLoggedIn()).andReturn(true).times(2);
+        expect(community.getSecurityGuard()).andReturn(sec1); // first time no dig sig
+        expect(community.getSecurityGuard()).andReturn(sec2).times(2); // second time a dig sig
+        
+        // skeleton resource object.
+        Capability[] caps = new Capability[]{
+                new Capability() {{
+                    setStandardID(URI.create(StandardIds.CEA_1_0));
+                    setInterfaces(new Interface[]{
+                            new Interface() {{
+                                setAccessUrls(new AccessURL[]{
+                                        new AccessURL() {{
+                                            setValueURI(endpoint);
+                                        }}
+                                });
+                            }}
+                    });
+                }}
+        };                                           
+        expect(service.getCapabilities()).andStubReturn(caps);
+        replayAll();
+        CommonExecutionConnectorClient client = cea.createCEADelegate(service);
+        verifyDelegate(client);
+        // no way of checking whether credentials are set or not.
+        client = cea.createCEADelegate(service);
+        verifyDelegate(client);
+        client = cea.createCEADelegate(service);
+        verifyDelegate(client);      
+        verifyAll();
+    }
+
+    /**
+     * @param client
+     */
+    private void verifyDelegate(CommonExecutionConnectorClient client) {
+        assertNotNull(client);
+        assertEquals(endpoint.toString(),client.getTargetEndPoint());
+    }
+	
 	
 	/** basically tests that we can round trip - between endpoint/id and execId */
-	/* @todo 
-	public void testCreateDelegateExecId() throws NotFoundException, ServiceException, NotApplicableException {
-		reg.resolveIdentifier(serverId);
-		regControl.setReturnValue(endpoint);
-		regControl.replay();
-		URI execId = cea.mkRemoteTaskURI("fred",new ResourceInformation(serverId,null,null,null,null));
-		CommonExecutionConnectorClient client = cea.createCEADelegate(execId);
-		assertNotNull(execId);
-		assertEquals(endpoint.toString(),client.getTargetEndPoint());
-	}
-	*/
+	public void testCreateCeaDelegateFromExecId() throws Exception {
+        // skeleton resource object.
+        Capability[] caps = new Capability[]{
+                new Capability() {{
+                    setStandardID(URI.create(StandardIds.CEA_1_0));
+                    setInterfaces(new Interface[]{
+                            new Interface() {{
+                                setAccessUrls(new AccessURL[]{
+                                        new AccessURL() {{
+                                            setValueURI(endpoint);
+                                        }}
+                                });
+                            }}
+                    });
+                }}
+        };                                           
+        expect(service.getCapabilities()).andStubReturn(caps);	   
+        expect(service.getId()).andStubReturn(this.serverId);                
+        expect(reg.getResource(serverId)).andReturn(service);
+        expect(community.isLoggedIn()).andReturn(false);
+        replayAll();
+        URI execId = cea.mkRemoteTaskURI("fred",service);
+        assertNotNull(execId);
+        CommonExecutionConnectorClient client = cea.createCEADelegate(execId);
+        verifyDelegate(client);        
+        verifyAll();
+    }
 	
+	   public void testCreateCeaDelegateFromExecIdInappropriateResourceType() throws Exception {
+	       Authority auth = createMock(Authority.class); // not a cea server.
+	        expect(reg.getResource(serverId)).andReturn(auth);
+	        expect(service.getId()).andStubReturn(this.serverId);   	        
+	        replay(auth);
+	        replayAll();
+	        URI execId = cea.mkRemoteTaskURI("fred",service);
+	        assertNotNull(execId);
+	        try {
+	        CommonExecutionConnectorClient client = cea.createCEADelegate(execId);
+	        fail("expected to throw");
+	        } catch (ServiceException e) {
+	            // ook
+	        }       
+	        verifyAll();
+	    }
+
+	
+	/** check we can round trip between local executionId and AppId */
 	public void testMkLocalTaskURI() throws ServiceException {
 		String appId = "fred";
 		URI u = cea.mkLocalTaskURI(appId);
 		assertNotNull(u);
-		assertEquals("local",u.getScheme());
-		assertEquals("//",u.getSchemeSpecificPart());
-		assertEquals(appId,u.getFragment());
 		assertEquals(appId,cea.getAppId(u));
+		assertTrue(cea.isLocal(u));
 	}
-/* @todo 	
-	public void testMkRemoteTaskURI() throws ServiceException, URISyntaxException {
-		String appId = "fred";
-
-		ResourceInformation server = new ResourceInformation(serverId,null,null,null,null);
-		URI u = cea.mkRemoteTaskURI(appId,server);
-		assertNotNull(u);
-		
-		assertEquals(serverId.toString(),u.getScheme() + ":" + u.getSchemeSpecificPart());
-		assertEquals(appId,u.getFragment());
-		assertEquals(appId,cea.getAppId(u));
-	}
-	*/
+ 	
+	/** check we can round rtip between remote executionId and AppId */
+	public void testMkRemoteTaskURI() throws Exception {
+	    expect(service.getId()).andStubReturn(this.serverId);
+        replay(service);
+        String appId = "fred";
+        URI taskURI = cea.mkRemoteTaskURI(appId,service);
+        assertNotNull(taskURI);
+        assertFalse(cea.isLocal(taskURI));
+        assertEquals(appId,cea.getAppId(taskURI));
+        verify(service);
+    }
+	
+	public void testParseTool() throws Exception {
+	    // create a tool document
+        Tool t = new Tool();
+        t.setInput(new Input());
+        t.setOutput(new Output());
+        t.setInterface("iface");
+        t.setName("ivo://org.astrogrid.Galaxev"); // erroneous
+        
+        assertTrue(t.isValid());
+        // convert it to a document..
+        Document document = DomHelper.newDocument();
+        Marshaller.marshal(t,document);
+        Tool t1 = cea.parseTool(document);
+        assertEquals(t.getName(),"ivo://" + t1.getName());
+        
+        t.setName("org.astrogrid.Galaxev"); // correct
+        
+        assertTrue(t.isValid());
+        // convert it to a document..
+        document = DomHelper.newDocument();
+        Marshaller.marshal(t,document);
+        t1 = cea.parseTool(document);
+        assertEquals(t.getName(),t1.getName());
+    }
+	
+	// can't test - as comunitrAccountSpaceResolver is created inline, and so can't be mocked.
+//	   public void testMakeMyspaceIvornsConcrete() throws Exception {
+//	        // create a tool document
+//	        Tool t = new Tool();
+//	        t.setInput(new Input());
+//	        t.setOutput(new Output());
+//	        t.setInterface("iface");
+//	        t.setName("org.astrogrid.Galaxev"); // correct
+//	        
+//	        ParameterValue pv = new ParameterValue();
+//	        pv.setIndirect(true);
+//	        pv.setName("foo");
+//	        t.getInput().addParameter(pv);
+//	        
+//	      
+//	        
+//	        
+//	        assertTrue(t.isValid());
+//	        // convert it to a document..
+//	        Tool t1 = cea.makeMySpaceIvornsConcrete(t);
+//	    
+//	    }
+	
 }

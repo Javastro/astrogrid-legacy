@@ -198,7 +198,7 @@ public class HelpServerImplUnitTest extends TestCase {
         // pretend to be the scheduler, and call the load method.
         assertEquals(0,help.getDelay());
         assertNull(help.execute()); // no continuation
-        waitForEDT();
+
         return help;
     }
 }

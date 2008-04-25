@@ -17,6 +17,7 @@ public class AllSystemUnitTests {
                 "Test for org.astrogrid.desktop.modules.system");
         //$JUnit-BEGIN$
         suite.addTestSuite(HelpServerImplUnitTest.class);
+        suite.addTestSuite(ClockDaemonSchedulerUnitTest.class);
         //$JUnit-END$
         return suite;
     }

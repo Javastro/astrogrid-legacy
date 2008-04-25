@@ -125,7 +125,7 @@ public class VotableContentHandlerUnitTest extends TestCase {
         replay(h);
         
         InputStream is =this.getClass().getResourceAsStream("bz1729.votable");
-        assertNotNull("siap.vot not found",is);
+        assertNotNull("bz1729.votable not found",is);
         InputSource src = new InputSource(is);
         parser.parse(src);
         verify(h);

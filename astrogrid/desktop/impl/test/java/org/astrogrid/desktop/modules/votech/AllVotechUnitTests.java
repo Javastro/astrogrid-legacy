@@ -18,6 +18,7 @@ public class AllVotechUnitTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(VoMonImplUnitTest.class);
 		suite.addTestSuite(AnnotationIOImplUnitTest.class);
+		suite.addTestSuite(AnnotationServiceImplUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}

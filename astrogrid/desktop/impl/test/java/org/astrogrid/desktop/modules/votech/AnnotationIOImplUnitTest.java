@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.iterators.EmptyIterator;
 import org.apache.commons.collections.iterators.SingletonIterator;
 import org.apache.commons.io.FileUtils;
@@ -22,11 +21,14 @@ import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.hamcrest.EasyMock2Matchers;
+import org.hamcrest.Matchers;
 
 import junit.framework.TestCase;
 import static org.astrogrid.Fixture.*;
 import static org.easymock.EasyMock.*;
-
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.integration.EasyMock2Adapter.adapt;
 /** unit testing for anntionation io.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 22, 20089:41:26 PM
@@ -136,7 +138,6 @@ public class AnnotationIOImplUnitTest extends TestCase {
         Collection collection = aio.load(aio.getUserSource());
         assertNotNull(collection);
         assertTrue(collection.isEmpty());
-        assertTrue(aio.userAnnotationIds.isEmpty());
         verifyAll();  
     }
     
@@ -162,7 +163,7 @@ public class AnnotationIOImplUnitTest extends TestCase {
         expect(xmlPersist.fromXml((InputStream)anyObject())).andReturn(userAnnotations);
         expect(this.annotationService.getUserAnnotation(testURI)).andReturn(userAnnotation);
         xmlPersist.toXml(
-                equals(Collections.singletonList(userAnnotation))
+                eq(Collections.singletonList(userAnnotation))
                 ,isA(OutputStream.class)
                 );
         replayAll();
@@ -170,7 +171,6 @@ public class AnnotationIOImplUnitTest extends TestCase {
         // this collection is delivered from the xmpersist mock.
         Collection collection = aio.load(aio.getUserSource());
         aio.updateUserAnnotation(userAnnotation);
-        waitForEDT();
         verifyAll();  
     }
     
@@ -180,7 +180,7 @@ public class AnnotationIOImplUnitTest extends TestCase {
         
         expect(xmlPersist.fromXml((InputStream)anyObject())).andReturn(userAnnotations);
         xmlPersist.toXml(
-                equals(Collections.emptyList())
+                eq(Collections.emptyList())
                 ,isA(OutputStream.class)
                 );
         replayAll();
@@ -188,7 +188,6 @@ public class AnnotationIOImplUnitTest extends TestCase {
         // this collection is delivered from the xmpersist mock.
         Collection collection = aio.load(aio.getUserSource());
         aio.removeUserAnnotation(resource);
-        waitForEDT();
         verifyAll();  
     }
 /** try adding an annotaiton */
@@ -198,13 +197,12 @@ public class AnnotationIOImplUnitTest extends TestCase {
         expect(xmlPersist.fromXml((InputStream)anyObject())).andReturn(userAnnotations);
         UserAnnotation ua2 = new UserAnnotation();
         URI uri2 = new URI("ivo://another.one");
+        ua2.setResourceId(uri2);
         expect(this.annotationService.getUserAnnotation(testURI)).andReturn(userAnnotation);
         expect(this.annotationService.getUserAnnotation(uri2)).andReturn(ua2);     
-        List result = new ArrayList(); // expected result. might need to do someting about order here.
-        result.add(userAnnotation);
-        result.add(ua2);
+
         xmlPersist.toXml(
-                equals(result)
+                  adapt(hasItems(userAnnotation,ua2))
                 ,isA(OutputStream.class)
                 );
         replayAll();
@@ -212,13 +210,50 @@ public class AnnotationIOImplUnitTest extends TestCase {
         // this collection is delivered from the xmpersist mock.
         Collection collection = aio.load(aio.getUserSource());
         aio.updateUserAnnotation(ua2);
-        waitForEDT();
         verifyAll();  
     }
     
-    // try removing a user annotation that doesn't exist.
+    /** try removing a user annotation that doesn't exist. */
+    public void testRemoveNonExistentUserAnnotation() throws Exception {
+        expect(objectBuilder.creationIterator()).andReturn(EmptyIterator.INSTANCE);
+        
+        expect(xmlPersist.fromXml((InputStream)anyObject())).andReturn(userAnnotations);
+        expect(this.annotationService.getUserAnnotation(testURI)).andReturn(userAnnotation);        
+        xmlPersist.toXml(
+                eq(Collections.singletonList(userAnnotation))
+                ,isA(OutputStream.class)
+                );
+        URI uri2 = new URI("ivo://another.one");
+        Resource otherResource = createMock(Resource.class);
+        expect(otherResource.getId()).andStubReturn(uri2);
+        replay(otherResource);
+        replayAll();
+        AnnotationIOImpl aio = createAIO();
+        // this collection is delivered from the xmpersist mock.
+        Collection collection = aio.load(aio.getUserSource());
+        aio.removeUserAnnotation(otherResource);
+        verifyAll();  
+    }    
+    
+    
     // try modifying user annotations before loading them.
+    
+    /**try updating an annotation */
+    public void testModifyBeforeLoadUserAnnotation() throws Exception {
+        expect(objectBuilder.creationIterator()).andReturn(EmptyIterator.INSTANCE);
+ 
+        replayAll();
+        AnnotationIOImpl aio = createAIO();
 
+         // not loaded - straight into modifying
+        try {
+            aio.updateUserAnnotation(userAnnotation);
+            fail("expected to fail");
+        } catch (IllegalStateException e) {
+            // ok
+        }
+        verifyAll();  
+    }
 
     
     /**try loading the user annotations. */
@@ -299,7 +334,6 @@ public class AnnotationIOImplUnitTest extends TestCase {
         // ok, try loading the user annotations.
         assertFalse(aio.userAnnotationsFile.exists()) ; // no user annotations
         FileUtils.touch(aio.userAnnotationsFile); // create the file - this prevents 'openStream' giving an error
-        assertTrue(aio.userAnnotationIds.isEmpty());
         return aio;
     }
     
