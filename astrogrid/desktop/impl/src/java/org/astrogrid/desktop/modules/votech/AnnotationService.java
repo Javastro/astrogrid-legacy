@@ -25,9 +25,15 @@ public interface AnnotationService extends Selftest {
 	/** add a new annotation source to the list. 
 	 * it's expected that this will be persisted so that
 	 * it's permently added to the list of sources.
+	 * 
+	 * unused, and not fully implemented.
 	 * @param nu
 	 */
 	void addSource(AnnotationSource nu);
+	/** remove the user annotation for a resource
+	 * unused, and not fully implemented
+	 *  */
+	public void removeUserAnnotation(Resource r);	
 	
 	
 	// editing annotations.
@@ -43,8 +49,6 @@ public interface AnnotationService extends Selftest {
 	/** set the annotation for a particular resource */
 	void setUserAnnotation(Resource r, UserAnnotation ann);
 	
-	/** remove the user annotation for a resource */
-    public void removeUserAnnotation(Resource r);	
 	
 	// query for annotations.
 	

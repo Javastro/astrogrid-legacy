@@ -34,7 +34,6 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 /** Implementaiton of a service that provides additional metadata - annotaitons - about registry resources.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:12:26 PM
- * @TEST
  */
 public class AnnotationServiceImpl implements AnnotationService{
 	/**
@@ -47,8 +46,7 @@ public class AnnotationServiceImpl implements AnnotationService{
 	private final List annotationSources;
 	private final AnnotationIO io;
 	private final Ehcache cache;
-	protected final UIContext ui;
-	private final AnnotationSource userSource;
+	protected final UIContext ui;	
 	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, AnnotationIO io) {
 		super();
 		this.io = io;
@@ -58,7 +56,6 @@ public class AnnotationServiceImpl implements AnnotationService{
 		// populate the annotation source list.
 		this.annotationSources = io.getSourcesList();
 		// this file load runs on startup thread, but at least it's local
-		userSource = io.getUserSource();
 		run();
 	}
 
@@ -90,7 +87,7 @@ private void saveSourceList() {
 	}
 	
 	public void removeSource(AnnotationSource remove) {
-		if (userSource.equals(remove)) {
+		if (io.getUserSource().equals(remove)) {
 			logger.warn("Ignoring attempt to remove user source");
 			return; //ignored.
 		}
@@ -145,18 +142,24 @@ private void saveSourceList() {
 	
 // access the user annotation
 	public AnnotationSource getUserAnnotationSource() {
-		return userSource;
+		return io.getUserSource();
 	}
 	public UserAnnotation getUserAnnotation(Resource r) {
+	    if (r == null) {
+	        return null;
+	    }
 	    return getUserAnnotation(r.getId());
 	}
 	public UserAnnotation getUserAnnotation(URI resourceId) {
+	    if (resourceId == null) {
+	        return null;
+	    }	        	        
 		Element el = cache.get(resourceId);
 		if (el == null) {
 			return null;
 		}
 		Map m = (Map)el.getValue();
-		UserAnnotation ua = (UserAnnotation)m.get(userSource);
+		UserAnnotation ua = (UserAnnotation)m.get(io.getUserSource());
 		return ua;
 	}
 	
@@ -166,6 +169,7 @@ private void saveSourceList() {
 		if (ann == null || r == null) {
 			return;
 		}
+		AnnotationSource userSource = io.getUserSource();
 		// make sure references are correct.
 		ann.setResourceId(r.getId());
 		ann.setSource(userSource);
@@ -193,7 +197,7 @@ private void saveSourceList() {
 	    Element el = cache.get(r.getId());
 	    if (el != null) { // else nothing needs doing.
 	        Map m = (Map)el.getValue();
-	        if (m.remove(userSource) != null) { // else wasn't a user annotaiton anyhow
+	        if (m.remove(io.getUserSource()) != null) { // else wasn't a user annotaiton anyhow
 	            cache.put(el);
 	            io.removeUserAnnotation(r);
 	        }
@@ -202,7 +206,10 @@ private void saveSourceList() {
 
 // process annotations
 	public void processLocalAnnotations(Resource r, AnnotationProcessor procesor) {
-		Element el = cache.get(r.getId());
+		if (r == null || procesor == null) {
+		    return;
+		}
+	    Element el = cache.get(r.getId());
 		if (el == null) {
 			return;
 		}
@@ -218,6 +225,9 @@ private void saveSourceList() {
 	}
 	
 	public Iterator getLocalAnnotations(Resource r) {
+	    if (r == null) {
+            return IteratorUtils.emptyIterator();
+        }
 		Element el = cache.get(r.getId());
 		if (el == null) {
 			return IteratorUtils.emptyIterator();

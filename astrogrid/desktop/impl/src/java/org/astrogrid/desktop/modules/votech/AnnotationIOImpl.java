@@ -49,7 +49,8 @@ public class AnnotationIOImpl implements AnnotationIO {
 	private final File annotationSourceList; // unused at the moment.
 	final File userAnnotationsFile; // package visibiiliy, as accessed during testing.
 	final Set<URI> userAnnotationIds; // set of resource id's that contain user annotations.
-
+	/** a custom null value to indicate that the userAnnotationIds has not yet been initialized */
+	private final static URI UNINITIALIZED_SET = URI.create("uninitialized:/set");
     private final XmlPersist xml;
 
     private final UIContext context;
@@ -64,6 +65,7 @@ public class AnnotationIOImpl implements AnnotationIO {
         this.service = service;
         this.context = context;
 		userAnnotationIds = new HashSet<URI>();
+		userAnnotationIds.add(UNINITIALIZED_SET); // mark the set as uninitialized.
 		this.workDir = new File(workDirPref.toString());
 		userAnnotationsFile =  new File(workDir,"user-annotations.xml");
 		this.userSource = new AnnotationSource(userAnnotationsFile.toURI(),"User");
@@ -152,11 +154,17 @@ public class AnnotationIOImpl implements AnnotationIO {
 	// user annotations.
 	/** mark a user annotation as updated, and persist the list */
 	public void updateUserAnnotation(UserAnnotation ann) {
+	    if (userAnnotationIds.contains(UNINITIALIZED_SET)) {
+	        throw new IllegalStateException("User annotations must be loaded first");
+	    }
 	        userAnnotationIds.add(ann.getResourceId());
 	        saveUserAnnotations();
 	}
 	/** mark a user annotation as removed, and persist the list */
 	public void removeUserAnnotation(Resource r) {
+        if (userAnnotationIds.contains(UNINITIALIZED_SET)) {
+            throw new IllegalStateException("User annotations must be loaded first");
+        }	    
            userAnnotationIds.remove(r.getId());
            saveUserAnnotations();
    }
@@ -175,12 +183,13 @@ public class AnnotationIOImpl implements AnnotationIO {
 	            try {
 	                List<UserAnnotation> persistList = new ArrayList<UserAnnotation>(userAnnotationIds.size());
 	                for (Iterator<URI> i = userAnnotationIds.iterator(); i.hasNext();) {
-	                    URI id = i.next();
+	                    URI id = i.next();	   
 	                    UserAnnotation a = service.getUserAnnotation(id);
 	                    if (a != null) {
 	                        persistList.add(a);
 	                    }
 	                }
+	                
 	                fos = new FileOutputStream(userAnnotationsFile);
 	                xml.toXml(persistList,fos);
 	            } finally {
