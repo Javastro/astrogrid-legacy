@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.16 2008/04/23 11:10:19 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.17 2008/04/25 08:59:01 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.desktop.modules.system;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.util.Iterator;
+
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,7 +38,7 @@ import EDU.oswego.cs.dl.util.concurrent.WaiterPreferenceSemaphore;
  * Provides a thread pool (configurable with keys) that processes new background tasks. Appears to be much faster - UI more responsive - than
  * creating a new background thread for each task.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Nov-2005
- * @TEST write unit tests.
+ * @TEST improve integration tests. hard to test because of concurrency.
  */
 public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownListener{
     /**
@@ -426,6 +428,14 @@ and has an 'express' slot which bypasses all others. */
     public String lastChance() {
         return null;
     }
+
+    public void executeLaterEDT(Runnable r) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            r.run();
+        } else {
+            SwingUtilities.invokeLater(r);
+        }
+    }
    
     
 
@@ -436,6 +446,9 @@ and has an 'express' slot which bypasses all others. */
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.17  2008/04/25 08:59:01  nw
+refactored to ease testing.
+
 Revision 1.16  2008/04/23 11:10:19  nw
 marked as needing test.
 

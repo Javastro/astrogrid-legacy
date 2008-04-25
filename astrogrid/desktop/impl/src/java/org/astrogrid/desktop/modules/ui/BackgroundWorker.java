@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.19 2008/04/23 11:11:45 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.20 2008/04/25 08:58:47 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,11 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
+
+import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.ui.ProgressDialogue;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
@@ -162,6 +163,8 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         protected final String workerTitle;
         /** ui component that this operation is displaying progress in */
         protected final UIComponent parent;
+        /** executor that's running this background worker*/
+        protected final BackgroundExecutor executor;
         /** flag to indicate that this is a 'system' task - only used within UI */
         private boolean system;
         
@@ -213,6 +216,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         public BackgroundWorker(UIComponent parent,String msg, TimeoutEnum timeout, int priority) {
             super();
             this.parent = parent;
+            this.executor = parent.getContext().getExecutor();
             this.workerTitle = msg;
             long tout = 5 * timeout.factor;
             if (parent.getContext() != null && parent.getContext().getConfiguration() != null) {
@@ -244,16 +248,13 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         
         /** overridden to ensure calls on EDT */
         public final void notifyObservers() {
-            if (SwingUtilities.isEventDispatchThread()) {
-                super.notifyObservers();
-            } else {
-                SwingUtilities.invokeLater(new Runnable() {
+                executor.executeLaterEDT(new Runnable() {
 
                     public void run() {
                         BackgroundWorker.super.notifyObservers();
                     }
                 });
-            }
+            
         }
 
         
@@ -266,7 +267,8 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          */
         public  final void run() {
             if (!run) return; // halt here if has been cancelled while on queue            
-            SwingUtilities.invokeLater(new Runnable() {// notify ui that we're starting to execute
+            executor.executeLaterEDT(new Runnable() {
+            // notify ui that we're starting to execute
                 public void run() {
                     setStatus(RUNNING);
                     // display a progress monitor, if requested.
@@ -299,7 +301,8 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                     return construct();
                 }
             }).run();           
-            SwingUtilities.invokeLater(new Runnable() {// finish off by updating ui.
+            executor.executeLaterEDT(new Runnable() {
+                // finish off by updating ui.
                 public void run() {
                     try {
                         Object o = get();
@@ -317,6 +320,10 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                             } else {
                                 parent.setStatusMessage(workerTitle + " - Interrupted");
                             }
+                        } else if (AssertionError.class.isAssignableFrom(ex.getClass())) {
+                            throw (AssertionError)ex;   
+                        } else if (AssertionFailedError.class.isAssignableFrom(ex.getClass())) {
+                            throw (AssertionFailedError)ex;
                         } else { // it's some kind of failure                    
                             doError(ex);
                         }
@@ -336,18 +343,14 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * Starts the worker thread.
          */
         public final void start() {
-        	if (! SwingUtilities.isEventDispatchThread()) {
-        		SwingUtilities.invokeLater(new Runnable() {
+                   executor.executeLaterEDT(new Runnable() {
 					public void run() {
-						start();
+					    parent.getContext().getTasksList().add(BackgroundWorker.this);
+					    //@todo think when's best to set the status message...
+					    parent.setStatusMessage(workerTitle);
+					    executor.executeWorker(BackgroundWorker.this);
 					}
         		});
-        	} else {
-        		parent.getContext().getTasksList().add(this);
-        		//@todo think when's best to set the status message...
-        		parent.setStatusMessage(this.workerTitle);
-        		parent.getContext().getExecutor().executeWorker(this);
-        	}
         }
 
         /**
@@ -356,9 +359,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          */
         public final void interrupt() {
             run = false; // will halt a task if it hasn't already been executed.
-            parent.getContext().getExecutor().interrupt(this); // will try to halt a running task
+            executor.interrupt(this); // will try to halt a running task
             result.setException(new InterruptedException());
-            SwingUtilities.invokeLater(new Runnable() {
+            executor.executeLaterEDT(new Runnable() {
                 public void run() {
             parent.getContext().getTasksList().remove(BackgroundWorker.this);
                 }
@@ -525,6 +528,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.20  2008/04/25 08:58:47  nw
+refactored to ease testing.
+
 Revision 1.19  2008/04/23 11:11:45  nw
 adaptations for headless
 

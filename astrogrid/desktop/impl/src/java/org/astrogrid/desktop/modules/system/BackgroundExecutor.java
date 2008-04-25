@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutor.java,v 1.3 2007/01/29 11:11:37 nw Exp $
+/*$Id: BackgroundExecutor.java,v 1.4 2008/04/25 08:59:01 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,12 +23,23 @@ public interface BackgroundExecutor extends Executor {
 
     public void executeWorker(BackgroundWorker worker);
     public void interrupt(Runnable r) ;
+    
+    /** request to execute a runnable on the swing event dispatch thread
+     * implementations may choose to ignore this (for testing)
+     * 
+     * called from backgroundWorker.
+     * @param r
+     */
+    public void executeLaterEDT(Runnable r);
 
 }
 
 
 /* 
 $Log: BackgroundExecutor.java,v $
+Revision 1.4  2008/04/25 08:59:01  nw
+refactored to ease testing.
+
 Revision 1.3  2007/01/29 11:11:37  nw
 updated contact details.
 
