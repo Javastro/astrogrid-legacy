@@ -11,8 +11,10 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
-/** Alternative implementation of Background Executor - implements the task in-thread.
- * 
+/** Alternative implementation of Background Executor
+ *  - implements the task in-thread.
+ * and executes <i>all</i> parts of a backgroundworker on the calling
+ * thread - not on EDT or a backgrund thread.
  * @author noel
  * @since Apr 10, 20063:21:22 PM
  */
@@ -55,5 +57,9 @@ public class InThreadExecutor implements BackgroundExecutor {
 		}
 
 	}
+	
+    public void executeLaterEDT(Runnable r) {
+        r.run();
+    }
 
 }
