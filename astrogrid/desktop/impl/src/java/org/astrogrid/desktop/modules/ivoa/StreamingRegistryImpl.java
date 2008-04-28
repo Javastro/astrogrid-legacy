@@ -43,7 +43,6 @@ import org.w3c.dom.Document;
  * delegates work to the external registry impl
  * @author Noel Winstanley
  * @since Jul 26, 200611:41:13 PM
- * @TEST by mocking external registry.
  */
 public class StreamingRegistryImpl implements RegistryInternal {
 

@@ -23,7 +23,6 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
  * manipulat objects thather than primitives itself.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 27, 200711:18:35 AM
- * @TEST
  */
 public class QuerySizerImpl implements QuerySizer {
 	private final RegistryInternal reg;
@@ -77,12 +76,15 @@ public class QuerySizerImpl implements QuerySizer {
      * @return
      */
     public static String constructSizingQuery(String query) {
+        if (query == null) {
+            throw new IllegalArgumentException("null query");
+        }
         return "let $sizeResults := ( " + query.trim() + ") return <size>{count($sizeResults)}</size>";
     }
 	
 	private final Builder queryBuilder = new OnlyCompleteQueriesVisitor();
 	
-	private static class OnlyCompleteQueriesVisitor extends BasicRegistrySRQLVisitor {
+	static class OnlyCompleteQueriesVisitor extends BasicRegistrySRQLVisitor {
 		public Object visit(TermSRQL q) {
 			if (q.getTerm() == null || q.getTerm().trim().length() == 0) {
 				throw new IllegalArgumentException("Not a complete query");

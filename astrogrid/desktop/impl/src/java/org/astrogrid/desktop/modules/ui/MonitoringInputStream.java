@@ -17,7 +17,6 @@ import org.apache.commons.vfs.FileObject;
  * implementation based on commons.io.CountingInputStream
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 27, 200712:45:39 PM
- * @TEST unit test this.
  */
 public class MonitoringInputStream  extends ProxyInputStream {
 
@@ -36,15 +35,13 @@ public class MonitoringInputStream  extends ProxyInputStream {
     public static MonitoringInputStream create(WorkerProgressReporter reporter, URL url,long factor) throws IOException {
         URLConnection conn = url.openConnection();
         int size = conn.getContentLength();
-        long lastModified = conn.getLastModified();
-        return new MonitoringInputStream(reporter,conn.getInputStream(),lastModified,size,factor);
+        return new MonitoringInputStream(reporter,conn.getInputStream(),size,factor);
     }
 
     public static MonitoringInputStream create(WorkerProgressReporter reporter, FileObject fo,long factor) throws IOException {
        FileContent content = fo.getContent();
         long size = content.getSize();
-        long lastModified = content.getLastModifiedTime();
-        return new MonitoringInputStream(reporter,content.getInputStream(),lastModified,size,factor);
+        return new MonitoringInputStream(reporter,content.getInputStream(),size,factor);
     }
     
     
@@ -53,11 +50,10 @@ public class MonitoringInputStream  extends ProxyInputStream {
     private final long factor;
     private final int factoredSize;
     private long factoredCount;
-    private final long lastModified;
-    private MonitoringInputStream(WorkerProgressReporter reporter,InputStream is,long lastModified,long size,long factor) {
+   // private final long lastModified;
+    MonitoringInputStream(WorkerProgressReporter reporter,InputStream is,long size,long factor) {
         super(is);
         this.reporter = reporter;
-        this.lastModified = lastModified;
         this.size = size;
         
         this.factor = factor;
@@ -190,10 +186,5 @@ public class MonitoringInputStream  extends ProxyInputStream {
         this.count = 0;
         return tmp;
     }
-
-    public final long getLastModified() {
-        return this.lastModified;
-    }
-
     
 }

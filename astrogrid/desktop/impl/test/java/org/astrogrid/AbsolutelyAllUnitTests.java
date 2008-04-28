@@ -10,12 +10,14 @@ import junit.framework.TestSuite;
 import org.astrogrid.desktop.modules.auth.AllAuthUnitTests;
 import org.astrogrid.desktop.modules.system.AllSystemUnitTests;
 import org.astrogrid.desktop.modules.system.ui.AllSystemUiUnitTests;
+import org.astrogrid.desktop.modules.ui.AllUIUnitTests;
 import org.astrogrid.desktop.modules.ui.actions.AllActionsUnitTests;
 import org.astrogrid.desktop.modules.ui.comp.AllUIComponentUnitTests;
 import org.astrogrid.desktop.modules.ui.dnd.AllDndUnitTests;
 import org.astrogrid.desktop.modules.ui.fileexplorer.AllFileExplorerUnitTests;
 import org.astrogrid.desktop.modules.ui.folders.AllUiFoldersUnitTests;
 import org.astrogrid.desktop.modules.ui.scope.AllScopeUnitTests;
+import org.astrogrid.desktop.modules.ui.voexplorer.AllVoexplorerUnitTests;
 import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
 import org.astrogrid.desktop.thirdparty.AllThirdPartyUnitTests;
 
@@ -55,10 +57,12 @@ public class AbsolutelyAllUnitTests {
 		
 		suite.addTest(AllSystemUiUnitTests.suite());
 		suite.addTest(AllUIComponentUnitTests.suite());
+		suite.addTest(AllUIUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.ui.voexplorer.srql.AllSRQLUnitTests.suite());
 		suite.addTest(AllDndUnitTests.suite());
 		suite.addTest(AllUiFoldersUnitTests.suite());
 		suite.addTest(AllFileExplorerUnitTests.suite());
+		suite.addTest(AllVoexplorerUnitTests.suite());
 		suite.addTest(AllScopeUnitTests.suite());
 		suite.addTest(AllActionsUnitTests.suite());
 		return suite;

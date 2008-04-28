@@ -15,7 +15,6 @@ import org.apache.commons.io.output.ProxyOutputStream;
  * implementation based on commons.io CountingOutputStreams
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 27, 20071:17:07 PM
- * @TEST unit test this.
  */
 public class MonitoringOutputStream extends ProxyOutputStream {
     public static final long ONE_KB = FileUtils.ONE_KB;
@@ -28,6 +27,13 @@ public class MonitoringOutputStream extends ProxyOutputStream {
     private final int factoredSize;
     private long factoredCount;
     private WorkerProgressReporter reporter;
+    /**
+     * construct a new monitoring output stream
+     * @param reporter reports progress to
+     * @param os wrapped stream to write to
+     * @param size number of byte that are expected to be written
+     * @param factor factor to divide bytes by to report progress.
+     */
     public MonitoringOutputStream(WorkerProgressReporter reporter,OutputStream os,long size,long factor) {
         super(os);
         this.reporter = reporter;
