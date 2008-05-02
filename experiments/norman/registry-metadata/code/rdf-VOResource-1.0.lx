@@ -1,5 +1,5 @@
-;; Convert an instance of VOResource-1.0 to RDF statements (as
-;; striped RDF/XML) using the
+;; Convert an instance of VOResource-1.0 to RDF statements
+;; (as striped RDF/XML) using the
 ;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
 
 (lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
@@ -38,10 +38,10 @@
              (choose
               (when vor:identifier
                 (attribute rdf:about
-                           (apply-templates select: "vor:identifier/text()")))
+                           (apply-templates select: "normalize-space(vor:identifier)")))
               (when identifier
                 (attribute rdf:about
-                           (apply-templates select: "identifier/text()"))))
+                           (apply-templates select: "normalize-space(identifier)"))))
              (choose
               (when @xsi:type
                 (call-template name: resolve-xsitype))
@@ -135,7 +135,7 @@
   (template referenceURL
       (voro:referenceURL
        (voro:FullAccessURL
-        (attribute voro:uri (apply-templates)))))
+        (attribute voro:uri (value-of "normalize-space()")))))
 
   (template accessURL
     (voro:accessURL
@@ -144,7 +144,7 @@
   (template wsdlURL
     (voro:wsdlURL
      (voro:FullAccessURL
-      (attribute voro:uri (apply-templates)))))
+      (attribute voro:uri (value-of "normalize-space()")))))
 
   (template rights
     (voro:rights
@@ -327,9 +327,9 @@
     ;; in this XSchema -- ought it to be?)
     (template vor:AuthorityID
       ;; model this as an IdentifierURI with no resource key
-      (variable name: authid (apply-templates))
+      (variable name: authid (value-of "normalize-string()"))
       (voro:authorityID (value-of $authid))
-      (voro:uri "ivo://" (value-of $authid)))
+      (voro:uri "ivo://" (value-of $authid))) ; XXX or should this be a resource, not a string
 
     (template vor:Rights
       (variable name: rights-type
@@ -355,7 +355,7 @@
                  (otherwise ;; eh?
                   AccessURL)))
       (rdf:type rdf:resource: "{$vor-ns}{$access-url-type}")
-      (element voro:uri (apply-templates)))
+      (element voro:uri (value-of "normalize-space()"))) ;XXX should this be a resource?
 
     ;; The following can be both `base types' and extended ones
     (template vor:Service
@@ -390,16 +390,15 @@
     (template make-identifier-uri
       (param name: id)
       (param name: propname voro:identifier)
-      ;;(param name: ns "http://www.ivoa.net/xml/VOResource/v1.0#")
-;      (element "{name(namespace::*[.=$ns])}{$propname}"
       (element "{$propname}"
        (attribute rdf:parseType Resource)
        (call-template name: make-identifier-uri-body
                       (with-param id (value-of $id)))))
     (template make-identifier-uri-body
       (param name: id)
-      (voro:uri (value-of $id))
-      (variable name: id-and-key select: "substring-after($id,'ivo://')")
+      (variable name: nid select: "normalize-space($id)")
+      (voro:uri (value-of $nid))
+      (variable name: id-and-key select: "substring-after($nid,'ivo://')")
       (choose
        (when "contains($id-and-key,'/')"
          (voro:authorityID (value-of "substring-before($id-and-key,'/')"))
