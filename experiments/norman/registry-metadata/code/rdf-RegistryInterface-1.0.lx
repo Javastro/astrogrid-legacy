@@ -8,9 +8,10 @@
                     ;; voro: not used in this script, but declaring it here
                     ;; means that it'll be declared in the RDF element
                     (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+                    (x2s  "http://ns.eurovotech.org/registry-metadata#")
                     )
          (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
-         (dtd (template (match #t) mode)
+         (dtd ;;(template (match #t) mode)
               (element (name #t))
               (attribute (name #t))
               (value-of (select #t))
@@ -24,10 +25,13 @@
           version: 1.0
           indent: yes)
 
-  (template ri:VOResources
+  (template match: ri:VOResources
       ;; Note that, although ri:Resource is in the namespace this script `owns',
       ;; it's actually processed by the script which owns the VOResource
       ;; namespace, as that's where it more naturally belongs.
       (apply-templates select: ri:Resource))
+
+  (template name: ri:resolve-xsitype
+            (x2s:ERROR "This shouldn't happen: called template {http://www.ivoa.net/xml/RegistryInterface/v1.0}resolve-xsitype"))
 
   ))

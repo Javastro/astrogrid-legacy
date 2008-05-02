@@ -1,7 +1,7 @@
-CWM=PYTHONPATH=/Volumes/Lagrange/Data/tools/cwm-cvs/lib/python2.3/site-packages /Volumes/Lagrange/Data/tools/cwm-cvs/bin/cwm
+CWM=PYTHONPATH=/Data/tools/cwm-cvs/lib/python2.3/site-packages /Volumes/Lagrange/Data/tools/cwm-cvs/bin/cwm
 JENA=$T/Jena-2.3
 #CP=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'`
-CP=/Volumes/Lagrange/Data/tools/Jena-2.3/lib/antlr-2.7.5.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/arq.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/commons-logging.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/concurrent.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/icu4j_3_4.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jakarta-oro-2.0.8.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jena.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jenatest.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/junit.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/log4j-1.2.12.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/stax-1.1.1-dev.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/stax-api-1.0.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/xercesImpl.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/xml-apis.jar
+CP=$(JENA)/lib/antlr-2.7.5.jar:$(JENA)/lib/arq.jar:$(JENA)/lib/commons-logging.jar:$(JENA)/lib/concurrent.jar:$(JENA)/lib/icu4j_3_4.jar:$(JENA)/lib/jakarta-oro-2.0.8.jar:$(JENA)/lib/jena.jar:$(JENA)/lib/jenatest.jar:$(JENA)/lib/junit.jar:$(JENA)/lib/log4j-1.2.12.jar:$(JENA)/lib/stax-1.1.1-dev.jar:$(JENA)/lib/stax-api-1.0.jar:$(JENA)/lib/xercesImpl.jar:$(JENA)/lib/xml-apis.jar
 
 TESTCASES=test-instance \
 	sia-1.0 mssl-reg-authority mssl-reg-registry \
@@ -29,7 +29,7 @@ TESTCASES=test-instance \
 	rm -f $@
 #	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` 
 	@java -cp $(CP) jena.rdfcopy $< RDF/XML N-TRIPLE \
-	  | ./normalise-ntriples >$@
+	  | ./normalise-ntriples >$@.tmp && mv $@.tmp $@
 #	$(CWM) -pipe -rdf $< -ntriples | ./normalise-ntriples >$@
 
 # ... and a normalised version, ready for diffing
@@ -42,7 +42,7 @@ TESTCASES=test-instance \
 %.n3: %.rdf
 	rm -f $@
 	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` \
-	  java jena.rdfcopy $< RDF/XML N3 >$@
+	  java jena.rdfcopy $< RDF/XML N3 >$@.tmp && mv $@.tmp $@
 #	$(CWM) -pipe -rdf $< -n3 >$@
 
 # Run the RDF through Eyeball.  Exclude the URI check, which objects
@@ -74,13 +74,16 @@ check: $(TESTCASES:=.nt) # $(TESTCASES:=.eyeballed)
 	    echo "$$f: ok"; \
 	    rm $$f.diff; \
 	  else \
-	    echo "$$f: failed -- see $$f.diff & $$f.diffx"; \
+	    echo "$$f: failed (maybe) -- see $$f.diff & $$f.diffx"; \
 	    sed 's/_:[0-9a-f]*/_:X/g' $$f.nt >t.nt; \
 	    sed 's/_:[0-9a-f]*/_:X/g' $$f.nt-correct >t.nt-correct; \
 	    diff t.nt-correct t.nt >$$f.diffx; \
 	    rm t.nt t.nt-correct; \
 	  fi; \
 	done
+
+../code/STAMP:
+	cd ../code; make STAMP
 
 #test.xslt: test.xsd
 #	cd ../code; make test.xslt

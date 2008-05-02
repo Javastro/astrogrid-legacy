@@ -1,0 +1,64 @@
+;; Quick stylesheet to display the type hierarchy of an XSchema file.
+
+(lx:let ((namespace (xsl "http://www.w3.org/1999/XSL/Transform")
+                    (#f "http://www.w3.org/1999/XSL/Transform")
+                    (xt "http://www.w3.org/1999/XSL/TransformAlias")
+                    (xs "http://www.w3.org/2001/XMLSchema")
+                    (x2s "http://ns.eurovotech.org/registry-metadata#")
+                    ;;(dc "http://purl.org/dc/elements/1.1/")
+
+                    (vor "http://www.ivoa.net/xml/VOResource/v1.0")
+                    (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+
+                    (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    ;(rdfs "http://www.w3.org/2000/01/rdf-schema#")
+                    ;(owl  "http://www.w3.org/2002/07/owl#")
+                    )
+         (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
+         (dtd (template (match #t) mode)
+              (element (name #t))
+              (attribute (name #t))
+              (value-of (select #t))
+              (when (test #t))
+              (if (test #t))
+              (with-param (name #t) select)))
+
+(stylesheet version: 1.0
+  (output method: text)
+
+  (key name: types
+       match: "xs:simpleType|xs:complexType"
+       use: @name)
+
+  (template /
+    (apply-templates select: ".//xs:simpleType|.//xs:complexType"))
+
+  (template "xs:simpleType|xs:complexType"
+    (choose
+     (when "xs:complexContent"
+       (apply-templates select: "xs:complexContent/xs:restriction|xs:complexContent/xs:extension"))
+     (otherwise
+      (text "
+")))
+    (if self::xs:simpleType
+        "!")
+    (choose
+     (when @name (value-of @name))
+     (otherwise "<anon>"))
+    ;(text "")
+    )
+
+  (template "xs:restriction|xs:extension"
+    (choose
+     (when "key('types',@base)"
+       (apply-templates select: "key('types',@base)"))
+     (otherwise
+      (text "
+[") (value-of @base) "]"))
+    (choose
+     (when self::xs:restriction
+       " <-r ")
+     (otherwise
+       " <-e ")))
+
+))

@@ -213,12 +213,16 @@
                (when "$cl = 'amateur'"
                  voro:AmateurContentLevel)
                (when "$cl = 'informaleducation'"
-                 voro:InformalEducationContentLevel)
+                 voro:InformalEducationContentLevel)           
                ;; simply ignore this element if its value is not one of the
                ;; recognised ones
                ))
     (voro:contentLevel
-     (element "{$cltype}")))
+     (choose
+      (when "$cltype != ''"
+        (element "{$cltype}"))
+      (otherwise
+       (x2s:WARNING "Unrecognised content level: " (value-of $cl))))))
 
   ;; There is no 'template relationshipType', since this is handled
   ;; internally to 'relationship'

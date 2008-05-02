@@ -9,6 +9,18 @@
            elementFormDefault="unqualified" attributeFormDefault="unqualified"
            version="1.0wd">
 
+   <xs:annotation>
+      <xs:appinfo>
+        <vm:schemaName>VORegistry</vm:schemaName>
+        <vm:schemaPrefix>xs</vm:schemaPrefix>
+        <vm:targetPrefix>vg</vm:targetPrefix>
+      </xs:appinfo>
+      <xs:documentation>
+        An extension to the core resource metadata (VOResource) for 
+        describing registries and authority IDs.
+      </xs:documentation>
+   </xs:annotation>
+
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0"
               schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0"/>
 
@@ -94,7 +106,7 @@
                            minOccurs="0">
                  <xs:annotation>
                    <xs:appinfo>
-                     <x2s:multipleDomains equivalentProperty='vr:description'/>
+                     <x2s:multipleDomains equivalentProperty='vro:description'/>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
@@ -102,7 +114,7 @@
                            minOccurs="0" maxOccurs="unbounded">
                  <xs:annotation>
                    <xs:appinfo>
-                     <x2s:multipleDomains equivalentProperty='vr:interface'/>
+                     <x2s:multipleDomains equivalentProperty='vro:interface'/>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
@@ -143,7 +155,7 @@
                      <xs:appinfo>
                        <x2s:multipleDomains
                            equivalentProperty='sia:maxRecords'
-                           xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0"/>
+                           xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0#"/>
                      </xs:appinfo>
                   </xs:annotation>
                </xs:element>
@@ -174,7 +186,7 @@
                      <xs:appinfo>
                        <x2s:multipleDomains
                            equivalentProperty='sia:maxRecords'
-                           xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0"/>
+                           xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0#"/>
                      </xs:appinfo>
                   </xs:annotation>
                </xs:element>

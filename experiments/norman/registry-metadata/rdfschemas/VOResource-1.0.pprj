@@ -1,4 +1,4 @@
-; Fri Apr 27 17:36:07 BST 2007
+; Mon May 14 19:24:51 CST 2007
 ; 
 ;+ (version "3.3")
 ;+ (build "Build 372")
@@ -6972,12 +6972,12 @@
 		[KB_713803_Instance_693]
 		[KB_313796_Instance_943]
 		[KB_938545_Instance_495]
-		[KB_713803_Instance_303]
 		[STANDARD_CLASS_FORM_WIDGET]
+		[KB_713803_Instance_303]
 		[KB_313796_Instance_852]
 		[Instance_1005]
-		[KB_301165_Instance_1013]
 		[Instance_581]
+		[KB_301165_Instance_1013]
 		[KB_938545_Instance_412]
 		[KB_764103_Instance_545]
 		[KB_713803_Instance_390]
@@ -7014,18 +7014,18 @@
 		"xsd:integer"
 		"xsd:unsignedShort"
 		"owl:allValuesFrom"
-		"protege:inferredSuperclassOf"
 		"rdfs:member"
+		"protege:inferredSuperclassOf"
 		"xsd:base64Binary"
 		"owl:Class"
-		"owl:Ontology"
 		"rdfs:Container"
-		":TO"
-		"xsd:gMonthDay"
+		"owl:Ontology"
 		"owl:DataRange"
+		"xsd:gMonthDay"
+		":TO"
 		"xsd:NMTOKEN"
-		"xsd:unsignedInt"
 		"xsd:QName"
+		"xsd:unsignedInt"
 		"xsd:long"
 		"owl:FunctionalProperty"
 		"owl:onProperty"
@@ -7035,15 +7035,13 @@
 		"xsd:positiveInteger"
 		"owl:someValuesFrom"
 		"owl:DeprecatedClass"
-		"owl:DatatypeProperty"
 		"xsd:duration"
 		"owl:DeprecatedProperty"
-		"owl:ObjectProperty"
 		"owl:AnnotationProperty"
 		"xsd:unsignedByte"
 		"xsd:unsignedLong"
-		"rdfs:Class"
 		"protege:inferredSubclassOf"
+		"rdfs:Class"
 		"rdf:first"
 		"xsd:short"
 		"rdf:List"
@@ -7053,41 +7051,40 @@
 		"xsd:double"
 		"xsd:decimal"
 		"rdf:subject"
-		"owl:sameAs"
-		"xsd:Name"
-		"rdf:value"
 		"owl:SymmetricProperty"
+		"rdf:value"
+		"xsd:Name"
+		"owl:sameAs"
 		"xsd:byte"
-		"owl:AllDifferent"
 		"owl:differentFrom"
+		"owl:AllDifferent"
 		"owl:Nothing"
-		"rdf:Property"
-		"owl:InverseFunctionalProperty"
 		"owl:cardinality"
+		"owl:InverseFunctionalProperty"
 		"xsd:nonNegativeInteger"
 		"rdf:Statement"
-		"rdfs:Literal"
 		":FROM"
-		"owl:disjointWith"
+		"rdfs:Literal"
 		"xsd:anySimpleType"
+		"owl:disjointWith"
 		"owl:minCardinality"
 		"xsd:ID"
 		"xsd:gDay"
 		"xsd:gYearMonth"
-		"xsd:NCName"
 		"owl:distinctMembers"
+		"xsd:NCName"
 		"xsd:nonPositiveInteger"
 		"rdfs:Datatype"
-		"xsd:token"
-		"owl:TransitiveProperty"
 		":DIRECTED-BINARY-RELATION"
-		"xsd:ENTITY"
-		"xsd:normalizedString"
+		"owl:TransitiveProperty"
+		"xsd:token"
 		"xsd:IDREF"
+		"xsd:normalizedString"
+		"xsd:ENTITY"
 		"xsd:gMonth"
-		"rdf:type"
-		"owl:oneOf"
 		"owl:maxCardinality"
+		"owl:oneOf"
+		"rdf:type"
 		"rdf:object")
 	(journaling_enabled FALSE)
 	(next_frame_number 0)

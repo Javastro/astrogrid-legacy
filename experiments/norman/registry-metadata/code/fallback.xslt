@@ -15,6 +15,7 @@
       <attribute name="x2s:namespace">
         <value-of select="namespace::*[name()=$p]"/>
       </attribute>
+      <comment>fallback: name=<value-of select="name()"/>, p=<value-of select="$p"/></comment>
       <apply-templates/>
     </x2s:UNKNOWN>
   </template>

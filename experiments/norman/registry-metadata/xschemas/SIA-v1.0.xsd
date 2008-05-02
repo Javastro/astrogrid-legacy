@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+           xmlns:vro="http://www.ivoa.net/xml/VOResource/v1.0#"
            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
            xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0"
            xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
@@ -20,6 +21,8 @@
               schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0"/>
    <xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.0"
               schemaLocation="http://www.ivoa.net/xml/VODataService/v1.0"/>
+   <!-- XXX below, we declare the VORegistry namespace, so we should mention
+        this namespace in an owl:imports in the .rdfs.  FIXME -->
 
    <xs:complexType name="SIACapRestriction" abstract="true">
       <xs:annotation>
@@ -40,10 +43,10 @@
                    <xs:appinfo>
                      <!-- This property is modelled by various subproperties
                              of the vr:validationLevel property -->
-                     <x2s:propertyName>vr:validationLevel</x2s:propertyName>
+                     <x2s:propertyName>vro:validationLevel</x2s:propertyName>
                      <x2s:multipleDomains
-                         equivalentProperty='vr:validationLevel'/>
-                     <x2s:propertyRange>vr:Organization</x2s:propertyRange>
+                         equivalentProperty='vro:validationLevel'/>
+                     <x2s:propertyRange>vro:Organization</x2s:propertyRange>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
@@ -51,7 +54,7 @@
                            minOccurs="0">
                  <xs:annotation>
                    <xs:appinfo>
-                     <x2s:multipleDomains equivalentProperty='vr:description'/>
+                     <x2s:multipleDomains equivalentProperty='vro:description'/>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
@@ -59,7 +62,7 @@
                            minOccurs="0" maxOccurs="unbounded">
                  <xs:annotation>
                    <xs:appinfo>
-                     <x2s:multipleDomains equivalentProperty='vr:interface'/>
+                     <x2s:multipleDomains equivalentProperty='vro:interface'/>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
@@ -149,7 +152,7 @@
                      <xs:appinfo>
                        <x2s:multipleDomains
                            equivalentProperty='reg:maxRecords'
-                           xmlns:reg="http://www.ivoa.net/xml/VORegistry/v1.0"/>
+                           xmlns:reg="http://www.ivoa.net/xml/VORegistry/v1.0#"/>
                      </xs:appinfo>
                   </xs:annotation>
                </xs:element>

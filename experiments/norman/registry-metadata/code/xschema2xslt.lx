@@ -20,20 +20,22 @@
 ;;
 ;; See the same-named section at the top of xschema2rdfs
 
-(lx:let ((namespace (xsl "http://www.w3.org/1999/XSL/Transform")
-                    (#f "http://www.w3.org/1999/XSL/Transform")
-                    (xt "http://www.w3.org/1999/XSL/TransformAlias")
-                    (xs "http://www.w3.org/2001/XMLSchema")
-                    (x2s "http://ns.eurovotech.org/registry-metadata#")
-                    ;;(dc "http://purl.org/dc/elements/1.1/")
+(lx:let ((namespace
+           (xsl "http://www.w3.org/1999/XSL/Transform")
+           (xsi "http://www.w3.org/2001/XMLSchema-instance")
+           (#f "http://www.w3.org/1999/XSL/Transform")
+           (xt "http://www.w3.org/1999/XSL/TransformAlias")
+           (xs "http://www.w3.org/2001/XMLSchema")
+           (x2s "http://ns.eurovotech.org/registry-metadata#")
+           ;;(dc "http://purl.org/dc/elements/1.1/")
 
-                    (vor "http://www.ivoa.net/xml/VOResource/v1.0")
-                    (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+           (vor "http://www.ivoa.net/xml/VOResource/v1.0")
+           (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
 
-                    (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-                    ;(rdfs "http://www.w3.org/2000/01/rdf-schema#")
-                    ;(owl  "http://www.w3.org/2002/07/owl#")
-                    )
+           (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+           ;;(rdfs "http://www.w3.org/2000/01/rdf-schema#")
+           ;;(owl  "http://www.w3.org/2002/07/owl#")
+           )
          (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
          (dtd (template (match #t) mode)
               (element (name #t))
@@ -90,7 +92,11 @@
 ;;   (variable name: targetprefix
 ;;             select: "name(/*/namespace::*[.=/xs:schema/@targetNamespace])")
   (variable name: targetnamespaceo
-            select: "concat(/xs:schema/@targetNamespace,'#')")
+            (choose
+             (when "/xs:schema/@x2s:targetNamespace"
+               (value-of "/xs:schema/@x2s:targetNamespace"))
+             (otherwise
+              (value-of "concat(/xs:schema/@targetNamespace,'#')"))))
   (variable name: targetprefixo
             select: "name(document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=$targetnamespaceo])")
 
@@ -125,7 +131,11 @@
       ;; Copy over the namespace declaration for the target RDFS namespace
       ;; (see the discussion about namespaces above).
       (copy-of select: "document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=$targetnamespaceo]")
-      ;; ...and the targetNamespace declaration
+      ;; ...and ensure that the targetNamespace namespace node is copied
+      ;; from the declaration in this XSD file
+      (copy-of select: "namespace::*[.=/xs:schema/@targetNamespace]")
+      ;; ...and the targetNamespace declaration, if we don't have
+      ;; elementFormDefault=unqualified
       (if "$matchprefix != ''"
           (copy-of select: "document('namespace-nodes.xml')/namespace-nodes/namespace::*[name()=$targetprefix]"))
 
@@ -149,8 +159,7 @@
       ;; Create $targetprefix:resolve-xsitype, where $targetprefix is
       ;; the prefix assigned to the namespace given in the
       ;; @targetNamespace attribute.
-      (xt:template
-       name: "{$targetprefix}:resolve-xsitype"
+      (xt:template name: "{$targetprefix}:resolve-xsitype"
        (xt:param name: type)
        (xt:choose
         (apply-templates select: "xs:complexType[xs:complexContent]"
@@ -164,6 +173,7 @@
 
   ;; [complextype]
   (template xs:complexType
+    (copy-of select: "namespace::*[name()=$targetprefix]") ;ensure NS decl copied over
     (choose
      ;; Following was in an STC experiment -- don't use for now
 ;;      (when "xs:annotation/xs:appinfo/x2s:generate[@transformer = 'no']"
@@ -227,7 +237,6 @@
        ;; We do need to call xt:apply-templates, since there is
        ;; no base class to do this for us.
        (xt:template name: "{$targetprefix}:{@name}"
-                    foo: tracing
                     (rdf:type rdf:resource: "{$targetnamespaceo}{@name}")
                     (call-template name: handle-element-attributes)
 ;;                     (apply-templates select: xs:attribute)
@@ -278,25 +287,25 @@
       (x2s:ERROR "simpleType " (value-of @name)
                  " contains no xs:restriction or xs:extension"))))
 
-  (template "xs:extension|xs:restriction"  ;[complexrestriction]
+  (template "xs:extension|xs:restriction" ;[complexrestriction]
     mode: complex-content
     ;; This gets a bit complicated if the base/superclass is in the
     ;; default namespace, and I'm not positive I've got the correct
     ;; behaviour there.
     (variable name: base-class
               (choose
-               (when .//x2s:superclass  ;indicates which template to call
-                 (value-of .//x2s:superclass))
+               (when xs:annotation/xs:appinfo/x2s:superclass ;indicates which template to call
+                 (value-of xs:annotation/xs:appinfo/x2s:superclass))
                (otherwise               ;nothing special -- just @base
                 (value-of @base))))
     (variable name: pfx
               select: "substring-before($base-class,':')")
     ;; ensure that the base class's namespace is copied over
-    (if "$pfx!=''"
+    (if $pfx                            ;"$pfx!=''"
         (copy-of select: "namespace::*[name()=$pfx]"))
     (xt:call-template
      (attribute name: name
-                (if "$pfx=''"
+                (if "not($pfx)"         ;"$pfx=''"
                     (value-of $matchprefix))
                 (value-of $base-class))))
 ;;   (template "xs:extension|xs:restriction" ;[complexrestriction]
@@ -411,34 +420,61 @@
           ;; produce a warning, unless the x2s:multipleDomains annotation
           ;; is present.
           (choose
-           (when ".//x2s:multipleDomains or /xs:schema/xs:annotation/xs:appinfo/x2s:multipleDomains/@all"
+           (when "xs:annotation/xs:appinfo/x2s:multipleDomains or /xs:schema/xs:annotation/xs:appinfo/x2s:multipleDomains/@all"
              (comment "Spotted multiple domains for element "
                       (value-of @name)))
            (otherwise
             (x2s:ERROR "Multiple (undeclared) domains for name "
                        (value-of @name)))))
-        (when ".//x2s:propertyName"
+        (when "xs:annotation/xs:appinfo/x2s:propertyName and @type"
           ;; [propertyname]
           ;; In this case, let the type handler template handle this completely.
           ;; That is, we do not emit any (RDF) property element.
           (variable name: propnameprefix
                     (value-of "substring-before(.//x2s:propertyName,':')"))
           (xt:template match: "{$matchprefix}{@name}"
-                       (if "$propnameprefix != ''"
-                           (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
+            (if "$propnameprefix != ''"
+                (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
                        (xt:call-template name: {$matchprefix}{@type})))
+
+        (when @type
+          ;; this is probably the most common case
+          (xt:template match: "{$matchprefix}{@name}"
+             (xt:element name: "{concat($targetprefixo,':',@name)}" ;"{$propname}"
+                         (call-template name: handle-type
+                                        (with-param type
+                                                    (value-of @type))))))
         (otherwise
-         ;; there is no x2s:propertyName annotation
+         ;; we don't know what to do in this case
+         ;; At one point, I had something similar to the @type case, but with
+         ;; (variable name: r (value-of xs:annotation/xs:appinfo/x2s:propertyRange)) instead of @type,
+         ;; plus a copy of $r's namespace, but that's in appropriate, since that's an _output_ type
+         ;; not a type we have a template for
+         (x2s:ERROR "Baffled: no @type or x2s:propertyName for element " (value-of @name)))
+;;         (otherwise
+;;          ;; there is no x2s:propertyName annotation
 
-         (xt:template
-          match: "{$matchprefix}{@name}"
-          (xt:element
-           name: "{concat($targetprefixo,':',@name)}" ;"{$propname}"
-           (call-template name: handle-type
-                          (with-param type (value-of @type))))))))
+;;          (xt:template match: "{$matchprefix}{@name}"
+;;           (xt:element name: "{concat($targetprefixo,':',@name)}" ;"{$propname}"
+           
+;;            (choose
+;;             (when xs:annotation/xs:appinfo/x2s:propertyRange
+;;               ;; call handle-type template with the x2s:propertyRange type,
+;;               ;; first ensuring that the x2s:propertyRange namespace
+;;               ;; is declared
+;;               (variable name: r
+;;                         (value-of xs:annotation/xs:appinfo/x2s:propertyRange))
+;;               (copy-of select: "xs:annotation/xs:appinfo/x2s:propertyRange/namespace::*[name()=substring-before($r,':')]")
+;;               (call-template name: handle-type
+;;                              (with-param type
+;;                                (value-of $r))))
+;;             (otherwise
+;;               (call-template name: handle-type
+;;                              (with-param type
+;;                                (value-of @type)))))
+;;            )))
+        ))
 
-;;      (when @ref
-;;        (apply-templates select: "key('global-elements',@ref)"))
      (when @ref                         ;[elementref]
        ;; We don't need to do anything with @ref elements.  Since we generate
        ;; templates for all global elements, these are already handled.
@@ -471,6 +507,11 @@
                    (value-of "concat($matchprefix,$type)"))
                  (otherwise ; $type already has a prefix -- don't add one
                   (value-of $type))))
+
+      (comment "handle-type: "
+               "type=" (value-of $type)
+               " {" (value-of $type-ns)
+               "}, otype=" (value-of $otype))
 
       (choose
        ;; Work through various special cases.
@@ -516,7 +557,7 @@
          ;; which we can't handle right now.  I don't think we have to, however.
          ;; If we do, then we'll either have to start being able to grub
          ;; around in other XSchema files, or else we could just leave it
-         ;; to the otherwise clause, and go ahead an generate a named
+         ;; to the otherwise clause, and go ahead and generate a named
          ;; template for simpleTypes as well.
          (x2s:ERROR "Attribute " (value-of @name)
                     " with type {"
@@ -533,6 +574,10 @@
         ;; there's an xsi:type attribute on the (instance) element, in which
         ;; case call the resolve-xsitype template, which handles this.
 
+        ;; Copy over the namespace node for $otype, in case this was
+        ;; set other than by a @type attribute (for example an x2s annotation).
+        ;(copy-of select: "namespace::")
+
         ;; Use $type-ln to look up the type declaration in this schema.
         (choose
          (when "key('classes',$type-ln)/self::node() = xs:simpleType or key('classes',$type-ln)//xs:simpleContent"
@@ -545,6 +590,11 @@
            (xt:when test: @xsi:type
                     (xt:call-template name: resolve-xsitype))
            (xt:otherwise
+            ;; I think the following is wrong, because $otype is an _output_ type,
+            ;; which is therefore not one which has a template defined.  I'm not
+            ;; currently sure what the real case is here, since this branch appears
+            ;; to be exercised only in one of my test cases, and not in a real example
+            ;; of an input schema.
             (xt:call-template name: "{$otype}"))))))))
 
     (template handle-element-attributes

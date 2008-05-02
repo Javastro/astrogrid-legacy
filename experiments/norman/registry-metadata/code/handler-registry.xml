@@ -27,6 +27,8 @@
           >http://www.ivoa.net/xml/SIA/v0.7</xml-ns>
   <xml-ns id='x-sia'
           >http://www.ivoa.net/xml/SIA/v1.0</xml-ns>
+  <xml-ns id='x-ssa'
+          >http://www.ivoa.net/xml/SSA/v0.4</xml-ns>
   <xml-ns id='x-stc130'
           >http://www.ivoa.net/xml/STC/stc-v1.30.xsd</xml-ns>
   <xml-ns id='x-tdb03'
@@ -48,6 +50,8 @@
                >http://www.ivoa.net/xml/VOResource/v1.0#</ontology-ns>
   <ontology-ns id='o-sia'
                >http://www.ivoa.net/xml/SIA/v1.0#</ontology-ns>
+  <ontology-ns id='o-ssa'
+               >http://www.ivoa.net/xml/SSA/v0.4#</ontology-ns>
   <ontology-ns id='o-stc130'
                >http://www.ivoa.net/xml/STC/stc-v1.30.xsd#</ontology-ns>
   <ontology-ns id='o-tdb'
@@ -83,6 +87,9 @@
   <handler from='x-sia' to='o-sia'>
     <xslt>SIA-v1.0.xslt</xslt>                        <!--generated-->
   </handler>
+  <handler from='x-ssa' to='o-ssa'>
+    <xslt>SSA-v0.4.xslt</xslt>                        <!--generated-->
+  </handler>
   <handler from='x-stc130' to='o-stc130'>
     <xslt>stc-v1.30.xslt</xslt>                       <!--generated-->
   </handler>
@@ -94,6 +101,9 @@
   </handler>
   <handler from='x-ds05' to='o-ds' status='disabled'>
     <xslt>rdf-VODataService-v0.5.xslt</xslt>
+  </handler>
+  <handler from='x-reg03' to='o-reg'>
+    <xslt>VORegistry-v0.3.xslt</xslt>                 <!--generated-->
   </handler>
   <handler from='x-reg' to='o-reg'>
     <xslt>VORegistry-v1.0.xslt</xslt>                 <!--generated-->

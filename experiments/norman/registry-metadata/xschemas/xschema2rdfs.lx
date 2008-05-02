@@ -30,13 +30,16 @@
 ;;
 ;;     <x2s:superclass>[name]</x2s:superclass>
 ;;         Appears within an appinfo annotation for an XSD <extension> element.
-;;         Indicates that the superclass for the RDFS class (which
-;;         we're currently generating) should be the named class and
-;;         namespace, rather than the one corresponding to the class
+;;         Indicates that the superclass for the RDFS class which
+;;         we're currently generating, should be the class and
+;;         namespace corresponding to the named XSD class (ie, not a RDFS
+;;         class), rather than the one corresponding to the class
 ;;         in the extension element.  For example, the
 ;;         TabularDB-v0.3.xsd schema extends the VODataService-v0.5
 ;;         XSchema, but we want to have its generated classes refer to
-;;         the VODataService-v1.0 RDF Schema instead.
+;;         the VODataService-v1.0 RDF Schema instead.  The analogue of
+;;         this within <element> is the x2s:propertyRange annotation,
+;;         used for the same reason.
 ;;
 ;;     <x2s:multipleDomains/>
 ;;         If present on an element/attribute, then the element/attribute
@@ -68,7 +71,10 @@
 ;;         the default; these will have to be special-cased in the 
 ;;         conversion scripts (which means in practice special-casing
 ;;         them within rdf-VOResource-1.0.lx).  See for example
-;;         sia:SIACapRestriction/@validationLevel.
+;;         sia:SIACapRestriction/@validationLevel.  This is the
+;;         analogue within <element> of the x2s:superclass annotation
+;;         within <extension>.  This also suppresses the processing,
+;;         or falling back to, the @base class in an extension/restriction.
 ;;         ;This can also be used to force the range
 ;;         ;of a property derived from an xs:attribute, which would
 ;;         ;otherwise be presumed to be a datatype property rather than
@@ -197,7 +203,7 @@
                     " contains anonymous complexType"))
        (when xs:simpleContent ; [simplecontent]
          (apply-templates select: xs:simpleContent))
-       (when "xs:complexContent or xs:sequence"
+       (when "xs:complexContent or xs:sequence or xs:choice"
         (rdfs:Class (attribute rdf:ID (value-of @name))
                     (apply-templates select: xs:annotation)
                     (apply-templates select: "xs:complexContent/xs:extension|xs:complexContent/xs:restriction"
@@ -355,6 +361,12 @@
             (x2s:ERROR "ref=" (value-of @ref) " not in complexType!")))
           (apply-templates select: xs:annotation)))
 
+       (when @substitutionGroup
+         ;; XXX HACK: I expect I should do more in this case.
+         ;; This is here to cope with the @substitutionGroup declared
+         ;; for numBins2 in the Characterisation schema
+         (apply-templates select: complexType))
+
        (when @type                      ;[elementtype]
          (rdf:Property
           (variable name: propname
@@ -483,8 +495,8 @@
            (variable name: e-ln
                      (value-of "substring-after(xs:annotation/xs:appinfo/x2s:multipleDomains/@equivalentProperty,':')"))
            (variable name: e-ns
-                     (value-of "namespace::*[name()=$e-pfx]"))
-           (rdf:Description rdf:about: "#{@name}"
+                     (value-of "xs:annotation/xs:appinfo/x2s:multipleDomains/namespace::*[name()=$e-pfx]"))
+           (rdf:Property rdf:about: "#{@name}"
                             (rdfs:subPropertyOf
                              rdf:resource: "{$e-ns}{$e-ln}")
                             ;; use owl:equivalentProperty.  We actually mean
@@ -583,7 +595,7 @@
       (choose
        (when "$ns = 'http://www.w3.org/2001/XMLSchema'"
          ;; special-case the xsd: namespace
-         "http://www.w3.org/2001/XMLSchema"
+         "http://www.w3.org/2001/XMLSchema#"
          (value-of select: "substring-after($type,':')"))
        (when "local-name($typenode) = 'simpleType' and not($typenode//xs:enumeration)" ;simpleType, but not an enumeration
          (value-of select: "$ns")

@@ -1,11 +1,13 @@
-LX=$(CT)/code/lx/build/classes
+#LX=$(CT)/code/lx/build/classes
+LX=$(CT)/code/lx/lx.jar
 CWM=PYTHONPATH=/Volumes/Lagrange/Data/tools/cwm-cvs/lib/python2.3/site-packages /Volumes/Lagrange/Data/tools/cwm-cvs/bin/cwm
 JENA=$T/Jena-2.3
 
 # List of schemas which have been verified to convert sanely with
 # xschema2rdfs.lx.
-AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 VORegistry-v1.0 \
-	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30
+AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 \
+	VORegistry-v1.0 \
+	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 SSA-v0.4
 # The XSchemas SIA-0.7, VODataService-v0.5 and VORegistry-v0.3 also work, but
 # I'm no longer working with those, so they're unverified, and untweaked.
 # TabularDB-v0.3 appears to be the most recent version of that series --
@@ -31,6 +33,11 @@ all: $(AUTOCONVERTIBLE:=.rdfs)
 	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` \
 	  java jena.rdfcopy $< RDF/XML N3 >$@
 #	$(CWM) -pipe -rdf $< -n3 >$@.tmp && mv $@.tmp $@
+
+# Following is better than .rdfs -> .n3, but requires rapper
+%.ttl: %.rdfs
+	rm -f $@ $@.tmp
+	rapper -o turtle $< >$@.tmp && mv $@.tmp $@
 
 %.nt: %.rdfs
 	rm -f $@

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema targetNamespace="http://www.ivoa.net/xml/VORegistry/v0.3" 
+<xs:schema targetNamespace="http://www.ivoa.net/xml/VORegistry/v0.3"
+           x2s:targetNamespace="http://www.ivoa.net/xml/VORegistry/v1.0#"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
+           xmlns:vr10="http://www.ivoa.net/xml/VOResource/v1.0" 
            xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
            elementFormDefault="qualified" attributeFormDefault="unqualified"
            version="0.3">
 
@@ -17,51 +20,75 @@
       </xs:annotation>
 
       <xs:complexContent>
-         <xs:extension base="vr:Service">
-            <xs:sequence>
-               <xs:element name="managedAuthority" type="vr:AuthorityID"
-                           minOccurs="0" maxOccurs="unbounded">
-                  <xs:annotation>
-                     <xs:documentation>
-                       an authority identifier managed by a registry.
-                     </xs:documentation>
-                     <xs:documentation>
-                       Typically, this means the AuthorityIDs that originated 
-                       (i.e. were first published by) this registry.  Currently,
-                       only one registry can lay claim to an AuthorityID via
-                       this element at a time.   
-                     </xs:documentation>
-                  </xs:annotation>
-               </xs:element>
-            </xs:sequence>
-         </xs:extension>
+        <xs:extension base="vr:Service">
+          <xs:annotation>
+            <xs:appinfo>
+              <x2s:superclass>vr10:Service</x2s:superclass>
+            </xs:appinfo>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element name="managedAuthority" type="vr:AuthorityID"
+                        minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:documentation>
+                  an authority identifier managed by a registry.
+                </xs:documentation>
+                <xs:documentation>
+                  Typically, this means the AuthorityIDs that originated 
+                  (i.e. were first published by) this registry.  Currently,
+                  only one registry can lay claim to an AuthorityID via
+                  this element at a time.   
+                </xs:documentation>
+                <xs:appinfo>
+                  <x2s:propertyRange>xs:string</x2s:propertyRange>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:extension>
       </xs:complexContent>
    </xs:complexType>
 
    <xs:complexType name="Authority">
-      <xs:annotation>
-         <xs:documentation>
-           a naming authority; an assertion of control over a
-           namespace represented by an authority identifier. 
-         </xs:documentation>
-      </xs:annotation>
-      <xs:complexContent>
-         <xs:extension base="vr:Resource">
-            <xs:sequence>
-               <xs:element name="managingOrg" type="vr:ResourceName" 
-                           minOccurs="0">
-                  <xs:annotation>
-                     <xs:documentation>
-                       the organization that manages or owns the this authority.
-                     </xs:documentation>
-                     <xs:documentation>
-                       In most cases, this will be the same as the Publisher.
-                     </xs:documentation>
-                  </xs:annotation>
-               </xs:element>
-            </xs:sequence>
-         </xs:extension>
-      </xs:complexContent>
+     <xs:annotation>
+       <xs:documentation>
+         a naming authority; an assertion of control over a
+         namespace represented by an authority identifier. 
+       </xs:documentation>
+     </xs:annotation>
+     <xs:complexContent>
+       <xs:extension base="vr:Resource">
+         <xs:annotation>
+           <xs:appinfo>
+             <x2s:superclass>vr10:Resource</x2s:superclass>
+           </xs:appinfo>
+         </xs:annotation>
+         <xs:sequence>
+           <xs:element name="managingOrg" type="vr:ResourceName" 
+                       minOccurs="0">
+             <xs:annotation>
+               <xs:documentation>
+                 the organization that manages or owns the this authority.
+               </xs:documentation>
+               <xs:documentation>
+                 In most cases, this will be the same as the Publisher.
+               </xs:documentation>
+               <xs:appinfo>
+                 <!--<x2s:superclass>vr10:ResourceName</x2s:superclass>-->
+                 <!--
+                     <x2s:superclass
+                     xmlns:vro='http://www.ivoa.net/xml/VOResource/v1.0#'
+                     >vro:resource-name</x2s:superclass>
+                 -->
+                 <x2s:propertyRange
+                     xmlns:vr10o="http://www.ivoa.net/xml/VOResource/v1.0#" 
+                     >vr10o:resource-name</x2s:propertyRange>
+               </xs:appinfo>
+             </xs:annotation>
+           </xs:element>
+         </xs:sequence>
+       </xs:extension>
+     </xs:complexContent>
    </xs:complexType>
 
 </xs:schema>

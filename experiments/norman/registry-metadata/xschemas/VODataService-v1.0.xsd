@@ -2,6 +2,7 @@
 <xs:schema targetNamespace="http://www.ivoa.net/xml/VODataService/v1.0" 
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+           xmlns:vro="http://www.ivoa.net/xml/VOResource/v1.0#" 
            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" 
            xmlns:stc="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" 
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
@@ -48,7 +49,7 @@
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
-                     <x2s:multipleDomains equivalentProperty='vr:facility'/>
+                     <x2s:multipleDomains equivalentProperty='vro:facility'/>
                    </xs:appinfo>
                    <xs:documentation>
                      the observatory or facility used to collect the data 
@@ -63,7 +64,7 @@
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
                      <vm:dcterm>Subject.Instrument</vm:dcterm>
-                     <x2s:multipleDomains equivalentProperty='vr:instrument'/>
+                     <x2s:multipleDomains equivalentProperty='vro:instrument'/>
                    </xs:appinfo>
                    <xs:documentation>
                      the Instrument used to collect the data contain or 
@@ -77,7 +78,7 @@
                  <xs:annotation>
                     <xs:appinfo>
                       <vm:dcterm>Rights</vm:dcterm>
-                      <x2s:multipleDomains equivalentProperty='vr:rights'/>
+                      <x2s:multipleDomains equivalentProperty='vro:rights'/>
                     </xs:appinfo>           
                     <xs:documentation>
                       Information about rights held in and over the resource.
@@ -143,7 +144,7 @@
                      this data collection.
                    </xs:documentation>
                    <xs:appinfo>
-                     <x2s:multipleDomains equivalentProperty='vr:accessURL'/>
+                     <x2s:multipleDomains equivalentProperty='vro:accessURL'/>
                    </xs:appinfo>
                  </xs:annotation>
               </xs:element>
@@ -566,7 +567,7 @@
                   the name of the table 
                </xs:documentation>
                <xs:appinfo>
-                 <x2s:multipleDomains equivalentProperty='vr:name'/>
+                 <x2s:multipleDomains equivalentProperty='vro:name'/>
                </xs:appinfo>
             </xs:annotation>
          </xs:element>
@@ -577,7 +578,7 @@
                   a description of the tables contents
                </xs:documentation>
                <xs:appinfo>
-                 <x2s:multipleDomains equivalentProperty='vr:description'/>
+                 <x2s:multipleDomains equivalentProperty='vro:description'/>
                </xs:appinfo>
             </xs:annotation>
          </xs:element>
@@ -634,7 +635,7 @@
                   a description of the column's contents
                </xs:documentation>
                <xs:appinfo>
-                 <x2s:multipleDomains equivalentProperty='vr:description'/>
+                 <x2s:multipleDomains equivalentProperty='vro:description'/>
                </xs:appinfo>
             </xs:annotation>
          </xs:element>

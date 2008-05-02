@@ -1,4 +1,5 @@
-LXCP=$(CT)/code/lx/build/classes
+#LXCP=$(CT)/code/lx/build/classes
+LXCP=$(CT)/code/lx/lx.jar
 
 # TRANSFORMERS=rdf-RegistryInterface-0.1.xslt rdf-RegistryInterface-1.0.xslt \
 # 	rdf-VOResource-0.10.xslt rdf-VOResource-1.0.xslt \
@@ -13,11 +14,14 @@ TRANSFORMERS=rdf-VOResource-1.0.xslt rdf-RegistryInterface-1.0.xslt
 
 SCHEMAS=../xschemas
 # List of schemas which have been verified to convert sanely with
-# xschema2xslt.lx.
-# Nothing will actually break if this doesn't match the corresponding list
-# in ../xschemas/Makefile, but I'd expect them to be the same.
-AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 VORegistry-v1.0 \
-	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 test-schema
+# xschema2xslt.lx.  This will be a superset of the corresponding list
+# in ../xschemas/Makefile, including a few such as VORegistry-v0.3 which
+# aren't targets of a conversion, but which we do need to be
+# able to convert _from_.
+AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 \
+	VORegistry-v0.3 VORegistry-v1.0 \
+	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 SSA-v0.4\
+	test-schema
 
 PRODUCTS=ExtractNamespaces.jar convert-root.xslt
 
@@ -38,7 +42,7 @@ PRODUCTS=ExtractNamespaces.jar convert-root.xslt
 	  $< xschema2xslt.lx $@
 
 %.class: %.java
-	javac $<
+	CLASSPATH=. javac $<
 
 all: STAMP
 
