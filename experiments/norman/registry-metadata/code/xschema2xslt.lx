@@ -89,8 +89,6 @@
               ;; so just use the namespace node from the
               ;; namespace-nodes.xml file.
               (value-of "name(document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=/xs:schema/@targetNamespace])"))))
-;;   (variable name: targetprefix
-;;             select: "name(/*/namespace::*[.=/xs:schema/@targetNamespace])")
   (variable name: targetnamespaceo
             (choose
              (when "/xs:schema/@x2s:targetNamespace"
@@ -105,10 +103,7 @@
              (when "/xs:schema/@elementFormDefault='unqualified'"
                "")
              (otherwise 
-              (value-of $targetprefix) ":")
-;;              (otherwise
-;;               (value-of "name(document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=/xs:schema/@targetNamespace])") ":")
-             ))
+              (value-of $targetprefix) ":")))
 
   ;; we need to refer explicitly to these namespaces in the tests below
   (variable name: vor-ns "http://www.ivoa.net/xml/VOResource/v1.0")
@@ -185,9 +180,6 @@
      (when xs:simpleContent ; [simplecontent]
        (xt:template name: "{$targetprefix}:{@name}"
                     (call-template name: handle-element-attributes)
-;;                     (for-each select: .//xs:attribute
-;;                               (xt:if test: @{@name}
-;;                                      (apply-templates select: .)))
                     (xt:element name: "{$targetprefixo}:{@name}Value"
                                 (xt:apply-templates))))
      (when "xs:complexContent or xs:sequence"
@@ -200,9 +192,6 @@
                     (when xs:complexContent
                       ;; handle any attributes peculiar to this type
                       (call-template name: handle-element-attributes)
-;;                       (for-each select: .//xs:attribute
-;;                                 (xt:if test: @{@name}
-;;                                        (apply-templates select: .)))
 
                       ;; Don't insert a (xt:apply-templates) here.
                       ;; ComplexContent must include wither restriction or extension,
@@ -239,8 +228,6 @@
        (xt:template name: "{$targetprefix}:{@name}"
                     (rdf:type rdf:resource: "{$targetnamespaceo}{@name}")
                     (call-template name: handle-element-attributes)
-;;                     (apply-templates select: xs:attribute)
-;;                     (apply-templates select: xs:attributeGroup)
                     (xt:apply-templates)))
 ;;      (when "@abstract='true'" ; [abstracttype]
 ;;        ;; This type has no other content; it exists only to be extended.
@@ -308,21 +295,6 @@
                 (if "not($pfx)"         ;"$pfx=''"
                     (value-of $matchprefix))
                 (value-of $base-class))))
-;;   (template "xs:extension|xs:restriction" ;[complexrestriction]
-;;     mode: complex-content
-;;     (xt:call-template
-;;      (choose
-;;       (when .//x2s:superclass           ;indicates which template to call
-;;         (variable name: p
-;;                   select: "substring-before(.//x2s:superclass, ':')")
-;;         (copy-of select: "namespace::*[name()=$p]")
-;;         (attribute name: name
-;;                    (value-of $matchprefix)
-;;                    (value-of .//x2s:superclass)))
-;;       (otherwise                        ;nothing special -- just call @base
-;;        (attribute name: name
-;;                   (value-of $matchprefix)
-;;                   (value-of @base))))))
 
   ;; no need (yes?) for simple-content variant of extension|restriction template
 
@@ -448,32 +420,12 @@
          ;; we don't know what to do in this case
          ;; At one point, I had something similar to the @type case, but with
          ;; (variable name: r (value-of xs:annotation/xs:appinfo/x2s:propertyRange)) instead of @type,
-         ;; plus a copy of $r's namespace, but that's in appropriate, since that's an _output_ type
-         ;; not a type we have a template for
-         (x2s:ERROR "Baffled: no @type or x2s:propertyName for element " (value-of @name)))
-;;         (otherwise
-;;          ;; there is no x2s:propertyName annotation
-
-;;          (xt:template match: "{$matchprefix}{@name}"
-;;           (xt:element name: "{concat($targetprefixo,':',@name)}" ;"{$propname}"
-           
-;;            (choose
-;;             (when xs:annotation/xs:appinfo/x2s:propertyRange
-;;               ;; call handle-type template with the x2s:propertyRange type,
-;;               ;; first ensuring that the x2s:propertyRange namespace
-;;               ;; is declared
-;;               (variable name: r
-;;                         (value-of xs:annotation/xs:appinfo/x2s:propertyRange))
-;;               (copy-of select: "xs:annotation/xs:appinfo/x2s:propertyRange/namespace::*[name()=substring-before($r,':')]")
-;;               (call-template name: handle-type
-;;                              (with-param type
-;;                                (value-of $r))))
-;;             (otherwise
-;;               (call-template name: handle-type
-;;                              (with-param type
-;;                                (value-of @type)))))
-;;            )))
-        ))
+         ;; plus a copy of $r's namespace, but that's inappropriate, since that's an _output_ type
+         ;; not a type we have a template for.
+         ;;
+         ;; Was there a specific case I was aiming for there?  I don't know, and I don't have
+         ;; a test-case for it, so it's gone!
+         (x2s:ERROR "Baffled: no @type or x2s:propertyName for element " (value-of @name)))))
 
      (when @ref                         ;[elementref]
        ;; We don't need to do anything with @ref elements.  Since we generate
