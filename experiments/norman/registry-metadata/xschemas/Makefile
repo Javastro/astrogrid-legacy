@@ -3,6 +3,9 @@ LX=$(CT)/code/lx/lx.jar
 CWM=PYTHONPATH=/Volumes/Lagrange/Data/tools/cwm-cvs/lib/python2.3/site-packages /Volumes/Lagrange/Data/tools/cwm-cvs/bin/cwm
 JENA=$T/Jena-2.3
 
+# DISTDIR is where 'install' puts things -- should be overridden by parent makefile
+DISTDIR=XXX
+
 # List of schemas which have been verified to convert sanely with
 # xschema2rdfs.lx.
 AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 \
@@ -83,6 +86,10 @@ test-schema.n3: test-schema.rdfs
 	  sort | \
 	  awk 'BEGIN {printf "# Converted from $<"} {if ($$1 == PREV) {printf " ;\n\t%s\t%s", $$2, $$3;} else { printf " .\n\n%s\n\t%s\t%s", $$1, $$2, $$3; PREV=$$1; }} END {print " ."}' \
 	  >$@.temp && mv $@.temp $@
+
+install: all
+	test -d $(DESTDIR)
+	cp $(AUTOCONVERTIBLE:=.rdfs) $(DISTDIR)
 
 check: test-schema.n3
 	diff test-schema.n3-correct test-schema.n3

@@ -1,3 +1,29 @@
+This currently isn't much cop as a README, since it's merely a
+collection of more-or-less random reflections.
+
+But for what it's worth, these are my notes for the registry-metadata
+conversion scripts, v@VERSION@, released @RELEASEDATE@.
+
+To run the scripts on a set of registry records in XML, do
+
+% xsltproc --path <xslt-dir> convert-root.xslt instance.xml >instance.rdf
+
+To add more schemas, copy the file foo.xsd into xschemas/ and
+xschemas/originals (the latter for reference).  Add 'foo' to the
+AUTOCONVERTIBLE variable in code/Makefile and xschemas/Makefile, edit
+the appropriate namespace in to code/handler-registry.xml, then type
+make, and see what happens.  You might have to add various annotations
+in foo.xsd -- see the added annotations in the other .xsd files.
+
+
+
+
+
+------------------------------------------------------------
+random notes below here...
+
+
+
 * Overview
 I was initially rather indecisive about this, and unable to decide whether to
 stick to RDFS for the RM ontology, or to go with OWL.  Presumably the

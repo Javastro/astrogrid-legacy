@@ -1,6 +1,9 @@
 #LXCP=$(CT)/code/lx/build/classes
 LXCP=$(CT)/code/lx/lx.jar
 
+# DISTDIR is where 'install' puts things -- should be overridden by parent makefile
+DISTDIR=XXX
+
 # TRANSFORMERS=rdf-RegistryInterface-0.1.xslt rdf-RegistryInterface-1.0.xslt \
 # 	rdf-VOResource-0.10.xslt rdf-VOResource-1.0.xslt \
 # 	rdf-VORegistry-1.0.xslt \
@@ -74,6 +77,11 @@ convert-root.xslt: handler-registry.xml namespace-nodes.xml make-convert-root.lx
 	  handler-registry.xml make-convert-root.lx $@
 #	xsltproc make-convert-root.xslt handler-registry.xml >$@.tmp \
 #	  && mv $@.tmp $@
+
+install: all
+	test -d $(DISTDIR)
+	cp $(TRANSFORMERS) convert-root.xslt fallback.xslt $(DISTDIR)
+	cp $(AUTOCONVERTIBLE:=.xslt) $(DISTDIR)
 
 clean:
 	rm -f $(TRANSFORMERS) $(AUTOCONVERTIBLE:=.xslt) *.class STAMP
