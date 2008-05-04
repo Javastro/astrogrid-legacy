@@ -1,16 +1,16 @@
-; Mon May 14 19:24:51 CST 2007
+; Sun May 04 21:34:42 BST 2008
 ; 
-;+ (version "3.3")
-;+ (build "Build 372")
+;+ (version "3.3.1")
+;+ (build "Build 430")
 
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[VOResource-1.0_ProjectKB_Instance_44]
-		[VOResource-1.0_ProjectKB_Instance_45]
-		[VOResource-1.0_ProjectKB_Instance_46]
-		[VOResource-1.0_ProjectKB_Instance_47]
-		[VOResource-1.0_ProjectKB_Instance_48]))
+		[VOResource-1.0_ProjectKB_Instance_10050]
+		[VOResource-1.0_ProjectKB_Instance_10051]
+		[VOResource-1.0_ProjectKB_Instance_10052]
+		[VOResource-1.0_ProjectKB_Instance_10053]
+		[VOResource-1.0_ProjectKB_Instance_10054]))
 
 ([CLSES_TAB] of  Widget
 
@@ -3991,59 +3991,21 @@
 ([KB_938545_Instance_292] of  String
 
 	(name "vertical_stretcher")
-	(string_value "<<all>>"))
+	(string_value "<<none>>"))
 
 ([KB_938545_Instance_293] of  Widget
 
-	(height 220)
+	(height 0)
 	(is_hidden FALSE)
 	(label "Domain")
 	(name ":DIRECT-DOMAIN")
 	(property_list [KB_938545_Instance_294])
-	(widget_class_name "edu.stanford.smi.protegex.owl.ui.properties.domain.OWLDomainWidget")
-	(width 200)
+	(width 0)
 	(x 0)
-	(y 170))
+	(y 0))
 
 ([KB_938545_Instance_294] of  Property_List
-
-	(properties
-		[KB_938545_Instance_295]
-		[KB_938545_Instance_296]
-		[KB_938545_Instance_297]
-		[KB_938545_Instance_298]
-		[KB_938545_Instance_299]
-		[KB_938545_Instance_300]))
-
-([KB_938545_Instance_295] of  Boolean
-
-	(boolean_value TRUE)
-	(name "ButtonDisplayed-View Selected Instances"))
-
-([KB_938545_Instance_296] of  Boolean
-
-	(boolean_value TRUE)
-	(name "ButtonDisplayed-Create Instance"))
-
-([KB_938545_Instance_297] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-References"))
-
-([KB_938545_Instance_298] of  Boolean
-
-	(boolean_value TRUE)
-	(name "ButtonDisplayed-Add"))
-
-([KB_938545_Instance_299] of  Boolean
-
-	(boolean_value TRUE)
-	(name "ButtonDisplayed-Remove"))
-
-([KB_938545_Instance_300] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-Delete Selected Instances"))
+)
 
 ([KB_938545_Instance_301] of  Widget
 
@@ -4172,14 +4134,13 @@
 
 ([KB_938545_Instance_325] of  Widget
 
-	(height 220)
+	(height 0)
 	(is_hidden FALSE)
 	(name "rdfs:range")
 	(property_list [KB_938545_Instance_326])
-	(widget_class_name "edu.stanford.smi.protegex.owl.ui.properties.range.OWLRangeWidget")
-	(width 200)
-	(x 200)
-	(y 170))
+	(width 0)
+	(x 0)
+	(y 0))
 
 ([KB_938545_Instance_326] of  Property_List
 )
@@ -6950,7 +6911,7 @@
 
 ([OWL_ProjectKB_Instance_3] of  Integer
 
-	(integer_value 372)
+	(integer_value 430)
 	(name "owl_build"))
 
 ([PAL_FORM_WIDGET] of  Widget
@@ -6972,12 +6933,12 @@
 		[KB_713803_Instance_693]
 		[KB_313796_Instance_943]
 		[KB_938545_Instance_495]
-		[STANDARD_CLASS_FORM_WIDGET]
 		[KB_713803_Instance_303]
+		[STANDARD_CLASS_FORM_WIDGET]
 		[KB_313796_Instance_852]
 		[Instance_1005]
-		[Instance_581]
 		[KB_301165_Instance_1013]
+		[Instance_581]
 		[KB_938545_Instance_412]
 		[KB_764103_Instance_545]
 		[KB_713803_Instance_390]
@@ -7020,12 +6981,12 @@
 		"owl:Class"
 		"rdfs:Container"
 		"owl:Ontology"
-		"owl:DataRange"
-		"xsd:gMonthDay"
 		":TO"
+		"xsd:gMonthDay"
+		"owl:DataRange"
 		"xsd:NMTOKEN"
-		"xsd:QName"
 		"xsd:unsignedInt"
+		"xsd:QName"
 		"xsd:long"
 		"owl:FunctionalProperty"
 		"owl:onProperty"
@@ -7051,40 +7012,40 @@
 		"xsd:double"
 		"xsd:decimal"
 		"rdf:subject"
-		"owl:SymmetricProperty"
-		"rdf:value"
-		"xsd:Name"
 		"owl:sameAs"
+		"xsd:Name"
+		"rdf:value"
+		"owl:SymmetricProperty"
 		"xsd:byte"
-		"owl:differentFrom"
 		"owl:AllDifferent"
+		"owl:differentFrom"
 		"owl:Nothing"
-		"owl:cardinality"
 		"owl:InverseFunctionalProperty"
+		"owl:cardinality"
 		"xsd:nonNegativeInteger"
 		"rdf:Statement"
-		":FROM"
 		"rdfs:Literal"
-		"xsd:anySimpleType"
+		":FROM"
 		"owl:disjointWith"
+		"xsd:anySimpleType"
 		"owl:minCardinality"
 		"xsd:ID"
 		"xsd:gDay"
 		"xsd:gYearMonth"
-		"owl:distinctMembers"
 		"xsd:NCName"
+		"owl:distinctMembers"
 		"xsd:nonPositiveInteger"
 		"rdfs:Datatype"
-		":DIRECTED-BINARY-RELATION"
-		"owl:TransitiveProperty"
 		"xsd:token"
-		"xsd:IDREF"
-		"xsd:normalizedString"
+		"owl:TransitiveProperty"
+		":DIRECTED-BINARY-RELATION"
 		"xsd:ENTITY"
+		"xsd:normalizedString"
+		"xsd:IDREF"
 		"xsd:gMonth"
-		"owl:maxCardinality"
-		"owl:oneOf"
 		"rdf:type"
+		"owl:oneOf"
+		"owl:maxCardinality"
 		"rdf:object")
 	(journaling_enabled FALSE)
 	(next_frame_number 0)
@@ -7158,7 +7119,59 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_11])
-	(widget_class_name "edu.stanford.smi.protegex.psm.PSMTab"))
+	(widget_class_name "edu.stanford.smi.protegex.changes.ChangesTab"))
+
+([VOResource-1.0_ProjectKB_Instance_10044] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [VOResource-1.0_ProjectKB_Instance_10045])
+	(widget_class_name "edu.stanford.smi.RemoteKBTab.UMLSTab"))
+
+([VOResource-1.0_ProjectKB_Instance_10045] of  Property_List
+)
+
+([VOResource-1.0_ProjectKB_Instance_10046] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [VOResource-1.0_ProjectKB_Instance_10047])
+	(widget_class_name "edu.stanford.smi.protegex.server_changes.prompt.UsersTab"))
+
+([VOResource-1.0_ProjectKB_Instance_10047] of  Property_List
+)
+
+([VOResource-1.0_ProjectKB_Instance_10048] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [VOResource-1.0_ProjectKB_Instance_10049])
+	(widget_class_name "uk.ac.man.cs.mig.coode.owlviz.ui.OWLVizTab"))
+
+([VOResource-1.0_ProjectKB_Instance_10049] of  Property_List
+)
+
+([VOResource-1.0_ProjectKB_Instance_10050] of  String
+
+	(name "owl:Class")
+	(string_value "%3ANAME"))
+
+([VOResource-1.0_ProjectKB_Instance_10051] of  String
+
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
+
+([VOResource-1.0_ProjectKB_Instance_10052] of  String
+
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
+
+([VOResource-1.0_ProjectKB_Instance_10053] of  String
+
+	(name "owl:Thing")
+	(string_value "%3ANAME"))
+
+([VOResource-1.0_ProjectKB_Instance_10054] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
 
 ([VOResource-1.0_ProjectKB_Instance_11] of  Property_List
 )
@@ -7167,7 +7180,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_13])
-	(widget_class_name "edu.stanford.smi.protegex.changes.ChangesTab"))
+	(widget_class_name "ezpal.EZPalTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_13] of  Property_List
 )
@@ -7176,7 +7189,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_15])
-	(widget_class_name "ezpal.EZPalTab"))
+	(widget_class_name "edu.stanford.smi.protegex.fctab.FacetConstraintsTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_15] of  Property_List
 )
@@ -7185,7 +7198,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_17])
-	(widget_class_name "edu.stanford.smi.protegex.fctab.FacetConstraintsTab"))
+	(widget_class_name "edu.stanford.smi.protegex.changes.changesKBViewTab.ChangesKBViewTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_17] of  Property_List
 )
@@ -7236,7 +7249,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_27])
-	(widget_class_name "DataGenieTab.DataGenieTab"))
+	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.KnowledgeTreeTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_27] of  Property_List
 )
@@ -7245,7 +7258,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_29])
-	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.KnowledgeTreeTab"))
+	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.InstanceTreeTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_29] of  Property_List
 )
@@ -7257,7 +7270,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_31])
-	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.InstanceTreeTab"))
+	(widget_class_name "edu.stanford.smi.protegex.changes.stats.ChangeStatisticsTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_31] of  Property_List
 )
@@ -7284,7 +7297,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_37])
-	(widget_class_name "org.algernon.kb.okbc.protege.plugins.AlgernonTab"))
+	(widget_class_name "edu.stanford.smi.protegex.datamaster.DataMasterTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_37] of  Property_List
 )
@@ -7293,7 +7306,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_39])
-	(widget_class_name "edu.stanford.smi.protegex.widget.pal.PalQueriesTab"))
+	(widget_class_name "org.algernon.kb.okbc.protege.plugins.AlgernonTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_39] of  Property_List
 )
@@ -7308,7 +7321,7 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_41])
-	(widget_class_name "edu.stanford.smi.RemoteKBTab.UMLSTab"))
+	(widget_class_name "edu.stanford.smi.protegex.widget.pal.PalQueriesTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_41] of  Property_List
 )
@@ -7317,35 +7330,10 @@
 
 	(is_hidden TRUE)
 	(property_list [VOResource-1.0_ProjectKB_Instance_43])
-	(widget_class_name "uk.ac.man.cs.mig.coode.owlviz.ui.OWLVizTab"))
+	(widget_class_name "edu.stanford.smi.protegex.chatPlugin.ChatTab"))
 
 ([VOResource-1.0_ProjectKB_Instance_43] of  Property_List
 )
-
-([VOResource-1.0_ProjectKB_Instance_44] of  String
-
-	(name "owl:Class")
-	(string_value "%3ANAME"))
-
-([VOResource-1.0_ProjectKB_Instance_45] of  String
-
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
-
-([VOResource-1.0_ProjectKB_Instance_46] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
-
-([VOResource-1.0_ProjectKB_Instance_47] of  String
-
-	(name "owl:Thing")
-	(string_value "%3ANAME"))
-
-([VOResource-1.0_ProjectKB_Instance_48] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
 
 ([VOResource-1.0_ProjectKB_Instance_5] of  Property_List
 )
