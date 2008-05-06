@@ -1,3 +1,8 @@
+<http://adil.ncsa.uiuc.edu/>	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://adil.ncsa.uiuc.edu/"	.
+<http://adil.ncsa.uiuc.edu/>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#FullAccessURL>	.
+<ivo://ivoa.net/std/SIA>	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"ivoa.net"	.
+<ivo://ivoa.net/std/SIA>	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"std/SIA"	.
+<ivo://ivoa.net/std/SIA>	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://ivoa.net/std/SIA"	.
 <ivo://org.astrogrid.regtest/sia>	<http://www.ivoa.net/xml/VODataService/v1.0#rights>	_:0	.
 <ivo://org.astrogrid.regtest/sia>	<http://www.ivoa.net/xml/VODataService/v1.0#table>	_:1	.
 <ivo://org.astrogrid.regtest/sia>	<http://www.ivoa.net/xml/VOResource/v1.0#capability>	_:2	.
@@ -15,6 +20,12 @@
 <ivo://org.astrogrid.regtest/sia>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Resource>	.
 <ivo://org.astrogrid.regtest/sia>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Service>	.
 _:0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#PublicRights>	.
+_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:b9	.
+_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c0	.
+_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c1	.
+_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c2	.
+_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c3	.
+_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c4	.
 _:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c5	.
 _:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c6	.
 _:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:c7	.
@@ -24,35 +35,29 @@ _:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d0	.
 _:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d1	.
 _:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d2	.
 _:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d3	.
-_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d4	.
-_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d5	.
-_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d6	.
-_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d7	.
-_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d8	.
-_:1	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:d9	.
 _:1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#Table>	.
-_:2	<http://www.ivoa.net/xml/SIA/v1.0#imageServiceType>	_:a4	.
-_:2	<http://www.ivoa.net/xml/SIA/v1.0#maxFileSize>	"100000000"	.
-_:2	<http://www.ivoa.net/xml/SIA/v1.0#maxImageExtent>	_:a0	.
-_:2	<http://www.ivoa.net/xml/SIA/v1.0#maxImageSize>	_:a2	.
-_:2	<http://www.ivoa.net/xml/SIA/v1.0#maxQueryRegionSize>	_:9	.
-_:2	<http://www.ivoa.net/xml/SIA/v1.0#standardID>	_:a5	.
-_:2	<http://www.ivoa.net/xml/SIA/v1.0#testQuery>	_:a3	.
-_:2	<http://www.ivoa.net/xml/VORegistry/v1.0#interface>	_:a6	.
+_:2	<http://www.ivoa.net/xml/SIA/v1.0#imageServiceType>	_:f3	.
+_:2	<http://www.ivoa.net/xml/SIA/v1.0#maxImageExtent>	_:9	.
+_:2	<http://www.ivoa.net/xml/SIA/v1.0#maxImageSize>	_:a1	.
+_:2	<http://www.ivoa.net/xml/SIA/v1.0#maxQueryRegionSize>	_:8	.
+_:2	<http://www.ivoa.net/xml/SIA/v1.0#standardID>	<ivo://ivoa.net/std/SIA>	.
+_:2	<http://www.ivoa.net/xml/SSA/v0.4#maxFileSize>	"100000000"	.
+_:2	<http://www.ivoa.net/xml/SSA/v0.4#testQuery>	_:a2	.
+_:2	<http://www.ivoa.net/xml/VORegistry/v1.0#interface>	_:d6	.
 _:2	<http://www.ivoa.net/xml/VORegistry/v1.0#maxRecords>	"5000"	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#standardID>	_:a7	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#validationLevel2>	_:a8	.
+_:2	<http://www.ivoa.net/xml/VOResource/v1.0#standardID>	_:f2	.
+_:2	<http://www.ivoa.net/xml/VOResource/v1.0#validationLevel2>	_:e7	.
 _:2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#SIACapRestriction>	.
 _:2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#SimpleImageAccess>	.
 _:3	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"This Simple Image Access Protocol implementation allows clients to progrommatically search for images in the ADIL that overlap with the given region."	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:f2	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:f3	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:f4	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#referenceURL>	_:f5	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#serviceFor>	_:f0	.
+_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:d8	.
+_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:d9	.
+_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:e0	.
+_:3	<http://www.ivoa.net/xml/VOResource/v1.0#referenceURL>	<http://adil.ncsa.uiuc.edu/>	.
+_:3	<http://www.ivoa.net/xml/VOResource/v1.0#serviceFor>	_:e1	.
 _:3	<http://www.ivoa.net/xml/VOResource/v1.0#subject>	"data repositories"	.
 _:3	<http://www.ivoa.net/xml/VOResource/v1.0#subject>	"digital libraries"	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#type>	_:f6	.
+_:3	<http://www.ivoa.net/xml/VOResource/v1.0#type>	_:e2	.
 _:3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ContentDescription>	.
 _:4	<http://www.ivoa.net/xml/VOResource/v1.0#contact>	_:e3	.
 _:4	<http://www.ivoa.net/xml/VOResource/v1.0#contributor>	_:e4	.
@@ -63,163 +68,159 @@ _:5	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"org.astrogrid.regtest
 _:5	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"sia"	.
 _:5	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://org.astrogrid.regtest/sia"	.
 _:6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ActiveStatus>	.
-_:7	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:e7	.
-_:8	<http://www.ivoa.net/xml/SIA/v1.0#lat>	"1"	.
-_:8	<http://www.ivoa.net/xml/SIA/v1.0#long>	"1"	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:e9	.
+_:8	<http://www.ivoa.net/xml/SSA/v0.4#lat>	"180.0"	.
+_:8	<http://www.ivoa.net/xml/SSA/v0.4#long>	"360.0"	.
 _:8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#SkySize>	.
-_:9	<http://www.ivoa.net/xml/SIA/v1.0#lat>	"180.0"	.
-_:9	<http://www.ivoa.net/xml/SIA/v1.0#long>	"360.0"	.
+_:9	<http://www.ivoa.net/xml/SSA/v0.4#lat>	"180.0"	.
+_:9	<http://www.ivoa.net/xml/SSA/v0.4#long>	"360.0"	.
 _:9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#SkySize>	.
-_:a0	<http://www.ivoa.net/xml/SIA/v1.0#lat>	"180.0"	.
-_:a0	<http://www.ivoa.net/xml/SIA/v1.0#long>	"360.0"	.
-_:a0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#SkySize>	.
-_:a1	<http://www.ivoa.net/xml/SIA/v1.0#lat>	"20"	.
-_:a1	<http://www.ivoa.net/xml/SIA/v1.0#long>	"120"	.
-_:a1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#SkyPos>	.
-_:a2	<http://www.ivoa.net/xml/SIA/v1.0#lat>	"5000"	.
-_:a2	<http://www.ivoa.net/xml/SIA/v1.0#long>	"5000"	.
-_:a2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#ImageSize>	.
-_:a3	<http://www.ivoa.net/xml/SIA/v1.0#pos>	_:a1	.
-_:a3	<http://www.ivoa.net/xml/SIA/v1.0#size>	_:8	.
-_:a3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#Query>	.
-_:a4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#ImageServiceTypePointed>	.
-_:a5	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"ivoa.net"	.
-_:a5	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"std/SIA"	.
-_:a5	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://ivoa.net/std/SIA"	.
-_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#accessURL>	_:e2	.
-_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#param>	_:e0	.
-_:a6	<http://www.ivoa.net/xml/VOResource/v1.0#interfaceRole>	"std"	.
-_:a6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#ParamHTTP>	.
-_:a7	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"ivoa.net"	.
-_:a7	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"std/SIA"	.
-_:a7	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://ivoa.net/std/SIA"	.
-_:a8	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:e8	.
+_:a0	<http://www.ivoa.net/xml/SSA/v0.4#lat>	"20"	.
+_:a0	<http://www.ivoa.net/xml/SSA/v0.4#long>	"120"	.
+_:a0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SSA/v0.4#PosParam>	.
+_:a1	<http://www.ivoa.net/xml/SSA/v0.4#lat>	"5000"	.
+_:a1	<http://www.ivoa.net/xml/SSA/v0.4#long>	"5000"	.
+_:a1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#ImageSize>	.
+_:a2	<http://www.ivoa.net/xml/SSA/v0.4#pos>	_:a0	.
+_:a2	<http://www.ivoa.net/xml/SSA/v0.4#size>	"1 1"	.
+_:a2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SSA/v0.4#Query>	.
+_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
+_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
+_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
+_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
+_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
+_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
+_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
+_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
+_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
+_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
+_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
 _:a9	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
+_:a9	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
 _:b0	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
 _:b0	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
-_:b1	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
-_:b1	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
-_:b2	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
-_:b2	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
-_:b3	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
-_:b3	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
-_:b4	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
-_:b4	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
-_:b5	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
-_:b5	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
-_:b6	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"char"	.
-_:b6	<http://www.ivoa.net/xml/VODataService/v1.0#arraysize>	"*"	.
-_:b7	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"double"	.
-_:b8	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"double"	.
-_:b9	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"double"	.
-_:c0	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"float"	.
-_:c1	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"float"	.
-_:c2	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"int"	.
-_:c3	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"int"	.
-_:c4	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"real"	.
-_:c5	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b2	.
-_:c5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Source Name"	.
-_:c5	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_MAIN"	.
-_:c5	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Target Source of Image"	.
+_:b1	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"double"	.
+_:b2	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"double"	.
+_:b3	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"double"	.
+_:b4	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"float"	.
+_:b5	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"float"	.
+_:b6	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"int"	.
+_:b7	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"int"	.
+_:b8	<http://www.ivoa.net/xml/VODataService/v1.0#TableDataTypeValue>	"real"	.
+_:b9	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a6	.
+_:b9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Source Name"	.
+_:b9	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_MAIN"	.
+_:b9	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Target Source of Image"	.
+_:b9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:b9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:c0	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b3	.
+_:c0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Observation Epoch"	.
+_:c0	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"NVOX:Image_Epoch"	.
+_:c0	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"years"	.
+_:c0	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Upper bound on the epoch of the observations"	.
+_:c0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:c0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:c1	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b4	.
+_:c1	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Dec (Center)"	.
+_:c1	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"POS_EQ_DEC_MAIN"	.
+_:c1	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"degrees"	.
+_:c1	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Dec of Image Center (J2000)"	.
+_:c1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:c1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:c2	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b5	.
+_:c2	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"RA (Center)"	.
+_:c2	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"POS_EQ_RA_MAIN"	.
+_:c2	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"degrees"	.
+_:c2	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"RA of Image Center (J2000)"	.
+_:c2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:c2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:c3	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a4	.
+_:c3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Telescopes"	.
+_:c3	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"TEL_ID"	.
+_:c3	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"a list of Telescopes used to create this image"	.
+_:c3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:c3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:c4	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b1	.
+_:c4	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Central Frequency"	.
+_:c4	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:BandPass_RefValue"	.
+_:c4	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"Hz"	.
+_:c4	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Frequency at center of the image wavehand"	.
+_:c4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:c4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:c5	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a5	.
+_:c5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"URL"	.
+_:c5	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_AccessReference"	.
+_:c5	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"The URL for downloading image"	.
 _:c5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:c5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:c6	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b7	.
-_:c6	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Observation Epoch"	.
-_:c6	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"NVOX:Image_Epoch"	.
-_:c6	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"years"	.
-_:c6	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Upper bound on the epoch of the observations"	.
+_:c6	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a9	.
+_:c6	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Image Format"	.
+_:c6	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Format"	.
+_:c6	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Format of Image"	.
 _:c6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:c6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:c7	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:c0	.
-_:c7	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Dec (Center)"	.
-_:c7	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"POS_EQ_DEC_MAIN"	.
-_:c7	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"degrees"	.
-_:c7	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Dec of Image Center (J2000)"	.
+_:c7	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b6	.
+_:c7	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Number of Axes"	.
+_:c7	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Naxes"	.
+_:c7	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Number of axes in the image"	.
 _:c7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:c7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:c8	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:c1	.
-_:c8	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"RA (Center)"	.
-_:c8	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"POS_EQ_RA_MAIN"	.
-_:c8	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"degrees"	.
-_:c8	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"RA of Image Center (J2000)"	.
+_:c8	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b7	.
+_:c8	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Naxis"	.
+_:c8	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Naxis"	.
+_:c8	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Size of Image for each dimension"	.
 _:c8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:c8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:c9	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b5	.
-_:c9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Telescopes"	.
-_:c9	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"TEL_ID"	.
-_:c9	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"a list of Telescopes used to create this image"	.
+_:c9	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b2	.
+_:c9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Scale"	.
+_:c9	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Scale"	.
+_:c9	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"degrees/pixel"	.
+_:c9	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Scale of Image"	.
 _:c9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:c9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d0	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b9	.
-_:d0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Central Frequency"	.
-_:d0	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:BandPass_RefValue"	.
-_:d0	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"Hz"	.
-_:d0	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Frequency at center of the image wavehand"	.
+_:d0	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a3	.
+_:d0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Description"	.
+_:d0	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Title"	.
+_:d0	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Image Description"	.
 _:d0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:d0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d1	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b4	.
-_:d1	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"URL"	.
-_:d1	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_AccessReference"	.
-_:d1	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"The URL for downloading image"	.
+_:d1	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a7	.
+_:d1	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Codename"	.
+_:d1	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"ADIL Image Identifier - Unique identifier for image, as assigned by the ADIL"	.
 _:d1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:d1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d2	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b0	.
-_:d2	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Image Format"	.
-_:d2	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Format"	.
-_:d2	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Format of Image"	.
+_:d2	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a8	.
+_:d2	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Image Name"	.
+_:d2	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Image Filename, as provide by author"	.
 _:d2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:d2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d3	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:c2	.
-_:d3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Number of Axes"	.
-_:d3	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Naxes"	.
-_:d3	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Number of axes in the image"	.
+_:d3	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b0	.
+_:d3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Source Types"	.
+_:d3	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"a list of Source Types associated with this image"	.
 _:d3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
 _:d3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:c3	.
-_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Naxis"	.
-_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Naxis"	.
-_:d4	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Size of Image for each dimension"	.
+_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b8	.
+_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"FREQ"	.
+_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#std>	"false"	.
+_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"Hz"	.
+_:d4	<http://www.ivoa.net/xml/VODataService/v1.0#use>	_:d5	.
+_:d4	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Frequency of observation."	.
 _:d4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
-_:d4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d5	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b8	.
-_:d5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Scale"	.
-_:d5	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Scale"	.
-_:d5	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"degrees/pixel"	.
-_:d5	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Scale of Image"	.
-_:d5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
-_:d5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d6	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:a9	.
-_:d6	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Description"	.
-_:d6	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"VOX:Image_Title"	.
-_:d6	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Image Description"	.
-_:d6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
-_:d6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d7	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b3	.
-_:d7	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Codename"	.
-_:d7	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"ADIL Image Identifier - Unique identifier for image, as assigned by the ADIL"	.
-_:d7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
-_:d7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d8	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b6	.
-_:d8	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Image Name"	.
-_:d8	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Image Filename, as provide by author"	.
-_:d8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
-_:d8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:d9	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:b1	.
-_:d9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Source Types"	.
-_:d9	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"a list of Source Types associated with this image"	.
-_:d9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
-_:d9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
-_:e0	<http://www.ivoa.net/xml/VODataService/v1.0#dataType>	_:c4	.
-_:e0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"FREQ"	.
-_:e0	<http://www.ivoa.net/xml/VODataService/v1.0#std>	"false"	.
-_:e0	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"Hz"	.
-_:e0	<http://www.ivoa.net/xml/VODataService/v1.0#use>	_:e1	.
-_:e0	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Frequency of observation."	.
-_:e0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
-_:e0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#InputParam>	.
-_:e1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#ParamUseOptional>	.
-_:e2	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://adil.ncsa.uiuc.edu/cgi-bin/voimquery?survey=f&"	.
-_:e2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#AccessURL>	.
+_:d4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#InputParam>	.
+_:d5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#ParamUseOptional>	.
+_:d6	<http://www.ivoa.net/xml/VODataService/v1.0#accessURL>	_:d7	.
+_:d6	<http://www.ivoa.net/xml/VODataService/v1.0#param>	_:d4	.
+_:d6	<http://www.ivoa.net/xml/VOResource/v1.0#interfaceRole>	"std"	.
+_:d6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#ParamHTTP>	.
+_:d7	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://adil.ncsa.uiuc.edu/cgi-bin/voimquery?survey=f&"	.
+_:d7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#AccessURL>	.
+_:d8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#CommunityCollegeContentLevel>	.
+_:d9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ResearchContentLevel>	.
+_:e0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#UniversityContentLevel>	.
+_:e1	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:f1	.
+_:e1	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"NCSA Astronomy Digital Image Library"	.
+_:e1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:e2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ArchiveType>	.
 _:e3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"ADIL Librarian"	.
 _:e3	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"adil@ncsa.uiuc.edu"	.
 _:e3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
@@ -228,27 +229,23 @@ _:e4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/
 _:e5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Ramon Williamson"	.
 _:e5	<http://www.ivoa.net/xml/VOResource/v1.0#logo>	"http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif"	.
 _:e5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Creator>	.
-_:e6	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:e9	.
+_:e6	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:f0	.
 _:e6	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"NCSA Astronomy Digital Image Library (ADIL)"	.
 _:e6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
-_:e7	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"nvo.ncsa"	.
-_:e7	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"registry"	.
-_:e7	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://nvo.ncsa/registry"	.
+_:e7	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:e8	.
 _:e8	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"nvo.ncsa"	.
 _:e8	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"registry"	.
 _:e8	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://nvo.ncsa/registry"	.
-_:e9	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"adil.ncsa"	.
-_:e9	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"adil"	.
-_:e9	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://adil.ncsa/adil"	.
-_:f0	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:f1	.
-_:f0	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"NCSA Astronomy Digital Image Library"	.
-_:f0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:e9	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"nvo.ncsa"	.
+_:e9	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"registry"	.
+_:e9	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://nvo.ncsa/registry"	.
+_:f0	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"adil.ncsa"	.
+_:f0	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"adil"	.
+_:f0	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://adil.ncsa/adil"	.
 _:f1	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"adil.ncsa"	.
 _:f1	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"adil"	.
 _:f1	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://adil.ncsa/adil"	.
-_:f2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#CommunityCollegeContentLevel>	.
-_:f3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ResearchContentLevel>	.
-_:f4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#UniversityContentLevel>	.
-_:f5	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://adil.ncsa.uiuc.edu/"	.
-_:f5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#FullAccessURL>	.
-_:f6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ArchiveType>	.
+_:f2	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"ivoa.net"	.
+_:f2	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"std/SIA"	.
+_:f2	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://ivoa.net/std/SIA"	.
+_:f3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#ImageServiceTypePointed>	.

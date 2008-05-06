@@ -192,8 +192,7 @@
 
   ;; [import]
   (template xs:import
-      (owl:imports
-       (attribute rdf:resource (value-of @namespace))))
+    (owl:imports rdf:resource: "{@namespace}"))
 
   ;; [complextype]
   (template xs:complexType
@@ -204,7 +203,7 @@
        (when xs:simpleContent ; [simplecontent]
          (apply-templates select: xs:simpleContent))
        (when "xs:complexContent or xs:sequence or xs:choice"
-        (rdfs:Class (attribute rdf:ID (value-of @name))
+        (rdfs:Class rdf:ID: "{@name}"    ;(attribute rdf:ID (value-of @name))
                     (apply-templates select: xs:annotation)
                     (apply-templates select: "xs:complexContent/xs:extension|xs:complexContent/xs:restriction"
                                      mode: complex-content))
@@ -246,11 +245,8 @@
          (apply-templates select: .//xs:enumeration))
        (when "xs:restriction|xs:extension"           ;OK [simplerestriction]
          (rdfs:Class
-          (attribute rdf:about
-                     "#xscd(/type::" (value-of @name) ")")
-          (rdfs:subClassOf
-           (attribute rdf:resource
-                      "http://www.w3.org/2000/01/rdf-schema#Datatype"))
+          rdf:about: "#xscd(/type::{@name})"
+          (rdfs:subClassOf rdf:resource: "http://www.w3.org/2000/01/rdf-schema#Datatype")
           (rdfs:comment
            "Literal XSchema datatype property: see http://www.w3.org/TR/swbp-xsch-datatypes/")
           (apply-templates select: xs:annotation)
@@ -262,18 +258,15 @@
 
   (template xs:simpleContent            ;[simplecontent]
       (variable name: n select: ../@name)
-    (rdfs:Class (attribute rdf:ID (value-of ../@name))
+    (rdfs:Class rdf:ID: "{../@name}"
                 (apply-templates select: xs:annotation))
     (rdf:Property (attribute rdf:ID
                              (value-of "translate(substring($n,1,1),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')")
                              (value-of "substring($n,2)")
                              "Value")
-                  (rdfs:domain
-                   (attribute rdf:resource "#" (value-of ../@name)))
-                  (rdfs:range
-                   ;; be vague about the exact type, for the moment
-                   (attribute rdf:resource
-                              "http://www.w3.org/2000/01/rdf-schema#Datatype"))
+                  (rdfs:domain rdf:resource: "#{../@name}")
+                  ;; be vague about the exact type, for the moment
+                  (rdfs:range rdf:resource: "http://www.w3.org/2000/01/rdf-schema#Datatype")
                   (apply-templates select: "xs:extension|xs:restriction"
                                    mode: simple-content))
     (apply-templates select: .//xs:attribute))   ;only attributes below
@@ -281,8 +274,7 @@
   (template "xs:extension|xs:restriction" ;[complexrestriction]
     mode: complex-content
     (rdfs:subClassOf
-     (attribute
-      rdf:resource
+     (attribute rdf:resource
       (call-template name: create-type-reference
                      (with-param name: type
                                  (choose
@@ -353,10 +345,7 @@
                                                 (value-of @ref))))
           (choose
            (when ancestor::xs:complexType/@name
-             (rdfs:domain
-              (attribute rdf:resource
-                         "#"
-                         (value-of ancestor::xs:complexType/@name))))
+             (rdfs:domain rdf:resource: "#{ancestor::xs:complexType/@name}"))
            (otherwise
             (x2s:ERROR "ref=" (value-of @ref) " not in complexType!")))
           (apply-templates select: xs:annotation)))
@@ -422,21 +411,7 @@
           ;; (eg, in STC)
 
           (if ancestor::xs:complexType/@name
-              (rdfs:domain
-               (attribute rdf:resource
-                          "#"
-                          (value-of ancestor::xs:complexType/@name))))
-;;           (choose
-;;            (when ancestor::xs:complexType/@name
-;;              (rdfs:domain
-;;               (attribute rdf:resource
-;;                          "#"
-;;                          (value-of ancestor::xs:complexType/@name))))
-;;            (otherwise
-;;             (x2s:ERROR
-;;              "type=" (value-of @type) " not within complexType when processing element "
-;;              (choose (when @name "@name=" (value-of @name))
-;;                      (when @ref  "@ref="  (value-of @ref))))))
+              (rdfs:domain rdf:resource: "#{ancestor::xs:complexType/@name}"))
           (rdfs:range                   ;[propertyrange]
            (attribute rdf:resource
                       (choose
@@ -516,10 +491,7 @@
           (rdfs:comment "simpletype without @type")
           (choose
            (when ancestor::xs:complexType/@name
-             (rdfs:domain
-              (attribute rdf:resource
-                         "#"
-                         (value-of ancestor::xs:complexType/@name))))
+             (rdfs:domain rdf:resource: "###{ancestor::xs:complexType/@name}"))
            (otherwise
             (x2s:ERROR
              "type=" (value-of @type) " not within complexType when handling anonymous simpleType")))

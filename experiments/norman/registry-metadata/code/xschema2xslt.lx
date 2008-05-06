@@ -108,6 +108,7 @@
   ;; we need to refer explicitly to these namespaces in the tests below
   (variable name: vor-ns "http://www.ivoa.net/xml/VOResource/v1.0")
   (variable name: vods-ns "http://www.ivoa.net/xml/VODataService/v1.0")
+  (variable name: xschema-ns "http://www.w3.org/2001/XMLSchema")
 
   (template /
      (apply-templates select: xs:schema))
@@ -398,7 +399,8 @@
            (otherwise
             (x2s:ERROR "Multiple (undeclared) domains for name "
                        (value-of @name)))))
-        (when "xs:annotation/xs:appinfo/x2s:propertyName and @type"
+
+        (when "xs:annotation/xs:appinfo/x2s:propertyName"
           ;; [propertyname]
           ;; In this case, let the type handler template handle this completely.
           ;; That is, we do not emit any (RDF) property element.
@@ -409,23 +411,41 @@
                 (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
                        (xt:call-template name: {$matchprefix}{@type})))
 
-        (when @type
-          ;; this is probably the most common case
+        (when "xs:annotation/xs:appinfo/x2s:propertyRange"
+          ;; This is a special case.  If the forced property range is in the XSchema namespace
+          ;; (for example, xs:string), then treat this as a literal property;
+          ;; otherwise, invoke the handler for this element's @type.  In the former case,
+          ;; we simply (apply-templates), in the latter case, we duplicate the effect
+          ;; of the following (otherwise) clause.
+          ;;
+          ;; This isn't fully adequate, since the XSchema-namespace
+          ;; test is a proxy for the range being a literal.  However,
+          ;; the cases where this turns out to be a problem are those,
+          ;; such as VORegistry managedAuthority, with domain
+          ;; vr:AuthorityID, where the range is a (from my point of
+          ;; view) pointless restriction on xs:string, and at least in
+          ;; that case, there's a propertyRange declaration forcing
+          ;; the range to xs:string.
+          (variable name: range-prefix
+                    (value-of "substring-before(xs:annotation/xs:appinfo/x2s:propertyRange,':')"))
+          (variable name: range-ns
+                    select: "namespace::*[name()=$range-prefix]")
+          (xt:template match: "{$matchprefix}{@name}"
+             (xt:element name: "{concat($targetprefixo,':',@name)}"
+                (choose
+                 (when "$range-ns = $xschema-ns"
+                   (xt:apply-templates))
+                 (otherwise
+                  (call-template name: handle-type
+                                 (with-param type
+                                             (value-of @type))))))))
+
+        (otherwise ;; we just have a @name and @type
+         ;; this is the most common case
           (xt:template match: "{$matchprefix}{@name}"
              (xt:element name: "{concat($targetprefixo,':',@name)}" ;"{$propname}"
-                         (call-template name: handle-type
-                                        (with-param type
-                                                    (value-of @type))))))
-        (otherwise
-         ;; we don't know what to do in this case
-         ;; At one point, I had something similar to the @type case, but with
-         ;; (variable name: r (value-of xs:annotation/xs:appinfo/x2s:propertyRange)) instead of @type,
-         ;; plus a copy of $r's namespace, but that's inappropriate, since that's an _output_ type
-         ;; not a type we have a template for.
-         ;;
-         ;; Was there a specific case I was aiming for there?  I don't know, and I don't have
-         ;; a test-case for it, so it's gone!
-         (x2s:ERROR "Baffled: no @type or x2s:propertyName for element " (value-of @name)))))
+                (call-template name: handle-type
+                               (with-param type (value-of @type))))))))
 
      (when @ref                         ;[elementref]
        ;; We don't need to do anything with @ref elements.  Since we generate
@@ -451,8 +471,9 @@
                    (value-of $type))
                  (otherwise (value-of "substring-after($type,':')"))))
       (variable name: type-ns select: "namespace::*[name()=$type-pfx]")
-      ;; $otype is the type to be output, including any $matchprefix
-      ;; if $type doesn't already include one.
+      ;; $otype is the type to be output, or, put another way, the type whose
+      ;; template will control the output.  It's the same as $type, except that
+      ;; it includes the $matchprefix if $type has no prefix of its own.
       (variable name: otype
                 (choose
                  (when "$type-pfx=''"   ;no prefix -- add $matchprefix
@@ -468,16 +489,28 @@
       (choose
        ;; Work through various special cases.
        (when "$type-ns=$vor-ns and $type-ln='IdentifierURI'"
-         (xt:attribute name: rdf:parseType Resource)
-         ;; add a breadcrumb, mostly for debugging
-         (xt:comment "IdentifierURI, type=" (value-of $type)
-                     ", from " (value-of $use-node))
-         (xt:call-template name: make-identifier-uri-body
-                           (xt:with-param name: id
-                                          (xt:apply-templates
-                                           select: "{$use-node}"))))
+         (rdf:Description
+          (xt:attribute name: rdf:about (xt:apply-templates select: "{$use-node}"))
+          ;; add a breadcrumb, mostly for debugging
+          (xt:comment "IdentifierURI, type=" (value-of $type)
+                      ", from " (value-of $use-node))
+          (xt:call-template name: make-identifier-uri-body
+                            (xt:with-param name: id
+                                           (xt:apply-templates
+                                            select: "{$use-node}"))))
+         ;; The following is a similar version of this, which creates an anonymous resource
+         ;;        (when "$type-ns=$vor-ns and $type-ln='IdentifierURI'"
+         ;;          (xt:attribute name: rdf:parseType Resource)
+         ;;          ;; add a breadcrumb, mostly for debugging
+         ;;          (xt:comment "IdentifierURI, type=" (value-of $type)
+         ;;                      ", from " (value-of $use-node))
+         ;;          (xt:call-template name: make-identifier-uri-body
+         ;;                            (xt:with-param name: id
+         ;;                                           (xt:apply-templates
+         ;;                                            select: "{$use-node}"))))
+         )
+
        (when "$type-ns=$vor-ns and $type-ln='ResourceName'"
-         ;; add a breadcrumb, mostly for debugging
          (xt:comment "ResourceName, type=" (value-of $type)
                      ", name=" (value-of ancestor::xs:complexType/@name))
          (xt:call-template name: voro:resource-name
@@ -487,21 +520,27 @@
                            (xt:with-param name: type
                                           voro:Resource)
                            (xt:with-param name: ns
-                                          (value-of $targetnamespaceo))))
-       (when "$type-ns='http://www.w3.org/2001/XMLSchema'"
+                                          (value-of
+                                           $targetnamespaceo))))
+
+       (when "$type-ns=$xschema-ns"
          ;; simple content
          ;; (no rdf:parseType=Resource)
          (xt:value-of select: "normalize-space({$use-node})"))
+
        (when "$type-ns=/xs:schema/@targetNamespace and //xs:simpleType[@name=$type-ln] and not(//xs:simpleType[@name=$type-ln]//xs:enumeration)"
          ;; this type is a non-enumeration simpleType: value is just the content
          (xt:value-of select: "normalize-space({$use-node})"))
+
        (when "$type-ns=/xs:schema/@targetNamespace and //xs:simpleType[@name=$type-ln]//xs:enumeration"
          ;; This is an enumeration -- simply call the template.
          ;; We don't include rdf:parseType=Resource, since the template
          ;; starts off with the enumeration type.
          (xt:call-template name: "{$otype}"
                            (xt:with-param name: val
-                                          (xt:value-of select: "{$use-node}"))))
+                                          (xt:value-of select:
+                                                       "{$use-node}"))))
+
        (when "self::xs:attribute"
          ;; Ooops: this type isn't one of the special cases above,
          ;; and it's not a simpleType in this XSchema, but it's on an attribute.
@@ -519,35 +558,35 @@
                     " within "
                     (value-of ancestor::xs:*/@name)
                     " appears to have a simple type in an external XSchema: not handled!!!"))
+
+       ;; This is complexContent, within either simpleType or complexType.
+       ;; The following are the simplest, and most common, cases
+
+       ;; Use $type-ln to look up the type declaration in this schema.
+       (when "key('classes',$type-ln)/self::node() = xs:simpleType or key('classes',$type-ln)//xs:simpleContent"
+         ;; If this is simpleContent, then call the template which handles
+         ;; this type.
+         (comment "Type " (value-of $type-ln) " is a simpleType")
+         (xt:attribute name: rdf:parseType Resource)
+         (xt:call-template name: "{$otype}"))
+
        (otherwise
-        ;; This is complexContent, within either simpleType or complexType.
-        ;; If this is simpleContent, then call the template which handles
-        ;; this type.  If it's complexContent, then do the same, unless
+        ;; If it's complexContent, then do the same, unless
         ;; there's an xsi:type attribute on the (instance) element, in which
         ;; case call the resolve-xsitype template, which handles this.
+        (comment "Type " (value-of $type-ln) " is a complexType, or defined in a different XSchema file")
 
-        ;; Copy over the namespace node for $otype, in case this was
-        ;; set other than by a @type attribute (for example an x2s annotation).
-        ;(copy-of select: "namespace::")
+        ;; Do we have to copy over the namespace node for $otype, in case this was
+        ;; set other than by a @type attribute (for example an x2s annotation)?
+        ;;(copy-of select: "namespace::")
 
-        ;; Use $type-ln to look up the type declaration in this schema.
-        (choose
-         (when "key('classes',$type-ln)/self::node() = xs:simpleType or key('classes',$type-ln)//xs:simpleContent"
-           (comment "Type " (value-of $type-ln) " is simpleType")
-           (xt:attribute name: rdf:parseType Resource)
-           (xt:call-template name: "{$otype}"))
-         (otherwise
-          (xt:attribute name: rdf:parseType Resource)
-          (xt:choose
-           (xt:when test: @xsi:type
-                    (xt:call-template name: resolve-xsitype))
-           (xt:otherwise
-            ;; I think the following is wrong, because $otype is an _output_ type,
-            ;; which is therefore not one which has a template defined.  I'm not
-            ;; currently sure what the real case is here, since this branch appears
-            ;; to be exercised only in one of my test cases, and not in a real example
-            ;; of an input schema.
-            (xt:call-template name: "{$otype}"))))))))
+        (xt:attribute name: rdf:parseType Resource)
+        (xt:choose
+         (xt:when test: @xsi:type
+                  (xt:call-template name: resolve-xsitype))
+         (xt:otherwise
+          (comment "Using the template for type " (value-of $otype))
+          (xt:call-template name: "{$otype}"))))))
 
     (template handle-element-attributes
       ;; handle the list of attributes on a type

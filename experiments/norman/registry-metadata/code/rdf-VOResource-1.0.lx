@@ -132,19 +132,26 @@
            (voro:format (value-of @format)))
        (voro:value (apply-templates))))
 
+  ;; We could say, here, just
+  ;; (voro:referenceURL (voro:FullAccessURL voro:uri: "{$uri}"))
+  ;; but there seems no harm in making this a non-anonymous resource, and giving it
+  ;; the same name as the URI.  This probably helps its LinkingOpenData-ability.
+  ;; But we might revise this later, if we can find an argument why this is a bad thing
+  ;; (thanks to Doug Burke for the suggestion).
   (template referenceURL
-      (voro:referenceURL
-       (voro:FullAccessURL
-        (attribute voro:uri (value-of "normalize-space()")))))
+    (variable name: uri (value-of "normalize-space()"))
+    (voro:referenceURL
+     (voro:FullAccessURL rdf:about: "{$uri}" voro:uri: "{$uri}")))
 
   (template accessURL
     (voro:accessURL
      (call-template name: vor:AccessURL)))
 
   (template wsdlURL
+    (variable name: uri (value-of "normalize-space()"))
     (voro:wsdlURL
-     (voro:FullAccessURL
-      (attribute voro:uri (value-of "normalize-space()")))))
+     ;; is PostAccessURL correct here?
+     (voro:PostAccessURL rdf:about: "{$uri}" voro:uri: "{$uri}")))
 
   (template rights
     (voro:rights
@@ -325,11 +332,6 @@
     ;; the following aren't extended, but the template is referred to
     ;; by other stylesheets (this isn't a complete list of types defined
     ;; in this XSchema -- ought it to be?)
-    (template vor:AuthorityID
-      ;; model this as an IdentifierURI with no resource key
-      (variable name: authid (value-of "normalize-space()"))
-      (voro:authorityID (value-of $authid))
-      (voro:uri "ivo://" (value-of $authid))) ; XXX or should this be a resource, not a string
 
     (template vor:Rights
       (variable name: rights-type
@@ -355,7 +357,7 @@
                  (otherwise ;; eh?
                   AccessURL)))
       (rdf:type rdf:resource: "{$vor-ns}{$access-url-type}")
-      (element voro:uri (value-of "normalize-space()"))) ;XXX should this be a resource?
+      (element voro:uri (value-of "normalize-space()")))
 
     ;; The following can be both `base types' and extended ones
     (template vor:Service

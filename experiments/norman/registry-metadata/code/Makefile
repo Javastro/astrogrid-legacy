@@ -38,7 +38,7 @@ PRODUCTS=ExtractNamespaces.jar convert-root.xslt
 
 %.xslt: %.lx
 	java -cp $(LXCP) uk.me.nxg.lx.helpers.Transformer \
-	  http://ns.nxg.me.uk/lx/generated-prefix=x --indent $< >$@
+	  http://ns.nxg.me.uk/lx/generated-prefix=x --indent $< >$@.tmp && mv $@.tmp $@
 
 %.xslt: $(SCHEMAS)/%.xsd xschema2xslt.lx namespace-nodes.xml
 	java -cp $(LXCP) uk.me.nxg.lx.helpers.Transformer \
