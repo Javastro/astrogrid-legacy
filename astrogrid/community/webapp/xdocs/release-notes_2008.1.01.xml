@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Release notes: 2008.1.01</title>
+    </properties>
+    <body>
+    <section name="Release notes for community service 2008.1.01">
+      
+      <p>
+        V2008.1.01 is released to cure a problem reported in operation. This
+        release is recommended for all operators of communities.
+        These are differences between version 2008.1.01 and 2008.1.
+      </p>
+      
+      <subsection name="Generation of proxy certificates by accounts service">
+        <p>
+          In 2008.1, it was possible for the community to load incomplete 
+          cryptography code. This showed up as an inability to decrypt the
+          private-key files written by the community CA when changing passwords
+          or signing proxy-certificates. In the current version, the community
+          is forced to load suitable cryptographic libraries.
+          This issue is 
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2750">BZ2750</a>.
+        </p>
+      </subsection>
+      
+      <subsection name="Accounts service v2">
+        <p>
+          This release introduces v2 of the accounts protocol; v2008.1
+          supported v1 of the accounts protocol. V2 is fully compatible with
+          clients written for v1 of the protocol. Clients for this protocol will 
+          be included in a later version of VODesktop and the Astro Runtime. 
+        </p>
+        <p>
+          In v2, each account has a web resource called <i>home</i>, e.g.
+          <i>http://some.domain/community/accounts/gtr/home</i>. This
+          resource lists the location of the home-space (in VOSpace) for the
+          account.
+        </p>
+        <p>
+          In v2008.2 of the community service, this new accounts protocol
+          will replace the SOAPy policy-manager service. At that time, all
+          users will need to upgrade to clients that understand accounts
+          protocol v2.
+        </p>
+      </subsection>
+      
+      <subsection name="Registry-client updated">
+        <p>
+          The client code for the IVO registry has been updated to the latest release.
+        </p>
+      </subsection>
+    </section>
+    </body>
+</document>

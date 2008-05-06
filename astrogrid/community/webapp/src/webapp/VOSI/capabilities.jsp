@@ -22,7 +22,7 @@ String secure = (String) request.getAttribute("org.astrogrid.vosi.baseurlsecure"
 >
 
   <capability standardID="ivo://org.astrogrid/std/Community/accounts">
-    <interface xsi:type="vs:ParamHTTP">
+    <interface xsi:type="vs:ParamHTTP" version="2" role="std">
       <accessURL use="base"><%=secure%>/accounts</accessURL>
     </interface>
   </capability>
@@ -30,12 +30,6 @@ String secure = (String) request.getAttribute("org.astrogrid.vosi.baseurlsecure"
   <capability standardID="ivo://org.astrogrid/std/Community/v1.0#PolicyManager">
     <interface xsi:type="vr:WebService">
       <accessURL use="full"><%=base%>/services/PolicyManager</accessURL>
-    </interface>
-  </capability>
-  
-  <capability standardID="ivo://org.astrogrid/std/Community/v1.0#SecurityService">
-    <interface xsi:type="vr:WebService">
-      <accessURL use="full"><%=base%>/services/SecurityService</accessURL>
     </interface>
   </capability>
 

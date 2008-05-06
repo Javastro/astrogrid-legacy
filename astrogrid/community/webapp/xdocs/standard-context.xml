@@ -33,8 +33,6 @@
         <dt>org.astrogrid.community.default.vospace</dt>
         <dd>The registry identifier ("IVORN") for the VOSpace service associated
         with the community.</dd>
-        <dt>org.astrogrid.registry.query.endpoint</dt>
-        <dd>The URL for the web service for queries to the full registry.</dd>
       </dl>  
       <p>
         These entries are already correct for your community if you are
@@ -42,6 +40,15 @@
         you change the installation details.
       </p>
       <dl>
+        <dt>org.astrogrid.registry.query.endpoint</dt>
+        <dd>The URL for the web service for queries to the full registry. (Given
+          value is for a registry run by AstroGrid in the UK; you might want
+          to use a local registry.)</dd>
+        <dt>org.astrogrid.registry.query.alt.endpoint</dt>
+        <dd>The URL for the web service for queries to the back-up full-registry.
+         (Given
+          value is for a registry run by AstroGrid in the UK; you might want
+          to use a local registry.)</dd>
         <dt>org.astrogrid.community.dbconfigurl</dt>
         <dd>The URL for the main database-configuration file (should begin with 
         <i>file:</i>).</dd>

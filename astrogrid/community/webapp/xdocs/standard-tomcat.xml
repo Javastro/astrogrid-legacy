@@ -34,7 +34,10 @@
         the current community, but later upgrades might require you to get
         credentials from a recognised certificate-authority. You need the
         credentials to make HTTPS work, and you need HTTPS to run the
-        community accounts service.
+        community accounts service. There are some 
+        <a href="host-certificate.html">notes on generating
+        self-signed certificates</a> since Tomcat's description of the process is
+        incomplete.
       </p>
       <p>
         Set Tomcat to start whenever the host machine reboots. The procedure

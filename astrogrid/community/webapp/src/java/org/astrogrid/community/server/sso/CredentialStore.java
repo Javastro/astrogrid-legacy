@@ -8,12 +8,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.AccessControlException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -25,6 +29,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.openssl.PasswordFinder;
@@ -40,11 +45,22 @@ public class CredentialStore {
   private String storeLocation;
   
   private CertificateFactory factory;
+
+  private String provider;
   
   /**
-   * Constructs a ProxyFactory.
+   * Constructs a CredentialStore.
    */
   public CredentialStore() throws GeneralSecurityException {
+    
+    // Make sure that the Bouncy Castle provider for the JCE is loaded.
+    // Only this provider is able to read the encrypted key files
+    // written by OpenSSL. Further, the constructors for PEMReader and
+    // PEMWriter assume the BC provider unless directed otherwise.
+    if (Security.getProvider("BC") == null) {
+      Security.addProvider(new BouncyCastleProvider());
+      this.provider = "BC";
+    }
     
     this.factory = CertificateFactory.getInstance("X509");
     
@@ -71,8 +87,7 @@ public class CredentialStore {
     }
     
     // Read the key file.
-    Password p = new Password(password);
-    PEMReader pr = new PEMReader(new InputStreamReader(fis), p);
+    PEMReader pr = getPemReader(new InputStreamReader(fis), password);
     KeyPair keys = null;
     try {
       keys = (KeyPair) (pr.readObject());
@@ -134,8 +149,8 @@ public class CredentialStore {
     }
     
     // Read the key file.
-    Password p = new Password(oldPassword);
-    PEMReader pr = new PEMReader(new InputStreamReader(fis), p);
+    
+    PEMReader pr = getPemReader(new InputStreamReader(fis), oldPassword);
     KeyPair keys = null;
     try {
       keys = (KeyPair) (pr.readObject());
@@ -166,6 +181,19 @@ public class CredentialStore {
                     X509Certificate[] chain) {
     // Not implemented yet.
   }
+
+  /**
+   * Produces a PEMReader.
+   * The password for reading private keys is initialized.
+   *
+   * @param reader The reader for the input stream to be read.
+   * @param password The unencrypted, undigested password for the private key.
+   * @return The reader.
+   */
+  private PEMReader getPemReader(Reader reader, String password) {
+    PasswordFinder f = new Password(password);
+    return new PEMReader(reader, f);
+  }
   
   public class Password implements PasswordFinder {
     
@@ -179,5 +207,5 @@ public class CredentialStore {
       return this.password.toCharArray();
     }
   }
-  
+
 }

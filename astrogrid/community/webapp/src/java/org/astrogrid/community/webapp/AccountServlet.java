@@ -17,14 +17,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
+import org.astrogrid.community.common.policy.data.AccountData;
+import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
 import org.astrogrid.community.server.sso.ProxyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 
 /**
- * A servlet to handle requests for proxy certificates.
+ * A servlet to handle requests for account details. It implements v2 of the
+ * AstroGrid-community accounts protocol.
  * <p>
+ * Certificate chains may be fetched with a posted request to a URI ending in
+ * <i>/proxy</i>. 
  * The request parameters are
  * </p><dl>
  * <dt>username</dt>
@@ -45,6 +51,16 @@ import org.bouncycastle.openssl.PEMWriter;
  * certificates and one or more end-entity certificate (EEC). The last
  * certificate in the chain is signed by one of the community's trust anchors;
  * the requestor is assumed to have copies of those anchors.
+ * <p>
+ * The URI for the home-space may be got from a URI ending in <i>/home</i>.
+ * This request needs no parameters.
+ * <p>
+ * On successful completion, there is no content in the body of the response
+ * but the client is redirected to the home-space location. The URI for the
+ * redirection is typically in the ivo or vos schemes, so HTTP clients will
+ * not be able to follow the redirection automatically. They will need to
+ * read the <i>Location</i> header and delegate to an appropriate client
+ * libary.
  *
  * @author Guy Rixon
  */
@@ -61,7 +77,9 @@ public class AccountServlet extends HttpServlet {
   public void init() {
     
     // Have to use this JCE provider otherwise PEMReader fails.
-    Security.addProvider(new BouncyCastleProvider());
+    if (Security.getProvider("BC") == null) {
+      Security.addProvider(new BouncyCastleProvider());
+    }
     
     try {
       this.factory = new ProxyFactory();
@@ -72,7 +90,9 @@ public class AccountServlet extends HttpServlet {
     }
   }
   
-  /** Handles the HTTP <code>POST</code> method.
+  /** 
+   * Handles the HTTP <code>POST</code> method.
+   * 
    * @param request servlet request
    * @param response servlet response
    */
@@ -189,5 +209,65 @@ public class AccountServlet extends HttpServlet {
       response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
                          "Failed to send certificate chain to the client.");
     }
+  }
+  
+  /** 
+   * Handles the HTTP GET method.
+   * 
+   * @param request servlet request
+   * @param response servlet response
+   */
+  protected void doGet(HttpServletRequest  request, 
+                       HttpServletResponse response) throws ServletException, 
+                                                            IOException {
+    
+    // Parse the requested URL to check that this request is for a homespace
+    // and to find the user's name.
+    String userName = null;
+    String path = request.getPathInfo();
+    if (path.startsWith("/") && path.endsWith("/home")) {
+      userName = path.substring(1, path.lastIndexOf("/home"));
+    }
+    else {
+      log.info("Request to account servlet for " + path + " is no good.");
+      response.sendError(response.SC_NOT_FOUND);
+      return;
+    }
+    
+    // Get the user's account-record from the community DB.
+    // Note that the API for the DB accepts new-style
+    // account-IVORNs.
+    StringBuilder accountName;
+    try {
+      accountName = new StringBuilder("ivo://");
+      accountName.append(userName);
+      accountName.append('@');
+      accountName.append(CommunityIvornParser.getLocalIdent());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      response.sendError(response.SC_INTERNAL_SERVER_ERROR);
+      return;
+    }   
+    AccountManagerImpl ami = new AccountManagerImpl();
+    AccountData account = null;
+    try {
+      account = ami.getAccount(accountName.toString());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      response.sendError(response.SC_INTERNAL_SERVER_ERROR);
+      return;
+    }
+    
+    // If a homespace is recorded for this user, redirect the
+    // client to that URI. Otherwise, treat the current resource
+    // as not found.
+    if (account.getHomeSpace() == null) {
+      response.sendError(response.SC_NOT_FOUND);
+    }
+    else {
+      response.setHeader("Location", account.getHomeSpace());
+      response.setStatus(response.SC_SEE_OTHER);
+    }
+    
   }
 }

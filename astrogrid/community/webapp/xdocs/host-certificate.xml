@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>AstroGrid community: host certificate</title>
+    </properties>
+    <body>
+    <section name="Notes on generating a host certificate">
+      <p>
+        You need an identity certificate for your host computer in order to 
+        serve pages over HTTPS. The nature of the host certificate determines
+        whether the HTTPS client will trust the community service. If the
+        client does not trust the host certificate then it aborts the HTTPS
+        exchange and your service fails.
+      </p>
+      <p>
+        There are, broadly, four ways to get a host certificate:
+      </p>
+      <ol>
+        <li>use any old certificate you already have;</li>
+        <li>buy a certificate from a commercial certificate authority (CA);</li>
+        <li>get a free certificate from your academic CA;</li>
+        <li>generate your own certificate and sign it as if you were a CA.</li>
+      </ol>
+      <p>
+        The first option <em>doesn't work</em>. Clients will not trust a
+        host certificate unless the common-name (CN) part of the distinguished
+        name (DN) in the certificate is the name of the host. You can't use
+        your personal certificate as a host certificate.
+      </p>
+      <p>
+        The second option is expensive and the third can be painful. The rest
+        of these note describe the fourth option using a "self-signed"
+        certificate.
+      </p>
+      <p>
+        Here is an example of generating a self-signed, host certificate using
+        the <i>keytool</i> utility in the SUN JDK.
+      </p>
+      <pre>
+        keytool -genkey -alias tomcat -keyalg RSA -validity 365 \
+            -keystore host.jks -storetype JKS \
+            -dname "C=UK,O=Example University,OU=Astronomy,CN=ivo.example.ac.uk"
+      </pre>
+      <p>
+        The <strong>alias</strong> allows the Tomcat software to pick out the 
+        right certificate from a keystore that may contain more than one such.
+        Tomcat assumes the alias <i>tomcat</i>.
+      </p>
+      <p>
+        The <strong>key algorithm</strong> can be RSA or DSA. Most tests of
+        the community use RSA.
+      </p>
+      <p>
+        The <strong>validity period</strong>, which is in days, should be
+        longer than <i>keytool's</i> default of 90 days. A year is reasonable,
+        and you might choose to make the certificate valid for 10 years. You
+        will need to renew the certificate before it expires, by repeating
+        the current procedure.
+      </p>
+      <p>
+        The name of the file in which you store the credentials 
+        (<i>host.jks</i> in the example above) can be anything you like, but
+        the <strong>store type</strong> should be JKS as Tomcat's support for
+        other types is questionable. Therefore, the file-name should end in
+        <i>.jks</i>. You will need to edit Tomcat's confguration to tell it
+        which key-store file to use.
+      </p>
+      <p>
+        The <strong>distinguished name</strong> must be globally unique,
+        should identify the operation hosting the service and <em>must</em>
+        have the correct common-name component. In the example above, C stands 
+        for country, O stands for organization, OU stands for organizational
+        unit (typically a department within the organization) and CN stands
+        for common name. The value of the common name is the fully-qualified
+        host-name of the computer <em>as seen by the client</em>
+      </p>
+      <p>
+        "Fully-qualified host-name of the computer as seen by the client"
+        mean a host visible via HTTP outside your site. In the example above,
+        a user should be able to type <i>http://ivo.example.ac.uk/</i> into a
+        web-browser and get the default page of the Tomcat installation.
+      </p>
+      <p>
+        <i>keytool</i> will prompt for a password to secure the private key and
+        another to secure the key-store as a whole. You should set both of these
+        to "changeit" since Tomcat assumes this password. You could use a
+        different password but you would then need to write it down, in clear
+        text, in Tomcat's configuration, so this does not add much security.
+      </p>
+    </section>
+   </body>
+</document>
