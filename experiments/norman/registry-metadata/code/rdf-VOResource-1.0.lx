@@ -38,10 +38,10 @@
              (choose
               (when vor:identifier
                 (attribute rdf:about
-                           (apply-templates select: "normalize-space(vor:identifier)")))
+                           (value-of select: "normalize-space(vor:identifier)")))
               (when identifier
                 (attribute rdf:about
-                           (apply-templates select: "normalize-space(identifier)"))))
+                           (value-of select: "normalize-space(identifier)"))))
              (choose
               (when @xsi:type
                 (call-template name: resolve-xsitype))
@@ -327,7 +327,7 @@
     ;; in this XSchema -- ought it to be?)
     (template vor:AuthorityID
       ;; model this as an IdentifierURI with no resource key
-      (variable name: authid (value-of "normalize-string()"))
+      (variable name: authid (value-of "normalize-space()"))
       (voro:authorityID (value-of $authid))
       (voro:uri "ivo://" (value-of $authid))) ; XXX or should this be a resource, not a string
 

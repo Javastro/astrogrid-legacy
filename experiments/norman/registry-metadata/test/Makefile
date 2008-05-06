@@ -11,10 +11,9 @@ TESTCASES=test-instance \
 .PRECIOUS: %.rdf %.xslt
 
 %.rdf: %.xml ../code/STAMP
-	rm -f $@
+	@rm -f $@
 	xsltproc --path ../code convert-root.xslt $< >$@.tmp
-	if grep 'UNKNOWN' $@.tmp; then echo "ERRORs in $@!!"; false; else :; fi
-	mv $@.tmp $@
+	@if grep 'UNKNOWN' $@.tmp; then echo "ERRORs in $@!!"; false; else :; fi && mv $@.tmp $@
 # %.rdf: %.xml %.xslt
 # 	rm -f $@
 # 	xsltproc --path ../code ${<:.xml=.xslt} $< >$@.tmp && mv $@.tmp $@
@@ -26,7 +25,7 @@ TESTCASES=test-instance \
 
 # Create a ntriples representation.
 %.nt: %.rdf
-	rm -f $@
+	@rm -f $@
 #	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` 
 	@java -cp $(CP) jena.rdfcopy $< RDF/XML N-TRIPLE \
 	  | ./normalise-ntriples >$@.tmp && mv $@.tmp $@
