@@ -8,6 +8,7 @@
 	<item name="Use in an Axis client" href="client-use.html" />
 	<item name="Use in an Axis service" href="service-use.html"/>
         <item name="Enhanced SSL implemenation for Tomcat" href="tomcat-SSL.html"/>
+        <item name="Release notes" href="release-notes.html"/>
     </menu>
   </body>
 </project>

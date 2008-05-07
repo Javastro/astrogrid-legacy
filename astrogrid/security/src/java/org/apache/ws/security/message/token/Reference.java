@@ -29,7 +29,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Reference.
- * <p/>
  *
  * @author Davanum Srinivas (dims@yahoo.com).
  */
@@ -40,11 +39,6 @@ public class Reference {
 
     /**
      * Constructor.
-     * <p/>
-     *
-     * @param wssConfig
-     * @param elem
-     * @throws WSSecurityException
      */
     public Reference(WSSConfig wssConfig, Element elem) throws WSSecurityException {
         if (elem == null) {
@@ -75,10 +69,6 @@ public class Reference {
 
     /**
      * Constructor.
-     * <p/>
-     *
-     * @param wssConfig
-     * @param doc
      */
     public Reference(WSSConfig wssConfig, Document doc) {
         this.wssConfig = wssConfig;
@@ -88,9 +78,6 @@ public class Reference {
 
     /**
      * get the dom element.
-     * <p/>
-     *
-     * @return
      */
     public Element getElement() {
         return this.element;
@@ -98,9 +85,6 @@ public class Reference {
 
     /**
      * get the URI.
-     * <p/>
-     *
-     * @return
      */
     public String getValueType() {
         return this.element.getAttribute("ValueType");
@@ -108,9 +92,6 @@ public class Reference {
 
     /**
      * get the URI.
-     * <p/>
-     *
-     * @return
      */
     public String getURI() {
         return this.element.getAttribute("URI");
@@ -118,9 +99,6 @@ public class Reference {
 
     /**
      * set the Value type.
-     * <p/>
-     *
-     * @param valueType
      */
     public void setValueType(String valueType) {
         this.element.setAttribute("ValueType", valueType);
@@ -128,9 +106,6 @@ public class Reference {
 
     /**
      * set the URI.
-     * <p/>
-     *
-     * @param uri
      */
     public void setURI(String uri) {
         this.element.setAttribute("URI", uri);
@@ -138,9 +113,6 @@ public class Reference {
 
     /**
      * return the string representation.
-     * <p/>
-     *
-     * @return
      */
     public String toString() {
         return DOM2Writer.nodeToString((Node) this.element);

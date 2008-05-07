@@ -1,343 +1,178 @@
 /*
-
  * Copyright  2003-2004 The Apache Software Foundation.
-
  *
-
  *  Licensed under the Apache License, Version 2.0 (the "License");
-
  *  you may not use this file except in compliance with the License.
-
  *  You may obtain a copy of the License at
-
  *
-
  *      http://www.apache.org/licenses/LICENSE-2.0
-
  *
-
  *  Unless required by applicable law or agreed to in writing, software
-
  *  distributed under the License is distributed on an "AS IS" BASIS,
-
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
  *  See the License for the specific language governing permissions and
-
  *  limitations under the License.
-
  *
-
  */
 
 
 
 package org.apache.ws.security.handler;
 
-
-
 import org.apache.ws.security.WSConstants;
-
-
-
 import java.util.Hashtable;
-
 import java.util.Map;
 
-
-
 /**
-
  * This class defines the names, actions, and other string for the deployment
-
  * data of the WSS handler. Both the Axis handler as well as the JAX-RPC handler
-
  * use this class.
-
  *  
-
  * @author Werner Dittmann (werner@apache.org)
-
  */
 
 public class WSHandlerConstants {
 
-
-
     /**
-
      * The action parameter. The
-
      * handlers use the value of this parameter to determine how
-
      * to process the SOAP Envelope. For example in a Axis WSDD file:
-
      * <pre>
-
      * &lt;handler type="java:org.apache.ws.axis.security.WSDoAllSender">
-
      * &lt;parameter name="action" value="UsernameToken"/>
-
      * ...
-
      * </pre>
-
      * orders the handler to attach a <code>UsernameToken</code> to the SOAP
-
      * enevelope. It is a blank separated list of actions to perform.
-
      * <p/>
-
      * The application may set this parameter using the following method:
-
      * <pre>
-
      * call.setProperty(WSDoAllConstants.ACTION, WSDoAllConstants.USERNAME_TOKEN);
-
      * </pre>
-
      * However, the parameter in the WSDD deployment file overwrites the
-
      * property setting (deployment setting overwrites application setting)
-
      */
-
     public static final String ACTION = "action";
-
     public static final String SEND = "send";
-
     public static final String RECEIVE = "receive";
 
     /**
-
      * Perform nothing.
-
      */
-
     public static final String NO_SECURITY = "NoSecurity";
 
 
 
     /**
-
      * Perform a UsernameToken identification only.
-
      */
-
     public static final String USERNAME_TOKEN = "UsernameToken";
 
-
-
     /**
-
      * Perform a SAML Token identification.
-
      */
-
     public static final String SAML_TOKEN_UNSIGNED = "SAMLTokenUnsigned";
-
     public static final String SAML_TOKEN_SIGNED = "SAMLTokenSigned";
 
-
-
     /**
-
      * Perform Signature.
-
      * The signature specific parameters define how to sign, which keys
-
      * to use, and so on
-
      */
-
     public static final String SIGNATURE = "Signature";
 
-
-
     /**
-
      * Perform Encryption.
-
      * The encryption specific parameters define how to encrypt, which keys
-
      * to use, and so on.
-
      */
-
     public static final String ENCRYPT = "Encrypt";
 
-
-
     /**
-
      * Add a timestamp to the security header.
-
      */
-
     public static final String TIMESTAMP = "Timestamp";
 
-
-
     /**
-
      * Supress the serialization of the SOAP message.
-
      * <p/>
-
      * Usually the handler serializes the processed SOAP message into a string
-
      * and sets it into the Axis message context as new current message. To
-
      * supress this action, define this action. In this case the handler
-
      * stores the processed SOAP message as <code>Document</code> in the
-
      * Axis message context with the property name <code>SND_SECURITY</code>.
-
      * <p/>
-
      * A chained handler can retrieve the SOAP message and process it. The
-
      * last handler in the chain must set the processed SOAP message as
-
      * current message in Axis message context.
-
      */
-
     public static final String NO_SERIALIZATION = "NoSerialization";
 
-
-
     /**
-
      * Use this to use a specific signature mechanism for .Net.
-
      * This signature mechanism uses data from the username token and
-
      * a well defined constant string and constructs a signature
-
      * key. 
-
      */
-
     public static final String SIGN_WITH_UT_KEY = "UsernameTokenSignature";
 
     /**
-
      * This is an interal property name to support handler chaining.
-
      * The Axis WSS4J handlers use this message context property to
-
      * hand over the SOAP partially processed envelope document to
-
      * the next WSS4J handler in the chain.
-
      */
-
     public static final String SND_SECURITY = "SND_SECURTIY";
 
-    // public static final String RCV_SECURITY = "RCV_SECURTIY";
-
-
-
     /**
-
      * The actor name of the <code>wsse:Security</code> header.
-
      * <p/>
-
      * If this parameter is omitted, the actor name is not set. Please
-
      * refer to {@link org.apache.axis.Constants#ATTR_ACTOR} and {@link org.apache.axis.Constants#ATTR_ROLE}
-
      * about the parameter names. They are set to <code>"actor"</code>
-
      * and <code>"role"</code> respectively.
-
      * <p/>
-
      * The value of the actor or role has to match the receiver's setting
-
      * or may contain standard values.
-
      * <p/>
-
      * The application may set this parameter using the following method:
-
      * <pre>
-
      * call.setProperty(WSDoAllConstants.ACTOR, "ActorName");
-
      * </pre>
-
      * However, the parameter in the WSDD deployment file overwrites the
-
      * property setting (deployment setting overwrites application setting).
-
      *
-
      * @see org.apache.axis.Constants#URI_SOAP11_NEXT_ACTOR
-
      * @see org.apache.axis.Constants#URI_SOAP12_NEXT_ROLE
-
      */
-
     public static final String ACTOR = "actor";
 
-
-
     /**
-
      * The role name of the <code>wsse:Security</code> header.
-
      * This is used for SOAP 1.2. Refer also to {@link #ACTOR}.
-
      */
-
     public static final String ROLE = "role";
 
-
-
     /**
-
      * Sets the <code>mustUnderstand</code> flag.
-
      * <p/>
-
      * If the parameter has the value <code>1</code>
-
      * or <code>true</code> the <code>mustUnderstand</code> is set.
-
      * The values <code>0</code> or <code>false</code> supress the
-
      * flag.
-
      * <p/>
-
      * The application may set this parameter using the following method:
-
      * <pre>
-
      * call.setProperty(WSDoAllConstants.MUST_UNDERSTAND, "false");
-
      * </pre>
-
      * However, the parameter in the WSDD deployment file overwrites the
-
      * property setting (deployment setting overwrites application setting).
-
      * <p/>
-
      * The default setting is <code>true</code>
-
      * <p/>
-
      * Please refer to {@link org.apache.axis.Constants#ATTR_MUST_UNDERSTAND}
-
      * about the parameter name (<code>"mustUnderstand"</code>).
-
      */
-
     public static final String MUST_UNDERSTAND = "mustUnderstand";
 
 
@@ -432,7 +267,7 @@ public class WSHandlerConstants {
 
      * combination is valid. Refer to the documentation of 
 
-     * {@link org.apache.ws.security.WSPasswordCallback} for more information
+     * org.apache.ws.security.WSPasswordCallback for more information
 
      * about this feature.
 
@@ -482,15 +317,15 @@ public class WSHandlerConstants {
 
      * class needs to implement the
 
-     * {@link javax.security.auth.callback.CallbackHandler} interface.
+     * javax.security.auth.callback.CallbackHandler interface.
 
      * <p/>
 
      * The callback function
 
-     * {@link javax.security.auth.callback.CallbackHandler#handle(javax.security.auth.callback.Callback[])}
+     * javax.security.auth.callback.CallbackHandler#handle(javax.security.auth.callback.Callback[])
 
-     * gets an array of {@link org.apache.ws.security.WSPasswordCallback}
+     * gets an array of org.apache.ws.security.WSPasswordCallback
 
      * objects. Only the first entry of the array is used. This object
 
@@ -528,7 +363,7 @@ public class WSHandlerConstants {
 
      * An application may set an object reference to an object that implements
 
-     * the {@link javax.security.auth.callback.CallbackHandler} interface.
+     * the javax.security.auth.callback.CallbackHandler interface.
 
      * Only the application can set this property using:
 
@@ -622,7 +457,7 @@ public class WSHandlerConstants {
 
     /**
 
-     * Specifying this name as {@link ENCRYPTION_USER}
+     * Specifying this name as {@link #ENCRYPTION_USER}
 
      * triggers a special action to get the public key to use for encryption.
 
@@ -714,7 +549,7 @@ public class WSHandlerConstants {
 
      * The property file of the standard implementation
 
-     * {@link org.apache.ws.security.components.crypto.Merlin} uses
+     * org.apache.ws.security.components.crypto.Merlin uses
 
      * the following properties:
 

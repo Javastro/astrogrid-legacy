@@ -73,12 +73,14 @@ public class WSSConfig {
                 java.security.Security.addProvider((java.security.Provider)c.newInstance());
             }
         } catch (Throwable t) {
+          log.debug("Throwable was ignored: " + t.getMessage());
         }
         Transform.init();
         try {
             Transform.register(STRTransform.implementedTransformURI,
                     "org.apache.ws.security.transform.STRTransform");
         } catch (Exception ex) {
+          log.debug("Exception was ignored: " + ex);
         }
     }
 
@@ -100,7 +102,7 @@ public class WSSConfig {
     }
 
     /**
-     * default value is {@link WSConstants.WSSE_NS_OASIS_1_0}
+     * default value is {@link WSConstants#WSSE_NS_OASIS_1_0}
      * <p/>
      * The WS-Security namespace
      */
@@ -122,7 +124,7 @@ public class WSSConfig {
     }
 
     /**
-     * default value is {@link WSConstants.WSU_NS_OASIS_1_0}
+     * default value is {@link WSConstants#WSU_NS_OASIS_1_0}
      * <p/>
      * The WS-Security utility namespace
      */
@@ -241,7 +243,7 @@ public class WSSConfig {
     /**
      * Checks if we are in WS-I Basic Security Profile compliance mode
      *
-     * @return
+     * @return True if the operation is compliant.
      */
     public boolean isWsiBSPCompliant() {
         return wsiBSPCompliant;
@@ -260,7 +262,7 @@ public class WSSConfig {
     /**
      * Checks if we need to use milliseconds in timestamps
      *
-     * @return
+     * @return True if the prceision is milliseconds.
      */
     public boolean isPrecisionInMilliSeconds() {
         return precisionInMilliSeconds;
@@ -269,7 +271,7 @@ public class WSSConfig {
     /**
      * Set the precision in milliseconds
      *
-     * @param wsiBSPCompliant
+     * @param precisionInMilliSeconds The required precision.
      */
     public void setPrecisionInMilliSeconds(boolean precisionInMilliSeconds) {
         this.precisionInMilliSeconds = precisionInMilliSeconds;

@@ -5,34 +5,31 @@ import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.authorization.AuthenticatedAccessPolicy;
 import org.astrogrid.security.authorization.OpenAccessPolicy;
 
-
-
-
-
 /**
- * Unit tests for the {@link SecurityGuard class}.
- * JUnit is used.
- *
- * The SUT is a Java bean with properties but no
- * business logic. Each test case tests the setter
- * and getter for one property, assuming that there
- * are no internal linkagaes between properties.
+ * JUnit tests for the {@link SecurityGuard class}.
  *
  * @author Guy Rixon
-
  */
-
 public class SecurityGuardTest extends TestCase {
-
+  
   /**
-   * Constructs the test suite.
+   * To allow unit testing, some of the objects used by the security guard
+   * must make mockeries of themselves.
    */
-  public SecurityGuardTest () {}
-
-
+  public void setUp() {
+    SimpleConfig.getSingleton().setProperty(
+      "org.astrogrid.security.community.CommunityEndpointResolver.mock",
+      "true"
+    );
+    SimpleConfig.getSingleton().setProperty(
+      "org.astrogrid.security.community.SsoClient.mock",
+      "true"
+    );
+  }
 
   /**
    * Tests the ssoUsername property.
@@ -71,4 +68,12 @@ public class SecurityGuardTest extends TestCase {
                g2.accessPolicy instanceof AuthenticatedAccessPolicy);
   }
 
+  /**
+   * Tests the sign-on function. This mocks the community.
+   */
+  public void testSignOn() throws Exception {
+    SimpleConfig.getSingleton().setProperty("org.astrogrid.security.mock.community", "true");
+    SecurityGuard sut = new SecurityGuard();
+    sut.signOn("ivo://frog@pond/community", "croakcroak", 36000);
+  }
 }

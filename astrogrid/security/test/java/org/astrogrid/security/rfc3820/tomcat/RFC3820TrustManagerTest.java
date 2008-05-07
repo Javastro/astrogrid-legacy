@@ -39,8 +39,8 @@ public class RFC3820TrustManagerTest extends TestCase {
   private X509Certificate[] loadAnchors() throws Exception {
     CertificateFactory factory = CertificateFactory.getInstance("X509");
     X509Certificate[] anchors = new X509Certificate[1];
-    File anchorFile = new File("pem", "unit-test-ca.0");
-    InputStream is = new FileInputStream(anchorFile);
+    File anchorFile = new File("target/pem", "unit-test-ca.0");
+    InputStream is = this.getClass().getResourceAsStream("/unit-test-ca.0");
     anchors[0] = (X509Certificate)(factory.generateCertificate(is));
     return anchors;
   }

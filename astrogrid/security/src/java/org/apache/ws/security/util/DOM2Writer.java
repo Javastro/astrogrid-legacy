@@ -17,6 +17,8 @@
 
 package org.apache.ws.security.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.WSConstants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -38,6 +40,7 @@ import java.io.Writer;
  * @author Joseph Kesselman
  */
 public class DOM2Writer {
+    public static Log log = LogFactory.getLog(DOM2Writer.class);
     public static final char NL = '\n';
     public static final String LS = System.getProperty("line.separator",
             (new Character(NL)).toString());
@@ -124,6 +127,7 @@ public class DOM2Writer {
                                 prefixIsDeclared = true;
                             }
                         } catch (IllegalArgumentException e) {
+                          log.debug("Exception was ignored: " + e.getMessage());
                         }
                         if (!prefixIsDeclared) {
                             printNamespaceDecl(node, namespaceStack, out);
@@ -146,6 +150,7 @@ public class DOM2Writer {
                                     prefixIsDeclared = true;
                                 }
                             } catch (IllegalArgumentException e) {
+                              log.debug("Exception was ignored: " + e.getMessage());
                             }
                             if (!prefixIsDeclared) {
                                 printNamespaceDecl(attr, namespaceStack, out);

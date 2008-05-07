@@ -7,6 +7,7 @@ import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import javax.security.auth.x500.X500Principal;
 import org.globus.gsi.TrustedCertificates;
 import org.globus.gsi.proxy.ProxyPathValidator;
@@ -132,6 +133,32 @@ public class CertificateChainValidator extends ProxyPathValidator {
                                           "No trusted certificate with subject " +
                                           issuer.getName() +
                                           " is available.");
+  }
+  
+  /**
+   * Validates a certficate chain.
+   *
+   * @param chain The chain to be checked.
+   * @param trustAnchors The set of trusted certificates.
+   * @throws ProxyPathException - if the use of proxy certificates is invalid.
+   * @throws NoSuchAlgorithmException - on unsupported signature algorithms.
+   * @throws InvalidKeyException - on incorrect key.
+   * @throws NoSuchProviderException - if there's no default provider for the JCE.
+   * @throws SignatureException - on signature errors.
+   * @throws CertificateException - on encoding errors.
+   */
+  public void validate(List<X509Certificate> chain,
+                       X509Certificate[]     trustAnchors)
+      throws CertificateException,
+             InvalidKeyException,
+             NoSuchAlgorithmException,
+             NoSuchProviderException,
+             ProxyPathValidatorException,
+             SignatureException {
+    X509Certificate[] c = new X509Certificate[chain.size()];
+    c = chain.toArray(c);
+    TrustedCertificates tc = new TrustedCertificates(trustAnchors);
+    super.validate(c, tc); 
   }
 
 }

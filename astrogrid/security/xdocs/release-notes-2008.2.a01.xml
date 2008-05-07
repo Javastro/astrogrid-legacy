@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2.a01</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2.a01">
+      <p>
+        V2008.2.a01 is the first alpha version in the development leading
+        to the 2008.2 release. This version introduces significant new
+        functions.
+      </p>
+      
+      <subsection name="Java 5 required">
+        <p>
+          Java 5 is now required; the code will not compile with Java 1.4.2.
+        </p>
+      </subsection>
+      
+      <subsection name="Client for accounts protocol v2">
+        <p>
+          The new <i>org.astrogrid.security.community</i> package contains
+          client classes for talking to the AstroGrid community service.
+          These classes are ported from the community-common and 
+          community-resolver packages.
+        </p>
+        <p>
+          The client for the AstroGrid accounts-protocol, 
+          <i>SsoClient</i> handles v2 of that protocol. This means 
+          that the home-space of the user may be looked up by calling the 
+          <i>home</i> method on the client.
+        </p>
+      </subsection>
+      
+      <subsection name="RFC3820 support">
+        <p>
+          The <i>org.astrogrid.security.rfc3820</i> package gains a new class
+          <i>ProxyCertificateFactory</i> that generates proxy certificates.
+          This code is refactored from the community-webapp project and is
+          expected to be used in later versions of that project.
+        </p>
+        <p>
+          The <i>CertificateChainValidator</i> has a new method that validates
+          a chain presented as <i>List&lt;X509Certificate&gt;</i>.
+        </p>
+      </subsection>
+      
+      <subsection name="maven.xml eliminated">
+        This version of the facade has no <i>maven.ml</i> file. The unit tests
+        have been reworked to cope without it.
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>

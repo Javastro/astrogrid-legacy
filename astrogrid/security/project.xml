@@ -4,33 +4,31 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <name>Security Facade</name>
-  <currentVersion>2007.2.04</currentVersion>
-  <shortDescription>APIs for security in web services.</shortDescription>
+  <currentVersion>2008.2.a01</currentVersion>
+  <shortDescription>APIs for single-sign-on security.</shortDescription>
   
   <description>
     <![CDATA[
     <p>
-    The security-facade package implements a single-sign-on (SSO) authentication 
-    system between SOAP clients and SOAP services. Messages sent with the aid of 
-    this package are annotated with SSO credentials in the SOAP headers. Messages
-    received by services using this package are authenticated using the credentials
-    in the message.
+      The security-facade implements IVOA's security model together with AstroGrid
+      and EuroVO extensions. The facade consists in a class library for use in
+      VO services and clients. It is used in most AstroGrid service-components
+      and in the Astro Runtime. The facade presents a common API to classes from 
+      different sources.
     </p>
-  	<p>
-  	The current implementation is based on Axis and WSS4J. It enforces digital
-  	signatures on requests from clients to services in line with the emerging
-  	IVOA standard for SSO.
-  	</p>
     <p>
-    The facade hides details of the authentication from the client and service code.
-  	Services alter their WSDD configuration to use the facade. Clients call the
-  	facade's APIs, with the Axis-specific security calls encapsulated in the axis-specific
-  	delegates.
-  	</p>
-        <p>For REST services running in the Apache-Tomcat container, the
-        facade provides an enhanced implementation of SSL that support
-        RFC3820 proxy-certificates.
-        </p>
+      These are some of the main features available from the security facade.
+    </p>
+    <ul>
+      <li>Validation of digital signatures on requests to a SOAP service.</li>
+      <li>Signature of requests sent from a SOAP client.</li>
+      <li>An SSL implementation for Apache Tomcat that allows authentication of
+          clients using proxy certificates.</li>
+      <li>Classes to generate and validate certificate chains containing
+          proxy certificates.</li>
+      <li>Client code to sign on a user using either MyProxy or the
+          AstroGrid accounts service.</li>
+    </ul>
     ]]>
   </description>
   
@@ -44,21 +42,30 @@
       <id>gtr</id>
       <email>gtr@ast.cam.ac.uk</email>
       <organization>University of Cambridge</organization>
+      <timezone>0</timezone>
     </developer>
  </developers>
 
+ <versions>
+   <version>
+     <id>2007.2.04</id>
+     <name>2007.2.04</name>
+     <tag>v2007_2_04</tag>
+   </version>
+ </versions>
+ 
  <reports>
-    <report>maven-changes-plugin</report>
+    <report>maven-license-plugin</report>
     <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
     <report>maven-junit-report-plugin</report>
     <report>maven-pmd-plugin</report>
-    <report>maven-license-plugin</report>
   </reports> 
   
   <organization>
     <name>AstroGrid</name>
     <url>http://www.astrogrid.org/</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    <logo>http://www.astrogrid.org/images/AGlogo.png</logo>
   </organization>
   
   <build>
@@ -93,6 +100,12 @@
       	    <include>*</include>
       	  </includes>
       	</resource>
+        <resource>
+      	  <directory>test/pkipath</directory>
+          <includes>
+      	    <include>*</include>
+      	  </includes>
+      	</resource>
       </resources>
     </unitTest>
   </build>
@@ -104,7 +117,7 @@
         <groupId>axis</groupId>
         <type>jar</type>
         <artifactId>axis</artifactId>
-        <version>1.2.1</version>
+        <version>1.3</version>
       </dependency>
       <dependency>
         <groupId>axis</groupId>
@@ -116,13 +129,13 @@
         <groupId>axis</groupId>
         <type>jar</type>
         <artifactId>axis-saaj</artifactId>
-        <version>1.2.1</version>
+        <version>1.3</version>
       </dependency>
       <dependency>
         <groupId>axis</groupId>
         <type>jar</type>
         <artifactId>axis-jaxrpc</artifactId>
-        <version>1.2.1</version>
+        <version>1.3</version>
       </dependency>
       <dependency>
         <groupId>axis</groupId>
@@ -169,8 +182,8 @@
       <dependency>
         <groupId>bouncycastle</groupId>
         <type>jar</type>
-        <artifactId>bcprov-jdk14</artifactId>
-        <version>129</version>
+        <artifactId>bcprov-jdk15</artifactId>
+        <version>139</version>
       </dependency>
       
       <dependency>
@@ -182,28 +195,29 @@
           <dist.bundle>true</dist.bundle>
         </properties>
       </dependency>
-      
+
+      <!-- This is cruft. These four jars are needed because cog-jglobus
+           has a historical dependency on them and their classes are baked
+           into the ProxyPathValidator. If I wrote a cleaner validator,
+           then all this could be dropped. -->
       <dependency>
         <groupId>globus</groupId>
         <artifactId>cog-cryptix</artifactId>
         <version>1.2</version>
         <type>jar</type>
       </dependency>
-      
       <dependency>
         <groupId>globus</groupId>
         <artifactId>cog-cryptix32</artifactId>
         <version>1.2</version>
         <type>jar</type>
       </dependency>
-      
       <dependency>
         <groupId>globus</groupId>
         <artifactId>cog-cryptix-asn1</artifactId>
         <version>1.2</version>
         <type>jar</type>
       </dependency>
-      
       <dependency>
         <groupId>globus</groupId>
         <artifactId>cog-puretls</artifactId>
@@ -235,13 +249,13 @@
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-client-lite</artifactId>
-        <version>2007.2r</version>
+        <version>2008.0.04</version>
       </dependency>
       
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-registry-common</artifactId>
-        <version>2007.2r</version>
+        <version>2008.0.04</version>
       </dependency>
       
       <dependency>

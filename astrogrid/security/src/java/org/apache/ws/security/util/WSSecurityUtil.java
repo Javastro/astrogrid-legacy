@@ -1,4 +1,3 @@
-
 /*
 * Copyright  2003-2004 The Apache Software Foundation.
 *
@@ -25,7 +24,6 @@ import org.apache.ws.security.SOAP12Constants;
 import org.apache.ws.security.SOAPConstants;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSSConfig;
-//import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.apache.ws.security.message.token.BinarySecurity;
@@ -59,11 +57,6 @@ import java.util.Vector;
  */
 public class WSSecurityUtil {
     private static Log log = LogFactory.getLog(WSSecurityUtil.class);
-    private static boolean doDebug = false;
-
-    static {
-        doDebug = log.isDebugEnabled();
-    }
 
     /**
      * Returns the first WS-Security header element for a given actor.
@@ -74,7 +67,7 @@ public class WSSecurityUtil {
      * @return the <code>wsse:Security</code> element or
      *         <code>null</code> if not such element found
      *	@deprecated
-     *	@see	getSecurityHeader(
+     *	@see	#getSecurityHeader(
         WSSConfig wssConfig, Document doc, String actor, SOAPConstants sc)
      */
     public static Element getSecurityHeader(
@@ -136,10 +129,6 @@ public class WSSecurityUtil {
     /**
      * Compares two actor strings and returns true if these are equal.
      * Takes care of the null length strings and uses ignore case.
-     *
-     * @param actor
-     * @param hActor
-     * @return
      */
     public static boolean isActorEqual(String actor, String hActor) {
         if ((((hActor == null) || (hActor.length() == 0))
@@ -391,12 +380,6 @@ public class WSSecurityUtil {
 
     /**
      * set the namespace if it is not set already.
-     * <p/>
-     *
-     * @param element
-     * @param namespace
-     * @param prefix
-     * @return
      */
     public static String setNamespace(Element element,
                                       String namespace,
@@ -509,22 +492,18 @@ public class WSSecurityUtil {
 
     /**
      * Search for an element given its wsu:id.
-     * <p/>
      *
-     * @param wssConfig The WSS configuration data conating namesapce 
-     * 	definitions, etc.
      * @param doc the DOM document (SOAP request) 
      * @param id the Id of the element
      * @return the found element or null if no element with the Id exists
      * @deprecated
-     * @see getElementByWsuId(WSSConfig wssConfig, Document doc, String id)
+     * @see #getElementByWsuId(WSSConfig wssConfig, Document doc, String id)
     */
      public static Element getElementByWsuId(Document doc, String id) {
 	return getElementByWsuId(WSSConfig.getDefaultWSConfig(), doc, id);
     }
     /**
      * Search for an element given its wsu:id.
-     * <p/>
      *
      * @param wssConfig The WSS configuration data conating namesapce 
      * 	definitions, etc.
@@ -576,17 +555,12 @@ public class WSSecurityUtil {
 
     /**
      * Create a BinarySecurityToken element
-     * <p/>
      *
      * @param doc the DOM document (SOAP request) 
      * @param wsuIdVal the value for the wsu:Id
-     * @param wssConfig The WSS configuration data conating namesapce 
-     * 	definitions, etc.
-     * @return then BST element (DOM element)
+     * @return the BST element (DOM element)
      * @deprecated
-     * @see createBinarySecurityToken(Document doc,
-                                                    String wsuIdVal,
-                                                    WSSConfig wssConfig)
+     * @see #createBinarySecurityToken(Document doc,String wsuIdVal,WSSConfig wssConfig)
      */
     public static Element createBinarySecurityToken(Document doc,
                                                     String wsuIdVal) {
@@ -711,14 +685,13 @@ public class WSSecurityUtil {
 
     /**
      * find the first ws-security header block
-     * <p/>
      *
      * @param doc the DOM document (SOAP request)
      * @param envelope the SOAP envelope
      * @param doCreate if true create a new WSS header block if none exists
      * @return the WSS header or null if none found and doCreate is false
      * @deprecated
-     * @see	findWsseSecurityHeaderBlock(WSSConfig wssConfig, Document doc, Element envelope, boolean doCreate)
+     * @see #findWsseSecurityHeaderBlock(WSSConfig wssConfig, Document doc, Element envelope, boolean doCreate)
      */
     public static Element findWsseSecurityHeaderBlock(Document doc, Element envelope, boolean doCreate) {
         return findWsseSecurityHeaderBlock(WSSConfig.getDefaultWSConfig(), doc, envelope, doCreate);
@@ -746,7 +719,7 @@ public class WSSecurityUtil {
      * @param doCreate if true create a new WSS header block if none exists
      * @return the WSS header or null if none found and doCreate is false
      * @deprecated
-     * @see findWsseSecurityHeaderBlock(WSSConfig wssConfig,
+     * @see #findWsseSecurityHeaderBlock(WSSConfig wssConfig,
                                                       Document doc,
                                                       Element envelope,
                                                       String actor,
@@ -834,8 +807,8 @@ public class WSSecurityUtil {
      *
      * @param doc the DOM document (SOAP request)
      * @return a conext element usable for xpath requests
-     *	@deprecated
-     *	@see	createNamespaceContext(WSSConfig wssConfig, Document doc)
+     * @deprecated
+     * @see #createNamespaceContext(WSSConfig wssConfig, Document doc)
      */
     public static Element createNamespaceContext(Document doc) {
 	return createNamespaceContext(WSSConfig.getDefaultWSConfig(), doc);
@@ -904,32 +877,6 @@ public class WSSecurityUtil {
         }
         return cipher;
     }
-
-    /**
-     * Fetch the result of a given action from a given result vector
-     * <p/>
-     *
-     * @param wsResultVector The result vector to fetch an action from
-     * @param action         The action to fetch
-     * @return The result fetched from the result vector, null if the result
-     *         could not be found
-     */
-    /*
-    public static WSSecurityEngineResult fetchActionResult(Vector wsResultVector, int action) {
-        WSSecurityEngineResult wsResult = null;
-
-        // Find the part of the security result that matches the given action
-
-        for (int i = 0; i < wsResultVector.size(); i++) {
-            // Check the result of every action whether it matches the given action
-            if (((WSSecurityEngineResult) wsResultVector.get(i)).getAction() == action) {
-                wsResult = (WSSecurityEngineResult) wsResultVector.get(i);
-            }
-        }
-
-        return wsResult;
-    }
-     */
 
     static public int decodeAction(String action, Vector actions)
             throws WSSecurityException {

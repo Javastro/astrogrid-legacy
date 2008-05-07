@@ -45,10 +45,6 @@ public class BinarySecurity {
     public static String TOKEN = "BinarySecurityToken";
     /**
      * Constructor.
-     * <p/>
-     *
-     * @param elem
-     * @throws WSSecurityException
      */
     public BinarySecurity(WSSConfig wssConfig, Element elem) throws WSSecurityException {
         this.element = elem;
@@ -78,9 +74,6 @@ public class BinarySecurity {
 
     /**
      * Constructor.
-     * <p/>
-     *
-     * @param doc
      */
     public BinarySecurity(WSSConfig wssConfig, Document doc) {
         this.wssConfig = wssConfig;
@@ -93,9 +86,6 @@ public class BinarySecurity {
 
     /**
      * get the value type.
-     * <p/>
-     *
-     * @return
      */
     public String getValueType() {
         String valueType = this.element.getAttribute("ValueType");
@@ -108,9 +98,6 @@ public class BinarySecurity {
 
     /**
      * set the value type.
-     * <p/>
-     *
-     * @param type
      */
     protected void setValueType(String type) {
         if (wssConfig.isBSTAttributesQualified()) {
@@ -122,9 +109,6 @@ public class BinarySecurity {
 
     /**
      * get the encoding type.
-     * <p/>
-     *
-     * @return
      */
     public String getEncodingType() {
         String encodingType = this.element.getAttribute("EncodingType");
@@ -137,9 +121,6 @@ public class BinarySecurity {
 
     /**
      * set the encoding type.
-     * <p/>
-     *
-     * @param encoding
      */
     protected void setEncodingType(String encoding) {
         if (wssConfig.isBSTAttributesQualified()) {
@@ -151,9 +132,6 @@ public class BinarySecurity {
 
     /**
      * get the byte array containing token information.
-     * <p/>
-     *
-     * @return
      */
     public byte[] getToken() {
         Text node = getFirstNode();
@@ -169,9 +147,6 @@ public class BinarySecurity {
 
     /**
      * set the token information.
-     * <p/>
-     *
-     * @param data
      */
     protected void setToken(byte[] data) {
         if (data == null) {
@@ -183,9 +158,6 @@ public class BinarySecurity {
 
     /**
      * return the first text node.
-     * <p/>
-     *
-     * @return
      */
     protected Text getFirstNode() {
         Node node = this.element.getFirstChild();
@@ -194,9 +166,6 @@ public class BinarySecurity {
 
     /**
      * return the dom element.
-     * <p/>
-     *
-     * @return
      */
     public Element getElement() {
         return this.element;
@@ -204,9 +173,6 @@ public class BinarySecurity {
 
     /**
      * get the id.
-     * <p/>
-     *
-     * @return
      */
     public String getID() {
         return this.element.getAttributeNS(wssConfig.getWsuNS(), "Id");
@@ -214,9 +180,6 @@ public class BinarySecurity {
 
     /**
      * set the id.
-     * <p/>
-     *
-     * @param id
      */
     public void setID(String id) {
         String prefix = WSSecurityUtil.setNamespace(this.element, wssConfig.getWsuNS(), WSConstants.WSU_PREFIX);
@@ -225,9 +188,6 @@ public class BinarySecurity {
 
     /**
      * return the string representation of the token.
-     * <p/>
-     *
-     * @return
      */
     public String toString() {
         return DOM2Writer.nodeToString((Node) this.element);

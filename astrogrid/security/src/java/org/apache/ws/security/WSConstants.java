@@ -41,14 +41,14 @@ public class WSConstants {
      * <li> {@link #OASIS_2002_07} </li>
      * <li> {@link #OASIS_2002_12} </li>
      * <li> {@link #OASIS_2003_06} </li>
-     * <li> {@link #OASIS_1_0} OASIS WS-Security v1.0 as released on March 2004. This is the default and recommended setting</li>
+     * <li> {@link #OASIS_1_0} OASIS WS-Security v1.0 as released on March 2004. 
+     *      This is the default and recommended setting</li>
      * </ul>
      * <p/>
-     * Using {@link #OASIS_2002} enhances chances of interoperability with other
+     * Using {@link #OASIS_2002_07} or {@link #OASIS_2002_12} 
+     * enhances chances of interoperability with other
      * WSS implementations that do not fully adhere to the OASIS v1.0 March 2004
      * specs yet.
-     *
-     * @param specs instructs WSS4J on which standard to follow
      */
     public static final int COMPLIANCE_MODE = OASIS_1_0;
 
@@ -140,7 +140,7 @@ public class WSConstants {
 
     public static final String NULL_NS = "Null";
     /**
-     * Sets the {@link org.apache.ws.security.message.WSSAddUsernameToken#build(Document, String, String) UserNameToken}
+     * Sets the org.apache.ws.security.message.WSSAddUsernameToken#build(Document, String, String)
      * method to use a password digest to send the password information
      * <p/>
      * This is a required method as defined by WS Specification, Username token profile.
@@ -149,7 +149,7 @@ public class WSConstants {
     public static final String PASSWORD_DIGEST = USERNAMETOKEN_NS + "#PasswordDigest";
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSSAddUsernameToken#build(Document, String, String) UserNameToken}
+     * Sets the org.apache.ws.security.message.WSSAddUsernameToken#build(Document, String, String)
      * method to send the password in clear
      * <p/>
      * This is a required method as defined by WS Specification, Username token profile.
@@ -159,7 +159,7 @@ public class WSConstants {
     public static final String PASSWORD_TEXT = USERNAMETOKEN_NS + "#PasswordText";
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to encrypt the symmetric data encryption key with the RSA algoritm.
      * <p/>
      * This is a required method as defined by XML encryption.
@@ -167,7 +167,7 @@ public class WSConstants {
     public static final String KEYTRANSPORT_RSA15 = EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to encrypt the symmetric data encryption key with the RSA algoritm.
      * <p/>
      * This is a required method as defined by XML encryption.
@@ -177,7 +177,7 @@ public class WSConstants {
     public static final String KEYTRANSPORT_RSAOEP = EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to use triple DES as the symmetric algorithm to encrypt data.
      * <p/>
      * This is a required method as defined by XML encryption.
@@ -185,7 +185,7 @@ public class WSConstants {
     public static final String TRIPLE_DES = EncryptionConstants.ALGO_ID_BLOCKCIPHER_TRIPLEDES;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to use AES with 128 bit key as the symmetric algorithm to encrypt data.
      * <p/>
      * This is a required method as defined by XML encryption.
@@ -193,7 +193,7 @@ public class WSConstants {
     public static final String AES_128 = EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to use AES with 256 bit key as the symmetric algorithm to encrypt data.
      * <p/>
      * This is a required method as defined by XML encryption.
@@ -201,7 +201,7 @@ public class WSConstants {
     public static final String AES_256 = EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to use AES with 192 bit key as the symmetric algorithm to encrypt data.
      * <p/>
      * This is a optional method as defined by XML encryption.
@@ -209,7 +209,7 @@ public class WSConstants {
     public static final String AES_192 = EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto) signature}
+     * Sets the org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto)
      * method to use DSA with SHA1 (DSS) to sign data.
      * <p/>
      * This is a required method as defined by XML signature.
@@ -217,7 +217,7 @@ public class WSConstants {
     public static final String DSA = XMLSignature.ALGO_ID_SIGNATURE_DSA;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto) signature}
+     * Sets the org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto)
      * method to use RSA with SHA to sign data.
      * <p/>
      * This is a recommended method as defined by XML signature.
@@ -230,7 +230,7 @@ public class WSConstants {
     public static final String C14N_EXCL_WITH_COMMENTS = Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto) signing}
+     * Sets the org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto)
      * method to send the signing certificate as a
      * <code>BinarySecurityToken</code>.
      * <p/>
@@ -250,8 +250,8 @@ public class WSConstants {
     public static final int BST_DIRECT_REFERENCE = 1;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto) signing}
-     * or the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto)
+     * or the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to send the issuer name and the serial number of a
      * certificate to the receiver.
      * <p/>
@@ -266,7 +266,7 @@ public class WSConstants {
     public static final int ISSUER_SERIAL = 2;
 
     /**
-     * Sets the {@link org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto) encryption}
+     * Sets the org.apache.ws.security.message.WSEncryptBody#build(Document, Crypto)
      * method to send the certificate used to encrypt the symmetric key.
      * <p/>
      * The encryption method uses the private key associated with this certificate
@@ -282,8 +282,7 @@ public class WSConstants {
     public static final int X509_KEY_IDENTIFIER = 3;
     /**
      * Sets the
-     * {@link org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto)
-     * signing}
+     * org.apache.ws.security.message.WSSignEnvelope#build(Document, Crypto)
      * method to send a <code>SubjectKeyIdentifier</code> to identify
      * the signing certificate.
      * <p/>

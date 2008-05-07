@@ -56,10 +56,9 @@ public class EnvelopeIdResolver extends ResourceResolverSpi {
     private Document document;
 
     /**
-     * Singleton instance of the resolver.
-     * <p/>
+     * Gives areference to the singleton instance of the resolver.
      *
-     * @return
+     * @return The singleton.
      */
     public synchronized static ResourceResolverSpi getInstance(WSSConfig wssConfig) {
         // instance comparison, should be same instance most of the time
@@ -81,11 +80,9 @@ public class EnvelopeIdResolver extends ResourceResolverSpi {
 
     /**
      * This is the workhorse method used to resolve resources.
-     * <p/>
      *
      * @param uri
      * @param BaseURI
-     * @return
      * @throws ResourceResolverException
      */
     public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
@@ -178,11 +175,9 @@ public class EnvelopeIdResolver extends ResourceResolverSpi {
     /**
      * This method helps the ResourceResolver to decide whether a
      * ResourceResolverSpi is able to perform the requested action.
-     * <p/>
      *
      * @param uri
      * @param BaseURI
-     * @return
      */
     public boolean engineCanResolve(Attr uri, String BaseURI) {
         if (uri == null) {
@@ -213,7 +208,7 @@ public class EnvelopeIdResolver extends ResourceResolverSpi {
      *
      * @param node    the node to traverse
      * @param nodeSet the set of nodes traversed so far
-     * @param the     previous sibling node
+     * @param prevSibling the previous sibling-node
      */
     private void nodeSetMinusCommentNodes(Node node,
                                           Set nodeSet,

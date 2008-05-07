@@ -17,7 +17,7 @@ import org.apache.axis.client.Stub;
  * or principals do affect the new guard.
  *
  * To enable digital signatures on an Axis stub, call the 
- * {@link configureStub} method. This passes references to the credentials
+ * {@link #configureStub(Stub)} method. This passes references to the credentials
  * to the stub and sets it to sign each subsequent message to its service.
  * In order for the signature to work, the grid subject of the guard must
  * contain the following credentials: a java.security.PrivateKey and a 

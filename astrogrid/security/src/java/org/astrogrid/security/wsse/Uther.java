@@ -1,16 +1,11 @@
 package org.astrogrid.security.wsse;
 
-import org.apache.commons.discovery.Resource;
-import org.apache.commons.discovery.ResourceIterator;
-import org.apache.commons.discovery.jdk.JDKHooks;
-import org.apache.commons.discovery.resource.DiscoverResources;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -21,7 +16,6 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -382,7 +376,6 @@ public class Uther implements Crypto {
      */
     public X509Certificate[] getCertificates(String alias) throws WSSecurityException {
         Certificate[] certs = null;
-        ;
         try {
             certs = keystore.getCertificateChain(alias);
             if (certs == null || certs.length == 0) {

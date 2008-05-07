@@ -1,8 +1,10 @@
 package org.astrogrid.security;
 
 import java.security.GeneralSecurityException;
+import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +16,9 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
 import org.astrogrid.security.authorization.AccessPolicy;
-
+import org.astrogrid.security.community.CommunityEndpointResolver;
+import org.astrogrid.security.community.CommunityIvornParser;
+import org.astrogrid.security.community.SsoClient;
 
 /**
  * A container for security information.
@@ -98,7 +102,7 @@ public class SecurityGuard {
    * Provided only for backward compatibility with the workbench.
    * 
    * @return - the subject (never null).
-   * @deprecated - Use {@link getSubject} instead.
+   * @deprecated - Use {@link #getSubject()} instead.
    */
   public Subject getSsoSubject() {
     return this.subject;
@@ -109,7 +113,7 @@ public class SecurityGuard {
    * Provided only for backward compatibility with the workbench.
    * 
    * @return - the subject (never null).
-   * @deprecated - Use {@link getSubject} instead.
+   * @deprecated - Use {@link #getSubject()} instead.
    */
   public Subject getGridSubject() {
     return this.subject;
@@ -181,14 +185,16 @@ public class SecurityGuard {
    * @return - the name (null if not authenticated by signature).
    */
   public X500Principal getX500Principal() {
-    Set principals = this.subject.getPrincipals(X500Principal.class);
-    return (principals.size() > 0)? (X500Principal)(principals.iterator().next()) : null;
+    Iterator<X500Principal> i = 
+        this.subject.getPrincipals(X500Principal.class).iterator();
+    return (i.hasNext())? i.next(): null;
   }
+  
   
   /**
    * Records the X500 distinguished name which has been authenticated.
    *
-   * @return - the name (null if not authenticated by signature).
+   * @param p The distinguished name.
    */
   public void setX500Principal(X500Principal p) {
     this.subject.getPrincipals().add(p);
@@ -203,14 +209,18 @@ public class SecurityGuard {
    * @return - the chain (never null; zero-length array if no certificates).
    */
   public X509Certificate[] getCertificateChain() {
-    Set s = this.subject.getPublicCredentials(CertPath.class);
-    CertPath p = (CertPath)(s.iterator().next());
-    List l = p.getCertificates();
-    X509Certificate[] chain = new X509Certificate[l.size()];
-    for (int i = 0; i < chain.length; i++) {
-      chain[i] = (X509Certificate)(l.get(i));
+    Iterator<CertPath> i = this.subject.getPublicCredentials(CertPath.class).iterator();
+    if (i.hasNext()) {
+      List l = i.next().getCertificates();
+      X509Certificate[] chain = new X509Certificate[l.size()];
+      for (int c = 0; c < chain.length; c++) {
+        chain[c] = (X509Certificate)(l.get(c));
+      }
+      return chain;
     }
-    return chain;
+    else {
+      return new X509Certificate[0];
+    }
   }
   
   /**
@@ -267,22 +277,37 @@ public class SecurityGuard {
    * certificate is the first non-proxy certificate in the chain.
    */
   public X509Certificate getIdentityCertificate() {
-    Set s = this.subject.getPublicCredentials(X509Certificate.class);
-    return (s.size() > 0)? (X509Certificate)(s.iterator().next()) : null;
+    
+    // RFC 3820 defines the ProxyCertInfo extension to an X.509 certificate
+    // and specifies the OID for that extension. The RFC says that all
+    // proxy certificates must have the extension and no end-entity
+    // certificate may have such an extension. Before RFC 3820 was written, the
+    // extension had an OID in the Globus Alliance's private namespace, and
+    // some PCs use this older OID. Therefore, to find the
+    // identity certificate, we traverse the certificate chain and return the
+    // first certificate that doesn't have an extension under either of these
+    // two OIDs.
+    final String ietfProxyCertInfoOid = "1.3.6.1.5.5.7.1.14";
+    final String globusProxyCertInfoOid = "1.3.6.1.4.1.3536.1.222";
+    X509Certificate[] chain = getCertificateChain();
+    for (int i = 0; i < chain.length; i++) {
+      if (chain[i].getExtensionValue(ietfProxyCertInfoOid) == null &&
+          chain[i].getExtensionValue(globusProxyCertInfoOid) == null){
+        return chain[i];
+      }
+    }
+    return null;
   }
   
   /**
-   * Records the X.509 certificate carrying the authenticated identity.
-   * If the caller has been authenticated using a chain of certificates that
-   * includes limited or impersonation proxy certificates, the identity
-   * certificate is the first non-proxy certificate in the chain.
+   * Reveals the location of the user's home space, if known.
+   *
+   * @return The URI for the homespace (null if not known).
    */
-  public void setIdentityCertificate(X509Certificate newCert) {
-    X509Certificate oldCert = this.getIdentityCertificate();
-    if (oldCert != null) {
-      this.subject.getPublicCredentials().remove(oldCert);
-    }
-    this.subject.getPublicCredentials().add(newCert);
+  public String getHomespaceLocationAsString() {
+    Iterator<HomespaceLocation> homes = 
+        this.subject.getPrincipals(HomespaceLocation.class).iterator();
+    return (homes.hasNext())? homes.next().getName() : null;
   }
   
   /**
@@ -323,6 +348,45 @@ public class SecurityGuard {
     }
     else {
       return this.accessPolicy.decide(this, request);
+    }
+  }
+  
+  /**
+   * Signs a user into the IVO. This provides, cached in the SecurityGuard,
+   * credentials valid for a specified duration.
+   * The user and community are identified by
+   * an account ivorn, e.g. ivo://gtr@uk.ac.cam.ast/community for user
+   * gtr at the community service ivo://uk.ac.cam.ast/community. After signing
+   * on, the subject contains (at least) two principals, one AccountIvorn and 
+   * one X500Principal.
+   *
+   * @param account The IVORN for the user's account.
+   * @param password The password, undigested and unencrypted.
+   * @param lifetime The duration of validity of the credentials, in seconds.
+   */
+  public void signOn(String account, String password, int lifetime) throws Exception {
+    
+    // Sign on at the community's accounts service.
+    // This adds to the subject a certificate chain and private key but
+    // does nor record any principals.
+    CommunityIvornParser p = new CommunityIvornParser(account);
+    CommunityEndpointResolver r = 
+        new CommunityEndpointResolver(p.getCommunityIvorn().toString());
+    if (r.getAccounts() == null) {
+      throw new Exception("No endpoint is registered for the accounts service for " + account);
+    }
+    SsoClient s = new SsoClient(r.getAccounts().toString());
+    s.authenticate(p.getAccountName(), password, lifetime, this.subject);
+    s.home(p.getAccountName(), this.subject);
+    
+    // Record the account IVORN as a principal.
+    AccountIvorn i = new AccountIvorn(p.getAccountIvorn().toString());
+    this.subject.getPrincipals().add(i);
+    
+    // Record the distinguished name from the certificate chain as a principal.
+    X509Certificate x = getIdentityCertificate();
+    if (x != null) {
+      this.subject.getPrincipals().add(x.getSubjectX500Principal());
     }
   }
   

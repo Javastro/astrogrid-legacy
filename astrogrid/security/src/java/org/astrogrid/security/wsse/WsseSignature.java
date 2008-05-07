@@ -182,11 +182,11 @@ public class WsseSignature {
     validator.validateChain(chain, this.trustAnchors);
     log.debug("Certificate chain is valid.");
 
-    // Remember the authenticated identity and its certificate.
+    // Remember the authenticated identity and its certificates.
+    this.authenticated.setCertificateChain(chain);
     X509Certificate identityCertificate = validator.getIdentityCertificate();
     this.authenticated.setX500Principal(identityCertificate.getSubjectX500Principal());
-    this.authenticated.setIdentityCertificate(identityCertificate);
-    this.authenticated.setCertificateChain(chain);
+    
   }
   
   /**

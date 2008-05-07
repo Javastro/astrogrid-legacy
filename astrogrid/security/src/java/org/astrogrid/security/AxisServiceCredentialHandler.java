@@ -1,7 +1,6 @@
 package org.astrogrid.security;
 
 import javax.security.auth.x500.X500Principal;
-import org.apache.axis.AxisFault;
 import org.apache.axis.MessageContext;
 import org.apache.axis.handlers.BasicHandler;
 import org.apache.log4j.Logger;

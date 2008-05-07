@@ -25,7 +25,6 @@ import java.net.URL;
 
 /**
  * Load resources (or images) from various sources.
- * <p/>
  *
  * @author Davanum Srinivas (dims@yahoo.com).
  */
@@ -36,19 +35,15 @@ public class Loader {
      * This method will search for <code>resource</code> in different
      * places. The rearch order is as follows:
      * <ol>
-     * <p><li>Search for <code>resource</code> using the thread context
+     * <li>Search for <code>resource</code> using the thread context
      * class loader under Java2. If that fails, search for
      * <code>resource</code> using the class loader that loaded this
      * class (<code>Loader</code>).
-     * <p><li>Try one last time with
+     * <li>Try one last time with
      * <code>ClassLoader.getSystemResource(resource)</code>, that is is
      * using the system class loader in JDK 1.2 and virtual machine's
      * built-in class loader in JDK 1.1.
      * </ol>
-     * <p/>
-     *
-     * @param resource
-     * @return
      */
     static public URL getResource(String resource) {
         ClassLoader classLoader = null;
@@ -78,11 +73,6 @@ public class Loader {
 
     /**
      * Get the Thread context class loader.
-     * <p/>
-     *
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
      */
     private static ClassLoader getTCL() throws IllegalAccessException, InvocationTargetException {
         return Thread.currentThread().getContextClassLoader();
@@ -92,11 +82,6 @@ public class Loader {
      * If running under JDK 1.2 load the specified class using the
      * <code>Thread</code> <code>contextClassLoader</code> if that
      * fails try Class.forname.
-     * <p/>
-     *
-     * @param clazz
-     * @return
-     * @throws ClassNotFoundException
      */
     static public Class loadClass(String clazz) throws ClassNotFoundException {
         try {
@@ -104,6 +89,7 @@ public class Loader {
             if (c != null)
                 return c;
         } catch (Throwable e) {
+          log.debug("Throwable was ignored: " + e.getMessage());
         }
         // we reached here because tcl was null or because of a
         // security exception, or because clazz could not be loaded...

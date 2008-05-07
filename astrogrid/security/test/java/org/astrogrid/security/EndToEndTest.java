@@ -27,6 +27,12 @@ import org.astrogrid.security.sample.SampleDelegate;
  * @author Guy Rixon
  */
 public class EndToEndTest extends TestCase {
+  
+  public void setUp() throws Exception {
+    TestUtilities.copyResourceToFile(this.getClass(),
+                                     "/server-config.wsdd",
+                                     new File("server-config.wsdd"));
+  }
 
   public void testGoodCredentials() throws Exception {
 

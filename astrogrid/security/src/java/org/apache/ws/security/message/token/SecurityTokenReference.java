@@ -36,14 +36,12 @@ import java.security.cert.X509Certificate;
 
 /**
  * Security Token Reference.
- * <p/>
  *
  * @author Davanum Srinivas (dims@yahoo.com).
  */
 public class SecurityTokenReference {
     private static Log log =
             LogFactory.getLog(SecurityTokenReference.class.getName());
-    private static Log tlog = LogFactory.getLog("org.apache.ws.security.TIME");
     public static final String SECURITY_TOKEN_REFERENCE = "SecurityTokenReference";
     public static final String KEY_NAME = "KeyName";
     public static final String SKI_URI =
@@ -57,11 +55,6 @@ public class SecurityTokenReference {
 
     /**
      * Constructor.
-     * <p/>
-     *
-     * @param wssConfig
-     * @param elem
-     * @throws WSSecurityException
      */
     public SecurityTokenReference(WSSConfig wssConfig, Element elem) throws WSSecurityException {
         doDebug = log.isDebugEnabled();
@@ -88,10 +81,6 @@ public class SecurityTokenReference {
 
     /**
      * Constructor.
-     * <p/>
-     *
-     * @param wssConfig
-     * @param doc
      */
     public SecurityTokenReference(WSSConfig wssConfig, Document doc) {
         doDebug = log.isDebugEnabled();
@@ -108,9 +97,6 @@ public class SecurityTokenReference {
 
     /**
      * set the reference.
-     * <p/>
-     *
-     * @param ref
      */
     public void setReference(Reference ref) {
         Element elem = getFirstElement();
@@ -126,7 +112,6 @@ public class SecurityTokenReference {
      *
      * @return the <code>Reference</code> element contained in this
      *         SecurityTokeneReference
-     * @throws WSSecurityException
      */
     public Reference getReference() throws WSSecurityException {
         Element elem = getFirstElement();
@@ -501,7 +486,7 @@ public class SecurityTokenReference {
     /**
      * Method containsX509IssuerSerial
      *
-     * @return true if the <code>SecurtityTokenReference</code> contains
+     * @return true if the <code>SecurityTokenReference</code> contains
      *         a <code>ds:IssuerSerial</code> element
      */
     public boolean containsX509IssuerSerial() {
@@ -521,7 +506,7 @@ public class SecurityTokenReference {
     /**
      * Method containsKeyIdentifier.
      *
-     * @return true if the <code>SecurtityTokenReference</code> contains
+     * @return true if the <code>SecurityTokenReference</code> contains
      *         a <code>wsse:KeyIdentifier</code> element
      */
     public boolean containsKeyIdentifier() {
@@ -551,8 +536,6 @@ public class SecurityTokenReference {
     /**
      * Method length.
      *
-     * @param namespace
-     * @param localname
      * @return number of elements with matching localname and namespace
      */
     public int length(String namespace, String localname) {
@@ -579,9 +562,6 @@ public class SecurityTokenReference {
 
     /**
      * get the dom element.
-     * <p/>
-     *
-     * @return
      */
     public Element getElement() {
         return this.element;
@@ -589,9 +569,6 @@ public class SecurityTokenReference {
 
     /**
      * set the id.
-     * <p/>
-     *
-     * @param id
      */
     public void setID(String id) {
         String prefix =
@@ -603,9 +580,6 @@ public class SecurityTokenReference {
 
     /**
      * return the string representation.
-     * <p/>
-     *
-     * @return
      */
     public String toString() {
         return DOM2Writer.nodeToString((Node) this.element);

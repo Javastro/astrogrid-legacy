@@ -59,5 +59,14 @@ import java.security.Principal;
        return false;
      }
    }
+   
+   /**
+    * Returns a hash code for the object. See Object.hashCode() for details.
+    *
+    * @return The hash code.
+    */
+   public int hashCode() {
+     return this.name.hashCode();
+   }
 
  }
