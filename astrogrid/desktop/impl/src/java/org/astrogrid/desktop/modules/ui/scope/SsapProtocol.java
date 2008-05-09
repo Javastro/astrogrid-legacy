@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.13 2008/04/25 08:59:36 nw Exp $
+/*$Id: SsapProtocol.java,v 1.14 2008/05/09 11:33:04 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,8 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 /**
  * @TEST
@@ -31,20 +33,15 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  */
 public class SsapProtocol extends SpatialDalProtocol {
 
-    public SsapProtocol(Registry reg, Ssap ssap) {
-        super("Spectra",IconHelper.loadIcon("ssap16.png").getImage());
-        this.reg = reg;
+    public SsapProtocol(RegistryInternal reg, Ssap ssap) {
+        super("Spectra",IconHelper.loadIcon("ssap16.png").getImage(),reg);
         this.ssap = ssap;
     }
-    private final Registry reg;
     private final Ssap ssap;
-
-    public Service[] listServices() throws Exception{
-        Resource[] rs = reg.xquerySearch(ssap.getRegistryXQuery());
-        Service[] result = new Service[rs.length];
-        System.arraycopy(rs,0,result,0,rs.length);
-        return result;
-    }
+@Override
+public String getXQuery() {
+    return ssap.getRegistryXQuery();
+}
 
 	public AbstractRetriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
         Capability[] capabilities = service.getCapabilities();
@@ -76,15 +73,13 @@ public class SsapProtocol extends SpatialDalProtocol {
         return retrievers;
     }
     
-	public Service[] filterServices(List resourceList) {
-		List result = new ArrayList();
+	public void processSuitableServicesInList(List resourceList,ResourceProcessor p) {
 		for (Iterator i = resourceList.iterator(); i.hasNext();) {
 			Resource r = (Resource) i.next();
 			if (r instanceof SsapService) {
-				result.add(r);
+				p.process(r);
 			}
 		}
-		return (Service[])result.toArray(new Service[result.size()]);
 	}
 
 }
@@ -92,6 +87,13 @@ public class SsapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.14  2008/05/09 11:33:04  nw
+Complete - task 394: process reg query results in a stream.
+
+Incomplete - task 391: get to grips with new CDS
+
+Complete - task 393: add waveband column.
+
 Revision 1.13  2008/04/25 08:59:36  nw
 extracted interface from retriever, to ease unit testing.
 

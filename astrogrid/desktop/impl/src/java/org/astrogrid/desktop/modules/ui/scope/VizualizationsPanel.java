@@ -75,6 +75,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
         add(RADIAL_VIEW,radialViz.getDisplay());
         add(HYPERBOLIC_VIEW,hyperbolicViz.getDisplay());
         add(SERVICES_VIEW,table);
+        getShowServicesFiltersAction().setEnabled(false);
     }
 
 //prefuse listener interface
@@ -173,7 +174,8 @@ private void clearPrefuseSelection() {
      public void actionPerformed(ActionEvent e) {
          if (servicesHasPrecedence) { // we've flipped from services view - clear selection
              clearPrefuseSelection();
-             viz.reDrawGraphs();               
+             viz.reDrawGraphs();           
+             getShowServicesFiltersAction().setEnabled(false);
          }
          show(RADIAL_VIEW);
          servicesHasPrecedence = false;
@@ -189,6 +191,7 @@ private void clearPrefuseSelection() {
          if (servicesHasPrecedence) { // we've flipped from services view - clear selection
              clearPrefuseSelection();      
              viz.reDrawGraphs();               
+             getShowServicesFiltersAction().setEnabled(false);             
          }         
          show(HYPERBOLIC_VIEW);
          servicesHasPrecedence = false;
@@ -206,6 +209,7 @@ private void clearPrefuseSelection() {
          if (table.getCurrentDisplayedResources().size() > 0) {
              tableSelected.add(table.getCurrentDisplayedResources().get(0));
          }
+         getShowServicesFiltersAction().setEnabled(true);         
          show(SERVICES_VIEW);
          servicesHasPrecedence = true;        
      }
@@ -251,6 +255,15 @@ public Object evaluate(Object sourceValue) {
         node.setAttribute(SERVICE_FILTERED_ATTR,"false");
     }
     return sourceValue;
+}
+
+/** access the action used to expand / contract the services tab.
+ * based on the show browser action provided by the reg google pane,
+ * but is enabled / disabled according to which view is shown.
+ * @return
+ */
+public Action getShowServicesFiltersAction() {
+    return table.getExpandAction();
 }
 
 

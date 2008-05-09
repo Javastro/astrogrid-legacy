@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.14 2008/04/25 08:59:36 nw Exp $
+/*$Id: SiapProtocol.java,v 1.15 2008/05/09 11:33:04 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,8 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
@@ -35,23 +37,18 @@ public class SiapProtocol extends SpatialDalProtocol {
 
     /** Construct a new SiapProtocol
      */
-    public SiapProtocol(Registry reg,Siap siap) {
-        super("Images",IconHelper.loadIcon("siap16.png").getImage());
-        this.reg =  reg;
+    public SiapProtocol(RegistryInternal reg,Siap siap) {
+        super("Images",IconHelper.loadIcon("siap16.png").getImage(),reg);
         this.siap = siap;
     }
-    private final Registry reg;
     private final Siap siap;
 
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#listServices()
-     */
-    public Service[] listServices() throws Exception{
-        Resource[] rs = reg.xquerySearch(siap.getRegistryXQuery());
-        Service[] result = new Service[rs.length];
-        System.arraycopy(rs,0,result,0,rs.length);
-        return result;        
-    } 
+    
+    @Override
+    public String getXQuery() {
+        return siap.getRegistryXQuery();
+    }
+
 
 
     public AbstractRetriever[] createRetrievers(Service service, double ra, double dec, double raSize, double decSize) {
@@ -84,15 +81,14 @@ public class SiapProtocol extends SpatialDalProtocol {
         return retrievers;
     }
     
-	public Service[] filterServices(List resourceList) {
+	public void processSuitableServicesInList(List resourceList,ResourceProcessor p) {
 		List result = new ArrayList();
 		for (Iterator i = resourceList.iterator(); i.hasNext();) {
 			Resource r = (Resource) i.next();
 			if (r instanceof SiapService) {
-				result.add(r);
+			    p.process(r);
 			}
 		}
-		return (Service[])result.toArray(new Service[result.size()]);
 	}
     
 
@@ -101,6 +97,13 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.15  2008/05/09 11:33:04  nw
+Complete - task 394: process reg query results in a stream.
+
+Incomplete - task 391: get to grips with new CDS
+
+Complete - task 393: add waveband column.
+
 Revision 1.14  2008/04/25 08:59:36  nw
 extracted interface from retriever, to ease unit testing.
 

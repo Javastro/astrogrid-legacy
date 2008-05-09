@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** Base class for dal protocols that query on time.
@@ -24,8 +25,8 @@ public abstract class TemporalDalProtocol extends DalProtocol {
 	/**
 	 * @param name
 	 */
-	public TemporalDalProtocol(String name, Image img) {
-		super(name,img);
+	public TemporalDalProtocol(String name, Image img,RegistryInternal reg) {
+		super(name,img,reg);
 	}
 
     public abstract AbstractRetriever[] createRetrievers(Service i, Date start, Date end, double ra, double dec, double raSize, double decSize);

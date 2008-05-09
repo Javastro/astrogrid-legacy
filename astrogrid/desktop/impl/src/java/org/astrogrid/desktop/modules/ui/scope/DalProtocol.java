@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.18 2008/04/25 08:59:36 nw Exp $
+/*$Id: DalProtocol.java,v 1.19 2008/05/09 11:33:04 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,12 +17,19 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
+import javax.xml.stream.XMLStreamReader;
 
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
+import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
@@ -36,9 +43,10 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  */
 public abstract class DalProtocol {
 
-    public DalProtocol(String name, Image img) {
+    public DalProtocol(String name, Image img, RegistryInternal reg) {
         super();
         this.name = name;
+        this.reg = reg;
         this.primaryNode = new ImageTreeNode();
         primaryNode.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,name);
         primaryNode.setImage(img);
@@ -55,6 +63,7 @@ public abstract class DalProtocol {
     private final ImageTreeNode primaryNode;
     private final JCheckBox checkBox;
     private final JCheckBoxMenuItem menuCheckBox;
+    protected final RegistryInternal reg;
     
     public String getName() {
         return name;
@@ -90,18 +99,23 @@ public abstract class DalProtocol {
         return vizModel;
     }
     
-    /** produce a list of all known services of this protocol
-     *  -- typically by querying the registry
-     */
-    public abstract Service[] listServices() throws Exception;
+    /** return an xquery that will produce a list of all known services of this protocol
+     * when passed to the registry.
+      */
+    public abstract String getXQuery();
     
+    
+    public final void processAllServices(ResourceProcessor p) throws ServiceException {
+        reg.xquerySearchStream(getXQuery(),p);
+    }
     
 	/** produce a list of all services suitable to this protocol
 	 * @param resourceList input list to filter
-	 * @return the subset that this protocol can query
+	 * @param p a processor that is passed each suitable service
 	 */
-	public abstract Service[] filterServices(List resourceList) ;
+	public abstract void processSuitableServicesInList(List<? extends Service> resourceList,ResourceProcessor p) ;
 
+	
     /** returns a NodeSocket which will join nodes directly to the primary 
      *  node for this protocol.
      */
@@ -213,6 +227,13 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.19  2008/05/09 11:33:04  nw
+Complete - task 394: process reg query results in a stream.
+
+Incomplete - task 391: get to grips with new CDS
+
+Complete - task 393: add waveband column.
+
 Revision 1.18  2008/04/25 08:59:36  nw
 extracted interface from retriever, to ease unit testing.
 

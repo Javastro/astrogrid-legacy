@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.20 2008/04/25 08:59:36 nw Exp $
+/*$Id: ConeProtocol.java,v 1.21 2008/05/09 11:33:04 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,11 +15,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Cone;
-import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.ConeCapability;
@@ -27,7 +25,8 @@ import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
 
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
@@ -37,23 +36,18 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 public class ConeProtocol extends SpatialDalProtocol {
 
 
-    public ConeProtocol(Registry reg, Cone cone) {
-        super("Cat. Objects",IconHelper.loadIcon("cone16.png").getImage());
-        this.reg = reg;
+    public ConeProtocol(RegistryInternal reg, Cone cone) {
+        super("Cat. Objects",IconHelper.loadIcon("cone16.png").getImage(),reg);
         this.cone = cone;
     } 
-    private final Registry reg;
     private final Cone cone;
 
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#listServices()
-     */
-    public Service[] listServices() throws Exception{
-    	Resource[] rs= reg.xquerySearch(cone.getRegistryXQuery());
-        Service[] result = new Service[rs.length];
-        System.arraycopy(rs,0,result,0,rs.length);
-        return result;
+    
+    @Override
+    public String getXQuery() {
+        return cone.getRegistryXQuery();
     }
+
 
     public AbstractRetriever[] createRetrievers(Service service,double ra, double dec, double raSize, double decSize) {
         Capability[] capabilities = service.getCapabilities();
@@ -85,49 +79,29 @@ public class ConeProtocol extends SpatialDalProtocol {
         return retrievers;
     }
 
-	public Service[] filterServices(List resourceList) {
-		List result = new ArrayList();
+	public void processSuitableServicesInList(List resourceList,ResourceProcessor p) {
 		for (Iterator i = resourceList.iterator(); i.hasNext();) {
 			Resource r = (Resource) i.next();
-			if (r instanceof ConeService
-					// special case for CDS.
-					|| isConeSearchableCdsCatalog(r)) { 
-				result.add(r);
+			if (r instanceof ConeService) { 
+			    p.process(r);
 			}
 		}
-		return (Service[])result.toArray(new Service[result.size()]);
 	}
-    /** test whether a resource is from CDS,and is a catalogue which
-     * can be cone-searched - i.e. has a column wiht a position UCD
-     * @param r
-     * @return
-     */
-	public static boolean isConeSearchableCdsCatalog(Resource r) {
-		if (! isCdsCatalog(r)) {
-		    return false;
-		}
-		CatalogService c = (CatalogService)r;
-		TableBean[] tables = c.getTables();
-		for (int i = 0; i < tables.length; i++) {
-			ColumnBean[] columns = tables[i].getColumns();
-			for (int j = 0; j < columns.length; j++) {
-				if (POSITION_UCD.equals(columns[j].getUCD())) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+
 
     /** test whether a resource is a catgalogue from CDS.
      * 
      * @param r
      */
     public static boolean isCdsCatalog(Resource r) {
-        return r instanceof CatalogService 
-            && r.getId().toString().startsWith("ivo://CDS/VizieR/");
+        return r instanceof CatalogService
+        && r.getCuration().getPublisher() != null
+        && CDS.equals(r.getCuration().getPublisher().getId());
+           // && r.getId().toString().startsWith("ivo://CDS/VizieR/");
 
     }
+    
+    private static final URI CDS = URI.create("ivo://CDS");
 
 	public static final String POSITION_UCD = "POS_EQ_RA_MAIN";
     
@@ -137,6 +111,13 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.21  2008/05/09 11:33:04  nw
+Complete - task 394: process reg query results in a stream.
+
+Incomplete - task 391: get to grips with new CDS
+
+Complete - task 393: add waveband column.
+
 Revision 1.20  2008/04/25 08:59:36  nw
 extracted interface from retriever, to ease unit testing.
 
