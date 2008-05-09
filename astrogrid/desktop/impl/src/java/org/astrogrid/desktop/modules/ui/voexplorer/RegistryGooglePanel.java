@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.31 2008/03/28 13:08:58 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.32 2008/05/09 11:33:51 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -69,6 +69,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.desktop.modules.system.CSH;
@@ -225,21 +226,26 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     
 	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
 	 * and caching the result */
-	private abstract class Worker extends BackgroundWorker implements StreamProcessor {
+	private abstract class Worker extends BackgroundWorker implements ResourceProcessor {
 		
 		public Worker(UIComponent parent, String message) {
 			super(parent,message,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
 			fireLoadStarted();
 		}
 
-		// callback from the xml stream reader.
-		public void process(XMLStreamReader reader) throws Exception {
-		    reportProgress("Parsing registry response");
-		    if (isInterrupted()) {
-		        return;
-		    }
-			ResourceStreamParser p = new ResourceStreamParser(reader);
-			load(p);	
+		// callback from the the registry.
+		public void process(Resource r) {
+	        if (isInterrupted()) {
+                return;
+            }
+	        try {
+	            items.getReadWriteLock().writeLock().lock();
+	            items.add(r);
+	        } finally {
+	            //this throws an illegal monitor state exception if I didn't lock it.
+	            items.getReadWriteLock().writeLock().unlock();
+	        }
+	        
 		}
 		
 		private Thread _thread;
@@ -255,23 +261,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		    }
 		    return interrupted;
 		}
-		
-		/**
-		 * @param p
-		 * @throws InterruptedException 
-		 */
-		private void load(ResourceStreamParser p) throws InterruptedException {
-			while (p.hasNext() && ! isInterrupted()) { // bail out on interrupt.
-				final Resource r = (Resource)p.next();
-				try {
-					items.getReadWriteLock().writeLock().lock();
-					items.add(r);
-				} finally {
-				    //this throws an illegal monitor state exception if I didn't lock it.
-				        items.getReadWriteLock().writeLock().unlock();
-				}
-			}
-		}
+
 		private void load(Resource[] arr) {
 			for (int i = 0; i < arr.length; i++) {
 				try {
@@ -283,17 +273,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 			}			
 		}
 		
-		private void cacheResult( final String key) {
-			Resource[] arr = (Resource[]) items.toArray(new Resource[items.size()]);
-			Element el = new Element(key,arr);
-			bulk.put(el);
-			for (int i = 0; i < arr.length; i++) {
-				if (resources.get(arr[i].getId()) == null) {
-					resources.put(new Element(arr[i].getId(),  arr[i]));
-				}
-			}									
-		}
-	
 		protected void runQuery(String xq) throws ServiceException {
 		    // check bulk cache.
 		    reportProgress("Running query");
@@ -309,11 +288,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		    reportProgress("Querying registry");
 			reg.xquerySearchStream(xq,this);
 			// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
-			
-			if (! isInterrupted() && items.size() > 0) {
-			    reportProgress("Caching result for future use");
-				cacheResult(xq);
-			}
 		}
 		protected void doFinished(Object result) {
 			//resourceTable.selectAll(); dislike this.
@@ -415,7 +389,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 	protected final JTabbedPane tabPane;
 	protected final RegistryInternal reg;
-	protected final Ehcache resources ;
 	protected final VoMonInternal vomon;
 	protected final CapabilityIconFactory iconFac;
 	protected final Ehcache bulk;
@@ -448,23 +421,22 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * @param pref controls whether to display 'advanced' features of the ui.
 	 */
 	public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg,
-			final Ehcache resources, final Ehcache bulk
+			 final Ehcache bulk
 			,TypesafeObjectBuilder uiBuilder
 			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {
-	    this(parent,reg,resources,bulk,uiBuilder,createDefaultViews(parent,uiBuilder)
+	    this(parent,reg,bulk,uiBuilder,createDefaultViews(parent,uiBuilder)
 	        ,vm,iconFac,annServer,advancedPreference);
 	}
 	
 	/** constructor for extension that allows an alternate set of resource viewers to be provided */
     protected RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg,
-            final Ehcache resources, final Ehcache bulk
+             final Ehcache bulk
             ,TypesafeObjectBuilder uiBuilder, ResourceViewer[] viewers
             , final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {	
 		super();    
 		this.parent = parent;
 		this.uiBuilder = uiBuilder;
 		this.reg = reg;
-		this.resources = resources;
 		this.bulk = bulk;
 		this.vomon = vm;
 		this.iconFac = iconFac;
@@ -956,6 +928,11 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.32  2008/05/09 11:33:51  nw
+Complete - task 394: process reg query results in a stream.
+
+Incomplete - task 391: get to grips with new CDS
+
 Revision 1.31  2008/03/28 13:08:58  nw
 help-tagging
 
