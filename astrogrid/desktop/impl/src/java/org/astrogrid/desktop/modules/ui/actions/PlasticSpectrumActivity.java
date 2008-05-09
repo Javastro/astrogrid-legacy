@@ -118,9 +118,9 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 
 	private void sendLoadSpectrumMessage(final FileObject f) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
-		    {
-		        setTransient(true);
-		    }
+//		    {
+//		        setTransient(true);
+//		    }
 			protected Object construct() throws Exception {
 				List l = new ArrayList();
 				URL url = f.getURL();

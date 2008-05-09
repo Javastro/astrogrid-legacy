@@ -83,9 +83,9 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 	}
 	private void sendLoadMessage(final Resource r) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {		
-		    {
-		        setTransient(true);
-		    }
+//		    {
+//		        setTransient(true);
+//		    }
 			protected Object construct() throws Exception {
 				List l = new ArrayList();
 				l.add(r.getId().toString());

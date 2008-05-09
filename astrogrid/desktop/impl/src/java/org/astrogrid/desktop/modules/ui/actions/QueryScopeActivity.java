@@ -43,13 +43,11 @@ private final AstroScopeInternal ai;
 
 
 	/** Test whether it's something we can invoke.
-	 * @todo implement a SpectrumService type too.
 	 * @param r
 	 */
 	protected boolean invokable(Resource r) {
 		boolean b =  r instanceof SiapService 
 				|| r instanceof ConeService
-				|| ConeProtocol.isConeSearchableCdsCatalog(r)
 				|| r instanceof SsapService
 				|| r instanceof StapService
 			

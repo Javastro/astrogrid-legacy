@@ -184,14 +184,14 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
             this.fo = fo;
             this.id = fo.getName().getBaseName();
             this.uri = null;
-            setTransient(true);
+            //setTransient(true);
         }
         public LoadVotableInlineWorker(URI uri, String id) {
             super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
             this.uri = uri;
             this.id = id;
             this.fo = null;
-            setTransient(true);
+            //setTransient(true);
         }   	
 
 			protected Object construct() throws Exception {
