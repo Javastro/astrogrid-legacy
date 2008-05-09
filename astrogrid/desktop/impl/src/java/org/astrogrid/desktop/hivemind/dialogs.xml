@@ -88,7 +88,6 @@ REGISTRY GOOGLE
 		<object name="registryGooglePanel" class="org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel">
 			<inject-arg />
             <inject object="service:ivoa.registry" />
-			<inject object="cache:resources" />
 			<inject object="cache:bulk" />
 			<inject object="service:ui.UiBuilder" />
 			<inject object="service:votech.vomon" />
