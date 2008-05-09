@@ -36,6 +36,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker.TimeoutEnum;
+import org.joda.time.Duration;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -95,7 +96,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
         logger.info(suite.countTestCases() + " self tests found");
         // set the tests to run, once, in a few seconds.
         if (runAtStartup) {
-            scheduler.executeAfterDelay(1000L * delay,this);
+            scheduler.executeAfterDelay(new Duration(1000L * delay),this);
         }
         
     }

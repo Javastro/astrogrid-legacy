@@ -563,9 +563,10 @@
         <dependency>
             <artifactId>commons-beanutils</artifactId>
             <groupId>commons-beanutils</groupId>
-            <version>1.6</version>
+            <version>1.7</version>
             <type>jar</type>
             <properties>
+                <!--  was 1.6 -->
                 <part-of>jxpath(1.2) - 1.4</part-of>
                 <dist.bundle>true</dist.bundle>
                 <strip>true</strip>
@@ -749,6 +750,15 @@
         <!-- ****************************
         Other Core Libraries
          -->
+         <dependency>
+            <artifactId>joda-time</artifactId>
+            <groupId>joda-time</groupId>
+            <version>1.5.2</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>            
+         </dependency>
         <dependency>
             <artifactId>concurrent</artifactId>
             <type>jar</type>
@@ -850,9 +860,6 @@
             <type>jar</type>
             <groupId>commons-jxpath</groupId>
             <url>http://jakarta.apache.org/commons/</url>
-            <!-- 
-             <version>1.1-patched</version>
-             -->
              <version>1.2</version>
             <properties>
                 <dist.bundle>true</dist.bundle>

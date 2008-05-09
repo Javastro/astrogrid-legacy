@@ -14,6 +14,7 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.joda.time.Duration;
 
 import junit.framework.TestCase;
 import static org.astrogrid.Fixture.*;
@@ -196,7 +197,7 @@ public class HelpServerImplUnitTest extends TestCase {
                 ,mapURL
                 ,context);
         // pretend to be the scheduler, and call the load method.
-        assertEquals(0,help.getDelay());
+        assertEquals(Duration.ZERO,help.getDelay());
         assertNull(help.execute()); // no continuation
 
         return help;

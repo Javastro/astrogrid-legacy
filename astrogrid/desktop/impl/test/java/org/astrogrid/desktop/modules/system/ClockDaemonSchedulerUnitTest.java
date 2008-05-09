@@ -15,6 +15,7 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuatio
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 import org.easymock.IAnswer;
+import org.joda.time.Duration;
 
 import junit.framework.TestCase;
 import static org.astrogrid.Fixture.*;
@@ -91,7 +92,7 @@ public class ClockDaemonSchedulerUnitTest extends TestCase {
  public void testInstantiateDelayedContinuation() throws Exception {
      DelayedContinuation task = createMock(DelayedContinuation.class);
      expect(task.getTitle()).andStubReturn("testTask");
-     expect(task.getDelay()).andStubReturn(300);
+     expect(task.getDelay()).andStubReturn(new Duration(300));
      expect(task.getPrincipal()).andStubReturn(null);
      expect(task.execute()).andReturn(task).times(2);
      expect(task.execute()).andReturn(null);
@@ -136,7 +137,7 @@ public class ClockDaemonSchedulerUnitTest extends TestCase {
         ClockDaemonScheduler scheduler = new ClockDaemonScheduler(Collections.EMPTY_LIST,context,session);
         
         sw.start();
-        scheduler.executeAfterDelay(500,r);
+        scheduler.executeAfterDelay(new Duration(500),r);
         Thread.sleep(1000);
         assertTrue(sw.getTime() > 300);
         

@@ -20,6 +20,8 @@ public class AllThirdPartyUnitTests {
         suite.addTestSuite(VfsHttpResolvingUnitTest.class);
         suite.addTestSuite(CastorUnitTest.class);
         suite.addTestSuite(BoundedFifoBufferUnitTest.class);
+        suite.addTestSuite(UnicodeUnitTest.class);
+        suite.addTestSuite(JodaTimeUnitTest.class);
         //$JUnit-END$
         return suite;
     }
