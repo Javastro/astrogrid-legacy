@@ -11,7 +11,9 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -33,6 +35,9 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
+import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.voexplorer.QuerySizerImpl;
 import org.astrogrid.util.DomHelper;
@@ -319,9 +324,57 @@ public class StreamingRegistryImpl implements RegistryInternal {
 				}
 			} catch (ServiceException e) {
 				logger.warn("Failed to query main system registry - falling back",e);
+				// note - I don't cache fallback results.
 				return reg.xquerySearch(getFallbackSystemRegistryEndpoint(),arg0);
 			}
 		}
+		
+		public void xquerySearchStream(String arg0, ResourceProcessor processor)
+		throws ServiceException {
+		    try {
+		        Element e = bulkCache.get(arg0);
+		        if (e != null) {
+		            Resource[] arr = (Resource[])e.getValue();
+		            for (Resource resource : arr) {
+		                processor.process(resource);
+		            }
+		        } else {                      
+		            ResourceProcessorToStreamProcessor streamProcessor = new ResourceProcessorToStreamProcessor(processor);
+		            reg.xquerySearchStream(getSystemRegistryEndpoint(),arg0
+		                    ,streamProcessor
+		            );
+		            Resource[] res = (Resource[])streamProcessor.resources.toArray(new Resource[streamProcessor.resources.size()]);
+		            bulkCache.put(new Element(arg0,res));
+		            cacheResources(res);             
+		        }
+		    } catch (ServiceException e) {
+		        logger.warn("Failed to query main system registry - falling back",e);
+		        // fallback results aren't cached.
+		        reg.xquerySearchStream(getFallbackSystemRegistryEndpoint(),arg0, new ResourceProcessorToStreamProcessor(processor));
+		    }	        
+		}
+	    /** adapter that wraps a resouce processor to appear as a stream prociessor,
+	     * and collects all the results that pass - so they can be cached.
+	     * sadly, this means that a reference is held onto all resources as they whizz pass.
+	     * @author Noel.Winstanley@manchester.ac.uk
+	     * @since May 6, 20089:34:52 PM
+	     */
+	    private class ResourceProcessorToStreamProcessor implements StreamProcessor {
+	        private final ResourceProcessor proc;
+	        public final List resources = new ArrayList();
+            public ResourceProcessorToStreamProcessor(ResourceProcessor proc) {
+                super();
+                this.proc = proc;
+            }
+            public void process(XMLStreamReader r) throws Exception {
+                ResourceStreamParser parser = new ResourceStreamParser(r);
+                while(parser.hasNext()) {
+                    Resource resource = (Resource)parser.next();
+                    resources.add(resource);
+                   proc.process(resource);
+                }                
+            }
+	    }
 		
 		public Document xquerySearchXML(String arg0) throws ServiceException {
 			try {
@@ -400,4 +453,6 @@ public class StreamingRegistryImpl implements RegistryInternal {
         });
         return ts;
     }
+
+
 }

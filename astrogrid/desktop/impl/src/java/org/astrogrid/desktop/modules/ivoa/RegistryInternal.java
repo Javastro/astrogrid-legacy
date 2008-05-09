@@ -11,6 +11,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.util.Selftest;
 import org.w3c.dom.Document;
 
@@ -25,8 +27,23 @@ import org.w3c.dom.Document;
  */
 public interface RegistryInternal extends org.astrogrid.acr.ivoa.Registry, Selftest {
 
-	/** perform an xquery, and consume results with the parameter processor */
+	/** perform an xquery, and consume results with the parameter processor 
+	 * the stream processor is responsible for parsing and caching as needed.
+	 *  but the query may return any kind of result document.
+	 * */
 	public void xquerySearchStream(String xquery, StreamProcessor processor) throws ServiceException;
+
+	   /** perform an xquery, and consume results with the parameter processor
+	    * here the registry impl takes care of parsing and caching, hence the query must 
+	    * return a sequence of resource documents.
+	    *  */
+    public void xquerySearchStream(String xquery, ResourceProcessor processor) throws ServiceException;
+
+    public static interface ResourceProcessor {
+        public void process(Resource s);
+    }
+	
+	
 	//deliberately restruct to saviing to local file - otherwise introduces all kinds of deps, login requirements, etc.
 	//hard to know how to add as a public interface.. need to find way to xml-serialize File
 	public void xquerySearchSave(String xquery, File saveLocation)  throws InvalidArgumentException, ServiceException;

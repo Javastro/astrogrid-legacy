@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.ivoa;
 
 import java.util.Date;
 
+import org.joda.time.Period;
+
 /** representation of the vosi response.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 20088:27:12 PM
@@ -12,7 +14,7 @@ import java.util.Date;
 public class VosiAvailabilityBean {
 
     private boolean available;
-    private long uptime;
+    private Period uptime;
     private Date validTill;
     /** indicates whether this service is currently available */
     public final boolean isAvailable() {
@@ -22,10 +24,12 @@ public class VosiAvailabilityBean {
         this.available = available;
     }
     /** return the uptime (in seconds) */
-    public final long getUptime() {
+    public final Period getUptime() {
         return this.uptime;
     }
-    public final void setUptime(long uptime) {
+
+    
+    public final void setUptime(Period uptime) {
         this.uptime = uptime;
     }
     /** date that this availability is valid till- ie.. next scheduled downtime
@@ -42,7 +46,7 @@ public class VosiAvailabilityBean {
         final int prime = 31;
         int result = 1;
         result = prime * result + (this.available ? 1231 : 1237);
-        result = prime * result + (int) (this.uptime ^ (this.uptime >>> 32));
+        result = prime * result + uptime.hashCode();
         result = prime * result
                 + ((this.validTill == null) ? 0 : this.validTill.hashCode());
         return result;

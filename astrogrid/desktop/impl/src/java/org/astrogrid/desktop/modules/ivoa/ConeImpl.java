@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.13 2008/04/23 10:56:23 nw Exp $
+/*$Id: ConeImpl.java,v 1.14 2008/05/09 11:32:21 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,19 +49,7 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
     public URL constructQuery(URI arg0, double arg1, double arg2, double arg3)
             throws InvalidArgumentException, NotFoundException {
         URL endpoint = resolveEndpoint(arg0);
-        /* appears not to be needed - vizier does cone search (think this is a new development?)
-        if (endpoint.toString().indexOf("vizier") != -1) { // dirty hack, for now.
-        	endpoint = addOption(
-        			addOption(
-        			addOption(
-        			addOption(
-        					addOption(endpoint,"-c",Double.toString(arg1) + " " + (arg2>=0?"+":"") + Double.toString(arg2))
-        					, "-c.r",Double.toString(arg3))
-        					,"-c.u","deg")
-        					,"-oc.form","dec")
-        					,"-oc","deg");
-        } else {
-        */
+
         endpoint = addOption(
         					addOption( 
         							addOption(endpoint,"RA",Double.toString(arg1))
@@ -95,17 +83,10 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
                     }
             }                            
             return std.getAccessUrls()[0].getValue();
-        } else { // find an interface of ParamHttp? worth it? depends on CDS.
-//          Capability[] caps = s.getCapabilities(); // need to be searching interfaces now..
-//          for (int i = 0; i < caps.length; i++) {
-//          if (caps[i].getType().indexOf("ParamHTTP") != -1) {
-//          return caps[i].getInterfaces()[0].getAccessUrls()[0].getValue();
-//          }
-//          }
+        } 
 
             throw new InvalidArgumentException(s.getId() + " does not provide a Cone Search capability");
-
-        }  	
+        
     }
 
 
@@ -120,19 +101,14 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 		 return "Select * from Registry r where ( " +
 	        "r.capability/@xsi:type like '%ConeSearch'  " +
 	        " or r.capability/@standardID = '" + StandardIds.CONE_SEARCH_1_0 + "'"
-	 /*       " or ( @xsi:type like '%TabularSkyService' " + 
-			" and vr:identifier like 'ivo://CDS/%' " + 
-			" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
-	    */   + " )  ";
+	        + " )  ";
 	        //@issue and (not ( @status = 'inactive' or @status='deleted') )";
 	}
 	   public String getRegistryXQuery() {
 	        return "//vor:Resource[(" +
 	                "(capability/@xsi:type &= '*ConeSearch') " 
 	                + " or " 
-	                +"(capability/@standardID = '" + StandardIds.CONE_SEARCH_1_0 + "')"
-	                // @future - find out how to add CDS in.
-	                //" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" +                
+	                +"(capability/@standardID = '" + StandardIds.CONE_SEARCH_1_0 + "')"             
 	                + ") and ( not ( @status = 'inactive' or @status='deleted'))]";
 	    }
 }
@@ -140,6 +116,13 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.14  2008/05/09 11:32:21  nw
+Complete - task 394: process reg query results in a stream.
+
+Incomplete - task 392: joda time
+
+Incomplete - task 391: get to grips with new CDS
+
 Revision 1.13  2008/04/23 10:56:23  nw
 marked as needing test.
 

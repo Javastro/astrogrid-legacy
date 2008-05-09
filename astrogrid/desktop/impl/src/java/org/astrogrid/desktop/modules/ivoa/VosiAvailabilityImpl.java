@@ -28,6 +28,7 @@ import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.joda.time.Period;
 
 /** Implementation against availability
  * very loose parsing - first of identifying the correct capability, and thn
@@ -57,34 +58,18 @@ public class VosiAvailabilityImpl implements VosiAvailability {
                     } else if (StringUtils.containsIgnoreCase(localName,"uptime")) {
                         String content = in.getElementText();
                         if (StringUtils.isNotEmpty(content)) {
-                            // this approach doesn't work. try something more primitive.
-//                            try {
-//                                XmlDuration duration = XmlDuration.Factory.parse(content.trim());
-//                                GDuration v = duration.getGDurationValue();
-//                                long dur = v.getSecond() 
-//                                    + (v.getMinute() * 60L)
-//                                    + (v.getHour() * 60L * 60L)
-//                                    + (v.getDay() * 60L * 60L * 24L)
-//                                    + (v.getMonth() * 60L * 60L * 24L * 30L)
-//                                    // intentionall omitted year. no chance.
-//                                    ;
-//                                result.setUptime(dur);
-//                                
-//                            } catch (XmlException x) {
-//                                // ignore.
+                            Period period = new Period(content.trim());
+                            result.setUptime(period);
+//                            Pattern pattern = Pattern.compile("PT(\\d+)S");
+//                            Matcher matcher = pattern.matcher(content.trim());
+//                            if (matcher.matches()) {
+//                                String secs = matcher.group(1);
+//                                try {
+//                                    result.setUptime(Long.parseLong(secs));
+//                                } catch (NumberFormatException e) {
+//                                    // never mind..
+//                                }
 //                            }
-                            // hacky approach... will work enough for now.
-                            //if (content.matches("PT\d+S"));
-                            Pattern pattern = Pattern.compile("PT(\\d+)S");
-                            Matcher matcher = pattern.matcher(content.trim());
-                            if (matcher.matches()) {
-                                String secs = matcher.group(1);
-                                try {
-                                    result.setUptime(Long.parseLong(secs));
-                                } catch (NumberFormatException e) {
-                                    // never mind..
-                                }
-                            }
                         }
                     } else if (StringUtils.containsIgnoreCase(localName,"validTo")) {
                         String content = in.getElementText();
