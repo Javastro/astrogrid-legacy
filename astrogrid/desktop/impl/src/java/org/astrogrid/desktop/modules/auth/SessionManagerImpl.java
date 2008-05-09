@@ -18,6 +18,7 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.desktop.alternatives.SingleSessionManager;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.WebServerInternal;
+import org.joda.time.Duration;
 
 /** manages sessions and plugs ag community into the hivelock system.
  * 
@@ -89,7 +90,7 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 			adoptSession(previousSession);
 		}
 		
-		long millis = minutes * 60 * 1000;
+		Duration millis = new Duration(minutes * 60 * 1000);
 		scheduler.executeAfterDelay(millis,new Runnable() {
 			public void run() {
 				dispose(sid);

@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.17 2008/04/23 10:57:34 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.18 2008/05/09 11:32:34 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,7 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuatio
 import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.joda.time.Duration;
 
 /** Implementation of the help server.
  * 
@@ -265,8 +266,8 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
         }).start();
         return null; // no more repititions for this task.
     }
-    public long getDelay() {
-        return 0; // as soon as possible
+    public Duration getDelay() {
+        return Duration.ZERO; // as soon as possible
     }
     public Principal getPrincipal() {
         return null;
@@ -282,6 +283,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.18  2008/05/09 11:32:34  nw
+Incomplete - task 392: joda time
+
 Revision 1.17  2008/04/23 10:57:34  nw
 changes cominfg from unit testing.
 

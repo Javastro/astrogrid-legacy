@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.9 2007/11/26 14:44:46 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.10 2008/05/09 11:32:34 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.desktop.modules.system;
 
 import java.security.Principal;
 import java.util.Date;
+
+import org.joda.time.Duration;
 
 
 
@@ -31,7 +33,7 @@ public interface SchedulerInternal {
 
     /** execute a simple task after a delay - the task is executed on the timer
      * thread, and should be a simple task */
-    public void executeAfterDelay(long delay, Runnable task);
+    public void executeAfterDelay(Duration delay, Runnable task);
     
     /** execute a simple task some time in the future - the task is executed on
      * the timer thread and should be a simple task. */
@@ -49,9 +51,9 @@ public interface SchedulerInternal {
 		public DelayedContinuation execute();
 		/** the period to wait before executing
 		 * 
-		 * @return delay in milliseconds. 0 indicates 'as soon as possible', -1 indicates halt.
+		 * @return a duration to wait for. {@link Duration.ZERO} 0 indicates 'as soon as possible'
 		 */ 
-		public long getDelay();
+		public Duration getDelay();
 		
 		/** specify the session to run this continuation as
 		 * 
@@ -68,6 +70,9 @@ public interface SchedulerInternal {
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.10  2008/05/09 11:32:34  nw
+Incomplete - task 392: joda time
+
 Revision 1.9  2007/11/26 14:44:46  nw
 Complete - task 224: review configuration of all backgroiund workers
 

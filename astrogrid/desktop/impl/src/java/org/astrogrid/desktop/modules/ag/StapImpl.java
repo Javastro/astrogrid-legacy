@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.14 2008/04/23 10:52:21 nw Exp $
+/*$Id: StapImpl.java,v 1.15 2008/05/09 11:31:55 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class StapImpl extends DALImpl implements Stap {
      */
     public StapImpl(Registry reg, MyspaceInternal ms) {
         super(reg,ms);
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // why has this format got '-' in it? 
         
     }
     
@@ -181,6 +181,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.15  2008/05/09 11:31:55  nw
+Incomplete - task 392: joda time
+
 Revision 1.14  2008/04/23 10:52:21  nw
 marked as needing test.
 

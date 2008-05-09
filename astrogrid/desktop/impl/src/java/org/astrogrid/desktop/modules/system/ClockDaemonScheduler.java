@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.17 2008/04/25 08:58:04 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.18 2008/05/09 11:32:34 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.joda.time.Duration;
 
 import EDU.oswego.cs.dl.util.concurrent.ClockDaemon;
 import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
@@ -99,10 +100,10 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     }
     
 	public void schedule(final DelayedContinuation task) {
-		if (task.getDelay() < 0) {
+		if (task.getDelay().getMillis() < 0) {
 			return;
 		}
-		daemon.executeAfterDelay(task.getDelay(),new Runnable() {
+		daemon.executeAfterDelay(task.getDelay().getMillis(),new Runnable() {
 
 			public void run() {// rund on scheduler thread. just submits a new backgroundWorker for execution.
 				BackgroundWorker worker = new BackgroundWorker(context,task.getTitle(),BackgroundWorker.LONG_TIMEOUT) {
@@ -121,8 +122,8 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 		});
 	}
 
-    public void executeAfterDelay(long delay, Runnable task) {
-    	daemon.executeAfterDelay(delay,task);
+    public void executeAfterDelay(Duration delay, Runnable task) {
+    	daemon.executeAfterDelay(delay.getMillis(),task);
     }
     
     public void executeAt(Date d, Runnable task) {
@@ -148,6 +149,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.18  2008/05/09 11:32:34  nw
+Incomplete - task 392: joda time
+
 Revision 1.17  2008/04/25 08:58:04  nw
 tested
 

@@ -249,7 +249,8 @@ public class XStreamXmlPersist implements XmlPersist {
         } 
     }
     
-    /** convertor for java.awt.Color */
+    /** convertor for java.awt.Color - convert to a hex string. XStream lib contains a color converter already - but this has
+     * separate elements for R, G B - which is  a bit of a mouthful, and means it can't be used in an attribute, only an element. */
     public static class ColorConverter implements Converter {
 
         public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {

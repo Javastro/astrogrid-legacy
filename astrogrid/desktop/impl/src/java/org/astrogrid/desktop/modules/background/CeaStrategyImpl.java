@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.35 2008/04/23 10:53:37 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.36 2008/05/09 11:32:10 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,6 +66,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.core.exceptions.CastorException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
+import org.joda.time.Duration;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 import org.w3c.dom.Document;
@@ -80,6 +81,8 @@ import org.w3c.dom.Document;
  *
  */
 public class CeaStrategyImpl implements RemoteProcessStrategy{
+    public static final Duration SHORTEST = new Duration(1000); // 1 second
+    public static final Duration LONGEST = new Duration(1000 * 60 * 10); // 10 minutes
 	/** monitor for a single remote cea task */
 	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor implements ProcessMonitor.Advanced {
 		
@@ -216,6 +219,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 throw new ServiceException(x);
 	    }       
         }
+	
         
         /**
          * use vomon to filter a list of services.
@@ -265,19 +269,18 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	            refresh();
 	        }
 		}
-		
+	
 		//@todo find out how to cleanup a remote service.
 
-		public static final long SHORTEST = 1000 * 1; // 1 second
-		public static final long LONGEST = 1000 * 60 * 10; // 10 minutes
-		public static final double FACTOR = 2; // double every time
-		
+
+		public static final long FACTOR = 2; // double every time
 		/** increase the time before running again */
 		private void standOff(boolean increaseStandoff) {
 		    if (increaseStandoff) {
-		        runAgain = Math.min(LONGEST,Math.round(runAgain*FACTOR));
-		        int secs = (int)runAgain / 1000;
-		        info("No change: will re-check in " + (secs < 120 ? secs + " seconds" : secs/60 + " minutes" ));
+		        Duration nu =new Duration(runAgain.getMillis() *FACTOR);
+		        runAgain = nu.isLongerThan(LONGEST) ? LONGEST : nu;
+		       int secs = (int)runAgain.getMillis() / 1000;
+		        info("No change: will re-check in " + (secs < 120 ? secs + " seconds" : secs/60 + " minutes" ));		        
 		    } else {
 		        info("No change");
 		    }
@@ -398,8 +401,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	        }
 	    }
 
-		private long runAgain = SHORTEST;
-		public long getDelay() {
+		private Duration runAgain = SHORTEST;
+		public Duration getDelay() {
 			return runAgain;
 		}
 
@@ -653,6 +656,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.36  2008/05/09 11:32:10  nw
+Incomplete - task 392: joda time
+
 Revision 1.35  2008/04/23 10:53:37  nw
 fix to get castor working under 1.5
 
