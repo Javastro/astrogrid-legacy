@@ -1,0 +1,2 @@
+# Insert the directory which holds the Jena Jar files
+jena.lib=<JENA.LIB>

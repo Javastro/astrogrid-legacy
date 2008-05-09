@@ -1,0 +1,110 @@
+<project name="bibxml2rdf" default='compile' basedir='.'>
+
+  <property file='build.properties'/>
+
+  <property name='app.name'
+            value='bibxml2rdf'/>
+  <property name='app.version'
+            value='0.1'/>
+  <property name='build.home'
+            value='${basedir}/build'/>
+  <property name='build.classes'
+            value='${build.home}/classes'/>
+  <property name='build.tests'
+            value='${basedir}/tests'/>
+  <property name='src.home'
+            value='${basedir}/src/main'/>
+
+  <!-- The following properties must be set in build.properties
+   !       jena.lib         : Jena library directory.  This is the
+   !                          directory which contains the jena.jar
+   !                          file and friends.
+   !-->
+
+  <!-- JUnit test options -->
+  <property name="junit.fork" value="true"/>
+  <property name="junit.filtertrace" value="on"/>
+  <property name="junit.summary" value="withOutAndErr"/>
+
+  <!-- Compilation options -->
+  <property name="compile.debug"       value="true"/>
+  <property name="compile.deprecation" value="true"/>
+  <property name="compile.optimize"    value="true"/>
+  <property name="compile.source"      value="1.5"/>
+
+
+
+  <!-- include Jena support -->
+  <fileset dir="${jena.lib}"
+           id="jena.support">
+    <!-- This is a subset of the Jena jars, which is intended to be minimal, but may not be in fact.
+         The version in the Jena-2.3 distribution... -->
+    <include name="antlr-2.7.5.jar"/>
+    <include name="commons-logging.jar"/>
+    <include name="icu4j_3_4.jar"/>
+    <include name="jakarta-oro-2.0.8.jar"/>
+    <include name="jena.jar"/>
+    <include name="xercesImpl.jar"/>
+    <include name="xml-apis.jar"/>
+  </fileset>
+  <path id='jena.classpath'>
+    <fileset refid='jena.support'/>
+  </path>
+
+  <!-- Check availability of dependencies -->
+  <target name='check-packages'>
+
+    <available property="jena.present"
+               filepath="${jena.lib}"
+               file="jena.jar"/>
+    <fail unless="jena.present"
+          message="Must have Jena to build: see jena.sourceforge.net"/>
+  </target>
+
+  <!-- Compilation class path -->
+  <path id='compile.classpath'>
+    <path refid='jena.classpath'/>
+  </path>
+
+  <!-- TARGET: all -->
+  <target name='all'
+          depends='clean,compile'
+          description='Clean build, then compile'/>
+
+  <!-- TARGET: clean -->
+  <target name='clean'
+          description='Delete old build directories'>
+    <delete dir='${build.home}'/>
+  </target>
+
+  <!-- TARGET: prepare -->
+  <target name='prepare'
+          description='Create the build destination'>
+    <mkdir dir='${build.classes}/org/eurovotech/bibxml2rdf'/>
+    <copy todir='${build.classes}/org/eurovotech/bibxml2rdf'>
+      <fileset dir='${src.home}/org/eurovotech/bibxml2rdf'
+               includes='*.ttl'/>
+    </copy>
+  </target>
+
+  <!-- TARGET: compile -->
+  <target name='compile'
+          depends='prepare, check-packages'
+          description='Compile sources'>
+
+    <mkdir dir='${build.classes}'/>
+    <javac srcdir='${src.home}'
+           destdir='${build.classes}'
+           debug="${compile.debug}"
+           deprecation="${compile.deprecation}"
+           optimize="${compile.optimize}"
+           source="${compile.source}"
+           >
+        <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+</project>
+
+
+
+

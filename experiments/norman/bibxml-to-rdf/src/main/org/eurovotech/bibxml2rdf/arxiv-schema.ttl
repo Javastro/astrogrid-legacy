@@ -1,0 +1,8 @@
+@prefix : <http://arxiv.org/OAI/arXiv/#>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+:id rdfs:subPropertyOf dcterms:identifier.
+:doi rdfs:subPropertyOf dcterms:identifier.
+:msc-class rdfs:subPropertyOf dcterms:subject.
+:categories rdfs:subPropertyOf dcterms:subject.

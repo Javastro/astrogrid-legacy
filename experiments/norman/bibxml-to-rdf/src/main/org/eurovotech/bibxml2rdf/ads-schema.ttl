@@ -1,0 +1,7 @@
+@prefix : <http://ads.harvard.edu/schema/abs/1.0/abstracts#>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+:bibcode rdfs:subPropertyOf dcterms:identifier.
+:DOI rdfs:subPropertyOf dcterms:identifier.
+:eprintid rdfs:subPropertyOf dcterms:identifier.
