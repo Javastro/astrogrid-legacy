@@ -14,7 +14,24 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.1.1" date="unreleased">
+<release version="2008.1.snapshot02" date="unreleased">
+    <action dev="nw" type="fix">
+    Updated astroscope registry querying to process as a stream
+    </action>
+    <action dev="nw" type="fix" issue="2718">
+    errors when sending plastic messages are now displayed in click-to-dismiss dialogues.
+    </action>
+    <action dev="nw" type="fix">
+    slightly improved presentation of STC coverage - still no STC renderer through
+    </action>
+    <action dev="nw" type="fix">
+    added waveband column to voexplorer / astroscope resource table
+    </action>
+    <action dev="nw" type="fix">
+    Altered voexplorer, astroscope, AR to work with new CDS resource format.
+    </action>
+</release>
+<release version="2008.1.snapshot01" date="2008-04-29">
 <action dev="jl" type="fix" issue="2756">
     Cures loss of focus after certain edits in QB
 </action>
