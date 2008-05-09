@@ -18,6 +18,7 @@ import org.astrogrid.acr.ivoa.resource.HasCoverage;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.util.DomHelper;
@@ -41,23 +42,28 @@ public class ShowCoverageButton extends ResourceDisplayPaneEmbeddedButton implem
 
     public void actionPerformed(ActionEvent e) {
         
-        Resource r = getResourceDisplayPane(e).getCurrentResource();
+        final Resource r = getResourceDisplayPane(e).getCurrentResource();
         if (! (r instanceof HasCoverage)) {
             // very unlikley.
             throw new RuntimeException("Programming error - current resource has no coverage");
         }
-        StcResourceProfile stc = ((HasCoverage)r).getCoverage().getStcResourceProfile();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        DomHelper.PrettyDocumentToStream(stc.getStcDocument(),bos);
+        ConfirmDialog.newConfirmDialog(this,"Not yet implemented"
+                ,"We can't format the coverage information yet. Show the XML source?"
+                ,new Runnable() {
 
-        ResultDialog dialog = ResultDialog.newResultDialog(this,"");
-        dialog.getResultDisplay().setContentType("text/plain");
-        dialog.getResultDisplay().setText(
-                "Temporary - need a formatter here\n" 
-                +  bos);
-        dialog.getResultDisplay().setCaretPosition(0);
-        dialog.setSize(550,400);
-        dialog.setVisible(true);
+                    public void run() {
+                        StcResourceProfile stc = ((HasCoverage)r).getCoverage().getStcResourceProfile();
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        DomHelper.PrettyDocumentToStream(stc.getStcDocument(),bos);
+                        
+                        ResultDialog dialog = ResultDialog.newResultDialog(ShowCoverageButton.this,"");
+                        dialog.getResultDisplay().setContentType("text/plain");
+                        dialog.getResultDisplay().setText(bos.toString());
+                        dialog.getResultDisplay().setCaretPosition(0);
+                        dialog.setSize(550,400);
+                        dialog.setVisible(true);
+                    }
+        }).show();
 
     }
 }

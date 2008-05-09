@@ -14,6 +14,8 @@ import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
+import org.joda.time.format.PeriodFormat;
+import org.joda.time.format.PeriodFormatter;
 
 /** Button that allows user to test availability.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -55,8 +57,8 @@ public class TestAvailabilityButton extends ResourceDisplayPaneEmbeddedButton im
                         setText("Service OK");
                     }
                     setIcon(IconHelper.loadIcon("tick16.png"));
-                    if (b.getUptime() > 0) {
-                        setToolTipText("Uptime: " + b.getUptime() + "s");
+                    if (b.getUptime() != null) {
+                        setToolTipText("Uptime: " +pFormat.print(b.getUptime()));
                     }
                     
                 } else {
@@ -71,4 +73,5 @@ public class TestAvailabilityButton extends ResourceDisplayPaneEmbeddedButton im
             }
         }).start();
     }
+    private final static PeriodFormatter pFormat = PeriodFormat.getDefault();
 }

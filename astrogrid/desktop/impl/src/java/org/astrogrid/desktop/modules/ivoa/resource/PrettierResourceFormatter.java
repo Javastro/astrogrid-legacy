@@ -4,8 +4,10 @@
 package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +38,7 @@ import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.acr.ivoa.resource.SearchCapability;
 import org.astrogrid.acr.ivoa.resource.SecurityMethod;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -224,7 +227,7 @@ public final class PrettierResourceFormatter {
      */
     private static void formatCoverage(HtmlBuilder sb, final Coverage coverage) {
         if (coverage != null) {
-            sb.appendTitledResourceName("Footprint&nbsp;Service",coverage.getFootprint());
+            appendServiceReference(sb,"Footprint&nbsp;Service",coverage.getFootprint());
             sb.appendTitledSequence("Waveband&nbsp;Coverage",coverage.getWavebands());
 
             StcResourceProfile stc = coverage.getStcResourceProfile();
@@ -244,6 +247,44 @@ public final class PrettierResourceFormatter {
                 sb.p();
             }
          }
+    }
+    
+    public static void appendServiceReference(HtmlBuilder sb,String title,ResourceName name) {
+        if (name != null) {
+            sb.appendLabel(title);
+            // see if the value is a valid URL.
+            URL url;
+            try {
+                url = new URL(name.getValue());
+            } catch (MalformedURLException e){
+                url = null;
+            }
+            // now different cases depending on what we've got.
+            if (url != null) {
+                try {
+                    sb.appendURI(url.toURI());
+                } catch (URISyntaxException x) {
+                    // unlikely.
+                    sb.append(url.toString());
+                }
+                if(name.getId() != null) { // tack it on the end.
+                    sb.append(" (");
+                    sb.appendURI("resource",name.getId());
+                    sb.append(")");
+                } 
+            } else { // not a valid url. treat it as a name.
+                if (name.getId() != null) {
+                    sb.append("<a class='res' href='").append(name.getId()).append("'>");
+                    String v = name.getValue();
+                    sb.append(v == null  ? name.getId().toString() : v);
+                    sb.append("</a>");
+                } else {
+                    sb.append(name.getValue());
+                }
+            }
+            sb.br();
+        }
+
     }
 
 
@@ -269,19 +310,24 @@ public final class PrettierResourceFormatter {
     private static void formatValidation(HtmlBuilder sb,
             final Validation[] validationLevel) {
         if (validationLevel != null && validationLevel.length > 0) {
-		    sb.appendLabel("Validated");
-		    for(int i = 0 ; i < validationLevel.length; i++) {
-		        if (i > 0) {
-		            sb.append(", ");
-		        }
-		        sb.append(validationLevel[i].getValidationLevel());
-		        if (validationLevel[i].getValidatedBy() != null) {
-		            sb.append("&nbsp;by&nbsp;");
-		            sb.appendURI(validationLevel[i].getValidatedBy());
-		        }
-		    }
-		    sb.br();
-		}
+            sb.appendLabel("Validated");
+            for(int i = 0 ; i < validationLevel.length; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+
+                final Validation validation = validationLevel[i];
+                //Character.toChars()
+                if (validation.getValidationLevel() > 0) { // skip 0-sized ones.
+                    sb.append(Character.toChars(9311 + validation.getValidationLevel()));// convert it to unicode.
+                    if (validation.getValidatedBy() != null) {
+                        sb.append("&nbsp;by&nbsp;");
+                        sb.appendURI(validation.getValidatedBy());
+                    }
+                }
+            }
+            sb.br();
+        }
     }
 
 
@@ -375,15 +421,20 @@ public final class PrettierResourceFormatter {
 		            sb.append(", ");
 		        }
 		        if (contact.getEmail() != null) {
-		            sb.append("<a href='mailto:").append(contact.getEmail()).append("'>");
+		            sb.append(Character.toChars(9993));
+		            sb.append("&nbsp;<a href='mailto:").append(contact.getEmail()).append("'>");
 		            sb.append(contact.getEmail()).append("</a>");
 		            sb.append(", ");
 		        }
 		        if (contact.getTelephone() != null) {
+                    sb.append(Character.toChars(9742));
+                    sb.append("&nbsp;");
 		            sb.append(contact.getTelephone()).append(", ");
 		        }
 		        if (contact.getAddress() != null) {
 		            sb.br();
+                    sb.append(Character.toChars(9998));
+                    sb.append("&nbsp;");		            
 		            sb.append(contact.getAddress());
 		        }
 		    }		   
@@ -622,9 +673,6 @@ public final class PrettierResourceFormatter {
 	                                : capType;
 	                            if ("WebBrowser".equals(capTypeUnprefixed)) {
 	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/browser16.png'>&nbsp;This resource describes a <b>Web&nbsp;Interface</b>");
-	                            sb.br();
-	                        } else if (ConeProtocol.isConeSearchableCdsCatalog(s)){ // detects vizier interfaces that aren't web-browser
-	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");
 	                            sb.br();
 	                        } else if (SystemFilter.isBoringCapability(c)) {
 	                               sb.append("This resource descibes an <b>Technical System Service</b>");
