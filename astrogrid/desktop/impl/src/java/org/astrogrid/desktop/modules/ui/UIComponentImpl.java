@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.21 2007/11/26 12:01:48 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.22 2008/05/09 11:32:48 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,7 +80,11 @@ public class UIComponentImpl extends JFrame implements UIComponent {
             	setVisible(false);
             	// detach myself from the context.
             	assist.cleanup();
-            	dispose();
+            	try {
+            	    dispose();
+            	} catch (NullPointerException x) {
+            	    // work around for bugzilla 2758
+            	}
             }
         });        
     }
@@ -237,6 +241,11 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.22  2008/05/09 11:32:48  nw
+NEW - bug 2758: bug from help desk system - ubuntu and java version?
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2758
+Incomplete - task 391: get to grips with new CDS
+
 Revision 1.21  2007/11/26 12:01:48  nw
 added framework for progress indication for background processes
 

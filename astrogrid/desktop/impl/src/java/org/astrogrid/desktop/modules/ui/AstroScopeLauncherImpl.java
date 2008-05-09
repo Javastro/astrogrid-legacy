@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.84 2008/04/25 08:59:36 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.85 2008/05/09 11:32:48 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,6 +64,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
@@ -428,6 +429,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                        vmb.radiobox(radial)
                            .radiobox(hyper)
                            .radiobox(services)
+                       .separator()                           
+                       .windowOperationWithIcon(flip.getShowServicesFiltersAction())
                        .separator()
                        .checkbox(showTransientWarnings)
                        ;                
@@ -549,30 +552,39 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	
 //Astroscope internal interface.
 	// configure to run against this list of services.
-	public void runSubset(List resources) {
-		this.resourceList = resources;
-		StrBuilder sb = new StrBuilder("Astroscope");
-		if (resources.size() == 1) {
-		    sb.append(" - ").append(((Resource)resources.get(0)).getTitle());
-		} 
-		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
-			DalProtocol p = (DalProtocol)i.next();
-			p.getCheckBox().setEnabled(false); // no point showing these - there's no option.
-			Service[] services = p.filterServices(resources);
-			if (services != null && services.length > 0) {
-			    p.getCheckBox().setSelected(true);
-			    if (resources.size() > 1) {
-			        sb.append(" - ")
-			            .append(services.length)
-			            .append(" ")
-			            .append(p.getName().endsWith("s") ? StringUtils.substringBeforeLast(p.getName(),"s") : p.getName());
-			        sb.append(services.length == 1 ? " Service" : " Services"); 
-			    }
-			} else {
-			    p.getCheckBox().setSelected(false);
-			}
-		}	
-		setTitle(sb.toString());
+	public void runSubset(final List resources) {
+	    this.resourceList = resources;
+	    final StrBuilder sb = new StrBuilder("Astroscope");
+	    if (resources.size() == 1) {
+	        sb.append(" - ").append(((Resource)resources.get(0)).getTitle());
+	    } 
+	    for (Iterator i = protocols.iterator(); i.hasNext(); ) {
+	        final DalProtocol p = (DalProtocol)i.next();
+	        p.getCheckBox().setEnabled(false); // no point showing these - there's no option.
+	        CountServices cs = new CountServices();
+	        p.processSuitableServicesInList(resources,cs);
+	        if (cs.length > 0) {
+	                    p.getCheckBox().setSelected(true);
+	                if (resources.size() > 1) {
+	                    sb.append(" - ")
+	                    .append(cs.length)
+	                    .append(" ")
+	                    .append(p.getName().endsWith("s") ? StringUtils.substringBeforeLast(p.getName(),"s") : p.getName());
+	                    sb.append(cs.length == 1 ? " Service" : " Services"); 
+	                }
+	        } else {
+	            p.getCheckBox().setSelected(false);
+	        }
+	    }
+	    setTitle(sb.toString());
+	}
+	
+	private static class CountServices implements ResourceProcessor {
+
+	    public int length = 0;
+        public void process(Resource s) {
+            length++;
+        }
 	}
 	
 	   public void runSubsetAsHelioscope(List resources) {
@@ -769,7 +781,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 28, 20075:30:43 PM
      */
-    public final class ListServicesRegistryQuerier extends BackgroundOperation {
+    public final class ListServicesRegistryQuerier extends BackgroundOperation implements ResourceProcessor {
         /**
          * 
          */
@@ -807,43 +819,54 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
         protected Object construct() throws Exception {
         	if (resourceList == null) {
-        		return this.p.listServices();
+        		this.p.processAllServices(this);
         	} else {
-        		return this.p.filterServices(resourceList);
+        		this.p.processSuitableServicesInList(resourceList,this);
         	}
+        	return null;
         }
 
-        protected void doFinished(Object result) {
-        	Service[] services = (Service[])result;
-            List rList = new ArrayList();
+        // called in 'construct' for each service in turn.
+        public void process(Resource r) {
+            if (! (r instanceof Service)) {
+                return; // got some kind of garbage - ignore. 
+            }
+            Service s = (Service)r;
+            // build a set of retrievers for this service.
+            final AbstractRetriever[] retrievers; 
             if (this.p instanceof SpatialDalProtocol) {
                 SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
-                for (int i = 0; i < services.length; i++) {
-                    AbstractRetriever[] retrievers = spatial.createRetrievers(services[i],this.ra,this.dec,this.radius,this.radius);
-                    rList.addAll(Arrays.asList(retrievers));
-                }
+                    retrievers = spatial.createRetrievers(s,this.ra,this.dec,this.radius,this.radius);
             } else if (this.p instanceof TemporalDalProtocol) {
                 TemporalDalProtocol temporal = (TemporalDalProtocol)this.p;
                 Date start = startCal.getDate();
                 Date end = endCal.getDate();
-                for (int i = 0; i < services.length; i++) {
-                    AbstractRetriever[] retrievers;
                     if (noPosition.isSelected()) { // zero out the positional fields
-                        retrievers = temporal.createRetrievers(services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN);
+                        retrievers = temporal.createRetrievers(s,start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN);
                     } else {
-                        retrievers = temporal.createRetrievers(services[i],start,end,this.ra,this.dec,this.radius,this.radius);
+                        retrievers = temporal.createRetrievers(s,start,end,this.ra,this.dec,this.radius,this.radius);
+                    }                                    
+            } else {
+                throw new RuntimeException("Programming error - unknown subtype of protocol " + p.getClass().getName());
+            }
+            // now register these retreivers with the system and start them running - do all this on the edt.
+            serviceCount += retrievers.length;
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    vizModel.getSummarizer().addAll(retrievers);
+                    setProgressMax(getProgressMax() + retrievers.length);                    
+                    for (int i = 0; i < retrievers.length; i++) {
+                        retrievers[i].start();
                     }
-                    rList.addAll(Arrays.asList(retrievers));
                 }
-            }
-            AbstractRetriever[] retrievers = (AbstractRetriever[]) rList.toArray(new Retriever[0]);
-            vizModel.getSummarizer().addAll(retrievers);
-            parent.showTransientMessage(retrievers.length + " " + this.p.getName().toLowerCase() + " services to query", "");
-            setProgressMax(getProgressMax() + retrievers.length);
-            for (int i = 0; i < retrievers.length; i++) {
-                retrievers[i].start();
-            }
+            });
         }
+        private int serviceCount = 0;
+        
+        protected void doFinished(Object result) {
+            parent.showTransientMessage(serviceCount + " " + this.p.getName().toLowerCase() + " services to query", "");
+        }
+
     }
 
     /** implementation of an item in the history menu.
