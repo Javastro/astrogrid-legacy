@@ -111,7 +111,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		// store each result in a bit set.
 		// Carefule - order of tests here must match with order of icons in constructor.
 		if (r instanceof Service) {
-		caps.set(ix++,r instanceof ConeService || ConeProtocol.isConeSearchableCdsCatalog(r));
+		caps.set(ix++,r instanceof ConeService);
 		caps.set(ix++,r instanceof StapService);
 		caps.set(ix++,r instanceof SsapService);	
 		caps.set(ix++,r instanceof SiapService);

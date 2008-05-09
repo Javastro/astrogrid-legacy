@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Creator;
+import org.astrogrid.acr.ivoa.resource.HasCoverage;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.acr.ivoa.resource.Source;
@@ -58,6 +59,7 @@ public class ResourceTableFomat extends ModularTableFormat {
     
     protected final static String FLAG_NAME = "Flagged";
     protected final static String TAG_NAME = "Tags";
+    protected final static String WAVEBAND_NAME = "Waveband";
     
     private final static String MORE = ", ...";  // continuation string
 
@@ -284,7 +286,20 @@ public class ResourceTableFomat extends ModularTableFormat {
                 return "";
             }
         });
-
+        columnList.add(new StringColumn(WAVEBAND_NAME) {
+            final StrBuilder sbuf = new StrBuilder();
+            public String getValue(Resource res) {
+                sbuf.clear();
+                if (res instanceof HasCoverage) {
+                    String[] bands = ((HasCoverage)res).getCoverage().getWavebands();
+                    sbuf.appendWithSeparators(bands,", ");
+                }
+                return sbuf.toString();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(150);
+            }
+        });
         columnList.add(new StringColumn(VALIDATION_NAME) {
             final StrBuilder sbuf = new StrBuilder();
             public String getValue(Resource res) {
