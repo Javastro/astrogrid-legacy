@@ -439,27 +439,34 @@ public class ADSContentHandler
 //             return sb.toString();
 //         }
         public Resource asResource() {
-            Resource thisResource;
-            String resourceName = familyName + (givenName == null ? "" : givenName);
-            Matcher m = nonLetter.matcher(resourceName);
-            thisResource = currentModel.createResource(recordBaseURI + m.replaceAll(""));
+            try {
+                Resource thisResource;
+                String resourceName = familyName + (givenName == null ? "" : givenName);
+                Matcher m = nonLetter.matcher(resourceName);
+                java.net.URI uri = new java.net.URI(recordBaseURI + "people/" + m.replaceAll(""));
+                thisResource = currentModel.createResource(uri.toASCIIString());
+                //thisResource = currentModel.createResource(recordBaseURI + m.replaceAll(""));
 
-            thisResource.addProperty(currentModel.createProperty(FOAFns, "surname"),  familyName);
-            if (givenName == null) {
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
-                                         familyName);
-            } else {
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "firstName"), givenName);
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
-                                         givenName + ' ' + familyName);
+                thisResource.addProperty(currentModel.createProperty(FOAFns, "surname"),  familyName);
+                if (givenName == null) {
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
+                                             familyName);
+                } else {
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "firstName"), givenName);
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
+                                             givenName + ' ' + familyName);
+                }
+                if (affiliation != null)
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "isMemberOf"), // correct/best?
+                                             affiliation);
+                if (email != null)
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "mbox"),
+                                             currentModel.createResource("mailto:" + email));
+                return thisResource;
+            } catch (java.net.URISyntaxException e) {
+                assert false : "Invalid URI format generating arXiv user resource";
+                return null;    // syntactically required
             }
-            if (affiliation != null)
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "isMemberOf"), // correct/best?
-                                         affiliation);
-            if (email != null)
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "mbox"),
-                                         currentModel.createResource("mailto:" + email));
-            return thisResource;
         }
     }
 }

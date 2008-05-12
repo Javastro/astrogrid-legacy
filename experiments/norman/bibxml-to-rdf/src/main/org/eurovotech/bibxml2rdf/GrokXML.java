@@ -40,12 +40,15 @@ public class GrokXML {
             if (bch == null)
                 Usage();
 
+            BibRecordHandler rh = new SimpleRecordHandler(System.out);
+            bch.setBibRecordHandler(rh);
+
             // We need to be sure to parse the input XML file as UTF-8
             java.io.InputStreamReader fr
                     = new java.io.InputStreamReader(new java.io.FileInputStream(sourceFile), "UTF8");
 
             // do the work
-            boolean res = processXML(fr, bch, System.out);
+            boolean res = processXML(fr, bch);
 
             exitStatus = (res ? 0 : 1);
         } catch (java.io.FileNotFoundException e) {
@@ -64,21 +67,15 @@ public class GrokXML {
         System.exit(1);
     }
 
-    private static boolean processXML(Reader input,
-                                      BibContentHandler bch,
-                                      java.io.PrintStream output) {
+    public static boolean processXML(Reader input,
+                                     BibContentHandler bch) {
         try {
             javax.xml.parsers.SAXParserFactory spf = javax.xml.parsers.SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);
             spf.setFeature("http://xml.org/sax/features/string-interning", true);
             javax.xml.parsers.SAXParser sp = spf.newSAXParser();
 
-            BibRecordHandler rh = new SimpleRecordHandler(output);
-            bch.setBibRecordHandler(rh);
-
             sp.parse(new org.xml.sax.InputSource(input), bch);
-
-            rh.close();
 
             return true;
             

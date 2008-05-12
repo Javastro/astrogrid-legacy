@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<records xmlns="http://ads.harvard.edu/schema/abs/1.0/abstracts"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://ads.harvard.edu/schema/abs/1.0/abstracts http://ads.harvard.edu/schema/abs/1.0/abstracts.xsd" 
+         retrieved="500" start="1" selected="2303">
+<record>
+<bibcode>2008TMP...154..319L</bibcode>
+<title>Theory of superfluidity in a polariton system</title>
+<author>Lozovik, Yu. E.</author>
+<author>Sémenov, A. G.</author>
+<author>Other, A. N.</author>
+<affiliation>AA(Institute of Spectroscopy, RAS), AB()</affiliation>
+<journal>Theoretical and Mathematical Physics, Volume 154, Issue 2, pp.319-329</journal>
+<volume>154</volume>
+<pubdate>Feb 2008</pubdate>
+<page>319</page>
+<lastpage>329</lastpage>
+<keywords>
+<keyword>exciton</keyword>
+<keyword>polariton</keyword>
+<keyword>superfluidity</keyword>
+<keyword>functional integration method</keyword>
+<keyword>Popov approximation</keyword>
+</keywords>
+<origin>SPRINGER</origin>
+<copyright>(c) 2008: Springer Science+Business Media, Inc.</copyright>
+<link type="ABSTRACT">
+  <name>Abstract</name>
+  <url>http://ukads.nottingham.ac.uk/cgi-bin/nph-data_query?bibcode=2008TMP...154..319L&#38;link_type=ABSTRACT</url>
+</link>
+<link type="EJOURNAL">
+  <name>Electronic On-line Article (HTML)</name>
+  <url>http://ukads.nottingham.ac.uk/cgi-bin/nph-data_query?bibcode=2008TMP...154..319L&#38;link_type=EJOURNAL</url>
+</link>
+<link type="REFERENCES">
+  <name>References in the Article</name>
+  <url>http://ukads.nottingham.ac.uk/cgi-bin/nph-data_query?bibcode=2008TMP...154..319L&#38;link_type=REFERENCES</url>
+</link>
+<url>http://ukads.nottingham.ac.uk/abs/2008TMP...154..319L</url>
+<abstract>We consider the superfluidity properties of a two-dimensional system of
+polaritons in an optical cavity. Deriving an expression for the
+effective low-energy action for thermodynamic phase fluctuations, we
+simultaneously obtain the expression for an analogue of superfluid
+density in the system in terms of the current-current correlation
+function and also find the expression for the current operator. We
+describe the Bogoliubov approximation for a polariton system and
+calculate the superfluid density. We discuss the
+Berezinskii-Kosterlitz-Thouless transition in the system under study.</abstract>
+<DOI>10.1007/s11232-008-0030-y</DOI>
+</record>
+</records>

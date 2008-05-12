@@ -12,6 +12,7 @@ public class SimpleRecordHandler
 
     private java.io.OutputStream out;
     private Model accumulatingModel;
+    private int nrecords = 0;
 
     public SimpleRecordHandler(java.io.OutputStream out) {
         this.out = out;
@@ -20,6 +21,7 @@ public class SimpleRecordHandler
 
     public void handleRecord(Model record) {
         accumulatingModel.add(record);
+        nrecords++;
     }
 
     public void setNsPrefix(String prefix, String URI) {
@@ -39,6 +41,9 @@ public class SimpleRecordHandler
 //             System.out.println("Property object: " + s.getPredicate() + " -> " + s.getObject());
 //         }
 
+        System.err.println("writing model: "
+                           + nrecords + " records, ~"
+                           + accumulatingModel.size() + " triples");
         accumulatingModel.write(out);
     }
 }

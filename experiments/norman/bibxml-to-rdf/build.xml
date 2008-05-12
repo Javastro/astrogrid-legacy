@@ -11,9 +11,11 @@
   <property name='build.classes'
             value='${build.home}/classes'/>
   <property name='build.tests'
-            value='${basedir}/tests'/>
+            value='${build.home}/tests'/>
+  <property name='src.dir'
+            value='${basedir}/src'/>
   <property name='src.home'
-            value='${basedir}/src/main'/>
+            value='${src.dir}/main'/>
 
   <!-- The following properties must be set in build.properties
    !       jena.lib         : Jena library directory.  This is the
@@ -38,19 +40,25 @@
   <property name='dist.javadocs' value='${dist.dir}/doc/javadocs'/>
   -->
 
+  <!-- JUnit test options -->
+  <property name="junit.fork" value="true"/>
+  <property name="junit.filtertrace" value="on"/>
+  <property name="junit.summary" value="withOutAndErr"/>
+  <!-- Directories for JUnit test cases and related files -->
+  <property name="tests.dir" value="${src.dir}/test"/>
+
 
   <!-- include Jena support -->
   <fileset dir="${jena.lib}"
            id="jena.support">
-    <!-- This is a subset of the Jena jars, which is intended to be minimal, but may not be in fact.
-         The version in the Jena-2.3 distribution... -->
-    <include name="antlr-2.7.5.jar"/>
-    <include name="commons-logging.jar"/>
-    <include name="icu4j_3_4.jar"/>
-    <include name="jakarta-oro-2.0.8.jar"/>
-    <include name="jena.jar"/>
-    <include name="xercesImpl.jar"/>
-    <include name="xml-apis.jar"/>
+    <!-- This is a subset of the Jena jars, which is intended to be minimal.
+         The version in the Jena-2.5.5 distribution... -->
+    <include name='jena.jar'/>
+    <include name='commons-logging-1.1.1.jar'/>
+    <include name='xercesImpl.jar'/>
+    <include name='iri.jar'/>
+    <include name='icu4j_3_4.jar'/>
+    <include name='antlr-2.7.5.jar'/>
   </fileset>
   <path id='jena.classpath'>
     <fileset refid='jena.support'/>
@@ -64,11 +72,23 @@
                file="jena.jar"/>
     <fail unless="jena.present"
           message="Must have Jena to build: see jena.sourceforge.net"/>
+
+    <!-- classpathref='tests.classpath' -->
+    <available property='junit.present'
+               classname='junit.framework.TestCase'/>
+    <fail unless='junit.present'
+          message='Must have JUnit available'/>
   </target>
 
   <!-- Compilation class path -->
   <path id='compile.classpath'>
     <path refid='jena.classpath'/>
+  </path>
+
+  <path id='tests.classpath'>
+    <pathelement location='${build.tests}'/>
+    <pathelement location='${build.classes}'/>
+    <path refid='compile.classpath'/>
   </path>
 
   <!-- TARGET: all -->
@@ -120,6 +140,50 @@
     </copy>
     <chmod dir='${build.home}/bin' perm='755' includes='*'/>
   </target>
+
+  <!-- maintainance target: compile-tests -->
+  <target name='compile-tests'
+          depends='compile,check-packages'
+          if='junit.present'>
+    <mkdir dir='${build.tests}'/>
+    <javac deprecation='${deprecation}'
+           source='${compile.source}'
+           destdir='${build.tests}'
+           debug='${compile.debug}'
+           srcdir='${tests.dir}'>
+      <classpath refid='tests.classpath'/>
+    </javac>
+    <!-- ...and copy in the test XML files -->
+    <copy todir='${build.tests}/org/eurovotech/bibxml2rdf'>
+      <fileset dir='${tests.dir}/org/eurovotech/bibxml2rdf'
+               includes='*.xml'/>
+    </copy>
+  </target>
+
+  <!-- TARGET: test : run tests -->
+  <target name='test'
+          depends='compile-tests'>
+    <junit printsummary='${junit.summary}'
+           haltonfailure='yes'
+           filtertrace='${junit.filtertrace}'
+           fork='${junit.fork}'>
+
+      <jvmarg value="-enableassertions"/>
+      <classpath refid="tests.classpath"/>
+
+      <sysproperty key="build.tests" value="${build.tests}"/>
+      <formatter type="brief" usefile="false"/>
+
+      <batchtest>
+        <fileset dir="${tests.dir}">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+
+    </junit>
+
+  </target>
+
 
 </project>
 

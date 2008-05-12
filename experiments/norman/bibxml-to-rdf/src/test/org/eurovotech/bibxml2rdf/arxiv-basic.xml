@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+<responseDate>2008-05-12T16:46:24Z</responseDate>
+<request resumptionToken="39172|2001" verb="ListRecords">http://export.arxiv.org/oai2</request>
+<ListRecords>
+<record>
+<header>
+ <identifier>oai:arXiv.org:astro-ph/1234567</identifier>
+ <datestamp>2008-02-03</datestamp>
+ <setSpec>physics:astro-ph</setSpec>
+</header>
+<metadata>
+  <!-- this is a synthetic entry -->
+ <arXiv xmlns="http://arxiv.org/OAI/arXiv/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://arxiv.org/OAI/arXiv/ http://arXiv.org/OAI/arXiv.xsd"
+        >
+   <id>astro-ph/1234567</id>
+   <authors>
+     <author>                                                  <!--author with unicode characters-->
+     <keyname>O'Shaughnessy</keyname>
+     <forenames>Ølé Vlad</forenames>
+     <affiliation>Université del ¡Ping!</affiliation>
+     </author>
+     <author>
+       <keyname>con Beethoven</keyname>
+       <forenames>Seamus</forenames>
+       <affiliation>Cork Institute of Advanced Studies</affiliation>
+     </author>
+   </authors>
+   <title>Microlensing of Goats</title>
+   <categories>astro-ph hep-th</categories>                    <!--multiple categories-->
+   <comments>Too many pages to count</comments>
+   <abstract>We talk about interstellar $\alpha$-goats</abstract>
+ </arXiv>
+</metadata>
+</record>
+</ListRecords>
+</OAI-PMH>

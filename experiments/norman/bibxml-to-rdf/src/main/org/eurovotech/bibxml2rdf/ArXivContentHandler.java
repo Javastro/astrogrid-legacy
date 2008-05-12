@@ -219,7 +219,9 @@ public class ArXivContentHandler
             break;
 
           case CATEGORIES:
-            addToProperties(thisField, currentModel.createResource(ArXivCategoriesBaseURI + content.toString()));
+            String[] cats = content.toString().split("\\s+");
+            for (int i=0; i<cats.length; i++)
+                addToProperties(thisField, currentModel.createResource(ArXivCategoriesBaseURI + cats[i]));
             break;
           case MSCCLASS:
             String mscClass = content.toString();
@@ -297,25 +299,31 @@ public class ArXivContentHandler
         }
 
         public Resource asResource() {
-            Resource thisResource;
-            String resourceName = keyname + (forenames == null ? "" : forenames);
-            Matcher m = nonLetter.matcher(resourceName);
-            assert currentModel != null;
-            thisResource = currentModel.createResource(recordBaseURI + "people/" + m.replaceAll(""));
+            try {
+                Resource thisResource;
+                String resourceName = keyname + (forenames == null ? "" : forenames);
+                Matcher m = nonLetter.matcher(resourceName);
+                assert currentModel != null;
+                java.net.URI uri = new java.net.URI(recordBaseURI + "people/" + m.replaceAll(""));
+                thisResource = currentModel.createResource(uri.toASCIIString());
 
-            thisResource.addProperty(currentModel.createProperty(FOAFns, "surname"),  keyname);
-            if (forenames == null) {
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
-                                         keyname);
-            } else {
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "firstName"), forenames);
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
-                                         keyname +  ", " + forenames);
+                thisResource.addProperty(currentModel.createProperty(FOAFns, "surname"),  keyname);
+                if (forenames == null) {
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
+                                             keyname);
+                } else {
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "firstName"), forenames);
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "name"),
+                                             keyname +  ", " + forenames);
+                }
+                if (affiliation != null)
+                    thisResource.addProperty(currentModel.createProperty(FOAFns, "isMemberOf"), // correct/best?
+                                             affiliation);
+                return thisResource;
+            } catch (java.net.URISyntaxException e) {
+                assert false : "Invalid URI format generating arXiv user resource";
+                return null;    // syntactically required
             }
-            if (affiliation != null)
-                thisResource.addProperty(currentModel.createProperty(FOAFns, "isMemberOf"), // correct/best?
-                                         affiliation);
-            return thisResource;
         }
     }
 }
