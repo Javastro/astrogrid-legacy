@@ -150,6 +150,9 @@ public class ADSContentHandler
         switch (thisField) {
           case RECORD:
             currentModel = ModelFactory.createDefaultModel();
+            // set the namespace prefix, for prettiness
+            // don't bother -- setting it here has no effect on the output
+            //currentModel.setNsPrefix("ads", ADSns);
             assert currentModel != null;
             authorList.clear();
             break;
@@ -186,6 +189,7 @@ public class ADSContentHandler
                 addToProperties(Field.AUTHOR, a);
             }
             bibRecordHandler.handleRecord(ModelFactory.createInfModel(schemaReasoner, currentModel));
+            bibRecordHandler.setNsPrefix("ads", ADSns);
             currentModel = null;
             currentResource = null;
             break;
@@ -331,6 +335,14 @@ public class ADSContentHandler
     private void addToProperties(Field thisField, Util.SubResource resourceValue) {
         assert currentResource != null && currentModel != null;
         currentResource.addProperty(thisField.asProperty(currentModel), resourceValue.asResource());
+//         Resource r = resourceValue.asResource();
+//         currentResource.addProperty(thisField.asProperty(currentModel), r);
+//         System.err.println("*** addToProperties ...");
+//         com.hp.hpl.jena.rdf.model.StmtIterator si = r.listProperties();
+//         while (si.hasNext()) {
+//             com.hp.hpl.jena.rdf.model.Statement s = (com.hp.hpl.jena.rdf.model.Statement)si.nextStatement();
+//             System.err.println("Property object: " + s.getPredicate() + " -> " + s.getObject());
+//         }
     }
 
     private class Link

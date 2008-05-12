@@ -40,11 +40,19 @@ public class GrokXML {
             if (bch == null)
                 Usage();
 
-            boolean res = processXML(new java.io.FileReader(sourceFile), bch, System.out);
+            // We need to be sure to parse the input XML file as UTF-8
+            java.io.InputStreamReader fr
+                    = new java.io.InputStreamReader(new java.io.FileInputStream(sourceFile), "UTF8");
+
+            // do the work
+            boolean res = processXML(fr, bch, System.out);
 
             exitStatus = (res ? 0 : 1);
         } catch (java.io.FileNotFoundException e) {
             System.err.println("Can't find file: " + e);
+            exitStatus = 1;
+        } catch (java.io.UnsupportedEncodingException e) {
+            System.err.println("Unsupported encoding requested when parsing XML file: " + e);
             exitStatus = 1;
         }
         

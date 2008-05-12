@@ -1,31 +1,21 @@
 package org.eurovotech.bibxml2rdf;
 
+/**
+ * Process an XML source, to help produce an RDF model.
+ *
+ * <p>This abstract class extends the SAX {@link org.xml.sax.helpers.DefaultHandler}
+ * class, and so can be handed to a SAX parser.  It should be extended
+ * to handle the SAX stream produced by a given input type, and use
+ * the stream to populate an RDF model, as mediated by the
+ * {@link BibRecordHandler} passed to it.
+ */
 public abstract class BibContentHandler
         extends org.xml.sax.helpers.DefaultHandler {
     protected BibRecordHandler bibRecordHandler;
 
-//     public enum Type {
-//         ADS
-//     };
-    
-//     BibContentHandler() {
-//         // non-instantiable class -- constructor disabled
-//     }
-//     public static BibContentHandler newBibContentHandler(Type type, BibRecordHandler brh) {
-//         BibContentHandler ch = null;
-
-//         switch (type) {
-//           case ADS:
-//             ch = new ADSContentHandler();
-//             ch.setBibRecordHandler(brh);
-//             break;
-//           default:
-//             throw new AssertionError("Impossible BibContentHandlerType: " + type);
-//         }
-//         assert ch != null;
-//         return ch;
-//     }
-
+    /**
+     * Associate a BibRecordHandler with this content handler
+     */
     void setBibRecordHandler(BibRecordHandler brh) {
         bibRecordHandler = brh;
     }

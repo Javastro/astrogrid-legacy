@@ -1,4 +1,4 @@
-<project name="bibxml2rdf" default='compile' basedir='.'>
+<project name="bibxml2rdf" default='all' basedir='.'>
 
   <property file='build.properties'/>
 
@@ -32,6 +32,11 @@
   <property name="compile.optimize"    value="true"/>
   <property name="compile.source"      value="1.5"/>
 
+  <!-- Distribution options -->
+  <!-- not currently used
+  <property name='dist.dir' value='dist'/>
+  <property name='dist.javadocs' value='${dist.dir}/doc/javadocs'/>
+  -->
 
 
   <!-- include Jena support -->
@@ -68,8 +73,8 @@
 
   <!-- TARGET: all -->
   <target name='all'
-          depends='clean,compile'
-          description='Clean build, then compile'/>
+          depends='compile,scripts'
+          description='Compile the code'/>
 
   <!-- TARGET: clean -->
   <target name='clean'
@@ -103,6 +108,19 @@
         <classpath refid="compile.classpath"/>
     </javac>
   </target>
+
+  <!-- TARGET: scripts.
+   !   A shell script to run the Java with the correct classpath -->
+  <target name='scripts'>
+    <mkdir dir='${build.home}/bin'/>
+    <copy file='src/scripts/bibxml2rdf.sh' todir='${build.home}/bin'>
+      <filterset>
+        <filter token='JENA.LIB' value='${jena.lib}'/>
+      </filterset>
+    </copy>
+    <chmod dir='${build.home}/bin' perm='755' includes='*'/>
+  </target>
+
 </project>
 
 
