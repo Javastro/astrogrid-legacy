@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.37 2008/02/13 22:14:58 norman Exp $
+     $Id: build.xml,v 1.38 2008/05/15 16:20:52 norman Exp $
 -->
 
 
@@ -113,7 +113,7 @@
   <property name="app.path"      value="/${app.name}"/>
   <!-- Versions: make odd-numbered versions stable (-ish), and even-numbered
        ones intermediate beta releases. -->
-  <property name="app.version"   value="0.4.4"/>
+  <property name="app.version"   value="0.4.5"/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.client"  value="${build.home}/client"/>
@@ -131,6 +131,10 @@
   <property name="src.tests"     value="${basedir}/src/test"/>
   <property name="scm.test.home" value="${src.tests}/scm"/>
   <property name="web.home"      value="${basedir}/web"/>
+
+  <!-- products -->
+  <property name='quaestor.lib.jar' value='${app.name}-lib-${app.version}.jar'/>
+  <property name='quaestor.jetty.zip' value='${app.name}-jetty-${app.version}.zip'/>
 
   <!-- The following properties must be set in build.properties
    !
@@ -230,6 +234,7 @@
     -->
 
     <!-- ...and the versions in the SDB SVN build -->
+    <!--
     <include name="antlr-2.7.5.jar"/>
     <include name="commons-logging-1.1.jar"/>
     <include name="icu4j_3_4.jar"/>
@@ -238,10 +243,14 @@
     <include name='iri.jar'/>
     <include name="xercesImpl.jar"/>
     <include name="xml-apis.jar"/>
+-->
 
     <!-- ...and ARQ jars -->
+    <!--
     <include name="arq.jar"/>
     <include name="concurrent.jar"/>
+    -->
+    <include name='*.jar'/>
   </fileset>
 
   <filelist id='sdb.support' dir='${sdb.lib}' files='sdb.jar'/>
@@ -504,7 +513,12 @@
     </copy>
     <jar jarfile="${build.client}/${app.name}-client-${app.version}.jar"
          basedir="${build.war}/WEB-INF/classes"
-         includes="org/eurovotech/quaestor/**"/>
+         includes="org/eurovotech/quaestor/**">
+      <manifest>
+        <attribute name='Built-By' value='${user.name}'/>
+        <attribute name='Main-Class' value='org.eurovotech.quaestor.repl.QuaestorReplClient'/>
+      </manifest>
+    </jar>
     <zip destfile="${dist.home}/${app.name}-client-${app.version}.zip">
       <fileset dir="${build.client}"/>
     </zip>
@@ -534,7 +548,7 @@
         <include name="util/*"/>
       </fileset>
     </copy>
-    <jar jarfile="${build.home}/${app.name}-lib-${app.version}.jar"
+    <jar jarfile="${build.home}/${quaestor.lib.jar}"
          basedir="${build.home}/quaestorlib"/>
   </target>
 
@@ -576,7 +590,8 @@
       Build everything - specifically the quaestorlib and the quaestor.scm -
       and install a script which can start the standalone Jetty service.
   -->
-  <target name="jetty" depends="prepare,compile,quaestorlib"
+  <target name="jetty"
+          depends="prepare,compile,quaestorlib"
           description="Build for Jetty">
     <copy todir="${build.home}">
       <fileset file="${src.etc}/start-jetty.sh"/>
@@ -584,12 +599,22 @@
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
+    <chmod file='${build.home}/start-jetty.sh'
+           perm='ugo+x'/>
     <copy todir="${build.war}/WEB-INF">
       <fileset file="${src.etc}/SchemeJettyServer.properties"/>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
+    <mkdir dir='${dist.home}'/>
+    <zip destfile='${dist.home}/${quaestor.jetty.zip}'>
+      <fileset dir='${build.home}'>
+        <include name='start-jetty.sh'/>
+        <include name='${quaestor.lib.jar}'/>
+        <include name='war/**'/>
+      </fileset>
+    </zip>
   </target>
 
 

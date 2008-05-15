@@ -88,6 +88,9 @@ public class SchemeJettyServer {
                 } else if (opt.equals("verbose")) {
                     chatter = true;
 
+                } else if (opt.equals("quiet")) {
+                    chatter = false;
+
                 } else if (opt.equals("help")) {
                     Usage();
 
@@ -101,6 +104,9 @@ public class SchemeJettyServer {
             }
         }
 
+        System.err.println("Quaestor starting on http://localhost:"
+                           + portNumber + "/");
+
         JettyServer s = new JettyServer(portNumber, chatter, configProperties);
         s.run();
     }
@@ -111,6 +117,7 @@ public class SchemeJettyServer {
         System.err.println("  SchemeJettyServer [--verbose] [--port=int] [--help]");
         System.err.println("Starts a server on the nominated port");
         System.err.println("  --verbose   chatter on stderr");
+        System.err.println("  --quiet     ...or not");
         System.err.println("  --port=n    start the service on port n (default 8080)");
         System.err.println("  --help      display this help");
         System.exit(1);
@@ -145,7 +152,7 @@ public class SchemeJettyServer {
 
                 // create and install the handlers which this server will manage
                 kbHandler = new JettySchemeHandler();
-                Handler docHandler = new JettyDocHandler(getInitParameter("doc-base", "build/war"));
+                Handler docHandler = new JettyDocHandler(getInitParameter("doc-base", "war"));
 
                 Handler codeHandler = new JettyCodeHandler(getInitParameter("repl-status","disabled").equals("enabled"));
                 HandlerList handlerList = new HandlerList();
@@ -467,6 +474,8 @@ public class SchemeJettyServer {
                         
                         Object val = SchemeWrapper.getInstance().evalInputStream(request.getInputStream(), out);
 
+                        Log.info("Value returned: " + val);
+
                         // the following isn't particularly elegant, but it suffices
                         if (val == null) {
                             response.setStatus(response.SC_NO_CONTENT);
@@ -477,7 +486,9 @@ public class SchemeJettyServer {
                             response.setStatus(response.SC_OK);
                             ps.println(((Boolean)val).booleanValue() ? "#t" : "#f");
                         } else {
-                            response.setStatus(response.SC_BAD_REQUEST); // ???
+                            // I'm not sure how this would happen, and not be
+                            // a SchemeException
+                            response.setStatus(response.SC_BAD_REQUEST); // is this the best response?
                             ps.println(";; Bad request?");
                             ps.println(";; returned object <" 
                                        + val.toString()
@@ -492,7 +503,11 @@ public class SchemeJettyServer {
                         response.getWriter().println("Code updating forbidden by configuration");
                     }
                 } catch (SchemeException e) {
-                    throw new ServletException(e);
+                    Log.info("Threw exception: text=" + e.getMessage());
+                    response.setStatus(response.SC_BAD_REQUEST);
+                    // ie, we presume this is the user's fault, not ours!
+                    java.io.PrintStream ps = new java.io.PrintStream(response.getOutputStream());
+                    ps.println(e.getMessageText());
                 }
             }
         }

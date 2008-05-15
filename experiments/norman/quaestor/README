@@ -5,7 +5,7 @@ To build, requires Tomcat, Jena and SISC.
 
 It works with both Java 1.4 and 1.5, and with Tomcat 5.0.x and 5.5.x.
 
-I've only tried it with Jena 2.3 -- other versions may or may not
+I've tried it with Jena 2.3 and 2.5.5 -- other versions may or may not
 work.  See <http://jena.sourceforge.net>.
 
 SISC is available from <http://sisc.sourceforge.net>.  Quaestor works
@@ -41,13 +41,41 @@ following properties:
   sisc.shp (in the SISC binary distributions, this is usually the same
   directory as sisc.bin).
 
-Then 'ant && ant dist' to make the .war file.
+Then 'ant && ant dist' to make the .war file.  'ant install' installs
+it in a local Tomcat.
+
+Products
+--------
+
+ant dist: makes the .war file, plus a quaestor-client-<version>.zip.
+The latter contains API documentation plus a
+quaestor-client-<version>.jar, which acts as a REPL for the server, if
+it's been configured (in either
+document('war/WEB-INF/web.xml')/web-app/servlet[servlet-name="codemanager"]
+or war/WEB-INF/SchemeJettyServer.properties, as appropriate) to allow that.
+
+ant jetty: makes quaestor-jetty-<version>.zip, which contains a
+start-jetty.sh script
 
 Testing
 -------
 
-To run the full regression tests, you'll have to install the
-application in a Tomcat server.  Do that either by creating the .war
-file ('ant dist'), or with 'ant install', after making sure that
-manager.url has the correct value in the build.xml file (or in
-build.properties).  Then 'ant test' should work.
+To run the full regression tests, you'll have to either install the
+application in a Tomcat server or run up the standalone Jetty server.
+
+Make the .war file ('ant dist'), or install it locally with 'ant
+install', after making sure that manager.url has the correct value in
+the build.xml file (or in build.properties).  Make the Jetty server
+with 'ant jetty', and start it up with build/start-jetty.sh
+
+  * 'ant scm-tests' tests the scheme support within the application,
+    and is the real code self-test
+
+  * 'ant junit-tests' tests the server RESTful interface, and so is
+    the protocol test.  This can also be used to test a remote
+    service, or a local service running at a non-default port,
+    by setting the property quaestor.url to the appropriate target:
+    % ant -Dquaestor.url=<foo> junit-tests
+
+  * 'ant test' invokes both tests, with the default Quaestor URL,
+    though that can be overridden the same way.

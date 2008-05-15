@@ -212,6 +212,11 @@ public class SchemeWrapper {
      * Evaluate an input stream.  This is a package-only method.
      * Unlike the public methods of this class, the return value is
      * not converted to a convenient Java value.
+     *
+     * <p>Unlike
+     * {@link #evalInputStream(java.io.InputStream,java.io.OutputStream)},
+     * this is not expected to be used outside of this class.
+     *
      * @param in an input stream from which s-expressions can be read
      * @returns the value of the last expression evaluated, as a SISC Value
      */
@@ -242,16 +247,14 @@ public class SchemeWrapper {
      * error-handling code.  The method acts as a basic REPL, reading
      * expressions from the input stream, displaying any output on the
      * output stream, and returning the value of the last expression
-     * evaluated.  If there is an error, it is trapped, and returned
-     * as a semi-readable string.
+     * evaluated.  If there is an error, it appears as a SchemeException.
      *
      * @param in a stream from which expressions are read
      * @param out a stream to which any output is written
      * @return a Java Object (String, Boolean or null) representing the
      *   value of the expression, translated as described above
      * @throws IOException if the input stream cannot be parsed
-     * @throws SchemeException if there is a syntax error reading the 
-     *   Scheme input
+     * @throws SchemeException if there's an error evaluating the Scheme input
      */
     public Object evalInputStream(final java.io.InputStream in,
                                   final java.io.OutputStream out)
@@ -265,12 +268,13 @@ public class SchemeWrapper {
                          throws SchemeException {
                      try {
                          // The following is a basic REPL, with a
-                         // failure continuation which evaluates to a
-                         // semi-readable error message.
-                         String evalCurrentInput = "(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a~a\" (error-location r) (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (show-err m)) (lambda () (let loop ((e (read)) (last #f)) (if (eof-object? e) last (loop (read) (eval e))))))";
+                         // failure continuation which throws an improved
+                         // error message as a SchemeException
+                         String evalCurrentInput = "(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error~a: ~a~a\" (if (error-location r) (format #f \" at ~a\" (error-location r)) \"\") (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (error (show-err m))) (lambda () (let loop ((e (read)) (last #f)) (if (eof-object? e) last (loop (read) (eval e))))))";
 
                          return i.eval(evalCurrentInput);
                      } catch (IOException e) {
+                         // I'm not sure under what circumstances this can happen
                          return e; // return exception as value
                      }
                  }
@@ -314,8 +318,7 @@ public class SchemeWrapper {
             // We can't create SchemeExceptions (no useful constructor),
             // so hijack the IOException instead.  Ought this to be a
             // ServletException?
-            throw new IOException("Error reading file " + loadFile
-                                  + ": " + o);
+            throw new IOException("Error reading file " + loadFile + ": " + o);
         }
 
         return true;
