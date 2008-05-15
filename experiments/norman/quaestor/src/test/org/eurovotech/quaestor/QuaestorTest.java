@@ -344,11 +344,11 @@ public class QuaestorTest
                      "encoding", "UTF-8",
                  });
         ParsedRpcResponse rpc;
-        String kbbaseurl = makeKbUrl().toString();
+        URL kbbaseurl = makeKbUrl();
         rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
-        assertEquals(kbbaseurl, rpc.getResponseString());
+        assertEquivalentURLs(kbbaseurl, rpc.getResponseString());
 
         // Exactly the same, but with different properties
         call = makeXmlRpcCall("get-model",
@@ -362,8 +362,7 @@ public class QuaestorTest
         rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
-        assertEquals(kbbaseurl,
-                     rpc.getResponseString());
+        assertEquivalentURLs(kbbaseurl, rpc.getResponseString());
     }
 
     public void testRpcQuery()
@@ -606,6 +605,44 @@ public class QuaestorTest
             throw new junit.framework.AssertionFailedError
                     ("ContentType: expected " + expectedType
                      + ", got " + r.getContentType());
+        }
+    }
+
+    /**
+     * Assert that two URLs are equivalent.  We can't just compare
+     * them as strings, because http://foo and http://foo:80 should be
+     * the same, and there are probably others we haven't come across yet.
+     */
+    private void assertEquivalentURLs(URL u1, URL u2) 
+            throws junit.framework.AssertionFailedError {
+        int port1 = u1.getPort();
+        if (port1 < 0) port1 = u1.getDefaultPort();
+        int port2 = u2.getPort();
+        if (port2 < 0) port1 = u2.getDefaultPort();
+
+//         System.err.println("u1: protocol=" + u1.getProtocol()
+//                            + ", host=" + u1.getHost()
+//                            + ", port=" + port1
+//                            + ", path=" + u1.getPath());
+//         System.err.println("u2: protocol=" + u2.getProtocol()
+//                            + ", host=" + u2.getHost()
+//                            + ", port=" + port2
+//                            + ", path=" + u2.getPath());
+        assertEquals(u1.getProtocol(), u2.getProtocol());
+        assertEquals(u1.getHost(),     u2.getHost());
+        assertEquals(port1,            port2);
+        assertEquals(u1.getPath(),     u2.getPath());
+    }
+
+    private void assertEquivalentURLs(URL u1, String u2) 
+            throws junit.framework.AssertionFailedError {
+        try {
+            assertEquivalentURLs(u1, new URL(u2));
+        } catch (java.net.MalformedURLException e) {
+            System.err.println("test URL " + u2 + " malformed");
+            throw new junit.framework.AssertionFailedError
+                    ("assertEquivalentURLs: expected " + u1
+                     + ", got " + u2 + ", which is malformed");
         }
     }
 

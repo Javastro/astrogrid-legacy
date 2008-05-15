@@ -480,6 +480,10 @@
 ;; http://localhost:8080/quaestor/kb)
 ;;
 ;; The one-arg form will have the same value for any request made to a given servlet.
+;;
+;; This isn't bulletproof, since we can't _really_ know what the
+;; original URL was, but it gets it right enough almost all of the
+;; time.
 (define (webapp-base-from-request request . with-servlet?)
   (define-generic-java-methods
     get-server-name get-server-port
@@ -499,7 +503,8 @@
       (java-new <url>
                 (->jstring "http")
                 (get-server-name request)
-                (get-server-port request)
+                (get-server-port request) ;not quite right, if the original URL was on port 80,
+                                        ;since this inserts a spurious :80
                 (if include-servlet-path?
                     (concat (get-context-path request)
                             (get-servlet-path request))
