@@ -40,7 +40,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.46 $ $Date: 2008/02/13 22:14:58 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.47 $ $Date: 2008/05/15 16:10:51 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -148,12 +148,14 @@
     (let* ((kb (kb:get kb-name))
            (kb-name-string (->string (to-string kb-name)))
            (info (kb 'info))
-           (submodel-pair (assq 'submodels info))) ;cdr is list of alists
+           (submodels (cdr (assq 'submodels info)))) ;cdr is list of alists
       `(li "Knowledgebase "
            (a (@ (href ,kb-name-string))
               (strong ,kb-name-string))
            ", submodels:"
-           (ul ,@(map (lambda (sm-alist)
+           (if (null? submodels)
+               (em "None")
+               (ul ,@(map (lambda (sm-alist)
                         (let ((name-pair (assq 'name sm-alist))
                               (tbox-pair (assq 'tbox sm-alist))
                               (namespaces (assq 'namespaces sm-alist)))
@@ -176,7 +178,7 @@
                                                ,(string-append (car ns) ":"))
                                            (td ,(cdr ns))))
                                    (cdr namespaces))))))
-                      (cdr submodel-pair)))
+                      submodels)))
            (p "Knowledgebase metadata...")
            (pre
             ,(sexp-xml:escape-string-for-xml
