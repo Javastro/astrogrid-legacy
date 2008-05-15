@@ -8,7 +8,7 @@ beast, with the Jetty support sitting on top of the Tomcat support, in
 a way.  Also, the two are currently mixed together untidily in the
 build.xml file.
 
-Merged on to TRUNK 2008-02-13
+Merged on to HEAD 2008-02-13
 
 Branch point: bp-nxg-2008-02-11-jetty-quaestor
 merge point: nxg-2008-02-11-jetty-quaestor-MERGED
@@ -17,6 +17,10 @@ merge point: nxg-2008-02-11-jetty-quaestor-MERGED
 
 BRANCH nxg-2008-02-13-skua
 
-Created to add the SKUA infrastructure required
+Created to add the SKUA infrastructure required, immediately after the
+nxg-2008-02-11-jetty-quaestor branch was merged.  The changes are
+mostly in sparql.scm.  There are actually a variety of useful changes
+to the files other than this one, which might be usefully merged onto
+the trunk even if the SKUA stuff is abandoned.
 
 Branch point tagged as bp-nxg-2008-02-13-skua
