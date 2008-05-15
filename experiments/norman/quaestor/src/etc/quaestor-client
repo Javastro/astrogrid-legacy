@@ -113,6 +113,8 @@
 
 ;; Delete a knowledgebase from the server.
 ;; This isn't handled by curl, so we have to do it by hand.
+;; (no, it is handled: you can do 'curl -X DELETE ...'
+;; but what's here currently works, so no need to touch it)
 (define (delete-handler kb-name)
   (define read-from-socket              ;return string, or #f on EOF
     (let ((buf (make-string 128)))
