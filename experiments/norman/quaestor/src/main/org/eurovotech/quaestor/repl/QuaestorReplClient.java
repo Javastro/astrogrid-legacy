@@ -32,7 +32,7 @@ public class QuaestorReplClient {
 
     public QuaestorReplClient(String host, int port, String servlet)
             throws URISyntaxException, MalformedURLException {
-        serverURI = new URI("http", null, host, port, "/"+servlet, null, null);
+        serverURI = new URI("http", null, host, port, "/"+servlet+"/", null, null);
         codeURL = serverURI.resolve("./code").toURL();
         prompt = host+":quaestor> ";
     }
