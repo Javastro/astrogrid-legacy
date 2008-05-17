@@ -112,32 +112,18 @@
            ,full-url))))
 
 ;; Delete a knowledgebase from the server.
-;; This isn't handled by curl, so we have to do it by hand.
-;; (no, it is handled: you can do 'curl -X DELETE ...'
-;; but what's here currently works, so no need to touch it)
-(define (delete-handler kb-name)
-  (define read-from-socket              ;return string, or #f on EOF
-    (let ((buf (make-string 128)))
-      (lambda (sock)
-        (receive (count-or-false address)
-                 (receive-message!/partial sock buf)
-           (and count-or-false
-                buf)))))
-  (let ((server-url (format #f "~a/kb/~a" (base-url) kb-name))
-        (crlf (list->string (list (ascii->char #o15) (ascii->char #o12))))
-        (sock (socket-connect protocol-family/internet
-                              socket-type/stream
-                              (server-hostname)
-                              (server-port))))
-    (if (chatter) (format #t "DELETE ~a HTTP/1.0 ...~%" server-url))
-    (send-message sock
-                  (format #f "DELETE ~a HTTP/1.0~a~a" server-url crlf crlf))
-    (let loop ((resp (read-from-socket sock))) ;read/clear the server response
-      (if resp
-          (begin (if (chatter) (format #t "~a" resp));possibly echoing
-                 (loop (read-from-socket sock)))
-          #f))
-    (close-socket sock)))
+(define (delete-handler kb-name . submodel-name)
+  (define (verbose-option) (if (chatter) '("--verbose" "--include") '()))
+  (let ((full-url (cond ((null? submodel-name)
+                         (format #f "~a/kb/~a" (base-url) kb-name))
+                        ((= (length submodel-name) 1)
+                         (format #f "~a/kb/~a/~a"
+                                 (base-url) kb-name (car submodel-name)))
+                        (else
+                         (error "Bad call to get: too many arguments")))))
+    (chatter "DELETE ~a" full-url)
+    (call-curl
+     (curl -X DELETE ,@(verbose-option) ,full-url))))
 
 ;; Upload code to the server.  The CODE parameter names a file, or '-'
 ;; to indicate stdin, or an expr starting with a left-parenthesis to indicate
@@ -259,9 +245,9 @@
      ,code-handler
      "code scm-code: Upload code to server; scm-code may be file/'-'/(expr)")
     (delete
-     1
+     #f
      ,delete-handler
-     "delete kb: delete the knowledgebase from the server")
+     "delete kb [submodel]: delete the knowledgebase from the server")
     (help
      0
      ,Usage
@@ -499,8 +485,10 @@
 (define server-hostname (create-option "localhost"))
 (define server-port     (create-option 8080))
 (define server-context  (create-option "/quaestor"))
+(define quaestor-url    (create-option #f))
 (define (base-url)
-  (format #f "http://~a:~a~a" (server-hostname) (server-port) (server-context)))
+  (or (quaestor-url)
+      (format #f "http://~a:~a~a" (server-hostname) (server-port) (server-context))))
 ;(define base-url (create-option "http://localhost:8080/quaestor"))
 
 ;; Preferred language for receiving responses.  Fallback language for uploading.
@@ -588,6 +576,9 @@
   (declare-option "server-path"
                   "Set the path to the Quaestor service"
                   server-context)
+  (declare-option "url"
+                  "Set the full URL of the Quaestor service (overrides setver-{hostname,port,context}"
+                  quaestor-url)
 ;;   (declare-option "base-url"
 ;;                   "set context URL to arg for Quaestor service"
 ;;                   base-url)
