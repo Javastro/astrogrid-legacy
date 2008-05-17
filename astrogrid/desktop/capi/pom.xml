@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><project  xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>astrogrid-base</artifactId>
+    <groupId>org.astrogrid</groupId>
+    <version>2008.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>astrogrid-ar-capi</artifactId>
+  <name>AstroRuntime C Api</name>
+  <version>2008.0-SNAPSHOT</version>
+  <description>A C and IDL based API for the AstroRuntime access to the Virtual Observatory</description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <transformationSets>
+            <transformationSet>
+              <dir>src/main/xml</dir>
+              <stylesheet>genc.xsl</stylesheet>
+            </transformationSet>
+          </transformationSets>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <version>8.7</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>astrogrid-common</artifactId>
+    </dependency>
+  </dependencies>
+</project>

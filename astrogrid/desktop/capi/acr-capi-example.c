@@ -4,7 +4,7 @@
  */ 
 
 #include <stdio.h>
-#include "intf.h"
+#include "arintf.h"
 #include "testintf.h"
 
 
@@ -19,7 +19,8 @@ int main(int argc, char* argv[]) {
     double size = 0.1;
  
     /* doing a cone search */
-    char * ivorn = "ivo://wfau.roe.ac.uk/twomass-dsa/cone";
+    char * ivorn = "ivo://wfau.roe.ac.uk/twomass-dsa/wsa/twomass_psc/cone";
+//    ivorn ="ivo://irsa.ipac/2MASS-PSC";
     struct Resource_Base registry;
     /* TODO what about if the resource structure is some subclass - unions..  */ 
      registry = ivoa_registry_getResource(ivorn);

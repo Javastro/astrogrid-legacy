@@ -1,0 +1,24 @@
+lots of acr functions return void - is this always appropriate?
+
+system_apihelp_callFunction is a nuisance - too loosely typed
+
+astrogrid_applications_convertStructToDocument has argument named struc - C reserved word
+
+parameter called long everywhere - C reserved word - lon better
+
+plastic dealt with separately, so that the 
+
+overloading in delete function of the VFS 
+
+ivoa_siap_execute overrides the same function in the standard dal - this is a little strange- all that it amounst o is a change of documentation
+
+better to make all floats double...
+
+hasCoverage support is awkward - it is a double inheritance tricky...
+
+org.astrogrid.acr.ivoa.resource.Date has to be renamed to org.astrogrid.acr.ivoa.resource.CurationDate in jel.xml before running script
+
+is @bean abd @xmlrpc used consistently
+
+
+Service_Base is the only non bottom level base style class that is used as a return value....
