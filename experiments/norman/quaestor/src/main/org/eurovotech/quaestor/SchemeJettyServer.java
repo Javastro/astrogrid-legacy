@@ -246,7 +246,7 @@ public class SchemeJettyServer {
         /**
          * Provide an initialisation parameter to a servlet.  Modelled after
          * {@link javax.servlet.ServletContext#getInitParameter}.
-         * @param the parameter name
+         * @param key the parameter name
          * @return the parameter value, or null if there is no such parameter
          */
         public String getInitParameter(String key) {
