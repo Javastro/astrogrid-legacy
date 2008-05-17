@@ -8,7 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-base</artifactId>
   <name>Astrogrid Master Maven POM</name>
-  <version>2008.1-SNAPSHOT</version>
+  <version>2008.2-SNAPSHOT</version>
   <packaging>pom</packaging>
     <modules>
       <module>ws</module>
@@ -218,31 +218,7 @@
                </includes>
             </configuration>
          </plugin>
-         <plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-               <links>
-                  #http://www.astrogrid.org/maven/docs/HEAD/aggregate/multiproject/web-start/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/applications/multiproject/astrogrid-cea-client/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/applications/multiproject/astrogrid-cea-server/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/applications/multiproject/astrogrid-cea-commandline/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/applications/multiproject/astrogrid-cea-http/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/community/multiproject/astrogrid-community-common/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/community/multiproject/astrogrid-community-client/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/community/multiproject/astrogrid-community-resolver/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/community/multiproject/astrogrid-community-server/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/community/multiproject/astrogrid-community-install/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/community/multiproject/astrogrid-community/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/pal/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/astrogrid-datacenter-client/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/sixdF/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/merlin/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/cdsdelegate/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/sec/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/mch/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/installation-test/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/http2java/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/eXist/multiproject/astrogrid-exist-server/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/filemanager/multiproject/astrogrid-filemanager-common/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/filemanager/multiproject/astrogrid-filemanager-client/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/filemanager/multiproject/astrogrid-filemanager-server/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/filemanager/multiproject/astrogrid-filemanager/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/filestore/multiproject/astrogrid-filestore-common/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/filestore/multiproject/astrogrid-filestore-client/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/filestore/multiproject/astrogrid-filestore-server/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/filestore/multiproject/astrogrid-filestore/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/jes/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-store-client/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/mySpace/multiproject/astrogrid-mySpace/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-common/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-base/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-help/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-community/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-datacenter/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-login/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-myspace/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-registry/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-scenarios/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-resources/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/portal/multiproject/astrogrid-portal-workflow/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-common/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-client-lite/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry-server/apidocs/,#http://www.astrogrid.org/maven/docs/HEAD/registry/multiproject/astrogrid-registry/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/scripting/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/security/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/slinger/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/ui/apidocs/,http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/apidocs,http://www.astrogrid.org/maven/docs/HEAD/workflow/apidocs
-               </links>
-               <source>1.5</source>
-               <tags>
-                  <tag>
-                     <head>To Do:</head>
-                     <name>todo</name>
-                     <placement>a</placement>
-                  </tag>
-                  <tag>
-                     <head>Future:</head>
-                     <name>future</name>
-                  </tag>
-                  <tag>
-                     <head>Modified:</head>
-                     <name>modified</name>
-                     <placement>a</placement>
-                  </tag>
-               </tags>
-            </configuration>
-         </plugin>
+         
          <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
@@ -317,17 +293,14 @@
       <dependency>
          <groupId>commons-logging</groupId>
          <artifactId>commons-logging</artifactId>
-         <version>1.1</version>
       </dependency>
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <version>3.8.2</version>
       </dependency>
       <dependency>
          <groupId>log4j</groupId>
          <artifactId>log4j</artifactId>
-         <version>1.2.14</version>
       </dependency>
    </dependencies>
    <dependencyManagement>
@@ -335,12 +308,12 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-contracts</artifactId>
-      <version>2008.0a2</version>
+      <version>2008.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>2007.2.01</version>
+      <version>2008.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -435,7 +408,7 @@
       <version>1.3.1</version>
     </dependency>
     <dependency>
-      <groupId>castor</groupId>
+      <groupId>org.codehaus.castor</groupId>
       <artifactId>castor</artifactId>
       <version>1.1.2.1</version>
       <exclusions>
@@ -448,12 +421,7 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>2.6.2</version>
+      <version>2.8.0</version>
     </dependency>
     <dependency>
       <groupId>regexp</groupId>
@@ -465,10 +433,22 @@
       <artifactId>oro</artifactId>
       <version>2.0.7</version>
     </dependency>
-    <dependency>
-      <groupId>commons-jxpath</groupId>
-      <artifactId>commons-jxpath</artifactId>
-      <version>1.1</version>
+    
+   <dependency>
+       <artifactId>commons-jxpath</artifactId>
+       <groupId>commons-jxpath</groupId>
+       <version>1.2</version>
+       <exclusions>
+          <!-- this includes a really old version of xerces...before the split into the xercesImpl jar -v.bad... -->
+          <exclusion>
+             <artifactId>xerces</artifactId>
+             <groupId>xerces</groupId>
+          </exclusion>
+          <exclusion>
+             <artifactId>xml-apis</artifactId>
+             <groupId>xml-apis</groupId>
+          </exclusion>
+       </exclusions>
     </dependency>
     <dependency>
       <groupId>commons-collections</groupId>
@@ -483,13 +463,19 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8</version>
+      <version>4.4</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
+      <version>1.2.15</version>
     </dependency>
+    <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <version>1.1</version>
+      </dependency>
+    
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
@@ -516,8 +502,13 @@
             <groupId>org.acegisecurity</groupId>
             <version>1.0.3</version>
          </dependency>
- 
-    </dependencies>
+         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+         </dependency>
+   </dependencies>
    </dependencyManagement>
   <reporting>
      
@@ -547,10 +538,35 @@
           <connectionType>developerConnection</connectionType>           
          </configuration>
        </plugin>
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
+<plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+            <!-- reintroduce later perhaps
+               <links>
+               </links>  -->
+               <source>1.5</source>
+               <tags>
+                  <tag>
+                     <head>To Do:</head>
+                     <name>todo</name>
+                     <placement>a</placement>
+                  </tag>
+                  <tag>
+                     <head>Future:</head>
+                     <name>future</name>
+                  </tag>
+                  <tag>
+                     <head>Modified:</head>
+                     <name>modified</name>
+                     <placement>a</placement>
+                  </tag>
+                  <tag>
+                     <head>To be Refactored:</head>
+                     <name>IMPL</name>
+                  </tag>
+               </tags>
+            </configuration>
+         </plugin>
        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
@@ -591,22 +607,15 @@
          <url>${vos.server.url}/maven2repo</url>
       </repository>
       -->
-      <!-- put ibiblio first in hope of getting proper maven2 versions early - they are not as good as the ones at repo1.maven.org/maven2
+      <!-- put central first in hope of getting proper maven2 versions early - they are not as good as the ones at repo1.maven.org/maven2
+ -->
       <repository>
-         <id>ibiblio</id>
+         <id>central</id>
          <layout>default</layout>
          <name>Ibiblio Repository</name>
-         <url>http://www.ibiblio.org/maven2</url>
-      </repository> -->
-      
-      <!-- should probably remove this old repository at some time... 
-      <repository>
-         <id>vos-maven1</id>
-         <name>VOS maven 1 repository</name>
-         <url>${vos.server.url}/maven1repo</url>
-         <layout>legacy</layout>
+         <url>http://repo1.maven.org/maven2/</url>
       </repository>
-      -->
+      
       <repository>
          <id>astrogrid1</id>
          <name>Astrogrid maven 1 repository</name>
