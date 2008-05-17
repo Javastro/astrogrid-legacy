@@ -134,7 +134,11 @@ namespace XmlRpc {
     operator std::string&()   { assertTypeOrInvalid(TypeString); return *_value.asString; }
     operator BinaryData&()    { assertTypeOrInvalid(TypeBase64); return *_value.asBinary; }
     operator struct tm&()     { assertTypeOrInvalid(TypeDateTime); return *_value.asTime; }
-    operator  char *()    { assertTypeOrInvalid(TypeString); char * retval; retval = (char *)malloc((*_value.asString).size() +1); strcpy(retval,(*_value.asString).c_str()); return retval;} // return a copy...IMPL - it seems odd to me that just 
+    operator  char *()    { assertTypeOrInvalid(TypeString); 
+    char * retval; 
+    retval = (char *)malloc((*_value.asString).size() +1); 
+    strcpy(retval,(*_value.asString).c_str()); 
+    return retval;} // return a copy...IMPL - it seems odd to me that just 
     
     //ACR
     operator ACRKeyValueMap();
@@ -146,7 +150,11 @@ namespace XmlRpc {
     XmlRpcValue& operator[](int i)             { assertArray(i+1); return _value.asArray->at(i); }
 
     XmlRpcValue & operator[](std::string const & k)  { assertStruct(); return (*_value.asStruct)[k]; }
-    XmlRpcValue& mem(const char* k) { /*std::cerr << " accessing member " << k << "\n";*/ assertStruct(); std::string s(k); return (*_value.asStruct)[s]; }
+    XmlRpcValue& mem(const char* k) { 
+    	assertStruct(); 
+    	std::string s(k); 
+       	std::cerr << " accessing member " << k  << "\n";
+         	return (*_value.asStruct)[s]; }
 
     // Accessors
     //! Return true if the value has been set to something.
