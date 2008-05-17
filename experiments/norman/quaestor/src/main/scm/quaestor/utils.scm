@@ -503,7 +503,12 @@
       (java-new <url>
                 (->jstring "http")
                 (get-server-name request)
-                (get-server-port request) ;not quite right, if the original URL was on port 80,
+                (let ((port (get-server-port request)))
+                  ;; avoid adding the explicit port number, if it's on port 80
+                  (if (= (->number port) 80)
+                      (->jint -1)
+                      port))
+                ;;(get-server-port request) ;not quite right, if the original URL was on port 80,
                                         ;since this inserts a spurious :80
                 (if include-servlet-path?
                     (concat (get-context-path request)
