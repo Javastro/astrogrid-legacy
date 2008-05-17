@@ -40,7 +40,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.47 $ $Date: 2008/05/15 16:10:51 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.48 $ $Date: 2008/05/17 18:05:02 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -152,10 +152,10 @@
       `(li "Knowledgebase "
            (a (@ (href ,kb-name-string))
               (strong ,kb-name-string))
-           ", submodels:"
-           (if (null? submodels)
-               (em "None")
-               (ul ,@(map (lambda (sm-alist)
+           ", submodels: "
+           ,(if (null? submodels)
+               '(strong "None")
+               `(ul ,@(map (lambda (sm-alist)
                         (let ((name-pair (assq 'name sm-alist))
                               (tbox-pair (assq 'tbox sm-alist))
                               (namespaces (assq 'namespaces sm-alist)))
@@ -283,6 +283,7 @@
                              (cons requested-mime-type lang-string)))
                       (loop (cdr ml)))))))))
 
+  (chatter "get-model: path-info-list=~s, query-string=~s" path-info-list query-string)
   (case (length path-info-list)
     ((1 2)
      (let ((kb-name (request->kb-uri request))
@@ -292,6 +293,8 @@
        (let ((kb (kb:get kb-name))
              (mime-and-lang (find-ok-language request))
              (query (string->symbol (or query-string "model"))))
+;;          (chatter "get-model: kb-name=~s  submodel-name=~s  mime-and-lang=~s  query=~s"
+;;                   kb-name submodel-name mime-and-lang query)
          (cond ((and kb
                      (eq? query 'model)
                      mime-and-lang) ;normal case
@@ -303,9 +306,11 @@
                       (write m
                              (get-output-stream response)
                              (->jstring (cdr mime-and-lang)))
-                      (no-can-do request response
-                                 '|SC_NOT_FOUND|
-                                 "There is no model to return")))
+                      (begin (chatter "get-model: failed to find model with kb-name=~s, submodel=~s"
+                                      kb-name submodel)
+                             (no-can-do request response
+                                        '|SC_NOT_FOUND|
+                                        "There is no model to return"))))
                 #t)
 
                ((and kb
@@ -579,8 +584,8 @@
            (if (kb:discard kb-name)
                (set-response-status! response '|SC_NO_CONTENT|)
                (no-can-do request response
-                          '|SC_NOT_FOUND| ;correct?
-                          "There was no knowledgebase ~a to delete"
+                          '|SC_BAD_REQUEST| ;correct?
+                          "There was no knowledgebase \"~a\" to delete"
                           (car path-list))))
           ((2)
            (let ((submodel (cadr path-list)))
@@ -590,16 +595,16 @@
                              (set-response-status! response '|SC_NO_CONTENT|)
                              (no-can-do request response
                                         '|SC_BAD_REQUEST|
-                                        "No such submodel ~a"
+                                        "No such submodel \"~a\""
                                         submodel))))
                    (else
                     (no-can-do request response
                                '|SC_BAD_REQUEST|
-                               "No such knowledgebase ~a" kb-name)))))
+                               "No such knowledgebase \"~a\"" kb-name)))))
           (else
            (no-can-do request response
                       '|SC_BAD_REQUEST|
-                      "The request path has too many elements ~s"
+                      "The request path has too many elements: ~s"
                       path-list)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
