@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 public class QuaestorTest
@@ -67,14 +68,24 @@ public class QuaestorTest
                 // Print an explanatory message and stop the test.
                 System.err.println
                         ("Can't get Quaestor top page: is Tomcat running?");
-                throw new junit.framework.AssertionFailedError
-                        ("Tomcat not running");
+                throw new AssertionFailedError("Tomcat not running");
             }
 
             // Attempt to delete the knowledgebase, whether or not it's there.
-            // Don't care about the return value.
-            System.err.println("Deleting any KB at " + makeKbUrl());
             r = QuaestorConnection.httpDelete(makeKbUrl());
+            switch (r.getStatus()) {
+              case HttpURLConnection.HTTP_NO_CONTENT:
+                // ooops -- a "testing" KB hanging over from a previous test?
+                System.err.println("Deleted old KB at " + makeKbUrl());
+                break;
+              case HttpURLConnection.HTTP_BAD_REQUEST:
+                // there was no knowledgebase there to delete (fair enough)
+                break;
+              default:
+                throw new AssertionFailedError("Unexpected status " + r.getStatus()
+                                               + " when clearing old testing knowledgebase "
+                                               + makeKbUrl());
+            }
         }
     }
 
@@ -573,18 +584,17 @@ public class QuaestorTest
      * Throw an assertion error and emit debugging info if not.
      * @param r the result obtained from an HTTP transaction
      * @param expectedStatus the status it should have
-     * @throws junit.framework.AssertionFailedError if the assertion fails
+     * @throws AssertionFailedError if the assertion fails
      */
     private void assertStatus(HttpResult r, int expectedStatus)
-            throws junit.framework.AssertionFailedError {
+            throws AssertionFailedError {
         if (r.getStatus() != expectedStatus) {
             System.err.println("Status: expected " + expectedStatus
                                + ", got " + r.getStatus());
             System.err.println(r);
             
-            throw new junit.framework.AssertionFailedError
-                    ("Expected status " + expectedStatus
-                     + ", but got " + r.getStatus());
+            throw new AssertionFailedError("Expected status " + expectedStatus
+                                           + ", but got " + r.getStatus());
         }
     }
 
@@ -593,18 +603,17 @@ public class QuaestorTest
      * Throw an assertion error and emit debugging info if not.
      * @param r the result obtained from an HTTP transaction
      * @param expectedType the content type it should have
-     * @throws junit.framework.AssertionFailedError if the assertion fails
+     * @throws AssertionFailedError if the assertion fails
      */
     private void assertContentType(HttpResult r, String expectedType)
-            throws junit.framework.AssertionFailedError {
+            throws AssertionFailedError {
         if (! r.getContentType().equals(expectedType)) {
             System.err.println("ContentType: expected " + expectedType
                                + ", got " + r.getContentType());
             System.err.println(r);
             
-            throw new junit.framework.AssertionFailedError
-                    ("ContentType: expected " + expectedType
-                     + ", got " + r.getContentType());
+            throw new AssertionFailedError("ContentType: expected " + expectedType
+                                           + ", got " + r.getContentType());
         }
     }
 
@@ -614,11 +623,11 @@ public class QuaestorTest
      * the same, and there are probably others we haven't come across yet.
      */
     private void assertEquivalentURLs(URL u1, URL u2) 
-            throws junit.framework.AssertionFailedError {
+            throws AssertionFailedError {
         int port1 = u1.getPort();
         if (port1 < 0) port1 = u1.getDefaultPort();
         int port2 = u2.getPort();
-        if (port2 < 0) port1 = u2.getDefaultPort();
+        if (port2 < 0) port2 = u2.getDefaultPort();
 
 //         System.err.println("u1: protocol=" + u1.getProtocol()
 //                            + ", host=" + u1.getHost()
@@ -635,14 +644,13 @@ public class QuaestorTest
     }
 
     private void assertEquivalentURLs(URL u1, String u2) 
-            throws junit.framework.AssertionFailedError {
+            throws AssertionFailedError {
         try {
             assertEquivalentURLs(u1, new URL(u2));
         } catch (java.net.MalformedURLException e) {
             System.err.println("test URL " + u2 + " malformed");
-            throw new junit.framework.AssertionFailedError
-                    ("assertEquivalentURLs: expected " + u1
-                     + ", got " + u2 + ", which is malformed");
+            throw new AssertionFailedError("assertEquivalentURLs: expected " + u1
+                                           + ", got " + u2 + ", which is malformed");
         }
     }
 
