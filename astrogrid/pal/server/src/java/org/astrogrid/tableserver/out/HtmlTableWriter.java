@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.10 2008/04/02 14:20:44 clq2 Exp $
+ * $Id: HtmlTableWriter.java,v 1.11 2008/05/27 11:07:38 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -93,49 +93,67 @@ public class HtmlTableWriter extends AsciiTableSupport {
       
       printOut.println("<TABLE border='1'>");  //it's wrong to put formatting in here, but the default seems to be 0
       
-      printOut.println("</TR>");
-      printOut.println("<TH>ID</TH>");
+      printOut.println("<TR>");
+      printOut.println("<TH>Name</TH>");
       for (int i = 0; i < cols.length; i++) {
          if (cols[i] == null) {
             throw new IllegalArgumentException("No information for column "+i);
          }
-         printOut.print("<TH>"+cols[i].getId()+"</TH>");
+         String tabName = cols[i].getGroupName();
+         if (tabName == null) { 
+            tabName = "UNKNOWN"; 
+         }
+         String catName = cols[i].getParentName();
+         if (catName == null) { 
+            catName = "UNKNOWN"; 
+         }
+         //printOut.print("<TH>"+cols[i].getId()+"</TH>");
+         printOut.print("<TH align='left'>Catalog:&nbsp;"+catName+
+               "<br/>Table:&nbsp;"+tabName+
+               "<br/>Column:&nbsp;"+cols[i].getName()+"</TH>");
       }
       printOut.println("</TR>");
 
-      printOut.println("</TR>");
+      printOut.println("<TR>");
+      printOut.println("<TH>Description</TH>");
+      for (int i = 0; i < cols.length; i++) {
+         printOut.print("<TH>"+cols[i].getDescription()+"</TH>");
+      }
+      printOut.println("<TR>");
+
+      printOut.println("<TR>");
       printOut.println("<TH>Public Type</TH>");
       for (int i = 0; i < cols.length; i++) {
          printOut.print("<TH>"+cols[i].getPublicType()+"</TH>");
       }
-      printOut.println("</TR>");
+      printOut.println("<TR>");
 
-      printOut.println("</TR>");
+      printOut.println("<TR>");
       printOut.println("<TH>Java Class</TH>");
       for (int i = 0; i < cols.length; i++) {
          printOut.print("<TH>");
          if (cols[i].getJavaType() != null) {
-            cols[i].getJavaType().getName();
+            printOut.print(cols[i].getJavaType().getName());
          }
          printOut.print("</TH>");
       }
-      printOut.println("</TR>");
+      printOut.println("<TR>");
 
-      printOut.println("</TR>");
+      printOut.println("<TR>");
       printOut.println("<TH>Native Type</TH>");
       for (int i = 0; i < cols.length; i++) {
          printOut.print("<TH>"+cols[i].getBackType()+"</TH>");
       }
       printOut.println("</TR>");
 
-      printOut.println("</TR>");
+      printOut.println("<TR>");
       printOut.println("<TH>UCD</TH>");
       for (int i = 0; i < cols.length; i++) {
          printOut.print("<TH>"+emptyIfNull(cols[i].getUcd("1"))+"</TH>");
       }
       printOut.println("</TR>");
 
-      printOut.println("</TR>");
+      printOut.println("<TR>");
       printOut.println("<TH>Units</TH>");
       for (int i = 0; i < cols.length; i++) {
          if (cols[i].getUnits() == null) {
@@ -243,6 +261,12 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.11  2008/05/27 11:07:38  clq2
+ merged PAL_KEA_2715
+
+ Revision 1.10.2.1  2008/05/01 10:52:54  kea
+ Fixes relating to:  BZ2127 BZ2657 BZ2720 BZ2721
+
  Revision 1.10  2008/04/02 14:20:44  clq2
  KEA_PAL2654
 

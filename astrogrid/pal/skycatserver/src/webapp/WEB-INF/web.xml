@@ -244,14 +244,16 @@
       </auth-constraint>
   </security-constraint>
    
+  <!-- Use basic http authentication rather than custom form, for 
+   consistency with other AG webapps. -->
   <login-config>
-      <auth-method>FORM</auth-method>
-      <!-- realm-name>AstroGrid</realm-name -->
-    <form-login-config>
-      <form-login-page>/admin/login.jsp</form-login-page>
-      <form-error-page>/admin/loginFailed.jsp</form-error-page>
-    </form-login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>AstroGrid</realm-name>
   </login-config>
+
+  <security-role>
+    <role-name>manager</role-name>
+  </security-role>
 
   <security-role>
      <role-name>paladmin</role-name>

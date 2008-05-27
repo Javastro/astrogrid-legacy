@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.6 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: SearchField.java,v 1.7 2008/05/27 11:07:39 clq2 Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -18,6 +18,8 @@ public class SearchField {
    private String name;
    private String groupName;
    private String groupID;
+   private String parentName; //To support one more level of hierarchy
+   private String parentID;
    private String description;
    
    /** interoperating type - presented to the outside world */
@@ -50,9 +52,15 @@ public class SearchField {
       this.groupName = groupName;   
       this.groupID = groupID;   
    }
+   public void setParent(String parentName, String parentID)  {        
+      this.parentName = parentName;   
+      this.parentID = parentID;   
+   }
    
    public String getGroupName()          {        return groupName;   }
    public String getGroupID()            {        return groupID;     }
+   public String getParentName()         {        return parentName;  }
+   public String getParentID()           {        return parentID;    }
    
    public void setJavaType(Class javaType) {    this.javaType = javaType;   }
    

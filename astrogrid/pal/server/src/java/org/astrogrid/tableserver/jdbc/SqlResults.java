@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.17 2008/04/02 14:20:43 clq2 Exp $
+ * $Id: SqlResults.java,v 1.18 2008/05/27 11:07:38 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -99,7 +99,6 @@ public class SqlResults extends TableResults {
    public void writeTable(TableWriter tableWriter, 
          QuerierStatus statusToUpdate) throws IOException
    {
-      int unknownCount = 1;
       int dummyColIndex = 1;
       boolean tableIsOpen = false;
 
@@ -165,6 +164,23 @@ public class SqlResults extends TableResults {
                      catalogID = "";
                   }
                }
+               if (catalogName == null) {
+                  // If we only have one wrapped catalog, set that as the name
+                  // and ID
+                  try {
+                     String catnames[] = 
+                        TableMetaDocInterpreter.getCatalogNames();
+                     if (catnames.length == 1) {
+                        catalogName = catnames[0];
+                        catalogID = 
+                           TableMetaDocInterpreter.getCatalogIDForName(
+                                 catalogName);
+                     }
+                  }
+                  catch (MetadataException e) {
+                     // No need to do anything
+                  }
+               }
                tableID = metadata.getTableName(i).trim();
                if (tableID.trim().length()==0) {
                   tableID = null;
@@ -177,7 +193,7 @@ public class SqlResults extends TableResults {
                     tableID = tableID.substring(dotIndex+1);
                   }
                   // The table name in the metadata might well be a 
-                  // column alias;  try to get the real table name.
+                  // table alias;  try to get the real table name.
                   // If the input tableName from the metadata is not
                   // actually a table name or table alias, the tableName
                   // variable will be set back to null by the statement
@@ -198,8 +214,11 @@ public class SqlResults extends TableResults {
                            "' in metadoc");
                         tableID = null;
                      }
+                     /* 
+                     //KONA TOFIX WHAT TO DO HERE?  Set table name?
                      if (tableID != null) {
                      }
+                     */
                   }
                }
             }
@@ -221,7 +240,10 @@ public class SqlResults extends TableResults {
                      //but carry on with a dummy table name
                      cols[i-1] = new ColumnInfo();
                      cols[i-1].setName(columnID);   // Use ID as name
-                     cols[i-1].setId("UNKNOWN."+columnID); 
+                     cols[i-1].setId("UNKNOWN.UNKNOWN."+columnID+"." +
+                           Integer.toString(i)); 
+                     cols[i-1].setDescription(
+                           "Unrecognised column with name '" + columnID + "'");
                      tableID = null; // Just in case
                   }
                   catch (MetadataException me) { // Didn't find any column
@@ -241,10 +263,13 @@ public class SqlResults extends TableResults {
                        // Column ID contains other than alphanumeric and
                        // underscore characters
                        String newColumnName = "UNKNOWN_" +
-                           Integer.toString(unknownCount);
-                       unknownCount = unknownCount+1;
+                           Integer.toString(i);
                        cols[i-1].setName(newColumnName);
-                       cols[i-1].setId("UNKNOWN."+newColumnName);
+                       cols[i-1].setId("UNKNOWN.UNKNOWN." + newColumnName + 
+                             "." + Integer.toString(i)); 
+                       cols[i-1].setDescription(
+                           "Unrecognised column with name '" + columnID + "'"
+                       );
                        log.info("Got dubious unmatched column ID " +
                            columnID + " from JDBC, replacing it with " +
                            newColumnName);
@@ -254,41 +279,67 @@ public class SqlResults extends TableResults {
                        // JDBC column name is OK to use
                        cols[i-1] = new ColumnInfo();
                        cols[i-1].setName(columnID);
-                       cols[i-1].setId("UNKNOWN."+columnID);
+                       cols[i-1].setId("UNKNOWN.UNKNOWN."+columnID+"." +
+                           Integer.toString(i)); 
+                       cols[i-1].setDescription(
+                           "Unrecognised column with name '" + columnID + "'");
                      }
                      tableID = null; // Just in case
                   }
                 }
                 else {     // Don't have column or table name
-                  // Use unknownCount to ensure unique table names
                     cols[i-1] = new ColumnInfo();
-                    cols[i-1].setName("UNKNOWN_" + 
-                        Integer.toString(unknownCount));
-                    cols[i-1].setId("UNKNOWN."+"UNKNOWN_"+
-                        Integer.toString(unknownCount));
-                    unknownCount = unknownCount+1;
+                    String newName = "UNKNOWN_" + Integer.toString(i);
+                    cols[i-1].setName(newName);
+                    cols[i-1].setId("UNKNOWN.UNKNOWN."+newName+ "." +
+                        Integer.toString(i)); 
+                    cols[i-1].setDescription(
+                        "Unrecognised column with unknown name");
                     tableID = null; // Just in case
                 }
             }
             // When we get here, we have a ColumnInfo structure created
             // and may or may not have found the table name.
-            if (tableID != null) {   // We found the table
+            if (tableID != null) {   // We found the table in the metadoc
+               //TOFIX IS THIS TRUE???
+               String tableName = null;
+               String columnName = null;
+
                // If we have the table name, we can provide proper metadata
                // from the DSA's own configuration
-               // KONA TOFIX WHAT IS THIS ACTUALLY DOING??
+               // TOFIX what if this goes wrong? (though it shouldn't)
                cols[i-1] = TableMetaDocInterpreter.getColumnInfoByID(
                      catalogID, tableID, columnID);
 
-               cols[i-1].setId(tableID+"."+columnID);
-
-               cols[i-1].setUcd(TableMetaDocInterpreter.getColumnInfoByID(
-                     catalogID, tableID, columnID).getUcd("1"),"1");
-
-               cols[i-1].setUnits(TableMetaDocInterpreter.getColumnInfoByID(
-                     catalogID, tableID, columnID).getUnits());
-
-               cols[i-1].setPublicType(TableMetaDocInterpreter.getColumnInfoByID(
-                     catalogID, tableID, columnID).getPublicType());
+               // Get the table and column name
+               try {
+                  tableName = TableMetaDocInterpreter.getTableNameForID(
+                      catalogID, tableID);
+               }
+               catch (MetadataException me) {
+                  // Shouldn't get here, but just in case
+                  tableName = "UNKNOWN";
+               }
+               try {
+                  columnName = TableMetaDocInterpreter.getColumnNameForID(
+                      catalogID, tableID, columnID);
+               }
+               catch (MetadataException me) {
+                  // Shouldn't get here, but just in case
+                  columnName = "UNKNOWN";
+               }
+               if (catalogName == null) {
+                  catalogName = "UNKNOWN";
+               }
+               // Generate an ID guaranteed to be unique - and using
+               // published names rather than private IDs so as not
+               // to confuse the user
+               cols[i-1].setId(catalogName + "." + tableName + "." 
+                     + columnName + "." + Integer.toString(i));
+               // Enhance description to show this info too
+               cols[i-1].setDescription(catalogName + "." + tableName + "." 
+                     + columnName +  ": " + 
+                     cols[i-1].getDescription());
             }
             // Now try to add some final JDBC metadata
             //read direct from sql metadata
@@ -296,6 +347,10 @@ public class SqlResults extends TableResults {
             try {
                //read from sql metadata and convert
                //(some dbs don't implement this function)
+               /*
+               log.warn("KONA Class name is " +
+                     metadata.getColumnClassName(i)); 
+                     */
                cols[i-1].setJavaType(Class.forName(
                      metadata.getColumnClassName(i))); 
             }
@@ -412,6 +467,12 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.18  2008/05/27 11:07:38  clq2
+ merged PAL_KEA_2715
+
+ Revision 1.17.2.1  2008/05/01 10:52:54  kea
+ Fixes relating to:  BZ2127 BZ2657 BZ2720 BZ2721
+
  Revision 1.17  2008/04/02 14:20:43  clq2
  KEA_PAL2654
 

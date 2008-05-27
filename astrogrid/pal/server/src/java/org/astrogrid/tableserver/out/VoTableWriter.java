@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.13 2008/04/02 14:20:44 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.14 2008/05/27 11:07:38 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -71,9 +71,7 @@ public class VoTableWriter implements TableWriter {
    }
 
    public void writeErrorTable(String errorDesc) throws IOException {
-      errorDesc = errorDesc.replaceAll("&", "&amp;");
-      errorDesc = errorDesc.replaceAll("<", "&lt;");
-      errorDesc = errorDesc.replaceAll(">", "&gt;");
+      errorDesc = makeSafeString(errorDesc);
 
       println("<?xml version='1.0' encoding='UTF-8'?>");
       println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");
@@ -148,7 +146,6 @@ public class VoTableWriter implements TableWriter {
 
                printString(VoTypes.getVoTableTypeAttributes(colType));
             }
-            /*
             // KEA FUTURE: I added this, but not sure if it should
             // work or not, needs further investigation.
             // Try java type if no public type
@@ -156,7 +153,6 @@ public class VoTableWriter implements TableWriter {
                printString(VoTypes.getVoTableTypeAttributes(
                      cols[i].getJavaType()));
             }
-            */
             else {
               // Use String type as default, since any real data type
               // will be parsable as a string.  THis is not ideal; 
@@ -174,7 +170,13 @@ public class VoTableWriter implements TableWriter {
                   printString(" unit='"+cols[i].getUnits()+"' ");
                }
             }
-            println("/>");
+            println(">");
+            println(" <DESCRIPTION>");
+            String desc = cols[i].getDescription();
+            // Make safe
+            println(" " + desc);
+            println(" </DESCRIPTION>");
+            println("</FIELD>");
          }
       }
 
@@ -205,12 +207,7 @@ public class VoTableWriter implements TableWriter {
                  printString("<TD></TD>");
                }
                else {
-                  // Quick fix - replace &, < and ? to avoid breaking
-                  // xml
-                 String output = (String)colValues[i];
-                 output = output.replaceAll("&", "&amp;"); //Do this first!!
-                 output = output.replaceAll("<", "&lt;");
-                 output = output.replaceAll(">", "&gt;");
+                 String output = makeSafeString( (String)colValues[i] );
                  printString("<TD>"+output+"</TD>");
                }
             }
@@ -263,10 +260,23 @@ public class VoTableWriter implements TableWriter {
    {
      bufferedOut.flush();
    }
+
+   protected String makeSafeString(String input) {
+      String output = input.replaceAll("&", "&amp;"); //Do this first!!
+      output = output.replaceAll("<", "&lt;");
+      output = output.replaceAll(">", "&gt;");
+      return output;
+   }
 }
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.14  2008/05/27 11:07:38  clq2
+ merged PAL_KEA_2715
+
+ Revision 1.13.2.1  2008/05/01 10:52:54  kea
+ Fixes relating to:  BZ2127 BZ2657 BZ2720 BZ2721
+
  Revision 1.13  2008/04/02 14:20:44  clq2
  KEA_PAL2654
 

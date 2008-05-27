@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.20 2008/03/14 16:09:21 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.21 2008/05/27 11:07:38 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -857,6 +857,7 @@ public class TableMetaDocInterpreter
       ColumnInfo info = new ColumnInfo();
       info.setName(getValueOf(element, "Name"));
       info.setGroup(getTableNameForID(catalogID, tableID), tableID);
+      info.setParent(getCatalogNameForID(catalogID), catalogID);
 
       String id = getAttribute(element,"ID");
       /*  DON'T DO THIS!
