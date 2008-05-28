@@ -37,14 +37,11 @@
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
         <unitTest>
             <includes>
-                <!--  
-                    <include>**/*UnitTest.java</include>		
-                    <include>**/*IntegrationTest.java</include>					
-                -->
-                <!-- NWW - too broken, due to get upgrade. just run uni tests for now. 
+               
                     <include>**/AllRepeatableTests.java</include>
-                -->
+                <!-- fallback..
                 <include>**/AbsolutelyAllUnitTests.java</include>
+                -->
             </includes>
             <resources>
                 <resource>
