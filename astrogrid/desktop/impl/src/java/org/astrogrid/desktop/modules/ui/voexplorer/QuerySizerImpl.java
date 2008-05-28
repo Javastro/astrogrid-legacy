@@ -34,7 +34,7 @@ public class QuerySizerImpl implements QuerySizer {
 		this.cache = cache;
 	}
 	
-	public Integer regSize() {
+	public synchronized Integer regSize() { // synchronize this, so query to reg is only run one time.
 		return size(ALL_QUERY);
 	}
 	/** the query that returns all 'active' resources. use with caution */
