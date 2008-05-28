@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.18 2008/05/09 11:32:34 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.19 2008/05/28 12:28:15 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -96,7 +96,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 				worker.start();
         	}
         }
-        		,true);
+        		,true); // start it right now.
     }
     
 	public void schedule(final DelayedContinuation task) {
@@ -149,6 +149,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.19  2008/05/28 12:28:15  nw
+Incomplete - task 400: Alternate caching strategy.
+
 Revision 1.18  2008/05/09 11:32:34  nw
 Incomplete - task 392: joda time
 
