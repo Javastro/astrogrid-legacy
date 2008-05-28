@@ -1,4 +1,4 @@
-/*$Id: AllAstrogridSystemTests.java,v 1.8 2008/04/23 11:23:16 nw Exp $
+/*$Id: AllAstrogridSystemTests.java,v 1.9 2008/05/28 12:26:18 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,13 +36,16 @@ public class AllAstrogridSystemTests {
        suite.addTestSuite(StapSystemTest.class);
 
 
-        return new ARTestSetup(suite,true);       
+        return new ARTestSetup(suite);       
     }
 }
 
 
 /* 
 $Log: AllAstrogridSystemTests.java,v $
+Revision 1.9  2008/05/28 12:26:18  nw
+improved tsts
+
 Revision 1.8  2008/04/23 11:23:16  nw
 removed obsolete tests.
 

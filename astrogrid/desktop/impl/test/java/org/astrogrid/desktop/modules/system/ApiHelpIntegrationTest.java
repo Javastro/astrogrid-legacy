@@ -1,4 +1,4 @@
-/*$Id: ApiHelpIntegrationTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
+/*$Id: ApiHelpIntegrationTest.java,v 1.5 2008/05/28 12:26:18 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,17 +40,14 @@ public class ApiHelpIntegrationTest extends InARTestCase {
         assertNotNull(reg);
         help = (ApiHelp) reg.getService(ApiHelp.class);
         assertNotNull(help);
-    	uri = new URI("ivo://org.astrogrid/Galaxev");
     }
     protected ApiHelp help;
-    protected URI uri;
     /*
      * @see TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
         super.tearDown();
         help = null;
-        uri = null;
     }
 
 
@@ -357,6 +353,9 @@ public class ApiHelpIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ApiHelpIntegrationTest.java,v $
+Revision 1.5  2008/05/28 12:26:18  nw
+improved tsts
+
 Revision 1.4  2007/01/29 10:42:48  nw
 tidied.
 

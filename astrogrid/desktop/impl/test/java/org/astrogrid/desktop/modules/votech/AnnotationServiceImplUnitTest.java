@@ -4,12 +4,25 @@
 package org.astrogrid.desktop.modules.votech;
 
 
-import static org.easymock.EasyMock.*;
-import static org.astrogrid.Fixture.*;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.astrogrid.Fixture.createMockContext;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,17 +31,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.collections.IteratorUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.votech.AnnotationService.AnnotationProcessor;
-import org.hamcrest.integration.EasyMock2Adapter;
-
-import com.thoughtworks.xstream.annotations.AnnotationProvider;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import junit.framework.TestCase;
 
 /** Unit test for the annotaiton service.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -98,7 +108,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(cache.get(uri)).andReturn(null).times(2);
 
         // case for an entry
-        Map m = new HashMap();
+        Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(userAnnotationSource,uan);
         Element e = new Element(uan.getResourceId(),m);
        
@@ -126,7 +136,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 
         expect(cache.get(uri)).andReturn(null); // it's not in the cache.
         
-        Map  m = new HashMap();
+        Map<AnnotationSource,UserAnnotation>  m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(userAnnotationSource,uan);
         cache.put(new Element(uri,m)); // it's stored in the cache.
         
@@ -152,7 +162,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 
         expect(io.getSourcesList()).andReturn(Collections.EMPTY_LIST);
         
-        Map  m = new HashMap();
+        Map<AnnotationSource,Annotation>  m = new HashMap<AnnotationSource, Annotation>();
         m.put(otherSource,new Annotation());
         Element e = new Element(uri,m);        
         expect(cache.get(uri)).andReturn(e); // there's other annotations for this id.
@@ -182,7 +192,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 
         expect(io.getSourcesList()).andReturn(Collections.EMPTY_LIST);
         
-        Map  m = new HashMap();
+        Map<AnnotationSource,Object>  m = new HashMap<AnnotationSource, Object>();
 
         assertFalse(otherSource.equals(userAnnotationSource));
         m.put(otherSource,new Annotation());
@@ -220,19 +230,19 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return false;
             }
         };
-        List<AnnotationSource> sources = new ArrayList();
+        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
         
         expect(io.getSourcesList()).andReturn(sources);
-        List<Annotation> uaAnns = new ArrayList();
+        List<Annotation> uaAnns = new ArrayList<Annotation>();
         uaAnns.add(uan);
         expect(io.load(userAnnotationSource)).andReturn(uaAnns);
         expect(io.load(otherSource)).andThrow(new RuntimeException());
         
         expect(cache.get(uri)).andReturn(null);
-        Map m = new HashMap();
+        Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(userAnnotationSource,uan);
         Element e= new Element(uri,m);
         cache.put(e);
@@ -254,7 +264,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(cache.get(uri)).andReturn(null);
 
         // case for an entry
-        Map m = new HashMap();
+        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
@@ -270,7 +280,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
 // test when there's an entry in the cache.        
         final Iterator it = asi.getLocalAnnotations(resource);
         assertTrue(it.hasNext());
-        assertThat(IteratorUtils.toList(it),allOf(hasItem(uan),hasItem(otherAnn)));
+        assertThat((List<? extends Annotation>)IteratorUtils.toList(it),allOf(hasItem(uan),hasItem(otherAnn)));
         
 // test for an erroneous inputs.        
         assertFalse(asi.getLocalAnnotations((Resource)null).hasNext());
@@ -283,7 +293,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(cache.get(uri)).andReturn(null);
 
         // case for an entry
-        Map m = new HashMap();
+        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
@@ -330,7 +340,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return false;
             }
         };
-        List<AnnotationSource> sources = new ArrayList();
+        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -342,7 +352,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
     //    expect(cache.get(uri)).andReturn(null);
 
         // case for an entry
-        Map m = new HashMap();
+        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
@@ -375,7 +385,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return false;
             }
         };
-        List<AnnotationSource> sources = new ArrayList();
+        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -384,7 +394,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(userAnnotationSource)).andReturn(null);
 
         // case for an entry
-        Map m = new HashMap();
+        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
@@ -415,7 +425,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList();
+        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -423,7 +433,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(otherSource)).andReturn(null);
         expect(io.load(userAnnotationSource)).andReturn(null);
 
-        Map m = new HashMap();
+        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
@@ -459,7 +469,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList();
+        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -467,7 +477,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(otherSource)).andReturn(null);
         expect(io.load(userAnnotationSource)).andReturn(null);
 
-        Map m = new HashMap();
+        Map<AnnotationSource, Annotation> m = new HashMap<AnnotationSource, Annotation>();
         m.put(userAnnotationSource,uan);
         final Annotation otherAnn = new Annotation();
         m.put(otherSource,otherAnn);
@@ -499,7 +509,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList();
+        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -522,7 +532,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         AnnotationServiceImpl asi = new AnnotationServiceImpl(cache,context,io);
 
         asi.processRemainingAnnotations(resource,proc);     
-        assertThat(m,hasEntry(dyn,dynAnn));
+        assertThat((Map<AnnotationSource,UserAnnotation>)m,hasEntry(dyn,dynAnn));
         assertThat(m.size(),is(3));
         verify(cache,context,io,proc);
     }
@@ -541,7 +551,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
                 return true;
             }
         };
-        List<AnnotationSource> sources = new ArrayList();
+        List<AnnotationSource> sources = new ArrayList<AnnotationSource>();
         sources.add(otherSource);
         sources.add(userAnnotationSource);
         sources.add(dyn);
@@ -550,7 +560,7 @@ public class AnnotationServiceImplUnitTest extends TestCase {
         expect(io.load(userAnnotationSource)).andReturn(null);
 
         expect(cache.get(uri)).andReturn(null);
-        Map m = new HashMap();
+        Map<AnnotationSource, UserAnnotation> m = new HashMap<AnnotationSource, UserAnnotation>();
         m.put(dyn,dynAnn);
         Element e = new Element(uri,m);       
         cache.put(e);

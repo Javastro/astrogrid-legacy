@@ -8,6 +8,7 @@ import static org.easymock.EasyMock.*;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -30,7 +31,6 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 /** Unit test for the bulk copy worker.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 18, 200810:52:14 AM
- * @todo prevent result dialog from being displayed.
  */
 public class BulkCopyWorkerUnitTest extends TestCase {
 
@@ -70,9 +70,13 @@ public class BulkCopyWorkerUnitTest extends TestCase {
         dirFO = dirCommand.resolveSourceFileObject(vfs);        
         assertNotNull(dirFO);
         assertTrue(dirFO.exists());
+        assertTrue(dirFO.getType().hasChildren());
+        assertEquals(1,dirFO.getChildren().length);
         fileFO= fileCommand.resolveSourceFileObject(vfs);
         assertNotNull(fileFO);
-        assertTrue(fileFO.exists());        
+        assertTrue(fileFO.exists());
+        assertTrue(fileFO.getType().hasContent());
+        assertSame(fileFO,dirFO.getChildren()[0]);
         neFO = nonexistentCommand.resolveSourceFileObject(vfs);
         assertNotNull(neFO);
         assertFalse(neFO.exists());        
@@ -203,32 +207,36 @@ public class BulkCopyWorkerUnitTest extends TestCase {
      }    
 
         
-    /** single copy of a folder - should copy contents too.
-     * @FIXME alter impl of copy worker to make this test pass */
+    /** single copy of a folder - should copy contents  */
     public void testSingleCopyFolder() throws Exception {
         BulkCopyWorker worker = new BulkCopyWorker(vfs,ui,saveDir,new CopyCommand[]{
                 dirCommand
         });
         worker.start();     
+        // check physical contents (using java Files).
         assertTrue(saveDir.exists());
-        assertEquals(1,saveDir.list().length);
+        assertEquals(1,saveDir.list().length);        
+        final File copiedDir = saveDir.listFiles()[0];
+        assertEquals(dirFO.getName().getBaseName(),copiedDir.getName());
+        assertEquals("child of directory not copied",1,copiedDir.list().length);
+        File copiedFile = copiedDir.listFiles()[0];
+        assertEquals(fileFO.getName().getBaseName(),copiedFile.getName());
+        assertTrue(IOUtils.contentEquals(fileFO.getContent().getInputStream(),new FileInputStream(copiedFile)));
+        
         
         // check that the command records the correct info.
         assertFalse("dir command reports as failed",dirCommand.failed());
         FileName destination = dirCommand.getDestination();
         assertNotNull("no destination",destination);
-        assertEquals("reported destination different to what's on disk",saveDir.list()[0],destination.getBaseName());
-     assertEquals("destination filename differs to source filename"
-                ,dirFO.getName().getBaseName()
-                ,destination.getBaseName()
-                );
+        assertEquals("reported destination different to what's on disk",copiedDir.getName(),destination.getBaseName());
+
      FileObject destinationFO = vfs.resolveFile(destination.getURI());
      assertNotNull(destinationFO);
      assertTrue(destinationFO.exists()); 
      assertTrue(destinationFO.getType().hasChildren());
      // now verify children of the file object.
-     assertEquals(0,destinationFO.getChildren().length); //@fixme should copy all directory contents.
-     assertEquals(fileFO,destinationFO.getChildren()[0]);     
+     assertEquals(1,destinationFO.getChildren().length); 
+     assertEquals(fileFO.getName().getBaseName(),destinationFO.getChildren()[0].getName().getBaseName());     
         // check the content
         assertTrue("content differs",IOUtils.contentEquals(
                 fileFO.getContent().getInputStream()

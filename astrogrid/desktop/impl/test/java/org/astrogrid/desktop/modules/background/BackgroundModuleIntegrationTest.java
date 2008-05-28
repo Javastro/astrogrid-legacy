@@ -39,7 +39,7 @@ public class BackgroundModuleIntegrationTest extends InARTestCase {
 	}
 
     public static Test suite() {
-        return new ARTestSetup(new TestSuite(BackgroundModuleIntegrationTest.class),true);
+        return new ARTestSetup(new TestSuite(BackgroundModuleIntegrationTest.class));
     }
 	
 }

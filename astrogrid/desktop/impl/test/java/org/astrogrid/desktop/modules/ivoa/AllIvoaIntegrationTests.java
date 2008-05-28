@@ -21,6 +21,6 @@ public class AllIvoaIntegrationTests {
 		suite.addTestSuite(LooselyTypedFunctionCallIntegrationTest.class);
 		suite.addTestSuite(IvoaXmlRpcTransportIntegrationTest.class);
 		suite.addTestSuite(IvoaRmiTransportIntegrationTest.class);
-		return new ARTestSetup(suite,true);
+		return new ARTestSetup(suite);
 	}
 }

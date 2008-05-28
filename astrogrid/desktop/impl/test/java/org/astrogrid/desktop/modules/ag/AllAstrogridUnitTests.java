@@ -19,6 +19,7 @@ public class AllAstrogridUnitTests {
 		suite.addTestSuite(RemoteProcessManagerUnitTest.class);
 		suite.addTestSuite(MonitorMapUnitTest.class);
 		suite.addTestSuite(StapUnitTest.class);
+		suite.addTestSuite(DocumentToStructureConversionUnitTest.class);
 		return suite;
 	}
 

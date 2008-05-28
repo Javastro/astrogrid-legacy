@@ -69,7 +69,7 @@ public class AstrogridModuleIntegrationTest extends InARTestCase {
 	
 	
     public static Test suite() {
-        return new ARTestSetup(new TestSuite(AstrogridModuleIntegrationTest.class),true);
+        return new ARTestSetup(new TestSuite(AstrogridModuleIntegrationTest.class));
     }
 	
 
