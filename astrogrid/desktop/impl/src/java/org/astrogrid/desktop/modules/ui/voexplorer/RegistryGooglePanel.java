@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.32 2008/05/09 11:33:51 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.33 2008/05/28 12:27:17 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -23,7 +23,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
-import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -56,22 +55,15 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import javax.xml.stream.XMLStreamReader;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceConsumer;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -226,18 +218,29 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     
 	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
 	 * and caching the result */
-	private abstract class Worker extends BackgroundWorker implements ResourceProcessor {
+	private abstract class Worker extends BackgroundWorker implements ResourceConsumer {
 		
-		public Worker(UIComponent parent, String message) {
+
+
+        public Worker(UIComponent parent, String message) {
 			super(parent,message,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
 			fireLoadStarted();
 		}
 
 		// callback from the the registry.
-		public void process(Resource r) {
+		public void process(final Resource r) {
 	        if (isInterrupted()) {
                 return;
             }
+	        reportProgress("Processed " + r.getTitle());
+	        setProgress(resourceCount++,size);
+	        // need to run the setProgress on the EDT, so might as well add to the list on this thread too - removes the need to lock.
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  //  items.add(r);
+                    parent.setProgressValue(parent.getProgressValue() +1);
+                }
+            });
 	        try {
 	            items.getReadWriteLock().writeLock().lock();
 	            items.add(r);
@@ -247,6 +250,23 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	        }
 	        
 		}
+		
+		int resourceCount = 0; // current number of resources
+		int size = 0; // estimated size.
+
+        public void estimatedSize(final int i) {
+            size = i;
+            logger.debug("Size is " + i);
+            if (isInterrupted()) {
+                return;
+            }
+            setProgress(resourceCount,i);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    parent.setProgressMax(i);
+                }
+            });            
+        }		
 		
 		private Thread _thread;
 		private volatile boolean interrupted = false;
@@ -262,37 +282,24 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		    return interrupted;
 		}
 
-		private void load(Resource[] arr) {
-			for (int i = 0; i < arr.length; i++) {
-				try {
-					items.getReadWriteLock().writeLock().lock();
-					items.add(arr[i]);
-				} finally {
-					items.getReadWriteLock().writeLock().unlock();
-				}
-			}			
-		}
 		
 		protected void runQuery(String xq) throws ServiceException {
 		    // check bulk cache.
 		    reportProgress("Running query");
-		    Element el = bulk.get(xq);			
-		    if (el != null) {
-		        if (bypassCache) { // remove it from the cache, whlle we're here.
-		            bulk.remove(xq);
-		        } else if (! isInterrupted()) {			    
-		            load((Resource[])el.getValue()); 
-		            return;// found a cached result - halt here.
-		        }
+		    if (bypassCache) {		        
+	            reg.consumeXQueryReload(xq,this);		        
+		    } else {
+		          reg.consumeXQuery(xq,this);
 		    }
-		    reportProgress("Querying registry");
-			reg.xquerySearchStream(xq,this);
-			// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
+		// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
 		}
 		protected void doFinished(Object result) {
 			//resourceTable.selectAll(); dislike this.
-		    if (! isInterrupted() && resourceTable.getRowCount() > 0) {
-		        resourceTable.getSelectionModel().setSelectionInterval(0,0);
+		    if (! isInterrupted()) {
+		        parent.setProgressMax(0);
+		        if (resourceTable.getRowCount() > 0) {
+		            resourceTable.getSelectionModel().setSelectionInterval(0,0);
+		        }
 		    }
 			
 		}		
@@ -355,23 +362,25 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 */
 	private final class ListWorker extends Worker{
 
-		public ListWorker(UIComponent parent, Collection ids) {
+		public ListWorker(UIComponent parent, Collection<URI> ids) {
 			super(parent, "Loading List");
 			this.ids = ids;
 		}
 		
-		public ListWorker(String title,UIComponent parent, Collection ids) {
+		public ListWorker(String title,UIComponent parent, Collection<URI> ids) {
 			super(parent, "Loading " + title);
 			this.ids = ids;
 		}		
-		private final Collection ids;
+		private final Collection<URI> ids;
 		
 		protected Object construct() throws Exception {   
-		    reportProgress("Constructing xquery");
-				String xq = makeXQueryFromIdSet(ids);
-				runQuery(xq);
-				return null;
+		    reportProgress("Running query");
+		    //NB - no way to force a 'reload' here, as there is with xquery.
+		    // still, it's only a single-stage query, so not so much of a problem.
+		    reg.consumeResourceList(ids,this);
+			return null;
 		}
+		
 	}
 	// no state - so can be reused between instances.
 	//seems unneeded static final SRQLVisitor feedbackVisitor = new KeywordSRQLVisitor();	
@@ -391,7 +400,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	protected final RegistryInternal reg;
 	protected final VoMonInternal vomon;
 	protected final CapabilityIconFactory iconFac;
-	protected final Ehcache bulk;
 	protected final JComponent toolbar;
 	protected final ResourceViewer[] resourceViewers;
 	protected final AnnotationService annServer;
@@ -420,24 +428,21 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * @param advancedPreference 
 	 * @param pref controls whether to display 'advanced' features of the ui.
 	 */
-	public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg,
-			 final Ehcache bulk
+	public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg
 			,TypesafeObjectBuilder uiBuilder
 			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {
-	    this(parent,reg,bulk,uiBuilder,createDefaultViews(parent,uiBuilder)
+	    this(parent,reg,uiBuilder,createDefaultViews(parent,uiBuilder)
 	        ,vm,iconFac,annServer,advancedPreference);
 	}
 	
 	/** constructor for extension that allows an alternate set of resource viewers to be provided */
-    protected RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg,
-             final Ehcache bulk
+    protected RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg
             ,TypesafeObjectBuilder uiBuilder, ResourceViewer[] viewers
             , final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {	
 		super();    
 		this.parent = parent;
 		this.uiBuilder = uiBuilder;
 		this.reg = reg;
-		this.bulk = bulk;
 		this.vomon = vm;
 		this.iconFac = iconFac;
 		this.annServer = annServer;
@@ -794,12 +799,12 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}
 	
 	/** set scope to just display this list of resources */
-	public void displayIdSet(Collection idList) {
+	public void displayIdSet(Collection<URI> idList) {
 	    summary.setTitle("ID Set");
 		(new ListWorker(parent,idList)).start();		
 	}
 	
-	public void displayIdSet(String title,Collection idList) {
+	public void displayIdSet(String title,Collection<URI> idList) {
 	    summary.setTitle(title);
 		(new ListWorker(title,parent,idList)).start();		
 	}
@@ -828,23 +833,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}
 
 	
-	/** build an xquery that will retrieve all items in a list */
-	public static String makeXQueryFromIdSet(Collection l) {
-		//@future investigae whether some kind of ' vr:identifier in idset' form is more efficient
-		// as at the moment defining a static list of 300+ items causes the server to fail with an out-of-memory error.
-		StringBuffer sb = new StringBuffer("for $r in //vor:Resource[not (@status = 'inactive' or @status= 'deleted')]\nwhere (");
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			URI id = (URI) i.next();
-			sb.append("$r/identifier = '").append(id.toString()).append("'");
-			if (i.hasNext()) {
-				sb.append(" or ");
-			}
-		}
-		sb.append(")\nreturn $r");
-		return sb.toString();	
-	}
-
-
 	/** set whether user is permitted to select multiple resources 
 	 * @param multiple if true, multiple selection is permitted.*/
 	public void setMultipleResources(boolean multiple) {
@@ -928,6 +916,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.33  2008/05/28 12:27:17  nw
+Alternate caching strategy.
+
 Revision 1.32  2008/05/09 11:33:51  nw
 Complete - task 394: process reg query results in a stream.
 

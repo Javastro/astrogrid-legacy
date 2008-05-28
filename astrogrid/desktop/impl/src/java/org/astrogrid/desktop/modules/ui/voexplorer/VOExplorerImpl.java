@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.22 2008/03/28 13:08:58 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.23 2008/05/28 12:27:17 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -499,12 +499,12 @@ public class VOExplorerImpl extends UIComponentImpl
 	/** called to display a specific set of resouces in this view.
 	 * @param uriList
 	 */
-	public void displayResources(List uriList) {
+	public void displayResources(List<URI> uriList) {
         resourceLists.clearSelection();     
 		google.displayIdSet(uriList);
 	}
 	
-	public void displayResources(String title, List uriList) {
+	public void displayResources(String title, List<URI> uriList) {
         resourceLists.clearSelection();         
 	    google.displayIdSet(title,uriList);
 	}
@@ -571,6 +571,7 @@ public class VOExplorerImpl extends UIComponentImpl
         }
 
         public void actionPerformed(ActionEvent e) {
+            System.err.println("refreshing");
             google.setNextToBypassCache(); 
             ResourceFolder f =  (ResourceFolder)resourceLists.getSelectedFolder();
             if (f != null) { 
