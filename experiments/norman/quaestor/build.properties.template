@@ -1,5 +1,7 @@
 # Template build.properties file for Quaestor.
-# Copy to build.properties, and substitute below the paths to Tomcat and SISC.
+# Copy to build.properties, and substitute below the paths to the required libraries.
+#
+# ...or set properties on the ant command line with -D
 
 # Context path.  This controls the name of the servlet which will be generated,
 # and can be changed at your convenience
@@ -23,7 +25,7 @@ sdb.lib=<SDB.LIB>
 jdbc.support.jar=<JDBC.SUPPORT.JAR>
 
 # Location of the Jetty home (${jetty.home}/lib is where the jars are)
-# See www.mortbay.org
+# See http://www.mortbay.org
 jetty.home=<JETTY.HOME>
 
 # SISC binary and library directories.
@@ -35,8 +37,12 @@ sisc.bin=<SISC.BIN>
 sisc.lib=<SISC.LIB>
 
 # The JUnit test jar file, .../junit.jar
+# See http://junit.org
 junit.jar=<JUNIT.JAR>
 
 # Tomcat manager username and password
 manager.username=manager
 manager.password=manager
+
+# ...and the Tomcat host and port, if these aren't the default ones
+#tomcat.hostport=http://localhost:8080

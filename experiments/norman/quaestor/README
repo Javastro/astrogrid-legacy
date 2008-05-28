@@ -32,28 +32,16 @@ The first Quaestor version which was released to anyone else was 0.3.  I'll
 follow the common practice and have even-numbered versions as beta
 releases, and odd-numbered ones as rather stable (-ish).
 
+
 Building Quaestor
 -----------------
 
 Copy build.properties.template to build.properties and fill in the
-templated properties:
-
-  catalina.home : the directory which should be assigned to the
-  environment variable CATALINA_HOME, that is, the directory
-  containing bin/, webapps and so on.
-
-  jena.lib : Jena library directory.  This is the directory which
-  contains the jena.jar file and friends. 
-
-  sisc.bin : the binary directory is the one which contains the sisc
-  program.
-
-  sisc.lib : the directory which contains sisc{,-opt,-lib}.jar and
-  sisc.shp (in the SISC binary distributions, this is usually the same
-  directory as sisc.bin).
+property values as described in the comments there.
 
 Then 'ant && ant dist' to make the .war file.  'ant install' installs
 it in a local Tomcat.  'ant jetty' builds the Jetty version of Quaestor.
+
 
 Products
 --------
@@ -61,12 +49,13 @@ Products
 ant dist: makes the .war file, plus a quaestor-client-<version>.zip.
 The latter contains API documentation plus a
 quaestor-client-<version>.jar, which acts as a REPL for the server, if
-it's been configured (in either
+the latter has been configured (in either
 document('war/WEB-INF/web.xml')/web-app/servlet[servlet-name="codemanager"]
 or war/WEB-INF/SchemeJettyServer.properties, as appropriate) to allow that.
 
 ant jetty: makes quaestor-jetty-<version>.zip, which contains a
 start-jetty.sh script
+
 
 Testing
 -------
@@ -75,9 +64,10 @@ To run the full regression tests, you'll have to either install the
 application in a Tomcat server or run up the standalone Jetty server.
 
 Make the .war file ('ant dist'), or install it locally with 'ant
-install', after making sure that manager.url has the correct value in
-the build.xml file (or in build.properties).  Make the Jetty server
-with 'ant jetty', and start it up with build/start-jetty.sh
+install', after making sure that tomcat.hostport has the correct value
+in the build.xml file (or in build.properties, or on the ant command
+line).  Alternatively, make the Jetty server with 'ant jetty', and
+start it up with build/start-jetty.sh
 
   * 'ant scm-tests' tests the scheme support within the application,
     and is the real code self-test
@@ -90,3 +80,61 @@ with 'ant jetty', and start it up with build/start-jetty.sh
 
   * 'ant test' invokes both tests, with the default Quaestor URL,
     though that can be overridden the same way.
+
+
+Using SDB
+---------
+
+This is currently underdocumented (ie, this note is all the
+documentation there currently is...).  To use a database as the
+triple-store persistence, you need to install Jena SDB, hook it up to
+the RDBMS you want to use, and populate it with RDF, as described in
+the SDB docs.  To link this to Quaestor, create a knowledgebase by
+POSTing to it a description such as the following.
+
+% cat quaestor-metadata.ttl
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
+
+<> dc:description "Registry metadata knowledgebase";
+    dc:creator "Norman";
+    quaestor:requiredReasoner [
+        quaestor:level "none"
+    ].
+% cat rm-sdb.ttl 
+@prefix rdfs:	   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
+
+[] rdf:type sdb:Store;
+#        sdb:layout      "layout2/hash";
+        sdb:layout      "layout2/index"; # ...if the SDB was created with an 'index' layout
+        sdb:connection  _:c.
+
+_:c rdf:type sdb:SDBConnection;
+        sdb:sdbType     "postgresql";
+        sdb:sdbHost     "localhost";
+        sdb:sdbName     "sdb1"; # ...matching the DB name selected when setting up SDB
+	sdb:sdbUser     "postgres";
+        sdb:driver      "org.postgresql.Driver".
+% cat load-rm-knowledgebase.sh 
+#! /bin/sh -
+
+#BASEURL=http://thor.roe.ac.uk/quaestor
+BASEURL=${1-http://localhost:8090/quaestor}
+
+echo "Quaestor at $BASEURL"
+
+cd `dirname $0`
+
+# create the knowledgebase -- PUT the ttl file
+curl --header Content-Type:application/x-turtle \
+     --upload-file quaestor-metadata.ttl \
+     $BASEURL/kb/rm
+
+# ...now the submodel
+curl --header Content-Type:application/x-turtle \
+     --upload-file rm-sdb.ttl \
+     "$BASEURL/kb/rm/3store?abox"
+% ./load-rm-knowledgebase.sh
