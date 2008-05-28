@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.85 2008/05/09 11:32:48 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.86 2008/05/28 12:28:01 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,8 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
@@ -55,16 +53,20 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
+import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapService;
+import org.astrogrid.acr.ivoa.resource.SsapService;
+import org.astrogrid.acr.ivoa.resource.StapService;
+import org.astrogrid.acr.ivoa.resource.SiapCapability.Query;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceConsumer;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
@@ -84,10 +86,10 @@ import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField.ResolutionEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
+import org.astrogrid.desktop.modules.ui.scope.AbstractRetriever;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.AbstractRetriever;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
@@ -98,6 +100,7 @@ import org.astrogrid.desktop.modules.ui.scope.VizualizationsPanel;
 import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
 import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.PositionHistoryItem;
 import org.freixas.jcalendar.JCalendarCombo;
+import org.joda.time.DateTime;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
@@ -106,12 +109,10 @@ import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
-import ca.odell.glazedlists.matchers.MatcherEditor;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.l2fprod.common.propertysheet.Property;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
@@ -552,14 +553,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	
 //Astroscope internal interface.
 	// configure to run against this list of services.
-	public void runSubset(final List resources) {
+	public void runSubset(final List<? extends Resource> resources) {
 	    this.resourceList = resources;
-	    final StrBuilder sb = new StrBuilder("Astroscope");
+	    final StringBuilder sb = new StringBuilder("Astroscope");
 	    if (resources.size() == 1) {
 	        sb.append(" - ").append(((Resource)resources.get(0)).getTitle());
 	    } 
-	    for (Iterator i = protocols.iterator(); i.hasNext(); ) {
-	        final DalProtocol p = (DalProtocol)i.next();
+	    for (DalProtocol p : protocols) {                 
 	        p.getCheckBox().setEnabled(false); // no point showing these - there's no option.
 	        CountServices cs = new CountServices();
 	        p.processSuitableServicesInList(resources,cs);
@@ -577,17 +577,56 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	        }
 	    }
 	    setTitle(sb.toString());
+	    // find the first resource in the list which has a testQuery of some kind.
+	    for (Resource r : resources) {
+            if (r instanceof SiapService &&  ((SiapService)r).findSiapCapability().getTestQuery() != null) {
+                Query testQuery = ((SiapService)r).findSiapCapability().getTestQuery();
+                posText.setPosition(testQuery.getPos().getLong(),testQuery.getPos().getLat()); //@todo check I've got these the correct way rouind.
+                regionText.setRadius(testQuery.getSize().getLong()); // can only set region to a single dim - not both. no matter.
+                break; // no need to continue
+            }
+            if (r instanceof ConeService && ((ConeService)r).findConeCapability().getTestQuery() != null) {
+                org.astrogrid.acr.ivoa.resource.ConeCapability.Query testQuery = ((ConeService)r).findConeCapability().getTestQuery();
+                posText.setPosition(testQuery.getRa(),testQuery.getDec()); //
+                regionText.setRadius(testQuery.getSr()); 
+                break; // no need to continue
+            }
+            if (r instanceof SsapService && ((SsapService)r).findSsapCapability().getTestQuery() != null) {
+                org.astrogrid.acr.ivoa.resource.SsapCapability.Query testQuery = ((SsapService)r).findSsapCapability().getTestQuery();
+                posText.setPosition(testQuery.getPos().getLong(),testQuery.getPos().getLat()); //@todo check I've got these the correct way rouind.
+                regionText.setRadius(testQuery.getSize());                 
+                break; // no need to continue
+            }
+            if (r instanceof StapService && ((StapService)r).findStapCapability().getTestQuery() != null) {
+                org.astrogrid.acr.ivoa.resource.StapCapability.Query testQuery = ((StapService)r).findStapCapability().getTestQuery();
+                posText.setPosition(testQuery.getPos().getLong(),testQuery.getPos().getLat()); //@todo check I've got these the correct way rouind.
+                regionText.setRadius(testQuery.getSize().getLong());
+                try {
+                    DateTime dt = new DateTime(testQuery.getStart()); // jodatime parses ISO format dates.
+                    startCal.setDate(dt.toDate() );
+                    dt = new DateTime(testQuery.getEnd());
+                    endCal.setDate(dt.toDate());
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Failed to set date",e);
+                }
+                break; // no need to continue
+            }
+        }
 	}
 	
-	private static class CountServices implements ResourceProcessor {
+	
+	/** just count the number of services */
+	private static class CountServices implements ResourceConsumer {
 
 	    public int length = 0;
         public void process(Resource s) {
             length++;
         }
+        public void estimatedSize(int i) {
+        }
 	}
 	
-	   public void runSubsetAsHelioscope(List resources) {
+	   public void runSubsetAsHelioscope(List<? extends Resource> resources) {
 	       runSubset(resources);
 	       setTitle("All-VO Helioscope: standard set of timed solar data services");
 	   }
@@ -781,33 +820,12 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Nov 28, 20075:30:43 PM
      */
-    public final class ListServicesRegistryQuerier extends BackgroundOperation implements ResourceProcessor {
-        /**
-         * 
-         */
+    public final class ListServicesRegistryQuerier extends BackgroundOperation implements ResourceConsumer {
         private final double radius;
-        /**
-         * 
-         */
         private final double dec;
-        /**
-         * 
-         */
         private final double ra;
-        /**
-         * 
-         */
         private final DalProtocol p;
 
-        /**
-         * @param msg
-         * @param timeout
-         * @param priority
-         * @param radius
-         * @param dec
-         * @param ra
-         * @param p
-         */
         private ListServicesRegistryQuerier(double radius, double dec, double ra,
                 DalProtocol p) {
             super("Searching for " + p.getName() + " Services",  BackgroundWorker.LONG_TIMEOUT, Thread.MAX_PRIORITY);
@@ -850,7 +868,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                 throw new RuntimeException("Programming error - unknown subtype of protocol " + p.getClass().getName());
             }
             // now register these retreivers with the system and start them running - do all this on the edt.
-            serviceCount += retrievers.length;
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     vizModel.getSummarizer().addAll(retrievers);
@@ -861,13 +878,24 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                 }
             });
         }
-        private int serviceCount = 0;
+
+        // called from construct() to indicate number of expected resources.
+        public void estimatedSize(final int i) {
+            // estimated size gives the number of services - but there may be multiple capabiltities per service...
+            // still, present this informatino early - number of services.
+            // call this on EDT
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    parent.showTransientMessage(i + " " + p.getName().toLowerCase() + " services to query", "");
+                }
+            });
+        }
         
         protected void doFinished(Object result) {
-            parent.showTransientMessage(serviceCount + " " + this.p.getName().toLowerCase() + " services to query", "");
+            // do nothing.
         }
 
-    }
+    } // end of list services registry querier.
 
     /** implementation of an item in the history menu.
 	 * 

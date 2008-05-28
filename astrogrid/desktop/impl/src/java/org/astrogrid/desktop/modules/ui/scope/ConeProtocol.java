@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.21 2008/05/09 11:33:04 nw Exp $
+/*$Id: ConeProtocol.java,v 1.22 2008/05/28 12:27:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,8 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
@@ -26,7 +23,6 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
 
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
@@ -79,13 +75,10 @@ public class ConeProtocol extends SpatialDalProtocol {
         return retrievers;
     }
 
-	public void processSuitableServicesInList(List resourceList,ResourceProcessor p) {
-		for (Iterator i = resourceList.iterator(); i.hasNext();) {
-			Resource r = (Resource) i.next();
-			if (r instanceof ConeService) { 
-			    p.process(r);
-			}
-		}
+
+	
+	protected boolean isSuitable(Resource r)  {
+	    return r instanceof ConeService;
 	}
 
 
@@ -111,6 +104,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.22  2008/05/28 12:27:49  nw
+Complete - task 408: Adjust count reporting in astroscope and voexplorer.
+
 Revision 1.21  2008/05/09 11:33:04  nw
 Complete - task 394: process reg query results in a stream.
 

@@ -61,10 +61,10 @@ public class ScopeServicesList extends RegistryGooglePanel
 	 * @param pref 
 	 * @param pref
 	 */
-	public ScopeServicesList(AstroScopeLauncherImpl parent,RegistryInternal reg,  Ehcache bulk
+	public ScopeServicesList(AstroScopeLauncherImpl parent,RegistryInternal reg
 	        ,TypesafeObjectBuilder uiBuilder, ActivitiesManager acts
 	        ,VoMonInternal vomon, final CapabilityIconFactory iconFac,AnnotationService annServer, Preference pref) {
-		super(parent,reg, bulk, uiBuilder
+		super(parent,reg, uiBuilder
 		        ,createServicesListViews(parent,uiBuilder,acts)
 		        ,vomon, iconFac,annServer,pref);
         this.astroscope = parent;		

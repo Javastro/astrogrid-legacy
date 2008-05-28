@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.14 2008/05/09 11:33:04 nw Exp $
+/*$Id: SsapProtocol.java,v 1.15 2008/05/28 12:27:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -24,8 +21,6 @@ import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.SsapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 /**
  * @TEST
  * @author Noel.Winstanley@manchester.ac.uk
@@ -73,20 +68,19 @@ public String getXQuery() {
         return retrievers;
     }
     
-	public void processSuitableServicesInList(List resourceList,ResourceProcessor p) {
-		for (Iterator i = resourceList.iterator(); i.hasNext();) {
-			Resource r = (Resource) i.next();
-			if (r instanceof SsapService) {
-				p.process(r);
-			}
-		}
-	}
+    
+    protected boolean isSuitable(Resource r)  {
+        return r instanceof SsapService;
+    }	
 
 }
 
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.15  2008/05/28 12:27:49  nw
+Complete - task 408: Adjust count reporting in astroscope and voexplorer.
+
 Revision 1.14  2008/05/09 11:33:04  nw
 Complete - task 394: process reg query results in a stream.
 

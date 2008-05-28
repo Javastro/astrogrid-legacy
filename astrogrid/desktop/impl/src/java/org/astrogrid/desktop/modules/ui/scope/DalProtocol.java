@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.19 2008/05/09 11:33:04 nw Exp $
+/*$Id: DalProtocol.java,v 1.20 2008/05/28 12:27:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,11 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
 import java.net.URI;
+import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
-import javax.xml.stream.XMLStreamReader;
 
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
@@ -27,9 +26,7 @@ import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceConsumer;
 
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
@@ -105,15 +102,27 @@ public abstract class DalProtocol {
     public abstract String getXQuery();
     
     
-    public final void processAllServices(ResourceProcessor p) throws ServiceException {
-        reg.xquerySearchStream(getXQuery(),p);
+    public final void processAllServices(ResourceConsumer p) throws ServiceException {
+        reg.consumeXQuery(getXQuery(),p);
     }
     
 	/** produce a list of all services suitable to this protocol
 	 * @param resourceList input list to filter
 	 * @param p a processor that is passed each suitable service
+	 *  this method obeys the calling contract for resourceConsumer
 	 */
-	public abstract void processSuitableServicesInList(List<? extends Service> resourceList,ResourceProcessor p) ;
+	public final void processSuitableServicesInList(List<? extends Resource> resourceList,ResourceConsumer p) {
+        p.estimatedSize(resourceList.size());
+        for (Iterator<? extends Resource> i = resourceList.iterator(); i.hasNext();) {
+            Resource r =i.next();
+            if (isSuitable(r)) { 
+                p.process(r);
+            }
+        }	    
+	}
+	
+	/** abstract test to be implemented by subclasses, used within <tt>processSuitableServicesInLIst()</tt>*/
+	protected abstract boolean isSuitable(Resource r) ;
 
 	
     /** returns a NodeSocket which will join nodes directly to the primary 
@@ -227,6 +236,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.20  2008/05/28 12:27:49  nw
+Complete - task 408: Adjust count reporting in astroscope and voexplorer.
+
 Revision 1.19  2008/05/09 11:33:04  nw
 Complete - task 394: process reg query results in a stream.
 
