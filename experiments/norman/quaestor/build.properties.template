@@ -1,7 +1,8 @@
 # Template build.properties file for Quaestor.
 # Copy to build.properties, and substitute below the paths to Tomcat and SISC.
 
-# Context path
+# Context path.  This controls the name of the servlet which will be generated,
+# and can be changed at your convenience
 app.path=/quaestor
 
 # Tomcat installation directory.
@@ -14,12 +15,12 @@ catalina.home=<CATALINA.HOME>
 # This is the directory which contains the jena.jar file and friends.
 jena.lib=<JENA.LIB>
 
-# SDB distribution
-# (or should I use the Jena libraries in the SDB distribution?)
+# SDB distribution's .../lib directory
 sdb.lib=<SDB.LIB>
-
-# Location of the PostgreSQL JDBC connector jar
-postgres.jar=<POSTGRES.JAR>
+#
+# ...and the location of the JDBC connector jar which you will use with
+# the SDB support
+jdbc.support.jar=<JDBC.SUPPORT.JAR>
 
 # Location of the Jetty home (${jetty.home}/lib is where the jars are)
 # See www.mortbay.org
@@ -28,9 +29,14 @@ jetty.home=<JETTY.HOME>
 # SISC binary and library directories.
 # The binary directory is the one which contains the sisc program.
 sisc.bin=<SISC.BIN>
-# This is the directory which contains sisc{,-opt,-lib}.jar and sisc.shp.
+# This is the directory which contains sisc{,-opt,-lib}.jar and sisc.shp
+# (in SISC distributions after 1.15 or so, this is the same directory as
+# sisc.bin)
 sisc.lib=<SISC.LIB>
 
-# Manager username and password
+# The JUnit test jar file, .../junit.jar
+junit.jar=<JUNIT.JAR>
+
+# Tomcat manager username and password
 manager.username=manager
 manager.password=manager

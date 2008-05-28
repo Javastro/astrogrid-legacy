@@ -226,10 +226,9 @@ public class SchemeWrapper {
                 public Object execute(Interpreter i)
                         throws SchemeException {
                     try {
-                        return i.evalInput
-                                (new sisc.io.ReaderInputPort
-                                 (new java.io.InputStreamReader(in)));
+                        return i.evalInput(new java.io.PushbackReader(new java.io.InputStreamReader(in)));
                     } catch (IOException e) {
+                        // Smuggle it out by returning it.
                         return e;
                     }
                 }

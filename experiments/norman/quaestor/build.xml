@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.39 2008/05/17 18:06:59 norman Exp $
+     $Id: build.xml,v 1.40 2008/05/28 14:21:59 norman Exp $
 -->
 
 
@@ -156,16 +156,31 @@
    !                          sisc{,-opt,-lib}.jar and sisc.shp.
    !
    !       jetty.home       : the directory containing the Jetty support
+   !
+   !       jdbc.support.jar : a JDBC jar file, which must match the database
+   !                          which you have chosen to use with SDB
    ! -->
 
 
   <!-- ================= Custom Ant Task Definitions ====================== -->
   <!-- See also <http://localhost:8080/tomcat-docs/manager-howto.html> -->
 
-  <taskdef name="deploy"   classname="org.apache.catalina.ant.DeployTask"/>
-  <taskdef name="list"     classname="org.apache.catalina.ant.ListTask"/>
-  <taskdef name="reload"   classname="org.apache.catalina.ant.ReloadTask"/>
-  <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask"/>
+  <path id='tomcat.classpath'>
+    <fileset dir='${catalina.home}/server/lib' includes='catalina-ant.jar'/>
+  </path>
+
+  <taskdef name="deploy"   classname="org.apache.catalina.ant.DeployTask">
+    <classpath refid="tomcat.classpath"/>
+  </taskdef>
+  <taskdef name="list"     classname="org.apache.catalina.ant.ListTask">
+    <classpath refid="tomcat.classpath"/>
+  </taskdef>
+  <taskdef name="reload"   classname="org.apache.catalina.ant.ReloadTask">
+    <classpath refid="tomcat.classpath"/>
+  </taskdef>
+  <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+    <classpath refid="tomcat.classpath"/>
+  </taskdef>
 
 
   <!-- =================== Compilation Control Options =================== -->
@@ -254,7 +269,6 @@
   </fileset>
 
   <filelist id='sdb.support' dir='${sdb.lib}' files='sdb.jar'/>
-  <fileset id='jdbc.support' file='${postgres.jar}'/>
   <fileset id='jetty.support' dir='${jetty.home}/lib'>
     <include name='*.jar'/>
   </fileset>
@@ -281,11 +295,6 @@
     <fail unless='sdb.present'
           message='Must have SDB; version at least SVN XXX'/>
 
-    <available property='postgres.jdbc'
-               file='${postgres.jar}'/>
-    <fail unless='postgres.jdbc'
-          message='Must have PostgreSQL JSBC: see jdbc.postgresql.org'/>
-
     <available property='jetty.present'
                filepath='${jetty.home}'
                file='lib'/>
@@ -294,6 +303,7 @@
 
     <!-- Need JUnit for the src/test/org/... testcases: not essential -->
     <available property="junit.present"
+               classpath='${junit.jar}'
                classname="junit.framework.TestCase"/>
 
 
@@ -333,6 +343,7 @@
   <path id="tests.classpath">
     <pathelement location="${build.tests}"/>
     <pathelement location="${build.classes}"/>
+    <pathelement location='${junit.jar}'/>
   </path>
 
 
@@ -535,7 +546,7 @@
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
       <filelist refid="sdb.support"/>
-      <fileset refid="jdbc.support"/>
+      <fileset file="${jdbc.support.jar}"/>
       <fileset refid='jetty.support'/>
     </unjar>
     <!-- When working on the Java files below, it's convenient to have this commented out
@@ -694,7 +705,7 @@
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
       <filelist refid="sdb.support"/>
-      <fileset refid='jdbc.support'/>
+      <fileset file='${jdbc.support.jar}'/>
       <fileset refid='jetty.support'/>
     </copy>
 
