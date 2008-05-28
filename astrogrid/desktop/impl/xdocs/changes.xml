@@ -14,7 +14,18 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.1.snapshot02" date="unreleased">
+<release version="2008.1.snapshot03" date="unreleased">
+    <action dev="nw" type="fix" issue="2253">
+        AR now accepts CEA tool structures with repeated parameters.
+    </action>
+    <action dev="nw" type="update">
+        Altered registry resource caching scheme
+    </action>
+    <action dev="nw" type="add">
+        pre fill search form in astroscope with testquery parameters, if available.
+    </action>
+</release>
+<release version="2008.1.snapshot02" date="2008-05-12">
     <action dev="nw" type="fix">
     Updated astroscope registry querying to process as a stream
     </action>
