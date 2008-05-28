@@ -10,7 +10,7 @@ import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
+import org.astrogrid.desktop.modules.ag.ToolManipulator;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** construct a parameter model of a cea application
@@ -49,7 +49,7 @@ public final class ParamBuilder {
 
     public ParamBuilder(String iName, CeaApplication resource,Tool t) {
     
-        final InterfaceBean iface = ApplicationsImpl.findInterface(iName,resource.getInterfaces());
+        final InterfaceBean iface = ToolManipulator.findInterface(iName,resource.getInterfaces());
         Map descriptions = createDescriptionMap(resource);
         
         // inputs
