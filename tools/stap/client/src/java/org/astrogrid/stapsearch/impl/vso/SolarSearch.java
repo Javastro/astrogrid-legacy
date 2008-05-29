@@ -223,6 +223,23 @@ public class SolarSearch implements IStapSearch, IStapFetch {
             providerReq = ((String [])info.get("PROVIDER"))[0];
         }
         
+        String sourceReq = null;
+        if(info.containsKey("source")) {
+            sourceReq = ((String [])info.get("source"))[0];
+        }
+        
+        String []extent = null; 
+        if(info.containsKey("extent")) {
+            extent = ((String [])info.get("extent"))[0].split(",");
+        }
+        
+        String bandReq = null;
+        if(info.containsKey("BAND")) {
+        	bandReq = ((String [])info.get("BAND"))[0];
+        }
+        
+        String waveUnit = null;
+        
         
         Calendar startTimeCal = Calendar.getInstance();
         Calendar endTimeCal = Calendar.getInstance();
@@ -267,9 +284,51 @@ public class SolarSearch implements IStapSearch, IStapFetch {
         QueryRequestBlock qrb = new QueryRequestBlock();        
         qrb.setInstrument(instrumentName[0]);
         qrb.setTime(queryTime);
-        if(providerReq != null)
+        if(providerReq != null) {
             qrb.setProvider(providerReq);
+        }
         
+        if(sourceReq != null) {
+            qrb.setSource(sourceReq);
+        }
+        
+        
+        if(bandReq != null) {
+            if(info.containsKey("waveunit")) {
+            	waveUnit = ((String [])info.get("waveunit"))[0];
+            }else {
+            	waveUnit = "Angstrom";
+            }
+          Wave wv = new Wave(Float.parseFloat(bandReq.split("/")[0]),
+        		             Float.parseFloat(bandReq.split("/")[1]),
+        		             waveUnit,null);
+          qrb.setWave(wv);
+        }
+        
+        if(extent != null) {
+        	Extent vsoExtent = new Extent();
+        	
+        	if(extent[0] != null && extent[0].trim().length() > 0) {
+        		vsoExtent.setX(extent[0]);
+        	}
+        	
+        	if(extent[1] != null && extent[1].trim().length() > 0) {
+        		vsoExtent.setY(extent[1]);
+        	}
+        	
+        	if(extent[2] != null && extent[2].trim().length() > 0) {
+        		vsoExtent.setWidth(extent[2]);
+        	}
+        	
+        	if(extent[3] != null && extent[3].trim().length() > 0) {
+        		vsoExtent.setLength(extent[3]);
+        	}
+        	
+        	if(extent[4] != null && extent[4].trim().length() > 0) {
+        		vsoExtent.setType(extent[4]);
+        	}
+        	qrb.setExtent(vsoExtent);
+        }
         
         Float versionNumber = new Float(1.0);
         try {
@@ -338,7 +397,7 @@ public class SolarSearch implements IStapSearch, IStapFetch {
                         stapMaker.setProvider("VSO - " + value[j].getProvider());
                         stapMaker.setDescription("Physical Object = " + qrbResults[k].getPhysobs() + "-- Source = " + qrbResults[k].getSource() +
                                 " Wave: min = " + tempWave.getWavemin() + " max = " + tempWave.getWavemax() + " unit = " + tempWave.getWaveunit() +
-                                " type = " + tempWave.getWavetype()); 
+                                " type = " + tempWave.getWavetype() + " Extent Info (if any) x,y,width,length,type = " + tempExtent.getX()+","+tempExtent.getY()+","+tempExtent.getWidth()+","+tempExtent.getLength()+","+tempExtent.getType()); 
                         stapMaker.setInstrumentID(qrbResults[k].getInstrument());
                         
                         tempFormat = DEFAULT_FORMAT;
