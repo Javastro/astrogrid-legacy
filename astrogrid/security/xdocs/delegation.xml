@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Delegation protocol</title>
+  
+  <body>
+  	
+    <section name="How to use the delegation protocol">
+      <p>
+        The security facade implements both the client and service parts of
+        the IVOA delegation-protocol.
+      </p>
+      
+      <subsection name="Use in a web-application">
+        <p>
+          The server-side implementation is a servlet class plus supporting classes.
+        </p>
+        <p>
+          In the <i>web.xml</i> of your web application, you should declare a
+          servlet of the class 
+          <i>org.astrogrid.security.delegation.DelegationServlet</i>.
+        </p>
+        <p>
+          Pick a path within your web application for the delegation endpoint.
+          <i>/delegations</i> is recommended and will be used as an example here.
+          In <i>web.xml</i>, bind your delegation servlet to the URL patterns
+          <i>/delegations</i> and <i>/delegations/*</i> (adjusting the names
+          to suit your choice of endpoint).
+        </p>
+        <p>
+          The steps above set up the delegation service in your web application.
+          To get at the delegated credentials from your service code, 
+          follow one of the following recipies, depending on whether your
+          web service is RESTful or SOAPy.
+        </p>
+        <p>
+          For a RESTful web-service using TLS-with-client-certificate
+          authentication, do this:
+        </p>
+        <ol>
+          <li>Authenticate the caller of your service.</li>
+          <li>Construct an <i>HttpsServiceSecurityGuard</i> object.</li>
+          <li>Call the <i>loadHttpsAuthentication()</i> method on the guard.</li>
+          <li>Call the <i>loadDelegation()</i> method on the guard.</li>
+        </ol>
+        <p>
+          For a SOAPy web-service using SOAP-digital-signature
+          authentication, do this:
+        </p>
+        <ol>
+          <li>Authenticate the caller of your service.</li>
+          <li>Obtain an <i>AxisServiceSecurityGuard</i> object from the factory method in that class.</li>
+          <li>Call the <i>loadDelegation()</i> method on the guard.</li>
+        </ol>
+        <p>
+          Please see the other documents of this library for details of how to
+          perform the authentication.
+        </p>
+        <p>
+          After completion of one of the procedures above, your security guard
+          should contain a certificate chain, a matching private-key and a
+          matching X500 principal. The certificate chain will have at least one
+          proxy certificate before the end-entity certificate stating the
+          authenticated identity. I.e., if you were to
+          call <i>getCertificateChain()</i> and to look up the subject of the
+          first certificate in that chain you would get the <em>wrong</em>
+          value. Therefore, to extract the identity to use for
+          authorization checks you must call <i>getX500Principal()</i> which
+          returns the subject of the end-entity certificate.
+        </p>
+      </subsection>
+      
+      <subsection name="Use in a client application">
+        <p>
+          The client-side implementation is the class
+          <i>org.astrogrid.security.delegation.DelegationClient</i> plus some
+          supporting classes.
+        </p>
+        <p>
+          To perform delegation from a client, follow this procedure.
+        </p>
+        <ol>
+          <li>Obtain the user's credentials in a <i>SecurityGuard</i> object.</li>
+          <li>Determine the delegation endpoint from the registry.</li>
+          <li>Create a <i>DelegationClient</i>.</li>
+          <li>Invoke the <i>delegate</i> method on the client.</li>
+        </ol>
+        <p>
+          The credentials may be got by signing the user into the IVO. To do this,
+          construct a new <i>SecurityGuard</i> object and call its <i>signOn</i>
+          method. Alternatively, the client may itself be a service and receive
+          its credentials by delegation.
+        </p>
+        <p>
+          In the example of a delegation service in the previous section there
+          is an resource whose URI ends in <i>/delegations</i>. This is the
+          URI to pass to the delegation client as the delegation endpoint.
+        </p>
+        <p>
+          When creating the delegation client, you pass the endpoint and the
+          security guard. This means that each instance of 
+          <i>DelegationClient</i> is specific to one delegation service and one
+          identity. Make new ones if you need to work for other endpoints or
+          other users.
+        </p>
+        <p>
+          The <i>delegate()</i> method has no arguments. All its inputs are
+          set when the client is constructed.
+        </p>
+      </subsection>
+      
+      <subsection name="Required jars">
+        <p>
+          You will need the security-facade jar plus some 3rd-party jars.
+          These are needed for both the client and server sides.
+        </p>
+        <ul>
+          <li>bcprov-jdk15-139.jar, the Bouncy Castle JCE implementation.</li>
+          <li>cog-jglobus-1.4.jar, from the Java CoG kit.</li>
+          <li>log4j-1.2.8.jar (or compatible version of log4j).</li>
+          <li>commons-logging-1.0.4.jar (or compatible version of commons logging).</li>
+        </ul>
+        <p>
+          The delegation protocol is RESTful and does not use any part of Apache Axis.
+          Your application may, however, need Axis' jars for its other services.
+        </p>
+      </subsection>
+    </section>
+  </body>
+  
+ </document>

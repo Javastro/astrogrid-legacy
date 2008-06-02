@@ -48,8 +48,10 @@
       </subsection>
       
       <subsection name="maven.xml eliminated">
-        This version of the facade has no <i>maven.ml</i> file. The unit tests
-        have been reworked to cope without it.
+        <p>
+          This version of the facade has no <i>maven.xml</i> file. The unit tests
+          have been reworked to cope without it.
+        </p>
       </subsection>
     </section>
   

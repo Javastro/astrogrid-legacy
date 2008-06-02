@@ -1,4 +1,4 @@
-package org.astrogrid.security.community;
+package org.astrogrid.security.ssl;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

@@ -17,11 +17,7 @@ import java.security.KeyPairGenerator;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.security.auth.Subject;
-import org.astrogrid.security.HomespaceLocation;
+import org.astrogrid.security.SecurityGuard;
 import org.bouncycastle.openssl.PEMWriter;
 
 /**
@@ -61,19 +57,19 @@ public class SsoClient extends Mockery {
    * @param userName The user-name as known to the community service.
    * @param password The password, unhashed and unencrypted.
    * @param lifetime The duration of validity of the credentials, in seconds.
-   * @param subject The Subject to receive the credentials.
+   * @param guard The SecurityGuard to receive the credentials.
    * @throws IOException If communication with the service fails.
    * @throws CertificateException If the service returns invalid credentials.
    */
-  public void authenticate(String  userName, 
-                           String  password, 
-                           int     lifetime,
-                           Subject subject) throws IOException,
-                                                   CertificateException {
+  public void authenticate(String        userName, 
+                           String        password, 
+                           int           lifetime,
+                           SecurityGuard guard) throws IOException,
+                                                       CertificateException {
     assert userName != null;
     assert password != null;
     assert lifetime > 0;
-    assert subject != null;
+    assert guard != null;
     
     // If this is a test, load no credentials.
     // @TODO: load some fake credentials.
@@ -97,9 +93,7 @@ public class SsoClient extends Mockery {
     // Set up HTTPS if necessary. This makes the connection accept
     // any server identified by X509 credentials, regardless of the
     // content of those credentials.
-    if (connection instanceof HttpsURLConnection) {
-      configureHttps((HttpsURLConnection) connection);
-    }
+    guard.configureHttps(connection);
       
     // Send the password and the public key and the lifetime as parameters.
     // The keys is formatted as a PEM object.
@@ -125,11 +119,12 @@ public class SsoClient extends Mockery {
     // Read the certificate chain from the HTTP response.
     // This throws CertificateException if the response is invalid and
     // IOException if the response cannot be read at all. 
-    CertPath path = readCertificates(connection.getInputStream());
+    CertPath chain = readCertificates(connection.getInputStream());
       
     // Pack and return the credentials.
-    subject.getPrivateCredentials().add(keys.getPrivate());
-    subject.getPublicCredentials().add(path);
+    guard.setPrivateKey(keys.getPrivate());
+    guard.setCertificateChain(chain);
+    guard.setX500PrincipalFromCertificateChain();
   }
   
   /**
@@ -137,13 +132,13 @@ public class SsoClient extends Mockery {
    * Records the location as a principal in the given subject.
    *
    * @param userName The user-name as known to the community service.
-   * @param subject The Subject to receive the credentials.
+   * @param guard The object to receive the principal.
    * @throws IOException If communication with the service fails.
    */
-  public void home(String  userName, 
-                   Subject subject) throws IOException {
+  public void home(String        userName,
+                   SecurityGuard guard) throws IOException {
     assert userName != null;
-    assert subject != null;
+    assert guard != null;
     
     // If this is a test, load no credentials.
     // @TODO: load some fake credentials.
@@ -166,9 +161,7 @@ public class SsoClient extends Mockery {
     // Set up HTTPS if necessary. This makes the connection accept
     // any server identified by X509 credentials, regardless of the
     // content of those credentials.
-    if (connection instanceof HttpsURLConnection) {
-      configureHttps((HttpsURLConnection) connection);
-    }
+    guard.configureHttps(connection);
     
     // There are no query-parameters for this request.
     
@@ -185,7 +178,7 @@ public class SsoClient extends Mockery {
     // If not, assume that the account has no homespace; therefore this
     // is not an error.
     if (homespace != null) {
-      subject.getPrincipals().add(new HomespaceLocation(homespace));
+      guard.setHomespaceLocation(homespace);
     }
   }
   
@@ -221,25 +214,6 @@ public class SsoClient extends Mockery {
     catch (Exception e) {
       // This cannot happen in service unless there is a bug.
       throw new RuntimeException("Failed to construct a URL for a user homespace", e);
-    }
-  }
-  
-  /**
-   * Configures an HTTPS connection to the community. TLS is specified as the
-   * encryption protocol. Neither the client nor the server is authenticated; 
-   * the TLS is used for privacy, not identification.
-   */
-  private void configureHttps(HttpsURLConnection connection) {
-    assert connection != null;
-    try {
-      SSLContext ssl = SSLContext.getInstance("TLS");
-      TrustManager[] tms = {new GullibleX509TrustManager()};
-      ssl.init(null, tms, null);
-      connection.setSSLSocketFactory(ssl.getSocketFactory());
-    }
-    catch (Exception e) {
-      // This cannot happen in service unless there is a bug.
-      throw new RuntimeException("Failed to configure HTTPS", e);
     }
   }
   

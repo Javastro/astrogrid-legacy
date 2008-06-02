@@ -1,6 +1,9 @@
 package org.astrogrid.security;
 
+import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.security.GeneralSecurityException;
+import java.security.Principal;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,11 +16,17 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertPath;
 import java.security.cert.X509Certificate;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509KeyManager;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
 import org.astrogrid.security.authorization.AccessPolicy;
 import org.astrogrid.security.community.CommunityEndpointResolver;
 import org.astrogrid.security.community.CommunityIvornParser;
+import org.astrogrid.security.ssl.GullibleX509TrustManager;
 import org.astrogrid.security.community.SsoClient;
 
 /**
@@ -46,7 +55,7 @@ import org.astrogrid.security.community.SsoClient;
  *
  * @author Guy Rixon
  */
-public class SecurityGuard {
+public class SecurityGuard implements X509KeyManager {
   
   /**
    * The JAAS Subject for all credentials and principals.
@@ -229,8 +238,8 @@ public class SecurityGuard {
    * the signature on certificate i may be checked using the public key
    * in certificate i+1.
    *
-   * @param chain - the chain (never null; zero-length array if no certificates).
-   * @throws CertificateException - if the JRE does not support X.509.
+   * @param chain The chain (never null; zero-length array if no certificates).
+   * @throws CertificateException If the JRE does not support X.509.
    */
   public void setCertificateChain(X509Certificate[] chain) throws CertificateException {
     CertificateFactory f = CertificateFactory.getInstance("X509");
@@ -241,6 +250,29 @@ public class SecurityGuard {
     }
     CertPath p = f.generateCertPath(l);
     this.subject.getPublicCredentials().add(p);
+  }
+  
+  /**
+   * Sets the certificate-chain public-credential.
+   *
+   * @param chain The chain (never null; may be empty of certificates).
+   */
+  public void setCertificateChain(CertPath chain) {
+    this.subject.getPublicCredentials().add(chain);
+  }
+  
+  /**
+   * Sets the X500Principal from the previously-set certificate chain.
+   * The identity certificate - the first EEC - in the chain is located and
+   * its subject is recorded as a principal. This method should be called
+   * when a certificate chain is authenticated: setting the principal
+   * records the authentication.
+   */
+  public void setX500PrincipalFromCertificateChain() {
+    X509Certificate x = getIdentityCertificate();
+    if (x != null) {
+      this.subject.getPrincipals().add(x.getSubjectX500Principal());
+    }
   }
   
   /**
@@ -311,6 +343,16 @@ public class SecurityGuard {
   }
   
   /**
+   * Sets the home-space location. The home-space URI is recorded as a 
+   * principal of type {@link HomespaceLocation}.
+   *
+   * @param location The home-space URI.
+   */
+  public void setHomespaceLocation(String location) {
+    this.subject.getPrincipals().add(new HomespaceLocation(location));
+  }
+  
+  /**
    * Extracts the first Principal of a given type.
    * @param clazz - The class of principal required.
    * @return The Principal, or null if none of the requested type are present.
@@ -376,17 +418,45 @@ public class SecurityGuard {
       throw new Exception("No endpoint is registered for the accounts service for " + account);
     }
     SsoClient s = new SsoClient(r.getAccounts().toString());
-    s.authenticate(p.getAccountName(), password, lifetime, this.subject);
-    s.home(p.getAccountName(), this.subject);
+    s.authenticate(p.getAccountName(), password, lifetime, this);
+    s.home(p.getAccountName(), this);
     
     // Record the account IVORN as a principal.
     AccountIvorn i = new AccountIvorn(p.getAccountIvorn().toString());
     this.subject.getPrincipals().add(i);
+  }
+  
+  /**
+   * Configures an HTTPS connection. TLS is set as the protocol.
+   * Authentication of the server is disabled. If the connection is not an
+   * HTTPS connection then this method returns silently. This method must be
+   * called before the connection is opened;
+   *
+   * @param connection The connection to be configured.
+   */
+  public void configureHttps(HttpURLConnection connection) {
+    assert connection != null;
+    HttpsURLConnection https = null;
+    if (connection instanceof HttpsURLConnection) {
+      https = (HttpsURLConnection) connection;
+    }
+    else {
+      return;
+    }
     
-    // Record the distinguished name from the certificate chain as a principal.
-    X509Certificate x = getIdentityCertificate();
-    if (x != null) {
-      this.subject.getPrincipals().add(x.getSubjectX500Principal());
+    // The connection is configured by setting up a pre-configured
+    // SSLcontext, deriving from that an SSLSocket factory and imposing
+    // the factory on the connection.
+    try {
+      SSLContext ssl = SSLContext.getInstance("TLS");
+      TrustManager[] tms = {new GullibleX509TrustManager()};
+      KeyManager[]   kms = {this};
+      ssl.init(kms, tms, null);
+      https.setSSLSocketFactory(ssl.getSocketFactory());
+    }
+    catch (Exception e) {
+      // This cannot happen in service unless there is a bug.
+      throw new RuntimeException("Failed to configure HTTPS", e);
     }
   }
   
@@ -414,4 +484,70 @@ public class SecurityGuard {
                          new HashSet(given.getPrivateCredentials()));
     }
   }
+
+  /**
+   * Lists the aliases available for a given type of key and a given set of
+   * certificate authorities (CAs). The returned aliases should be those for 
+   * which keys of the specified type are available and for which there is a 
+   * certificate chain leading to the root certificate of one of the specified CAs.
+   * <p>
+   * This implementation is kludged: it ignores the conditions and always
+   * returns the alias "default" if the user is signed in. The use of a default
+   * alias is correct, since a given SecurityGuard only contains the credentials
+   * for one identity. However, this implementation should be extended to
+   * respect the given conditions.
+   *
+   * @param keyType The type of key required for authentication.
+   * @param cas The certificate authorities whose certificates are accepted by the service.
+   * @return The aliases (empty array if user is not signed in).
+   */
+  public String[] getClientAliases(String keyType, Principal[] cas) {
+    return (getX500Principal() == null)? new String[0] : new String[]{"default"};
+  }
+
+  /**
+   * Chooses an alias for the client based on a specified key-type and a
+   * specified set of credential issuers.
+   */
+  public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
+    return (getX500Principal() == null)? null : "default";
+  }
+
+  /**
+   * Lists the aliases available for a given type of key and a given set of
+   * certificate authorities (CAs). The returned aliases should be those for 
+   * which keys of the specified type are available and for which there is a 
+   * certificate chain leading to the root certificate of one of the specified CAs.
+   * <p>
+   * This implementation is kludged: it always returns an empty array. This
+   * class is just not expected to be used in an SSL server.
+   */
+  public String[] getServerAliases(String string, Principal[] principal) {
+    return new String[0];
+  }
+
+  public String chooseServerAlias(String string, Principal[] principal, Socket socket) {
+    return null;
+  }
+
+  /**
+   * Reveals the certificate chain for the given alias.
+   *
+   * @param alias The alias.
+   * @return The chain (null if the alias is not "default").
+   */
+  public X509Certificate[] getCertificateChain(String alias) {
+    return (alias.equals("default"))? getCertificateChain() : null;
+  }
+
+  /**
+   * Reveals the private key for the given alias.
+   *
+   * @param alias The alias.
+   * @return The key (null if the alias is not "default").
+   */
+  public PrivateKey getPrivateKey(String alias) {
+    return (alias.equals("default"))? getPrivateKey() : null;
+  }
+  
 }

@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <name>Security Facade</name>
-  <currentVersion>2008.2.a01</currentVersion>
+  <currentVersion>2008.2.a02</currentVersion>
   <shortDescription>APIs for single-sign-on security.</shortDescription>
   
   <description>
@@ -28,6 +28,7 @@
           proxy certificates.</li>
       <li>Client code to sign on a user using either MyProxy or the
           AstroGrid accounts service.</li>
+      <li>A client and servlet implementing the IVOA delegation protocol.</li>
     </ul>
     ]]>
   </description>
@@ -51,6 +52,11 @@
      <id>2007.2.04</id>
      <name>2007.2.04</name>
      <tag>v2007_2_04</tag>
+   </version>
+   <version>
+     <id>2008.2.a01</id>
+     <name>2008.2.a01</name>
+     <tag>v2008_2_a01</tag>
    </version>
  </versions>
  
@@ -268,6 +274,13 @@
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>3.1</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>servletapi</groupId>
+        <artifactId>servletapi</artifactId>
+        <version>2.4</version>
+        <type>jar</type>
       </dependency>
       
     </dependencies>
