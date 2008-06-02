@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2.a02</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2.a02">
+      <p>
+        V2008.2.a02 is the second alpha version in the development leading
+        to the 2008.2 release. This version introduces significant new
+        functions.
+      </p>
+      
+      <subsection name="Authentication in HTTPS services">
+        <p>
+          In web services where the client has been authenticated by HTTPS
+          and client certificates, the <i>HttpsServiceSecurityGuard</i>
+          class may be used to recover the client's credentials and principals.
+          This class is a sub-class of the normal <i>SecurityGuard</i>.
+        </p>
+        <p>
+          Note that this security guard does not <em>perform</em> the
+          authentication but merely allows the results to be inspected for
+          authorization checks. The act of authentication is performed by
+          the servlet container (e.g. Apache Tomcat) as part of the SSL
+          handshake. You may need to turn on HTTPS in your container, and you
+          will probably need to configure it to accept proxy certifcates; see
+          the enhanced SSL implementation for Tomcat elsewhere in the security
+          facade.
+        </p>
+      </subsection>
+      
+      <subsection name="Key manager for HTTPS client">
+        <p>
+          When writing an HTTPS client that uses client certificates for
+          authentication, one has to inject into the Java library a
+          <i>KeyManager</i> implementation that holds the right keys for the
+          client. The <i>SecurityGuard</i> implements the specialized form
+          of this interface <i>X509Keymanager</i>. Given an
+          <i>HttpsURLConnection</i> to a web resource, the security-guard
+          object sets up the key manager when the <i>configureHttps</i>
+          method is called.
+        </p>
+      </subsection>
+      
+      <subsection name="IVOA delegation protocol">
+        <p>
+          IVOA has a draft web-service procol for delegating powers to a
+          service. This version of the facade includes an implementation.
+          A delegation servlet is provided that can be included in 
+          web applications, and there is a client that can be used in
+          applications or in the AR.
+        </p>
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>
