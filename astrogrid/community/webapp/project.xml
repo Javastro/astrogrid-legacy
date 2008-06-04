@@ -2,13 +2,14 @@
 
 <project>
 
-  <extend>../maven/project.xml</extend>
-
   <id>astrogrid-community</id>
   <name>Community Web Application</name>
   <currentVersion>2008.1.01</currentVersion>
   <shortDescription>A web-application providing the community services.</shortDescription>
   <description>Community is a AstroGrid web application to manage user accounts.</description>
+  
+  <siteAddress>terror.star.le.ac.uk</siteAddress>
+  <siteDirectory>/software_docs/community-2008.1.01</siteDirectory>
 
   <developers>
     <developer>
@@ -57,6 +58,11 @@
             scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/webapp
         </developerConnection>
     </repository>
+    
+    <organization>
+      <name>AstroGrid</name>
+      <url>http://www.astrogrid.org</url>
+    </organization>
  
     <build>
       <sourceDirectory>src/java</sourceDirectory>
@@ -203,15 +209,27 @@
             <war.bundle>true</war.bundle>
         </properties>       	
        </dependency>
+       
+       <dependency>
+         <groupId>org.astrogrid</groupId>
+         <artifactId>astrogrid-security</artifactId>
+         <version>2008.q</version>
+         <type>jar</type>
+         <properties>
+           <war.bundle>true</war.bundle>
+         </properties>
+       </dependency>
     	
       
-        <dependency>
-         <id>junit</id>
-            <version>3.8</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
+       <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>3.8.1</version>
+         <type>jar</type>
+         <properties>
+           <war.bundle>true</war.bundle>
+         </properties>
+       </dependency>
       
         <dependency>
            <id>xmlunit</id>
@@ -393,14 +411,15 @@
       
       <!-- Cryptography stuff. -->
       <dependency>
-        <artifactId>bcprov-jdk14</artifactId>
+        <artifactId>bcprov-jdk15</artifactId>
         <groupId>bouncycastle</groupId>
-        <version>137</version>
+        <version>139</version>
         <type>jar</type>
         <properties>
           <war.bundle>true</war.bundle>
         </properties>
       </dependency>
+      
       <dependency>
         <artifactId>cog-jglobus</artifactId>
         <groupId>globus</groupId>
@@ -414,6 +433,7 @@
            in operation. The tests ought to be improved so as not
            to need these jars; it ought to be possible to use
            just the BC jar. -->
+      
       <dependency>
         <artifactId>cog-puretls</artifactId>
         <groupId>globus</groupId>
@@ -438,6 +458,7 @@
         <version>1.2</version>
         <type>jar</type>
       </dependency>
+     
       
       <!-- Self testing in the deployed web-app. -->
       <dependency>
