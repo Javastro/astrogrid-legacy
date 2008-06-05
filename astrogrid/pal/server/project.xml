@@ -3,7 +3,7 @@
   <!--
     <extend>${basedir}/../../maven-base/project.xml</extend>
     -->
-    <extend>${basedir}/../project.xml</extend>
+    <extend>../project.xml</extend>
      <id>astrogrid-pal-server</id>
      <name>Astrogrid Server Library</name>
   <currentVersion>${astrogrid.pal.latest}</currentVersion>
@@ -49,6 +49,13 @@
       <id>astrogrid-xml</id>
       <groupId>org.astrogrid</groupId>
       <version>${astrogrid.xml.stable}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-security</artifactId>
+      <version>${astrogrid.security.version}</version>
+      <type>jar</type>
     </dependency>
 
     <!--
