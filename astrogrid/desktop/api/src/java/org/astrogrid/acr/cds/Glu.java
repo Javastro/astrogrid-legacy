@@ -13,7 +13,7 @@ import org.astrogrid.acr.ServiceException;
  * @see http://cdsweb.u-strasbg.fr/cdsws/glu_resolver.gml
  * @author CDS
  *@service cds.glu
- *@deprecated the webservice interface at CDS this client calls doesn't seem to be maintained
+ *@deprecated the webservice interface at CDS this client calls doesn't seem to be maintained, and this component of AR is no longer provided
  */
 public interface Glu {
     /** Resolve a tag.
