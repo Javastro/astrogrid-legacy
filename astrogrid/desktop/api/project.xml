@@ -202,7 +202,7 @@
 	</properties>	
     </dependency>
 
-    <!--  should remove this now that we're not bundling a parser in vodesktop -->
+    <!--  should remove this now that we're not bundling a parser in vodesktop
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xerces</artifactId>
@@ -215,7 +215,6 @@
 	</properties>      
     </dependency>
 
-    <!--  should remove this now that we're not bundling a parser in vodesktop -->
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
@@ -227,6 +226,7 @@
     	  <comment>Required when calling RMI methods that return org.w3c.dom.*</comment>      
 	</properties>      
 	</dependency>
+     -->
 
 <!--  not needed for build - just for packaging -->
 <dependency>
