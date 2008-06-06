@@ -48,6 +48,11 @@ public class Upgrade implements Runnable {
             reg = conf.find("org.astrogrid.registry.query.altendpoint");
             reg.setValue(reg.getDefaultValue());		    
 		}
+		if (upgradedVersion == null || upgradedVersion.compareTo("2008.1.1") <=0) { //@fixme - alter to check against the correct version number.
+		    // I've changed the default for the  registry cache preference - so reset it back to default - previous default is much too long for the new scheme
+		    Preference cacheLife = conf.find("ivo.registry.cacheLife");
+		    cacheLife.setValue(cacheLife.getDefaultValue());
+		}
 		// finaly, record that we've upgraded.
 		conf.setKey(UPGRADED_VERSION,currentVersion);
 		logger.info("Upgraded");
