@@ -292,6 +292,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            //xqlQuery += " return $x";
            xqlQuery += " return $x) return subsequence($hits," + fromSequence + "," + (maxListSize + fromSequence + 2) + ")";
            
+           System.out.println("xql for OAI = " + xqlQuery);
            log.info("the build xql = " + xqlQuery);
            
            XMLDBService xdb = XMLDBFactory.createXMLDBService();
@@ -783,7 +784,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         Iterator iterator = nativeMap.entrySet().iterator();
         int numRows = nativeMap.entrySet().size();
         if (debug) {
-            System.out.println("XMLFileOAICatalog.listRecords: numRows=" + numRows);
+            //System.out.println("XMLFileOAICatalog.listRecords: numRows=" + numRows);
         }
         int count = 0;
         while (count < maxListSize && iterator.hasNext()) {
@@ -793,9 +794,9 @@ public class XMLExistOAICatalog extends AbstractCatalog {
             String schemaLocation = (String)nativeRecord.get("schemaLocation");
             List setSpecs = (List)nativeRecord.get("setSpecs");
             if (debug) {
-                System.out.println("XMLFileOAICatalog.listRecord: recordDate=" + recordDate);
-                System.out.println("XMLFileOAICatalog.listRecord: requestedSchemaLocation=" + requestedSchemaLocation);
-                System.out.println("XMLFileOAICatalog.listRecord: schemaLocation=" + schemaLocation);
+                //System.out.println("XMLFileOAICatalog.listRecord: recordDate=" + recordDate);
+                //System.out.println("XMLFileOAICatalog.listRecord: requestedSchemaLocation=" + requestedSchemaLocation);
+                //System.out.println("XMLFileOAICatalog.listRecord: schemaLocation=" + schemaLocation);
             }
             if ((!schemaLocationIndexed || requestedSchemaLocation.equals(schemaLocation))) {
                 String record = constructRecord(nativeRecord, metadataPrefix);
@@ -886,9 +887,9 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         String resumptionId;
         int oldCount;
         String metadataPrefix;
-        String from, until, set;
+        String from, until, set, tempDT;
         int numRows;
-        System.out.println("Begin tokenize");
+        System.out.println("Begin tokenize of resumptionToken = " + resumptionToken);
         try {
             resumptionId = tokenizer.nextToken();
             oldCount = Integer.parseInt(tokenizer.nextToken());
@@ -896,12 +897,26 @@ public class XMLExistOAICatalog extends AbstractCatalog {
             System.out.println("resid = " + resumptionId + " oldCount = " + oldCount + " numrows = " + numRows);
             from = tokenizer.nextToken();
             System.out.println("from = " + from);
-            if(from != null && from.trim().length() == 0)
+            if(from != null && from.trim().length() == 0) {
                 from = null;
+            }
+            if(from != null  && from.indexOf("T") != -1) {
+            	//it seems on resumption tokens these from and until will have a T##:##:##Z which
+            	//screws things up some so lets tokenize again to the Z
+            	from += ":" + tokenizer.nextToken() + ":";
+            	from += tokenizer.nextToken();
+            }
             until = tokenizer.nextToken();
             System.out.println("until = " + until);
             if(until != null && until.trim().length() == 0)
-                until = null;            
+                until = null;     
+            if(until != null) {
+            	//really should not have to deal with until but much like From make sure it is
+            	//parsed to the 'Z'
+            	until += ":" + tokenizer.nextToken() + ":";
+            	until += tokenizer.nextToken();
+            }
+            
             set = tokenizer.nextToken();
             System.out.println("set = " + set);
             if(set != null && set.trim().length() == 0)

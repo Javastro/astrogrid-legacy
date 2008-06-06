@@ -327,7 +327,7 @@ public abstract class RecordFactory {
       CrosswalkItem crosswalkItem = (CrosswalkItem)entry.getValue();
       Crosswalk crosswalk = crosswalkItem.getCrosswalk();
                 if (debug) ;
-                    System.out.println("RecordFactory.create: crosswalk=" + crosswalk);
+                    //System.out.println("RecordFactory.create: crosswalk=" + crosswalk);
       if (schemaURL == null
           || crosswalk.getSchemaURL().equals(schemaURL)) {
 

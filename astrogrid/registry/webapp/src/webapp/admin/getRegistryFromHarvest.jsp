@@ -51,7 +51,7 @@ registries.  Alterntatively you can do verb=Identify to get just the singly Regi
 </p>
 <form name="harvestURL" method="post">
 URL:
-<input type="text" width=500 name="harvesturl" value="http://nvo.ncsa.uiuc.edu/cgi-bin/rofr/oai.pl"></input>
+<input type="text" width=500 name="harvesturl" value="http://rofr.ivoa.net/cgi-bin/oai.pl"></input>
 <br />
 <input type="submit" value="Submit" />
 </form>

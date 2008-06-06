@@ -83,9 +83,9 @@ public class ResultStreamer extends RegistryXMLStreamDelegate {
                     }else if(temp.endsWith("TabularDB")) {
                         schemaLocations += " urn:astrogrid:schema:vo-resource-types:TabularDB:v1.0 " + schemaLocationBase + "vo-resource-types/TabularDB/v1.0/TabularDB.xsd";
                     }else if(temp.endsWith("OpenSkyNode")) {
-                        schemaLocations += " http://www.ivoa.net/xml/OpenSkyNode/v1.0 " + schemaLocations + "vo-resource-types/OpenSkyNode/v1.0/OpenSkyNode.xsd";
+                        schemaLocations += " http://www.ivoa.net/xml/OpenSkyNode/v1.0 " + schemaLocationBase + "vo-resource-types/OpenSkyNode/v1.0/OpenSkyNode.xsd";
                     }else if(temp.endsWith("CeaService") || temp.endsWith("CeaHttpApplicationType") || temp.endsWith("CeaApplicationType")) {
-                        schemaLocations += " http://www.ivoa.net/xml/CEA/v1.0rc1 " + schemaLocations + "vo-resource-types/CEAService/v1.0rc1/CEAService.xsd";
+                        schemaLocations += " http://www.ivoa.net/xml/CEA/v1.0rc1 " + schemaLocationBase + "vo-resource-types/CEAService/v1.0rc1/CEAService.xsd";
                     }
                 }
                 //add schemaLocation.

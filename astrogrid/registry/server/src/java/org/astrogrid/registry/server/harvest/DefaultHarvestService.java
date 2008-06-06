@@ -377,7 +377,8 @@ public abstract class DefaultHarvestService {
                try {
                    log.debug("harvest call url = " + accessURL + urlQuery);
                    if(resumptionToken != null) {
-                       doc = DomHelper.newDocument(new URL(accessURL + "&resumptionToken=" + resumptionToken));
+                	   log.info("and full url to oai = " + accessURL + "&resumptionToken=" + java.net.URLEncoder.encode(resumptionToken,"UTF-8"));
+                       doc = DomHelper.newDocument(new URL(accessURL + "&resumptionToken=" + java.net.URLEncoder.encode(resumptionToken,"UTF-8")));
                        if(doc.getDocumentElement().getElementsByTagNameNS("*","metadata").getLength() > 0)
                            urlQuery = null;
                        else {

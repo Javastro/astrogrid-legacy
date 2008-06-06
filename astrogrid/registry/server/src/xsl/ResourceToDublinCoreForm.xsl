@@ -108,7 +108,7 @@
             <tr>
               <td>URL of creator's logo</td>
               <td>
-                <input type="text" size="48" name="curation.creator.logo">
+                <input type="text" size="48" name="curation.logo">
                   <xsl:attribute name="value"><xsl:value-of select="curation/creator/logo"/></xsl:attribute>
                 </input>
               </td>

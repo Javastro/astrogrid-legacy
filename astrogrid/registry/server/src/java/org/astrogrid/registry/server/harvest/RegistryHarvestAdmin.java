@@ -513,6 +513,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
 	                            else {
 	                                log.warn("Registry type from a Harvest has no ManagedAuthorities; AuthorityID = " + ident + " versionNumber = " + versionNumber);
 	                                errorMessages += "Registry type from a Harvest has no ManagedAuthorities, this is okay but rare logging as error for double checking; AuthorityID = " + ident + " versionNumber = " + versionNumber + "\n";
+	                                updateResource = false;
 	                            }
                             
 	                            //verify there are no conflicts on the authority id
@@ -542,7 +543,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                             	}//if
                             }
                             if(errorMessages.trim().length() > 0) {
-                            	throw new IOException(errorMessages);
+                            	//throw new IOException(errorMessages);
                             	/*
                                 try {
                                     addStatError(tempIdent, versionNumber, errorMessages);

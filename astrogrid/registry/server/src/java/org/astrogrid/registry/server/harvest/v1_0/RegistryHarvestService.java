@@ -94,7 +94,10 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
       //get the accessurl and invocation type.
       //invocationtype is either WebService or WebBrowser.
       Node typeAttribute = resource.getAttributes().getNamedItem("xsi:type");
-      
+      if(typeAttribute == null) {
+    	  //A couple of registries might not use 'xsi' so lets try to look it up via NS call.
+    	  typeAttribute = resource.getAttributes().getNamedItemNS("http://www.w3.org/2001/XMLSchema-instance","type");
+      }
       isRegistryType = (typeAttribute != null) &&
                        (typeAttribute.getNodeValue().indexOf("Registry") >= 0);
       if(!isRegistryType) {
@@ -107,12 +110,16 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
       if(nlInterface.getLength() > 0) {
     	  for(int j = 0;j < nlInterface.getLength();j++) {
     	    typeAttribute = nlInterface.item(j).getAttributes().getNamedItem("xsi:type");
-    	    if(typeAttribute != null && typeAttribute.getNodeValue().indexOf("OAI") != -1) {
+    	      if(typeAttribute == null) {
+    	    	  //A couple of registries might not use 'xsi' so lets try to look it up via NS call.
+    	    	  typeAttribute = nlInterface.item(j).getAttributes().getNamedItemNS("http://www.w3.org/2001/XMLSchema-instance","type");
+    	      }
+    	      if(typeAttribute != null && typeAttribute.getNodeValue().indexOf("OAI") != -1) {
     	    	
     	    	nl = ((Element)nlInterface.item(j)).getElementsByTagNameNS("*","accessURL");
     	    	if(nl.getLength() > 0)
     	    		break;
-    	    }//if
+    	      }//if
     	  }
       }
       
