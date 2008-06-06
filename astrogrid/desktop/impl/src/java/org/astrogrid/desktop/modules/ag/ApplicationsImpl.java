@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.31 2008/04/23 10:51:44 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.32 2008/06/06 13:39:58 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,8 +52,6 @@ import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ivoa.AdqlInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -86,12 +82,14 @@ public class ApplicationsImpl implements ApplicationsInternal {
         this.adql = adql;
         this.nuReg = nuReg;
         this.applicationResourceCache = applicationResourceCache;
+        this.manipulator = new ToolManipulator();
        }
     protected final Ehcache applicationResourceCache;
     protected final RegistryInternal nuReg;
     protected final RemoteProcessManager manager;
     private final FileSystemManager vfs;
     protected final AdqlInternal adql;
+    protected final ToolManipulator manipulator;
 
    
     public URI[] list() throws ServiceException {   
@@ -249,172 +247,10 @@ public class ApplicationsImpl implements ApplicationsInternal {
   
 
 
-public Tool createTemplateTool(String interfaceName, CeaApplication descr) throws IllegalArgumentException {
-    if (interfaceName != null && (! interfaceName.equals("default"))) {
-        InterfaceBean[] ifaces = descr.getInterfaces();
-        InterfaceBean iface = findInterface(interfaceName, ifaces);
-        if (iface == null) {
-            throw new IllegalArgumentException("Cannot find interface named " + interfaceName );
-        }
-         return createTool(descr,iface);
-    } else {
-        return createTool(descr,null);
-    }
-}
-
-
-
-public static InterfaceBean findInterface(String interfaceName, InterfaceBean[] ifaces) {
-	InterfaceBean iface = null;
-	for (int i = 0; i < ifaces.length; i++) {
-	    if (ifaces[i].getName().equals(interfaceName)) {
-	        iface =ifaces[i];
-	    }
-	}
-	return iface;
-}
-
-private Tool createTool(CeaApplication descr,InterfaceBean iface) {
-    if (iface == null) {
-        iface = descr.getInterfaces()[0];
-    }
-    Tool t = new Tool();
-    t.setInterface(iface.getName());
-    t.setName(descr.getId().getAuthority() + descr.getId().getPath()); //@todo should I drop the 'ivo' part.? - yes. for now. until cea accept this
-    Input input = new Input();
-    Output output = new Output();
-    t.setInput(input);
-    t.setOutput(output);
-    
-    // populate inputs
-    ParameterReferenceBean[] refs = iface.getInputs();
-    ParameterBean[] parameters = descr.getParameters();
-    ParameterValue[] arr = new ParameterValue[refs.length];
-    for (int i = 0; i < refs.length; i++) {
-        ParameterBean pb =findParameter(parameters,refs[i].getRef());
-        arr[i] = createParameterValue(pb);         
-    }
-    input.setParameter(arr);
-    
-    // populate outputs.
-    refs = iface.getOutputs();
-    arr = new ParameterValue[refs.length];
-    for (int i = 0; i < refs.length; i++) {
-        ParameterBean pb =findParameter(parameters,refs[i].getRef());
-        arr[i] = createParameterValue(pb);
-        
-    }   
-    output.setParameter(arr);
-    
-    // fill in the blanks.
-    return t;
-}
-
-public static ParameterBean findParameter(ParameterBean[] arr,String name) {
-	for (int i =0; i < arr.length; i++) {
-		if (arr[i].getName().equals(name)){
-			return arr[i];
-		}
-	}
-	return null;
-}
-
-  
-  private ParameterValue createParameterValue(ParameterBean pb) {
-      ParameterValue pv = new ParameterValue();
-      pv.setName(pb.getName());
-      if (pb.getDefaultValue()!= null) {
-          pv.setValue(pb.getDefaultValue());
-      } else {
-          pv.setValue("");
-      }
-      return pv;
-      
-  }
-    
-    public Map createTemplateStruct(URI applicationName, String interfaceName)
+public Map createTemplateStruct(URI applicationName, String interfaceName)
     throws ServiceException, NotFoundException, InvalidArgumentException {
         Document t = createTemplateDocument(applicationName,interfaceName);
         return convertDocumentToStruct(t);
-    }
-    
-    public Map convertDocumentToStruct(Document doc) throws InvalidArgumentException {
-        
-        Tool document;
-        try {
-            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);    
-        Map result = new LinkedHashMap();
-        result.put("interface",document.getInterface());
-        result.put("name",document.getName());
-        Hashtable inputs= new Hashtable();
-        Hashtable outputs = new Hashtable();
-        result.put("input",inputs);
-        for (int i = 0; i < document.getInput().getParameterCount(); i++) {
-            convertParameterToHash(inputs, document.getInput().getParameter(i));
-        }
-        result.put("output",outputs);
-        for (int i = 0; i < document.getOutput().getParameterCount(); i++) {
-            convertParameterToHash(outputs, document.getOutput().getParameter(i));
-        }        
-        return result;
-        } catch (MarshalException e) {
-            throw new InvalidArgumentException(e);
-        } catch (ValidationException e) {
-            throw new InvalidArgumentException(e);
-        }        
-    }
-    
-    private void convertParameterToHash(Hashtable collection,ParameterValue v) {
-        Hashtable result = new Hashtable();
-        collection.put(v.getName(),result);
-        result.put("value",v.getValue());
-        result.put("indirect",Boolean.valueOf( v.getIndirect()));
-    }
-    
-    private ParameterValue convertHashToParameter(String name,Map h) {
-        ParameterValue v= new ParameterValue();
-        v.setName(name);
-        v.setIndirect(((Boolean)h.get("indirect")).booleanValue());
-        v.setValue(h.get("value").toString());
-        return v;
-    }
-
-    private ParameterValue[] convertParams(Map inputHash) {
-        ParameterValue[] arr = new ParameterValue[inputHash.size()];
-        Iterator i = inputHash.entrySet().iterator();
-        for (int ix = 0; ix < arr.length; ix++) {
-            Map.Entry e =(Map.Entry) i.next();
-            arr[ix] =convertHashToParameter(e.getKey().toString(),(Map)e.getValue());                        
-        }
-        return arr;
-    }
-    
-    public Document convertStructToDocument(Map struct) throws InvalidArgumentException {
-        Tool t = new Tool();
-        t.setName(struct.get("name").toString());
-        t.setInterface(struct.get("interface").toString());
-        org.astrogrid.workflow.beans.v1.Input input = new org.astrogrid.workflow.beans.v1.Input();
-        
-        Map paramHash= (Map)struct.get("input");
-        input.setParameter(convertParams(paramHash));
-        t.setInput(input);
-        
-        Output output = new Output();
-        paramHash = (Map)struct.get("output");               
-       output.setParameter(convertParams(paramHash));
-        t.setOutput(output);
-
-        try {
-            Document doc = XMLUtils.newDocument();
-            Marshaller.marshal(t,doc);
-            return doc;
-        } catch (ParserConfigurationException e) {
-            throw new InvalidArgumentException(e);
-        } catch (MarshalException e) {
-            throw new InvalidArgumentException(e);
-        } catch (ValidationException e) { 
-            throw new InvalidArgumentException(e);
-        }
     }
     //@todo test.
     public void validate(Document document) throws ServiceException, InvalidArgumentException {
@@ -545,7 +381,7 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
      */
     public void translateQueries(Resource application, Tool document) throws  ServiceException {
         // fiddle any embedded queries..
-        String[] adqlParameters = listADQLParameters(document.getInterface(),application);
+        String[] adqlParameters = ToolManipulator.listADQLParameters(document.getInterface(),application);
         if (adqlParameters.length > 0) {            
             for (int i = 0; i < adqlParameters.length; i++) {
                 ParameterValue val = (ParameterValue) document.findXPathValue("input/parameter[name='" + adqlParameters[i] + "']");
@@ -582,36 +418,24 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 
 
-	/** returns true if this app has an adql parameter */
-	public static String[] listADQLParameters(String interfaceName,Resource r) {
-		if (! (r instanceof CeaApplication)) {
-			return new String[0];
-		}
-		CeaApplication info = (CeaApplication)r;
-	    InterfaceBean ib = null;
-	    List results = new ArrayList();
-	    for (int i = 0; i < info.getInterfaces().length; i++) {        
-	        if (info.getInterfaces()[i].getName().equals(interfaceName)) {
-	            ib = info.getInterfaces()[i];
-	        }            
-	    }
-	    if (ib == null) {
-	        return new String[]{};
-	    }
-	    ParameterBean[] arr = info.getParameters();
-	    for (int i =0; i < ib.getInputs().length; i++) {
-	        ParameterReferenceBean prb = ib.getInputs()[i];
-	        ParameterBean pb = findParameter(arr,prb.getRef());
-	        if (pb ==null) {
-	            return new String[]{};
-	        }
-	        if (pb.getType() != null && pb.getType().equalsIgnoreCase("adql")) {
-	            results.add(pb.getName());
-	        }
-	    }
-	    return (String[])results.toArray(new String[results.size()]);
-	    
-	}
+	public Map convertDocumentToStruct(Document arg0)
+            throws InvalidArgumentException {
+        return DocumentToStructureConversion.convertDocumentToStruct(arg0);
+    }
+
+
+
+    public Document convertStructToDocument(Map arg0)
+            throws InvalidArgumentException {
+        return DocumentToStructureConversion.convertStructToDocument(arg0);
+    }
+
+
+
+    public Tool createTemplateTool(String interfaceName, CeaApplication descr)
+            throws IllegalArgumentException {
+        return this.manipulator.createTemplateTool(interfaceName, descr);
+    }
 
 
 
@@ -624,6 +448,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.32  2008/06/06 13:39:58  nw
+refactored applicationsImpl in prep for reinstating CDS tasks.
+
 Revision 1.31  2008/04/23 10:51:44  nw
 marked as needing test.
 
