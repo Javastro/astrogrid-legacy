@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.11 2007/11/27 07:09:51 nw Exp $
+/*$Id: ScheduledTask.java,v 1.12 2008/06/06 13:44:50 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,9 @@ import java.security.Principal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 
-/** interface to a schedulable task. the execute method is called each 'period' milliseconds.
+/** interface to a schedulable task. 
+ * the execute method is called each 'period' milliseconds.
+ * after a first initial execution.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 05-Nov-2005
  *
  */
@@ -41,6 +43,9 @@ public interface ScheduledTask{
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.12  2008/06/06 13:44:50  nw
+corrected documentation.
+
 Revision 1.11  2007/11/27 07:09:51  nw
 integrate commons.io
 

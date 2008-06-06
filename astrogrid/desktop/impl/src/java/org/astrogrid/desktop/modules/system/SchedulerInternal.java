@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.10 2008/05/09 11:32:34 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.11 2008/06/06 13:43:43 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.joda.time.Duration;
  *
  */
 public interface SchedulerInternal {
-    /** execute a periodic task */
+    /** execute a periodic task - runs the first time immediately, and then after task.getPeriod() milliseconds*/
     public void schedule(ScheduledTask task);
     
     /** execute a delayed continuation */
@@ -70,6 +70,9 @@ public interface SchedulerInternal {
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.11  2008/06/06 13:43:43  nw
+corrected documentation.
+
 Revision 1.10  2008/05/09 11:32:34  nw
 Incomplete - task 392: joda time
 
