@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.18 2008/05/09 11:32:34 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.19 2008/06/06 13:44:52 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
@@ -226,9 +227,6 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 	
 	// the delayedContinuation interface - used to fetch the helpmap, avoiding a race condition.
     public DelayedContinuation execute() {
-        (new BackgroundWorker(context,"Fetching help-map", Thread.MIN_PRIORITY) { // load the help bap on a background thread.
-
-            protected Object construct() throws Exception {
                 final XMLInputFactory fac = XMLInputFactory.newInstance();
                 XMLStreamReader in = null;
                 try {
@@ -249,6 +247,10 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
                             }
                         }
                     } // end while.
+                } catch (XMLStreamException x) {
+                    logger.error("XMLStreamException",x);
+                } catch (IOException x) {
+                    logger.error("IOException",x);
                 } finally {
                     if (in != null) {
                         try {
@@ -258,12 +260,6 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
                         }
                     }
                 }                
-                return null; 
-            }
-            protected void doError(Throwable ex) {
-                logger.warn("Failed to download helpmap",ex);
-            }
-        }).start();
         return null; // no more repititions for this task.
     }
     public Duration getDelay() {
@@ -283,6 +279,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.19  2008/06/06 13:44:52  nw
+fix to threading implementation.
+
 Revision 1.18  2008/05/09 11:32:34  nw
 Incomplete - task 392: joda time
 
