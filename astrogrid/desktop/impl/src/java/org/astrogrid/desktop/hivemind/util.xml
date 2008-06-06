@@ -54,7 +54,7 @@ good place to put functionality and coding tests - which should be part of the m
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> <!-- implement a headless selftester?? -->
     </service-point>
         
-    <implementation service-id="selftest" if="property java.awt.headless">
+    <implementation service-id="selftest" if="not (property java.awt.headless)">
         <interceptor service-id="system.edtInvoke" />
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.util.SelfTesterImpl">
