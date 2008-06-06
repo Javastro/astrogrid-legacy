@@ -17,7 +17,6 @@
 			<acrService id="vizier" interface="VizieR" />
 			<acrService id="coordinate" interface="Coordinate"/>
 			<acrService id="ucd" interface="UCD" />
-			<acrService id="glu" interface="Glu" />
 	</contribution>
 	
 <!-- 
@@ -67,7 +66,7 @@ SESAME
             overflowToDisk="true"
             diskPersistent="true"
             timeToLiveSeconds="${ivo.registry.cacheLife}"
-            timeToIdleSeconds="345600"
+            timeToIdleSeconds="${ivo.registry.cacheLife}"
         />
     </contribution>
 <!-- 
@@ -158,32 +157,5 @@ UCD Dictionary
 		</preference>
 	</contribution>
 	
-	<!-- 
-	=========================
-	GLU
-	 -->	
-	<service-point id="glu" interface="Glu">
-		CDS service registry
-        <interceptor service-id="system.edt" />        
-		<interceptor service-id="system.throbber" />		
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.cds.GluImpl">
-				<object>preference:cds.glu.endpoint</object>
-			</construct>
-		</invoke-factory>			
-	</service-point>
-	
-	<implementation service-id="glu" if="property cds.glu.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
-	
-		<contribution configuration-id="framework.preferences">
-			<preference name="cds.glu.endpoint"  advanced="true"
-				default-value="http://cdsws.u-strasbg.fr/axis/services/Jglu" >
-					<ui-name>GLU resolver endpoint</ui-name>
-					<description>http url of the resolver service</description>
-					<units>url</units>
-			</preference>
-	</contribution>	
  </module>
  

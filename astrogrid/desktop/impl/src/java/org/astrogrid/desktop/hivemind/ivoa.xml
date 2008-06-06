@@ -35,7 +35,7 @@
 	<!-- =====================
 	REGISTRY
 	-->
-	
+	<!-- 
 	<service-point id="registry" interface="org.astrogrid.desktop.modules.ivoa.RegistryInternal">
 		System Registry
         <interceptor service-id="system.edt" />        
@@ -47,21 +47,43 @@
                <object>preference:org.astrogrid.registry.query.altendpoint</object>
 				<object>cache:resources</object>
 				<object>cache:documents</object>
-				<object>cache:bulk</object>				
+				<object>cache:bulk</object>			
 			</construct>
 		</invoke-factory>
 	</service-point>
+     -->
+
+    <service-point id="registry" interface="org.astrogrid.desktop.modules.ivoa.RegistryInternal">
+        System Registry
+        <interceptor service-id="system.edt" />        
+        <interceptor service-id="system.throbber" />
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ivoa.IndexCachingRegistryImpl" >
+                <service>externalRegistry</service>
+               <object>preference:org.astrogrid.registry.query.endpoint</object>
+               <object>preference:org.astrogrid.registry.query.altendpoint</object>
+                <object>cache:resources</object>
+                <object>cache:documents</object>
+                <object>cache:indexes</object>      
+            </construct>
+    </invoke-factory>
+    </service-point>
+    
+        <!--  run periodically -->  
+    <contribution configuration-id="system.scheduledTasks">
+        <object>service:registry</object><!--  removes obsolete registry entries -->
+    </contribution>
+        
 	
 	<contribution configuration-id="ivoa.caches">
-		cache for individual resource objects
+		cache for individual resource objects. elements are eternal - never expire based on age. We manage expiration instead.
 		<cache name="resources"
-			maxElementsInMemory="50"
-			maxElementsOnDisk="300"
+			maxElementsInMemory="300"
+			maxElementsOnDisk="5000"
 			overflowToDisk="true"
 			diskPersistent="true"
-			timeToLiveSeconds="${ivo.registry.cacheLife}"
-			timeToIdleSeconds="345600"
             registrySensitive="true"
+            eternal="true"
 		/>
 		cache for registry return documents - resource docs, and xquery docs
 		sized so it's just enough in memory one up, one down in registry google.
@@ -71,20 +93,29 @@
 			overflowToDisk="true"
 			diskPersistent="true"
 			timeToLiveSeconds="${ivo.registry.cacheLife}"
-			timeToIdleSeconds="345600"
+			timeToIdleSeconds="${ivo.registry.cacheLife}"
             registrySensitive="true"
 		/>
-		cache for bulk searches, etc, of registry documents.
-		smallest amount in memory, enough on disk to store astroscope queries.
+        unused - keep around so that any residual data in this cache will be cleaned from disk.
 		<cache name="bulk"
 			maxElementsInMemory="1"
 			maxElementsOnDisk="10"
 			overflowToDisk="true"
 			diskPersistent="true"
-			timeToLiveSeconds="${ivo.registry.cacheLife}"
-			timeToIdleSeconds="345600"
+			timeToLiveSeconds="10"
+			timeToIdleSeconds="10"
             registrySensitive="true"
 		/>			
+        cache for index lists - lists of indexes matching a particular xquery. used to optimize xquery and voexplorer UI
+        <cache name="indexes"
+            maxElementsInMemory="3"
+            maxElementsOnDisk="200"
+            overflowToDisk="true"
+            diskPersistent="true"
+            timeToLiveSeconds="${ivo.registry.cacheLife}"
+            timeToIdleSeconds="${ivo.registry.cacheLife}"
+            registrySensitive="true"
+            />            
 	</contribution>
     
      <contribution configuration-id="util.selftest" >
@@ -129,7 +160,7 @@
 				<units>url</units>
 		</preference>
 		<preference name="ivo.registry.cacheLife" requires-restart="true"
-			default-value="604800">
+			default-value="86400">
 				<ui-name>Cached entries expire after</ui-name>
 				<description>86400 seconds = a day, 604800 seconds = a week</description>
 				<units>seconds</units>
@@ -242,6 +273,11 @@ RESULT CACHE
 		<provider prefix="cache" service-id="cache" />
 	</contribution>
 		
+    <!--  run periodically -->  
+    <contribution configuration-id="system.scheduledTasks">
+        <object>service:cache</object><!--  removes old data from the cache periodically -->
+    </contribution>
+        
 	
 	<configuration-point id="caches">
 		Defines caches for components to use.
@@ -253,6 +289,9 @@ RESULT CACHE
 				<attribute name="diskPersistent" translator="boolean">
 				For caches that overflow to disk, whether the disk cache persists between CacheManager instances.				
 				</attribute>
+                <attribute name="eternal" translator="boolean">
+                    If eternal, timeouts are ignored and the element is never expired.                
+                </attribute>
 				<attribute name="maxElementsInMemory">
 				the maximum objects to be held in the MemoryStore.
 				</attribute>

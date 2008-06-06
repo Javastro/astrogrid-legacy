@@ -50,13 +50,14 @@ ANNOTATION SERVICE
 		cache of annotations
 		'unlimited' disk storage, lasts whole session, but is discarded at end of session.
 		practically infinite storage - necessary because we're using this for real data.
+        NB: shoudl diskPersistent be 'false' here - if discarded at end of session?
 		<cache name="annotate"
 			maxElementsInMemory="1000"
 			maxElementsOnDisk="10000000"
 			overflowToDisk="true"
             diskPersistent="true"
             timeToLiveSeconds="${ivo.registry.cacheLife}"
-            timeToIdleSeconds="345600"
+            timeToIdleSeconds="${ivo.registry.cacheLife}"
 		/>
 	</contribution>
 
@@ -147,11 +148,11 @@ VOMON
 		'unlimited' disk storage for entire document
 		<cache name="vomon"
 			maxElementsInMemory="100"
-			maxElementsOnDisk="100000"
+			maxElementsOnDisk="10000000"
 			overflowToDisk="true"
 			diskPersistent="true"
             timeToLiveSeconds="${ivo.registry.cacheLife}"
-            timeToIdleSeconds="345600"            
+            timeToIdleSeconds="${ivo.registry.cacheLife}"           
 		/>
         <!-- 
 			timeToLiveSeconds="7200"
@@ -185,13 +186,9 @@ VOMON
         <object>service-property:vomon:selftest</object>
     </contribution>
 
-	<!--  load on startup -->
-	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="vomon"/><!--  fetches status fiule from service on startup. -->
-	</contribution>	
-	
+	<!--  run periodically -->	
 	<contribution configuration-id="system.scheduledTasks">
-		<object>service:vomon</object><!--  reloads the data periodically -->
+		<object>service:vomon</object><!--  reloads the data periodically - runs first time immediately, so data is fetched at startup -->
 	</contribution>
 
  </module>

@@ -71,7 +71,6 @@ ASTROSCOPE
 		displaying summaries in astroscope.
             <inject-arg />
 			<inject object="service:ivoa.registry" />
-			<inject object="cache:bulk" />
 			<inject object="service:UiBuilder" />	
             <inject-arg />		
 			<inject object="service:votech.vomon" />

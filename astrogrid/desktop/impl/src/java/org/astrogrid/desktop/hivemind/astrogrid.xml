@@ -252,13 +252,14 @@ APPLICATIONS
  small cache of resources that have been treated as applications.
 		 not entirely happy about thios one - will do for now.
 		 makes workflow builder much more responsive.	
+         TODO: is this still needed?
 		<cache name="applicationResources"
 			maxElementsInMemory="20"
 			maxElementsOnDisk="100"
 			overflowToDisk="true"
 			diskPersistent="true"
 			timeToLiveSeconds="${ivo.registry.cacheLife}"
-			timeToIdleSeconds="345600"
+			timeToIdleSeconds="${ivo.registry.cacheLife}"
             registrySensitive="true"
 		/>
 	</contribution>
