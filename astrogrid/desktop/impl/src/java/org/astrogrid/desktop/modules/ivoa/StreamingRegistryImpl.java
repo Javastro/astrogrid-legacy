@@ -13,6 +13,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -35,8 +37,6 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.voexplorer.QuerySizerImpl;
@@ -46,10 +46,12 @@ import org.w3c.dom.Document;
 
 /** Registry implementaiton,
  * delegates work to the external registry impl
+ * 
+ * @todo relict of a previous caching technique - remove cruft in time.
  * @author Noel Winstanley
  * @since Jul 26, 200611:41:13 PM
  */
-public class StreamingRegistryImpl implements RegistryInternal {
+public abstract class StreamingRegistryImpl implements RegistryInternal {
 
 	/** processor that just copies input to a supplied stream writer */
 	public static class WriterStreamProcessor implements StreamProcessor {
@@ -117,16 +119,20 @@ public class StreamingRegistryImpl implements RegistryInternal {
 	/**
 	 * Logger for this class
 	 */
-	private static final Log logger = LogFactory
+	protected static final Log logger = LogFactory
 			.getLog(StreamingRegistryImpl.class);
 
-	private final ExternalRegistryInternal reg;
-	private final Preference endpoint;
-	private final Preference fallbackEndpoint;
+	protected final ExternalRegistryInternal reg;
+	protected final Preference endpoint;
+	protected final Preference fallbackEndpoint;
 	private final XMLOutputFactory outputFactory;
-	private final Ehcache resourceCache;
-	private final Ehcache documentCache;	
+	// map from URI to Resource
+	protected final Ehcache resourceCache;
+	// map from URI to Document
+	private final Ehcache documentCache;
+	// map from query expression to Resource[]
 	private final Ehcache bulkCache;
+
 	
 			
 		
@@ -185,14 +191,6 @@ public class StreamingRegistryImpl implements RegistryInternal {
 			}
 		}
 
-		public void keywordSearchStream(String keywords, boolean orValues, StreamProcessor processor) throws ServiceException {
-			try {
-				reg.keywordSearchStream(getSystemRegistryEndpoint(),keywords, orValues,processor);
-			} catch (ServiceException e) {
-				logger.warn("Failed to query main system registry - falling back",e);
-				reg.keywordSearchStream(getFallbackSystemRegistryEndpoint(),keywords,orValues,processor);
-			}
-		}
 
 		public void xquerySearchStream(String xquery, StreamProcessor processor) throws ServiceException {
 			try {
@@ -210,8 +208,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 					return (Resource[])e.getValue();
 				} else {
 					Resource[]res =  reg.adqlsSearch(getSystemRegistryEndpoint(),arg0);
-					bulkCache.put(new Element(arg0,res));
-					cacheResources(res);
+					cacheResources(arg0,res);
 					return res;
 					}
 			} catch (ServiceException e) {
@@ -227,8 +224,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 					return (Resource[])e.getValue();
 				} else {				
 				Resource[] res =  reg.adqlxSearch(getSystemRegistryEndpoint(),arg0);
-				bulkCache.put(new Element(arg0,res));				
-				cacheResources(res);
+				cacheResources(arg0,res);
 				return res;
 				}
 			} catch (ServiceException e) {
@@ -236,8 +232,10 @@ public class StreamingRegistryImpl implements RegistryInternal {
 				return reg.adqlxSearch(getFallbackSystemRegistryEndpoint(),arg0);
 			}
 		}
-		
-		private void cacheResources(Resource[] res) {
+		/** stuff each resource in the individual resource cache, and add an entry to the bulk cache
+		 * for the entire array using <tt>bulkKey</tt> */
+		private void cacheResources(Object bulkKey,Resource[] res) {
+		    bulkCache.put(new Element(bulkKey,res));
 			for (int i = 0; i < res.length; i++) {
 				if (resourceCache.get(res[i].getId()) == null) {
 					resourceCache.put(new Element(res[i].getId(),res[i]));
@@ -249,7 +247,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 		public RegistryService getIdentity() throws ServiceException {
 			try {
 				Element el = resourceCache.get(getSystemRegistryEndpoint());
-				if (el != null) {
+				if (el != null && el.getValue() instanceof RegistryService) {
 					return (RegistryService)el.getValue();
 				} else {
 					RegistryService r = reg.getIdentity(getSystemRegistryEndpoint());
@@ -266,7 +264,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 		public Resource getResource(URI arg0) throws NotFoundException, ServiceException {
 			try {
 				Element el = resourceCache.get(arg0);
-				if (el != null) {
+				if (el != null && el.getValue() instanceof Resource) {
 					return (Resource)el.getValue();
 				} else {
 					Resource res = reg.getResource(getSystemRegistryEndpoint(),arg0);
@@ -279,6 +277,40 @@ public class StreamingRegistryImpl implements RegistryInternal {
 				return reg.getResource(getFallbackSystemRegistryEndpoint(),arg0);
 			}
 		}
+		
+		public void consumeResourceList(Collection<URI> uriList,
+		        ResourceConsumer processor) throws ServiceException {
+		    if (uriList.isEmpty()) {
+		        return; // done
+		    }	        
+		    consumeXQuery(mkListResourcesQuery(uriList),processor);
+		}
+
+	    /** build a query to list resources
+	     * @param uriList
+	     * @return
+	     */
+		protected String mkListResourcesQuery(final Collection<URI> uriList) {
+		    StringBuilder sb = new StringBuilder();
+		    sb.append("for $r in //vor:Resource[not (@status = 'inactive' or @status= 'deleted')]\n where (");
+		    sb.append("not( empty(index-of((");
+		    for (Iterator<URI> i = uriList.iterator(); i.hasNext();) {
+		        URI u =  i.next();
+		        sb.append("'")
+		        .append(u)
+		        .append("'");
+		        if (i.hasNext()) {
+		            sb.append(", ");
+		        }	     
+		    }
+		    sb.append("),$r/identifier)))");
+		    sb.append(")\nreturn $r");
+		    final String xquery = sb.toString();
+		    return xquery;
+		}
+	    
+		
+	    
 		public Document getResourceXML(URI ivorn) throws ServiceException, NotFoundException {
 			try {
 				final Element element = documentCache.get(ivorn);
@@ -301,8 +333,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 					return (Resource[])e.getValue();
 				} else {	
 				Resource[] res =  reg.keywordSearch(getSystemRegistryEndpoint(),arg0,arg1);
-				bulkCache.put(new Element(arg0 + arg1,res));					
-				cacheResources(res);
+				cacheResources(arg0+arg1,res);
 				return res;		
 				}
 			} catch (ServiceException e) {
@@ -310,7 +341,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 				return reg.keywordSearch(getFallbackSystemRegistryEndpoint(),arg0,arg1);
 			}
 		}
-
+		
 		public Resource[] xquerySearch(String arg0) throws ServiceException {
 			try {
 				Element e = bulkCache.get(arg0);
@@ -318,8 +349,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 					return (Resource[])e.getValue();
 				} else {						
 				Resource[] res =  reg.xquerySearch(getSystemRegistryEndpoint(),arg0);
-				bulkCache.put(new Element(arg0,res));
-				cacheResources(res);
+				cacheResources(arg0,res);
 				return res;	
 				}
 			} catch (ServiceException e) {
@@ -328,8 +358,8 @@ public class StreamingRegistryImpl implements RegistryInternal {
 				return reg.xquerySearch(getFallbackSystemRegistryEndpoint(),arg0);
 			}
 		}
-		
-		public void xquerySearchStream(String arg0, ResourceProcessor processor)
+	
+		public void consumeXQuery(String arg0, ResourceConsumer processor)
 		throws ServiceException {
 		    try {
 		        Element e = bulkCache.get(arg0);
@@ -344,8 +374,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 		                    ,streamProcessor
 		            );
 		            Resource[] res = (Resource[])streamProcessor.resources.toArray(new Resource[streamProcessor.resources.size()]);
-		            bulkCache.put(new Element(arg0,res));
-		            cacheResources(res);             
+		            cacheResources(arg0,res);             
 		        }
 		    } catch (ServiceException e) {
 		        logger.warn("Failed to query main system registry - falling back",e);
@@ -353,6 +382,17 @@ public class StreamingRegistryImpl implements RegistryInternal {
 		        reg.xquerySearchStream(getFallbackSystemRegistryEndpoint(),arg0, new ResourceProcessorToStreamProcessor(processor));
 		    }	        
 		}
+		
+		public void consumeXQueryReload(String arg0, ResourceConsumer processor)
+		throws ServiceException {
+		    Element e = bulkCache.get(arg0);
+		    if (e != null) {
+		        bulkCache.remove(arg0);
+		        
+		    }                
+		    consumeXQuery(arg0,processor);
+       
+		}		
 	    /** adapter that wraps a resouce processor to appear as a stream prociessor,
 	     * and collects all the results that pass - so they can be cached.
 	     * sadly, this means that a reference is held onto all resources as they whizz pass.
@@ -360,9 +400,9 @@ public class StreamingRegistryImpl implements RegistryInternal {
 	     * @since May 6, 20089:34:52 PM
 	     */
 	    private class ResourceProcessorToStreamProcessor implements StreamProcessor {
-	        private final ResourceProcessor proc;
+	        private final ResourceConsumer proc;
 	        public final List resources = new ArrayList();
-            public ResourceProcessorToStreamProcessor(ResourceProcessor proc) {
+            public ResourceProcessorToStreamProcessor(ResourceConsumer proc) {
                 super();
                 this.proc = proc;
             }
@@ -392,24 +432,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
 			}
 		}
 
-		public void adqlxSearchStream(Document adqlx, boolean identifiersOnly, StreamProcessor processor)
-			throws ServiceException, InvalidArgumentException {
-			try {
-				reg.adqlxSearchStream(getSystemRegistryEndpoint(),adqlx,identifiersOnly,processor);
-			} catch (ServiceException e) {
-				logger.warn("Failed to query main system registry - falling back",e);
-				reg.adqlxSearchStream(getFallbackSystemRegistryEndpoint(),adqlx,identifiersOnly,processor);
-			}
-		}
-		
-		public void getIdentityStream(StreamProcessor processor) throws ServiceException {
-			try {
-				reg.getIdentityStream(getSystemRegistryEndpoint(),processor);
-			} catch (ServiceException e) {
-				logger.warn("Failed to query main system registry - falling back",e);
-				reg.getIdentityStream(getFallbackSystemRegistryEndpoint(),processor);
-			}
-		}
+
 		
 		public final URI getFallbackSystemRegistryEndpoint() throws ServiceException {
 			try {
@@ -446,13 +469,16 @@ public class StreamingRegistryImpl implements RegistryInternal {
         ts.addTest(new RegistryTest("Fallback registry service", reg, fallbackEndpoint));
         ts.addTest(new TestCase("Registry caches") {
             protected void runTest() throws Throwable {
-                assertEquals("Problem with the bulk cache", Status.STATUS_ALIVE,bulkCache.getStatus());
+                //assertEquals("Problem with the bulk cache", Status.STATUS_ALIVE,bulkCache.getStatus());
                 assertEquals("Problem with the document cache",Status.STATUS_ALIVE,documentCache.getStatus());
                 assertEquals("Problem with the resource cache",Status.STATUS_ALIVE,resourceCache.getStatus());                    
             }
         });
         return ts;
     }
+
+
+    
 
 
 }

@@ -44,6 +44,7 @@ import org.codehaus.xfire.service.Service;
 import org.codehaus.xfire.service.binding.MessageBindingProvider;
 import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 import org.codehaus.xfire.transport.Transport;
+import org.codehaus.xfire.transport.http.CommonsHttpMessageSender;
 import org.codehaus.xfire.transport.http.SoapHttpTransport;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
@@ -496,7 +497,9 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	            throw new ServiceException(endpoint + " is not a known registry service");
 	        }
 	    } 
-		return new Client(this.transport,this.serv,endpoint.toString());		
+		Client client = new Client(this.transport,this.serv,endpoint.toString());
+		client.setProperty(CommonsHttpMessageSender.GZIP_RESPONSE_ENABLED, true); // enable gzip of the response, if.		
+		return client;
 	}
     protected String prependProlog(String xquery) {
         String[][] ns = XPathHelper.listDefaultNamespaces();

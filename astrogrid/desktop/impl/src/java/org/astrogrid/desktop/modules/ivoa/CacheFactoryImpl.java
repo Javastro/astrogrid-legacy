@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ivoa;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.apache.hivemind.service.ObjectProvider;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 
 /** implementation ofo the data cache - uses the ehCache libraries,
  * @author Noel Winstanley
@@ -107,6 +109,33 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal,
             Cache cache = manager.getCache(i.next());
             cache.removeAll();
         }       
+    }
+
+// scheduledTask interface. used to perform cache maintenance.
+    
+    public void execute(WorkerProgressReporter reporter) {
+        String[] cacheNames = manager.getCacheNames();
+        for (String name : cacheNames) {
+            final Cache cache = manager.getCache(name);
+            if (! cache.getCacheConfiguration().isEternal()) {
+                cache.evictExpiredElements();
+            }
+        }
+    }
+
+
+    public String getName() {
+        return "Cache Maintenance";
+    }
+
+
+    public long getPeriod() {
+        return 2 * 1000 * 60 * 60; // 2-hourly.
+    }
+
+
+    public Principal getPrincipal() {
+        return null; // use the default session
     }
 
 
