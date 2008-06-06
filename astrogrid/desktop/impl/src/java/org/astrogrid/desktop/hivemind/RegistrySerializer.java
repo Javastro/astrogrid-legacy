@@ -1389,6 +1389,7 @@ class RegistrySerializer
     {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true); // needs to be namespace aware to work with xslt.
 
 
 

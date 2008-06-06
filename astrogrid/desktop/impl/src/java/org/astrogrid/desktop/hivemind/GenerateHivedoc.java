@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.hivemind;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,12 +19,14 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.astrogrid.io.Piper;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 /** Specialized subclass of launcher that just generates Hivemind documentation.
  * 
  * @author Noel Winstanley
  * @since Jan 2, 20076:24:46 PM
+ * 
  */
 public class GenerateHivedoc extends Launcher {
 	
@@ -34,12 +37,17 @@ public class GenerateHivedoc extends Launcher {
 		RegistrySerializer serializer = new RegistrySerializer(); 
 		serializer.addModuleDescriptorProvider(createModuleDescriptorProvider());
 		Document result = serializer.createRegistryDocument();
-
-		// create hivedoc.
 		File targetDir = new File("hivedoc");
-		targetDir.mkdir();
 		try {
-		Source source = new DOMSource(result);
+		File tmpResult = File.createTempFile("hivedoc",".xml");
+		// seems to be a problem in the sun impl of DOMSource - so serialize to a file, and read back in.
+		FileOutputStream fos = new FileOutputStream(tmpResult);
+		DomHelper.DocumentToStream(result,fos);
+		fos.close();
+		// create hivedoc.
+		targetDir.mkdir();
+		//Source source = new DOMSource(result);
+		Source source = new StreamSource(new FileInputStream(tmpResult));
 		OutputStream sw = new FileOutputStream(new File(targetDir,"index.html"));
 		Result sink = new StreamResult(sw);
 		InputStream styleStream = GenerateHivedoc.class.getResourceAsStream("hivedoc/hivemind.xsl");
