@@ -100,6 +100,7 @@ public class SchemaMap {
         ALL.put("http://www.ivoa.net/xml/SIA/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/SIA/v1.0/SIA.xsd"));        
         ALL.put("http://www.ivoa.net/xml/SIA/v0.7",SchemaMap.class.getResource("/schema/vo-resource-types/SIA/v0.7/SIA.xsd"));
         ALL.put("http://www.ivoa.net/xml/OpenSkyNode/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/OpenSkyNode/v0.1/OpenSkyNode.xsd"));
+        ALL.put("http://www.ivoa.net/xml/SkyNode/v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/OpenSkyNode/v0.2/OpenSkyNode.xsd"));      
         ALL.put("urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd"));
         ALL.put("http://www.ivoa.net/xml/VODataService/v0.5",SchemaMap.class.getResource("/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd"));
         ALL.put("http://www.ivoa.net/xml/VODataService/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd"));        
@@ -132,6 +133,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.12  2008/06/06 09:21:30  KevinBenson
+added skynode v1.0 and stap v1.0 to the contracts along with the schemaMap.  Small correction on the wsdl referencing the older cea that we never used in contracts so updated that namespace.
+
 Revision 1.11  2008/03/14 16:07:48  KevinBenson
 added SSA schema v0.4 official from ivoa to our contracts
 
