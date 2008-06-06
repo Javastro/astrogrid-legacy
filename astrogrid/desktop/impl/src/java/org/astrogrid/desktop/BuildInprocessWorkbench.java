@@ -12,7 +12,7 @@ package org.astrogrid.desktop;
 public class BuildInprocessWorkbench extends BuildInprocessACR {
 
 	/* temporarily override to control which gets instantiated 
-	 * @todo comment out when done.*/
+	 * .*/
 	//protected void configureLauncher() {
 	//	HeadlessAstroRuntime.configureLauncherAsASR(launcher);
 //	}
