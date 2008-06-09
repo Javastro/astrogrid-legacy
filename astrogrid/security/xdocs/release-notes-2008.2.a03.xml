@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2.a03</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2.a03">
+      <p>
+        V2008.2.a03 is the third alpha version in the development leading
+        to the 2008.2 release. This version refactors existing code and adds
+        a few interfaces in support of the AR.
+      </p>
+      
+      <subsection name="Old classes refactored">
+        <p>
+          <i>org.astrogrid.security.AccountIvorn</i> takes over from
+          <i>org.astrogrid.security.community.CommunityIvornParser</i>;
+          the latter is dropped from the facade. The <i>AccountIvorn</i>
+          class, which was already present in a limited form, now parses
+          its value and its constructors enforce validity. There are new
+          accessors to get the IVORN for the community, etc.
+        </p>
+        <p>
+          <i>org.astrogrid.security.community.RegistryClient</i> takes over
+          from <i>org.astrogrid.security.community.CommunityEndpointResolver</i>.
+          The former is much simpler than the latter and is not at all specific
+          to the community services. This simpler form seems to be sufficient
+          for all uses within the facade.
+        </p>
+        <p>
+          <i>org.astrogrid.security.SecurityGuard</i> no longer throws a plain
+          <i>Exception</i>. It now always throws a specific kind of exception.
+          This is a result of the refactoring.
+        </p>
+        <p>
+          <i>org.astrogrid.security.SecurityGuard</i> has a new accessor
+          <i>getAccountIvorn()</i>.
+        </p>
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>

@@ -22,7 +22,7 @@ public class SecurityGuardTest extends TestCase {
    */
   public void setUp() {
     SimpleConfig.getSingleton().setProperty(
-      "org.astrogrid.security.community.CommunityEndpointResolver.mock",
+      "org.astrogrid.security.community.RegistryClient.mock",
       "true"
     );
     SimpleConfig.getSingleton().setProperty(
@@ -75,5 +75,6 @@ public class SecurityGuardTest extends TestCase {
     SimpleConfig.getSingleton().setProperty("org.astrogrid.security.mock.community", "true");
     SecurityGuard sut = new SecurityGuard();
     sut.signOn("ivo://frog@pond/community", "croakcroak", 36000);
+    assertEquals("ivo://frog@pond/community", sut.getAccountIvorn().toString());
   }
 }

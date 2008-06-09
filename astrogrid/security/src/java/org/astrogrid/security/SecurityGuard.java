@@ -1,7 +1,10 @@
 package org.astrogrid.security;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.security.cert.Certificate;
@@ -23,9 +26,9 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509KeyManager;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.authorization.AccessPolicy;
-import org.astrogrid.security.community.CommunityEndpointResolver;
-import org.astrogrid.security.community.CommunityIvornParser;
+import org.astrogrid.security.community.RegistryClient;
 import org.astrogrid.security.ssl.GullibleX509TrustManager;
 import org.astrogrid.security.community.SsoClient;
 
@@ -353,6 +356,13 @@ public class SecurityGuard implements X509KeyManager {
   }
   
   /**
+   * Reveals the IVORN of the signed-on account.
+   */
+  public AccountIvorn getAccountIvorn() {
+    return (AccountIvorn) getFirstPrincipal(AccountIvorn.class);
+  }
+  
+  /**
    * Extracts the first Principal of a given type.
    * @param clazz - The class of principal required.
    * @return The Principal, or null if none of the requested type are present.
@@ -405,25 +415,32 @@ public class SecurityGuard implements X509KeyManager {
    * @param account The IVORN for the user's account.
    * @param password The password, undigested and unencrypted.
    * @param lifetime The duration of validity of the credentials, in seconds.
+   * @throws URISyntaxException If the account IVORN is invalid.
+   * @throws IOException If communication with the community fails.
+   * @throws GeneralSecurityException If authentication fails.
+   * @throws RegistryException If the accounts service cannot be found in the registry.
+   * @throws RegistryException If the registry is off-line.
    */
-  public void signOn(String account, String password, int lifetime) throws Exception {
+  public void signOn(String account, 
+                     String password, 
+                     int    lifetime) throws URISyntaxException, 
+                                             IOException,
+                                             GeneralSecurityException, 
+                                             RegistryException {
+    
+    // Parse and verify the given account IVORN. It should be in the form
+    // ivo://user@authority/path.
+    AccountIvorn ivorn = new AccountIvorn(account);
     
     // Sign on at the community's accounts service.
     // This adds to the subject a certificate chain and private key but
     // does nor record any principals.
-    CommunityIvornParser p = new CommunityIvornParser(account);
-    CommunityEndpointResolver r = 
-        new CommunityEndpointResolver(p.getCommunityIvorn().toString());
-    if (r.getAccounts() == null) {
-      throw new Exception("No endpoint is registered for the accounts service for " + account);
-    }
-    SsoClient s = new SsoClient(r.getAccounts().toString());
-    s.authenticate(p.getAccountName(), password, lifetime, this);
-    s.home(p.getAccountName(), this);
+    SsoClient s = new SsoClient(findAccountsService(ivorn.getCommunityIvorn()));
+    s.authenticate(ivorn.getUserName(), password, lifetime, this);
+    s.home(ivorn.getUserName(), this);
     
     // Record the account IVORN as a principal.
-    AccountIvorn i = new AccountIvorn(p.getAccountIvorn().toString());
-    this.subject.getPrincipals().add(i);
+    this.subject.getPrincipals().add(ivorn);
   }
   
   /**
@@ -548,6 +565,22 @@ public class SecurityGuard implements X509KeyManager {
    */
   public PrivateKey getPrivateKey(String alias) {
     return (alias.equals("default"))? getPrivateKey() : null;
+  }
+  
+  /**
+   * Finds the endpoint for the accounts service given the community IVORN.
+   *
+   * @param The IVORN for the community.
+   * @return The endpoint (never null).
+   * @throws RegistryException If the service was not found in the registry.
+   * @throws RegistryException If the registry does not respond.
+   */
+  private String findAccountsService(URI community) throws RegistryException {
+    RegistryClient registry = new RegistryClient();
+    return registry.getEndpointByIdentifier(
+               community.toString(), 
+               "ivo://org.astrogrid/std/Community/accounts"
+           );
   }
   
 }
