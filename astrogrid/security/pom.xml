@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project 
+    xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                        http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-security</artifactId>
+  <packaging>jar</packaging>
+  <version>2008.2.a03</version>
+  
+    <dependencies>
+      
+      <dependency>
+        <groupId>axis</groupId>
+        <type>jar</type>
+        <artifactId>axis</artifactId>
+        <version>1.3</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>castor</groupId>
+        <type>jar</type>
+        <artifactId>castor</artifactId>
+        <version>0.9.5</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>xml-security</groupId>
+        <type>jar</type>
+        <artifactId>xmlsec</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>bouncycastle</groupId>
+        <type>jar</type>
+        <artifactId>bcprov-jdk15</artifactId>
+        <version>139</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-jglobus</artifactId>
+        <version>1.4</version>
+        <type>jar</type>
+      </dependency>
+
+      <!-- This is cruft. These four jars are needed because cog-jglobus
+           has a historical dependency on them and their classes are baked
+           into the ProxyPathValidator. If I wrote a cleaner validator,
+           then all this could be dropped. -->
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-cryptix</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-cryptix32</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-cryptix-asn1</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-puretls</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>tomcat</groupId>
+        <artifactId>tomcat-util</artifactId>
+        <type>jar</type>
+        <version>5.5.20</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-registry-client-lite</artifactId>
+        <version>2008.0.04</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-registry-common</artifactId>
+        <version>2008.0.04</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-common</artifactId>
+        <version>2007.2c</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-contracts</artifactId>
+        <version>2008.0a2</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>servletapi</groupId>
+        <artifactId>servletapi</artifactId>
+        <version>2.4</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.7.0</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <type>jar</type>
+        <scope>test</scope>
+      </dependency>
+      
+    </dependencies>
+  
+  <name>Security Facade</name>
+  <description>
+    The security-facade implements IVOA's security model together with AstroGrid
+    and EuroVO extensions. The facade consists in a class library for use in
+    VO services and clients. It is used in most AstroGrid service-components
+    and in the Astro Runtime. The facade presents a common API to classes from 
+    different sources. These are some of the main features available from the 
+    security facade: validation of digital signatures on requests to a SOAP 
+    service; signature of requests sent from a SOAP client; an SSL 
+    implementation for Apache Tomcat that allows authentication of clients using 
+    proxy certificates; classes to generate and validate certificate chains 
+    containing proxy certificates; client code to sign on a user using either 
+    MyProxy or the AstroGrid accounts service; a client and servlet implementing 
+    the IVOA delegation protocol.
+  </description>
+  
+  <!--<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>-->
+  
+  <inceptionYear>2003</inceptionYear>
+  
+  <developers>
+    <developer>
+      <name>Guy Rixon</name>
+      <id>gtr</id>
+      <email>gtr@ast.cam.ac.uk</email>
+      <organization>University of Cambridge</organization>
+      <timezone>0</timezone>
+    </developer>
+ </developers>
+ 
+ <licenses>
+  <license>
+    <name>Academic Free License v2.1</name>
+    <url>http://opensource-definition.org/licenses/afl-2.1.html</url>
+    <distribution>manual</distribution>
+  </license>
+</licenses>
+
+<!--
+ <versions>
+   <version>
+     <id>2007.2.04</id>
+     <name>2007.2.04</name>
+     <tag>v2007_2_04</tag>
+   </version>
+   <version>
+     <id>2008.2.a01</id>
+     <name>2008.2.a01</name>
+     <tag>v2008_2_a01</tag>
+   </version>
+      <version>
+     <id>2008.2.a02</id>
+     <name>2008.2.a02</name>
+     <tag>v2008_2_a02</tag>
+   </version>
+ </versions>
+ -->
+ 
+ <reports>
+    <report>maven-license-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-pmd-plugin</report>
+  </reports> 
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org/</url>
+    <!--<logo>http://www.astrogrid.org/images/AGlogo.png</logo>-->
+  </organization>
+  
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <directory>${basedir}/target</directory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>test/java</testSourceDirectory>
+    <!--
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+      -->
+    <testResources>
+      <testResource>
+        <directory>test/properties</directory>
+        <includes>
+          <include>*.properties</include>
+        </includes>
+      </testResource>
+      <testResource>
+      	<directory>test/keystore</directory>
+        <includes>
+      	  <include>tester.jks</include>
+       </includes>
+      </testResource>
+      <testResource>
+      	<directory>test/wsdd</directory>
+        <includes>
+      	  <include>*.wsdd</include>
+        </includes>
+      </testResource>
+      <testResource>
+      	<directory>test/pem</directory>
+        <includes>
+      	  <include>*</include>
+      	</includes>
+      </testResource>
+      <testResource>
+      	<directory>test/pkipath</directory>
+        <includes>
+      	  <include>*</include>
+      	</includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>  
+        <artifactId>maven-compiler-plugin</artifactId>  
+        <configuration>  
+          <source>1.5</source>  
+          <target>1.5</target>  
+        </configuration>  
+      </plugin>
+    </plugins>
+  </build>
+  
+<properties>
+  <property>
+   
+  </property>
+</properties>
+
+
+</project>
