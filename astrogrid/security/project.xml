@@ -33,6 +33,9 @@
     ]]>
   </description>
   
+  <siteAddress>terror.star.le.ac.uk</siteAddress>
+  <siteDirectory>/software_docs/security-${pom.currentVersion}</siteDirectory>
+  
   <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
   
   <inceptionYear>2003</inceptionYear>
