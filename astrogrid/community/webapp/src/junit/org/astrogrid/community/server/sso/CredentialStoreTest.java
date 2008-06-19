@@ -1,7 +1,9 @@
 package org.astrogrid.community.server.sso;
 
 import java.io.OutputStream;
+import java.security.KeyPairGenerator;
 import java.security.Provider;
+import java.security.spec.KeySpec;
 import junit.framework.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -105,6 +107,17 @@ public class CredentialStoreTest extends TestCase {
     List chain = sut.getCertificateChain("frog", "croakcroak");
     assertNotNull(chain);
     assertTrue(chain.size() == 1);
+  }
+  
+  public void testGetCertificateChainWithProxy() throws Exception {
+    CredentialStore sut = new CredentialStore();
+    KeyPair keys = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+    List chain = sut.getCertificateChain("frog", 
+                                         "croakcroak", 
+                                         keys.getPublic(),
+                                         36000);
+    assertNotNull(chain);
+    assertTrue(chain.size() == 2);
   }
 
   /**

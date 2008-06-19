@@ -4,12 +4,14 @@
 
   <id>astrogrid-community</id>
   <name>Community Web Application</name>
-  <currentVersion>2008.1.01</currentVersion>
+  <currentVersion>2008.1.02</currentVersion>
   <shortDescription>A web-application providing the community services.</shortDescription>
   <description>Community is a AstroGrid web application to manage user accounts.</description>
   
   <siteAddress>terror.star.le.ac.uk</siteAddress>
   <siteDirectory>/software_docs/community-2008.1.01</siteDirectory>
+  
+  <inceptionYear>2003</inceptionYear>
 
   <developers>
     <developer>
@@ -213,7 +215,7 @@
        <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-security</artifactId>
-         <version>2008.q</version>
+         <version>2008.2.a03</version>
          <type>jar</type>
          <properties>
            <war.bundle>true</war.bundle>
@@ -325,33 +327,32 @@
             </properties>
         </dependency>
         
-        <dependency>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-            <version>1.0.3</version>
-         <!--
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-            -->
-        </dependency>
-        
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.8</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        
-        <!-- Maven needs this for the build. It's not needed in the WAR. -->
-        <dependency>
-          <groupId>servletapi</groupId>
-          <artifactId>servletapi</artifactId>
-          <version>2.4</version>
-          <type>jar</type>
-        </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.8</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+      
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.0.4</version>
+        <type>jar</type>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+      
+      <!-- Maven needs this for the build. It's not needed in the WAR. -->
+      <dependency>
+        <groupId>servletapi</groupId>
+        <artifactId>servletapi</artifactId>
+        <version>2.4</version>
+        <type>jar</type>
+      </dependency>
       
       <!-- Apache Axis, our SOAP implementation. -->
       <dependency>
@@ -411,8 +412,8 @@
       
       <!-- Cryptography stuff. -->
       <dependency>
-        <artifactId>bcprov-jdk15</artifactId>
         <groupId>bouncycastle</groupId>
+        <artifactId>bcprov-jdk15</artifactId>
         <version>139</version>
         <type>jar</type>
         <properties>
@@ -444,8 +445,8 @@
         <artifactId>cog-cryptix</artifactId>
         <groupId>globus</groupId>
         <version>1.2</version>
-        <type>jar</type>
       </dependency>
+        <type>jar</type>
       <dependency>
         <artifactId>cog-cryptix32</artifactId>
         <groupId>globus</groupId>
@@ -457,6 +458,18 @@
         <groupId>globus</groupId>
         <version>1.2</version>
         <type>jar</type>
+      </dependency>
+      
+      
+      <!-- Castor 0.9.5 needs this. -->
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xerces</artifactId>
+        <version>2.4.0</version>
+        <type>jar</type>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
       </dependency>
      
       

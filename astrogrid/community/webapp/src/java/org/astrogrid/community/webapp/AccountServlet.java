@@ -8,6 +8,7 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.common.ivorn.CommunityIvornParser;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
-import org.astrogrid.community.server.sso.ProxyFactory;
+import org.astrogrid.community.server.sso.CredentialStore;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
@@ -67,7 +68,7 @@ import org.bouncycastle.openssl.PEMWriter;
 public class AccountServlet extends HttpServlet {
   static private Log log = LogFactory.getLog(AccountServlet.class);
   
-  private ProxyFactory factory;
+  private CredentialStore store;
   
   /**
    * Creates the objects reused in each request.
@@ -82,11 +83,11 @@ public class AccountServlet extends HttpServlet {
     }
     
     try {
-      this.factory = new ProxyFactory();
+      this.store = new CredentialStore();
     }
     catch (Exception e) {
       e.printStackTrace();
-      throw new RuntimeException("Can't set up the factory for proxy certificates", e);
+      throw new RuntimeException("Can't get into the credential store", e);
     }
   }
   
@@ -164,7 +165,7 @@ public class AccountServlet extends HttpServlet {
     
     // Check the password.
     try {
-      this.factory.authenticate(userName, password);
+      this.store.authenticate(userName, password);
       log.debug(userName + " has provided a valid password.");
     }
     catch (AccessControlException e) {
@@ -175,12 +176,13 @@ public class AccountServlet extends HttpServlet {
     
     // Generate a proxy certificate using the given key.
     // Make up a certificate chain containing the proxy.
-    List certificates = new ArrayList(2);
     CertPath chain = null;
     int nCerts = 0;
     try {
-      chain = this.factory.createProxy(userName, password, key, lifetime);
-      nCerts =  chain.getCertificates().size();
+      List certificates = 
+          this.store.getCertificateChain(userName, password, key, lifetime);
+      chain = CertificateFactory.getInstance("X509").generateCertPath(certificates);
+      nCerts =  certificates.size();
       log.debug("Proxy certificate has been generated; now " + 
                 nCerts + " certificates to send");
     }

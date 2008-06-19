@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Release notes: 2008.1.02</title>
+    </properties>
+    <body>
+    <section name="Release notes for community service 2008.1.02">
+      
+      <p>
+        These are differences between version 2008.1.02 and 2008.1.01.
+      </p>
+      
+      <subsection name="All-users mailing list">
+        <p>
+          The menu on all pages of the web application has a new entry:
+          "list of email addresses". This feature allows administrators to get
+          a list of addresses for all members of the community. The list is only
+          accessible to a user with the administrator password.
+        </p>
+      </subsection>
+      
+      <subsection name="Security facade updated">
+        <p>
+          This community release uses the latest security facade to take advantage
+          of fixes in that component.
+        </p>
+      </subsection>
+    </section>
+    </body>
+</document>

@@ -18,6 +18,7 @@
       <li><a href="ResetDB.jsp">Database reset</a></li>
       <li><a href="RegistrationInstructions.jsp">Registration</a></li>
       <li><a href="account-list.jsp">User accounts</a></li>
+      <li><a href="user-email-list">List of email addresses</a></li>
       <li><a href="CaEnablementForm.jsp">Certificate authority</a></li>
       <li><a href="../VOSI/capabilities">Service's capabilities</a></li>
       <li><a href="../VOSI/availability">Service's availability</a></li>

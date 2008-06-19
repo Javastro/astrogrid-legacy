@@ -1,34 +1,28 @@
 package org.astrogrid.community.server.sso;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.AccessControlException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
-import java.security.Provider;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.cert.CertPath;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.server.security.service.SecurityServiceImpl;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.security.rfc3820.ProxyCertificateFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
@@ -44,9 +38,9 @@ public class CredentialStore {
   
   private String storeLocation;
   
-  private CertificateFactory factory;
-
-  private String provider;
+  private ProxyCertificateFactory proxyFactory;
+  private CertificateFactory certificateFactory;
+  private SecurityServiceImpl securityService;
   
   /**
    * Constructs a CredentialStore.
@@ -59,14 +53,23 @@ public class CredentialStore {
     // PEMWriter assume the BC provider unless directed otherwise.
     if (Security.getProvider("BC") == null) {
       Security.addProvider(new BouncyCastleProvider());
-      this.provider = "BC";
     }
     
-    this.factory = CertificateFactory.getInstance("X509");
+    this.proxyFactory = new ProxyCertificateFactory();
+    this.certificateFactory = CertificateFactory.getInstance("X509");
+    this.securityService = new SecurityServiceImpl();
     
     // The location of the credential store is set in the general configuration.
     this.storeLocation =
         SimpleConfig.getSingleton().getString("org.astrogrid.community.myproxy");
+  }
+  
+  /**
+   * Validates the user name and password.
+   */
+  public void authenticate(String userName, String password)
+      throws AccessControlException {
+    this.securityService.authenticate(userName, password);
   }
   
   /**
@@ -120,7 +123,7 @@ public class CredentialStore {
     // Read the certificate file. 
     try {
       Certificate c = 
-          this.factory.generateCertificate(fis);
+          this.certificateFactory.generateCertificate(fis);
       List path = new ArrayList(1);
       path.add(c);
       return path;
@@ -128,6 +131,40 @@ public class CredentialStore {
       ex.printStackTrace();
       throw new AccessControlException("Can't read the certificates for " + userName);
     }
+  }
+  
+  /**
+   * Produces the user's certificate chain extended with a newly-created
+   * proxy certificate.
+   *
+   * @param userName The user name.
+   * @param password The password, in plain text.
+   * @param proxyKey The key to be written into the new proxy-certficate.
+   * @param lifetime The duration of validaity, in seconds, for the new proxy.
+   * @return A certificate chain starting with the new proxy.
+   */
+  public List getCertificateChain(String    userName,
+                                  String    password,
+                                  PublicKey proxyKey,
+                                  int       lifetime) throws GeneralSecurityException {
+    
+    // Get the user's stored certificate-chain. This is typically just one
+    // EEC but could also be an EEC and a proxy.
+    List certificates = getCertificateChain(userName, password);
+    if (certificates.size() == 0) {
+      throw new GeneralSecurityException(userName +
+                                         " has an empty certificate-chain.");
+    }
+    
+    // Generate a proxy certificate signed by the certificate on the
+    // front of the stored chain. Add this to the front of the chain.
+    System.out.println("Got " + certificates.size() + " certificates.");
+    this.proxyFactory.extendCertificateChain(certificates,
+                                             getPrivateKey(userName, password),
+                                             proxyKey,
+                                             lifetime,
+                                             false); // GSI-3 proxy, not RFC-3820.
+    return certificates;
   }
   
   /**
