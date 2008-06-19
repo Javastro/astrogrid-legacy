@@ -1,0 +1,29 @@
+I had to load several perl modules to get the VOEvent one to load - even then I had errors
+
+set PREFIX=~/Library/Perl
+on my mac to load local stuff to there.
+
+need
+
+export PERL5LIB=~/Library/Perl/lib/perl5/=~/Library/Perl/lib/perl5/site_perl/
+
+perl -MCPAN -e shell
+
+install Devel::Loaded - for listing modules
+
+install A/AA/AALLAN/Astro-VO-VOEvent-0.9.4.tar.gz
+install XML::Simple
+install XML::Writer
+install XML::Writer::String
+
+
+--Mysql setup
+
+need /usr/bin/perl event_clientDB.pl -host estar6.astro.ex.ac.uk -port 8099
+i.e. different host...
+
+
+Stap Server setp
+get the mysql jdbc jar
+
+
