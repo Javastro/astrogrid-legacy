@@ -96,21 +96,10 @@
   }    
 
   String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-  String fsService = regBas + "/services/FileStore";
-  String fsServiceName = SimpleConfig.getSingleton().getString("org.astrogrid.filestore.service.name");
-  String fsivorn =  SimpleConfig.getSingleton().getString(fsServiceName + ".service.ivorn");
-  String fsAuthority = fsivorn;
-  String  fsResourceKey = null;
-  if(fsivorn.indexOf("/",6) != -1) {
-    fsAuthority = fsivorn.substring(6,fsivorn.indexOf("/",6));
-    if(fsivorn.length() > (fsAuthority.length() + 7)) {
-    	fsResourceKey = fsivorn.substring((fsAuthority.length()+7));
-    }
-  }
  
 %>
-<ri:Resource  xmlns:sta="urn:astrogrid:schema:vo-resource-types:SimpleTimeAccess:v0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xsi:type="sta:SimpleTimeAccess" status="active"  created="2000-01-01T09:00:00" updated="2000-01-01T09:00:00">          
+<ri:Resource  xmlns:stap="urn:astrogrid:schema:vo-resource-types:STAP:v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xsi:type="vr:Service" status="active"  created="2000-01-01T09:00:00" updated="2000-01-01T09:00:00">          
  <title><%=title%></title>
  <shortName><%=shortName%></shortName>
  <identifier><%=ident%></identifier>
@@ -130,7 +119,7 @@
   <%} System.out.println("just finished contributor");
   for(int j = 0;j < dates.size();j++) {
   %>
-  <date<% if(dateRole.size() > j){%> role="<%=dateRole.elementAt(j)%><%}%>"><%=dates.elementAt(j)%></date>
+  <date<% if(dateRole.size() > j){%> role="<%=dateRole.elementAt(j)%>"<%}%>><%=dates.elementAt(j)%></date>
   <% } %>
   <%if(version != null && version.trim().length() > 0) { %>
     <version><%=version%></version>
@@ -174,7 +163,7 @@
  %>
    <rights><%=rights.elementAt(j)%></rights>
  <%}%>
- <capability standardID="ivo://org.astrogrid/stap/v1.0">
+ <capability standardID="ivo://org.astrogrid/stap/v1.0" xsi:type="stap:SimpleTimeAccess">
     <description>Stap capability</description>
     <interface xsi:type="vs:ParamHTTP" version="1.0">
 		<accessURL use="full"><%=accessURL%></accessURL>
@@ -189,5 +178,6 @@
 		  <securityMethod standardID="ivo://standardid" />
 		-->
     </interface> 
+   <supportPositioning>false</supportPositioning>
   </capability>
 </ri:Resource>
