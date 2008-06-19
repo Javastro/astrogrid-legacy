@@ -9,7 +9,7 @@
   <description>Community is a AstroGrid web application to manage user accounts.</description>
   
   <siteAddress>terror.star.le.ac.uk</siteAddress>
-  <siteDirectory>/software_docs/community-2008.1.01</siteDirectory>
+  <siteDirectory>/software_docs/community-${pom.currentVersion}</siteDirectory>
   
   <inceptionYear>2003</inceptionYear>
 
