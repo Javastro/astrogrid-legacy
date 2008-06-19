@@ -2,6 +2,7 @@
 
 <project>
 
+  <groupId>org.astrogrid</groupId>
   <id>astrogrid-community</id>
   <name>Community Web Application</name>
   <currentVersion>2008.1.02</currentVersion>
