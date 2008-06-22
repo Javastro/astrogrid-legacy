@@ -30,6 +30,19 @@
             (else
              (error "Bad call to FAILURES"))))))
 
+;; With an argument, increment the internal count of successes and return
+;; the argument.  Without an argument, return the number of successes, and reset the count.
+(define success
+  (let ((n 0))
+    (lambda args
+      (cond ((null? args)
+             (let ((retval n))
+               (set! n 0)
+               retval))
+            (else
+             (set! n (+ n 1))
+             (car args))))))
+
 (define (test-fc id expected)
   (lambda (m e)
     (format #t "Test ~a~%    produced error~a: ~a~%    expected ~s~%"
@@ -54,7 +67,7 @@
        (lambda ()
          (let ((test ((lambda ()
                         body ...))))
-           (if (not (equal? expected test))
+           (or (success (equal? expected test))
                (begin (format #t "Test ~a~%    produced ~s~%    expected ~s~%"
                               (quote id) test expected)
                       (failures 1)))))))))
@@ -65,7 +78,7 @@
     ((_ id body ...)
      (with/fc (lambda (m e)
                 ;;failed -- OK
-                #t)
+                (success #t))
         (lambda ()
           (let ((test ((lambda () body ...))))
             (format #t "Test ~a~%    produced ~s~%    expected ERROR~%"
@@ -78,7 +91,7 @@
     ((_ id body ...)
      (with/fc (test-fc (quote id) #t)
        (lambda ()
-         (or ((lambda () body ...))
+         (or (success ((lambda () body ...)))
              (begin (format #t "Test ~a: expected true, was false~%"
                             (quote id))
                     (failures 1))))))))
@@ -95,12 +108,17 @@
   (define-generic-java-method
     exit)
   (define-java-class <java.lang.system>)
-  (with-current-url (car args)
-     (lambda ()
-       (for-each run-test-file
-                 files-to-test)))
-  (if (> (failures) 0)
-      (format #t "Number of fails=~a~%" (failures)))
+  (let ((total-ok 0))
+    (with-current-url (car args)
+      (lambda ()
+        (for-each (lambda (f)
+                    (let ((n-ok (run-test-file f)))
+                      (set! total-ok (+ total-ok n-ok))
+                      (chatter "...~a ok" n-ok)))
+                  files-to-test)))
+    (chatter "Tests successful: ~a" total-ok)
+    (if (> (failures) 0)
+        (chatter "Tests FAILED:     ~a" (failures))))
   (exit (java-null <java.lang.system>) (->jint (failures))))
 
 (define (run-test-file file-name)
@@ -108,7 +126,8 @@
     (or url
         (error (format #f "Can't find resource ~a" file-name)))
     (chatter "Running tests in ~a..." file-name)
-    (load url)))
+    (load url)
+    (success)))
 
 (define chatter
   (let ((chatter? #t))

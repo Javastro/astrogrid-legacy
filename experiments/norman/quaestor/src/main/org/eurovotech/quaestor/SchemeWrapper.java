@@ -83,12 +83,10 @@ public class SchemeWrapper {
                 InputStream is = SchemeWrapper.class
                         .getResourceAsStream("scheme-wrapper-support.scm");
                 if (is == null)
-                    throw new IOException
-                            ("Failed to find scheme-wrapper-support.scm");
+                    throw new IOException("Failed to find scheme-wrapper-support.scm");
                 instance.evalInputStream(is);
             } catch (SchemeException e) {
-                throw new IOException
-                        ("Error loading scheme wrapper support:" + e);
+                throw new IOException("Error loading scheme wrapper support:" + e);
             }   
         }
         return instance;
@@ -106,7 +104,7 @@ public class SchemeWrapper {
     /**
      * Evaluates the string, returning the value as a String.  This is
      * not (currently) wrapped in the error-handling code of
-     * {@link #eval(String,Object[])}, because it's only used within this
+     * {@link #eval(Procedure,Object[])}, because it's only used within this
      * class, which we can hope would get things right (hmm).
      *
      * @param expr a scheme expression, which should not be null
@@ -147,8 +145,8 @@ public class SchemeWrapper {
      * in an error-handler (procedure <code>APPLY-WITH-TOP-FC</code>)
      * which translates errors and exceptions to a suitable string,
      * which it returns.  This procedure is defined in
-     * <code>src/main/scm/quaestor/utils.scm</code> -- ought it to be 
-     * somewhere else?
+     * <code>scheme-wrapper-support.scm</code>,
+     * which is found and evaluated in {@link #getInstance} above.
      *
      * @param proc a Scheme {@link Procedure} defined in the top level
      * @param args an array of Java objects
@@ -162,17 +160,16 @@ public class SchemeWrapper {
     public Object eval(final Procedure proc, final Object[] args)
             throws SchemeException, ServletException {
         Object o = Context.execute(new SchemeCaller() {
-                public Object execute(Interpreter r)
+                public Object execute(Interpreter i)
                         throws SchemeException {
                     // The failure-continuation within procedure
                     // APPLY-WITH-TOP-FC returns a ServletException
-                    Procedure apply =
-                            (Procedure)r.eval(Symbol.get("apply-with-top-fc"));
-                    Value[] v = r.createValues(args.length+1);
+                    Procedure apply = (Procedure)i.eval(Symbol.get("apply-with-top-fc"));
+                    Value[] v = i.createValues(args.length+1);
                     v[0] = proc;
-                    for (int i=0; i<args.length; i++)
-                        v[i+1] = new sisc.modules.s2j.JavaObject(args[i]);
-                    return r.eval(apply, v);
+                    for (int n=0; n<args.length; n++)
+                        v[n+1] = new sisc.modules.s2j.JavaObject(args[n]);
+                    return i.eval(apply, v);
                 }
             });
         if (o instanceof Exception) {
@@ -186,7 +183,7 @@ public class SchemeWrapper {
     /**
      * Evaluates a procedure, with arguments.
      * Equivalent to {@link #eval(Procedure,Object[])}, but with a
-     * string argument to the procedure.
+     * string naming the procedure.
      *
      * @param proc the name of a Scheme procedure defined in the top level
      * @param args an array of Java objects
@@ -200,9 +197,9 @@ public class SchemeWrapper {
     public Object eval(final String proc, final Object[] args)
             throws SchemeException, ServletException {
         Procedure p = (Procedure)Context.execute(new SchemeCaller() {
-                public Object execute(Interpreter r)
+                public Object execute(Interpreter i)
                         throws SchemeException {
-                    return r.eval(Symbol.get(proc));
+                    return i.eval(Symbol.get(proc));
                 }
             });
         return eval(p, args);
@@ -258,10 +255,7 @@ public class SchemeWrapper {
     public Object evalInputStream(final java.io.InputStream in,
                                   final java.io.OutputStream out)
             throws IOException, SchemeException {
-        DynamicEnvironment de
-                = new DynamicEnvironment(Context.getDefaultAppContext(),
-                                         in,
-                                         out);
+        DynamicEnvironment de = new DynamicEnvironment(Context.getDefaultAppContext(), in, out);
         Object o = Context.execute(de, new SchemeCaller() {
                 public Object execute(Interpreter i)
                          throws SchemeException {

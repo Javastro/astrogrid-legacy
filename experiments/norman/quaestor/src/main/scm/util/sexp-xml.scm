@@ -55,7 +55,7 @@
 ;; Given a string, return the string with < and & characters escaped.
 ;;
 ;;
-;; Copyright 2006 Norman Gray, <norman@astro.gla.ac.uk>
+;; Copyright 2006-2008 Norman Gray, <norman@astro.gla.ac.uk>
 ;; Released under the terms of the GNU General Public Licence.
 
 
@@ -76,7 +76,8 @@
 (import srfi-39)
 
 (define-java-classes
-  <org.xml.sax.content-handler>)
+  <org.xml.sax.content-handler>
+  <org.xml.sax.error-handler>)
 
 ;; Procedure NULL-METHOD does nothing
 (define (null-method name) #f)
@@ -147,10 +148,8 @@
             (else
              (error 'new-ssax-accumulator "Unknown op: ~a" op))))))
 
-                                        ;Given a SAX Attributes object, return
-                                        ;the list of attributes as a list of
-                                        ;(symbol string) lists.  If there are
-                                        ;no attributes, return #f, not '()
+;; Given a SAX Attributes object, return the list of attributes as a list of
+;; (symbol string) lists.  If there are no attributes, return #f, not '()
 (define (get-sax-atts-list sax-atts)
   (define-generic-java-methods
     get-length
@@ -171,8 +170,7 @@
                             al)
                       (+ n 1))))))))
 
-                                        ;Given a java string, return scheme #t
-                                        ;if the string matches all-whitespace
+;; Given a java string, return scheme #t if the string matches all-whitespace
 (define string-all-whitespace?
   (let ((pattern #f))
     (define-java-class <java.util.regex.pattern>)
@@ -183,11 +181,8 @@
                                  (->jstring "^\\s*$"))))
       (->boolean (matches (matcher pattern jstr))))))
 
-                                        ;Make a proxy SAX ContentHandler
-                                        ;intereface, using the given
-                                        ;ssax-accumulator.  If SKIP-WHITESPACE?
-                                        ;is true, then omit any all-whitespace
-                                        ;strings.
+;; Make a proxy SAX ContentHandler interface, using the given ssax-accumulator.
+;; If SEXP-XML:SKIP-WHITESPACE? is true, then omit any all-whitespace strings.
 (define-java-proxy (make-content-handler-proxy ssax-accumulator)
   (<org.xml.sax.content-handler>)
   (define (characters h ch start length)
@@ -227,6 +222,70 @@
   (define (start-prefix-mapping h prefix uri)
     (null-method 'start-prefix-mapping)))
 
+;; FORMAT-EXCEPTION : string/exception/any -> string
+;; UNUSED, except in make-error-handler-proxy below.
+;;
+;; (define (format-exception sax-exception)
+;;   (define-generic-java-methods
+;;     get-message
+;;     get-system-id
+;;     get-line-number
+;;     get-column-number
+;;     is-instance
+;;     get-cause)
+;;   (define-java-classes
+;;     (<sax-exception> |org.xml.sax.SAXException|))
+;;   ;(format #t "class=~s  exception=~s~%" <sax-exception> sax-exception)
+;;   (cond ((string? sax-exception)        ;what's this doing here?
+;;          sax-exception)
+;;         ((->boolean (is-instance <sax-exception> sax-exception))
+;;          (let ((sysid   (get-system-id sax-exception))
+;;                (line-no (->number (get-line-number sax-exception)))
+;;                (col-no  (->number
+;;                          (get-column-number
+;;                           sax-exception)))
+;;                (msg (->string (get-message sax-exception))))
+;;            (format #f
+;;                    "parse error:~a:~a:~a: ~a"
+;;                    (if (java-null? sysid) "?" sysid)
+;;                    (if (< line-no 0) "?" line-no)
+;;                    (if (< col-no 0)  "?" col-no)
+;;                    msg)))
+;;         (else
+;;          (format #f
+;;                  "Scheme? error: ~a"
+;;                  (->string (get-cause sax-exception))))))
+
+;; The following seems not to work, for some reason I can't divine.
+;; The idea was to be able to turn Java SAX exceptions into scheme exceptions,
+;; so they could be caught schemily in, for example, tests.  But this proxy seems
+;; not to work (and so the set-error-handler below is commented out), and seems
+;; to interact in some baffling with with some other error handler: the errors thrown
+;; here seem to be wrapped in a separte "Scheme invocation target exception" which
+;; I can't track down.
+;;
+;; If truth be told, the real motivation here is to get my tests looking prettier.
+;; I haven't noticed seriously annoying error behaviour otherwise.
+;;
+;; Perhaps all I really need to do, rather than create an ErrorHandler proxy,
+;; is to revisit XML->SEXP/INPUT-SOURCE, trap the SAX exception there,
+;; and convert it to a scheme exception.
+;;
+;; (define-java-proxy (make-error-handler-proxy scheme-error)
+;;   (<org.xml.sax.error-handler>)
+;;   (define (error h ex)
+;;     (let ((msg (format-exception ex)))
+;;       (chatter "SAX error: ~a" msg)
+;;       (scheme-error 'xml-sexp/parsing msg)))
+;;   (define (fatal-error h ex)
+;;     (let ((msg (format-exception ex)))
+;;       (chatter "SAX fatal error: ~a" msg)
+;;       (scheme-error 'xml-sexp/parsing msg)))
+;;   (define (warning h ex)
+;;     (let ((msg (format-exception ex)))
+;;       (chatter "SAX warning: ~a" msg)
+;;       (scheme-error 'xml-sexp/parsing msg))))
+
 (define (sexp-xml:xml->sexp/file filename)
   (define-java-classes
     <org.xml.sax.input-source>
@@ -263,35 +322,42 @@
     ;; checking that SAX-EXCEPTION, below, is a SAXException in fact,
     ;; and handling it using just Exception methods if not, but I'm
     ;; still not positive I've got this right.
-    (with/fc (lambda (m e)
-               (define-generic-java-methods
-                 get-message
-                 get-system-id
-                 get-line-number
-                 get-column-number
-                 is-instance)
-               (define-java-classes
-                 (<sax-exception> |org.xml.sax.SAXException|))
-               (let ((sax-exception (error-message m)))
-                 (if (->boolean (is-instance <sax-exception> sax-exception))
-                     (let ((sysid   (get-system-id sax-exception))
-                           (line-no (->number (get-line-number sax-exception)))
-                           (col-no  (->number
-                                     (get-column-number
-                                      sax-exception)))
-                           (msg (->string (get-message sax-exception))))
-                       (error 'xml->sexp/input-source
-                              "parse error:~a:~a:~a: ~a"
-                              (if (java-null? sysid) "?" sysid)
-                              (if (< line-no 0) "?" line-no)
-                              (if (< col-no 0)  "?" col-no)
-                              msg))
-                     (let ()
-                       (define-generic-java-methods get-cause)
-                       (error 'xml->sexp/input-source
-                              "Scheme? error: ~a"
-                              (->string (get-cause sax-exception)))))))
-       (lambda () (parse xml-reader input-source)))
+;;     (with/fc (lambda (m e)
+;; ;;                (define-generic-java-methods
+;; ;;                  get-message
+;; ;;                  get-system-id
+;; ;;                  get-line-number
+;; ;;                  get-column-number
+;; ;;                  is-instance)
+;; ;;                (define-java-classes
+;; ;;                  (<sax-exception> |org.xml.sax.SAXException|))
+;; ;;                (let ((sax-exception (error-message m)))
+;; ;;   (format #t "alt: class=~s  exception=~s~%" <sax-exception> sax-exception)
+;; ;;                  (if (->boolean (is-instance <sax-exception> sax-exception))
+;; ;;                      (let ((sysid   (get-system-id sax-exception))
+;; ;;                            (line-no (->number (get-line-number sax-exception)))
+;; ;;                            (col-no  (->number
+;; ;;                                      (get-column-number
+;; ;;                                       sax-exception)))
+;; ;;                            (msg (->string (get-message sax-exception))))
+;; ;;                        (error 'xml->sexp/input-source
+;; ;;                               "parse error:~a:~a:~a: ~a"
+;; ;;                               (if (java-null? sysid) "?" sysid)
+;; ;;                               (if (< line-no 0) "?" line-no)
+;; ;;                               (if (< col-no 0)  "?" col-no)
+;; ;;                               msg))
+;; ;;                      (let ()
+;; ;;                        (define-generic-java-methods get-cause)
+;; ;;                        (error 'xml->sexp/input-source
+;; ;;                               "Scheme? error: ~a"
+;; ;;                               (->string (get-cause sax-exception))))))
+;;                (error 'xml->sexp/input-source
+;;                       (let ((msg (format-exception (error-message m))))
+;;                         (chatter "fc: m=~s  error-message=~s  final-msg=~s" m (error-message m) msg)
+;;                         msg))
+;;                )
+;;        (lambda () (parse xml-reader input-source)))
+    (parse xml-reader input-source)
     (sa '*TOP*)))
 
 (define (get-xml-reader-with-proxy content-handler-proxy)
@@ -302,12 +368,16 @@
     (new-sax-parser |newSAXParser|)
     (get-xml-reader |getXMLReader|)
     set-content-handler
+    set-error-handler
     set-feature)
   (let ((reader (get-xml-reader
                  (new-sax-parser
                   (new-instance (java-null <sax-parser-factory>))))))
-    (set-content-handler reader
-                         content-handler-proxy)
+    (set-content-handler reader content-handler-proxy)
+;;     (set-error-handler reader (make-error-handler-proxy
+;;                                (lambda (sym msg)
+;;                                  ;(chatter "proxy error function: sym=~s  msg=~s" sym msg)
+;;                                  (error sym msg))))
     ;; the following should be the defaults
     (set-feature reader
                  (->jstring "http://xml.org/sax/features/namespaces")
