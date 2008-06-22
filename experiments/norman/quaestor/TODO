@@ -1,5 +1,19 @@
 * Things to do
 
+** Make the distribution more compact
+
+At the moment, both the Jetty and WAR distributions are
+splendiferously humungous, because the way that the jar file is
+constructed in both cases is by unpacking all the dependency jar files
+and bundling them into a single jar.
+
+I spent quite a bit of time trying to get Proguard to work with
+quaestorlib, but I think it's ultimately futile, because there
+appear to be lots of cases where classes are loaded dynamically,
+which means each one has to be analysed to work out which class
+has to be kept, and that looks like a long slog.  Still, there must be
+some cleverer way to do it than just putting the kitchen sink in there.
+
 ** Get REPL working again
 
 Somehow, typing (ident) or (chatter) at the Quaestor REPL no longer
@@ -9,3 +23,8 @@ SchemeWrapper.evalInputStream, both versions, adding the
 DynamicEnvironment in the one-arg one, and trying to eval CHATTER
 immediately after the initialisation using scheme-wrapper-support.scm,
 but nothing obvious works.
+
+Well, it seems to work again, apparently spontaneously (hmm).
+Starting up the Java client REPL allows you to get both (ident) and
+(chatter).
+
