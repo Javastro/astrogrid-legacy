@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.40 2008/05/28 14:21:59 norman Exp $
+     $Id: build.xml,v 1.41 2008/06/22 17:40:44 norman Exp $
 -->
 
 
@@ -113,7 +113,8 @@
   <property name="app.path"      value="/${app.name}"/>
   <!-- Versions: make odd-numbered versions stable (-ish), and even-numbered
        ones intermediate beta releases. -->
-  <property name="app.version"   value="0.4.6"/>
+  <property name="app.version"   value="0.4.7"/>
+  <property name='release.date'  value='2008 June 23'/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.client"  value="${build.home}/client"/>
@@ -134,7 +135,8 @@
 
   <!-- products -->
   <property name='quaestor.lib.jar' value='${app.name}-lib-${app.version}.jar'/>
-  <property name='quaestor.jetty.zip' value='${app.name}-jetty-${app.version}.zip'/>
+  <property name='quaestor.jetty' value='${app.name}-jetty-${app.version}'/>
+  <property name='quaestor.client' value='${app.name}-client-${app.version}'/>
 
   <!-- The following properties must be set in build.properties
    !
@@ -522,7 +524,7 @@
     <copy todir="${build.client}">
       <fileset dir="${dist.home}/docs"/>
     </copy>
-    <jar jarfile="${build.client}/${app.name}-client-${app.version}.jar"
+    <jar jarfile="${build.client}/${quaestor.client}.jar"
          basedir="${build.war}/WEB-INF/classes"
          includes="org/eurovotech/quaestor/**">
       <manifest>
@@ -530,7 +532,7 @@
         <attribute name='Main-Class' value='org.eurovotech.quaestor.repl.QuaestorReplClient'/>
       </manifest>
     </jar>
-    <zip destfile="${dist.home}/${app.name}-client-${app.version}.zip">
+    <zip destfile="${dist.home}/${quaestor.client}.zip">
       <fileset dir="${build.client}"/>
     </zip>
 
@@ -608,26 +610,73 @@
       <fileset file="${src.etc}/start-jetty.sh"/>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
+        <filter token='RELEASEDATE' value='${release.date}'/>
       </filterset>
     </copy>
-    <chmod file='${build.home}/start-jetty.sh'
-           perm='ugo+x'/>
-    <copy todir="${build.war}/WEB-INF">
+    <chmod file='${build.home}/start-jetty.sh' perm='ugo+x'/>
+    <mkdir dir="${build.war}/WEB-INF/classes"/>
+    <copy todir="${build.war}/WEB-INF/classes">
       <fileset file="${src.etc}/SchemeJettyServer.properties"/>
+      <fileset file='${scm.src.home}/quaestor.scm'/>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
-    <mkdir dir='${dist.home}'/>
-    <zip destfile='${dist.home}/${quaestor.jetty.zip}'>
+    <!-- create the contents of the distributed zip file -->
+    <mkdir dir='${quaestor.jetty}'/>
+    <copy todir='${quaestor.jetty}'>
       <fileset dir='${build.home}'>
         <include name='start-jetty.sh'/>
         <include name='${quaestor.lib.jar}'/>
-        <include name='war/**'/>
+        <include name='war/*'/>
+        <include name='war/WEB-INF/classes/*'/>
+        <!--include name='war/WEB-INF/classes/SchemeJettyServer.properties'/-->
+        <include name='war/WEB-INF/classes/org/eurovotech/quaestor/*.class'/>
+        <!--include name='war/WEB-INF/classes/**'/-->
       </fileset>
-    </zip>
+    </copy>
+    <!-- ...and zip it up -->
+    <mkdir dir='${dist.home}'/>
+    <zip destfile='${dist.home}/${quaestor.jetty}.zip'
+         basedir='.'
+         includes='${quaestor.jetty}/**'/>
   </target>
 
+  <!-- ==================== Installation/distribution ==================== -->
+  <!-- Create a webpage-tarball.tar.gz file which contains everything -->
+  <target name="dist-tarball"
+          depends='jetty,dist'
+          description='Make a single tarball (dist/webpage-tarball.tar.gz) which can be unpacked in the distribution directory'>
+    <mkdir dir='${dist.home}/webpage-tarball'/>
+    <copy todir='${dist.home}/webpage-tarball'>
+      <fileset file='${dist.home}/${app.name}-${app.version}.war'/>
+      <fileset file='${dist.home}/${quaestor.client}.zip'/>
+      <fileset file='${dist.home}/${quaestor.jetty}.zip'/>
+      <fileset file='${web.home}/base.css'/>
+    </copy>
+    <mkdir dir='${dist.home}/webpage-tarball/docs'/>
+    <copy todir='${dist.home}/webpage-tarball/docs'>
+      <fileset dir='${web.home}'/>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+        <filter token='RELEASEDATE' value='${release.date}'/>
+      </filterset>
+    </copy>
+
+    <copy file='${docs.home}/distrib.html'
+          tofile='${dist.home}/webpage-tarball/index.html'>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+        <filter token='RELEASEDATE' value='${release.date}'/>
+        <filter token='JETTYZIP' value='${quaestor.jetty}.zip'/>
+        <filter token='WARFILE' value='${app.name}-${app.version}.war'/>
+        <filter token='CLIENTZIP' value='${quaestor.client}.zip'/>
+      </filterset>
+    </copy>
+    <tar destfile='${dist.home}/webpage-tarball.tar.gz'
+         basedir='${dist.home}/webpage-tarball'
+         compression='gzip'/>
+  </target>
 
 <!-- ==================== Javadoc Target ================================== -->
 
