@@ -273,7 +273,9 @@ public class QuaestorTest
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
         assertEquals("header=present", r.getContentTypeParameters());
-        assertEquals("i\r\nurn:example#i1\r\n", r.getContentAsString());
+        String[] correctResponses = { "i", "urn:example#i1" };
+        assertEquals(correctResponses, r.getContentAsStringList());
+//        assertEquals("i\r\nurn:example#i1\r\n", r.getContentAsString());
     }
 
     public void testSparqlQueriesAsk()

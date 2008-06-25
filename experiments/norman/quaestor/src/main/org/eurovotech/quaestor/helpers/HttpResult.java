@@ -89,6 +89,7 @@ public class HttpResult {
      * then return null without error.  This method may be called
      * multiple times, returning the same content each time.
      *
+     * @return content of the HTTP response, as a single string
      * @throws java.io.IOException if there is a problem reading from the stream
      */
     public String getContentAsString()
@@ -117,6 +118,20 @@ public class HttpResult {
         else
             responseContentString = sb.toString();
         return responseContentString;
+    }
+
+    /** 
+     * Obtains the content of the HTTP transaction response as an array of
+     * strings.  If there was no response stream for some reason,
+     * then return null without error.  This method may be called
+     * multiple times, returning the same content each time.
+     *
+     * @return content of the HTTP response, one line per array element
+     * @throws java.io.IOException if there is a problem reading from the stream
+     */
+    public String[] getContentAsStringList()
+            throws java.io.IOException {
+        return getContentAsString().split("[\\n\\r]+");
     }
 
     /**
