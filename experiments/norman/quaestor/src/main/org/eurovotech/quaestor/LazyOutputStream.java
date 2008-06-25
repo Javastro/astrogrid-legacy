@@ -33,9 +33,9 @@ public class LazyOutputStream {
     private OutputStream stream;
     private PrintWriter writer;
 
-    private static java.util.Map streamMap;
+    private static java.util.Map<ServletResponse,LazyOutputStream> streamMap;
     static {
-        streamMap = new java.util.WeakHashMap();
+        streamMap = new java.util.WeakHashMap<ServletResponse,LazyOutputStream>();
     }
 
     /**
@@ -55,8 +55,7 @@ public class LazyOutputStream {
      * @return the unique LazyOutputStream associated with this response
      * @throws IllegalArgumentException if the response is null
      */
-    public static LazyOutputStream getLazyOutputStream
-            (ServletResponse response) {
+    public static LazyOutputStream getLazyOutputStream(ServletResponse response) {
         assert streamMap != null;
         if (response == null)
             throw new IllegalArgumentException("null response object");
@@ -77,7 +76,9 @@ public class LazyOutputStream {
     public synchronized OutputStream getOutputStream()
             throws java.io.IOException {
         if (stream == null) {
-            assert writer == null; // writer is set after a call to this method
+            // getWriter sets writer by calling this method
+            // so it can't be set already
+            assert writer == null; 
             stream = response.getOutputStream();
         }
         return stream;
@@ -89,8 +90,11 @@ public class LazyOutputStream {
      */
     public synchronized PrintWriter getWriter() 
             throws java.io.IOException {
-        if (writer == null)
+        if (writer == null) {
             writer = new PrintWriter(getOutputStream());
+            // side-effect...
+            assert stream != null;
+        }
         return writer;
     }
 }

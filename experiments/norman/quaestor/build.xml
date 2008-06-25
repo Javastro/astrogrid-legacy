@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.42 2008/06/25 11:24:12 norman Exp $
+     $Id: build.xml,v 1.43 2008/06/25 12:51:28 norman Exp $
 -->
 
 
@@ -406,6 +406,7 @@
            source="${compile.source}"
          >
         <classpath refid="compile.classpath"/>
+        <compilerarg value='-Xlint'/>
     </javac>
 
     <!-- Copy SchemeWrapper support resource -->
