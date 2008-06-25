@@ -482,14 +482,7 @@
           (set! v (car o))))))
 
 ;; Define the context URL for the Quaestor service
-(define server-hostname (create-option "localhost"))
-(define server-port     (create-option 8080))
-(define server-context  (create-option "/quaestor"))
-(define quaestor-url    (create-option #f))
-(define (base-url)
-  (or (quaestor-url)
-      (format #f "http://~a:~a~a" (server-hostname) (server-port) (server-context))))
-;(define base-url (create-option "http://localhost:8080/quaestor"))
+(define base-url (create-option "http://localhost:8080/quaestor"))
 
 ;; Preferred language for receiving responses.  Fallback language for uploading.
 (define preferred-language (create-option #f))
@@ -567,21 +560,9 @@
   (declare-option "n3"
                   "set preferred language to N3 for upload and download"
                   #f (preferred-language (get-language-from-extension "x.n3")))
-  (declare-option "server-hostname"
-                  "Set host name of Quaestor service"
-                  server-hostname)
-  (declare-option "server-port"
-                  "Set the port number for the Quaestor service"
-                  server-port)
-  (declare-option "server-path"
-                  "Set the path to the Quaestor service"
-                  server-context)
   (declare-option "url"
-                  "Set the full URL of the Quaestor service (overrides setver-{hostname,port,context}"
-                  quaestor-url)
-;;   (declare-option "base-url"
-;;                   "set context URL to arg for Quaestor service"
-;;                   base-url)
+                  "Set the full URL of the Quaestor service"
+                  base-url)
   (declare-option "tbox"
                   "uploaded RDF represents a TBOX"
                   #f (model-is-tbox? #t))

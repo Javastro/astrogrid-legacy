@@ -13,7 +13,9 @@ PATHTOHERE=`dirname $0`
 D=`cd $PATHTOHERE; pwd`
 cd $D
 
-exec java -cp $D/quaestor-lib-@VERSION@.jar:$D/war/WEB-INF/classes org.eurovotech.quaestor.SchemeJettyServer "$@"
+echo "Start Quaestor jetty server, v@VERSION@, @RELEASEDATE@"
+
+exec java -cp $D/@QUAESTORLIBJAR@:$D/war/WEB-INF/classes org.eurovotech.quaestor.SchemeJettyServer "$@"
 
 # shouldn't get here
 echo "Exec failed!" >&2

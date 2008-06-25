@@ -19,6 +19,9 @@
              (set! failures? (car arg)))
             (else
              (error "Bad call to FAILURES-IN-BLOCK?"))))))
+
+;; (FAILURES) : return the number of failures
+;; (FAILURES n) : increment the number of failures by n
 (define failures
   (let ((n 0))
     (lambda arg
@@ -30,8 +33,8 @@
             (else
              (error "Bad call to FAILURES"))))))
 
-;; With an argument, increment the internal count of successes and return
-;; the argument.  Without an argument, return the number of successes, and reset the count.
+;; (SUCCESS x) : increment the internal count of successes and return x
+;; (SUCCESS) : return the number of successes, and reset the count.
 (define success
   (let ((n 0))
     (lambda args
