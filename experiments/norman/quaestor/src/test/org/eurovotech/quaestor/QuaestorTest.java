@@ -275,7 +275,6 @@ public class QuaestorTest
         assertEquals("header=present", r.getContentTypeParameters());
         String[] correctResponses = { "i", "urn:example#i1" };
         assertEquals(correctResponses, r.getContentAsStringList());
-//        assertEquals("i\r\nurn:example#i1\r\n", r.getContentAsString());
     }
 
     public void testSparqlQueriesAsk()
@@ -287,8 +286,14 @@ public class QuaestorTest
         r = QuaestorConnection.httpPost(url, query, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/xml");
-        assertNotNull(r.getContentAsString());
-        // don't check actual content
+        String[] correctResponses = {
+            "<?xml version=\"1.0\"?>",
+            "<sparql xmlns=\"http://www.w3.org/2005/sparql-results#\">",
+            "  <head>",
+            "  </head>",
+            "  <boolean>true</boolean>",
+            "</sparql>",
+        };
 
         // Request plain text -- should return yes/no
         r = QuaestorConnection.httpPost(url,
@@ -299,8 +304,7 @@ public class QuaestorTest
                                         });
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/plain");
-        // if I test the content for equality with "yes\r\n" it fails -- why?
-        assertEquals("yes", r.getContentAsString().substring(0,3));
+        assertEquals(new String[] { "yes" }, r.getContentAsStringList());
 
         // Request CSV -- should fail
         r = QuaestorConnection.httpPost(url, query,
@@ -428,7 +432,7 @@ public class QuaestorTest
         r = QuaestorConnection.httpGet(pickup);
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
-        assertNotNull(r.getContentAsString());
+        assertEquals(new String[] {"i", "urn:example#i1"}, r.getContentAsStringList());
 
         // ...but bad for ASK
         rpc = performXmlRpcCall("query-model",
@@ -654,6 +658,20 @@ public class QuaestorTest
             throw new AssertionFailedError("assertEquivalentURLs: expected " + u1
                                            + ", got " + u2 + ", which is malformed");
         }
+    }
+
+    private void assertEquals(String[] slcorrect, String[] sltest) {
+//         System.err.println("assertEquals(");
+//         for (int i=0; i<slcorrect.length; i++)
+//             System.err.println("  " + slcorrect[i]);
+//         System.err.println("  ,");
+//         for (int i=0; i<sltest.length; i++)
+//             System.err.println("  " + sltest[i]);
+//         System.err.println("  )");
+        
+        assertEquals(slcorrect.length, sltest.length);
+        for (int i=0; i<slcorrect.length; i++)
+            assertEquals(slcorrect[i], sltest[i]);
     }
 
     /**

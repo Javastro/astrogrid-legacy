@@ -15,6 +15,12 @@ import sisc.interpreter.SchemeException;
  */
 public class CodeManager extends HttpServlet {
 
+    // The following is required, in order to suppress a -Xlint warning, since this
+    // class extends HttpServlet.  Since I don't serialise anything, I don't think this matters,
+    // but I might as well consistently keep this as a number based on the CVS revision number:
+    // major*1000+minor, when I remember.
+    private static final long serialVersionUID = 1009L;
+
     public void init() {
         // nothing to do
     }

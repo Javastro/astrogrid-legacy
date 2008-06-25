@@ -40,7 +40,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.48 $ $Date: 2008/05/17 18:05:02 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.49 $ $Date: 2008/06/25 15:58:40 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -907,26 +907,29 @@
   (define-generic-java-method
     set-content-type)
   (with/fc
-      ;; Since all the error-handling was supposed to be done before
-      ;; the callback functions were stored, any errors other than
-      ;; malformed calls are our fault.
-      (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
-    (lambda ()
-      (let ((path-list (request->path-list request)))
-        (if (= (length path-list) 1)
-            (let ((callback (ftoken->f (car path-list))))
-              (if callback
-                  (callback (response->lazy-output-stream response)
-                            (lambda (mimetype)
-                              (set-content-type response
-                                                (->jstring mimetype))))
-                  (no-can-do request response
-                             '|SC_BAD_REQUEST|
-                             "can't find callback for token ~a (have you called this more than once?)" (car path-list))))
-            (no-can-do request response
-                       '|SC_BAD_REQUEST|
-                       "found multiple path elements in pickup URL: ~s"
-                       path-list))))))
+   ;; Since all the error-handling was supposed to be done before
+   ;; the callback functions were stored, any errors other than
+   ;; malformed calls are our fault.
+   (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
+   (lambda ()
+     (let ((path-list (request->path-list request)))
+       (if (= (length path-list) 1)
+           (let ((callback (ftoken->f (car path-list))))
+             (if callback
+                 ;; it's OK for this callback to be all side-effect, but make sure we don't return #f
+                 (or (callback (response->lazy-output-stream response)
+                               (lambda (mimetype)
+                                 (set-content-type response
+                                                   (->jstring mimetype))))
+                     #t)
+                 (no-can-do request response
+                            '|SC_BAD_REQUEST|
+                            "can't find callback for token ~a (have you called this more than once?)"
+                            (car path-list))))
+           (no-can-do request response
+                      '|SC_BAD_REQUEST|
+                      "found multiple path elements in pickup URL: ~s"
+                      path-list))))))
 
 
 ;; Return true if debugging is on; false otherwise.
