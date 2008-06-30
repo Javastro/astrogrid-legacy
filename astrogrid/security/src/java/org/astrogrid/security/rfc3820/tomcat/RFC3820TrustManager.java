@@ -1,23 +1,21 @@
 package org.astrogrid.security.rfc3820.tomcat;
 
+import java.security.GeneralSecurityException;
 import java.security.Principal;
+import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.X509TrustManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.globus.common.CoGProperties;
-import org.globus.gsi.proxy.ProxyPathValidator;
-import org.globus.gsi.proxy.ProxyPathValidatorException;
+import org.astrogrid.security.rfc3820.CertificateChainValidator;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * A JSSE trust-manager that supports PKIX with RFC3820.
  * That means that it validates chains of X.509 certificates 
  * (the PKIX part) which may contain proxy certficates (the RFC3820 part).
  * This trust manager does not support CRLs.
- *
- * This implementation wraps a Globus artifact that
- * does what is necessary but doesn't fit into JSSE.
  *
  * The trust manager is given its trust anchors at construction. It doesn't
  * know anything about how the trust anchors are configured or loaded.
@@ -32,7 +30,7 @@ public class RFC3820TrustManager implements X509TrustManager {
    * The validator for the certificate path.
    * This is the Globus packaging of the validation function.
    */
-  private ProxyPathValidator validator;
+  private CertificateChainValidator validator;
   
   /**
    * The trust anchors aginst which to check certificate chains.
@@ -43,19 +41,14 @@ public class RFC3820TrustManager implements X509TrustManager {
    * Constructs a RFC3820TrustManager.
    */
   public RFC3820TrustManager(X509Certificate[] anchors) {
-    
-    // Make Globus shut up about missing CA files and CRLs.
-    // We don't need it to load them for us, so give it an
-    // empty list of places to look for them.
-    CoGProperties p = new CoGProperties();
-    p.setCaCertLocations("");
-    CoGProperties.setDefault(p);
-    
-    // This Globus artifact will do the actual validation.
-    // We feed it its trust anchors for each chain validated,
-    // so remember the set of anchors.
-    this.validator = new ProxyPathValidator();
-    this.anchors = anchors;
+    try {
+      if (Security.getProvider("BC") == null) {
+        Security.addProvider(new BouncyCastleProvider());
+      }
+      this.validator = new CertificateChainValidator(anchors);
+    } catch (GeneralSecurityException ex) {
+      throw new RuntimeException(ex);
+    }
   }
   
   /**
@@ -77,12 +70,10 @@ public class RFC3820TrustManager implements X509TrustManager {
     // out then getIdentityCertificate() returns the first identity certificate
     // to be validated after construction and doesn't change thereafter.
     try {
-      this.validator.reset();
-      this.validator.validate(chain, anchors);
-      Principal identity = this.validator.getIdentityCertificate().getSubjectDN();
-      log.info(identity + " is authenticated by TLS.");
+      this.validator.validate(chain);
+      log.info(getIdentity(chain) + " is authenticated by TLS.");
     } 
-    catch (ProxyPathValidatorException ex) {
+    catch (Exception ex) {
       String message = "This party's certificate-chain is not trusted: " + ex;
       log.info(message);
       throw new CertificateException(message);
@@ -109,6 +100,21 @@ public class RFC3820TrustManager implements X509TrustManager {
    */
   public X509Certificate[] getAcceptedIssuers() {
     return this.anchors;
+  }
+  
+  /**
+   * Determines the identity in a certificate chain that may contain proxies.
+   */
+  private String getIdentity(X509Certificate[] chain) {
+    final String ietfProxyCertInfoOid = "1.3.6.1.5.5.7.1.14";
+    final String globusProxyCertInfoOid = "1.3.6.1.4.1.3536.1.222";
+    for (int i = 0; i < chain.length; i++) {
+      if (chain[i].getExtensionValue(ietfProxyCertInfoOid) == null &&
+          chain[i].getExtensionValue(globusProxyCertInfoOid) == null){
+        return chain[i].getSubjectX500Principal().getName();
+      }
+    }
+    return null;
   }
   
 }

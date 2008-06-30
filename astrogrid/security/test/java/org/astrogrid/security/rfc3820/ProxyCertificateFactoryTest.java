@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 import org.astrogrid.config.SimpleConfig;
-import org.globus.gsi.GSIConstants;
-import org.globus.gsi.proxy.ProxyPathValidator;
 
 /**
  * JUnit 3 tests for ProxyCertificateFactory.
@@ -69,8 +67,8 @@ public class ProxyCertificateFactoryTest extends TestCase {
     X509Certificate[] chain  = {proxy, eec};
     X509Certificate[] anchor = {this.caCertificate};
     
-    ProxyPathValidator v = new ProxyPathValidator();
-    v.validate(chain, anchor);
+    CertificateChainValidator v = new CertificateChainValidator(anchor);
+    v.validate(chain);
   }
   
   public void testExtendCertificateChain() throws Exception {
@@ -98,9 +96,9 @@ public class ProxyCertificateFactoryTest extends TestCase {
                                false);
     assertEquals(2, chain.size());
     
-    CertificateChainValidator v = new CertificateChainValidator();
     X509Certificate[] anchors = {this.caCertificate};
-    v.validate(chain, anchors);
+    CertificateChainValidator v = new CertificateChainValidator(anchors);
+    v.validate(chain);
   }
   
 }

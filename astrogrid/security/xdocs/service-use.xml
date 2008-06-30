@@ -74,15 +74,12 @@
   				<dt>astrogrid-security.jar</dt>
   				<dd>Contains the security facade including the handler 
   					<i>org.astrogrid.security.AxisServiceCredentialHandler</i> which you declared in the WSDD file.</dd>
-  				<dt>xmlsec.jar (version 1.2.1 or later)</dt>
+  				<dt>xmlsec.jar (version 1.3.0 or later)</dt>
   				<dd>Contains the code for digital signature on XML.</dd>
-  				<dt>bcprov.jar ("the bouncy-castle jar"; version jdk13-128)</dt>
+  				<dt>bcprov-jdk15.jar ("the bouncy-castle jar"; version 139 or later)</dt>
   				<dd>Contains the cryptographic algorithms used in digital signature.</dd>
-  		
-  				<dt>cog-jglobus.jar (version 1.2)</dt>
-  				<dd>Contains the code from the Java CoG kit for checking certificate chains.</dd>
-  				<dt>cog-puretls.jar (version 1.2)</dt>
-  				<dd>Supports cog-jglobus.jar.</dd>
+  				<dt>cog-jglobus.jar (version 1.4 or later)</dt>
+                                <dd>Contains classes to model the internals of certificates.</dd>
   			</dl>
   		</subsection>
   			

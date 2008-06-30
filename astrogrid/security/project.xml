@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <name>Security Facade</name>
-  <currentVersion>2008.2.a03</currentVersion>
+  <currentVersion>2008.2.a04</currentVersion>
   <shortDescription>APIs for single-sign-on security.</shortDescription>
   
   <description>
@@ -61,10 +61,15 @@
      <name>2008.2.a01</name>
      <tag>v2008_2_a01</tag>
    </version>
-      <version>
+   <version>
      <id>2008.2.a02</id>
      <name>2008.2.a02</name>
      <tag>v2008_2_a02</tag>
+   </version>
+   <version>
+     <id>2008.2.a03</id>
+     <name>2008.2.a03</name>
+     <tag>v2008_2_a03</tag>
    </version>
  </versions>
  
@@ -189,7 +194,7 @@
         <groupId>xmlsec</groupId>
         <type>jar</type>
         <artifactId>xmlsec</artifactId>
-        <version>1.2.1</version>
+        <version>1.3.0</version>
       </dependency>
       
       <dependency>
@@ -207,35 +212,6 @@
         <properties>
           <dist.bundle>true</dist.bundle>
         </properties>
-      </dependency>
-
-      <!-- This is cruft. These four jars are needed because cog-jglobus
-           has a historical dependency on them and their classes are baked
-           into the ProxyPathValidator. If I wrote a cleaner validator,
-           then all this could be dropped. -->
-      <dependency>
-        <groupId>globus</groupId>
-        <artifactId>cog-cryptix</artifactId>
-        <version>1.2</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>globus</groupId>
-        <artifactId>cog-cryptix32</artifactId>
-        <version>1.2</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>globus</groupId>
-        <artifactId>cog-cryptix-asn1</artifactId>
-        <version>1.2</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>globus</groupId>
-        <artifactId>cog-puretls</artifactId>
-        <version>1.2</version>
-        <type>jar</type>
       </dependency>
       
       <dependency>

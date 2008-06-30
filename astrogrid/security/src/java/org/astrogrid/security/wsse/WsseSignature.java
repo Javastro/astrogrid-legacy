@@ -178,14 +178,14 @@ public class WsseSignature {
     // @TODO generalize the trust anchors.
     // @TODO refactor the validator to hold the chain internally.
     log.debug("Checking the certificate chain...");
-    CertificateChainValidator validator = new CertificateChainValidator();
-    validator.validateChain(chain, this.trustAnchors);
+    CertificateChainValidator validator = 
+        new CertificateChainValidator(this.trustAnchors.getCertificates());
+    validator.validate(chain);
     log.debug("Certificate chain is valid.");
 
     // Remember the authenticated identity and its certificates.
     this.authenticated.setCertificateChain(chain);
-    X509Certificate identityCertificate = validator.getIdentityCertificate();
-    this.authenticated.setX500Principal(identityCertificate.getSubjectX500Principal());
+    this.authenticated.setX500PrincipalFromCertificateChain();
     
   }
   

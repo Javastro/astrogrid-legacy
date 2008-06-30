@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2.a04</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2.a04">
+      <p>
+        V2008.2.a04 is the fourth alpha version in the development leading
+        to the 2008.2 release. This version eliminates the dependency on
+        several third-=party jars
+      </p>
+      
+      <subsection name="Revised validator for certificates chains">
+        <p>
+          Versions of the security facade up to and including 2008.2.a03
+          used the class <i>org.globus.gsi.proxy.ProxyPathValidator</i>
+          to validate certifcates chains. That class entrains many 3rd-party
+          jars (puretls; citrix).
+        </p>
+        <p>
+          A new class, <i>org.astrogrid.security.rfc3820.ProxyCertPathReviewer</i>
+          has been added to replace the Globus validator. It is based on a
+          validator from the Bouncy-Castle package, adding to the latter
+          support for proxy certificates. This validator is wrapped in a
+          revision of the existing class 
+          <i>org.astrogrid.security.rfc3820.CertificateChainValidator</i> which
+          in turn has some new methods and some new deprecations.
+        </p>
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>

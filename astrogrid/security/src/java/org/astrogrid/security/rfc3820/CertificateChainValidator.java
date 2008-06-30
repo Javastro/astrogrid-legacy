@@ -1,17 +1,22 @@
 package org.astrogrid.security.rfc3820;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PublicKey;
-import java.security.SignatureException;
-import java.security.cert.CertificateException;
+import java.security.AccessControlException;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.cert.CertPath;
+import java.security.cert.CertificateFactory;
+import java.security.cert.PKIXParameters;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import javax.security.auth.x500.X500Principal;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.i18n.ErrorBundle;
+import org.bouncycastle.x509.CertPathReviewerException;
 import org.globus.gsi.TrustedCertificates;
-import org.globus.gsi.proxy.ProxyPathValidator;
-import org.globus.gsi.proxy.ProxyPathValidatorException;
 
 /**
  * A validator for certificate chains formed according to RFC3820.
@@ -23,116 +28,92 @@ import org.globus.gsi.proxy.ProxyPathValidatorException;
  *
  * @author Guy Rixon
  */
-public class CertificateChainValidator extends ProxyPathValidator {
+public class CertificateChainValidator {
+  
+  static private Log log = LogFactory.getLog(CertificateChainValidator.class);
+  
+  /**
+   * The parameters for PKIX validation of a path.
+   * These define the trust anchors used in a validation.
+   */
+  private PKIXParameters pkixParameters;
 
   /**
-   * Constructs a new instance of CertificateChainValidator.
+   * Constructs a new CertificateChainValidator with no trust anchors.
    */
   public CertificateChainValidator() {
-    super();
+    this.pkixParameters = null;
   }
-
+  
   /**
-   * Validates a certificate chain conforming to RFC3820. Such a chain
-   * may include proxy certificates. The equivalent method in the
-   * Globus superclass is called to check the subject-issuer relationships
-   * and the use of the ProxyCert and BasicConstraints extensions. The
-   * signatures on the certificates are then checked. This method assumes that
-   * the given chain is complete and includes the trust anchor in the last
-   * element of the array.
+   * Constructs a new CertificateChainValidator with give trust anchors.
    *
-   * @param chain The chain to be checked, with the trust anchor in the last place.
-   * @throws ProxyPathException - if the use of proxy certificates is invalid.
-   * @throws NoSuchAlgorithmException - on unsupported signature algorithms.
-   * @throws InvalidKeyException - on incorrect key.
-   * @throws NoSuchProviderException - if there's no default provider for the JCE.
-   * @throws SignatureException - on signature errors.
-   * @throws CertificateException - on encoding errors.
+   * @param anchors The trust anchors to use for subsequent validations.
    */
-  public void validateChain(X509Certificate[] chain)
-      throws CertificateException,
-             InvalidKeyException,
-             NoSuchAlgorithmException,
-             NoSuchProviderException,
-             ProxyPathValidatorException,
-             SignatureException {
-
-    // Validate the subject-issuer relationships and the contraints
-    // but not the signatures. (The authors of Globus seem to treat
-    // signatures separately.)
-    super.validate(chain);
-
-    // Validate the signatures; i.e. for certificate i putatively issued by
-    // certificate i+1, check that i was signed by the private key matching
-    // the public key in i+1. For the last certificate in the chain, check the
-    // signature against the key in the trust anchor.
-    for (int i = 0; i < chain.length - 1; i++) {
-      PublicKey key = chain[i+1].getPublicKey();
-      chain[i].verify(key);
-    }
+  public CertificateChainValidator(List<X509Certificate> anchors) 
+      throws GeneralSecurityException {
+    loadTrustAnchors(anchors);
+  }
+  
+  /**
+   * Constructs a new CertificateChainValidator with give trust anchors.
+   *
+   * @param anchors The trust anchors to use for subsequent validations.
+   */
+  public CertificateChainValidator(X509Certificate[] anchors) 
+      throws GeneralSecurityException {
+    loadTrustAnchors(anchors);
+  }
+  
+  /**
+   * Constructs a new CertificateChainValidator with give trust anchors.
+   *
+   * @param anchors The store holding trust anchors to use for subsequent validations.
+   */
+  public CertificateChainValidator(KeyStore anchors) 
+      throws GeneralSecurityException {
+    loadTrustAnchors(anchors);
   }
 
   /**
-   * Validates a certificate chain conforming to RFC3820. Such as chain
-   * may include proxy certificates. The equivalent method in the
-   * Globus superclass is called to check the subject-issuer relationships
-   * and the use of the ProxyCert and BasicConstraints extensions. The
-   * signatures on the certificates are then checked. This method assumes that
-   * the given chain lacks a trust anchor and that a set of possible
-   * trust-anchors is passed separately.
+   * Validates a certificate chain conforming to RFC3820. 
+   *
+   * @param chain The chain to be checked.
+   * @throws AccessControlException If the chain is invalid.
+   * @throws GeneralSecurityException If the validation environment is broken.
+   */
+  public void validate(X509Certificate[] chain) 
+     throws GeneralSecurityException {
+    validate(Arrays.asList(chain));
+  }
+  
+  /**
+   * Validates a certificate chain conforming to RFC3820. 
+   *
+   * @param chain The chain to be checked.
+   * @throws AccessControlException If the chain is invalid.
+   * @throws GeneralSecurityException If the validation environment is broken.
+   * @deprecated Use validate(X509Certificate[]) instead.
+   */
+  public void validateChain(X509Certificate[] chain) 
+     throws GeneralSecurityException {
+    validate(chain);
+  }
+
+  /**
+   * Validates a certificate chain conforming to RFC3820. 
    *
    * @param chain The chain to be checked.
    * @param trustAnchors The set of trusted certificates.
-   * @throws ProxyPathException - if the use of proxy certificates is invalid.
-   * @throws NoSuchAlgorithmException - on unsupported signature algorithms.
-   * @throws InvalidKeyException - on incorrect key.
-   * @throws NoSuchProviderException - if there's no default provider for the JCE.
-   * @throws SignatureException - on signature errors.
-   * @throws CertificateException - on encoding errors.
+   * @throws AccessControlException If the chain is invalid.
+   * @throws GeneralSecurityException If the validation environment is broken.
+   * @deprecated Use one of the one-argument validate methods instead.
    */
   public void validateChain(X509Certificate[] chain,
                             TrustedCertificates trustAnchors)
-      throws CertificateException,
-             InvalidKeyException,
-             NoSuchAlgorithmException,
-             NoSuchProviderException,
-             ProxyPathValidatorException,
-             SignatureException {
-
-    // Validate the subject-issuer relationships and the contraints
-    // but not the signatures. (The authors of Globus seem to treat
-    // signatures separately.)
-    super.validate(chain, trustAnchors);
-
-    // Validate the signatures; i.e. for certificate i putatively issued by
-    // certificate i+1, check that i was signed by the private key matching
-    // the public key in i+1.
-    for (int i = 0; i < chain.length - 1; i++) {
-      X509Certificate signatory = chain[i+1];
-      chain[i].verify(signatory.getPublicKey());
-    }
-
-    // Validate the signature on the last certificate in the chain against the
-    // appropriate trust-anchor.
-    X509Certificate lastInGivenChain = chain[chain.length-1];
-    X500Principal issuer = lastInGivenChain.getIssuerX500Principal();
-    X509Certificate[] anchors = trustAnchors.getCertificates();
-    for (int j = 0; j < anchors.length; j++) {
-      X509Certificate anchor = anchors[j];
-      //System.out.println("\nHave: " + anchor.getIssuerX500Principal().getName(X500Principal.CANONICAL));
-      //System.out.println("Have: " + anchor.getIssuerX500Principal().getName(X500Principal.RFC1779));
-      //System.out.println("Have: " + anchor.getIssuerX500Principal().getName(X500Principal.RFC2253));
-      //System.out.println("Need: " + issuer.getName(X500Principal.CANONICAL));
-      if(issuer.equals(anchor.getSubjectX500Principal())) {
-        lastInGivenChain.verify(anchor.getPublicKey());
-        return;
-      }
-    }
-    throw new ProxyPathValidatorException(ProxyPathValidatorException.UNKNOWN_CA,
-                                          lastInGivenChain,
-                                          "No trusted certificate with subject " +
-                                          issuer.getName() +
-                                          " is available.");
+      throws GeneralSecurityException {
+    loadTrustAnchors(trustAnchors.getCertificates());
+    validate(Arrays.asList(chain));
   }
   
   /**
@@ -140,25 +121,119 @@ public class CertificateChainValidator extends ProxyPathValidator {
    *
    * @param chain The chain to be checked.
    * @param trustAnchors The set of trusted certificates.
-   * @throws ProxyPathException - if the use of proxy certificates is invalid.
-   * @throws NoSuchAlgorithmException - on unsupported signature algorithms.
-   * @throws InvalidKeyException - on incorrect key.
-   * @throws NoSuchProviderException - if there's no default provider for the JCE.
-   * @throws SignatureException - on signature errors.
-   * @throws CertificateException - on encoding errors.
+   * @throws AccesControlException If the chain is invalid.
+   * @throws GeneralSecurityException If the validation environment is broken.
+   * @deprecated Use one of the one-argument validate methods instead.
    */
   public void validate(List<X509Certificate> chain,
                        X509Certificate[]     trustAnchors)
-      throws CertificateException,
-             InvalidKeyException,
-             NoSuchAlgorithmException,
-             NoSuchProviderException,
-             ProxyPathValidatorException,
-             SignatureException {
-    X509Certificate[] c = new X509Certificate[chain.size()];
-    c = chain.toArray(c);
-    TrustedCertificates tc = new TrustedCertificates(trustAnchors);
-    super.validate(c, tc); 
+      throws GeneralSecurityException {
+    loadTrustAnchors(trustAnchors);
+    validate(chain);
+  }
+  
+  /**
+   * Validates a certificate chain presented as a CertPath.
+   * The previously-loaded trust anchors are used.
+   *
+   * @param chain The chain to be checked.
+   * @throws AccessControlException If the chain is invalid.
+   * @throws GeneralSecurityException If the validation environment is broken.
+   */
+  public void validate(CertPath chain) throws GeneralSecurityException {
+    try {
+      ProxyCertPathReviewer r = 
+          new ProxyCertPathReviewer(chain, this.pkixParameters);
+      if (!r.isValidCertPath()) {
+        log.info("A certificate chain was rejected.");
+        for (int i = 0; i < chain.getCertificates().size(); i++) {
+          log.info("Errors in certificate " + i + ":");
+          for (Object o : r.getErrors(i)) {
+            log.info(o);
+          }
+        }
+        throw new AccessControlException("The certificate chain is invalid.");
+      }
+    } catch (CertPathReviewerException ex) {
+      throw new GeneralSecurityException(
+          "Failed to set up validation for certificates", ex
+      );
+    }
+
+  }
+  
+  /**
+   * Validates a certificate chain presented as a list of certificates.
+   * The previously-loaded trust anchors are used.
+   *
+   * @param chain The chain to be checked.
+   * @throws AccessControlException If the chain is invalid.
+   * @throws GeneralSecurityException If the validation environment is broken.
+   */
+  public void validate(List<X509Certificate> givenChain) throws GeneralSecurityException {
+    CertPath chain = 
+        CertificateFactory.getInstance("X509").generateCertPath(givenChain);
+    try {
+      ProxyCertPathReviewer r = 
+          new ProxyCertPathReviewer(chain, this.pkixParameters);
+      if (!r.isValidCertPath()) {
+        log.info("A certificate chain was rejected.");
+        for (int i = 0; i < chain.getCertificates().size(); i++) {
+          log.info("Errors in certificate " + i + ":");
+          for (Object o : r.getErrors(i)) {
+            ErrorBundle e = (ErrorBundle) o;
+            log.info(e.getDetail(Locale.getDefault()));
+          }
+        }
+        throw new AccessControlException("The certificate chain is invalid.");
+      }
+    } catch (CertPathReviewerException ex) {
+      throw new GeneralSecurityException(
+          "Failed to set up validation for certificates", ex
+      );
+    }
+  }
+  
+  /**
+   * Loads the trust anchors for subsequent validations.
+   *
+   * @param keystore The key-store holding the trusted certificates.
+   * @throws GeneralSecurityException If the key-store cannot be read.
+   */
+  private void loadTrustAnchors(KeyStore keystore) throws GeneralSecurityException {
+    this.pkixParameters = new PKIXParameters(keystore);
+    this.pkixParameters.setRevocationEnabled(false);
+  }
+  
+  /**
+   * Loads the trust anchors for subsequent validations.
+   *
+   * @param anchors The list of trusted certificates.
+   * @throws GeneralSecurityException If the anchors cannot be loaded.
+   */
+  private void loadTrustAnchors(List<X509Certificate> anchors) 
+      throws GeneralSecurityException {
+    KeyStore keyStore = KeyStore.getInstance("JKS");
+    try {
+      keyStore.load(null);
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
+    for (X509Certificate x : anchors) {
+      keyStore.setCertificateEntry(x.getSubjectX500Principal().getName(), x);
+    }
+    loadTrustAnchors(keyStore);
+  }
+  
+  /**
+   * Loads the trust anchors for subsequent validations.
+   *
+   * @param anchors The list of trusted certificates.
+   * @throws GeneralSecurityException If the anchors cannot be loaded.
+   */
+  private void loadTrustAnchors(X509Certificate[] anchors) 
+      throws GeneralSecurityException {
+    loadTrustAnchors(Arrays.asList(anchors));
   }
 
 }

@@ -192,14 +192,12 @@ axisGuard.configureStub((org.apache.axis.client.Stub)proxy);
   				<dd>Contains the security facade including the handler 
   					<i>org.astrogrid.security.AxisClientCredentialHandler</i>.
   				  Also contains the necessary classes from Apache WSS4J.</dd>
-  				<dt>xmlsec.jar (version 1.2.1 or later)</dt>
+  				<dt>xmlsec.jar (version 1.3.0 or later)</dt>
   				<dd>Contains the code for digital signature on XML.</dd>
-  				<dt>bcprov.jar ("the bouncy-castle jar"; version jdk13-128 or later)</dt>
+  				<dt>bcprov-jdk15.jar ("the bouncy-castle jar"; version 139 or later)</dt>
   				<dd>Contains the cryptographic algorithms used in digital signature.</dd>
-  				<dt>cog-jglobus.jar (version 1.2)</dt>
+  				<dt>cog-jglobus.jar (version 1.4 or later)</dt>
   				<dd>The Java CoG kit, from which are drawn the classes supporting RFC3820.</dd>
-  				<dt>cog-puretls.jar (version 1.2)</dt>
-  				<dd>Supports cog-jglobus.jar.</dd>
   			</dl>
   		</subsection>
   	</section>

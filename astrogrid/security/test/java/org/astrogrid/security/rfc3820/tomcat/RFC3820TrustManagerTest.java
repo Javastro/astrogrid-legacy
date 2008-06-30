@@ -29,9 +29,11 @@ public class RFC3820TrustManagerTest extends TestCase {
     store.load(is, "testing".toCharArray());
     is.close();
     Certificate[] chain1 = store.getCertificateChain("tester");
-    X509Certificate[] chain2 = new X509Certificate[chain1.length];
-    for (int i = 0; i < chain2.length; i++) {
-      chain2[i] = (X509Certificate)chain1[i];
+    X509Certificate x = (X509Certificate) chain1[chain1.length-1];
+    int nToCopy = chain1.length;
+    X509Certificate[] chain2 = new X509Certificate[nToCopy];
+    for (int i = 0; i < nToCopy; i++) {
+      chain2[i] = (X509Certificate) chain1[i];
     }
     return chain2;
   }
