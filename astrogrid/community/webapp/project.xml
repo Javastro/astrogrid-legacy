@@ -5,7 +5,7 @@
   <groupId>org.astrogrid</groupId>
   <id>astrogrid-community</id>
   <name>Community Web Application</name>
-  <currentVersion>2008.1.02</currentVersion>
+  <currentVersion>2008.1.03</currentVersion>
   <shortDescription>A web-application providing the community services.</shortDescription>
   <description>Community is a AstroGrid web application to manage user accounts.</description>
   
@@ -216,7 +216,7 @@
        <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-security</artifactId>
-         <version>2008.2.a03</version>
+         <version>2008.2.a04</version>
          <type>jar</type>
          <properties>
            <war.bundle>true</war.bundle>
@@ -430,37 +430,6 @@
           <war.bundle>true</war.bundle>
         </properties>
       </dependency>
-      
-      <!-- These crypto jars are still needed for the unit tests but not
-           in operation. The tests ought to be improved so as not
-           to need these jars; it ought to be possible to use
-           just the BC jar. -->
-      
-      <dependency>
-        <artifactId>cog-puretls</artifactId>
-        <groupId>globus</groupId>
-        <version>1.2</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <artifactId>cog-cryptix</artifactId>
-        <groupId>globus</groupId>
-        <version>1.2</version>
-      </dependency>
-        <type>jar</type>
-      <dependency>
-        <artifactId>cog-cryptix32</artifactId>
-        <groupId>globus</groupId>
-        <version>1.2</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <artifactId>cog-cryptix-asn1</artifactId>
-        <groupId>globus</groupId>
-        <version>1.2</version>
-        <type>jar</type>
-      </dependency>
-      
       
       <!-- Castor 0.9.5 needs this. -->
       <dependency>
