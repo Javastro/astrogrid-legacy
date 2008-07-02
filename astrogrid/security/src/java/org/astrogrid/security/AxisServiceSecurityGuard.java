@@ -5,7 +5,8 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
 import org.apache.axis.MessageContext;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.security.delegation.Delegations;
 
 
@@ -26,7 +27,7 @@ import org.astrogrid.security.delegation.Delegations;
  */
 public class AxisServiceSecurityGuard extends SecurityGuard {
 
-  static Logger log = Logger.getLogger("org.astrogrid.security.AxisServiceSecurityGuard");
+  static Log log = LogFactory.getLog(AxisServiceSecurityGuard.class);
 
   /**
    * Constructs a ServiceSecurityGuard with an empty JAAS subject.

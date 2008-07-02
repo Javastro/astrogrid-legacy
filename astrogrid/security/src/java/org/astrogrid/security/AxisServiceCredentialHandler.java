@@ -3,7 +3,8 @@ package org.astrogrid.security;
 import javax.security.auth.x500.X500Principal;
 import org.apache.axis.MessageContext;
 import org.apache.axis.handlers.BasicHandler;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.Init;
 import org.w3c.dom.Document;
 import org.astrogrid.security.wsse.WsseSignature;
@@ -35,8 +36,7 @@ import org.globus.gsi.TrustedCertificates;
  */
 public class AxisServiceCredentialHandler extends BasicHandler {
   
-  private static Logger log 
-      = Logger.getLogger("org.astrogrid.security.AxisServiceCredentialHandler");
+  private static Log log = LogFactory.getLog(AxisServiceCredentialHandler.class);
   
   private static TrustedCertificates trustAnchors;
   

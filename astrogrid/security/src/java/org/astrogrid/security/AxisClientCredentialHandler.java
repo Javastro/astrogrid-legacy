@@ -5,7 +5,8 @@ import org.apache.axis.AxisFault;
 import org.apache.axis.MessageContext;
 import org.apache.axis.SOAPPart;
 import org.apache.axis.handlers.BasicHandler;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.Init;
 import org.astrogrid.security.wsse.WsseSignature;
@@ -20,8 +21,7 @@ import org.w3c.dom.Document;
  */ 
 public class AxisClientCredentialHandler extends BasicHandler {
   
-  private static Logger log = 
-      Logger.getLogger("org.astrogrid.security.AxisClientCredentialHandler");
+  private static Log log = LogFactory.getLog(AxisClientCredentialHandler.class);
   
   public void invoke(MessageContext msgContext) throws AxisFault {
     
