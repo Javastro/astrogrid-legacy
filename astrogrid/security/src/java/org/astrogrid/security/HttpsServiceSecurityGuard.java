@@ -5,7 +5,8 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.security.delegation.Delegations;
 
 
@@ -18,8 +19,7 @@ import org.astrogrid.security.delegation.Delegations;
  */
 public class HttpsServiceSecurityGuard extends SecurityGuard {
 
-  static Logger log = 
-      Logger.getLogger("HttpsServiceSecurityGuard");
+  static Log log = LogFactory.getLog(HttpsServiceSecurityGuard.class);
 
   /**
    * Constructs an HttpServiceSecurityGuard with no credentials or principals.

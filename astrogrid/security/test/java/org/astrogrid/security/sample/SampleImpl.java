@@ -1,13 +1,13 @@
 package org.astrogrid.security.sample;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.security.AxisServiceSecurityGuard;
 
 
 public class SampleImpl implements SamplePortType {
   
-  private static Logger log 
-      = Logger.getLogger("org.astrogrid.security.sample.SampleImpl");
+  private static Log log = LogFactory.getLog(SampleImpl.class);
 
   public String whoAmI () {
     AxisServiceSecurityGuard sg = AxisServiceSecurityGuard.getInstanceFromContext();
