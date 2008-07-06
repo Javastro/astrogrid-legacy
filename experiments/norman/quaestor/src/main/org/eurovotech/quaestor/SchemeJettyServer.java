@@ -126,7 +126,8 @@ public class SchemeJettyServer {
     /**
      * The main server, which marshalls the others.
      */
-    public static class JettyServer {
+    public static class JettyServer
+            implements QuaestorServlet {
         private boolean chatter;
         private int portNumber;
 
@@ -243,12 +244,7 @@ public class SchemeJettyServer {
             kbHandler.registerHandler(method, context, proc);
         }
 
-        /**
-         * Provide an initialisation parameter to a servlet.  Modelled after
-         * {@link javax.servlet.ServletContext#getInitParameter}.
-         * @param key the parameter name
-         * @return the parameter value, or null if there is no such parameter
-         */
+        // implement getInitParameter from QuaestorServlet
         public String getInitParameter(String key) {
             return servletProperties.getProperty(key);
         }
@@ -261,6 +257,11 @@ public class SchemeJettyServer {
          */
         public String getInitParameter(String key, String defaultValue) {
             return servletProperties.getProperty(key, defaultValue);
+        }
+
+        // implement log(String) from QuaestorServlet
+        public void log(String message) {
+            Log.info(message);
         }
     }
 
@@ -376,6 +377,7 @@ public class SchemeJettyServer {
             }
         }
 
+        // implement registerHandler from QuaestorServlet
         public void registerHandler(String method, String servletPath, Procedure proc) {
             if (method == null || servletPath == null || proc == null)
                 throw new IllegalArgumentException("registerHandler: must have non-null arguments");

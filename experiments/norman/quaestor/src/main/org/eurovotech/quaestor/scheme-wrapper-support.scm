@@ -169,9 +169,13 @@
 
 ;; Mostly for debugging.
 ;; Accumulate remarks, to supply later.
-;;     (chatter fmt . args)  ; Format a message and return #t.
-;;     (chatter)             ; return list of messages, or #f if none.
-;;     (chatter #t)          ; ditto, but additionally clear the list.
+;;     (chatter fmt . args)  ; Format a message and return #t
+;;     (chatter)             ; return list of messages, or #f if none
+;;     (chatter #t)          ; ditto, but additionally clear the list
+;;     (chatter Object)      ; Object must have a log(String) method
+;; In the latter case, subsequent calls to (chatter fmt . args) will put the
+;; message in the chatter buffer, but will additionally send it to the given
+;; logging object.
 (define chatter
   (let ()
     (define (make-circular-list n)
@@ -211,10 +215,43 @@
                  (if (car msg)
                      (set! chatter-list (make-circular-list 16))) ; new clear list
                  (and (not (null? r)) r)))  ;return list or #f
+              ((java-object? (car msg))     ;an object which has a log(String) method
+               (chatter-to-log (car msg)))
               (else
+               (apply chatter-to-log msg)
                (set! chatter-list   ;append a new message
                      (append-circular-list chatter-list
                                            (apply format (cons #f msg))))
                #t))))))
+
+;; CHATTER-TO-LOG : <Object> -> void
+;; CHATTER-TO-LOG : string . args -> void
+;; If given a Java object, it must be an object which has a
+;; log(String) method, and this object is saved.
+;; If given a message (a list of objects starting with a format
+;; string), and if the log-object is present, then it sends the given
+;; string to the indicated logging stream.
+;;
+;; Called from CHATTER.
+(define chatter-to-log
+  (let ((log-object #f))
+    (lambda msg
+      (define-generic-java-methods log)
+      (let ((fmt (and (not (null? msg))
+                         (car msg))))
+        (cond ((not fmt)
+               (error "bad call to chatter-to-log, with null argument"))
+              ((java-object? fmt) ;an object which has a log(String) method
+               (set! log-object fmt)
+               #t)
+              ((and (string? fmt)
+                    log-object)
+               (log log-object
+                    (->jstring (apply format `(#f ,(string-append "chatter:" fmt) . ,(cdr msg))))))
+              ((string? fmt)
+               ;; do nothing -- no log-object defined
+               #t)
+              (else
+               (error "bad call to chatter-to-log, with args: ~s" msg)))))))
 
 ) ; end of module

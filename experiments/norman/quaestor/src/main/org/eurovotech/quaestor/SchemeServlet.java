@@ -17,7 +17,7 @@ import sisc.data.Procedure;
 /**
  * The main servlet for the Quaestor (and other) application
  */
-public class SchemeServlet extends GenericServlet {
+public class SchemeServlet extends GenericServlet implements QuaestorServlet {
 
     // The following is required, in order to suppress a -Xlint warning, since this
     // class extends HttpServlet.  Since I don't serialise anything, I don't think this matters,
@@ -88,18 +88,7 @@ public class SchemeServlet extends GenericServlet {
         }
     }
 
-    /** 
-     * Register a Scheme handler procedure with this servlet.
-     *
-     * <p>This method is called by the Scheme initialiser to register
-     * a procedure which will handle a given context/method pair.
-     *
-     * @param method the name of the method, such as <code>GET</code>,
-     *   <code>POST</code> and so on
-     * @param context the webapp context, such as <code>/path</code>
-     * @param proc a Scheme procedure as a (subclass of)
-     *   {@link sisc.data.Procedure}
-     */
+    // implement interface registerHandler function 
     public void registerHandler(String method, String context, Procedure proc) {
         String key = method + context;
         log("registerHandler: " + key + " -> " + proc.toString());

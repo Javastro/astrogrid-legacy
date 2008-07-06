@@ -40,7 +40,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.49 $ $Date: 2008/06/25 15:58:40 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.50 $ $Date: 2008/07/06 16:21:26 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -70,6 +70,9 @@
 ;;
 ;; Implementation
 
+;; INITIALISE-QUAESTOR : <QuaestorServlet> -> void
+;; Initialise Quaestor, with a servlet object.  We require this object
+;; to implement interface QuaestorServlet
 (define (initialise-quaestor scheme-servlet)
   (define-generic-java-methods
     register-handler
@@ -89,7 +92,12 @@
     (reg "POST" kb http-post)
     (reg "DELETE" kb http-delete)
     (reg "POST" xmlrpc xmlrpc-handler)
-    (reg "GET" pickup pickup-dispatcher)))
+    (reg "GET" pickup pickup-dispatcher)
+
+    ;; initialise the logging, by passing the Servlet to (CHATTER),
+    ;; which relies on this object having a log(String) method on it.
+    (chatter scheme-servlet)
+    (chatter "Initialised quaestor")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
