@@ -72,11 +72,11 @@ start it up with build/start-jetty.sh
   * 'ant scm-tests' tests the scheme support within the application,
     and is the real code self-test
 
-  * 'ant junit-tests' tests the server RESTful interface, and so is
+  * 'ant protocol-tests' tests the server RESTful interface, and so is
     the protocol test.  This can also be used to test a remote
     service, or a local service running at a non-default port,
     by setting the property quaestor.url to the appropriate target:
-    % ant -Dquaestor.url=<foo> junit-tests
+    % ant -Dquaestor.url=<foo> protocol-tests
 
   * 'ant test' invokes both tests, with the default Quaestor URL,
     though that can be overridden the same way.
