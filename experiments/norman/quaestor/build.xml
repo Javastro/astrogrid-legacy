@@ -108,7 +108,7 @@
 
 -->
 
-  <property name="app.name"      value="quaestor-skua"/>         <!--Variant for SKUA project-->
+  <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
   <!-- Versions: make odd-numbered versions stable (-ish), and even-numbered
        ones intermediate beta releases. -->
@@ -622,7 +622,7 @@
     <chmod file='${build.home}/start-jetty.sh' perm='ugo+x'/>
     <mkdir dir="${build.war}/WEB-INF/classes"/>
     <copy todir="${build.war}/WEB-INF/classes">
-      <fileset file="${src.etc}/SchemeJettyServer.properties"/>
+      <fileset file="${src.etc}/JettySchemeServer.properties"/>
       <fileset file='${scm.src.home}/quaestor.scm'/>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
@@ -636,7 +636,7 @@
         <include name='${quaestor.lib.jar}'/>
         <include name='war/*'/>
         <include name='war/WEB-INF/classes/*'/>
-        <!--include name='war/WEB-INF/classes/SchemeJettyServer.properties'/-->
+        <!--include name='war/WEB-INF/classes/JettySchemeServer.properties'/-->
         <include name='war/WEB-INF/classes/org/eurovotech/quaestor/*.class'/>
         <!--include name='war/WEB-INF/classes/**'/-->
       </fileset>

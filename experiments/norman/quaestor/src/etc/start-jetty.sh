@@ -15,7 +15,7 @@ cd $D
 
 echo "Start Quaestor jetty server, v@VERSION@, @RELEASEDATE@"
 
-exec java -cp $D/@QUAESTORLIBJAR@:$D/war/WEB-INF/classes org.eurovotech.quaestor.SchemeJettyServer "$@"
+exec java -cp $D/@QUAESTORLIBJAR@:$D/war/WEB-INF/classes org.eurovotech.quaestor.JettySchemeServer "$@"
 
 # shouldn't get here
 echo "Exec failed!" >&2

@@ -17,7 +17,7 @@ import sisc.data.Procedure;
 /**
  * The main servlet for the Quaestor (and other) application
  */
-public class SchemeServlet extends GenericServlet implements QuaestorServlet {
+public class TomcatSchemeServlet extends GenericServlet implements QuaestorServlet {
 
     // The following is required, in order to suppress a -Xlint warning, since this
     // class extends HttpServlet.  Since I don't serialise anything, I don't think this matters,

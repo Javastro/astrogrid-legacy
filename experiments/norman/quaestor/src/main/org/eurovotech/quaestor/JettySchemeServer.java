@@ -34,7 +34,7 @@ import sisc.data.Procedure;
  * there's no security, so that there's nothing stopping you
  * retrieving the WEB-INF/web.xml file).
  */
-public class SchemeJettyServer {
+public class JettySchemeServer {
 
     static String versionString = "???";
 
@@ -45,9 +45,9 @@ public class SchemeJettyServer {
         Pattern opts = Pattern.compile("^--([a-z]+)(=(.*))?");
 
         Properties configProperties = new Properties();
-        java.io.InputStream propStream = ClassLoader.getSystemResourceAsStream("SchemeJettyServer.properties");
+        java.io.InputStream propStream = ClassLoader.getSystemResourceAsStream("JettySchemeServer.properties");
         if (propStream != null) {
-            Log.info("Found SchemeJettyServer.properties");
+            Log.info("Found JettySchemeServer.properties");
             try {
                 configProperties.load(propStream);
                 String s = configProperties.getProperty("version");
@@ -112,9 +112,9 @@ public class SchemeJettyServer {
     }
 
     private static void Usage() {
-        System.err.println("SchemeJettyServer " + versionString);
+        System.err.println("JettySchemeServer " + versionString);
         System.err.println("Usage:");
-        System.err.println("  SchemeJettyServer [--verbose] [--port=int] [--help]");
+        System.err.println("  JettySchemeServer [--verbose] [--port=int] [--help]");
         System.err.println("Starts a server on the nominated port");
         System.err.println("  --verbose   chatter on stderr");
         System.err.println("  --quiet     ...or not");
@@ -147,7 +147,7 @@ public class SchemeJettyServer {
             try {
 
                 // log name and version number
-                Log.info("SchemeJettyServer " + versionString);
+                Log.info("JettySchemeServer " + versionString);
 
                 org.mortbay.jetty.Server server = new org.mortbay.jetty.Server(portNumber);
 

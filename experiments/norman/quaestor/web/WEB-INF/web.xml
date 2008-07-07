@@ -27,7 +27,7 @@
       providing a RESTful and (minimal) XML-RPC interface to it.
       reports parameters.
     </description>
-    <servlet-class>org.eurovotech.quaestor.SchemeServlet</servlet-class>
+    <servlet-class>org.eurovotech.quaestor.TomcatSchemeServlet</servlet-class>
     <init-param>
       <param-name>main-script</param-name>
       <param-value>WEB-INF/quaestor.scm</param-value>
