@@ -15,6 +15,13 @@
          filter
          remove!)
 
+;; brain-dead assert macro
+(define-syntax assert
+  (syntax-rules ()
+    ((_ expr)
+     (if (not expr)
+         (error "assertion failed: ~s" (quote expr))))))
+
 (module knowledgebase
   (kb:new
    kb:get
@@ -102,9 +109,9 @@
           (else
            (error 'model-list "Bad call: (~s ~s)" cmd args))))))
 
-  ;; KB:GET : string -> knowledgebase or false
+  ;; KB:GET : Java-URI -> knowledgebase or false
   ;; Retrieve the knowledgebase with the given name, which is
-  ;; a symbol or string.  Return #f if there is no KB with this name.
+  ;; a Java URI.  Return #f if there is no KB with this name.
   (define/contract (kb:get (kb-name uri?)
                            -> (lambda (x)
                                 (or (not x)
@@ -114,7 +121,7 @@
   ;; KB:NEW : uri jena-model -> knowledgebase
   ;;
   ;; Create a new knowledgebase from scratch, registering it with the given
-  ;; KB-NAME (a URI).  It must not already exist.
+  ;; KB-NAME (a Java URI).  It must not already exist.
   ;; Return the new knowledgebase.  Either succeeds or throws an error.
   (define/contract (kb:new (kb-name uri?) (kb-metadata jena-model?) -> kb:knowledgebase?)
     (if (kb:get kb-name)
@@ -182,8 +189,10 @@
   ;;        Return the merged abox/tbox submodels, or #f if there are none.
   ;;    (kb 'get-metadata)
   ;;        Return the model's metadata, as a Jena Model.
-  ;;    (kb 'get-name)
-  ;;        Return the knowledgebase's name, as a symbol
+  ;;    (kb 'get-name-as-uri)
+  ;;        Return the knowledgebase's name, as a Java URI
+  ;;    (kb 'get-name-as-resource)
+  ;;        As get-name-as-uri, but returning the name as a Jena Resource
   ;;    (kb 'has-model [SUBMODEL-NAME])
   ;;        Return true if the named (sub)model exists, that is, if
   ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
@@ -297,38 +306,39 @@
             (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
           (define-generic-java-methods
             create-inf-model to-string)
-          (let* ((levelres
-                  (and metadata
-                       kb-name
-                       (rdf:select-statements metadata
-                                              kb-name
-                                              (in-quaestor-namespace "requiredReasoner")
-                                              #f)))
-                 (levelp (and levelres
-                              (not (null? levelres))
-                              (rdf:get-property-on-resource
-                               (car levelres)
-                               (in-quaestor-namespace "level"))))
-                 (level (and levelp
-                             (->string (to-string levelp)))))
+          (assert (and metadata kb-name))
+          (let* ((levelres (rdf:select-statements metadata
+                                                  kb-name
+                                                  (in-quaestor-namespace "requiredReasoner")
+                                                  #f))
+                 (level (cond ((and (not (null? levelres))
+                                    (rdf:get-property-on-resource (car levelres)
+                                                                  (in-quaestor-namespace "level")))
+                               => (lambda (levelp)
+                                    (->string (to-string levelp))))
+                              (else
+                               "none"))))
             (chatter "Level for ~s is ~s" kb-name level)
-            (let ((reasoner (and level
-                                 (rdf:get-reasoner level))))
-              (cond ((or (not level)
-                         (string=? level "none")
+            (let ((reasoner (rdf:get-reasoner level)))
+              (cond ((not reasoner)
+                     (error "level <~a> doesn't correspond to any reasoner I know about" level))
+                    ((and (not tbox)
+                          (not abox))
+                     ;; There's nothing in this model at all.
+                     ;; So return simply an empty model
+                     (rdf:new-empty-model))
+                    ((or (eq? reasoner 'none)
                          (not tbox))
                      (get-merged-model))
                     (abox
-                     (and reasoner 
-                          (create-inf-model (java-null <factory>)
-                                            reasoner
-                                            tbox
-                                            abox)))
+                     (create-inf-model (java-null <factory>)
+                                       reasoner
+                                       tbox
+                                       abox))
                     (else
-                     (and reasoner
-                          (create-inf-model (java-null <factory>)
-                                            reasoner
-                                            tbox))))))))
+                     (create-inf-model (java-null <factory>)
+                                       reasoner
+                                       tbox)))))))
 
       (lambda (cmd . args)
 
@@ -459,8 +469,16 @@
           ((get-metadata)
            (call-with-args () metadata))
 
-          ((get-name)
+          ((get-name-as-uri)
            (call-with-args () kb-name))
+
+          ((get-name-as-resource)
+           (call-with-args
+            ()
+            (define-generic-java-methods create-resource to-string)
+            (define-java-class <com.hp.hpl.jena.rdf.model.resource-factory>)
+            (create-resource (java-null <com.hp.hpl.jena.rdf.model.resource-factory>)
+                             (to-string kb-name))))
 
           ((info)
            (call-with-args
@@ -484,7 +502,7 @@
          (with/fc
              (lambda (m e) #f)
            (lambda ()
-             (uri? (object 'get-name))))))
+             (uri? (object 'get-name-as-uri))))))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;

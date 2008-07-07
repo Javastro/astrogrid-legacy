@@ -62,10 +62,10 @@
     (let* ((msg-or-pair (error-message error-record))
            (show-debugging? (not (pair? msg-or-pair))))
       (set-response-status! response
-                          (if (pair? msg-or-pair)
-                              (car msg-or-pair)
-                              status)
-                          "text/plain")
+                            (if (pair? msg-or-pair)
+                                (car msg-or-pair)
+                                status)
+                            "text/plain")
       (if show-debugging?
           (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
                   (format-error-record error-record)
@@ -152,12 +152,15 @@
           (else
            rec))))
 
-;; report-exception : symbol integer string . obj -> does-not-return
+;; report-exception : symbol symbol string . obj -> does-not-return
 ;; Variant of ERROR, which can be called in a region handled by the failure
 ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
 ;; with a message formatted with the given FMT and ARGS.  However instead
 ;; of exiting with the status code defaulted when the fc was created
 ;; by MAKE-FC, use the given NEW-STATUS.
+;;
+;; The NEW-STATUS must be a symbol, such as '|SC_OK|, indicating one of the
+;; status codes defined in class javax.servlet.http.HttpServletResponse.
 ;;
 ;; The returned `message' consists of a pair of integer status and the
 ;; message, and when the MAKE-FC handler processes this particular structure,
@@ -172,8 +175,9 @@
 ;;     (chatter fmt . args)  ; Format a message and return #t
 ;;     (chatter)             ; return list of messages, or #f if none
 ;;     (chatter #t)          ; ditto, but additionally clear the list
-;;     (chatter Object)      ; Object must have a log(String) method
-;; In the latter case, subsequent calls to (chatter fmt . args) will put the
+;;     (chatter Object)      ; Object must have a log(String) method, return #t
+;;     (chatter <output-port>) ; copy chatter to port, return #t
+;; In the two last cases, subsequent calls to (chatter fmt . args) will put the
 ;; message in the chatter buffer, but will additionally send it to the given
 ;; logging object.
 (define chatter
@@ -215,43 +219,54 @@
                  (if (car msg)
                      (set! chatter-list (make-circular-list 16))) ; new clear list
                  (and (not (null? r)) r)))  ;return list or #f
-              ((java-object? (car msg))     ;an object which has a log(String) method
-               (chatter-to-log (car msg)))
-              (else
+              ((string? (car msg))
                (apply chatter-to-log msg)
                (set! chatter-list   ;append a new message
                      (append-circular-list chatter-list
                                            (apply format (cons #f msg))))
-               #t))))))
+               #t)
+              ((chatter-to-log (car msg))) ;try giving it to the log function
+              (else
+               (error "chatter: I don't know what you expect me to do with a ~s" msg)))))))
 
-;; CHATTER-TO-LOG : <Object> -> void
 ;; CHATTER-TO-LOG : string . args -> void
+;; CHATTER-TO-LOG : <Object> -> #t
+;; CHATTER-TO-LOG : <output-port> -> #t
+;; CHATTER-TO-LOG : anything -> #f
 ;; If given a Java object, it must be an object which has a
 ;; log(String) method, and this object is saved.
 ;; If given a message (a list of objects starting with a format
-;; string), and if the log-object is present, then it sends the given
+;; string), and if the procedure log-it is present, then it sends the given
 ;; string to the indicated logging stream.
 ;;
 ;; Called from CHATTER.
 (define chatter-to-log
-  (let ((log-object #f))
+  (let ((log-it #f))
     (lambda msg
-      (define-generic-java-methods log)
       (let ((fmt (and (not (null? msg))
-                         (car msg))))
+                      (car msg))))
         (cond ((not fmt)
                (error "bad call to chatter-to-log, with null argument"))
-              ((java-object? fmt) ;an object which has a log(String) method
-               (set! log-object fmt)
-               #t)
               ((and (string? fmt)
-                    log-object)
-               (log log-object
-                    (->jstring (apply format `(#f ,(string-append "chatter:" fmt) . ,(cdr msg))))))
+                    log-it)
+               (apply log-it msg))
               ((string? fmt)
-               ;; do nothing -- no log-object defined
+               ;; do nothing -- no log-it defined
                #t)
-              (else
-               (error "bad call to chatter-to-log, with args: ~s" msg)))))))
+              ((java-object? fmt)       ;fmt is an object which should have a log(String) method
+               ;; a sophistication would be to use the Java reflection interface to check that the object
+               ;; does indeed have a log(String) method
+               ;; See SISC function java-class-declared-methods
+               (set! log-it
+                     (lambda (log-format . args)
+                       (define-generic-java-methods log)
+                       (log fmt (->jstring (apply format `(#f ,(string-append "chatter:" log-format) . ,args))))))
+               #t)
+              ((output-port? fmt)
+               (set! log-it
+                     (lambda args
+                       (apply format (cons fmt args))))
+               #t)
+              (else #f))))))
 
 ) ; end of module

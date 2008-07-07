@@ -40,7 +40,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.50 $ $Date: 2008/07/06 16:21:26 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.51 $ $Date: 2008/07/07 17:38:51 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -77,14 +77,25 @@
   (define-generic-java-methods
     register-handler
     get-init-parameter)
-  (let ((kb (get-init-parameter scheme-servlet (->jstring "kb-context")))
-        (xmlrpc (get-init-parameter scheme-servlet (->jstring "xmlrpc-context")))
-        (pickup (get-init-parameter scheme-servlet (->jstring "pickup-context"))))
+  (define (get-param s)                 ;get parameter, or #f if java-null
+    (let ((val (get-init-parameter scheme-servlet (->jstring s))))
+      (and (not (java-null? val))
+           val)))
+  (let ((kb (get-param "kb-context"))
+        (xmlrpc (get-param "xmlrpc-context"))
+        (pickup (get-param "pickup-context")))
     (define (reg method context proc)
       (register-handler scheme-servlet
                         (->jstring method)
                         context
                         (java-wrap proc)))
+    (if (not (and kb xmlrpc pickup))
+        (let ()
+          (define-java-class <javax.servlet.servlet-exception>)
+          (error (java-new <javax.servlet.servlet-exception>
+                           (->jstring (format #f "initialise-quaestor: some parameters not available: kb=~s, xmlrpc=~s, pickup=~s"
+                                              kb xmlrpc pickup))))))
+
     (reg "GET" kb http-get)
     (reg "GET" (->jstring "/debug") http-debug-query)
     (reg "HEAD" kb http-head)
@@ -96,7 +107,10 @@
 
     ;; initialise the logging, by passing the Servlet to (CHATTER),
     ;; which relies on this object having a log(String) method on it.
-    (chatter scheme-servlet)
+    (let ((verbosity (get-param "logging")))
+      (if (and verbosity
+               (equal? (->string verbosity) "verbose"))
+          (chatter scheme-servlet)))
     (chatter "Initialised quaestor")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -209,7 +223,7 @@
                                         (kb:get-names)))))))
       #f))
 
-;; If path-info-list has one element, and the query-string starts with "sparql",
+;; If path-info-list has one element, and the query-string starts with "query",
 ;; then the query is a URL-encoded SPARQL query to make of the model
 ;; named in (car path-info-list).
 (define (get-model-query path-info-list query-string request response)
@@ -238,7 +252,7 @@
   (let ((qp (parse-query-string query-string)))
     (and (= (length path-info-list) 1)
          (car qp)
-         (string=? (car qp) "sparql")
+         (string=? (car qp) "query")
          ;; the world is calling...
          (if (cdr qp)
              (sparql-encoded-query (request->kb-uri request)

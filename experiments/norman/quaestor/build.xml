@@ -108,7 +108,7 @@
 
 -->
 
-  <property name="app.name"      value="quaestor"/>
+  <property name="app.name"      value="quaestor-skua"/>         <!--Variant for SKUA project-->
   <property name="app.path"      value="/${app.name}"/>
   <!-- Versions: make odd-numbered versions stable (-ish), and even-numbered
        ones intermediate beta releases. -->
@@ -551,9 +551,10 @@
       <fileset file="${jdbc.support.jar}"/>
       <fileset refid='jetty.support'/>
     </unjar>
-    <!-- When working on the Java files below, it's convenient to have this commented out
-         and to change the path to point to the .../WEB-INF/classes instead.  You need
-         to adjust the classpath in start-jetty.sh at the same time. -->
+    <!-- When working on the Java files below, it's convenient to have this
+         next element commented out and to change the path to point to
+         .../WEB-INF/classes instead.  You need to adjust the classpath
+         in start-jetty.sh at the same time. -->
     <copy todir="${build.home}/quaestorlib">
       <fileset dir="${build.war}/WEB-INF/classes">
         <include name="org/eurovotech/quaestor/**"/>
@@ -602,6 +603,10 @@
   <!--
       Build everything - specifically the quaestorlib and the quaestor.scm -
       and install a script which can start the standalone Jetty service.
+  -->
+  <!-- When quaestorlib does not include quaestor.scm material (see above),
+       remove quaestorlib from this dependency:
+       depends="prepare,compile
   -->
   <target name="jetty"
           depends="prepare,compile,quaestorlib"
@@ -762,6 +767,7 @@
     <copy todir="${build.war}/WEB-INF">
       <fileset file="${scm.src.home}/quaestor.scm"/>
       <filterset>
+        <filter token="APPNAME" value="${app.name}"/>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
@@ -781,6 +787,7 @@
       <fileset dir="${web.home}"
                excludes="generate/**"/>
       <filterset>
+        <filter token="APPNAME" value="${app.name}"/>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>

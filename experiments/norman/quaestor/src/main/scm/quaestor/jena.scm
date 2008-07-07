@@ -541,47 +541,47 @@
         (error 'rdf:select-statements
                "Bad call : more than one #f slot"))))
 
-;; RDF:GET-REASONER : [string] -> reasoner
+;; RDF:GET-REASONER : string -> reasoner
 ;;
-;; Return a new Reasoner object, or #f on error
-;; The optional KEY parameter is one of the strings transitive,
-;; simpleRDFS, defaultRDFS, 
-;; fullRDFS, defaultOWL=fullOWL (not yet miniOWL or microOWL).
+;; Return a new Reasoner object,
+;; or 'NONE if we are not to use a reasoner,
+;; or #f on error.
 ;;
-;; The string 'none' is a valid 'reasoner', but will still return #f.
-(define (rdf:get-reasoner . key)
+;; The REASONER-LEVEL parameter is one of the strings 
+;; defaultOWL, miniOWL, microOWL, defaultRDFS, simpleRDFS, fullRDFS or transitive
+(define (rdf:get-reasoner reasoner-level)
 
-  (define (get-dig-reasoner)
-    (define-java-classes
-      ;;(<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|)
-      <com.hp.hpl.jena.reasoner.reasoner-registry>
-      <com.hp.hpl.jena.rdf.model.model-factory>
-      ;;(<factory> |com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory|)
-      ;;<com.hp.hpl.jena.rdf.model.resource>
-      )
-    (define-generic-java-methods
-      the-registry
-      (create-with-owl-axioms |createWithOWLAxioms|)
-      get-factory
-      create-resource
-      create-default-model
-      add-property)
+;;   (define (get-dig-reasoner)
+;;     (define-java-classes
+;;       ;;(<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|)
+;;       <com.hp.hpl.jena.reasoner.reasoner-registry>
+;;       <com.hp.hpl.jena.rdf.model.model-factory>
+;;       ;;(<factory> |com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory|)
+;;       ;;<com.hp.hpl.jena.rdf.model.resource>
+;;       )
+;;     (define-generic-java-methods
+;;       the-registry
+;;       (create-with-owl-axioms |createWithOWLAxioms|)
+;;       get-factory
+;;       create-resource
+;;       create-default-model
+;;       add-property)
 
-    (let* ((config-model (create-default-model
-                          (java-null <com.hp.hpl.jena.rdf.model.model-factory>)))
-           (conf (create-resource config-model)))
-      (add-property conf
-                    (java-retrieve-static-object
-                     '|com.hp.hpl.jena.vocabulary.ReasonerVocabulary.EXT_REASONER_URL|)
-                    (create-resource config-model
-                                     (->jstring (dig-uri))))
-      ;(chatter "Connecting to DIG reasoner at ~a" (dig-uri))
-      (create-with-owl-axioms
-       (get-factory
-        (the-registry (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>))
-        (java-retrieve-static-object
-         '|com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory.URI|))
-       conf)))
+;;     (let* ((config-model (create-default-model
+;;                           (java-null <com.hp.hpl.jena.rdf.model.model-factory>)))
+;;            (conf (create-resource config-model)))
+;;       (add-property conf
+;;                     (java-retrieve-static-object
+;;                      '|com.hp.hpl.jena.vocabulary.ReasonerVocabulary.EXT_REASONER_URL|)
+;;                     (create-resource config-model
+;;                                      (->jstring (dig-uri))))
+;;       ;(chatter "Connecting to DIG reasoner at ~a" (dig-uri))
+;;       (create-with-owl-axioms
+;;        (get-factory
+;;         (the-registry (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>))
+;;         (java-retrieve-static-object
+;;          '|com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory.URI|))
+;;        conf)))
 
   (define get-named-reasoner
     (let ()
@@ -591,7 +591,6 @@
         (get-owl-reasoner |getOWLReasoner|)
         (get-owl-mini-reasoner |getOWLMiniReasoner|)
         (get-owl-micro-reasoner |getOWLMicroReasoner|)
-        ;;(get-rdfs-reasoner |getRDFSReasoner|)
         get-transitive-reasoner)
       (let ((reasoner-list (list (cons "defaultOWL"
                                        (lambda ()
@@ -618,13 +617,13 @@
                                        (lambda ()
                                          (get-transitive-reasoner
                                           (java-null <registry>))))
-                                 ;; the key "none" is a valid 'reasoner', but it isn't
-                                 ;; in this list -- trapped below as an error
+                                 ;; the reasoner-level "none" is a valid 'reasoner',
+                                 ;; but is special-cased below
                                  )))
         (lambda (name)
           (let ((getter (assoc name reasoner-list)))
             (cond ((string=? name "none")
-                   #f)
+                   'none)
                   ((not getter)
                    #f)                       ;error
                   ((procedure? (cdr getter)) ;not cached yet
@@ -652,17 +651,6 @@
                           (:prop-set-rdfs-level (java-null <vocabulary>))
                           (->jstring level))))
 
-;;   (define (get-rdfs-reasoner)
-;;     (define-java-class
-;;       <com.hp.hpl.jena.reasoner.reasoner-registry>)
-;;     (define-generic-java-methods
-;;       (get-rdfs-reasoner |getRDFSReasoner|))
-;;     ;(chatter "Creating RDFS reasoner")
-;;     (get-rdfs-reasoner (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>)))
-
-  (get-named-reasoner (if (or (null? key)
-                              (not (car key)))
-                          "defaultOWL"
-                          (car key))))
+  (get-named-reasoner reasoner-level))
 
 )

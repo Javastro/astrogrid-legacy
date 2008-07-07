@@ -11,7 +11,6 @@ import java.net.MalformedURLException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-//import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 
@@ -62,29 +61,6 @@ public class QuaestorConnection {
     static {
         kbname = java.util.regex.Pattern.compile("^[a-zA-Z][a-zA-Z0-9-]*$");
     }
-
-//     /**
-//      * Sets the base URL for the Quaestor service.  Any connections to
-//      * the service from this point on will use this URL to make their
-//      * initial connection.  This URL be read from the system property
-//      * <code>quaestor.url</code>, and will default to
-//      * <code>http://localhost:8080/quaestor</code> if this is not
-//      * defined.
-//      * 
-//      * @param url the new base URL
-//      * @throws QuaestorException if the URL is malformed
-//      */
-//     public static setBaseURL(String url) 
-//             throws QuaestorException {
-//         try {
-//             if (url.endsWith("/"))
-//                 baseURL = new URL(url + ".");
-//             else
-//                 baseURL = new URL(url + "/.");
-//         } catch (java.net.MalformedURLException e) {
-//             throw new QuaestorException("URL " + url + " is malformed", e);
-//         }
-//     }
 
     /**
      * Create a new connection to an existing Quaestor knowledgebase.
@@ -285,17 +261,9 @@ public class QuaestorConnection {
         }
     }
 
-//     public static boolean deleteKnowledgebase(URL quaestorURL,
-//                                               String knowledgebase)
-//             throws QuaestorException {
-//         checkValidName(knowledgebase);
-//         URL delURL = makeKbURL(quaestorURL, knowledgebase, null);
-//         HttpResult r = httpDelete(delURL);
-//         return r.getStatus() == HttpURLConnection.HTTP_NO_CONTENT;
-//     }
-
     /**
      * Deletes the knowledgebase to which we are connected
+     * @return true on success
      */
     public boolean deleteKnowledgebase()
             throws QuaestorException {
@@ -552,23 +520,6 @@ public class QuaestorConnection {
                     }
                 }
 
-//             StringBuffer sb = new StringBuffer();
-//             BufferedReader r
-//                     = new BufferedReader
-//                     (new InputStreamReader(c.getInputStream()));
-//             char[] buffer = new char[256];
-//             int nread;
-//             while ((nread = r.read(buffer, 0, buffer.length)) >= 0) {
-//                 sb.append(buffer, 0, nread);
-//             }
-//             r.close();
-            
-//             String res;
-//             if (sb.length() == 0)
-//                 res = null;
-//             else
-//                 res = sb.toString();
-
                 return new HttpResult(c.getResponseCode(),
                                       c.getContentType(),
                                       c.getInputStream());
@@ -578,62 +529,27 @@ public class QuaestorConnection {
                     return new HttpResult(c.getResponseCode(),
                                           c.getContentType(),
                                           c.getErrorStream());
-//                 java.io.InputStream is = c.getErrorStream();
-//                 String contentString;
-//                 if (is == null) {
-//                     contentString = null;
-//                 } else {
-//                     StringBuffer sb = new StringBuffer();
-//                     BufferedReader r
-//                             = new BufferedReader(new InputStreamReader(is));
-//                     char[] buffer = new char[256];
-//                     int nread;
-//                     while ((nread = r.read(buffer, 0, buffer.length)) >= 0)
-//                         sb.append(buffer, 0, nread);
-//                     r.close();
-//                     if (sb.length() == 0)
-//                         contentString = null;
-//                     else
-//                         contentString = sb.toString();
-//                 }
-//                 return new HttpResult(c.getResponseCode(),
-//                                       c.getContentType(),
-//                                       contentString);
                 } else {
                     // it actually is an error
                     throw new QuaestorException
-                            ("Error connection to Quaestor service", e);
+                            ("Error in connection to Quaestor service", e);
                 }
             }
         } catch (java.io.IOException e) {
             // This is an exception thrown by the c.getResponseCode()
             // within the IOException handler.
-            // I think that really shouldn't happen.
-            throw new QuaestorException
-                    ("Weirdo IOException: " + e);
+            Throwable cause = e.getCause();
+            if (cause instanceof java.net.ConnectException) {
+                throw new QuaestorException
+                        ("Couldn't connect to Quaestor (is the server running?): " + cause);
+            } else {
+                // I think this really shouldn't happen.
+                throw new QuaestorException("Weirdo IOException: " + e);
+            }
         }
     }
 
     /* ******************** Various helper methods ******************** */
-
-    /**
-     * Return the fixed base URL for the Quaestor service
-     */
-//     public static URL getBaseURL()
-//             throws QuaestorException {
-//         if (baseURL == null) {
-//             try {
-//                 baseURL = new URL
-//                         (System.getProperty("quaestor.url",
-//                                             "http://localhost:8080/quaestor"));
-//             } catch (java.net.MalformedURLException e) {
-//                 throw new QuaestorException("Property quaestor.url="
-//                                             + System.getProperty("quaestor.url")
-//                                             + " is a malformed URL");
-//             }
-//         }
-//         return baseURL;
-//     }
 
     private static URL makeKbURL(URL baseURL,
                                  String knowledgebase,

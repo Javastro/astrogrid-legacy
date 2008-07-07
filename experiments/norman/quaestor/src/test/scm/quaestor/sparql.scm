@@ -20,11 +20,16 @@
 (define-java-classes
   <java.lang.string>
   <java.io.string-reader>
+  <java.io.byte-array-output-stream>
   (<uri> |java.net.URI|))
+(define-generic-java-methods
+  to-string write)
 
+;; Set up two knowledgebases with test data
 (define test-kb
+  ;; A simple KB with only a single triple in it.
   (let ()
-    (import* jena rdf:ingest-from-stream/language)
+    (import* jena rdf:ingest-from-stream/language rdf:new-empty-model)
     (import knowledgebase)
     
     (let ((model (rdf:ingest-from-stream/language
@@ -32,12 +37,40 @@
                             (->jstring "<urn:example#i1> a <urn:example#c1>."))
                   ""
                   "text/rdf+n3"))
-          (kb (kb:new (java-new <uri> (->jstring "urn:sparql-test-kb")) (rdf:new-empty-model))))
+          (kb (kb:new (java-new <uri> (->jstring "urn:sparql-test-kb"))
+                      (rdf:new-empty-model)))) ;no metadata
       (kb 'add-abox "abox" model)       ;just abox
       kb)))
 
-;; (format #t "test-kb=~s  procedure?=~s  kb?=~s~%"
-;;         test-kb (procedure? test-kb) (kb:knowledgebase? test-kb))
+(define test-kb-empty
+  ;; A simple KB with no triples in it.
+  (let ()
+    (import* jena rdf:ingest-from-stream/language rdf:new-empty-model)
+    (import knowledgebase)
+
+    (kb:new (java-new <uri> (->jstring "urn:sparql-test-kb-empty"))
+            (rdf:new-empty-model))))    ;no metadata
+
+(define test-kb-delegating
+  ;; This KB also has only a single triple in it, but it delegates to the other one.
+  (let ()
+    (import* jena rdf:ingest-from-stream/language)
+    (import knowledgebase)
+    
+    (let* ((model (rdf:ingest-from-stream/language
+                   (java-new <java.io.string-reader>
+                             (->jstring "<urn:example#i2> a <urn:example#c1>."))
+                   ""
+                   "text/rdf+n3"))
+           (metadata (rdf:ingest-from-stream/language
+                      (java-new <java.io.string-reader>
+                                (->jstring "<urn:sparql-test-kb-delegating> <http://ns.eurovotech.org/quaestor#delegatesTo> <urn:sparql-test-kb>."))
+                      ""
+                      "text/rdf+n3"))
+           (kb (kb:new (java-new <uri> (->jstring "urn:sparql-test-kb-delegating"))
+                       metadata)))
+      (kb 'add-abox "abox" model)       ;just abox
+      kb)))
 
 ;; it is no longer a failure to run a query against a model with no TBox
 ;; (expect-failure sparql-error-just-abox
@@ -92,6 +125,37 @@
         (procedure? (sparql:make-query-runner test-kb
                                               ask-query
                                               '("fandango" "*/*"))))
+
+(define (run-runner-on-kb kb)
+  (let ((runner (sparql:make-query-runner kb
+                                          select-query
+                                          '("text/csv")))
+        (string-stream (java-new <java.io.byte-array-output-stream>)))
+    (runner string-stream
+            (lambda (mime-type)
+              #f ; discard argument at present (the following doesn't work -- dunno why)
+;;               (define-generic-java-method get-bytes)
+;;               (define-generic-java-field-accessor :length)
+;;               (let ((mime-type-bytes (get-bytes (->jstring mime-type))))
+;;                 (write string-stream
+;;                        mime-type-bytes
+;;                        (->jint 0)
+;;                        (:length mime-type-bytes)))
+              ))
+    (->string (to-string string-stream))))
+
+
+(expect sparql-query-empty
+        "i\r\n"
+        (run-runner-on-kb test-kb-empty))
+
+(expect sparql-make-select-simple
+        (string->list "i\r\nurn:example#i1\r\n")
+        (string->list (run-runner-on-kb test-kb)))
+
+(expect sparql-make-select-delegating
+        (string->list "i\r\nurn:example#i2\r\nurn:example#i1\r\n")
+        (string->list (run-runner-on-kb test-kb-delegating)))
 
 (expect-failure sparql-error-null-kb
                 (sparql:make-query-runner #f ;boolean argument

@@ -24,3 +24,22 @@ to the files other than this one, which might be usefully merged onto
 the trunk even if the SKUA stuff is abandoned.
 
 Branch point tagged as bp-nxg-2008-02-13-skua
+HEAD merged here on 2008-05-15, after v0-4-5,
+          ...and on 2008-05-18
+          ...and on 2008-06-25 (twice!)
+(policy: don't make generally useful changes here, but instead make them
+on the trunk and merge them -- it's too confusing otherwise)
+          ...and on 2008-07-06
+
+[Specifically:
+% cd /tmp
+% cvs -d :ext:norman@cvs.astrogrid.org/devel co -r nxg-2008-02-13-skua experiments/norman/quaestor
+% cd experiments/norman/quaestor
+% cvs update -j HEAD
+# resolve conflicts
+% cvs commit -m "Merge from HEAD"
+# cd back to branch and update
+]
+
+Merged back on to HEAD 2008-07-07
+merge point: nxg-2008-02-13-skua-MERGED

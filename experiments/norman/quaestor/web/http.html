@@ -56,7 +56,7 @@ is to retrieve the model.</p>
 <p>This method returns status 200 (OK) on success, or a 4xx code on
 error.</p></dd>
 
-<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>?sparql=<em>query</em></code></dt>
+<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>?query=<em>query</em></code></dt>
 <dd>Perform the SPARQL query which is URL-encoded in the string
 <em>query</em>.  This has the same response codes and
 <code>accept</code> headers as the <code>POST</code> method below.</dd>
@@ -133,7 +133,36 @@ there was no such knowledgebase, or no such submodel.</dd>
 
 </dl>
 
-<h3><a name='config-metadata' >Knowledgebase metadata</a></h3>
+<h2><a name='delegation'>Delegation of knowledgebases</a></h2>
+
+<p>Quaestor supports a simple form of query delegation.  A
+knowledgebase can be configured, using the metadata
+<a href='#config-metadata' >below</a>, to forward queries to another
+SPARQL endpoint.</p>
+
+<p>The delegation is rather simple-minded.  If the metadata of a
+knowledgebase <em>A</em> includes a triple of the form <code>&lt;A&gt;
+quaestor:delegatesTo &lt;B&gt;</code>, then when a query is made
+against knowledgebase <em>A</em>, the <em>same</em> query is made
+against <em>B</em> (and against any other objects of the same property
+relation) and the results of the queries against <em>A</em> and
+<em>B</em> are concatenated.  This works adequately if the
+knowledgebases have similar and independent information, but it fails
+to answer queries where the relevant triples are in the union of the
+knowledgebases <em>A</em> and <em>B</em>, but not in either
+knowledgebase separately.</p>
+
+<p>The object of the <code>quaestor:delegatesTo</code> property may be
+the URL of another knowledgebase in the same Quaestor instance, or it
+may be a separate SPARQL endpoint.  In the latter case, Quaestor
+presumes that for a SPARQL endpoint URL <code>http://foo</code>, the query
+can be made with a GET on the URL
+<code>http://foo?query=&lt;query&gt;</code>, where
+<em>&lt;query&gt;</em> is the URL-encoded version of the original
+SPARQL query.  This interface is not standardised, but it appears to
+be rather common, and is the same as Quaestor's GET-query interface.</p>
+
+<h2><a name='config-metadata' >Knowledgebase metadata</a></h2>
 
 <p>When you create a knowledgebase with a <code>PUT
 http://hostport/quaestor/kb/<em>kb-name</em></code>, as shown above,
@@ -141,9 +170,55 @@ you can include metadata to describe and configure it.  The resources
 are resolved using the knowledgebase's own URI as the base-URI.</p>
 
 <p>You can add any metadata you like, but some properties are treated
-specially.  The following properties are in the namespace
+specially.  The following classes properties are in the namespace
 <code>http://ns.eurovotech.org/quaestor#</code> (at present, this might
 change).</p>
+
+<dl>
+<dt>Class <code>quaestor:Knowledgebase</code></dt>
+<dd>A Quaestor knowledgebase</dd>
+
+<dt>Class <code>quaestor:ReasonerSpecification</code></dt>
+<dd>A specification of various required properties of the reasoner to
+be used with this knowledgebase.</dd>
+
+<dt>Property <code>quaestor:requiredReasoner</code></dt>
+<dd>A property of a knowledgebase, which has a
+<code>quaestor:ReasonerSpecification</code> as its range.</dd>
+
+<dt>Property <code>quaestor:level</code></dt>
+<dd>A property of a <code>quaestor:ReasonerSpecification</code> which
+indicates the functionality required of the reasoner for this
+knowledgebase.  The property may have the values indicated below.</dd>
+
+<dt>Property <code>quaestor:delegatesTo</code></dt>
+<dd>A property of a knowledgebase, indicating the URL of
+another SPARQL endpoint, to which queries can be forwarded, as
+discussed <a href='#delegation'>above</a>.</dd>
+
+</dl>
+
+<p>The available reasoners are as follows:</p>
+<dl>
+<dt>none</dt>
+<dd>Do not use a reasoner</dd>
+
+<dt>simpleRDFS, defaultRDFS, or fullRDFS</dt>
+<dd>Three Jena reasoners supporting RDFS reasoning (able, for example,
+to reason that <code>rdfs:subClassOf</code> is transitive).</dd>
+
+<dt>defaultOWL</dt>
+<dd>The default Jena OWL reasoner.</dd>
+
+<dt>miniOWL and microOWL</dt>
+<dd>The two alternative Jena OWL reasoners.</dd>
+</dl>
+
+<p>For fuller details of these reasoners, see the
+<a href='http://jena.sourceforge.net/inference/index.html#rdfs' >Jena
+inference documentation</a>.</p>
+
+<p>The formal declaration of these properties is below.</p>
 
 <pre>
 @prefix : &lt;http://ns.eurovotech.org/quaestor#&gt;.
@@ -151,30 +226,43 @@ change).</p>
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
 
+:Knowledgebase a rdfs:Class;
+    rdfs:comment "A Quaestor knowledgebase".
+
 :ReasonerSpecification a rdfs:Class;
     rdfs:comment """Specification of the reasoner required to handle
         a knowledgebase""".
+
 :requiredReasoner a rdf:Property;
+    rdfs:domain :Knowledgebase;
     rdfs:range :ReasonerSpecification;
     rdfs:comment "The reasoner required to process a specific knowledgebase".
+
 :level a rdf:Property;
     rdfs:domain :ReasonerSpecification;
     rdfs:range xsd:string;
     rdfs:comment """A string indicating reasoning capability.  It may
         be one of the strings:
-        simpleRDFS, defaultRDFS, fullRDFS: three Jena reasoners; or
-        defaultOWL: the default Jena OWL reasoner; or
-        miniOWL, microOWL: the two alternative Jena OWL reasoners""" .
+        none (do not use a reasoner),
+        simpleRDFS, defaultRDFS, fullRDFS (three Jena reasoners),
+        defaultOWL (the default Jena OWL reasoner),
+        miniOWL, microOWL (the two alternative Jena OWL reasoners)""" .
+
+:delegatesTo a rdf:Property;
+    rdfs:domain :Knowledgebase;
+    rdfs:comment """A SPARQL endpoint to which this knowledgebase should
+        delegate queries""" .
 </pre>
 
 <p>If no <code>level</code> property is available, the default
-reasoner is (currently) <code>defaultOWL</code>.</p>
+reasoner is (currently) <code>none</code>.</p>
 
-<p>For example a configuration file such as the following would set up
+<h3>Example</h3>
+
+<p>For example a configuration file such as the following, sent as the
+payload of the <code>PUT</code> which creates the knowledgebase, would set up
 the knowledgebase with a reasoner that could process a useful subset
-of RDFS.  See the <a
-href='http://jena.sourceforge.net/inference/index.html#rdfs' >Jena
-inference documentation</a> for more discussion.</p>
+of RDFS.</p>
 
 <pre>
 @prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt;.

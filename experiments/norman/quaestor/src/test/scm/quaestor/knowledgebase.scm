@@ -11,11 +11,13 @@
 
 (define-java-classes
   (<uri> |java.net.URI|)
-  (<model> |com.hp.hpl.jena.rdf.model.Model|))
+  (<model> |com.hp.hpl.jena.rdf.model.Model|)
+  (<resource-factory> |com.hp.hpl.jena.rdf.model.ResourceFactory|))
+
+(define-generic-java-methods to-string)
 
 (define (jena-model? x)
   (is-java-type? x <model>))
-
 
 (define try1 (java-new <uri> (->jstring "urn:example/try1")))
 (define try2 (java-new <uri> (->jstring "urn:example/try2")))
@@ -47,6 +49,13 @@
 (expect kb-get-3
         #f
         (kb:get try3))
+
+(expect kb-name-as-uri
+        try1
+        ((kb:get try1) 'get-name-as-uri))
+(expect kb-name-as-resource
+        (to-string try1)
+        (to-string ((kb:get try1) 'get-name-as-resource)))
 
 (expect kb-discard
         #t
@@ -252,9 +261,14 @@
     quaestor:level \"invalid\"
   ].
 " uri3)))
+
+    (let ((simple-kb (expect-true kb-md-1
+                                  (kb:new uri1 simple-md1))))
+      (expect-true kb-md1-query
+                   (jena-model? (simple-kb 'get-query-model))))
   
-    (expect-true kb-md-1
-                 (kb:new uri1 simple-md1))
+;;     (expect-true kb-md-1
+;;                  (kb:new uri1 simple-md1))
     (let ((kb (kb:get uri1)))
       (expect-true kb-tbox-1
                    (kb 'add-tbox "model1" model-1))
@@ -274,9 +288,8 @@
     (let ((kb (kb:get uri3)))
       (expect-true kb-tbox-3
                    (kb 'add-tbox "model1" model-1))
-      (expect kb-query-3
-              #f
-              (kb 'get-query-model)))
+      (expect-failure kb-query-3
+                      (kb 'get-query-model)))
   
     ;; we could potentially test that the reasoner works, but...
     ))

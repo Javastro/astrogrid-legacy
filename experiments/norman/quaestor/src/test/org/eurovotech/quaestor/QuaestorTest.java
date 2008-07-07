@@ -72,20 +72,7 @@ public class QuaestorTest
             }
 
             // Attempt to delete the knowledgebase, whether or not it's there.
-            r = QuaestorConnection.httpDelete(makeKbUrl());
-            switch (r.getStatus()) {
-              case HttpURLConnection.HTTP_NO_CONTENT:
-                // ooops -- a "testing" KB hanging over from a previous test?
-                System.err.println("Deleted old KB at " + makeKbUrl());
-                break;
-              case HttpURLConnection.HTTP_BAD_REQUEST:
-                // there was no knowledgebase there to delete (fair enough)
-                break;
-              default:
-                throw new AssertionFailedError("Unexpected status " + r.getStatus()
-                                               + " when clearing old testing knowledgebase "
-                                               + makeKbUrl());
-            }
+            deleteKbIfPresent(makeKbUrl());
         }
     }
 
@@ -166,6 +153,20 @@ public class QuaestorTest
 
     /* ******************** Other test methods ******************** */
 
+    public void testQueryEmptyKB()
+            throws Exception {
+        // Query the empty KB.  This should produce no results, but shouldn't fail
+        HttpResult r = QuaestorConnection.httpPost(makeKbUrl(),
+                                                   "SELECT ?i where { ?i a <urn:example#c1> }",
+                                                   new String[] {
+                                                       "Accept", "text/csv",
+                                                       "Content-Type", "application/sparql-query",
+                                                   });
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/csv");
+        assertEquals(new String[] { "i" }, r.getContentAsStringList());
+    }
+
     public void testAddOntology()
             throws Exception {
         HttpResult r = QuaestorConnection.httpPut
@@ -226,7 +227,7 @@ public class QuaestorTest
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/xml");
         assertNotNull(r.getContentAsString());
-        // don't check actual content string
+        // don't check actual content string -- it's a bunch of XML
 
         // try making a query against a submodel -- should fail
         r = QuaestorConnection.httpPost(makeKbUrl("ontology"),
@@ -235,8 +236,10 @@ public class QuaestorTest
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
         assertNotNull(r.getContentAsString()); // error message
 
-        // Note we don't check whether the query fails if it's given with
-        // the wrong content-type.  Perhaps we should.
+        // POST a query with the wrong content-type
+        r = QuaestorConnection.httpPost(makeKbUrl(), query, "wibble/w00t");
+        assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
+        assertNotNull(r.getContentAsString()); // error message
 
         // check n-triple response
         // XXX this isn't actually correct yet, in that this still
@@ -252,14 +255,15 @@ public class QuaestorTest
         assertNotNull(r.getContentAsString());
         // don't check actual content
 
+        // Query through the GET interface
         String encodedQuery = java.net.URLEncoder.encode(query, "UTF-8");
-        r = QuaestorConnection.httpGet(makeKbUrl("?sparql="+encodedQuery));
+        r = QuaestorConnection.httpGet(makeKbUrl("?query="+encodedQuery));
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/xml");
         assertNotNull(r.getContentAsString());
 
         // the same, requesting text/plain
-        r = QuaestorConnection.httpGet(makeKbUrl("?sparql="+encodedQuery),
+        r = QuaestorConnection.httpGet(makeKbUrl("?query="+encodedQuery),
                     new String[] {"Accept", "text/plain"});
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/plain");
@@ -268,7 +272,7 @@ public class QuaestorTest
         // ...and requesting CSV
         // Note that we actually test the content, here, so are coupled to
         // testAddInstances.
-        r = QuaestorConnection.httpGet(makeKbUrl("?sparql="+encodedQuery),
+        r = QuaestorConnection.httpGet(makeKbUrl("?query="+encodedQuery),
                     new String[] {"Accept", "text/csv"});
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
@@ -345,6 +349,83 @@ public class QuaestorTest
         r = QuaestorConnection.httpGet(makeKbUrl("?sparql="));
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
         assertNotNull(r.getContentAsString());
+    }
+
+    /* ******************** Delegation tests ******************** */
+
+    public void testLocalDelegation()
+            throws Exception {
+        HttpResult r;
+        URL kb_d1 = new URL(contextURL, "kb/d1");
+        URL kb_d2 = new URL(contextURL, "kb/d2");
+        URL kb_d3 = new URL(contextURL, "kb/d3");
+        String baseMDprefix = "@prefix dc: <http://purl.org/dc/elements/1.1/>.\n@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.\n\n<> dc:description \"UCD knowledgebase\";\n    dc:creator \"Norman\";\n    quaestor:requiredReasoner [\n        quaestor:level \"none\"\n    ]";
+        
+        String baseMDextraList[] = {
+            "",
+            "; quaestor:debug \"externaldelegation\"",
+        };
+
+        for (String baseMDextra : baseMDextraList) {
+            // the network of delegation is as follows:
+            // d3 ---> d1 ---> testing
+            //    |
+            //    +--> d2
+            String baseMD = baseMDprefix + baseMDextra;
+
+        deleteKbIfPresent(kb_d1);
+        deleteKbIfPresent(kb_d2);
+        deleteKbIfPresent(kb_d3);
+
+        r = QuaestorConnection.httpPut(kb_d1,
+                                       baseMD+";  quaestor:delegatesTo <" + makeKbUrl() + ">.",
+                                       "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        r = QuaestorConnection.httpPut(kb_d2,
+                                       baseMD+".",
+                                       "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        r = QuaestorConnection.httpPut(kb_d3,
+                                       baseMD+";  quaestor:delegatesTo <"+kb_d1+">, <"+kb_d2+">.",
+                                       "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        r = QuaestorConnection.httpPut(new URL(kb_d1.toString()+"/content"),
+                                       "<urn:del#d1> a <urn:example#c1>.",
+                                       "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        r = QuaestorConnection.httpPut(new URL(kb_d2.toString()+"/content"),
+                                       "<urn:del#d2> a <urn:example#c1>.",
+                                       "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        r = QuaestorConnection.httpPut(new URL(kb_d3.toString()+"/content"),
+                                       "<urn:del#d3> a <urn:example#c1>.",
+                                       "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+
+        String query = "SELECT ?i where { ?i a <urn:example#c1>}";
+
+        // Make a successful query. and check XML response
+        r = QuaestorConnection.httpPost(kb_d3,
+                                        query,
+                                        new String[] {
+                                            "Content-type", "application/sparql-query",
+                                            "Accept", "text/csv",
+                                        });
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/csv");
+        // the order of the following isn't important, but this seems to be consistent
+        assertEquals(new String[] {"i",
+                                   "urn:del#d3",
+                                   "urn:del#d2",
+                                   "urn:del#d1",
+                                   "urn:example#i1" },
+                     r.getContentAsStringList());
+        }
+
+        // tidy up
+        deleteKbIfPresent(kb_d1);
+        deleteKbIfPresent(kb_d2);
+        deleteKbIfPresent(kb_d3);
     }
 
     /* ******************** XML-RPC tests ******************** */
@@ -545,7 +626,7 @@ public class QuaestorTest
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
         assertNull(r.getContentAsString());
 
-        // now delete it with the wrong namd
+        // now delete it with the wrong name
         r = QuaestorConnection.httpDelete(makeKbUrl("tempxx"));
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
 
@@ -661,19 +742,58 @@ public class QuaestorTest
     }
 
     private void assertEquals(String[] slcorrect, String[] sltest) {
-//         System.err.println("assertEquals(");
+//         System.err.println("assertEquals[StringList](");
 //         for (int i=0; i<slcorrect.length; i++)
 //             System.err.println("  " + slcorrect[i]);
 //         System.err.println("  ,");
 //         for (int i=0; i<sltest.length; i++)
 //             System.err.println("  " + sltest[i]);
 //         System.err.println("  )");
-        
-        assertEquals(slcorrect.length, sltest.length);
-        for (int i=0; i<slcorrect.length; i++)
-            assertEquals(slcorrect[i], sltest[i]);
+
+        try {
+            assertEquals(slcorrect.length, sltest.length);
+            for (int i=0; i<slcorrect.length; i++)
+                assertEquals(slcorrect[i], sltest[i]);
+        } catch (AssertionFailedError e) {
+            System.err.println("assertEquals[StringList](");
+            for (int i=0; i<slcorrect.length; i++)
+                System.err.println("  " + slcorrect[i]);
+            System.err.println("  ,");
+            for (int i=0; i<sltest.length; i++)
+                System.err.println("  " + sltest[i]);
+            System.err.println("  )");
+
+            // and rethrow the error
+            throw e;
+        }
     }
 
+    /**
+     * Delete a knowledgebase, without failing if it doesn't exist.
+     * This is useful before creating a test KB, to clear away that KB if it was left
+     * lying around after a previous unsuccessful test.
+     */
+    private static void deleteKbIfPresent(URL kbURL) {
+        try {
+            HttpResult r = QuaestorConnection.httpDelete(kbURL);
+            switch (r.getStatus()) {
+              case HttpURLConnection.HTTP_NO_CONTENT:
+                // ooops -- a "testing" KB hanging over from a previous test?
+                // System.err.println("Deleted old KB at " + kbURL);
+                break;
+              case HttpURLConnection.HTTP_BAD_REQUEST:
+                // there was no knowledgebase there to delete (fair enough)
+                break;
+              default:
+                throw new AssertionFailedError("Unexpected status " + r.getStatus()
+                                               + " when clearing old testing knowledgebase " + kbURL);
+            }
+        } catch (QuaestorException e) {
+            throw new AssertionFailedError("Got exception <" + e 
+                                           +"> when attempting to delete knowledgebase + kbURL");
+        }
+    }
+    
     /**
      * Create an RPC call from a method and arguments.  Returns a valid
      * XML-RPC call element as XML in a string.

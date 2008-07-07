@@ -67,7 +67,8 @@
      (curl ,@(verbose-option)
            ,@(make-header "Accept"
                           (or (acceptable-mime-types)
-                              (preferred-language)))
+                              (preferred-language)
+                              ACCEPT-ALL))
            ,full-url))))
 
 (define (new-kb-handler kb-name metadata)
@@ -77,8 +78,7 @@
             (char=? (string-ref metadata 0) #\@))
         (let ((metadata-file (if (have-found-file? metadata)
                                  metadata
-                                 (substring metadata 1
-                                            (string-length metadata))))
+                                 (substring metadata 1 (string-length metadata))))
               (mime-type (get-language-from-extension metadata)))
           (check-file-exists metadata-file)
           (if (not mime-type)
@@ -108,7 +108,7 @@
            ,@(make-header "Content-Type"
                           (or (get-language-from-extension submodel-file)
                               (preferred-language)
-                              #f))
+                              "application/rdf+xml"))
            ,full-url))))
 
 ;; Delete a knowledgebase from the server.
@@ -293,11 +293,16 @@
                    (".rdf" . "application/rdf+xml")
                    (".rdfs" . "application/rdf+xml")
                    (".owl" . "application/rdf+xml")
-                   (".txt" . "text/plain"))))
+                   (".txt" . "text/plain") ;N-triples
+                   (".nt"  . "text/plain"))))
     (cond ((assoc ext ext-map)
            => cdr)
           (else
            #f))))
+
+;; ACCEPT-ALL : string
+;; a string denoting an accept-all value for the Accept header
+(define ACCEPT-ALL "text/rdf+n3,application/x-turtle,application/rdf+xml")
 
 ;; Generate a curl header option, representing the given HEADER and VALUE.
 ;; Return either a list of two elements, or an empty list, if value is #f.

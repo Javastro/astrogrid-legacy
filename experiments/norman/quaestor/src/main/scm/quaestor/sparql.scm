@@ -10,19 +10,18 @@
 (require-library 'quaestor/jena)
 
 (module sparql
-(;sparql:perform-query
- sparql:make-query-runner)
+(sparql:make-query-runner)
 
 (import* utils
-         ;report-exception
-         ;chatter
          jlist->list
          is-java-type?)
 (import* knowledgebase
-         kb:knowledgebase?)
+         kb:knowledgebase?
+         kb:get)
 (import* jena
          rdf:mime-type-list
-         rdf:mime-type->language)
+         rdf:mime-type->language
+         rdf:select-statements)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -42,6 +41,161 @@
      (if (not test)
          (error 'sparql:make-query-runner message ...)))))
 
+;; Create an implementation of the ResultSet interface, which takes
+;; a list of ResultSet instances, and returns results from each of
+;; them in turn until all are exhausted.
+;;
+;; As well, this can be invoked with a null list of result-sets,
+;; in which case it functions correctly as a (dummy?) result-set
+;; with no results.
+(define-java-classes <com.hp.hpl.jena.query.result-set>)
+
+(define-java-proxy (multi-result-set result-sets)
+  (<com.hp.hpl.jena.query.result-set>)
+  (define (get-result-vars obj)
+    (define-generic-java-method get-result-vars)
+    (define-java-class <java.lang.string>)
+    (if (null? result-sets)
+        (java-array-new <java.lang.string> 0)
+        (get-result-vars (car result-sets))))
+  (define (get-row-number obj)
+    ;; This doesn't respect multiplicity of result sets
+    ;; ie, it resets the row number when starting on a new resultset
+    (define-generic-java-method get-row-number)
+    (if (null? result-sets)
+        (->jint 0)
+        (get-row-number (car result-sets))))
+  (define (has-next obj)
+    ;; return true if the hasNext method of the car of the result-sets returns true;
+    ;; if it doesn't, then try the succeeding elements of the list until one does,
+    ;; or we run out of list
+    (define-generic-java-method has-next)
+    (if (null? result-sets)
+        (->jboolean #f)
+        (let loop ((current-has-next (has-next (car result-sets))))
+          (if (->boolean current-has-next) ;it does
+              current-has-next
+              (let ((new-result-sets (cdr result-sets)))
+                (set! result-sets new-result-sets)
+                (if (null? new-result-sets) ; no more results available from anywhere
+                    (->jboolean #f)
+                    (loop (has-next (car new-result-sets)))))))))
+  (define (distinct? obj)
+    ;; All the results should be generated in response to the same query, so all should have
+    ;; the same return for this method.
+    (define-generic-java-method distinct?)
+    (if (null? result-sets)
+        (->jboolean #t)
+        (distinct? (car result-sets))))
+  (define (ordered? obj)
+    ;; as with DISTINCT?
+    (define-generic-java-method ordered?)
+    (if (null? result-sets)
+        (->jboolean #t)
+        (ordered? (car result-sets))))
+  (define (next obj)
+    (define-generic-java-method next)
+    (define-java-class <java.util.no-such-element-exception>)
+    (if (null? result-sets)
+        (error (java-new <java.util.no-such-element-exception>))
+        (next (car result-sets))))
+  (define (next-solution obj)
+    (define-generic-java-method next-solution)
+    (define-java-class <java.util.no-such-element-exception>)
+    (if (null? result-sets)
+        (error (java-new <java.util.no-such-element-exception>))
+        (next-solution (car result-sets))))
+  (define (remove obj)
+    (define-java-class <java.util.unsupported-operation-exception>)
+    (error (java-new <java.util.unsupported-operation-exception>
+                     (->jstring "multi-result-set: Method 'remove' called unexpectedly")))))
+
+;; PARSE-SPARQL-QUERY : string-or-jstring -> <Query>
+(define (parse-sparql-query query-string)
+  (define-java-classes
+    (<query-factory> |com.hp.hpl.jena.query.QueryFactory|))
+  (define-generic-java-methods
+    create get-message)
+  (let ((query-jstring (cond ((and (is-java-type? query-string '|java.lang.String|)
+                                   (not (java-null? query-string)))
+                              query-string)
+                             ((string? query-string)
+                              (->jstring query-string))
+                             (else
+                              (error 'sparql:make-query-runner
+                                     "bad call: got query ~s, not string"
+                                     query-string)))))
+    (with/fc
+     (lambda (m e)
+       ;; (error-message m) is the exception.
+       (report-exception 'sparql:make-query-runner
+                         '|SC_BAD_REQUEST|
+                         "SPARQL parse error: ~a" (->string (get-message (error-message m)))))
+     (lambda ()
+       (let ((q (create (java-null <query-factory>) query-jstring)))
+         (check q "can't happen: null query in sparql:make-query-runner")
+         q)))))
+
+;; FIND-DELEGATES : knowledgebase -> listof knowledgebase-or-URIstring
+;; Return the KB given as argument, at the head of a list of the KBs it delegates to
+;; (ie, without delegation, this returns simply (k)
+(define (find-delegates k)
+  (define-generic-java-methods
+    (get-uri |getURI|))
+  (define (literal->string literal)
+    (define-generic-java-methods to-string)
+    (->string (to-string literal)))
+  (chatter "finding delegates of KB ~a" (if (procedure? k) (k 'get-name-as-uri) k))
+  (cons k
+        (let ((kb-uris (map get-uri (rdf:select-statements (k 'get-metadata)
+                                                           (k 'get-name-as-resource)
+                                                           "http://ns.eurovotech.org/quaestor#delegatesTo"
+                                                           #f)))
+              (external (member "externaldelegation"
+                                (map literal->string
+                                     (rdf:select-statements (k 'get-metadata)
+                                                            (k 'get-name-as-resource)
+                                                            "http://ns.eurovotech.org/quaestor#debug"
+                                                            #f)))))
+          (chatter "...KB ~s apparently delegates to ~s~a" (if (procedure? k) (k 'get-name-as-uri) k) kb-uris (if external " (EXTERNALDELEGATION)" ""))
+          (apply append
+                 (map (lambda (kb-uri)
+                        (cond (external ;forced external for debugging/unit-testing
+                               (list kb-uri))
+                              ((kb:get (java-new <uri> kb-uri))
+                               => ;; this resource names a KB in this quaestor, so query that model directly
+                               find-delegates)
+                              (else ;; remote KB?, so evaluate to the string URI
+                               (list kb-uri))))
+                      kb-uris)))))
+
+;; MAKE-EXECUTABLE-QUERY : kb-or-url <com.hp.hpl.jena.query.Query> -> <...QueryExecution>
+(define (make-executable-query kb query)
+  (define-java-classes
+    (<query-execution-factory> |com.hp.hpl.jena.query.QueryExecutionFactory|))
+  (define-generic-java-methods create sparql-service)
+  (let ((qef (java-null <query-execution-factory>)))
+    (cond ((kb:knowledgebase? kb)
+           (create qef query (kb 'get-query-model)))
+          ((is-java-type? kb '|java.lang.String|)
+           ;; otherwise assume it names a SPARQL endpoint
+           ;; (FIXME: the following might throw MalformedURL exceptions,
+           ;; either because it is indeed malformed, or because the protocol is
+           ;; unknown (for example, 'urn:'); we should trap these, and also make
+           ;; ourselves more robust against the URL being simply wrong/dead, though
+           ;; we won't find that out until the query is actually performed, later).
+           ;;
+           ;; The returned object is a
+           ;; com.hp.hpl.jena.query.engineHTTP.QueryEngineHTTP object.  It does not
+           ;; appear possible to control the type of query being made, but it seems
+           ;; from the ARQ source, and its behaviour, that it constructs a
+           ;; 'GET foo?query=<query>' interaction, and that it switches to a POST
+           ;; of the query if the GET URL would be too long.
+           (sparql-service qef kb query))
+          (else
+           (error 'sparql-make-query-runner
+                  "can't happen: kb is ~s (expected KB or jstring)" kb)))))
+
 ;; sparql:make-query-runner knowledgebase string-or-jstring list-of-strings -> procedure
 ;;
 ;; Given a knowledgebase KB, a SPARQL QUERY, and a MIME-TYPE-LIST
@@ -58,7 +212,86 @@
 ;; successfully, barring unforseen changes in the environment.
 ;;
 ;; The procedure will either succeed or throw an error.
-(define (sparql:make-query-runner kb
+(define (sparql:make-query-runner kb query mime-type-list)
+  (with/fc (lambda (m error-continuation)
+             (if (pair? (error-message m))
+                 (throw m)              ;it came from report-exception; just pass it on
+                 (report-exception 'sparql:make-query-runner
+                                   '|SC_INTERNAL_SERVER_ERROR|
+                                   "Something bad happened in sparql:make-query-runner: ~a" (error-message m))))
+           (lambda ()
+             (sparql:make-query-runner* kb query mime-type-list))))
+
+(define (sparql:make-query-runner* kb
+                                   query
+                                   mime-type-list)
+  (define-generic-java-methods
+    close
+    to-string)
+
+  (check kb
+         "cannot query null knowledgebase")
+  (check (kb:knowledgebase? kb)
+         "kb argument is not a knowledgebase!")
+  (check (not (null? mime-type-list))
+         "received null mime-type-list")
+
+  (let ((query-model (kb 'get-query-model))
+        (parsed-query (parse-sparql-query query)))
+    (check query-model
+           "failed to get query model from knowledgebase ~a with metadata ~s"
+           (kb 'get-name-as-uri) (kb 'get-metadata))
+
+    ;; For each of the query models extracted above (in the simplest case, there will be only one,
+    ;; but there will be multiple ones if there is delegation), create an executable query
+    (let ((executable-queries        ;a list of QueryExecution objects
+           (map (lambda (one-kb)
+                  (make-executable-query one-kb parsed-query))
+                (find-delegates kb)))
+          (query-executor (find-query-executor parsed-query))
+          (handler (make-result-set-handler 'sparql:make-query-runner
+                                            mime-type-list
+                                            (determine-query-type parsed-query))))
+
+      ;; slightly paranoid: check everything looks as it should
+      (check (and (not (null? executable-queries))
+                  (let loop ((l executable-queries))
+                    (if (null? l)
+                        #t
+                        (and (not (java-null? (car l)))
+                             (loop (cdr l))))))
+             "error creating ~a executable queries from query ~a"
+             (length executable-queries) (->string query-jstring))
+
+      (if (not (and query-executor executable-queries))
+          (begin (or (java-null? executable-queries)
+                     (map close executable-queries))
+                 (error 'sparql:make-query-runner
+                        "can't find a way of executing query ~a"
+                        (->string query-jstring))))
+
+      (chatter "Produced list of queries: ~s" executable-queries)
+
+      ;; success!
+
+      ;; Return the function which will run all of these executable queries (in principle in parallel)
+      ;; and print out a result set consisting of the union of the result-sets returned.
+      ;; This doesn't attempt to deal with the case where the same result appears from multiple
+      ;; queries -- perhaps it should.
+      (lambda (output-stream content-type-setter)
+        (if (= (length executable-queries) 1)
+            (handler (query-executor (car executable-queries))
+                     output-stream
+                     content-type-setter)
+            (handler (multi-result-set (map query-executor executable-queries))
+                     output-stream
+                     content-type-setter))
+        (map close executable-queries)
+        #f))))
+
+;; The following is the simple case which doesn't handle delegation.
+;; Perhaps it's useful as documentation...?
+(define (sparql:make-query-runner-NO-DELEGATION kb
                                   query
                                   mime-type-list)
   (define-java-classes
@@ -87,12 +320,12 @@
                                      query)))))
     (check query-model
            "failed to get query model from knowledgebase ~a"
-           (kb 'get-name))
+           (kb 'get-name-as-uri))
 
     (let ((query (with/fc
                      (lambda (m e)
                        ;; (print-exception (make-exception m e)) seems not to
-                       ;; work here.  No matter: (error-message m) is the
+                       ;; work here.  Don't know why.  No matter: (error-message m) is the
                        ;; exception.
                        (define-generic-java-method get-message)
                        (report-exception 'sparql:make-query-runner
@@ -182,6 +415,12 @@
      (let ((handlers `(("application/xml" .
                         ,(lambda (result stream set-type)
                            (set-type "application/xml")
+                           (output-as-xml (java-null <result-set-formatter>)
+                                          stream
+                                          result)))
+                       ("application/sparql-results+xml" . ;see http://www.w3.org/TR/rdf-sparql-XMLres/#mime
+                        ,(lambda (result stream set-type)
+                           (set-type "application/sparql-results+xml")
                            (output-as-xml (java-null <result-set-formatter>)
                                           stream
                                           result)))
@@ -344,14 +583,14 @@
             (loop))))
     (flush pw))) ; flush is necessary
 
-;; find-query-executor java-string -> java-method
+;; find-query-executor <Query> -> procedure
 ;;
-;; Given a QUERY, return one of the set QueryExecution.execSelect,
+;; Given a PARSED-QUERY, return one of the set QueryExecution.execSelect,
 ;; QueryExecution.execAsk, ..., based on the type of query returned by
 ;; Query.getQueryType.  If none of them match for some reason, return #f.
 (define find-query-executor
   (let ((alist #f))
-    (lambda (query)
+    (lambda (parsed-query)
       (if (not alist)
           (let ()
             (define-generic-java-methods
@@ -364,8 +603,22 @@
                     (ask       . ,exec-ask)
                     (construct . ,exec-construct)
                     (describe  . ,exec-describe)))))
-      (let ((result-pair (assq (determine-query-type query) alist)))
-        (and result-pair (cdr result-pair))))))
+      (let ((result-pair (assq (determine-query-type parsed-query) alist)))
+        ;; If we've found a suitable function to execute the query (in the cdr of this pair),
+        ;; then return it, wrapped in a FC which means we don't fall over if the (remote?)
+        ;; query fails.
+        (and result-pair
+             (lambda (executable-query)
+               (define-generic-java-method to-string)
+               (with/fc (lambda (m e)
+                          ;; There's been some error executing the query, possibly because a remote
+                          ;; service is down, or something like that.  It's not completely clear what;s
+                          ;; the best thing to do, here, but for now, let's just note the error
+                          ;; and return an empty result set.
+                          (chatter "query execution failed: ~a" (->string (to-string (error-message m))))
+                          (multi-result-set '()))
+                 (lambda ()
+                   ((cdr result-pair) executable-query)))))))))
 
 ;; determine-query-type java-string -> symbol
 ;;

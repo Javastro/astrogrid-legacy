@@ -21,7 +21,7 @@
   </context-param>
 
   <servlet>
-    <servlet-name>quaestor</servlet-name>
+    <servlet-name>@APPNAME@</servlet-name>
     <description>
       This servlet plays the main role.  Supports managing a knowledgebase,
       providing a RESTful and (minimal) XML-RPC interface to it.
@@ -48,6 +48,10 @@
       <param-name>pickup-context</param-name>
       <param-value>/pickup</param-value>
     </init-param>
+    <init-param>  <!-- chatter incessantly if this parameter is 'verbose', not otherwise -->
+      <param-name>logging</param-name>
+      <param-value>verbose</param-value>
+    </init-param>
   </servlet>
 
   <servlet>
@@ -61,19 +65,19 @@
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>quaestor</servlet-name>
+    <servlet-name>@APPNAME@</servlet-name>
     <!-- this must match the quaestor servlet parameters, above -->
     <url-pattern>/kb/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>quaestor</servlet-name>
+    <servlet-name>@APPNAME@</servlet-name>
     <!-- this must match the quaestor servlet parameters, above -->
     <url-pattern>/xmlrpc</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>quaestor</servlet-name>
+    <servlet-name>@APPNAME@</servlet-name>
     <!-- this must match the quaestor servlet parameters, above -->
     <url-pattern>/pickup/*</url-pattern>
   </servlet-mapping>
@@ -82,7 +86,7 @@
     <!-- This doesn't actually do anything, but is picked up by the
      !   fallback handler, which displays the call
      !-->
-    <servlet-name>quaestor</servlet-name>
+    <servlet-name>@APPNAME@</servlet-name>
     <url-pattern>/debug/*</url-pattern>
   </servlet-mapping>
 

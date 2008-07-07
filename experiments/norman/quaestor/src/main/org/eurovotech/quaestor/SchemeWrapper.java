@@ -60,12 +60,14 @@ public class SchemeWrapper {
         // Set the maximum stack-trace depth to 16.  This causes a
         // performance hit which is reportedly about 30%: see
         // <http://sourceforge.net/mailarchive/forum.php?thread_id=21786623&forum_id=7422>
-        props.setProperty("sisc.maxStackTraceDepth", "16");
+        // In fact, setting this to be non-zero seems to produce longer,
+        // but less-intelligible stack traces, so I might be better off with it (default) zero.
+        //props.setProperty("sisc.maxStackTraceDepth", "16");
 
         // The following should be the defaults            
-        //         props.setProperty("sisc.emitAnnotations", "true");
-        //         props.setProperty("sisc.emitDebuggingSymbols", "true");
-        //         props.setProperty("sisc.stackTraceOnError", "true");
+        props.setProperty("sisc.emitAnnotations", "true");
+        props.setProperty("sisc.emitDebuggingSymbols", "true");
+        props.setProperty("sisc.stackTraceOnError", "true");
         
         AppContext ctx = new AppContext(props);
         ctx.addDefaultHeap();
