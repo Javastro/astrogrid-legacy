@@ -1,7 +1,6 @@
 package org.astrogrid.security.rfc3820.tomcat;
 
 import java.security.GeneralSecurityException;
-import java.security.Principal;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

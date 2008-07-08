@@ -6,7 +6,11 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -444,6 +448,64 @@ public class SecurityGuard implements X509KeyManager {
   }
   
   /**
+   * Signs a user into the IVO. This provides, cached in the SecurityGuard,
+   * credentials valid for a specified duration.
+   * <p>
+   * The source of credentials is identified by a URI and two types are 
+   * distinguished by the URI scheme. <i>ivo</i> implies a community with
+   * registered services (accounts protocol; MyProxy).; the URI is the IVORN
+   * for the community. Any other scheme implies a URL leading to a key-store
+   * of type JKS; other types of key store are not supported.s
+   * <p>
+   * For community services, the user name is the unqualified name at that
+   * community: e.g. fred rather than ivo://fred@authority/community. For a
+   * key store, the user name is the alias in that store for the user.
+   *
+   * @param username The user name, unqualified.
+   * @param password The password, undigested and unencrypted.
+   * @param lifetime The duration of validity of the credentials, in seconds.
+   * @param source The URI for the source of credentials.
+   * @throws URISyntaxException If the account IVORN is invalid.
+   * @throws IOException If communication with the community fails.
+   * @throws GeneralSecurityException If authentication fails.
+   * @throws RegistryException If the accounts service cannot be found in the registry.
+   * @throws RegistryException If the registry is off-line.
+   */
+  public void signOn(String username,
+                     String password,
+                     int    lifetime,
+                     URI    source) throws URISyntaxException, 
+                                           IOException,
+                                           GeneralSecurityException, 
+                                           RegistryException {
+    assert username != null;
+    assert password != null;
+    assert lifetime > 0;
+    assert source != null;
+    
+    if (source.getScheme().equals("ivo")) {
+      SsoClient s = new SsoClient(findAccountsService(source));
+      try {
+        s.authenticate(username, password, lifetime, this);
+      } catch (IOException ex) {
+        throw new GeneralSecurityException("Authentication failed", ex);
+      }
+      s.home(username, this);
+      String account = "ivo://" + 
+                       username + 
+                       '@' + 
+                       source.getAuthority() +
+                       source.getPath();
+      this.subject.getPrincipals().add(new AccountIvorn(account));
+    }
+    else {
+      KeyStore store = KeyStore.getInstance("JKS");
+      store.load(source.toURL().openStream(), password.toCharArray());
+      loadKeyStoreEntry(username, password, store);
+    }
+  }
+  
+  /**
    * Configures an HTTPS connection. TLS is set as the protocol.
    * Authentication of the server is disabled. If the connection is not an
    * HTTPS connection then this method returns silently. This method must be
@@ -500,6 +562,40 @@ public class SecurityGuard implements X509KeyManager {
                          new HashSet(given.getPublicCredentials()), 
                          new HashSet(given.getPrivateCredentials()));
     }
+  }
+  
+  /**
+   * Loads a certificate chain and private key from a key store.
+   *
+   * @param username The alias to the looked up in the store.
+   * @param password The password protecting the private key in the store.
+   * @param store The key store.
+   * @throws KeyStoreException If the store cannot be read.
+   * @throws CertificateException If the user's certificate chain is invalid or missing.
+   * @throws NoSuchAlgorithmException If the user's private key cannot be read.
+   * @throws UnrecoverableKeyException If the user's private key cannot be read.
+   */
+  public void loadKeyStoreEntry(String   username, 
+                                String   password,
+                                KeyStore store) throws KeyStoreException, 
+                                                       CertificateException, 
+                                                       NoSuchAlgorithmException, 
+                                                       UnrecoverableKeyException {
+    assert username != null;
+    assert password != null;
+    assert store    != null;
+    
+    Certificate[] chain1 = store.getCertificateChain(username);
+    X509Certificate[] chain2 = new X509Certificate[chain1.length];
+    for (int i = 0; i < chain1.length; i++) {
+      chain2[i] = (X509Certificate) chain1[i];
+    }
+    setCertificateChain(chain2);
+    
+    PrivateKey key = (PrivateKey)store.getKey(username, password.toCharArray());
+    setPrivateKey(key);
+    
+    setX500PrincipalFromCertificateChain();
   }
 
   /**

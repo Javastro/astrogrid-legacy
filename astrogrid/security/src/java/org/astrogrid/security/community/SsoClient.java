@@ -51,8 +51,12 @@ public class SsoClient extends Mockery {
   /**
    * Signs a user into the IVO. Provides a certificate chain and private key
    * suitable for authenticating to services; these are written into the given
-   * Subject. If the property org.astrogrid.security.mock.community is set, 
-   * then this is a unit test and fake credential are written.
+   * SecurityGuard. 
+   * <p>
+   * If the property org.astrogrid.security.mock.community is set, then calls 
+   * are treated as unit tests and the object behaves as a mock object. In this 
+   * mockery, the object does not talk to the community service. Instead, it 
+   * accepts the special user "frog" with password "croakcroak".
    *
    * @param userName The user-name as known to the community service.
    * @param password The password, unhashed and unencrypted.
@@ -74,7 +78,12 @@ public class SsoClient extends Mockery {
     // If this is a test, load no credentials.
     // @TODO: load some fake credentials.
     if (isMock()) {
-      return;
+      if (userName.equals("frog") && password.equals("croakcroak")) {
+        return;
+      }
+      else {
+        throw new IOException();
+      }
     }
   
     // Derive the URL from which to read the give user's credentials.

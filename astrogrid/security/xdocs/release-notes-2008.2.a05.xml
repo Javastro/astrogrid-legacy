@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2.a05</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2.a05">
+      <p>
+        V2008.2.a05 is the fifth alpha-version in the development leading
+        to the 2008.2 release. This version greatly expands the choices for
+        signing on to the system.
+      </p>
+      
+      <subsection name="New sign-on API">
+        <p>
+          Previous versions of the security facade introduced the <i>signOn()</i>
+          method with three arguments: account IVORN, password and lifetime of
+          credentials. This method signs the user on using the community services,
+          the name of the community being part of the account IVORN.
+        </p>
+        <p>
+          In the current version, there is a new form of <i>signOn()</i> with
+          four arguments: user name, password, lifetime of credentials and
+          URI for the source of credentials. This new API can sign on either at
+          community services or, in the absence of a community, by loading
+          credentials directly.
+        </p>
+        <p>
+          If the new API is given a source URI in which the scheme is <i>ivo</i>
+          then it reads it as the IVORN of the community. The object then uses
+          that community's service to sign on.
+        </p>
+        <p>
+          If the credential-source URI has a scheme other than <i>ivo</i> then
+          then it is treated as a URL leading to a key store. The object then
+          loads the key store and transcribes the credentials for the named user.
+          The store must be of type JKS; PKCS#12 stores are not supported in
+          this version of the facade.
+        </p>
+        <p>
+          Whatever the source of credentials, the user name given to the 
+          new API must be unqualified:
+          e.g. "fred" rather than "ivo://fred@ioa/community". When loading a
+          key store, the user name is used as the alias to distinguish entries
+          inside the store. User names are case-sensitive.
+        </p>
+        <p>
+          When using a key store, there may be two passwords: one protecting the
+          store  as a whole and one protecting the user's private key. The
+          security facade assumes and requires that they have the same value.
+        </p>
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>

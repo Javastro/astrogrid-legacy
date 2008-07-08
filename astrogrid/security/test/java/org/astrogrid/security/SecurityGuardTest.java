@@ -1,6 +1,8 @@
 package org.astrogrid.security;
 
 
+import java.net.URI;
+import java.security.GeneralSecurityException;
 import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
@@ -71,10 +73,52 @@ public class SecurityGuardTest extends TestCase {
   /**
    * Tests the sign-on function. This mocks the community.
    */
-  public void testSignOn() throws Exception {
+  public void testSignOn3Argument() throws Exception {
     SimpleConfig.getSingleton().setProperty("org.astrogrid.security.mock.community", "true");
     SecurityGuard sut = new SecurityGuard();
     sut.signOn("ivo://frog@pond/community", "croakcroak", 36000);
     assertEquals("ivo://frog@pond/community", sut.getAccountIvorn().toString());
   }
+  
+  /**
+   * Tests the sign-on function. This mocks the community.
+   */
+  public void testSignOn4ArgumentCommunity() throws Exception {
+    SimpleConfig.getSingleton().setProperty("org.astrogrid.security.mock.community", "true");
+    SecurityGuard sut = new SecurityGuard();
+    URI community = new URI("ivo://pond/community");
+    sut.signOn("frog", "croakcroak", 36000, community);
+    assertEquals("ivo://frog@pond/community", sut.getAccountIvorn().toString());
+  }
+  
+  /**
+   * Tests the sign-on function. This mocks the community.
+   */
+  public void testFailedSignOn4ArgumentCommunity() throws Exception {
+    SimpleConfig.getSingleton().setProperty("org.astrogrid.security.mock.community", "true");
+    SecurityGuard sut = new SecurityGuard();
+    URI community = new URI("ivo://pond/community");
+    try {
+      sut.signOn("frog", "wrong", 36000, community);
+      fail("Should throw exception for wrong password.");
+    }
+    catch (GeneralSecurityException e) {
+      // Expected.
+    }
+    assertNull(sut.getAccountIvorn());
+  }
+  
+  /**
+   * Tests the sign-on function. This uses local credentials.
+   */
+  public void testFailedSignOn4Keystore() throws Exception {
+    SecurityGuard sut = new SecurityGuard();
+    URI keyStore = this.getClass().getResource("/tester.jks").toURI();
+    sut.signOn("tester", "testing", 36000, keyStore);
+    assertNull(sut.getAccountIvorn());
+    assertNotNull(sut.getCertificateChain());
+    assertNotNull(sut.getPrivateKey());
+    assertNotNull(sut.getX500Principal());
+  }
+  
 }

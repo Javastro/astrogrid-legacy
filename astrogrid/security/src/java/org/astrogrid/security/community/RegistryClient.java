@@ -1,6 +1,5 @@
 package org.astrogrid.security.community ;
 
-import java.net.URI;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.v1_0.RegistryService;

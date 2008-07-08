@@ -18,7 +18,7 @@
           Versions of the security facade up to and including 2008.2.a03
           used the class <i>org.globus.gsi.proxy.ProxyPathValidator</i>
           to validate certifcates chains. That class entrains many 3rd-party
-          jars (puretls; citrix).
+          jars (puretls; cryptix).
         </p>
         <p>
           A new class, <i>org.astrogrid.security.rfc3820.ProxyCertPathReviewer</i>
