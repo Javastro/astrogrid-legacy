@@ -1,5 +1,5 @@
 body {
-  color: black;
+  color: #333;
   background: white;
   margin-left: +30%;
   margin-right: +5%;
@@ -8,8 +8,7 @@ body {
 a:link { color: #669; }
 a:visited { color: #966; }
 a[href]:hover {
-  background: #99C;
-  font-style: oblique;
+  background: #EEE;
 }
 
 h1, h2, h3, h4, h5, h6 {

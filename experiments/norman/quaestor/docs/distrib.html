@@ -9,7 +9,7 @@
 <body>
 <h1>Quaestor: generic SPARQL endpoint</h1>
 
-<p>Ths is Quaestor @VERSION@, released @RELEASEDATE@</p>
+<p>This is Quaestor @VERSION@, released @RELEASEDATE@</p>
 
 <p>Quaestor is a generic triplestore and SPARQL endpoint, which allows
 you to upload ontology and instance data, and query the result through
@@ -20,17 +20,26 @@ a RESTful interface.  It's built on top of
 <dl>
 <dt><a href='@WARFILE@'>@WARFILE@</a></dt>
 <dd>The Tomcat <code>.war</code> file.  Drop this in a running Tomcat,
-or upload it to the management interface.</dd>
+or upload it to the management interface.  The Quaestor server's interface is documented
+<a href='docs/index.html'>here</a>, as well as on the front page of the running
+Quaestor service.</dd>
 
 <dt><a href='@JETTYZIP@'>@JETTYZIP@</a></dt>
 <dd>The standalone Jetty server.  Unzip this, and start the server
-with the <code>start-jetty.sh</code> shell script.</dd>
+with the <code>start-jetty.sh</code> shell script.  This presents the
+same interface as the Tomcat version above.</dd>
 
 <dt><a href='@CLIENTZIP@'>@CLIENTZIP@</a></dt>
 <dd>API docs, and a small jar file which includes
 a REPL which allows you to talk to the server if you want to (I
 imagine rather few folk really want either, so this is I'm afraid
 barely documented)</dd>
+
+<dt><a href='@LIBJAR@'>@LIBJAR@</a></dt>
+<dd>Library jar file, which allows you to create Quaestor-like
+applications fairly straightforwardly.  Well, it would, if there were
+any documentation for that (coming soon, promise...).</dd>
+
 </dl>
 
 <p>The source code is in the
@@ -40,11 +49,8 @@ barely documented)</dd>
 You can also browse this with
 <a href='http://www.astrogrid.org/viewcvs/experiments/norman/quaestor/'>ViewVC</a>.
 That should be publicly available -- get in touch with me if you have
-difficulty getting at it.</p>
-
-<p>The Quaestor server's interface is documented
-<a href='docs/index.html'>here</a>, as well as on the front page of the running
-Quaestor service.</p>
+difficulty getting at it.  The build instructions in the top-level
+README should at least help build it; again, get in touch if you have problems.</p>
 
 <div class='trailer'>
 <a href='http://nxg.me.uk'>Norman</a>

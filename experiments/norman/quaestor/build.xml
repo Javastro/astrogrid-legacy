@@ -540,7 +540,10 @@
 
   <!-- ==================== Quaestor lib target ==================== -->
   <!-- Bundle up into a single jar file everything needed for the application
-       except the quaestor.scm program itself. -->
+       except the quaestor.scm program itself.  This could probably be slimmed
+       down a LOT using something like Proguard, but that turns out to be quite
+       complicated in practice, due to a fair amount of reflection happening
+       here and there within libraries, which confuses Proguard. -->
   <target name="quaestorlib"
           depends="compile">
     <mkdir dir="${build.home}/quaestorlib"/>
@@ -651,13 +654,14 @@
   <!-- ==================== Installation/distribution ==================== -->
   <!-- Create a webpage-tarball.tar.gz file which contains everything -->
   <target name="dist-tarball"
-          depends='jetty,dist'
+          depends='jetty,dist,quaestorlib'
           description='Make a single tarball (dist/webpage-tarball.tar.gz) which can be unpacked in the distribution directory'>
     <mkdir dir='${dist.home}/webpage-tarball'/>
     <copy todir='${dist.home}/webpage-tarball'>
       <fileset file='${dist.home}/${app.name}-${app.version}.war'/>
       <fileset file='${dist.home}/${quaestor.client}.zip'/>
       <fileset file='${dist.home}/${quaestor.jetty}.zip'/>
+      <fileset file='${build.home}/${quaestor.lib.jar}'/>
       <fileset file='${web.home}/base.css'/>
     </copy>
     <mkdir dir='${dist.home}/webpage-tarball/docs'/>
@@ -672,11 +676,12 @@
     <copy file='${docs.home}/distrib.html'
           tofile='${dist.home}/webpage-tarball/index.html'>
       <filterset>
-        <filter token="VERSION" value="${app.version}"/>
+        <filter token="VERSION"     value="${app.version}"/>
         <filter token='RELEASEDATE' value='${release.date}'/>
-        <filter token='JETTYZIP' value='${quaestor.jetty}.zip'/>
-        <filter token='WARFILE' value='${app.name}-${app.version}.war'/>
-        <filter token='CLIENTZIP' value='${quaestor.client}.zip'/>
+        <filter token='JETTYZIP'    value='${quaestor.jetty}.zip'/>
+        <filter token='WARFILE'     value='${app.name}-${app.version}.war'/>
+        <filter token='CLIENTZIP'   value='${quaestor.client}.zip'/>
+        <filter token='LIBJAR'      value='${quaestor.lib.jar}'/>
       </filterset>
     </copy>
     <tar destfile='${dist.home}/webpage-tarball.tar.gz'
