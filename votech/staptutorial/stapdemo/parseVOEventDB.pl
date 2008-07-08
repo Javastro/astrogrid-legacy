@@ -3,6 +3,10 @@ use strict;
 use Getopt::Long;
 use VOEventSTAPExtension;
 use DBI;
+use LWP::Simple;
+
+
+
 # USER CONFIGURATION - CUSTOMIZE THE FOLLOWING 4 VALUES
 my $dbuser="stapuser";
 my $dbpasswd="stappwd";
@@ -10,12 +14,20 @@ my $dbhost="localhost";
 my $db="stap";
 
 unless ( scalar @ARGV >= 1) {
-	die "USAGE: $0 -f filename";
+	die "USAGE: $0 -file|-url filename";
 }
-my $filename;
-my $status = GetOptions("f=s" => \$filename);
+my $isfile = 1;
+my $status = GetOptions("file" => \$isfile, "url" => sub {$isfile = 0});
 
-my $object = new VOEventSTAPExtension(File => $filename);
+my $object;
+
+if ($isfile) {
+  $object = new VOEventSTAPExtension(File => $ARGV[0]);
+  } else {
+  	my $xmlvoevent  = get($ARGV[0]);
+  	#read URL
+    $object = new VOEventSTAPExtension(XML => $xmlvoevent);
+  }
 
          my $id = $object->id();
          my $ra = $object->ra();
@@ -33,7 +45,6 @@ my $object = new VOEventSTAPExtension(File => $filename);
          my $dbtable = "ogle";
          my $url;
          
-          print $db . $dbhost . $dbuser . $dbpasswd . "\n";
            my $dbh = DBI->connect('DBI:mysql:' . $db . ';host=' . $dbhost, $dbuser,$dbpasswd) || die "Could not connect to database: $DBI::errstr";
 
            # Insert ivorn, url, ra, dec, starttime, stoptime, timeinstant, concept, name, contactname, contactemail, params, refs
