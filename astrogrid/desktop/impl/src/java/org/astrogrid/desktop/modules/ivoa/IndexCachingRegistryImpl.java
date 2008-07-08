@@ -3,34 +3,57 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.Status;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.desktop.modules.system.ScheduledTask;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
+import org.astrogrid.desktop.modules.ui.voexplorer.QuerySizerImpl;
+import org.astrogrid.util.DomHelper;
+import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 
-/** Alternate implementation of registry which uses a different caching strategy for xquerying.
+/** Improved implementation of registry which uses a different caching strategy for xquerying.
  * 
  * 
- * results aren't stored in bulk cache. instead, a preliminary query is done to get all indexes of 
+ * results aren't stored in bulk cache (as with previous version). instead, a preliminary query is done to get all indexes of 
  * results - this is stored in index cache.
  * then resources that are alreeady in cache are located.
  * then other resources in the index are queried for (and cached in resource cache)
@@ -39,7 +62,15 @@ import org.w3c.dom.Document;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 13, 200810:10:06 PM
  */
-public class IndexCachingRegistryImpl extends StreamingRegistryImpl{
+public class IndexCachingRegistryImpl implements RegistryInternal{
+    /** object used to indicate that registry doesn't have a resource associated with a particular ivorn */
+    private static final MissingResource MISSING_RESOURCE = new MissingResource();
+
+    /**
+     * Logger for this class
+     */
+    protected static final Log logger = LogFactory
+            .getLog(IndexCachingRegistryImpl.class);
 
     /**
      * @param reg
@@ -47,270 +78,43 @@ public class IndexCachingRegistryImpl extends StreamingRegistryImpl{
      * @param fallbackEndpoint
      * @param resource
      * @param document
-     * @param bulk
+     * @param index cache of result indexes.
      * @throws URISyntaxException
      */
     public IndexCachingRegistryImpl(ExternalRegistryInternal reg,
             Preference endpoint, Preference fallbackEndpoint, Ehcache resource,
             Ehcache document,Ehcache index) throws URISyntaxException {
-        super(reg, endpoint, fallbackEndpoint, resource, document, null/*bulk not used*/);
+        this.reg = reg;
+        this.endpoint = endpoint;
+        this.fallbackEndpoint =fallbackEndpoint;
+        this.outputFactory = XMLOutputFactory.newInstance();    
+        this.resourceCache  = resource;
+        this.documentCache = document;
+
+        checkEndpointPref(endpoint, "main");
+        checkEndpointPref(fallbackEndpoint, "fallback");
         this.indexCache = index;
         expirer= new CachedResourceExpirer(reg,endpoint,resource,document);
         logger.info("Using registy index caching");
     }
 
     
-    // map from xquery to URI[]
-    private final Ehcache indexCache;
+
+    // map from URI to Document
+    private final Ehcache documentCache;
+
     // subcomponent that handles the expiration process.
     private final ScheduledTask expirer;
-
-
-    @Override
-    public void consumeXQueryReload(String xquery, ResourceConsumer processor)
-            throws ServiceException {
-        if (indexCache.isKeyInCache(xquery)) {
-            indexCache.remove(xquery);
-            //@todo remove resources (or missing resources) too??
-        }
-        // now proceed as normal.
-        consumeXQuery(xquery,processor);
-    }
-
-    @Override
-    public Resource[] xquerySearch(String arg0) throws ServiceException {
-        ResourceAccumulator rc = new ResourceAccumulator();
-        consumeXQuery(arg0,rc);
-        return rc.getResources();        
-    }
-    /** resource processor that just accumulates the resources into a list */
-    private static final class  ResourceAccumulator implements ResourceConsumer {
-        private final ArrayList resources = new ArrayList();
-        public void process(Resource s) {
-            resources.add(s);
-        }
-        public final Resource[] getResources() {
-            return (Resource[])this.resources.toArray(new Resource[resources.size()]);
-        }
-        public void estimatedSize(int i) {
-            resources.ensureCapacity(i);
-        }
-    }
-
-    // slightly different behaviour - will cache results no matter whethe they come from main or fallback reg.
-    // as is implemented in terms of super.xquerySearchStream
-    // minor issue - dn't care for now.
-    @Override
-    public void consumeXQuery(String xquery, ResourceConsumer resourceConsumer)
-            throws ServiceException {
-            logger.debug("consumeXQuery " + xquery);
-            Element cachedIndex = indexCache.get(xquery);
-            final CacheFetcher fetcher = new CacheFetcher(resourceConsumer);
-            if (cachedIndex != null) {
-                logger.debug("found cached index");
-                final URI[] indexes = (URI[])cachedIndex.getValue();
-                resourceConsumer.estimatedSize(indexes.length);
-                for (URI index : indexes) {
-                    fetcher.fetchFromCache(index);
-                }
-            } else { // need to query the registry to get the list of indexes
-                logger.debug("Querying for index");
-               final IndexStreamProcessor indexStreamProcessor = new IndexStreamProcessor(fetcher);
-               xquerySearchStream(mkIndexQuery(xquery),indexStreamProcessor);
-               // cache the query response for next time
-               final URI[] indexes = indexStreamProcessor.getIndexes();
-               indexCache.put(new Element(xquery,indexes));
-               // tell the consumer (belatedly) how many resources to expect - they'll have seen any which are cached already.
-               logger.debug("Index size " + indexes.length);
-               resourceConsumer.estimatedSize(indexes.length);
-            }
-            final Set<URI> misses = fetcher.getMisses();
-            if (! misses.isEmpty()) { // query for the remainder
-                logger.debug("Querying for remaining resources");
-                queryForResourceList(misses, resourceConsumer);
-            }
-    }
-
-
-    /** bulk query to retrieve a list of resources.
-     * todo: need to add a variant which checks for cache here...
-     * @param uriList list of resources ids to retrieve
-     * @param resourceConsumer processor to call for each resource.
-     * @throws ServiceException
-     */
-    @Override
-    public void consumeResourceList(final Collection<URI> uriList,
-            ResourceConsumer resourceConsumer) throws ServiceException {
-        if (uriList.isEmpty()) {
-            return; // done
-        }
-        resourceConsumer.estimatedSize(uriList.size());
-        CacheFetcher fetcher = new CacheFetcher(resourceConsumer);
-        for (URI uri : uriList) {
-            fetcher.fetchFromCache(uri);
-        }
-        Set<URI> misses = fetcher.getMisses();
-        if (! misses.isEmpty()) {
-            // now query for the remainder.
-            queryForResourceList(misses, resourceConsumer);
-        }
-    }
-
-
-    /** query the registry for a list of resources. (caching the results)
-     * @param uriList
-     * @param resourceConsumer
-     * @throws ServiceException
-     */
-    private void queryForResourceList(final Set<URI> uriList,
-            ResourceConsumer resourceConsumer) throws ServiceException {
-        xquerySearchStream(mkListResourcesQuery(uriList)
-                ,new ResourceListProcessor(resourceConsumer, uriList));
-        // check whether we've got any uri left - these are ones not present in the reg - mark them as unknown.
-        for (URI uri : uriList) {
-            final Element element = new Element(uri,MISSING_RESOURCE);
-            element.setTimeToLive(60 * 60); // just mark it missing for a short amount of time - 1 hour.           
-            resourceCache.put(element);
-            
-        }                
-    }
-
-    /** object used to indicate that registry doesn't have a resource associated with a particular ivorn */
-    private static final MissingResource MISSING_RESOURCE = new MissingResource();
+    // map from xquery to URI[]
+    private final Ehcache indexCache;
+    private final XMLOutputFactory outputFactory;
+    protected final Preference endpoint;
+    protected final Preference fallbackEndpoint;
+    protected final ExternalRegistryInternal reg;       
+    // map from URI to Resource
+    protected final Ehcache resourceCache;
     
-    /** indicator class that represents a missing resource */
-    private static class MissingResource implements Serializable{
-
-        /**
-         * 
-         */
-        private static final long serialVersionUID = -5968284172785042470L;
-        
-    }
- 
-    /** class that fetches items from the cache by index
-     * the retrieved resources are passed to the argument ResourceProcessor,.    
-     * cache misses are accumulated into a list */
-    private final  class CacheFetcher {
-       
-        private final ResourceConsumer resourceConsumer;
-        private final Set<URI> misses = new HashSet<URI>();
-        /**
-         * @param resourceConsumer
-         */
-        public CacheFetcher(ResourceConsumer resourceConsumer) {
-            this.resourceConsumer = resourceConsumer;
-        }
-
-        /** call this repeatedly to process a list of indexes
-         * 
-         * @param index a resource id. if in the cache, will call ResourceProcessor, else is added to the 
-         * misses list.
-         */
-        private void fetchFromCache(URI index) {
-            Element element = resourceCache.get(index);
-            if (element == null) {
-                misses.add(index);
-            } else if (element.getValue() instanceof MissingResource) {
-                // it's an index which we know the registry lacks.
-                //do nothing - don't add to missing list, and don't pass to resource consumer.
-            } else {
-                resourceConsumer.process((Resource)element.getValue()); // no typesafety checking here..
-            }
-            
-        }
-
-        public final Set<URI> getMisses() {
-            return this.misses;
-        }
-
-        public final ResourceConsumer getResourceConsumer() {
-            return this.resourceConsumer;
-        }
-    }
-
-    /** streamprocessor that parses a list of indexes and passed each one to the associated cache fetcher 
-     * designed to operate with a query build by {@link #mkIndexQuery}
-     * */
-    private  static final class IndexStreamProcessor implements StreamProcessor {
-
-        private final CacheFetcher fetcher;
-        private final List<URI> indexes = new ArrayList<URI>();
-        
-        /**
-         * @param fetcher
-         */
-        public IndexStreamProcessor(CacheFetcher fetcher) {
-            this.fetcher = fetcher;
-        }
-
-        public void process(XMLStreamReader r) throws Exception {            
-            while (r.hasNext()) {
-                r.next();
-                if (r.isStartElement() && "identifier".equals(r.getLocalName())) {
-                    try {
-                        // 'expected a text token, got START ELEMENT
-                        // malformed XML? or unexpected nested content?
-                        URI u = new URI(r.getElementText());
-                        indexes.add(u);
-                        fetcher.fetchFromCache(u);
-                    } catch (URISyntaxException e) {
-                        logger.warn("Failed to build uri from index response",e);
-                    }
-                }
-            }
-        }
-
-        /** access the indexes returned by this query */
-        public final URI[] getIndexes() {
-            return this.indexes.toArray(new URI[indexes.size()]);
-        }
-    }
     
-    /** create an xquery from a query that will just list the matching indexes, not the entire resources */
-    private String mkIndexQuery(String query) {
-        if (query == null) {
-            throw new IllegalArgumentException("null query");
-        }
-        String xq =  "<indexes>{for $__resource_ in  ( " + query.trim() + ") return $__resource_/identifier}</indexes>";
-        return xq;
-        
-
-    }
-    
-    /** stream processor that queries for a set of resources, caches each, and passes each to 
-     * an argument resourceProcessor
-     * @author Noel.Winstanley@manchester.ac.uk
-     * @since May 14, 20084:01:24 PM
-     */
-    private final class ResourceListProcessor implements StreamProcessor {
-
-        private final ResourceConsumer resourceConsumer;
-        private final Set<URI> expectedResources ;
-
-        /**
-         * @param resourceConsumer onsimer to pass resources onto
-         * @param uriList list of resources we expect to see. will be modified in-place - resources removed as they're encountered.
-         */
-        public ResourceListProcessor(ResourceConsumer resourceConsumer, Set<URI> uriList) {
-            this.resourceConsumer = resourceConsumer;
-            expectedResources = uriList;
-        }
-
-        public void process(XMLStreamReader r) throws Exception {
-            ResourceStreamParser parser = new ResourceStreamParser(r);
-            while(parser.hasNext()) {
-                Resource resource = (Resource)parser.next();
-                final URI id = resource.getId();
-                resourceCache.put(new Element(id,resource));
-                expectedResources.remove(id);
-                resourceConsumer.process(resource);
-            }                   
-        }
-    }
-    // overridden to use index caching scheme, rather than bulk cache.
-
-    @Override
     public Resource[] adqlsSearch(String arg0) throws ServiceException,
     InvalidArgumentException {
         try {
@@ -337,18 +141,8 @@ public class IndexCachingRegistryImpl extends StreamingRegistryImpl{
         }
     }
 
-    /** stuff each resource in the individual resource cache, and add an entry to the index cache
-     * for the entire array of identifiers using <tt>indexKey</tt> */
-    private void cacheResourcesAndIndex(Object indexKey,Resource[] res) {
-        URI[] index = new URI[res.length];
-        for (int i = 0; i < res.length; i++) {
-            index[i] = res[i].getId();
-            resourceCache.put(new Element(res[i].getId(),res[i]));            
-        }
-        indexCache.put(new Element(indexKey,index));
-    }
 
-    @Override
+
     public Resource[] adqlxSearch(Document arg0) throws ServiceException,
     InvalidArgumentException {
         try {
@@ -374,9 +168,184 @@ public class IndexCachingRegistryImpl extends StreamingRegistryImpl{
             return reg.adqlxSearch(getFallbackSystemRegistryEndpoint(),arg0);
         }
     }
+    
+    /** bulk query to retrieve a list of resources.
+     * @todo : need to add a variant which checks for cache here...
+     * @param uriList list of resources ids to retrieve
+     * @param resourceConsumer processor to call for each resource.
+     * @throws ServiceException
+     */
+    public void consumeResourceList(final Collection<URI> uriList,
+            ResourceConsumer resourceConsumer) throws ServiceException {
+        if (uriList.isEmpty()) {
+            return; // done
+        }
+        resourceConsumer.estimatedSize(uriList.size());
+        CacheFetcher fetcher = new CacheFetcher(resourceConsumer);
+        for (URI uri : uriList) {
+            fetcher.fetchFromCache(uri);
+        }
+        Set<URI> misses = fetcher.getMisses();
+        if (! misses.isEmpty()) {
+            // now query for the remainder.
+            queryForResourceList(misses, resourceConsumer);
+        }
+    }
 
 
-    @Override
+    // slightly different behaviour compared to previous impl. - will cache results no matter whethe they come from main or fallback reg.
+    // as is implemented in terms of super.xquerySearchStream
+    // minor issue - dn't care for now.
+    public void consumeXQuery(String xquery, ResourceConsumer resourceConsumer)
+            throws ServiceException {
+            logger.debug("consumeXQuery " + xquery);
+            if (xquery == null) {
+                throw new IllegalArgumentException("null query");
+            }
+            Element cachedIndex = indexCache.get(xquery);
+            final CacheFetcher fetcher = new CacheFetcher(resourceConsumer);
+            if (cachedIndex != null) {
+                logger.debug("found cached index");
+                final URI[] indexes = (URI[])cachedIndex.getValue();
+                resourceConsumer.estimatedSize(indexes.length);
+                for (URI index : indexes) {
+                    fetcher.fetchFromCache(index);
+                }
+            } else { // need to query the registry to get the list of indexes
+                logger.debug("Querying for index");
+               final IndexStreamProcessor indexStreamProcessor = new IndexStreamProcessor(fetcher);
+               String indexQuery =  "<indexes>{( " + xquery.trim() + ")/identifier}</indexes>";               
+               xquerySearchStream(indexQuery,indexStreamProcessor);
+               // cache the query response for next time
+               final URI[] indexes = indexStreamProcessor.getIndexes();
+               indexCache.put(new Element(xquery,indexes));
+               // tell the consumer (belatedly) how many resources to expect - they'll have seen any which are cached already.
+               logger.debug("Index size " + indexes.length);
+               resourceConsumer.estimatedSize(indexes.length);
+            }
+            final Set<URI> misses = fetcher.getMisses();
+            if (! misses.isEmpty()) { // query for the remainder
+                logger.debug("Querying for remaining resources");
+                queryForResourceList(misses, resourceConsumer);
+            }
+    }
+    
+    
+    public void consumeXQueryReload(String xquery, ResourceConsumer processor)
+            throws ServiceException {
+        if (indexCache.isKeyInCache(xquery)) {
+            // remove the resources (or missing resources) 
+            Element cachedIndex = indexCache.get(xquery);
+            if (cachedIndex != null) {
+                final URI[] indexes = (URI[])cachedIndex.getValue();
+                for (URI ivoid : indexes) {
+                    resourceCache.remove(ivoid);
+                }
+            }
+            // remove the cached index.
+            indexCache.remove(xquery);
+        }
+        // now proceed as normal.
+        consumeXQuery(xquery,processor);
+    }
+    
+    public void consumeResourceListReload(Collection<URI> ids,
+            ResourceConsumer resourceConsumer) throws ServiceException {
+        // remove the resources (or missing resources) 
+        for (URI ivoid : ids) {
+            resourceCache.remove(ivoid);
+        }
+        consumeResourceList(ids,resourceConsumer);
+    }
+    
+    
+
+
+    
+    public final URI getSystemRegistryEndpoint() throws ServiceException {
+        try {
+            return new URI(endpoint.getValue());
+        } catch (URISyntaxException x) {
+            throw new ServiceException("Misconfigured url",x);
+        }               
+    }
+
+
+    public final URI getFallbackSystemRegistryEndpoint() throws ServiceException {
+        try {
+            return new URI(fallbackEndpoint.getValue());
+        } catch (URISyntaxException x) {
+            throw new ServiceException("Misconfigured url",x);
+        }
+    }
+    
+
+    public RegistryService getIdentity() throws ServiceException {
+        try {
+            Element el = resourceCache.get(getSystemRegistryEndpoint());
+            if (el != null && el.getValue() instanceof RegistryService) {
+                return (RegistryService)el.getValue();
+            } else {
+                RegistryService r = reg.getIdentity(getSystemRegistryEndpoint());
+                el = new Element(getSystemRegistryEndpoint(),r);
+                resourceCache.put(el);
+                return r;
+            }
+        } catch (ServiceException e) {
+            logger.warn("Failed to query main system registry - falling back",e);
+            return reg.getIdentity(getFallbackSystemRegistryEndpoint());
+        }
+    }
+    
+    
+
+
+    public Resource getResource(URI arg0) throws NotFoundException, ServiceException {
+        try {
+            Element el = resourceCache.get(arg0);
+            if (el != null && el.getValue() instanceof Resource) {
+                return (Resource)el.getValue();
+            } else {
+                Resource res = reg.getResource(getSystemRegistryEndpoint(),arg0);
+                el = new Element(arg0,res);
+                resourceCache.put(el);
+                return res;
+            }
+        } catch (ServiceException e) {
+            logger.warn("Failed to query main system registry - falling back",e);
+            return reg.getResource(getFallbackSystemRegistryEndpoint(),arg0);
+        }
+    }
+
+
+    public void getResourceStream(URI ivorn, StreamProcessor processor) throws ServiceException, NotFoundException {
+        try {
+            reg.getResourceStream(getSystemRegistryEndpoint(),ivorn,processor);
+        } catch (ServiceException e) {
+            logger.warn("Failed to query main system registry - falling back",e);
+            reg.getResourceStream(getFallbackSystemRegistryEndpoint(),ivorn,processor);
+        }
+    }
+    
+    public Document getResourceXML(URI ivorn) throws ServiceException, NotFoundException {
+        try {
+            final Element element = documentCache.get(ivorn);
+            if (element != null) {
+                return (Document)element.getValue();
+            } else {
+                Document doc =  reg.getResourceXML(getSystemRegistryEndpoint(),ivorn);
+                documentCache.put(new Element(ivorn,doc));
+                return doc;
+            }
+        } catch (ServiceException e) {
+            logger.warn("Failed to query main system registry - falling back",e);
+            return reg.getResourceXML(getFallbackSystemRegistryEndpoint(),ivorn);
+        }
+    }
+    
+
+
+
     public Resource[] keywordSearch(String arg0, boolean arg1)
     throws ServiceException {
         try {
@@ -402,21 +371,365 @@ public class IndexCachingRegistryImpl extends StreamingRegistryImpl{
             return reg.keywordSearch(getFallbackSystemRegistryEndpoint(),arg0,arg1);
         }
     }
-    // delegate methods to scheduled task.
+
+public Resource[] xquerySearch(String arg0) throws ServiceException {
+    ResourceAccumulator rc = new ResourceAccumulator();
+    consumeXQuery(arg0,rc);
+    return rc.getResources();        
+}
+
+public void xquerySearchSave(String xquery, File saveLocation) throws InvalidArgumentException, ServiceException {
+        XMLStreamWriter writer = null;
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(saveLocation);
+            writer = outputFactory.createXMLStreamWriter(os);
+            WriterStreamProcessor proc = new WriterStreamProcessor(writer);
+            xquerySearchStream(xquery,proc);
+        } catch (XMLStreamException x) {
+            throw new InvalidArgumentException("Failed to open location for writing",x);
+        } catch (FileNotFoundException x) {
+            throw new InvalidArgumentException("Failed to open location for writing",x);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (XMLStreamException ex) {
+                    logger.warn("Exception while closing writer",ex);
+                }
+            }
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException ex) {
+                    logger.warn("Exception while closing stream",ex);
+                }
+            }
+        }
+    }
+
+    public void xquerySearchStream(String xquery, StreamProcessor processor) throws ServiceException {
+        try {
+            reg.xquerySearchStream(getSystemRegistryEndpoint(),xquery,processor);
+        } catch (ServiceException e) {
+            logger.warn("Failed to query main system registry - falling back",e);
+            reg.xquerySearchStream(getFallbackSystemRegistryEndpoint(),xquery,processor);
+        }
+    }
+    
+    public Document xquerySearchXML(String arg0) throws ServiceException {
+        try {
+            final Element element = documentCache.get(arg0);
+            if (element != null) {
+                return (Document)element.getValue();
+            } else {
+                Document doc =  reg.xquerySearchXML(getSystemRegistryEndpoint(),arg0);
+                documentCache.put(new Element(arg0,doc));
+                return doc;
+            }
+        } catch (ServiceException e) {
+            logger.warn("Failed to query main system registry - falling back",e);
+            return reg.xquerySearchXML(getFallbackSystemRegistryEndpoint(),arg0);
+        }
+    }
+ 
+// background worker interface.
+
+    // BackgroundWorker interface - delegates to expirer class.
     public final void execute(WorkerProgressReporter reporter) {
         this.expirer.execute(reporter);
     }
-
+    
     public final String getName() {
         return this.expirer.getName();
     }
-
     public final long getPeriod() {
         return this.expirer.getPeriod();
     }
 
     public final Principal getPrincipal() {
         return this.expirer.getPrincipal();
+    }
+ 
+ //self-testing interface
+    
+    /** self tests that the registry is working */
+    public Test getSelftest() {
+        TestSuite ts = new TestSuite("Registry tests");
+        ts.addTest(new RegistryTest("Main registry service", reg, endpoint));
+        ts.addTest(new RegistryTest("Fallback registry service", reg, fallbackEndpoint));
+        ts.addTest(new TestCase("Registry caches") {
+            protected void runTest() throws Throwable {
+                //assertEquals("Problem with the bulk cache", Status.STATUS_ALIVE,bulkCache.getStatus());
+                assertEquals("Problem with the document cache",Status.STATUS_ALIVE,documentCache.getStatus());
+                assertEquals("Problem with the resource cache",Status.STATUS_ALIVE,resourceCache.getStatus());    
+                assertEquals("Problem with the index cache",Status.STATUS_ALIVE,indexCache.getStatus());
+            }
+        });
+        return ts;
+    }
+
+    
+    /** stuff each resource in the individual resource cache, and add an entry to the index cache
+     * for the entire array of identifiers using <tt>indexKey</tt>
+     * 
+     *  this method is called by the non-xquery registry search methods (adql, keyword), typically with the original adql/keyword search paramters as the key.
+     *  */
+    private void cacheResourcesAndIndex(Object indexKey,Resource[] res) {
+        URI[] index = new URI[res.length];
+        for (int i = 0; i < res.length; i++) {
+            index[i] = res[i].getId();
+            resourceCache.put(new Element(res[i].getId(),res[i]));            
+        }
+        indexCache.put(new Element(indexKey,index));
+    }
+
+    /**
+     * Checks whether the given endpoint preference is one of the given
+     * alternatives and warns if not.  It's possible that some other action
+     * (popup? automatic silent reselection?) would be more appropriate here.
+     */
+    private void checkEndpointPref(Preference endpoint1, String regLabel) {
+        String value = endpoint1.getValue();
+        if (! (endpoint1.getDefaultValue().equals(value) || Arrays.asList(endpoint1.getAlternatives()).contains(value))) {
+            logger.warn("Non-recommended " + regLabel + " registry endpoint: " + value);
+        }
+    }
+
+    
+    /** retrieve a list of rsources frm the registry. (caching the results)
+     * @param uriList list of resoources to retrieve. this method modifies the contents of this set.
+     * @param resourceConsumer consumer that will process the results. (which may be returned in arbitreary order).
+     * @throws ServiceException
+     */
+    private void queryForResourceList(final Set<URI> uriList,
+            ResourceConsumer resourceConsumer) throws ServiceException {
+        xquerySearchStream(mkListResourcesQuery (uriList)
+                ,new ResourceListProcessor(resourceConsumer, uriList));
+        // check whether we've got any uri left - these are ones not present in the reg - mark them as unknown.
+        for (URI uri : uriList) {
+            final Element element = new Element(uri,MISSING_RESOURCE);
+            element.setTimeToLive(60 * 60); // just mark it missing for a short amount of time - 1 hour.           
+            resourceCache.put(element);
+            
+        }                
+    }
+    /** build an xquery to retrieve a list of resources
+     * @param uriList set of URI to retrieve 
+     * @return an xquery string.
+     */    
+    protected String mkListResourcesQuery(final Collection<URI> uriList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("//vor:Resource[not (@status = 'inactive' or @status= 'deleted') and ( ");
+        for (Iterator<URI> i = uriList.iterator(); i.hasNext();) {
+            sb.append("identifier=");
+                
+            URI u =  i.next();
+            sb.append("'")
+            .append(u)
+            .append("'");
+            if (i.hasNext()) {
+                sb.append(" or ");
+            }        
+        }
+        sb.append(")]");
+        final String xquery = sb.toString();
+        return xquery;
+    }
+    
+    /** processor that just copies input to a supplied stream writer */
+    public static class WriterStreamProcessor implements StreamProcessor {
+        public WriterStreamProcessor(XMLStreamWriter os ) {
+            this.os = os;
+        }
+
+        private final XMLStreamWriter os;
+        public void process(XMLStreamReader r) throws Exception {
+            STAXUtils.copy(r,this.os);
+        }
+    }
+
+    /** class that fetches items from the cache by index
+     * the retrieved resources are passed to the argument ResourceProcessor,.    
+     * cache misses are accumulated into a list */
+    private final  class CacheFetcher {
+       
+        /** 
+         * @param resourceConsumer a consumer that this class should fetch resources for.
+         */
+        public CacheFetcher(ResourceConsumer resourceConsumer) {
+            this.resourceConsumer = resourceConsumer;
+        }
+        private final Set<URI> misses = new HashSet<URI>();
+        private final ResourceConsumer resourceConsumer;
+        /** retrieve the set of missed resoources - i.e. those not present in the cache */
+        public final Set<URI> getMisses() {
+            return this.misses;
+        }
+
+        /** access the consumer that this fetcher should pass resources onto */
+        public final ResourceConsumer getResourceConsumer() {
+            return this.resourceConsumer;
+        }
+
+        /** call this repeatedly to process a list of indexes
+         * 
+         * @param index a resource id. if in the cache, will call ResourceProcessor, else is added to the 
+         * misses list.
+         */
+        private void fetchFromCache(URI index) {
+            Element element = resourceCache.get(index);
+            if (element == null) {
+                misses.add(index);
+            } else if (element.getValue() instanceof MissingResource) {
+                // it's an index which we know the registry lacks.
+                //do nothing - don't add to missing list, and don't pass to resource consumer.
+            } else {
+                resourceConsumer.process((Resource)element.getValue()); // no typesafety checking here..
+            }
+            
+        }
+    }
+
+
+    /** streamprocessor that parses a list of indexes and passed each one to the associated cache fetcher 
+     * designed to operate with a query build by {@link #mkIndexQuery}
+     * */
+    private  static final class IndexStreamProcessor implements StreamProcessor {
+
+        /**
+         * @param fetcher
+         */
+        public IndexStreamProcessor(CacheFetcher fetcher) {
+            this.fetcher = fetcher;
+        }
+        private final CacheFetcher fetcher;
+        
+        private final List<URI> indexes = new ArrayList<URI>();
+
+        /** access the indexes returned by this query */
+        public final URI[] getIndexes() {
+            return this.indexes.toArray(new URI[indexes.size()]);
+        }
+
+        public void process(XMLStreamReader r) throws Exception {            
+            while (r.hasNext()) {
+                r.next();
+                if (r.isStartElement() && "identifier".equals(r.getLocalName())) {
+                    try {
+                        URI u = new URI(r.getElementText());
+                        indexes.add(u);
+                        fetcher.fetchFromCache(u);
+                    } catch (URISyntaxException e) {
+                        logger.warn("Failed to build uri from index response",e);
+                    }
+                }
+            }
+        }
+    }
+    /** indicator class that represents a missing resource */
+    private static class MissingResource implements Serializable{
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -5968284172785042470L;
+        
+    }
+
+    /** Self test for registry. */
+    private static class RegistryTest extends TestCase implements RegistryInternal.StreamProcessor {
+        RegistryTest(String name, ExternalRegistryInternal reg, Preference endpoint) {
+            super(name);
+            this.reg = reg;
+            this.endpoint = endpoint;
+        }
+        private final Preference endpoint;
+        private final ExternalRegistryInternal reg;
+        public void process(XMLStreamReader r) {
+        }
+        protected void runTest() {
+            URI endpointUri;
+            try {
+                endpointUri = new URI(endpoint.getValue());
+            } catch (URISyntaxException x) {
+                logger.error("Misconfigured registry endpoint",x);
+                fail("Misconfigured  registry endpoint");
+                endpointUri = null;  // keep compiler happy
+            }
+            try {
+                endpointUri.toURL().openConnection().connect();
+            } catch (MalformedURLException x) {
+                logger.error("Misconfigured registry endpoint",x);
+                fail("Misconfigured registry endpoint");
+            } catch (IOException x) {
+                logger.error("Failed to connect to registry service",x);
+                fail("Failed to connect to registry service");
+            }
+            try {
+                RegistryService serv = reg.getIdentity(endpointUri);
+                assertNotNull("No registry identity returned",serv);
+            } catch (ServiceException x) {
+                fail("Failed to get registry identity");
+            }
+            try {
+                Document doc = reg.xquerySearchXML(endpointUri, QuerySizerImpl.constructSizingQuery(QuerySizerImpl.ALL_QUERY));
+                assertNotNull("No response returned from xquery",doc);
+                // in a normal junit test, it'd be more sensible to use XMLAssert for the following.
+                // however, this isn't bundled with the final app - so just vanilla junit.
+                String docString = DomHelper.DocumentToString(doc);
+                assertTrue("xquery didn't return expected response",StringUtils.contains(docString,"<size>"));
+            } catch (ServiceException x) {
+                logger.error("Failed to xquery registry",x);
+                fail("Failed to xquery registry");
+            }
+            // could test 'getResource' here too - but I think this is enough.
+        }
+    }
+
+    /** resource processor that just accumulates the resources into a list */
+    private static final class  ResourceAccumulator implements ResourceConsumer {
+        private final ArrayList resources = new ArrayList();
+        public void estimatedSize(int i) {
+            resources.ensureCapacity(i);
+        }
+        public final Resource[] getResources() {
+            return (Resource[])this.resources.toArray(new Resource[resources.size()]);
+        }
+        public void process(Resource s) {
+            resources.add(s);
+        }
+    }
+
+    /** stream processor that queries for a set of resources, caches each, and passes each to 
+     * an argument resourceProcessor
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since May 14, 20084:01:24 PM
+     */
+    private final class ResourceListProcessor implements StreamProcessor {
+
+        /**
+         * @param resourceConsumer onsimer to pass resources onto
+         * @param uriList list of resources we expect to see. will be modified in-place - resources removed as they're encountered.
+         */
+        public ResourceListProcessor(ResourceConsumer resourceConsumer, Set<URI> uriList) {
+            this.resourceConsumer = resourceConsumer;
+            expectedResources = uriList;
+        }
+        private final Set<URI> expectedResources ;
+
+        private final ResourceConsumer resourceConsumer;
+
+        public void process(XMLStreamReader r) throws Exception {
+            ResourceStreamParser parser = new ResourceStreamParser(r);
+            while(parser.hasNext()) {
+                Resource resource = (Resource)parser.next();
+                final URI id = resource.getId();
+                resourceCache.put(new Element(id,resource));
+                expectedResources.remove(id);
+                resourceConsumer.process(resource);
+            }                   
+        }
     }
     
 }

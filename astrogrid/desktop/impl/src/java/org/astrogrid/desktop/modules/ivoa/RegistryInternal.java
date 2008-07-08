@@ -50,6 +50,18 @@ public interface RegistryInternal extends org.astrogrid.acr.ivoa.Registry, Selft
     public void consumeResourceList(Collection<URI> uriList,
             ResourceConsumer resourceConsumer) throws ServiceException ;
     
+    
+    /** bulk query to retrieve a list of resources, caching the result
+     * @param uriList list of resources ids to retrieve
+     * 
+     *      * this method forces a search of the registry -so forcing a 'refresh' by ignoring any previusy cached results.
+     * @param resourceConsumer processor to call for each resource.
+     * @throws ServiceException
+
+     */
+    public void consumeResourceListReload(Collection<URI> ids,
+            ResourceConsumer resourceConsumer) throws ServiceException ;
+    
 	   /** perform an xquery, and consume results with the parameter processor
 	    * here the registry impl takes care of parsing and caching, hence the query must 
 	    * return a sequence of resource documents.
@@ -96,6 +108,8 @@ public interface RegistryInternal extends org.astrogrid.acr.ivoa.Registry, Selft
     public void xquerySearchSave(String xquery, File saveLocation)  throws InvalidArgumentException, ServiceException;
  
     public Document getResourceXML(URI ivorn) throws ServiceException, NotFoundException;
+
+
     
 	
 }

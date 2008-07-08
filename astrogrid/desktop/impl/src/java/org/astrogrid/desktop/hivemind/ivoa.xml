@@ -35,23 +35,6 @@
 	<!-- =====================
 	REGISTRY
 	-->
-	<!-- 
-	<service-point id="registry" interface="org.astrogrid.desktop.modules.ivoa.RegistryInternal">
-		System Registry
-        <interceptor service-id="system.edt" />        
-		<interceptor service-id="system.throbber" />
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ivoa.StreamingRegistryImpl" >
-				<service>externalRegistry</service>
-               <object>preference:org.astrogrid.registry.query.endpoint</object>
-               <object>preference:org.astrogrid.registry.query.altendpoint</object>
-				<object>cache:resources</object>
-				<object>cache:documents</object>
-				<object>cache:bulk</object>			
-			</construct>
-		</invoke-factory>
-	</service-point>
-     -->
 
     <service-point id="registry" interface="org.astrogrid.desktop.modules.ivoa.RegistryInternal">
         System Registry
@@ -134,6 +117,7 @@
 				<description>http url of the main registry service</description>
                 <alternative>http://alt.registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                  <alternative>http://alt.registry.astrogrid.org/astrogrid-registry_v1_0/services/RegistryQueryv1_0</alternative>
+                <alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</alternative>
 				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
                 <alternative>http://rakaposhi.star.le.ac.uk/astrogrid-registry/services/RegistryQueryv1_0</alternative>
    <!-- remove the following for public release 

@@ -24,7 +24,10 @@ import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-/** subcomponent of the index caching registry - separates out the resource expiry logic */
+/** subcomponent of the index caching registry - separates out the resource expiry logic
+ * 
+ *  runs periodically to remove obselete resources.
+ *  */
 class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
     /**
      * Logger for this class

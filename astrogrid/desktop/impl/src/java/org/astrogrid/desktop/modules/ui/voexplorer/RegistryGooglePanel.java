@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.33 2008/05/28 12:27:17 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.34 2008/07/08 17:34:40 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -220,8 +220,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * and caching the result */
 	private abstract class Worker extends BackgroundWorker implements ResourceConsumer {
 		
-
-
         public Worker(UIComponent parent, String message) {
 			super(parent,message,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
 			fireLoadStarted();
@@ -232,12 +230,11 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	        if (isInterrupted()) {
                 return;
             }
-	        reportProgress("Processed " + r.getTitle());
+	        reportProgress("Loaded " + r.getTitle());
 	        setProgress(resourceCount++,size);
-	        // need to run the setProgress on the EDT, so might as well add to the list on this thread too - removes the need to lock.
+	        // need to run the setProgress on the EDT, 
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                  //  items.add(r);
                     parent.setProgressValue(parent.getProgressValue() +1);
                 }
             });
@@ -375,9 +372,11 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		
 		protected Object construct() throws Exception {   
 		    reportProgress("Running query");
-		    //NB - no way to force a 'reload' here, as there is with xquery.
-		    // still, it's only a single-stage query, so not so much of a problem.
-		    reg.consumeResourceList(ids,this);
+            if (bypassCache) {      
+                reg.consumeResourceListReload(ids,this);                
+            } else {
+                reg.consumeResourceList(ids,this);
+            }
 			return null;
 		}
 		
@@ -916,6 +915,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.34  2008/07/08 17:34:40  nw
+Complete - task 400: Alternate caching strategy.
+
 Revision 1.33  2008/05/28 12:27:17  nw
 Alternate caching strategy.
 

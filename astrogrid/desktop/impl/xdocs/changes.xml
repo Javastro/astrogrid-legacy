@@ -19,7 +19,7 @@
         AR now accepts CEA tool structures with repeated parameters.
     </action>
     <action dev="nw" type="update">
-        Altered registry resource caching scheme
+        Altered registry resource caching scheme -faster and better cache usage.
     </action>
     <action dev="nw" type="add">
         pre fill search form in astroscope with testquery parameters, if available.

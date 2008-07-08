@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.23 2008/05/28 12:27:17 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.24 2008/07/08 17:34:40 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -571,7 +571,6 @@ public class VOExplorerImpl extends UIComponentImpl
         }
 
         public void actionPerformed(ActionEvent e) {
-            System.err.println("refreshing");
             google.setNextToBypassCache(); 
             ResourceFolder f =  (ResourceFolder)resourceLists.getSelectedFolder();
             if (f != null) { 
