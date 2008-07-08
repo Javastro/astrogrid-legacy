@@ -1104,6 +1104,7 @@
                 <strip>false</strip>
             </properties>
         </dependency>
+        <!-- probably not needed.
         <dependency>
             <groupId>globus</groupId>
             <artifactId>cog-jgss</artifactId>
@@ -1113,7 +1114,8 @@
                 <dist.bundle>true</dist.bundle>
                 <strip>false</strip>
             </properties>
-        </dependency>        
+        </dependency>
+        -->        
         <dependency>
             <groupId>xmlsec</groupId>
             <artifactId>xmlsec</artifactId>
