@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.18 2008/03/05 10:59:22 nw Exp $
+/*$Id: JettyWebServer.java,v 1.19 2008/07/08 08:59:00 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,15 +42,16 @@ import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.modules.system.contributions.ServletContextContribution;
 import org.astrogrid.desktop.modules.system.contributions.ServletsContribution;
+import org.astrogrid.desktop.modules.system.contributions.WebappContribution;
 import org.mortbay.http.HttpContext;
 import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
-import org.mortbay.http.HttpServer;
 import org.mortbay.http.SocketListener;
 import org.mortbay.http.handler.AbstractHttpHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHttpContext;
+import org.mortbay.jetty.servlet.WebApplicationContext;
 import org.mortbay.util.InetAddrPort;
 
 /** Factory to create a webserver, listening to a random port, with a hashed key path.
@@ -75,9 +76,7 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
     protected final List contextObjects;
     protected int scanEndPort = SCAN_END_PORT_DEFAULT;
     protected int scanStartPort = SCAN_START_PORT_DEFAULT;
-    protected final HttpServer server; 
-    	// it's actually a subclass, Server, but this provides no additional useful methods
-    	// but is neccessary to use this subclass to be able to deploy servlets.
+    protected final Server server; 
     protected  SocketListener sockets;
     protected final List servlets;
     protected URL urlRoot;
@@ -85,8 +84,12 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
     
     private File connectionFile = new File(System.getProperty("user.home") , ".astrogrid-desktop");
     private InetAddress inetAddress;
-    public JettyWebServer(List servlets,List contextObjects )  {
+
+    private final List<WebappContribution> webapps;
+
+    public JettyWebServer(List servlets,List contextObjects, List<WebappContribution> webapps )  {
         super();
+        this.webapps = webapps;
         SplashWindow.reportProgress("Starting Astro Runtime HTTP interface...");
         this.server = new Server();
        // this.server.setStopGracefully(true); 
@@ -163,37 +166,56 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
         server.addListener(sockets);
         
         this.defaultContext = (ServletHttpContext) server.addContext(defaultContextName);
-        populateContext(this.defaultContext);
-         
-        // this places something on the root of the web server.
+        populateContextAttributes(this.defaultContext);
+        //now add servlets to this context..
+        populateContextServlets(this.defaultContext);        
+                
+        // now work through any additional web apps listed in the configuration.
+        boolean rootContextProvided = false;
+        for (WebappContribution webapp : webapps) {            
+            WebApplicationContext appContext = server.addWebApplication(webapp.getContext(),webapp.getLocation());
+            appContext.setDefaultsDescriptor(this.getClass().getResource("webdefault.xml").toString()); // our own custom descriptor (resource in this package).
+            populateContextAttributes(appContext); // all webapps get the context objects too.
+            rootContextProvided = rootContextProvided || webapp.getContext().equals("/");
+        }
+        
+        //if there's not already something at the root,  this places something on the root of the web server.
         // otherwise jetty generates a helpful error page listing all available contexts - not what we want.
-        HttpContext root = new HttpContext();
-        root.setContextPath("/");
-        root.addHandler(new AbstractHttpHandler() {
-			public void handle(String pathInContext, String pathParams
-					, HttpRequest req, HttpResponse resp) throws HttpException, IOException {
-				resp.sendError(HttpResponse.__403_Forbidden,"Astro Runtime - no session specified");
-			}
-        });
-        server.addContext(root);
+        if (!rootContextProvided) {
+            HttpContext root = new HttpContext();
+            root.setContextPath("/");
+            root.addHandler(new AbstractHttpHandler() {
+                public void handle(String pathInContext, String pathParams
+                        , HttpRequest req, HttpResponse resp) throws HttpException, IOException {
+                    resp.sendError(HttpResponse.__403_Forbidden,"Astro Runtime - Forbidden");
+                }
+            });
+            server.addContext(root);
+        }
         server.start();
     }
 
-    // populate a context with servlets and objects.
-	private void populateContext(ServletHttpContext cxt) {
-		for (Iterator i = contextObjects.iterator(); i.hasNext(); ) {
-            ServletContextContribution contrib = (ServletContextContribution)i.next();
-            logger.info("Adding context object " + contrib.getName());
-            cxt.getServletContext().setAttribute(contrib.getName(),contrib.getObject());
-        }
+    /**
+     * 
+     */
+    private void populateContextServlets(ServletHttpContext cxt) {
         for (Iterator i = servlets.iterator(); i.hasNext(); ) {
             ServletsContribution d = (ServletsContribution)i.next();
             logger.info("Adding servlet " + d.getName());
             try {
-				cxt.addServlet(d.getName(),d.getPath(),d.getServletClass().getName());
-			} catch (Exception x) {
-				logger.error("Failed to deploy servlet " + d.getName(),x);
-			} 
+                cxt.addServlet(d.getName(),d.getPath(),d.getServletClass().getName());
+            } catch (Exception x) {
+                logger.error("Failed to deploy servlet " + d.getName(),x);
+            } 
+        }
+    }
+
+    // populate a context with attribute objects..
+	private void populateContextAttributes(ServletHttpContext cxt) {
+		for (Iterator i = contextObjects.iterator(); i.hasNext(); ) {
+            ServletContextContribution contrib = (ServletContextContribution)i.next();
+            logger.debug("Adding context object " + contrib.getName());
+            cxt.getServletContext().setAttribute(contrib.getName(),contrib.getObject());
         }
 	}
 
@@ -266,7 +288,8 @@ public void setInetAddress(String netAddress) throws UnknownHostException {
 public URL createContext(String sessionId) {
 	logger.info("Creating context for session " + sessionId);
 	ServletHttpContext cxt = (ServletHttpContext)server.addContext(sessionId);
-	populateContext(cxt);
+	populateContextAttributes(cxt);
+	populateContextServlets(cxt);
 	// previously, I'd tried a lighter-weight approach using a forwarder - to forward
 	// requests on the new context to the servlets on the existing context - but couldnt get
 	// it to function correctlly. SO I'll create a new set of servlets for each
@@ -425,6 +448,9 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.19  2008/07/08 08:59:00  nw
+Added ability to deploy external war in embedded jetty.
+
 Revision 1.18  2008/03/05 10:59:22  nw
 added progress reporting to splashscreen
 

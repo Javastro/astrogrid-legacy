@@ -252,6 +252,7 @@ System module.
 				initialize-method="init" >
 				<configuration>servlets</configuration>				
 				<configuration>servletContext</configuration>
+				<configuration>webapps</configuration>
 				<event-listener service-id="builtin.shutdown" />				
 				<set property="port" value="${system.webserver.port}" />
 				<set property="scanStartPort" value="${system.webserver.startScanPort}" />
@@ -272,7 +273,7 @@ System module.
      <contribution configuration-id="util.selftest" >
         <object>service-property:webserver:selftest</object>
     </contribution>
-    \
+    
 	<contribution configuration-id="framework.preferences" if="not (property system.webserver.disabled)">
 		<preference name="system.webserver.port" default-value="-1"
 		requires-restart="true" advanced="true">
@@ -342,8 +343,23 @@ System module.
 			</element> 
 		</schema>
 	</configuration-point>
-	
-	
+
+    <configuration-point id="webapps">
+        List of additional web applications to deploy
+        <schema>
+            <element name="web-app">
+                Describes a single webapp to deploy
+                <attribute name="context" required="true" unique="true">
+                the context name to deploy this webapp under.
+                </attribute>
+                <attribute name="location" required="true">
+                the url or filepath to the war file or webapp directory.
+                </attribute>
+                <conversion class="org.astrogrid.desktop.modules.system.contributions.WebappContribution"
+                />
+            </element>
+        </schema>
+    </configuration-point>
 		
 	<contribution configuration-id="servlets" if="not (property system.xmlrpc.disabled)">
 		<servlet name="xmlrpc" path="/xmlrpc" servletClass="org.astrogrid.desktop.modules.system.XmlRpcServlet" />
@@ -898,7 +914,7 @@ MAC SETUP
 		</invoke-factory>
 	</service-point>
 		
-	<implementation service-id="tupperware"  if="property system.tupperware.disabled">
+	<implementation service-id="tupperware"  if="(property system.tupperware.disabled) or (property plastic.hub.disabled)">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>
 	
