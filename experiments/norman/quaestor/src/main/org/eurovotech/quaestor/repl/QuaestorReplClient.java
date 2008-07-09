@@ -16,7 +16,7 @@ import java.net.URL;
  * A helper class which provides command-line access to the REPL in Quaestor.
  * <p>Usage:
  * <pre>
- * java -cp ... org.eurovotech.quaestor.repl.QuaestorReplClient [options]
+ * java -cp ... org.eurovotech.quaestor.repl.QuaestorReplClient [options] [-|(expr)|file]
  * </pre>
  * <p>Sexps typed in at the prompt are evaluated in the Quaestor REPL
  * (this is done by sending them via a POST request to the Quaestor servlet's
@@ -148,9 +148,11 @@ public class QuaestorReplClient {
      * Main command-line function.
      * <p>Usage:
      * <pre>
-     * java -jar quaestor-client.jar [options]
+     * java -jar quaestor-client.jar [options] [-|(expr)|file]
      * </pre>
-     * <p>Options:
+     * <p>Argument: if present read code from an expression on the command line,
+     * a file, or stdin.</p>
+     * <p>Options:</p>
      * <dl>
      * <dt>--host=&lt;string&gt;</dt>
      * <dd>server host, default=localhost</dd>
@@ -162,6 +164,8 @@ public class QuaestorReplClient {
      * <dd>set URL explicitly, overriding above
      * <dt>--prompt=&lt;string&gt;</dt>
      * <dd>force prompt string</dd>
+     * <dt>--norepl</dt>
+     * <dd>Don't start a REPL after processing the input</dd>
      * </dl>
      */
     public static void main(String[] args) {
@@ -174,6 +178,8 @@ public class QuaestorReplClient {
         String forcedPrompt = null; // non-null overrides
         URI serverURI = null;       // non-null overrides
         boolean chatter = true;
+        boolean offerRepl = true;
+        String argument = null;
 
         try {
             java.util.regex.Pattern opt = java.util.regex.Pattern.compile("^--([^=]*)(?:=(.*))?");
@@ -199,11 +205,15 @@ public class QuaestorReplClient {
                         serverURI = new URI(value);
                     } else if (option.equals("quiet")) {
                         chatter = false;
+                    } else if (option.equals("norepl")) {
+                        offerRepl = false;
                     } else {
                         Usage();
                     }
                 } else {
-                    Usage();
+                    if (argument != null)
+                        Usage();
+                    argument = arg;
                 }
             }
 
@@ -231,30 +241,56 @@ public class QuaestorReplClient {
             if (forcedPrompt != null)
                 client.setPrompt(forcedPrompt);
 
-            SexpStream in = new SexpStream(System.in);
-
-            do {
-                try {
-                    System.out.print(client.prompt);
-                    String sexp = in.readSexp();
-                    if (sexp == null)
-                        break;      // JUMP OUT
-                    System.out.println(client.sendToServerREPL(sexp));
-                } catch (IOException e) {
-                    System.err.println("Error: " + e);
+            if (argument != null) {
+                if (argument.equals("-")) {
+                    processSexpsFromStream(System.in, client, false);
+                } else if (argument.startsWith("(")) {
+                    System.out.println(client.sendToServerREPL(argument));
+                } else {
+                    java.io.File inputFile = new java.io.File(argument);
+                    processSexpsFromStream(new java.io.FileInputStream(inputFile), client, false);
                 }
-            } while (true);
+            }
+
+            if (offerRepl)
+                processSexpsFromStream(System.in, client, true);
+
         } catch (URISyntaxException e) {
             System.err.println("That's not a good URI: " + e);
             System.exit(1);
         } catch (MalformedURLException e) {
             System.err.println("That's not a good URL: " + e);
             System.exit(1);
+        } catch (IOException e) {
+            System.err.println("Error parsing input: " + e);
+            System.exit(1);
         }
     }
 
+    private static void processSexpsFromStream(java.io.InputStream is, QuaestorReplClient client, boolean interactive)
+            throws IOException {
+        SexpStream in = new SexpStream(is);
+        do {
+            try {
+                if (interactive)
+                    System.out.print(client.prompt);
+                String sexp = in.readSexp();
+                if (sexp == null)
+                    break;      // JUMP OUT
+                String response = client.sendToServerREPL(sexp);
+                if (interactive)
+                    System.out.println(response);
+            } catch (IOException e) {
+                if (interactive)
+                    System.err.println("Error: " + e);
+                else
+                    throw e;
+            }
+        } while (true);
+    }
+
     private static void Usage() {
-        System.err.println("Usage: QuaestorReplClient [options]");
+        System.err.println("Usage: QuaestorReplClient [options] [-|(expr)|file]");
         System.err.println("Options:");
         System.err.println("  --host=<string>    server host, default=localhost");
         System.err.println("  --port=<integer>   server port, default=8080");
@@ -262,6 +298,7 @@ public class QuaestorReplClient {
         System.err.println("  --url=<url>        set URL explicitly, overriding above");
         System.err.println("  --prompt=<string>  force prompt string");
         System.err.println("  --quiet            no chatter");
+        System.err.println("  --norepl           don't provide a REPL at end of input");
         System.exit(1);
     }
 }
