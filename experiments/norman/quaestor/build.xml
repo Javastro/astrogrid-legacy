@@ -794,6 +794,9 @@
       <include name="*.jar"/>
     </fileset>
   </path>
+  <!-- Run the Scheme-based self-tests.  If the system property single.test
+       is set, it must be the name of one of the test files, and only that
+       test is run.  Otherwise, each of the *.scm files is run. -->
   <target name="scm-tests"
           depends="compile"
           description="Run regression tests">
@@ -802,6 +805,7 @@
           classpathref="sisc.test.classpath"
           failonerror="true">
       <sysproperty key="sisc.home" value="${build.lib}"/>
+      <sysproperty key='single.test' value='${single.test}'/>
       <arg value="-h"/>
       <arg value="${build.classes}/sisc.shp"/>
       <arg value="${scm.test.home}/run-tests.scm"/>

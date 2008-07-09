@@ -1,10 +1,17 @@
 ;; Test harness.
-;; The first argument to MAIN should be the full path to this script.
+;; The first argument to MAIN must be the full path to this script.
+;;
+;; Run all of the *.scm files in this and child directories, as tests.
+;; If the system property single.test is set, run only the file named there.
 
 (import s2j)
 
 (require-library 'org/eurovotech/quaestor/scheme-wrapper-support)
 (import* quaestor-support chatter)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Regression test support
 
 (define failures-in-block?
   (let ((failures? #f))
@@ -97,21 +104,80 @@
                             (quote id))
                     (failures 1))))))))
 
-(define files-to-test '("quaestor/utils.scm"
-                        "quaestor/knowledgebase.scm"
-                        "quaestor/jena.scm"
-                        "quaestor/sparql.scm"
-                        "quaestor/scheme-wrapper-support.scm"
-                        "util/sexp-xml.scm"
-                        "util/xmlrpc.scm"
-                        ))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Other utilities
+
+;; FIND-SCM-FILES-EXCEPT-FOR : string -> (listof string)
+;; Given a filename, finds all the files *.scm which are in this or child
+;; directories, with the exception of the filename given as argument.
+(define (find-scm-files-except-for key-file-name)
+  (define (filter pred? list)
+    (cond ((null? list)
+           '())
+          ((pred? (car list))
+           (cons (car list) (filter pred? (cdr list))))
+          (else
+           (filter pred? (cdr list)))))
+  (define (find-scm-files-in-directory jdir)
+    (define-generic-java-methods
+      directory? list-files ends-with get-name)
+    (define (process-one-file f)
+      (cond ((->boolean (directory? f))
+             (find-scm-files-in-directory f))
+            ((->boolean (ends-with (get-name f) (->jstring ".scm")))
+             (list f))
+            (else
+             '())))
+    (apply append
+           (map process-one-file (->list (list-files jdir)))))
+  (define-generic-java-methods
+    get-parent-file get-absolute-file get-path equals length substring)
+  (define-java-classes
+    (<file> |java.io.File|))
+
+  (let* ((key-file (java-new <file> (->jstring key-file-name)))
+         (key-directory (get-parent-file (get-absolute-file key-file)))
+         (dirlen (+ (->number (length (get-path key-directory))) 1)))
+    (map (lambda (f)
+           (->string (substring (get-path f) (->jint dirlen))))
+         (filter (lambda (f)
+                   (not (->boolean (equals key-file f))))
+                 (find-scm-files-in-directory key-directory)))))
+
+(define report
+  (let ((chatter? #t))
+    (lambda (fmt . args)
+      (cond ((boolean? fmt)
+             (set! chatter? fmt))
+            (chatter?
+             (apply format `(#t ,(string-append fmt "~%") . ,args)))
+            (else
+             #f)))))
+
+;; GET-SYSTEM-PROPERTY : string -> string-or-#f
+;; Given a system property, return its value, as a scheme string, or false
+(define (get-system-property propname)
+  (define-generic-java-methods get-property)
+  (define-java-classes <java.lang.system>)
+  (let ((v (get-property (java-null <java.lang.system>) (->jstring propname))))
+    (if (java-null? v)
+        #f
+        (->string v))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Main function
 
 (define (main . args)
   (define-generic-java-method
     exit)
   (define-java-class <java.lang.system>)
   ;(chatter (current-output-port))
-  (let ((total-ok 0))
+  (let ((total-ok 0)
+        (files-to-test (cond ((get-system-property "single.test")
+                              => list)
+                             (else (find-scm-files-except-for (car args))))))
     (with-current-url (car args)
       (lambda ()
         (for-each (lambda (f)
@@ -134,14 +200,5 @@
     (load url)
     (success)))
 
-(define report
-  (let ((chatter? #t))
-    (lambda (fmt . args)
-      (cond ((boolean? fmt)
-             (set! chatter? fmt))
-            (chatter?
-             (apply format `(#t ,(string-append fmt "~%") . ,args)))
-            (else
-             #f)))))
 
 

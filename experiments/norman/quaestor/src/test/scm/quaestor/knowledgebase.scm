@@ -9,6 +9,10 @@
          rdf:new-empty-model
          rdf:ingest-from-string/n3)
 
+(require-library 'quaestor/utils)
+(import* utils
+         is-java-type?)
+
 (define-java-classes
   (<uri> |java.net.URI|)
   (<model> |com.hp.hpl.jena.rdf.model.Model|)

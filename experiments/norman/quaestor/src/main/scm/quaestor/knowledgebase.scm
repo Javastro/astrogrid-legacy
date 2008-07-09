@@ -6,6 +6,8 @@
 
 (require-library 'quaestor/jena)
 (require-library 'quaestor/utils)
+(import* utils
+         iterator->list)
 (require-library 'util/lambda-contract)
 
 (require-library 'sisc/libs/srfi/srfi-1)
