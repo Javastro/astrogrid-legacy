@@ -18,9 +18,8 @@ echo "Start Quaestor jetty server, v@VERSION@, @RELEASEDATE@"
 CP=
 for j in lib/*.jar; do CP=${CP}$j:; done
 
-echo java -cp ${CP}:war/WEB-INF/classes org.eurovotech.quaestor.JettySchemeServer "$@"
-exec java -cp ${CP}:war/WEB-INF/classes org.eurovotech.quaestor.JettySchemeServer "$@"
-#exec java -cp $D/@QUAESTORLIBJAR@:$D/war/WEB-INF/classes org.eurovotech.quaestor.JettySchemeServer "$@"
+echo java -cp ${CP}war/WEB-INF/classes org.eurovotech.quaestor.JettySchemeServer "$@"
+exec java -cp ${CP}war/WEB-INF/classes org.eurovotech.quaestor.JettySchemeServer "$@"
 
 # shouldn't get here
 echo "Exec failed!" >&2

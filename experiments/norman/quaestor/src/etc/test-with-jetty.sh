@@ -30,21 +30,35 @@ unzip $zipfile
 sh $zipname/start-jetty.sh --port=$PORT >jetty.log 2>&1 &
 jettypid=$!
 
+jetty_status=0
+
 echo "Jetty server is PID $jettypid"
 echo "Giving it a chance to get going..."
-while ! curl $URL >quaestor-homepage.html 2>quaestor-homepage.stderr; do
+while ! curl $URL >page.html 2>page.stderr; do
     echo "Not going yet..."
     sleep 2
+    if ! ps | grep '^'$jettypid >/dev/null; then
+        echo "The jetty server appears to have died!"
+        jetty_status=1
+        break
+    fi
 done
-echo "Vroom"
 
-ant -buildfile $buildfile -Dquaestor.url=$URL protocol-tests
-ant_status=$?
+if test $jetty_status -eq 0; then
+    echo "Vroom..."
+    ant -buildfile $buildfile -Dquaestor.url=$URL protocol-tests
+    ant_status=$?
+else
+    echo "Unable to start the jetty server"
+    echo "See $WORK/jetty.log"
+    ant_status=1
+fi
 
 if test $ant_status -eq 0; then
     echo "tidying up..."
     kill $jettypid
     rm -Rf $WORK
+    echo "Done!"
 else
     echo "Test failed"
     echo "Jetty URL is $URL : PID $jettypid"

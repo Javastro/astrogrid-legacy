@@ -590,9 +590,12 @@
        depends="prepare,compile
   -->
   <target name="jetty"
-          depends="prepare,compile,quaestorlib"
+          depends="prepare,compile,dist,quaestorlib"
           description="Build for Jetty">
-    <copy todir="${build.home}">
+    <!-- create the contents of the distributed zip file -->
+    <mkdir dir='${build.home}/${quaestor.jetty}/lib'/>
+    <mkdir dir="${build.home}/${quaestor.jetty}/war/WEB-INF/classes"/>
+    <copy todir="${build.home}/${quaestor.jetty}">
       <fileset file="${src.etc}/start-jetty.sh"/>
       <filterset>
         <filter token='QUAESTORLIBJAR' value='${quaestor.lib.jar}'/>
@@ -600,20 +603,16 @@
         <filter token='RELEASEDATE' value='${release.date}'/>
       </filterset>
     </copy>
-    <chmod file='${build.home}/start-jetty.sh' perm='ugo+x'/>
-    <mkdir dir="${build.war}/WEB-INF/classes"/>
-    <copy todir="${build.war}/WEB-INF/classes">
+    <chmod file='${build.home}/${quaestor.jetty}/start-jetty.sh' perm='ugo+x'/>
+    <copy todir="${build.home}/${quaestor.jetty}/war/WEB-INF/classes">
       <fileset file="${src.etc}/JettySchemeServer.properties"/>
       <fileset file='${scm.src.home}/quaestor.scm'/>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
-    <!-- create the contents of the distributed zip file -->
-    <mkdir dir='${build.home}/${quaestor.jetty}/lib'/>
     <copy todir='${build.home}/${quaestor.jetty}'>
       <fileset dir='${build.home}'>
-        <include name='start-jetty.sh'/>
         <include name='war/*'/>
         <include name='war/WEB-INF/classes/*'/>
         <include name='war/WEB-INF/classes/org/eurovotech/quaestor/*.class'/>
@@ -805,7 +804,7 @@
           classpathref="sisc.test.classpath"
           failonerror="true">
       <sysproperty key="sisc.home" value="${build.lib}"/>
-      <sysproperty key='single.test' value='${single.test}'/>
+      <!--<sysproperty key='single.test' value='${single.test}'/> mmm, don't think this works -->
       <arg value="-h"/>
       <arg value="${build.classes}/sisc.shp"/>
       <arg value="${scm.test.home}/run-tests.scm"/>
@@ -875,7 +874,7 @@
   <target name="jetty-test"
           depends="jetty"
           description="Run the protocol tests against the Jetty version of the server">
-    <exec executable='/bin/sh'>
+    <exec executable='/bin/sh' failonerror='true'>
       <arg value='src/etc/test-with-jetty.sh'/>
       <arg file='build.xml'/> <!-- this file -->
       <arg file='${dist.home}/${quaestor.jetty}.zip'/>
