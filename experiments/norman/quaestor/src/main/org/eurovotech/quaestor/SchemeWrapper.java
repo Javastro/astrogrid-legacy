@@ -62,13 +62,28 @@ public class SchemeWrapper {
         // <http://sourceforge.net/mailarchive/forum.php?thread_id=21786623&forum_id=7422>
         // In fact, setting this to be non-zero seems to produce longer,
         // but less-intelligible stack traces, so I might be better off with it (default) zero.
-        //props.setProperty("sisc.maxStackTraceDepth", "16");
+        props.setProperty("sisc.maxStackTraceDepth", "16");
 
         // The following should be the defaults            
-        props.setProperty("sisc.emitAnnotations", "true");
-        props.setProperty("sisc.emitDebuggingSymbols", "true");
-        props.setProperty("sisc.stackTraceOnError", "true");
+        //props.setProperty("sisc.emitAnnotations", "true");
+        //props.setProperty("sisc.emitDebuggingSymbols", "true");
+        //props.setProperty("sisc.stackTraceOnError", "true");
         
+        for (Object keyo : System.getProperties().keySet()) {
+            String key = (String)keyo;
+            if (key.startsWith("sisc.")) {
+                props.setProperty(key, System.getProperty(key));
+                System.err.println("Found property " + key + "=" + System.getProperty(key));
+            }
+        }
+
+        // The following hopes to pick up additional properties, but I can't get it to work.
+        java.io.InputStream swprops = ClassLoader.getSystemResourceAsStream("SchemeWrapper.properties");
+        if (swprops != null) {
+            System.err.println("Found resource SchemeWrapper.properties");
+            props.load(swprops);
+        }
+
         AppContext ctx = new AppContext(props);
         ctx.addDefaultHeap();
         Context.setDefaultAppContext(ctx);
@@ -87,6 +102,11 @@ public class SchemeWrapper {
                 if (is == null)
                     throw new IOException("Failed to find scheme-wrapper-support.scm");
                 instance.evalInputStream(is);
+
+                // having loaded that, we now have to load the newly-defined module
+                // (we could do this in each file which uses these routines,
+                // but that's easy to forget, and in any case should really be transparent)
+                instance.eval("(import quaestor-support)");
             } catch (SchemeException e) {
                 throw new IOException("Error loading scheme wrapper support:" + e);
             }   
@@ -280,43 +300,6 @@ public class SchemeWrapper {
         }
         assert o instanceof Value;
         return schemeToJava((Value)o);
-    }
-    
-    /**
-     * Loads the given source file into the interpreter.
-     * @param loadFile the full path of a file to load
-     * @return true if the load succeeded; throws descriptive exception
-     * if there are errors reading the file
-     * @throws IOException if the file cannot be parsed
-     * @throws SchemeException if there is a scheme error when reading the file
-     */
-    public boolean load(final String loadFile)
-            throws IOException, SchemeException {
-        // Load the file using the LOAD procedure.  This is different from
-        // Interpreter.loadSourceFiles since that just returns true or false,
-        // whereas this will throw a SchemeException if there's a problem
-        // loading the file.  It's also different from just "(load loadFile)",
-        // since that displays the error-record structure, which takes
-        // some parsing by eye.
-        //
-        // The following expression evaluates to either #t on success,
-        // or a string on error.
-        //
-        // We use the elaborate eval, rather than using
-        // eval(String,Object[]), because this is used to load
-        // quaestor.scm, before which the APPLY-WITH-TOP-FC procedure
-        // is not defined.  If we don't do this, we get a SchemeException
-        // dumped into the logs.
-        Object o = eval("(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a~a\" (error-location r) (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (show-err m)) (lambda () (load \"" + loadFile + "\") #t))");
-        if (o instanceof String) {
-            // Contains an error message from the failure-continuation.
-            // We can't create SchemeExceptions (no useful constructor),
-            // so hijack the IOException instead.  Ought this to be a
-            // ServletException?
-            throw new IOException("Error reading file " + loadFile + ": " + o);
-        }
-
-        return true;
     }
     
     /**

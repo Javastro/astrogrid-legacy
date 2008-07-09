@@ -3,14 +3,12 @@
 
 (import s2j)
 
-(import quaestor-support)
-
 (require-library 'quaestor/utils)
 (require-library 'quaestor/knowledgebase)
 (require-library 'quaestor/jena)
 
 (module sparql
-(sparql:make-query-runner)
+(sparql:make-query-runner)              ;the sole export from this module
 
 (import* utils
          jlist->list

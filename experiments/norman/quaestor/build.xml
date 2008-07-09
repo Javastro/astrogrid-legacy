@@ -1,41 +1,9 @@
-<!--
-     General purpose build script for web applications and web services,
-     including enhanced support for deploying directly to a Tomcat 5
-     based server.
-
-     This build script assumes that the source code of your web application
-     is organized into the following subdirectories underneath the source
-     code directory from which you execute the build script:
-
-        docs                 Static documentation files to be copied to
-                             the "docs" subdirectory of your distribution.
-
-        src                  Java source code (and associated resource files)
-                             to be compiled to the "WEB-INF/classes"
-                             subdirectory of your web applicaiton.
-
-        web                  Static HTML, JSP, and other content (such as
-                             image files), including the WEB-INF subdirectory
-                             and its configuration file contents.
-
--->
-
-
-<!-- A "project" describes a set of targets that may be requested
-     when Ant is executed.  The "default" attribute defines the
-     target which is executed if no specific target is requested,
-     and the "basedir" attribute defines the current working directory
-     from which Ant executes the requested task.  This is normally
-     set to the current working directory.
--->
-
+<!-- ANT build file for Quaestor -->
 <project name="Quaestor" default="compile" basedir=".">
 
 
 
 <!-- ===================== Property Definitions =========================== -->
-
-
 <!--
 
   Each of the following properties are used in the build script.
@@ -65,8 +33,6 @@
 
 
 <!-- ==================== File and Directory Names ======================== -->
-
-
 <!--
 
   These properties generally define file and directory names (or paths) that
@@ -270,14 +236,14 @@
   </fileset>
 
   <filelist id='sdb.support' dir='${sdb.lib}' files='sdb.jar'/>
+
   <fileset id='jetty.support' dir='${jetty.home}/lib'>
     <include name='*.jar'/>
   </fileset>
 
   <!-- check availability of dependencies -->
   <target name="check-packages"
-          unless="runonly.install"
-          >
+          unless="runonly.install">
     <available property="sisc.present"
                filepath="${sisc.lib}"
                file="sisc.jar"/>
@@ -307,6 +273,9 @@
                classpath='${junit.jar}'
                classname="junit.framework.TestCase"/>
 
+    <available property='quaestorlib.built'
+               filepath='${build.home}'
+               file='${quaestor.lib.jar}'/>
 
   </target>
 
@@ -325,6 +294,7 @@
 
     <!-- for the sisc.shp file -->
     <path refid="sisc.classpath"/>
+
     <path refid='jetty.classpath'/>
 
     <!-- Include all elements that Tomcat exposes to applications -->
@@ -543,17 +513,25 @@
        except the quaestor.scm program itself.  This could probably be slimmed
        down a LOT using something like Proguard, but that turns out to be quite
        complicated in practice, due to a fair amount of reflection happening
-       here and there within libraries, which confuses Proguard. -->
+       here and there within various libraries, which confuses Proguard. -->
   <target name="quaestorlib"
-          depends="compile">
+          depends="compile"
+          unless='quaestorlib.built'>
     <mkdir dir="${build.home}/quaestorlib"/>
     <unjar dest="${build.home}/quaestorlib">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
       <filelist refid="sdb.support"/>
       <fileset file="${jdbc.support.jar}"/>
-      <fileset refid='jetty.support'/>
+      <!-- jetty.support shouldn't be here, since the presence of
+           javax.servlet.Servlet.class here violates the servlet spec
+           (Servlet Spec 2.3, section 9.7.2), and apparently causes
+           Tomcat to refuse to load the jar file.  Jetty support is added
+           when we're building the "jetty" target. -->
     </unjar>
+    <!-- It's confusing to inherit a log4j.properties file
+         included in a random one of the above jar files -->
+    <delete file='${build.home}/quaestorlib/log4j.properties'/>
     <!-- When working on the Java files below, it's convenient to have this
          next element commented out and to change the path to point to
          .../WEB-INF/classes instead.  You need to adjust the classpath
@@ -632,22 +610,25 @@
       </filterset>
     </copy>
     <!-- create the contents of the distributed zip file -->
-    <mkdir dir='${quaestor.jetty}'/>
-    <copy todir='${quaestor.jetty}'>
+    <mkdir dir='${build.home}/${quaestor.jetty}/lib'/>
+    <copy todir='${build.home}/${quaestor.jetty}'>
       <fileset dir='${build.home}'>
         <include name='start-jetty.sh'/>
-        <include name='${quaestor.lib.jar}'/>
         <include name='war/*'/>
         <include name='war/WEB-INF/classes/*'/>
-        <!--include name='war/WEB-INF/classes/JettySchemeServer.properties'/-->
         <include name='war/WEB-INF/classes/org/eurovotech/quaestor/*.class'/>
-        <!--include name='war/WEB-INF/classes/**'/-->
       </fileset>
+    </copy>
+    <copy todir='${build.home}/${quaestor.jetty}/lib'>
+      <fileset dir='${build.home}'>
+        <include name='${quaestor.lib.jar}'/>
+      </fileset>
+      <fileset refid='jetty.support'/>
     </copy>
     <!-- ...and zip it up -->
     <mkdir dir='${dist.home}'/>
     <zip destfile='${dist.home}/${quaestor.jetty}.zip'
-         basedir='.'
+         basedir='${build.home}'
          includes='${quaestor.jetty}/**'/>
   </target>
 
@@ -766,7 +747,7 @@
       <fileset refid="jena.support"/>
       <filelist refid="sdb.support"/>
       <fileset file='${jdbc.support.jar}'/>
-      <fileset refid='jetty.support'/>
+      <!--<fileset refid='jetty.support'/>-->
     </copy>
 
     <copy todir="${build.war}/WEB-INF">
@@ -883,6 +864,18 @@
 
     </junit>
     
+  </target>
+
+  <!-- Test that the Jetty version of the server works.
+       Note that this requires running a shell script, so only works on Unix -->
+  <target name="jetty-test"
+          depends="jetty"
+          description="Run the protocol tests against the Jetty version of the server">
+    <exec executable='/bin/sh'>
+      <arg value='src/etc/test-with-jetty.sh'/>
+      <arg file='build.xml'/> <!-- this file -->
+      <arg file='${dist.home}/${quaestor.jetty}.zip'/>
+    </exec>
   </target>
 
   <target name="run-single-test"

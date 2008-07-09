@@ -23,7 +23,7 @@ public class TomcatSchemeServlet extends GenericServlet implements QuaestorServl
     // class extends HttpServlet.  Since I don't serialise anything, I don't think this matters,
     // but I might as well consistently keep this as a number based on the CVS revision number:
     // major*1000+minor, when I remember.
-    private static final long serialVersionUID = 1005L;
+    private static final long serialVersionUID = 1001L;
 
     private java.util.Map<String,Procedure> requestHandlerMap;
 
@@ -51,28 +51,21 @@ public class TomcatSchemeServlet extends GenericServlet implements QuaestorServl
 
         // find the main script and initialiser parameters
         String mainScriptName = getInitParameter("main-script");
-        String initialiserProcedure
-                = getInitParameter("main-script-initialiser");
+        String initialiserProcedure = getInitParameter("main-script-initialiser");
         if (mainScriptName == null || initialiserProcedure == null)
-            throw new ServletException
-                    ("Parameters main-script and main-script-initialiser must both have values");
+            throw new ServletException("Parameters main-script and main-script-initialiser must both have values");
 
         try {
             // load the script
-            java.io.InputStream is = getServletContext()
-                    .getResourceAsStream(mainScriptName);
+            java.io.InputStream is = getServletContext().getResourceAsStream(mainScriptName);
             if (is == null)
-                throw new ServletException
-                        ("Failed to find resource " + mainScriptName);
+                throw new ServletException("Failed to find resource " + mainScriptName);
             SchemeWrapper.getInstance().evalInputStream(is);
             log("Loaded main script from " + mainScriptName
                 + " with initialiser " + initialiserProcedure);
 
             // ...and initialise it
-            Object val = SchemeWrapper
-                    .getInstance()
-                    .eval(initialiserProcedure,
-                          new Object[] { this });
+            Object val = SchemeWrapper.getInstance().eval(initialiserProcedure, new Object[] { this });
             if (val instanceof String) {
                 throw new ServletException
                         ("Failed to initialise main-script " + mainScriptName

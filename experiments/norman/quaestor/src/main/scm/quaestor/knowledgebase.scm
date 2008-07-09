@@ -4,8 +4,6 @@
 
 (import s2j)
 
-(import quaestor-support)
-
 (require-library 'quaestor/jena)
 (require-library 'quaestor/utils)
 (require-library 'util/lambda-contract)

@@ -57,20 +57,6 @@
                "one%24two"
                "%2520")))
 
-(expect report-exception-1
-        '((t1 1 "hello")
-          (t2 "x" "hello there"))
-        (map (lambda (l)
-               (with/fc
-                (lambda (m e)
-                  (list (error-location m)
-                        (car (error-message m))
-                        (cdr (error-message m))))
-                (lambda ()
-                  (apply REPORT-EXCEPTION l))))
-             '((t1 1 "hello")
-               (t2 "x" "hello ~a" "there"))))
-
 (expect parse-http-accept-header
         '(("text/plain")
           ("*/*")

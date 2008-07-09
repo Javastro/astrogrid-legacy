@@ -3,10 +3,7 @@
 
 (import s2j)
 
-;; We don't actually import this library here, but the tested modules
-;; do import quaestor-support
 (require-library 'org/eurovotech/quaestor/scheme-wrapper-support)
-
 (import* quaestor-support chatter)
 
 (define failures-in-block?
@@ -104,6 +101,7 @@
                         "quaestor/knowledgebase.scm"
                         "quaestor/jena.scm"
                         "quaestor/sparql.scm"
+                        "quaestor/scheme-wrapper-support.scm"
                         "util/sexp-xml.scm"
                         "util/xmlrpc.scm"
                         ))

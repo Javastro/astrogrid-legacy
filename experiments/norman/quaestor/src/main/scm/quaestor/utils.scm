@@ -4,7 +4,6 @@
 ;; quite generic enough to live in ../util
 
 (import s2j)
-(import quaestor-support)
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (require-library 'sisc/libs/srfi/srfi-13)

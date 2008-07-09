@@ -3,14 +3,11 @@
 
 (import s2j)
 
-(import quaestor-support)
-
 (require-library 'sisc/libs/srfi/srfi-1)
 (require-library 'sisc/libs/srfi/srfi-13)
 (require-library 'sisc/libs/srfi/srfi-26)
 
 (require-library 'quaestor/utils)
-
 
 (require-library 'util/lambda-contract)
 
