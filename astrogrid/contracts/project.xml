@@ -2,7 +2,7 @@
 <project>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-contracts</artifactId>
-  <currentVersion>2008.0</currentVersion>
+  <currentVersion>2008.1</currentVersion>
   <name>Astrogrid sub-system contracts</name>
   <shortDescription>Interface contracts for AstroGrid components.</shortDescription>
   <description><![CDATA[
