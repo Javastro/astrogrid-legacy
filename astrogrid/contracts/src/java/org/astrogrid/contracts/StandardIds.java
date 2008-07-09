@@ -62,6 +62,7 @@ public class StandardIds {
    * PolicyManager: ivo://org.astrogrid/std/Community/v1.0#PolicyManager.
    * Chosen by AstroGrid during cycle 1 of AG3.
    * PolicyManager is the community's SOAP service for reporting home space.
+   * This capability is obsolete.
    */
   public final static String POLICY_MANAGER_1_0 = 
       "ivo://org.astrogrid/std/Community/v1.0#PolicyManager";
@@ -70,6 +71,7 @@ public class StandardIds {
    * SecurityService: ivo://org.astrogrid/std/Community/v1.0#SecurityService.
    * Chosen by AstroGrid during cycle 1 of AG3.
    * SecurityService is the community's SOAP interface for checking passwords.
+   * This capability is obsolete.
    */
   public final static String SECURITY_SERVICE_1_0 =
       "ivo://org.astrogrid/std/Community/v1.0#SecurityService";
@@ -83,6 +85,13 @@ public class StandardIds {
    */
   public final static String MY_PROXY_2 = 
       "ivo://org.astrogrid/std/Community/v1.0#MyProxy";
+  
+  /**
+   * Community accounts protocol: ivo://org.astrogrid/std/Community/accounts.
+   * Chosen by AstroGrid during cycle 1 of AG3.
+   */
+  public final static String AG_ACCOUNTS =
+      "ivo://org.astrogrid/std/Community/accounts";
   
   /**
    * VOSI service availability: ivo://org.astrogrid/std/VOSI/v0.3#availability.
