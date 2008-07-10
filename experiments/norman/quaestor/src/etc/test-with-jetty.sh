@@ -37,7 +37,7 @@ echo "Giving it a chance to get going..."
 while ! curl $URL >page.html 2>page.stderr; do
     echo "Not going yet..."
     sleep 2
-    if ! ps | grep '^'$jettypid >/dev/null; then
+    if ! ps | grep '^ *'$jettypid >/dev/null; then
         echo "The jetty server appears to have died!"
         jetty_status=1
         break
