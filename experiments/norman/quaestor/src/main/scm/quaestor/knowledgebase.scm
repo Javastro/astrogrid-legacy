@@ -193,6 +193,8 @@
   ;;        Return the knowledgebase's name, as a Java URI
   ;;    (kb 'get-name-as-resource)
   ;;        As get-name-as-uri, but returning the name as a Jena Resource
+  ;;    (kb 'get-name-as-string)
+  ;;        As get-name-as-uri, but returning the name as a Scheme string
   ;;    (kb 'has-model [SUBMODEL-NAME])
   ;;        Return true if the named (sub)model exists, that is, if
   ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
@@ -471,6 +473,11 @@
 
           ((get-name-as-uri)
            (call-with-args () kb-name))
+
+          ((get-name-as-string)
+           (call-with-args ()
+                           (define-generic-java-methods to-string)
+                           (->string (to-string kb-name))))
 
           ((get-name-as-resource)
            (call-with-args

@@ -40,7 +40,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.51 $ $Date: 2008/07/07 17:38:51 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.52 $ $Date: 2008/07/10 21:57:52 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -148,9 +148,6 @@
 
 ;; Fallback get handler.  Matches everything, and returns a string.
 (define (get-fallback path-info-list query-string request response)
-  (define-generic-java-method
-    set-content-type)
-  (set-content-type response (->jstring "text/html"))
   (response-page request response
                  "Quaestor"
                  `((p "Debugging the query.")
@@ -211,7 +208,6 @@
            )))
   (if (= (length path-info-list) 0)     ;we handle this one
       (let ((namelist (kb:get-names)))
-        (set-response-status! response '|SC_OK| "text/html")
         (response-page request response
                        "Quaestor: list of knowledgebases"
                        (if (null? namelist)
@@ -220,7 +216,8 @@
                            `((p "Knowledgebases available:")
                              (ul ,@(map (lambda (kb-name)
                                           (display-kb-info kb-name))
-                                        (kb:get-names)))))))
+                                        (kb:get-names)))))
+                       '|SC_OK| "text/html"))
       #f))
 
 ;; If path-info-list has one element, and the query-string starts with "query",
@@ -281,29 +278,16 @@
   ;; Return (mime-string . rdf-language) if we can satisfy a request.
   ;; Return a default pair (the language which MIME type */* maps to)
   ;; if there were no Accept headers.
-  (define (find-ok-language rq)
-    (let ((lang-mime-list (request->accept-mime-types rq)))
-      (chatter (format #f "lang-mime-list=~s" lang-mime-list))
-      (if (null? lang-mime-list)
-          (let ((deflang (rdf:mime-type->language #f)))
-            (cons (rdf:language->mime-type deflang)
-                  deflang))             ;use the default language
-          (let loop ((ml lang-mime-list))
-            (if (null? ml)
-                #f                      ;ooops
-                (let* ((requested-mime-type (car ml))
-                       (lang-string (rdf:mime-type->language requested-mime-type)))
-                  (chatter "rdf:mime-type->language: ~s -> ~s"
-                           requested-mime-type lang-string)
-                  (if lang-string
-                      (cond ((string-index requested-mime-type #\*)
-                             ;; convert lang back to mime-type: don't use (car ml)
-                             ;; since it includes a star (eg, */*); also this canonicalises the type
-                             (cons (rdf:language->mime-type lang-string)
-                                   lang-string))
-                            (else
-                             (cons requested-mime-type lang-string)))
-                      (loop (cdr ml)))))))))
+  (define (find-acceptable-rdf-language rq)
+    (let ((acceptable-mimes (request->accept-mime-types rq)))
+      (cond ((null? acceptable-mimes)
+             (let ((deflang (rdf:mime-type->language #f)))
+               (cons (rdf:language->mime-type deflang) deflang)))
+            ((acceptable-mime (rdf:mime-type-list) acceptable-mimes)
+             => (lambda (ok-mime)
+                  (cons ok-mime (rdf:mime-type->language ok-mime))))
+            (else
+             #f))))
 
   (chatter "get-model: path-info-list=~s, query-string=~s" path-info-list query-string)
   (case (length path-info-list)
@@ -313,7 +297,7 @@
                                #f       ;no submodel
                                (cadr path-info-list))))
        (let ((kb (kb:get kb-name))
-             (mime-and-lang (find-ok-language request))
+             (mime-and-lang (find-acceptable-rdf-language request))
              (query (string->symbol (or query-string "model"))))
 ;;          (chatter "get-model: kb-name=~s  submodel-name=~s  mime-and-lang=~s  query=~s"
 ;;                   kb-name submodel-name mime-and-lang query)
@@ -381,15 +365,13 @@
 
 ;; A special debugging handler: handles /debug/*
 (define (http-debug-query request response)
-  (define-generic-java-method
-    set-content-type)
-  (set-content-type response (->jstring "text/html"))
   (response-page request response
                  "Quaestor"
                  `((p "I don't recognise that URL.")
                    (p ,(format #f "KB base: ~s" (request->kb-uri request)))
                    (p "The details of the request follow:")
-                   ,@(tabulate-request-information request))))
+                   ,@(tabulate-request-information request))
+                 "text/html"))
 
 (define/contract (http-head (request  request?)
                             (response response?)

@@ -595,9 +595,9 @@
 ;; This expects to be called before there has been any other output.
 (define (no-can-do request response response-code fmt . args)
   (let ((msg (apply format `(#f ,fmt ,@args))))
-    (set-response-status! response response-code "text/html")
     (response-page request response
-                   "Quaestor: no can do" `((p ,msg)))))
+                   "Quaestor: no can do" `((p ,msg))
+                   response-code "text/html")))
 
 ;; For debugging and error reporting.  Given a request, produce a list
 ;; of sexps describing the content of the request.
@@ -640,15 +640,28 @@
                 (map (lambda (jheader)
                        `(tr (td ,(->string-or-empty jheader))
                             (td ,(->string-or-empty (get-header request jheader)))))
-                     (enumeration->list (get-header-names request))))
-        ))
+                     (enumeration->list (get-header-names request))))))
 
 
 
 ;; Evaluates to a string corresponding to a HTML page.  The TITLE-STRING
 ;; is a string containing a page title, and the BODY-SEXP is a list of sexps.
-(define (response-page request response title-string body-sexp)
-  (define-generic-java-method get-context-path)
+;; The EXTRAS are an optional list of symbols or strings.  A symbol must
+;; be one of the HttpServletResponse SC_* fields, and is used to set
+;; the response status.  A string is used to set the content type.
+(define (response-page request response title-string body-sexp . extras)
+  (define-generic-java-methods get-context-path set-content-type)
+  (set-content-type response (->jstring "text/html"))
+  (let loop ((e extras))
+    (cond ((null? e))
+          ((symbol? (car e))
+           (set-response-status! response (car e))
+           (loop (cdr e)))
+          ((string? (car e))
+           (set-content-type response (->jstring (car e)))
+           (loop (cdr e)))
+          (else
+           (error "Bad extras to RESPONSE-PAGE: ~s" extras))))
   (let ((s `(html (head (title ,title-string)
                           (link (@ (rel stylesheet)
                                    (type text/css)
