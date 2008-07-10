@@ -29,6 +29,11 @@
   browser behaviour.  This has fixed the login problems previously 
   seen with the Opera browser.
 
+* Ticket BZ2672: 
+  Added support for secured access to conesearch services.  
+  Default configuration remains unsecured.
+
+
 2008.1
 ------
 Official launch release.  

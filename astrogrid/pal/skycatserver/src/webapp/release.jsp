@@ -27,7 +27,7 @@ Functionality supported
 Known bugs and ommissions, with workarounds where possible
 How to report bugs (BugZilla, content etc)
 -->
-<h1>Astrogrid DSA/catalog</h1>
+<h1>Astrogrid DSA/catalog release notes</h1>
 
 <h2>Functionality Supported</h2>
 <ul>
@@ -111,6 +111,12 @@ configured.
 Please include any error output or logs in the bug report, along with the server endpoint URL and version of the
 DSA/catalog server you have installed.
 </p>
+
+<h2>Change log</h2>
+<pre>
+<%@ include file="docs/changelog.txt" %>
+</pre>
+
 
 </div>
 </body>

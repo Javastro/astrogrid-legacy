@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project default="astrogrid-build-site" xmlns:j="jelly:core" xmlns:deploy="deploy">
+<project default="astrogrid-build-site" xmlns:j="jelly:core" xmlns:deploy="deploy" xmlns:ant="jelly:ant">
    <!--+
       | Custom astrogrid goals for nightly build
       | Override those in maven-base
@@ -15,11 +15,14 @@
    <goal name="astrogrid-build-artifact" prereqs="war:artifact"/>
    <goal name="astrogrid-install-artifact" prereqs="war:install"/>
    
-    <!-- Before building the XML documentation, generate the "about" page. -->
+   <!-- Before building the XML documentation, generate the "about" 
+    page and copy in the changelog page. -->
     <preGoal name="war:war">
        <echo message="Application: ${pom.name}      Version: ${pom.currentVersion}"
           file="${maven.war.webapp.dir}/docs/version.txt" 
           level="error" verbose="true"/>
+       <ant:copy verbose="false" todir="${maven.war.webapp.dir}/docs" overwrite="true" file="${basedir}/../xdocs/changelog.txt">
+       </ant:copy>
     </preGoal>
 
  <!-- packaging of the war file

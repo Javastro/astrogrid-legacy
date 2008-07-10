@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.4 2006/09/26 15:34:42 clq2 Exp $ -->
+<!-- $Id: index.xml,v 1.5 2008/07/10 13:54:11 clq2 Exp $ -->
 <document>
   <properties>
     <title>Astrogrid DSA/Catalog</title>
@@ -161,6 +161,9 @@
 </ul>
 </section>
   
+<section name="Changelog">
+   You can <a href="changelog.txt">view the software changelog here</a>.
+</section>
    
 
         </body>
