@@ -875,7 +875,7 @@
           depends="jetty"
           description="Run the protocol tests against the Jetty version of the server">
     <exec executable='/bin/sh' failonerror='true'>
-      <arg value='src/etc/test-with-jetty.sh'/>
+      <arg value='src/test/misc/test-with-jetty.sh'/>
       <arg file='build.xml'/> <!-- this file -->
       <arg file='${dist.home}/${quaestor.jetty}.zip'/>
     </exec>
