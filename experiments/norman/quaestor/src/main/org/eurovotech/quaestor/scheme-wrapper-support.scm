@@ -3,7 +3,6 @@
      make-fc
      format-error-record
      report-exception
-     set-response-status!
      chatter)
 
 (import s2j)
@@ -19,98 +18,75 @@
 ;; own error handlers, this failure-continuation will generally only
 ;; be called if something quite bad has gone wrong; therefore the
 ;; failure-continuation shows debugging information and chatter, and
-;; returns a Java exception.
+;; throws a Java exception (which will be wrapped in a SchemeException
+;; before it gets back to the servlet code).
 (define (apply-with-top-fc proc . args)
   (with/fc
       (lambda (m kontinuation)
         (define-java-class <javax.servlet.servlet-exception>)
-        (java-new
-         <javax.servlet.servlet-exception>
-         (->jstring
-          (format #f "Top-level error: ~a~%~a~%~%Stack trace: ~a~%"
-                  (format-error-record m)
-                  (let ((c (chatter)))
-                    (cond ((list? c)    ;normal case
-                           (apply string-append
-                                  (map (lambda (x)
-                                         (format #f "[chatter: ~a]~%" x))
-                                       c)))
-                          ((not c)      ;no chatter
-                           "")
-                          (else         ;can't happen!
-                           (format #f
-                                   "[Can't happen: (chatter) produced ~s]" c))))
-                  (with-output-to-string
-                    (lambda () (print-stack-trace kontinuation)))))))
+        (error
+         (java-new
+          <javax.servlet.servlet-exception>
+          (->jstring
+           (format #f "Top-level error: ~a~%" (format-error-record m))))))
+;; The following is much fuller, but unnecessary, since for this level
+;; of debugging I can probably just look in the logs.
+;;           (format #f "Top-level error: ~a~%~a~%~%Stack trace: ~a~%"
+;;                   (format-error-record m)
+;;                   (let ((c (chatter)))
+;;                     (cond ((list? c)    ;normal case
+;;                            (apply string-append
+;;                                   (map (lambda (x)
+;;                                          (format #f "[chatter: ~a]~%" x))
+;;                                        c)))
+;;                           ((not c)      ;no chatter
+;;                            "")
+;;                           (else         ;can't happen!
+;;                            (format #f
+;;                                    "[Can't happen: (chatter) produced ~s]" c))))
+;;                   (with-output-to-string
+;;                     (lambda () (print-stack-trace kontinuation))))
     (lambda ()
       (chatter "Applying proc ~s..." proc)
       (parameterize ((suppressed-stack-trace-source-kinds '()))
                     (apply proc args)))))
 
-;; make-fc java-request java-response symbol -> procedure
+;; MAKE-FC : symbol -> procedure
 ;;
 ;; Make a SISC failure continuation.  Return a two-argument procedure
 ;; which can be used as the handler for with-failure-continuation.
 ;; See REPORT-EXCEPTION for an error procedure which allows you to override
 ;; the status given here.
-(define (make-fc request response status)
-;(define/contract (make-fc (request java-object?)
-;                          (response java-object?)
-;                          (status symbol?)
-;                          -> procedure?)
+(define (make-fc status)
+;(define/contract (make-fc (status symbol?) -> procedure?)
   (lambda (error-record cont)
     (let* ((msg-or-pair (error-message error-record))
            (show-debugging? (not (pair? msg-or-pair))))
-      (set-response-status! response
-                            (if (pair? msg-or-pair)
-                                (car msg-or-pair)
-                                status)
-                            "text/plain")
-      (if show-debugging?
-          (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-                  (format-error-record error-record)
-                  (let ((c (chatter)))
-                    (cond ((list? c)    ;normal case
-                           (apply string-append
-                                  (map (lambda (x)
-                                         (format #f "[chatter: ~a]~%" x))
-                                       c)))
-                          ((not c)      ;no chatter
-                           "")
-                          (else         ;can't happen!
-                           (format #f
-                                   "[Can't happen: (chatter) produced ~s]" c))))
-                  (with-output-to-string
-                    (lambda () (print-stack-trace cont))))
-          (format #f "~%Error: ~a~%" (cdr msg-or-pair))))))
-
-;; set-response-status! java-response symbol -> #t
-;; set-response-status! java-response symbol string -> #t
-;; side-effect: set the java-response's status and optionally MIME type
-;;
-;; Set the HTTP response to the given value.  The RESPONSE-SYMBOL is
-;; one of the SC_* fields in javax.servlet.http.HttpServletResponse.
-;; Eg: (set-http-response response '|SC_OK|).
-;; If MIME-TYPE-L is non-null, then its car is a Scheme string representing
-;; the MIME type which should be set on the response.
-;; Returns #t for convenience, so that the call to this procedure may (but
-;; need not be) the final call in a handler function.
-(define set-response-status!
-  (let ((response-object #f))
-    (define-generic-java-methods
-      set-status
-      set-content-type)
-    (lambda (response response-symbol . mime-type-l)
-      (or response-object
-          (set! response-object (java-null
-                                 (java-class
-                                  '|javax.servlet.http.HttpServletResponse|))))
-      (set-status response
-                  ((generic-java-field-accessor response-symbol)
-                   response-object))
-      (or (null? mime-type-l)
-          (set-content-type response (->jstring (car mime-type-l))))
-      #t)))
+      (list (if (pair? msg-or-pair)
+                (car msg-or-pair)
+                status)
+            `("Server failure"
+              (p "Something's rather unfortunately gone badly wrong.")
+              (pre ,(format #f "~%Error: ~a~%" (if (pair? msg-or-pair) (cdr msg-or-pair) msg-or-pair)))
+;; I don't think this extra debugging info is helpful
+;;               (pre ,(if show-debugging?
+;;                         (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
+;;                                 (format-error-record error-record)
+;;                                 (let ((c (chatter)))
+;;                                   (cond ((list? c) ;normal case
+;;                                          (apply string-append
+;;                                                 (map (lambda (x)
+;;                                                        (format #f "[chatter: ~a]~%" x))
+;;                                                      c)))
+;;                                         ((not c) ;no chatter
+;;                                          "")
+;;                                         (else ;can't happen!
+;;                                          (format #f
+;;                                                  "[Can't happen: (chatter) produced ~s]" c))))
+;;                                 (with-output-to-string
+;;                                   (lambda () (print-stack-trace cont))))
+;;                         (format #f "~%Error: ~a~%" (cdr msg-or-pair))))
+              )))))
 
 ;; Format the given error record, as passed as the first argument of a
 ;; failure-continuation.  This ought to be able to handle most of the

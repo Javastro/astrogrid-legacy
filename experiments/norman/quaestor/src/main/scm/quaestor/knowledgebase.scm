@@ -7,7 +7,7 @@
 (require-library 'quaestor/jena)
 (require-library 'quaestor/utils)
 (import* utils
-         iterator->list)
+         jobject->list)
 (require-library 'util/lambda-contract)
 
 (require-library 'sisc/libs/srfi/srfi-1)
@@ -32,7 +32,7 @@
   (import jena)
   (import* utils
            is-java-type?
-           collection->list)
+           jobject->list)
 
   (define (in-quaestor-namespace fragment)
     (let ((ns "http://ns.eurovotech.org/quaestor#"))
@@ -105,7 +105,7 @@
                                       (java-unwrap prev-kb)))))))
           ((get-keys)                   ; -> list-of-uris
            (call-with-args ()
-                           (iterator->list (iterator (key-set model-list)))))
+                           (jobject->list (iterator (key-set model-list)))))
           (else
            (error 'model-list "Bad call: (~s ~s)" cmd args))))))
 
@@ -527,6 +527,6 @@
     (map (lambda (mapentry)
            (cons (->string (get-key mapentry))
                  (->string (get-value mapentry))))
-         (collection->list (entry-set (get-ns-prefix-map model)))))
+         (jobject->list (entry-set (get-ns-prefix-map model)))))
 
   )

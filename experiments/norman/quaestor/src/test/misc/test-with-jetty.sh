@@ -50,7 +50,6 @@ if test $jetty_status -eq 0; then
     ant_status=$?
 else
     echo "Unable to start the jetty server"
-    echo "See $WORK/jetty.log"
     ant_status=1
 fi
 
@@ -62,6 +61,7 @@ if test $ant_status -eq 0; then
 else
     echo "Test failed"
     echo "Jetty URL is $URL : PID $jettypid"
+    echo "See $WORK/jetty.log"
     echo "Work directory is $WORK"
 fi
 

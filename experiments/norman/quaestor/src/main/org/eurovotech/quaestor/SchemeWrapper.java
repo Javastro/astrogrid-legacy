@@ -180,7 +180,7 @@ public class SchemeWrapper {
      * @throws ServletException if the SISC procedure returns one
      */
     public Object eval(final Procedure proc, final Object[] args)
-            throws SchemeException, ServletException {
+            throws SchemeException {
         Object o = Context.execute(new SchemeCaller() {
                 public Object execute(Interpreter i)
                         throws SchemeException {
@@ -194,10 +194,10 @@ public class SchemeWrapper {
                     return i.eval(apply, v);
                 }
             });
-        if (o instanceof Exception) {
-            assert o instanceof ServletException;
-            throw (ServletException)o;
-        }
+//         if (o instanceof Exception) {
+//             assert o instanceof ServletException;
+//             throw (ServletException)o;
+//         }
         assert o instanceof Value;
         return schemeToJava((Value)o);
     }
@@ -217,7 +217,7 @@ public class SchemeWrapper {
      * @throws ServletException if the SISC procedure returns one
      */
     public Object eval(final String proc, final Object[] args)
-            throws SchemeException, ServletException {
+            throws SchemeException {
         Procedure p = (Procedure)Context.execute(new SchemeCaller() {
                 public Object execute(Interpreter i)
                         throws SchemeException {
@@ -338,11 +338,13 @@ public class SchemeWrapper {
             ret = Boolean.valueOf(sb.equals(sisc.data.SchemeBoolean.TRUE));
         } else if (v instanceof SchemeVoid) {
             ret = null;
-        } else if (v instanceof sisc.modules.s2j.JavaObject) {
-            ret = ((sisc.modules.s2j.JavaObject)v).get();
-            if (ret != null)
-                ret = ret.toString();
+//         } else if (v instanceof sisc.modules.s2j.JavaObject) {
+//             ret = ((sisc.modules.s2j.JavaObject)v).get();
+//             if (ret != null)
+//                 ret = ret.toString();
         } else {
+            // I don't think this should happen, but there's not a lot we
+            // can usefully do about it here and now without creating brittleness.
             ret = v.toString();
         }
         assert ret == null || ret instanceof String || ret instanceof Boolean;

@@ -11,7 +11,7 @@
 (sparql:make-query-runner)              ;the sole export from this module
 
 (import* utils
-         jlist->list
+         jobject->list
          is-java-type?)
 (import* knowledgebase
          kb:knowledgebase?
@@ -561,7 +561,7 @@
     <java.io.print-writer>
     <java.io.output-stream-writer>)
 
-  (let ((result-vars (jlist->list (get-result-vars result)))
+  (let ((result-vars (jobject->list (get-result-vars result)))
         (pw (java-new <java.io.print-writer>
                       (java-new <java.io.output-stream-writer>
                                 stream

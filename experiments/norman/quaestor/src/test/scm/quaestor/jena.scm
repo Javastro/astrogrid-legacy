@@ -4,7 +4,7 @@
 (import jena)
 
 (require-library 'quaestor/utils)
-(import* utils iterator->list)
+(import* utils jobject->list)
 
 (require-library 'util/misc)
 (import* misc sort-list)
@@ -58,7 +58,7 @@
     (sort-list
      (map (lambda (stmt)
             (->string (print pu stmt)))
-          (iterator->list (list-statements model)))
+          (jobject->list (list-statements model)))
      string<=?)))
 
 (expect ingest

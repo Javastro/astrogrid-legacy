@@ -35,7 +35,7 @@
          cut)
 (import* utils
          is-java-type?
-         iterator->list)
+         jobject->list)
 
 ;; heavily used classes
 (define-java-classes
@@ -401,7 +401,7 @@
     get-model list-properties create-property get-object)
   (let ((model (get-model resource)))
     (map get-object
-         (iterator->list
+         (jobject->list
           (list-properties
            resource
            (if (jena-property? property)
@@ -531,10 +531,10 @@
                                       (->jstring object))))))
     (if accessor
         (map accessor
-             (iterator->list (list-statements model
-                                              qsubject
-                                              qpredicate
-                                              qobject)))
+             (jobject->list (list-statements model
+                                             qsubject
+                                             qpredicate
+                                             qobject)))
         (error 'rdf:select-statements
                "Bad call : more than one #f slot"))))
 

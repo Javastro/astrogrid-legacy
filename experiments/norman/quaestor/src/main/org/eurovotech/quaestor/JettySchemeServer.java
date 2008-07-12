@@ -350,19 +350,19 @@ public class JettySchemeServer {
                 StringBuffer msg = new StringBuffer();
                 msg.append(method)
                         .append(servletPath)
-                        .append(": calling procedure on <")
-                        .append(rq.getPathInfo())
-                        .append(">");
+                        .append(": calling procedure on path ")
+                        .append(rq.getPathInfo());
                 Log.info(msg.toString());
 
                 // following statuses will very probably be overridden within the
                 // quaestorMethod procedure, but they're here in order to provide
                 // sane defaults.
                 response.setContentType("text/plain");
-                response.setStatus(response.SC_OK);
+                response.setStatus(response.SC_NOT_IMPLEMENTED);
 
                 try {
                     Object val = SchemeWrapper.getInstance().eval(proc, new Object[] { rq, response });
+                    Log.info("Jetty value: " + val);
                     if (val instanceof String) {
                         PrintWriter out = LazyOutputStream.getLazyOutputStream(response).getWriter();
                         out.print(val);
@@ -370,7 +370,10 @@ public class JettySchemeServer {
                     }
                 } catch (SchemeException e) {
                     Log.warn("Scheme exception: " + e);
-                    throw new ServletException(e);
+                    // with that logged, create a new exception, with fewer implementation details,
+                    // which should end up being reported to the caller
+                    throw new ServletException("Error evaluating servlet on path " + rq.getPathInfo()
+                                               + "; see log for full details");
                 }
                 
                 rq.setHandled(true);

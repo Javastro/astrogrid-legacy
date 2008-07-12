@@ -9,13 +9,11 @@
 (require-library 'sisc/libs/srfi/srfi-13)
 
 (require-library 'util/lambda-contract)
+
 (require-library 'util/sexp-xml)
 
 (module utils
- (collection->list
-  iterator->list
-  jlist->list
-  enumeration->list
+ (jobject->list
   java-retrieve-static-object
   is-java-type?
   url-decode-to-jstring
@@ -28,6 +26,7 @@
   ;; Transaction support functions.  Should these perhaps be moved
   ;; wholesale into scheme-wrapper-support.scm ?
   ;; (these functions currently have no test coverage)
+  service-http-call
   request->path-list
   request->query-string
   request->content-type
@@ -41,6 +40,10 @@
   response-page
   )
 
+
+(import* sexp-xml
+         sexp-xml:sexp->xml
+         sexp-xml:escape-string-for-xml)
 (import* srfi-1
          remove)
 (import* srfi-13
@@ -48,9 +51,6 @@
          string-downcase
          string-index
          string-index-right)
-
-(import* sexp-xml
-         sexp-xml:sexp->xml)
 
 ;(import debugging)                      ;for print-stack-trace
 
@@ -61,56 +61,61 @@
   <java.lang.string>
   <java.io.reader>
   <java.io.input-stream>)
-(define (jiterator? x)
-  (is-java-type? x '|java.util.Iterator|))
-(define (jlist? x)
-  (is-java-type? x '|java.util.List|))
-(define (jenumeration? x)
-  (is-java-type? x '|java.util.Enumeration|))
+;; (define (jiterator? x)
+;;   (is-java-type? x '|java.util.Iterator|))
+;; (define (jlist? x)
+;;   (is-java-type? x '|java.util.List|))
+;; (define (jenumeration? x)
+;;   (is-java-type? x '|java.util.Enumeration|))
 (define (jstring? x)
   (is-java-type? x <java.lang.string>))
-;; (define (jstring-or-null? x) ; null objects are also deemed true
-;;   (or (java-null? x)
-;;       (is-java-type? x <java.lang.string>)))
 
+;; JOBJECT->LIST : thing -> list
+;; For a variety of Java objects (collection, iterator, List, Enumeration),
+;; convert it to a list.  Return an empty list if the input is (Java) null.
+(define/contract (jobject->list jobject -> list?)
+  (define (collection->list coll)
+    (define-generic-java-methods
+      iterator)
+    (if (java-null? coll)
+        '()
+        (iterator->list (iterator coll))))
+  ;; Given a Java iterator, JITER, extract each of its contents into a list
+  (define (iterator->list jiter)
+    (define-generic-java-methods
+      (has-next? |hasNext|)
+      next)
+    (let loop ((l '()))
+      (if (->boolean (has-next? jiter))
+          (loop (cons (next jiter) l))
+          (reverse l))))
+  ;; The same, but taking a Java List as input
+  (define (jlist->list jlist)
+    (define-generic-java-method iterator)
+    (iterator->list (iterator jlist)))
+  ;; The same, but taking a Java Enumeration as input
+  (define (enumeration->list enum)
+    (define-generic-java-methods
+      has-more-elements
+      next-element)
+    (if (->boolean (has-more-elements enum))
+        (let ((n (next-element enum)))
+          (cons n
+                (enumeration->list enum)))
+        '()))
 
-;; Given a Java colllection, extract its contents into a list.
-;; Return the empty list if the input collection is (Java) null.
-(define/contract (collection->list
-                  (coll (or (java-null? coll)
-                            (is-java-type? coll '|java.util.Collection|)))
-                  -> list?)
-  (define-generic-java-methods
-    iterator)
-  (if (java-null? coll)
-      '()
-      (iterator->list (iterator coll))))
-
-;; Given a Java iterator, JITER, extract each of its contents into a list
-(define/contract (iterator->list (jiter jiterator?) -> list?)
-  (define-generic-java-methods
-    (has-next? |hasNext|)
-    next)
-  (let loop ((l '()))
-    (if (->boolean (has-next? jiter))
-        (loop (cons (next jiter) l))
-        (reverse l))))
-
-;; The same, but taking a Java List as input
-(define/contract (jlist->list (jlist jlist?) -> list?)
-  (define-generic-java-method iterator)
-  (iterator->list (iterator jlist)))
-
-;; The same, but taking a Java Enumeration as input
-(define/contract (enumeration->list (enum jenumeration?) -> list?)
-  (define-generic-java-methods
-    has-more-elements
-    next-element)
-  (if (->boolean (has-more-elements enum))
-      (let ((n (next-element enum)))
-        (cons n
-              (enumeration->list enum)))
-      '()))
+  (cond ((java-null? jobject)
+         '())
+        ((is-java-type? jobject '|java.util.Collection|)
+         (collection->list jobject))
+        ((is-java-type? jobject '|java.util.Iterator|)
+         (iterator->list jobject))
+        ((is-java-type? jobject '|java.util.List|)
+         (jlist->list jobject))
+        ((is-java-type? jobject '|java.util.Enumeration|)
+         (enumeration->list jobject))
+        (else
+         (error "I don't know how to convert an object like ~s to a list" jobject))))
 
  ;; Retrieve a Java static object by its full Java name, which may be a symbol
  ;; such as '|java.lang.System.out|, or a string
@@ -256,9 +261,6 @@
                            #f       ; what's this? -- ignore it anyway
                            )))
                    (->list (split commas jheader))))))
-;;         (format #t "header=~a -> mimes ~a~%"
-;;                 (->string jheader)
-;;                 key-and-mimes)
         (map cdr
              (sort-list key-and-mimes
                         (lambda (a b)
@@ -406,6 +408,107 @@
 ;;
 ;; Support functions for the HTTP transaction
 
+
+;; SERVICE-HTTP-CALL : <request> <response> procedure -> string or #t
+;;
+;; The main handler, which wraps the per-method handlers.  Each
+;; method-handler must satisfy the contract
+;;    handler : <request> -> list
+;; The list is a collection of items which control the response, and
+;; may be composed of:
+;;    symbol          : must be one of the symbols representing status
+;;                      codes in the javax.servlet.http.HttpServletResponse class
+;;    procedure       : (procedure : <output-stream> (string -> void) -> void).
+;;                      When called, this procedure calls the second
+;;                      argument with the required mime-type as argument,
+;;                      then writes its output to the given output-stream.
+;;    (string . sexp) : Generate an HTML response page with the first
+;;                      string as title, and the sexp as the page body.
+;;    (symbol . sexp) : Generate an XML page
+;;    string          : set the content-type
+;;    (string . string) : set an extra response header
+(define (service-http-call request response method-handler)
+  (define set-http-response-status!
+    (let ((http-servlet-response (java-null (java-class '|javax.servlet.http.HttpServletResponse|))))
+      (define-generic-java-methods set-status)
+      (lambda (response status)
+        (set-status response ((generic-java-field-accessor status) http-servlet-response)))))
+  (define-generic-java-methods
+    get-output-stream set-content-type set-header)
+
+  (set-http-response-status! response '|SC_INTERNAL_SERVER_ERROR|)
+  (with/fc
+      (lambda (error-record cont)
+        (sexp-xml:sexp->xml
+         (response-page request
+                        "Ooops"
+                        `((p "Error in service-http-call.  That wasn't supposed to happen")
+                          (p "Error was " (em ,(format-error-record error-record)))
+                          (p "Recent chatter:")
+                          (ul ,@(map (lambda (x) `(li ,(sexp-xml:escape-string-for-xml x)))
+                                     (chatter)))))))
+    (lambda ()
+      (let loop ((resp (with/fc
+                           (make-fc '|SC_INTERNAL_SERVER_ERROR|)
+                         (lambda ()
+                           (method-handler request))))
+                 (seen-status? #f)
+                 (seen-content-type? #f))
+        (chatter "resp=~s" resp)
+        (cond ((null? resp)
+               ;; we're finished, and there's been no output -- return quietly
+               #t)
+
+              ((symbol? (car resp))
+               ;; set the response status
+               (set-http-response-status! response (car resp))
+               (loop (cdr resp) #t seen-content-type?))
+
+              ((procedure? (car resp))
+               ;; generate output, and finish
+               ((car resp)
+                (get-output-stream response)
+                (lambda (mime-type)
+                  (set-content-type response (->jstring mime-type)))))
+
+              ((and (list? (car resp))
+                    (string? (caar resp)))
+               ;; sexp with leading string -- generate a response-page, and finish
+               (set-content-type response (->jstring "text/html;charset=utf-8"))
+               (sexp-xml:sexp->xml (response-page request (caar resp) (cdar resp))))
+
+              ((and (list? (car resp))
+                    (symbol? (caar resp)))
+               ;;sexp -- generate output, and finish
+               (or seen-content-type?
+                   (set-content-type response (->jstring "text/html;charset=utf-8")))
+               (sexp-xml:sexp->xml (car resp)))
+
+              ((string? (car resp))
+               ;; set the content type
+               (set-content-type response (->jstring (car resp)))
+               (loop (cdr resp) seen-status? #t))
+
+              ((and (pair? (car resp))
+                    (string? (caar resp))
+                    (string? (cdar resp)))
+               ;; pair of strings -- set an extra response header
+               (set-header response (->jstring (caar resp)) (->jstring (cdar resp)))
+               (loop (cdr resp seen-status? seen-content-type?)))
+
+              (else
+               ;; ooops
+               (set-http-response-status! response '|SC_INTERNAL_SERVER_ERROR|)
+               (set-content-type response (->jstring "text/html"))
+               (sexp-xml:sexp->xml
+                (response-page request
+                               "Server error (sorry...)"
+                               `((p "Unexpected response from servlet")
+                                 (p ,(sexp-xml:escape-string-for-xml
+                                      (format #f "Servlet ~s produced" method-handler)))
+                                 (pre ,(sexp-xml:escape-string-for-xml
+                                        (format #f "~s" resp))))))))))))
+
 ;; Extract the path-list from the request, splitting it at '/', and
 ;; returning the result as a list of strings.  If there was no path-info,
 ;; return an empty list.
@@ -550,7 +653,7 @@
   (map (lambda (header-jname)
          (cons (->string (to-lower-case header-jname))
                (->string (get-header request header-jname))))
-       (enumeration->list (get-header-names request))))
+       (jobject->list (get-header-names request))))
 
 ;; Return the contents of the Accept header as a list of scheme strings.
 ;; Each one is a MIME type.  If there are no Accept headers, return #f.
@@ -561,7 +664,7 @@
   ;; merge all the "accept" headers into a single comma-separated Java string
   (cond
    ((let loop ((headers
-                (enumeration->list (get-headers request (->jstring "accept"))))
+                (jobject->list (get-headers request (->jstring "accept"))))
                (res #f))
       (if (null? headers)
           res
@@ -593,11 +696,10 @@
 ;; Given a RESPONSE, set the response status to the given RESPONSE-CODE,
 ;; and produce a status page using the given format and arguments.
 ;; This expects to be called before there has been any other output.
-(define (no-can-do request response response-code fmt . args)
+(define (no-can-do request response-code fmt . args)
   (let ((msg (apply format `(#f ,fmt ,@args))))
-    (response-page request response
-                   "Quaestor: no can do" `((p ,msg))
-                   response-code "text/html")))
+    (list response-code
+          (response-page request "Quaestor: no can do" `((p ,msg))))))
 
 ;; For debugging and error reporting.  Given a request, produce a list
 ;; of sexps describing the content of the request.
@@ -640,36 +742,22 @@
                 (map (lambda (jheader)
                        `(tr (td ,(->string-or-empty jheader))
                             (td ,(->string-or-empty (get-header request jheader)))))
-                     (enumeration->list (get-header-names request))))))
+                     (jobject->list (get-header-names request))))))
 
 
 
-;; Evaluates to a string corresponding to a HTML page.  The TITLE-STRING
+;; RESPONSE-PAGE : <request> string (listof sexp) -> sexp
+;; Evaluates to a sexp corresponding to a HTML page.  The TITLE-STRING
 ;; is a string containing a page title, and the BODY-SEXP is a list of sexps.
-;; The EXTRAS are an optional list of symbols or strings.  A symbol must
-;; be one of the HttpServletResponse SC_* fields, and is used to set
-;; the response status.  A string is used to set the content type.
-(define (response-page request response title-string body-sexp . extras)
-  (define-generic-java-methods get-context-path set-content-type)
-  (set-content-type response (->jstring "text/html"))
-  (let loop ((e extras))
-    (cond ((null? e))
-          ((symbol? (car e))
-           (set-response-status! response (car e))
-           (loop (cdr e)))
-          ((string? (car e))
-           (set-content-type response (->jstring (car e)))
-           (loop (cdr e)))
-          (else
-           (error "Bad extras to RESPONSE-PAGE: ~s" extras))))
-  (let ((s `(html (head (title ,title-string)
-                          (link (@ (rel stylesheet)
-                                   (type text/css)
-                                   (href ,(string-append
-                                           (->string-or-empty (get-context-path request))
-                                           "/base.css")))))
-                    (body (h1 ,title-string)
-                          ,@body-sexp))))
-    (sexp-xml:sexp->xml s)))
+(define (response-page request title-string body-sexp)
+  (define-generic-java-method get-context-path)
+  `(html (head (title ,title-string)
+               (link (@ (rel stylesheet)
+                        (type text/css)
+                        (href ,(string-append
+                                (->string-or-empty (get-context-path request))
+                                "/base.css")))))
+         (body (h1 ,title-string)
+               ,@body-sexp)))
 
 )

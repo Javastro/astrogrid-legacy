@@ -21,9 +21,9 @@
         (map (lambda (sl)
                (let ((ja (->jarray (map ->jstring sl) <java.lang.string>)))
                  (or (java-array? ja)
-                     (error iterator->list-1 "Ooops: not jarray: ~s" ja))
+                     (error jobject->list-1 "Ooops: not jarray: ~s" ja))
                  (map (lambda (ji) (string-append "x" (->string ji)))
-                      (ITERATOR->LIST
+                      (jobject->LIST
                        (iterator
                         (as-list (java-null <java.util.arrays>) ja))))))
              '(()

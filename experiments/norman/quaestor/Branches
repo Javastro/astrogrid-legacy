@@ -43,3 +43,15 @@ on the trunk and merge them -- it's too confusing otherwise)
 
 Merged back on to HEAD 2008-07-07
 merge point: nxg-2008-02-13-skua-MERGED
+
+------------------------------------------------------------
+
+BRANCH nxg-2008-07-11-functional-http
+
+I think it would be more robust, or at least more entertaining, if the
+HTTP support within quaestor.scm were more functional in style.  Thus,
+rather than the functions taking <response> objects as arguments, and
+mutating them, they should simply return some specification of what is
+to be returned.  Have a go at that here.
+
+Worked fine.  Merged back on to trunk on 2008-07-12

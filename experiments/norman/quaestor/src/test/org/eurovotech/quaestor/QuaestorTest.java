@@ -111,7 +111,7 @@ public class QuaestorTest
     // as before, but this time uploading metadata
     public void testCreateKnowledgebaseWithMetadata()
             throws Exception {
-        HttpResult r;
+        HttpResult r = null;
         String kbName = "kb/metadataTest";
         URL testURL = new URL(contextURL, kbName);
         String mdString =
@@ -122,32 +122,38 @@ public class QuaestorTest
         // Try this for alternative MIME types
         String[] mimeTypes = { "text/rdf+n3", "application/x-turtle" };
         
-        for (String mime : mimeTypes) {
+        try {
+            for (String mime : mimeTypes) {
 
-            // create the new knowledgebase
-            r = QuaestorConnection.httpPut(testURL, mdString, mime);
-            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
-            assertNull(r.getContentAsString());
+                // create the new knowledgebase
+                r = QuaestorConnection.httpPut(testURL, mdString, mime);
+                assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+                assertNull(r.getContentAsString());
 
-            // Does ?metadata work?
-            r = QuaestorConnection.httpGet(new URL(contextURL, kbName + "?metadata"));
-            assertStatus(r, HttpURLConnection.HTTP_OK);
-            assertContentType(r, "text/rdf+n3");
+                // Does ?metadata work?
+                r = QuaestorConnection.httpGet(new URL(contextURL, kbName + "?metadata"));
+                assertStatus(r, HttpURLConnection.HTTP_OK);
+                assertContentType(r, "text/rdf+n3");
 
-            // try creating the knowledgebase again -- should fail, since
-            // we can't create the knowledgebase twice
-            r = QuaestorConnection.httpPut(testURL, mdString, mime);
-            assertStatus(r, HttpURLConnection.HTTP_FORBIDDEN);
+                // try creating the knowledgebase again -- should fail, since
+                // we can't create the knowledgebase twice
+                r = QuaestorConnection.httpPut(testURL, mdString, mime);
+                assertStatus(r, HttpURLConnection.HTTP_FORBIDDEN);
             
-            r = QuaestorConnection.httpGet(new URL(contextURL, "kb"));
-            assertStatus(r, HttpURLConnection.HTTP_OK);
-            // the following test is slightly fragile, as it depends on the detail of the
-            // Jena serialisation of the metadata model
-            assertTrue(r.getContentAsString().contains("dc:creator \"Norman\""));
-            assertContentType(r, "text/html");
+                r = QuaestorConnection.httpGet(new URL(contextURL, "kb"));
+                assertStatus(r, HttpURLConnection.HTTP_OK);
+                // the following test is slightly fragile, as it depends on the detail of the
+                // Jena serialisation of the metadata model
+                assertTrue(r.getContentAsString().contains("dc:creator \"Norman\""));
+                assertContentType(r, "text/html");
 
-            // ...and delete it
-            r = QuaestorConnection.httpDelete(testURL);
+                // ...and delete it
+                r = QuaestorConnection.httpDelete(testURL);
+                assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+            }
+        } catch (AssertionFailedError e) {
+            System.err.println("testCreateKnowledgebaseWithMetadata: r=" + r);
+            throw e;
         }
     }
 
@@ -742,14 +748,6 @@ public class QuaestorTest
     }
 
     private void assertEquals(String[] slcorrect, String[] sltest) {
-//         System.err.println("assertEquals[StringList](");
-//         for (int i=0; i<slcorrect.length; i++)
-//             System.err.println("  " + slcorrect[i]);
-//         System.err.println("  ,");
-//         for (int i=0; i<sltest.length; i++)
-//             System.err.println("  " + sltest[i]);
-//         System.err.println("  )");
-
         try {
             assertEquals(slcorrect.length, sltest.length);
             for (int i=0; i<slcorrect.length; i++)
@@ -786,7 +784,8 @@ public class QuaestorTest
                 break;
               default:
                 throw new AssertionFailedError("Unexpected status " + r.getStatus()
-                                               + " when clearing old testing knowledgebase " + kbURL);
+                                               + " when clearing old testing knowledgebase " + kbURL
+                                               + "; r=" + r);
             }
         } catch (QuaestorException e) {
             throw new AssertionFailedError("Got exception <" + e 

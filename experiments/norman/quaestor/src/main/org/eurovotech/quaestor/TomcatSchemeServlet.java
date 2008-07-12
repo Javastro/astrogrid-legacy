@@ -126,9 +126,8 @@ public class TomcatSchemeServlet extends GenericServlet implements QuaestorServl
             StringBuffer msg = new StringBuffer();
             msg.append(method)
                     .append(context)
-                    .append(": calling procedure on <")
-                    .append(request.getPathInfo())
-                    .append(">");
+                    .append(": calling procedure on path: ")
+                    .append(request.getPathInfo());
             log(msg.toString());
 
             // following statuses will very probably be overridden within the
@@ -151,7 +150,10 @@ public class TomcatSchemeServlet extends GenericServlet implements QuaestorServl
                 }
             } catch (SchemeException e) {
                 log("Scheme exception: " + e);
-                throw new ServletException(e);
+                // with that logged, create a new exception, with fewer implementation details,
+                // which should end up being reported to the caller
+                throw new ServletException("Error evaluating servlet on path " + request.getPathInfo()
+                                           + "; see log for full details");
             }
         }
     }
