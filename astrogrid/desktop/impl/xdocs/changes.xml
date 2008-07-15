@@ -21,6 +21,9 @@
     <action dev="nw" type="fix" issue="2778">
         File Explorer - 'new folder' dialogue now displays correctly.
     </action>
+    <action dev="nw" type="fix">
+        Voexplorer: Improved presentation of validation level.
+    </action>
 </release>
 <release version="2008.1.snapshot03" date="unreleased">
     <action dev="nw" type="fix" issue="2253">

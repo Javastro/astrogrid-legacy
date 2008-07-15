@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,7 +10,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
@@ -47,21 +45,14 @@ import org.astrogrid.acr.ivoa.resource.SimpleDataType;
 import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
 import org.astrogrid.acr.ivoa.resource.StapCapability;
-import org.astrogrid.acr.ivoa.resource.StapService;
 import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
 import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.acr.ivoa.resource.WebServiceInterface;
-import org.astrogrid.acr.ivoa.resource.ConeCapability.Query;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.ImageSize;
 import org.astrogrid.acr.ivoa.resource.SiapCapability.SkySize;
-import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
-import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactoryImpl;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.SystemFilter;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /** class containing static methods to render resources to html.
  * Improvments and tweaks based on resourceFormatter - in a separate class so it's easy to switch back
@@ -319,7 +310,7 @@ public final class PrettierResourceFormatter {
                 final Validation validation = validationLevel[i];
                 //Character.toChars()
                 if (validation.getValidationLevel() > 0) { // skip 0-sized ones.
-                    sb.append(Character.toChars(9311 + validation.getValidationLevel()));// convert it to unicode.
+                    sb.append(createValidationRoundel(validation.getValidationLevel()));// convert it to unicode.
                     if (validation.getValidatedBy() != null) {
                         sb.append("&nbsp;by&nbsp;");
                         sb.appendURI(validation.getValidatedBy());
@@ -329,6 +320,12 @@ public final class PrettierResourceFormatter {
             sb.br();
         }
     }
+    
+    /** converts an integer validation level into a formatted string roundel */
+    public static char[] createValidationRoundel(int validationLevel) {
+        return Character.toChars(9311 +validationLevel );
+    }
+    
 
 
 

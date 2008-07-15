@@ -25,6 +25,7 @@ import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
 import org.astrogrid.desktop.modules.ui.comp.ModularTableFormat;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
@@ -305,19 +306,21 @@ public class ResourceTableFomat extends ModularTableFormat {
             public String getValue(Resource res) {
                 sbuf.clear();
                 Validation[] validations = res.getValidationLevel();
-                if (validations.length > 0) {
-                    Validation validation = validations[0];
-                    sbuf.append(validation.getValidationLevel())
-                        .append(": ")
-                        .append(validation.getValidatedBy());
-                    if (validations.length > 1) {
-                        sbuf.append(MORE);
-                    }
+                // find the highest validation level. (typically will be only one.)
+                int bestValidation = -1;
+                for (int i = 0; i < validations.length; i++) {
+                    bestValidation = Math.max(bestValidation,validations[i].getValidationLevel());
                 }
-                return sbuf.toString();
+                if (bestValidation > 0) {
+                    return new String(PrettierResourceFormatter.createValidationRoundel(bestValidation));
+                } else {
+                    return "";
+                }
+               
             }
             public void configureColumn(TableColumn tcol) {
-                tcol.setPreferredWidth(150);
+                tcol.setPreferredWidth(50);
+                tcol.setMaxWidth(50);
             }
         });
 
