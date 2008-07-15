@@ -133,3 +133,10 @@
                "query="
                "query=value"
                "query=value=another")))
+
+(expect java-retrieve-static-object
+        '(#t #t #t)
+        (map ->boolean
+             (list (java-retrieve-static-object '|java.lang.Boolean.TRUE|)
+                   (java-retrieve-static-object "java.lang.Boolean.TRUE")
+                   (java-retrieve-static-object '|java.lang.Boolean| '|TRUE|))))

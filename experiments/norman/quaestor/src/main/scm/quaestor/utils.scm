@@ -26,7 +26,8 @@
   ;; Transaction support functions.  Should these perhaps be moved
   ;; wholesale into scheme-wrapper-support.scm ?
   ;; (these functions currently have no test coverage)
-  service-http-call
+  checked-service-http-call
+  unchecked-service-http-call
   request->path-list
   request->query-string
   request->content-type
@@ -117,21 +118,30 @@
         (else
          (error "I don't know how to convert an object like ~s to a list" jobject))))
 
- ;; Retrieve a Java static object by its full Java name, which may be a symbol
- ;; such as '|java.lang.System.out|, or a string
- (define (java-retrieve-static-object javaobj)
-   (let ((javaobjname (if (string? javaobj)
-                          javaobj
-                          (symbol->string javaobj))))
-     (let ((dot (string-index-right javaobjname #\.)))
-       (and dot
-            (let ((classname (substring javaobjname 0 dot))
-                  (objname (substring javaobjname
-                                      (+ 1 dot)
-                                      (string-length javaobjname))))
-              ((generic-java-field-accessor (string->symbol objname))
-               (java-null (java-class (string->symbol classname)))))))))
-
+;; JAVA-RETRIEVE-STATIC-OBJECT : string -> <jobject>
+;; JAVA-RETRIEVE-STATIC-OBJECT : symbol -> <jobject>
+;; JAVA-RETRIEVE-STATIC-OBJECT : symbol symbol -> <jobject>
+;; Retrieve a Java static object by its full Java name, which may be a
+;; symbol such as '|java.lang.System.out|,
+;; or a string "java.lang.System.out",
+;; or two symbols '|java.lang.System| and '|out|
+(define (java-retrieve-static-object x . args)
+   (cond ((null? args)
+          (let ((javaobjname (if (string? x)
+                                 x
+                                 (symbol->string x))))
+            (let ((dot (string-index-right javaobjname #\.)))
+              (and dot
+                   (let ((classname (substring javaobjname 0 dot))
+                         (objname (substring javaobjname
+                                             (+ 1 dot)
+                                             (string-length javaobjname))))
+                     ((generic-java-field-accessor (string->symbol objname))
+                      (java-null (java-class (string->symbol classname)))))))))
+         ((and (symbol? x) (symbol? (car args)))
+          ((generic-java-field-accessor (car args)) (java-null (java-class x))))
+         (else
+          (error "Bad arguments to java-retrieve-static-object: ~s ~s" x args))))
 
 ;; Verifies that a JOBJECT is an instance of a Java class CLASS (which
 ;; can be a class, a string, or a symbol).  Returns true if so, #f it
@@ -427,7 +437,173 @@
 ;;    (symbol . sexp) : Generate an XML page
 ;;    string          : set the content-type
 ;;    (string . string) : set an extra response header
-(define (service-http-call request response method-handler)
+
+;; This version calls a checker internally,
+;; to assert that what it's about to return does conform to what the WADL says.
+;; The CHECKER argument is either #f or a procedure
+;;   checker : method:symbol
+;;             request-path:(listof string)
+;;             status:symbol
+;;             content-type:string
+;;             output:string-or-procedure
+;;             headers:alist
+;;             -> void
+;; which takes the details about to be returned and throws an error if they're not appropriate.
+(define (checked-service-http-call request response method-handler checker)
+  (define (set-http-response-status! status)
+    (define-generic-java-methods set-status)
+    (set-status response (java-retrieve-static-object '|javax.servlet.http.HttpServletResponse| status)))
+  (define-generic-java-methods
+    get-output-stream set-content-type set-header
+    get-method get-servlet-path)
+
+  ;; CALL-HANDLER-AND-RETURN-RESPONSE : -> symbol string string-or-procedure alist
+  ;; Call the METHOD-HANDLER function, with the REQUEST as argument.
+  ;; This returns a list, as discussed above: process this list, and
+  ;; return the status, content-type, output and extra headers as
+  ;; multiple values.
+  (define (call-handler-and-return-response)
+    (let loop ((resp (with/fc
+                         (lambda (error-record cont)
+                           ;; Throw a nested error clearly blaming the method handler
+                           (let ((msg-or-pair (error-message error-record)))
+                             (throw
+                              (make-nested-error
+                               (make-error "Error calling the method handler: ~a"
+                                           (if (pair? msg-or-pair) (cdr msg-or-pair) msg-or-pair))
+                               error-record cont))))
+                       (lambda ()
+                         (method-handler request))))
+               (status #f)              ;symbol
+               (content-type #f)        ;string
+               (the-output #f)              ;sexp or procedure
+               (headers '()))           ;alist
+      (chatter "resp=~s" resp)
+      (cond ((null? resp)
+             ;; we're finished
+             (values status content-type the-output headers))
+
+            ((symbol? (car resp))
+             ;; response status
+             (loop (cdr resp)
+                   (car resp)
+                   content-type
+                   the-output
+                   headers))
+
+            ((procedure? (car resp))
+             ;; output procedure
+             (if the-output
+                 (error "request tried to return two outputs!"))
+             (loop (cdr resp)
+                   status
+                   content-type
+                   (car resp)           ;new output
+                   headers))
+
+            ((and (list? (car resp))
+                  (string? (caar resp)))
+             ;; sexp with leading string -- generate a response-page
+             (if the-output
+                 (error "request tried to return two outputs!"))
+             (loop (cdr resp)
+                   status
+                   "text/html;charset=utf-8" ;new content-type
+                   (sexp-xml:sexp->xml (response-page request (caar resp) (cdar resp))) ;new output
+                   headers))
+
+            ((and (list? (car resp))
+                  (symbol? (caar resp)))
+             ;;sexp -- generate output
+             (if the-output
+                 (error "request tried to return two outputs!"))
+             (loop (cdr resp)
+                   status
+                   (or content-type
+                       "text/html;charset=utf-8")  ;new content-type
+                   (sexp-xml:sexp->xml (car resp)) ;new output
+                   headers))
+
+            ((string? (car resp))
+             ;; content type
+             (loop (cdr resp)
+                   status
+                   (car resp)           ;new content-type
+                   the-output
+                   headers))
+
+            ((and (pair? (car resp))
+                  (string? (caar resp))
+                  (string? (cdar resp)))
+             ;; pair of strings -- set an extra response header
+             (loop (cdr resp)
+                   status
+                   content-type
+                   the-output
+                   (cons (car resp) headers))) ;new header)
+
+            (else
+             ;; ooops
+             (report-exception 'service-http-call
+                               '|SC_INTERNAL_SERVER-ERROR|
+                               "Unexpected response from servlet: servlet ~s produced ~s"
+                               method-handler
+                               (sexp-xml:escape-string-for-xml (format #f "~s" resp)))))))
+
+  (set-http-response-status! '|SC_INTERNAL_SERVER_ERROR|)
+  (with/fc
+      (lambda (error-record cont)
+        (set-http-response-status! '|SC_INTERNAL_SERVER_ERROR|)
+        (set-content-type response (->jstring "text/html"))
+        (sexp-xml:sexp->xml
+         (response-page request
+                        "Ooops"
+                        `((p "Error in checked-service-http-call.  That wasn't supposed to happen")
+                          (p "Error was " (em ,(format-error-record error-record)))
+                          (p "Recent chatter:")
+                          (ul ,@(map (lambda (x) `(li ,(sexp-xml:escape-string-for-xml x)))
+                                     (chatter)))
+;;                           (pre ,(sexp-xml:escape-string-for-xml
+;;                                  (with-output-to-string (lambda () (print-stack-trace cont)))))
+                          ))))
+    (lambda ()
+      ;;       (receive (status content-type handler-output headers)
+      ;;           (call-handler-and-return-response)
+      ;; hmmmmm, RECEIVE seemed not to work here, so do it by hand
+      ;; (peculiar -- no time to worry about it now...)
+      (call-with-values call-handler-and-return-response
+        (lambda (status content-type handler-output headers)
+          (if checker
+              ;; Here check that the response is one documented by the WADL file.
+              ;; Note that if the OUTPUT is a procedure, then we can't check its content-type.
+              ;; Perhaps rework this part of the interface, to avoid the second argument to
+              ;; the output procedure, and so oblige this to commit to a content-type beforehand.
+              (checker (string->symbol (string-downcase (->string (get-method request)))) ; request
+                       (cons (let ((s (->string (get-servlet-path request))))
+                               (substring s 1 (string-length s))) ; hacky: presumes that the servlet is of the form '/foo'
+                             (request->path-list request))
+                       status content-type handler-output headers))
+
+          (set-http-response-status! status)
+          (if content-type
+              (set-content-type response (->jstring content-type)))
+          (for-each (lambda (header-pair)
+                      (set-header response (->jstring (car header-pair)) (->jstring (cdr header-pair))))
+                    headers)
+          (cond ((not handler-output)
+                 #t)
+                ((string? handler-output)
+                 handler-output)
+                ((procedure? handler-output)
+                 (handler-output (get-output-stream response)
+                                 (lambda (mime-type)
+                                   (set-content-type response (->jstring mime-type)))))
+                (else
+                 (error 'service-http-call "Impossible output: ~s" handler-output))))))))
+
+;; the same, except that it doesn't call the checking routine,
+;; and (consequently) has a simpler loop
+(define (unchecked-service-http-call request response method-handler)
   (define set-http-response-status!
     (let ((http-servlet-response (java-null (java-class '|javax.servlet.http.HttpServletResponse|))))
       (define-generic-java-methods set-status)
@@ -699,7 +875,7 @@
 (define (no-can-do request response-code fmt . args)
   (let ((msg (apply format `(#f ,fmt ,@args))))
     (list response-code
-          (response-page request "Quaestor: no can do" `((p ,msg))))))
+          (response-page request "Quaestor: no can do" `((p ,(sexp-xml:escape-string-for-xml msg)))))))
 
 ;; For debugging and error reporting.  Given a request, produce a list
 ;; of sexps describing the content of the request.
