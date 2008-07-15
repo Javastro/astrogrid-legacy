@@ -44,5 +44,13 @@ public class HeadClauseSRQLVisitor extends BasicRegistrySRQLVisitor {
         logger.debug(sb);
         return sb.toString();
     }
+    
+    // reject all incomplete queries.
+    public Object visit(TermSRQL q) {
+        if (q.getTerm() == null || q.getTerm().trim().length() == 0) {
+            throw new IllegalArgumentException("Not a complete query");
+        }
+        return super.visit(q);
+    }
 
 }

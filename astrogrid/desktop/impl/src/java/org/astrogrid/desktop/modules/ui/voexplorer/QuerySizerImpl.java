@@ -14,7 +14,6 @@ import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
 
 /** Class that estimates size of queries. 
  * 
@@ -82,16 +81,16 @@ public class QuerySizerImpl implements QuerySizer {
         return "let $sizeResults := ( " + query.trim() + ") return <size>{count($sizeResults)}</size>";
     }
 	
-	private final Builder queryBuilder = new OnlyCompleteQueriesVisitor();
-	
-	static class OnlyCompleteQueriesVisitor extends HeadClauseSRQLVisitor/*BasicRegistrySRQLVisitor*/ {
-		public Object visit(TermSRQL q) {
-			if (q.getTerm() == null || q.getTerm().trim().length() == 0) {
-				throw new IllegalArgumentException("Not a complete query");
-			}
-			return super.visit(q);
-		}
-	}
+	private final Builder queryBuilder = new HeadClauseSRQLVisitor();
+//	this functionality already in HeadClauseSV
+//	static class OnlyCompleteQueriesVisitor extends HeadClauseSRQLVisitor/*BasicRegistrySRQLVisitor*/ {
+//		public Object visit(TermSRQL q) {
+//			if (q.getTerm() == null || q.getTerm().trim().length() == 0) {
+//				throw new IllegalArgumentException("Not a complete query");
+//			}
+//			return super.visit(q);
+//		}
+//	}
 	
 	private static class SizingStreamProcessor implements StreamProcessor {
 		private Integer size = ERROR;

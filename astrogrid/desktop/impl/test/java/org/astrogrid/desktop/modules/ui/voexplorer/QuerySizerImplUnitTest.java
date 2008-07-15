@@ -3,12 +3,17 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.TestCase;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
@@ -16,17 +21,9 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.XPathSRQL;
 import org.easymock.IAnswer;
-import org.xml.sax.helpers.XMLReaderFactory;
-
-import junit.framework.TestCase;
-import static org.astrogrid.Fixture.*;
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.integration.EasyMock2Adapter.*;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 25, 20088:52:38 PM
@@ -49,7 +46,7 @@ public class QuerySizerImplUnitTest extends TestCase {
     }
     
     public void testCompleteQueriesVisitor() throws Exception {
-        Builder b = new QuerySizerImpl.OnlyCompleteQueriesVisitor();
+        Builder b = new HeadClauseSRQLVisitor();
         TermSRQL t = new TermSRQL();
         t.setTerm("fred");
         assertNotNull(b.visit(t));
