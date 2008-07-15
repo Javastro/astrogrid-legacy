@@ -11,8 +11,8 @@ import net.sf.ehcache.Element;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.BasicRegistrySRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
 
@@ -84,7 +84,7 @@ public class QuerySizerImpl implements QuerySizer {
 	
 	private final Builder queryBuilder = new OnlyCompleteQueriesVisitor();
 	
-	static class OnlyCompleteQueriesVisitor extends BasicRegistrySRQLVisitor {
+	static class OnlyCompleteQueriesVisitor extends HeadClauseSRQLVisitor/*BasicRegistrySRQLVisitor*/ {
 		public Object visit(TermSRQL q) {
 			if (q.getTerm() == null || q.getTerm().trim().length() == 0) {
 				throw new IllegalArgumentException("Not a complete query");

@@ -11,7 +11,7 @@ import org.apache.hivemind.ApplicationRuntimeException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.BasicRegistrySRQLVisitor;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
 
@@ -45,7 +45,7 @@ public class HelioScopeFactory implements HelioScopeInternal {
 
             protected Object construct() throws Exception {
                 SRQL srql = new SRQLParser(QUERY).parse();
-                String xq = new BasicRegistrySRQLVisitor().build(srql,null);
+                String xq = new HeadClauseSRQLVisitor().build(srql,null);
                 Resource[] resources = reg.xquerySearch(xq);
                 return Arrays.asList(resources);
             }

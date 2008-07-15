@@ -14,16 +14,22 @@ import org.apache.commons.logging.LogFactory;
  * @since Aug 9, 20066:36:57 PM
  */
 public class BasicRegistrySRQLVisitor implements Builder{
+    /**
+     * 
+     */
+    public BasicRegistrySRQLVisitor() {
+    }
 	/**
 	 * Logger for this class
 	 */
-	private static final Log logger = LogFactory
+	protected static final Log logger = LogFactory
 			.getLog(BasicRegistrySRQLVisitor.class);
+	// these are deliberatley not static, so that subclasses can alter them.
 	/** list of elements searched by default */
-	private static  final String[] defaultTarget = new String[]{"$r/title","$r/identifier","$r/shortName","$r/content/subject","$r/content/description"};
+	protected  final String[] defaultTarget = new String[]{"$r/title","$r/identifier","$r/shortName","$r/content/subject","$r/content/description"};
 	/** a map of other alternate targets */
-	private static Map targets = new HashMap();
-	static {
+	protected  final Map<String,String[]> targets = new HashMap<String,String[]>();
+	 { // constructor initializer.
 		targets.put("shortname", new String[] {"$r/shortName"});
 		targets.put("title",new String[] {"$r/title"});
 		targets.put("name",new String[] {"$r/shortName","$r/title"});
@@ -37,7 +43,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		//targets.put("publisher", new String[] {"$r/curation/publisher","$r/curation/publisher/@ivo-id"});
 		targets.put("curation",new String[] {"$r/curation//*"});
 		targets.put("type", new String[] {
-		        "@xsi:type"
+		        "$r/@xsi:type"
 		        ,"$r/content/type"
 		        ,"$r/capability/@xsi:type"
 		 //drags in too much cruft.       ,"$r/capability/@standardID"
@@ -65,16 +71,16 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		logger.debug(sb);
 		return sb.toString();
 	}
-	// keeps track of where the current clause of the SRQL is being targetted at.
-	private String[] currentTarget = defaultTarget;
+	/** keeps track of where the current clause of the SRQL is being targetted at.*/
+	protected String[] currentTarget = defaultTarget;
 	
-	// reset targetting.
-	private void resetTarget() {
+	/** reset targetting. */
+	protected void resetTarget() {
 		currentTarget= defaultTarget;
 	}
 	
-	private void setTarget(String target) {
-		String[] candidate = (String[])targets.get(target.trim().toLowerCase());
+	protected void setTarget(String target) {
+		String[] candidate = targets.get(target.trim().toLowerCase());
 		if (candidate != null) {
 			currentTarget = candidate;
 		}

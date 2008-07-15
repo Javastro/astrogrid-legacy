@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.34 2008/07/08 17:34:40 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.35 2008/07/15 23:17:33 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -82,8 +82,8 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTitleComparator;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.BasicRegistrySRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.AuthorityStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.CapabilityStrategy;
@@ -383,7 +383,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}
 	// no state - so can be reused between instances.
 	//seems unneeded static final SRQLVisitor feedbackVisitor = new KeywordSRQLVisitor();	
-	static final Builder briefXQueryBuilder = new BasicRegistrySRQLVisitor();
+	static final Builder briefXQueryBuilder = new HeadClauseSRQLVisitor();
 	
 	// member variables.
 	protected final ResourceTable resourceTable;
@@ -475,7 +475,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 				, new CapabilityStrategy()
 				,new TagStrategy(annServer)
 				, new SourceStrategy()
-				//@todo move strategies out to hivemind? probably necessary for more advanced ones.
 				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
 				};
 		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
@@ -915,6 +914,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.35  2008/07/15 23:17:33  nw
+Complete - task 428: optimize srql translator output
+
 Revision 1.34  2008/07/08 17:34:40  nw
 Complete - task 400: Alternate caching strategy.
 
