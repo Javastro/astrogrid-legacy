@@ -13,6 +13,10 @@ import java.io.IOException;
  * is only intended to ensure that we read expressions from the stream
  * one at a time.  The goal is not to parse scheme expressions fully, not to
  * detect malformed expressions, but simply to avoid creating new errors.
+ *
+ * <p>Despite that limited goal, it would probably be best to use a proper
+ * tokenizer here, as that'll get round edge-cases more reliably than the 
+ * burgeoning set of special-cases below.
  */
 public class SexpStream {
     private PushbackReader in = null;
@@ -43,8 +47,7 @@ public class SexpStream {
         int chint;
         char ch;
         do {
-            chint = in.read();
-            if (chint < 0)
+            if ((chint = in.read()) < 0)
                 return null;        // EOF
             ch = (char)chint;
         } while (Character.isWhitespace(ch));
@@ -52,7 +55,12 @@ public class SexpStream {
             throw new IOException
                     ("malformed input -- too many right parentheses");
 
-        if (ch == ';') {
+        if (ch == '\\') {
+            // escape character            
+            if ((chint = in.read()) < 0)
+                return null;    // (unexpected) EOF, but don't raise an error
+            return "\\"+(char)chint;
+        } else if (ch == ';') {
             skipComment();
             return readSexp();
         } else if (ch=='\'' || ch=='`' || ch=='@' || ch==',') {
@@ -90,8 +98,7 @@ public class SexpStream {
         int nesting = 0;
         do {
             if ((chint = in.read()) < 0)
-                throw new IOException
-                      ("Unexpected end of input -- too many left parentheses");
+                throw new IOException("Unexpected end of input -- too many left parentheses");
             ch = (char)chint;
             if (ch == '(') {
                 nesting++;
@@ -102,6 +109,11 @@ public class SexpStream {
             } else if (ch == '"') {
                 in.unread(chint);
                 sexp.append(readSexpString());
+            } else if (ch == '\\') {
+                // escape character            
+                if ((chint = in.read()) < 0)
+                    throw new IOException("Unexpected end of input -- last character was \\");
+                sexp.append('\\').append((char)chint);
             } else if (ch == ';') {
                 skipComment();
                 sexp.append("\n");

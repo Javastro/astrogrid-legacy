@@ -19,7 +19,9 @@ public class SexpStreamTest
             throws Exception {
         SexpStream ss = new SexpStream
                 (new StringReader
-                 (" (hello) (1 ,(2)) `(3 ,(4))  there \"how are) you?\" (\"1\") ,(\"2\") ,@(\"3\") (\"x)y\") \"q\\\"t\" 'ping #f (a)\"b\"hi'fi,ve(there)"));
+                 //                 (" (hello) (1 ,(2)) `(3 ,(4))  there \"how are) you?\" (\"1\") ,(\"2\") ,@(\"3\") (\"x)y\") \"q\\\"t\" 'ping #f (a)\"b\"hi'fi,ve(there)")
+                 (" (hello) (1 ,(2)) `(3 ,(4))  there \"how are) you?\" (\"1\") ,(\"2\") ,@(\"3\") (\"x)y\") \"q\\\"t\" 'ping #f (a)\"b\"hi'fi,ve(there) #\\; (define x #\\;)")
+);
         assertEquals("(hello)",           ss.readSexp());
         assertEquals("(1 ,(2))",          ss.readSexp());
         assertEquals("`(3 ,(4))",         ss.readSexp());
@@ -38,6 +40,8 @@ public class SexpStreamTest
         assertEquals("'fi",               ss.readSexp());
         assertEquals(",ve",               ss.readSexp());
         assertEquals("(there)",           ss.readSexp());
+        assertEquals("#\\;",              ss.readSexp());
+        assertEquals("(define x #\\;)",   ss.readSexp());
         assertNull(ss.readSexp());
     }
 

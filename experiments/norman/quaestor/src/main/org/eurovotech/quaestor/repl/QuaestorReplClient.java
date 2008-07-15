@@ -39,12 +39,28 @@ public class QuaestorReplClient {
 
     public QuaestorReplClient(URI uri) 
             throws MalformedURLException {
-        serverURI = uri;
-        if (serverURI.getRawPath() == null)
-            codeURL = serverURI.resolve("/code").toURL();
-        else
-            codeURL = serverURI.resolve("./code").toURL();
-        prompt = uri.getHost() + ":quaestor> ";
+        try {
+            serverURI = uri;
+            if (serverURI.getRawPath() == null) // no path in the serverURI at all -- easy
+                codeURL = serverURI.resolve("/code").toURL();
+            else {
+                if (!serverURI.getRawPath().endsWith("/")) {
+                    // serverURI doesn't end with / -- that's OK, just normalise it by adding a / to the path
+                    serverURI = new URI(serverURI.getScheme(),
+                                        null,
+                                        serverURI.getHost(),
+                                        serverURI.getPort(),
+                                        serverURI.getRawPath()+"/",
+                                        null,
+                                        null);
+                }
+                codeURL = serverURI.resolve("code").toURL();
+            }
+            prompt = uri.getHost() + ":quaestor> ";
+        } catch (java.net.URISyntaxException e) {
+            throw new AssertionError("Can't happen: URI syntax error when reconstructing URI "
+                                     + serverURI + ": " + e);
+        }
     }
 
     /**
