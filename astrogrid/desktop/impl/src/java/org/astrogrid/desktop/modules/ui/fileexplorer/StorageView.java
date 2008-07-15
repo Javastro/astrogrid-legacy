@@ -9,14 +9,12 @@ import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.awt.TextField;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -281,7 +279,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
              * 
              */
             private final FileObject base;
-            private TextField tf = new TextField(20);
+            private JTextField tf = new JTextField(20);
             private void init (){
                 baseName = base.getName().getBaseName();
                 if (StringUtils.isEmpty(baseName)) {
