@@ -23,32 +23,31 @@
 ======================
 SESAME
  -->
-	<service-point id="sesame" interface="org.astrogrid.desktop.modules.cds.SesameInternal">
-		Name resolver
+ 
+    <service-point id="sesame" interface="org.astrogrid.desktop.modules.cds.SesameInternal">
+        Name resolver
         <interceptor service-id="system.edt" />        
-		<interceptor service-id="system.throbber" />		
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.cds.SesameDynamicImpl" >
-			 <object>cache:positions</object>
-            <set-object property="endpoint" value="preference:cds.sesame.endpoint" />
-			</construct>
-		</invoke-factory>	
-	</service-point>
+        <interceptor service-id="system.throbber" />        
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.cds.SesameRestImpl" >
+             <object>cache:positions</object>
+            <object>preference:cds.sesame.rest.endpoint</object>
+            </construct>
+        </invoke-factory>   
+    </service-point>
+
 
 	<implementation service-id="sesame" if="property cds.sesame.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
 	<contribution configuration-id="framework.preferences">
-		<preference name="cds.sesame.endpoint"  advanced="false"
-			default-value="http://cdsws.u-strasbg.fr/axis/services/Sesame">
+		<preference name="cds.sesame.rest.endpoint"  advanced="false"
+			default-value="http://vizier.u-strasbg.fr/viz-bin/nph-sesame/">
 				<ui-name>Sesame endpoint</ui-name>
-				<description>http url of the sesame name resolver service</description>
-                <!-- 
-                <alternative></alternative>
-                <alternative></alternative>
-                <alternative></alternative>
-                 -->
+				<description>http url of the sesame name resolver service</description>                
+                <alternative>http://vizier.hia.nrc.ca/viz-bin/nph-sesame/</alternative>
+                <alternative>http://vizier.cfa.harvard.edu/viz-bin/nph-sesame/</alternative>              
 				<units>url</units>
 			</preference>
 	</contribution>
