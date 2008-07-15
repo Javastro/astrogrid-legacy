@@ -39,7 +39,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.53 $ $Date: 2008/07/12 14:25:55 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.54 $ $Date: 2008/07/15 16:19:21 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -88,7 +88,7 @@
                         (->jstring method)
                         context
                         (java-wrap (lambda (request response)
-                                     (service-http-call request response proc)))))
+                                     (unchecked-service-http-call request response proc)))))
     (if (not (and kb xmlrpc pickup))
         (let ()
           (define-java-class <javax.servlet.servlet-exception>)
