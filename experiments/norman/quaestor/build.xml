@@ -518,6 +518,7 @@
           depends="compile"
           unless='quaestorlib.built'>
     <mkdir dir="${build.home}/quaestorlib"/>
+    <mkdir dir='${dist.home}'/>
     <unjar dest="${build.home}/quaestorlib">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
@@ -543,7 +544,7 @@
         <include name="util/*"/>
       </fileset>
     </copy>
-    <jar jarfile="${build.home}/${quaestor.lib.jar}"
+    <jar jarfile="${dist.home}/${quaestor.lib.jar}"
          basedir="${build.home}/quaestorlib"/>
   </target>
 
@@ -619,7 +620,7 @@
       </fileset>
     </copy>
     <copy todir='${build.home}/${quaestor.jetty}/lib'>
-      <fileset dir='${build.home}'>
+      <fileset dir='${dist.home}'>
         <include name='${quaestor.lib.jar}'/>
       </fileset>
       <fileset refid='jetty.support'/>
@@ -641,7 +642,7 @@
       <fileset file='${dist.home}/${app.name}-${app.version}.war'/>
       <fileset file='${dist.home}/${quaestor.client}.zip'/>
       <fileset file='${dist.home}/${quaestor.jetty}.zip'/>
-      <fileset file='${build.home}/${quaestor.lib.jar}'/>
+      <fileset file='${dist.home}/${quaestor.lib.jar}'/>
       <fileset file='${web.home}/base.css'/>
     </copy>
     <mkdir dir='${dist.home}/webpage-tarball/docs'/>
