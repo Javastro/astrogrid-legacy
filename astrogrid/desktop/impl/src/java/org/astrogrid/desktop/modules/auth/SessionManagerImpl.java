@@ -59,8 +59,9 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 	// listener interface 
 	// callback from community - either triggered by attemptUpgrade(), or oone of the methods in community.
 	public void userLogin(UserLoginEvent arg0) {
-		// handy that guy's already defined a suitable principal for us.
-		Principal p = (Principal)(comm.getSecurityGuard().getFirstPrincipal(UserIvorn.class));
+                // This principal is non-null if the community object has signed on
+                // at a community service. It is of the form ivo://user@authority/resource-key.
+                Principal p = comm.getSecurityGuard().getAccountIvorn();
 		if (p != null) {
 			MutablePrincipal mp = (MutablePrincipal) ss.getCurrentUser();
 			mp.setActualPrincipal(p);

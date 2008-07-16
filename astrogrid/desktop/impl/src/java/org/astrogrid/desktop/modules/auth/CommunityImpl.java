@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.12 2008/04/23 10:53:05 nw Exp $
+/*$Id: CommunityImpl.java,v 1.13 2008/07/16 15:27:54 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,30 +17,25 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 import javax.security.auth.x500.X500Principal;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.UI;
-import org.astrogrid.community.common.exception.CommunityIdentifierException;
-import org.astrogrid.community.common.exception.CommunitySecurityException;
-import org.astrogrid.community.common.exception.CommunityServiceException;
-import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.security.AccountIvorn;
 import org.astrogrid.security.SecurityGuard;
 
 /** Community Service implementation
+ *
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  * @TEST needs a unit test writing- but authentication mechanism needs to be isolated first, so it can be mocked out
  * and just the event-firing, ui notifiying parts vierfied. will wait until after the expected a&A cleanup.
@@ -60,100 +55,74 @@ public class CommunityImpl implements CommunityInternal {
         this.snitch = snitch;
         ui.setStatusMessage("Not Logged In");
         logger.info("Trusted certificates directory set to: '" + trustedCertificates + "'");
-        LoginFactory.declareTrustedCertificates(trustedCertificates);
+        CommunityImpl.declareTrustedCertificates(trustedCertificates);
+        this.guard = new SecurityGuard(); // Starts with no credentials or principals.
     }
+    
     protected final UIContext ui;
     protected final SnitchInternal snitch;
     protected final LoginDialogue loginDialogue;
-    private volatile UserInformation userInformation;
+    
+    /**
+     * The container for the credentials and principals.
+     * It is an invariant of this class that this instance variable is never null.
+     */
     protected volatile SecurityGuard guard;
 
-    public void login(String username,String password, String community) throws SecurityException, ServiceException {
-    	// Fix suggested by JDT.
-    	if (isLoggedIn()) { //already logged in.
-    		return;
+    public void login(String userName,
+                      String password, 
+                      String community) throws SecurityException, 
+                                               ServiceException {
+    	if (isLoggedIn()) {
+    	    return;
     	}
+        String accountIvorn = "ivo://" + userName + "@" + community + "/community";
+        URI communityIvorn;
         try {
-            authenticate(LoginFactory.mkUserInfo(community,username,password));
-        } catch (URISyntaxException x) {
-            throw new ServiceException("Failed to create user ivorn - invalid syntax",x);
+          communityIvorn = new URI("ivo://" + community + "/community");
+        } catch (URISyntaxException ex) {
+          throw new SecurityException("Community name " + community  + " invalid", ex);
         }
+        logger.info("Logging in " + accountIvorn);
+        try {
+            ui.setStatusMessage("Logging in..");
+            guard.signOn(userName, password, 3600*12, communityIvorn);
+            
+            // snitch now they've successfully logged in.
+            ui.setLoggedIn(true);
+            Map m = new HashMap();
+            m.put("username", accountIvorn);
+            snitch.snitch("LOGIN", m);      
+            notifyListeners(true);
+            logger.info(accountIvorn + " is authenticated.");
+        } 
+        catch (Exception e) {
+            throw new ServiceException(e);
+        } 
+        finally {
+            informUi();
+        }   
     }
 
     public void logout() {
-        userInformation = null;
+        this.guard = new SecurityGuard(); // Start again with no credentials or principals.
         notifyListeners(false);
         ui.setStatusMessage("Not Logged In");
         ui.getLoggedInModel().setActionCommand("Not logged in");        
         ui.setLoggedIn(false);
     }
     
-
-
-    
-    public UserInformation getUserInformation()  {
-    	return userInformation;
-    }    
-    
+    /**
+     * Determines whether the usre is currently logged in to the IVO.
+     * The user is deemed to be logged in if he has a principal arising from
+     * authentication at a community service.
+     */
     public boolean isLoggedIn() {
-        return userInformation != null;
+        return this.guard.getX500Principal() != null;
     }
 
-    
     public void guiLogin() {
         loginDialogue.login();
-    }
-
-    private boolean authenticate(UserInformation proposed) throws SecurityException, ServiceException{
-        logger.info("Logging in " + 
-                proposed.getName() +
-                "@" +
-                proposed.getCommunity());
-        try {
-            ui.setStatusMessage("Logging in..");
-            ScriptEnvironment env = LoginFactory.login(proposed);
-            // if we've gotten this far, we've successfullly logged in.
-            this.guard = env.getSecurityGuard();
-            this.userInformation = proposed;
-           ui.findMainWindow().showTransientMessage("Logged in", "as " + userInformation.getId());
-           //want to produce a tooltip from the authentication information when logged in
-           // however, donn't want to build this for all views - prefer to build it once in the model.
-           // however, there's no place to pass this info back to the views - so using a hack by stuffing it in 'actionCommand'
-           // of the login model.
-           ui.getLoggedInModel().setActionCommand("<html>Logged in as" 
-                       + "<br>User: " +userInformation.getName()
-                       + "<br>Community: " + userInformation.getCommunity()
-                       +  "<br>DN: " + 
-                           (guard != null && guard.getX500Principal()!= null
-                           ? guard.getX500Principal().getName(X500Principal.CANONICAL)
-                           : "not available")
-                       );
-           // snitch now they've successfully logged in.
-           ui.setLoggedIn(true);
-           Map m = new HashMap();
-           m.put("username",userInformation.getCommunity() + "/" + userInformation.getName());
-           snitch.snitch("LOGIN",m);           
-           notifyListeners(true);
-        } catch (CommunityResolverException e) {
-            throw new ServiceException(e);
-        } catch (CommunityServiceException e) {
-            throw new ServiceException(e);
-        } catch (CommunitySecurityException e) {
-            throw new SecurityException(e.getMessage());
-        } catch (CommunityIdentifierException e) {
-            throw new SecurityException(e.getMessage());
-        } catch (RegistryException e) {
-            throw new ServiceException(e);
-        } finally {
-            if (!isLoggedIn()) {
-                ui.setStatusMessage("");
-                ui.getLoggedInModel().setActionCommand("Not logged in");
-                ui.setLoggedIn(false);
-            }
-        } 
-
-        logger.info("Authenticated");        
-        return true;
     }
 
     /**
@@ -204,11 +173,84 @@ public class CommunityImpl implements CommunityInternal {
       return (this.guard == null)? new SecurityGuard() : this.guard;
     }
 
+    private static String trustedCertificatesDirectoryName;
+
+    /**
+     * Identifies the directory containing trusted certificates.
+     * This should be called before the first call to login().
+     * The certificates are those used when authenticating replies
+     * from services, typically when doing TLS.
+     *
+     * @param directoryName Fully-qualified name of the directory holding the certificates. 
+     */
+    public static void declareTrustedCertificates(String directoryName) {
+        CommunityImpl.trustedCertificatesDirectoryName = directoryName;
+    }
+    
+    /**
+     * Reveals a selection of credentials in UserInfo packaging.
+     * The credentials are retrieved from the results of the last authentication.
+     */
+    public UserInformation getUserInformation() {
+        AccountIvorn account = this.guard.getAccountIvorn();
+        URI accountUri = (account == null)? null : account.toUri();
+        String community = 
+            (account == null)? null : account.getCommunityIvorn().toString();
+        return new UserInformation(accountUri,
+                                   this.guard.getSsoUsername(),
+                                   this.guard.getSsoPassword(),
+                                   community);
+    }
+    
+    
+    /**
+     * Passes information to the UI so that the display reflects the 
+     * available principals.
+     */
+    private void informUi() {
+      
+      // Want to produce a tooltip from the authentication information when logged in
+      // however, donn't want to build this for all views - prefer to build it once in the model.
+      // however, there's no place to pass this info back to the views - so using a hack by stuffing it in 'actionCommand'
+      // of the login model.
+      if (isLoggedIn()) {
+        AccountIvorn  i = this.guard.getAccountIvorn();
+        X500Principal x = this.guard.getX500Principal();
+        ui.getLoggedInModel().setActionCommand(
+            "<html>Logged in as" + 
+            "<br>User@community: " + i +
+            "<br>DN: " + x
+        );
+        ui.setLoggedIn(true);
+        ui.findMainWindow().showTransientMessage("Logged in", "as " + i);
+      }
+      else {
+        ui.setStatusMessage("");
+        ui.getLoggedInModel().setActionCommand("Not logged in");
+        ui.setLoggedIn(false);
+      }
+    }
+    
 }
 
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.13  2008/07/16 15:27:54  nw
+merged guy's security refactoring.
+
+Revision 1.12.8.4  2008/07/09 10:33:24  gtr
+It uses only the authrity as the community name.
+
+Revision 1.12.8.3  2008/07/08 11:31:03  gtr
+I changed it to use the four-argument form of signOn(). This code now needs 2008.2.a05 or later of the security facade.
+
+Revision 1.12.8.2  2008/06/09 16:09:15  gtr
+I fixed the getUserInformation() result to include the community IVORN.
+
+Revision 1.12.8.1  2008/06/09 11:08:41  gtr
+Use the security facade to sign on and to hold credentials.
+
 Revision 1.12  2008/04/23 10:53:05  nw
 marked as needing test.
 

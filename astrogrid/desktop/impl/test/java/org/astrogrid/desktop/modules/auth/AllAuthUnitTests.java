@@ -19,6 +19,7 @@ public class AllAuthUnitTests {
 		suite.addTestSuite(SessionManagerImplUnitTest.class);
 		suite.addTestSuite(MutablePrincipalUnitTest.class);
 		suite.addTestSuite(UnauthenticatedPrincipalUnitTest.class);
+		suite.addTestSuite(CommunityImplUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}

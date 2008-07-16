@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.auth;
 import java.security.Principal;
 
 import junit.framework.TestCase;
+import org.astrogrid.security.HomespaceLocation;
 
 /** unit test for mutable principal
  * @author Noel.Winstanley@manchester.ac.uk
@@ -36,7 +37,7 @@ public class MutablePrincipalUnitTest extends TestCase {
 		
 		
 		// finally, test changing the actual Principal works, without changing the identity.
-		Principal r = new HomeIvorn("ivo://foobar");
+                Principal r = new HomespaceLocation("ivo://foobar");
 		int hc = p.hashCode();
 		p.setActualPrincipal(r);
 		assertEquals(r,p.getActualPrincipal());

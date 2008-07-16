@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.17 2008/03/28 13:21:12 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.18 2008/07/16 15:27:54 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,7 +83,10 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	        
             protected Object construct() throws Exception {
                 return reg.xquerySearch(
-                "for $r in //vor:Resource[capability/@standardID='" + StandardIds.POLICY_MANAGER_1_0 +  "' and not (@status='deleted' or @status='inactive')] order by $r/identifier return $r");
+                    "for $r in //vor:Resource[capability/@standardID='" + 
+                    StandardIds.AG_ACCOUNTS +  
+                    "' and not (@status='deleted' or @status='inactive')] order by $r/identifier return $r"
+                );
             }
             protected void doFinished(Object result) {
                 Resource[] knownCommunities = (Resource[])result;
@@ -307,6 +310,12 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.18  2008/07/16 15:27:54  nw
+merged guy's security refactoring.
+
+Revision 1.17.12.1  2008/07/09 09:55:54  gtr
+I changed the capability used in community searches from policy manager to accounts.
+
 Revision 1.17  2008/03/28 13:21:12  nw
 converted register to a help link.
 
@@ -391,7 +400,8 @@ Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 
 Revision 1.3.30.1  2006/04/14 02:45:01  nw
-finished code.extruded plastic hub.
+finished code.
+extruded plastic hub.
 
 Revision 1.3  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
