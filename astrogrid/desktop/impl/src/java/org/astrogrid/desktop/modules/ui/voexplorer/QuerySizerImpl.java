@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import net.sf.ehcache.Ehcache;
@@ -94,7 +95,7 @@ public class QuerySizerImpl implements QuerySizer {
 	
 	private static class SizingStreamProcessor implements StreamProcessor {
 		private Integer size = ERROR;
-		public void process(XMLStreamReader r) throws Exception {
+		public void process(XMLStreamReader r) throws XMLStreamException {
 				r.next();
 				// a bit unexpected, but works. - seems like the wrapper xml isn't being passed back by the reg client.
 				String szString = r.getText();

@@ -26,13 +26,10 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.SearchCapability;
-import org.astrogrid.adql.AdqlCompiler;
 import org.astrogrid.desktop.modules.ag.XPathHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.oldquery.sql.Sql2Adql;
-import org.astrogrid.registry.common.RegistryDOMHelper;
 import org.astrogrid.util.DomHelper;
 import org.codehaus.xfire.MessageContext;
 import org.codehaus.xfire.client.Client;
@@ -85,7 +82,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 			return this.doc;
 		}
 		private static final QName RESOURCE = new QName(XPathHelper.VOR_NS,"Resource");
-		public void process(XMLStreamReader r) throws Exception {
+		public void process(XMLStreamReader r) throws XMLStreamException{
 		    if (cutoutSingleResource) {
 		        // scan until we find the resource element.
 		        for (; r.hasNext(); r.next()) {
@@ -106,10 +103,14 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
          * @throws XMLStreamException
          */
         private void constructDOM(XMLStreamReader r)
-                throws ParserConfigurationException, XMLStreamException {
+                throws XMLStreamException {
             DocumentBuilder builder;
 			synchronized (fac) {
-				builder = fac.newDocumentBuilder();
+			    try {
+			        builder = fac.newDocumentBuilder();
+			    } catch (ParserConfigurationException e) {
+			        throw new RuntimeException(e);
+			    }
 			}
 		 this.doc = STAXUtils.read(builder,r,true);
         }
@@ -140,7 +141,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		public Resource[] getResult() {
 			return this.rs;
 		}
-		public void process(XMLStreamReader r) throws Exception {
+		public void process(XMLStreamReader r)  {
 			ResourceStreamParser parser = new ResourceStreamParser(r);
 			rs= (Resource[]) IteratorUtils.toArray(parser,Resource.class);
 		
@@ -156,7 +157,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		public Resource[] getResult() {
 			return this.rs;
 		}
-		public void process(XMLStreamReader r) throws Exception {
+		public void process(XMLStreamReader r)  {
 			ResourceStreamParser parser = new ResourceStreamParser(r,true);
 			rs= (Resource[]) IteratorUtils.toArray(parser,Resource.class);
 		
@@ -473,9 +474,11 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 			} catch (XFireFault f) {
 				logger.error("Error",f);
 				throw new ServiceException("Unable to query the registry service at " + endpoint,f);
+			} catch (ParserConfigurationException x) {
+			    throw new RuntimeException(x);				
 			} catch (Exception x) {
 					throw new ServiceException("Unable to query the registry service at "+ endpoint,x);
-			}	
+			}
 }
 
 	private Client createClient(URI endpoint) throws ServiceException {

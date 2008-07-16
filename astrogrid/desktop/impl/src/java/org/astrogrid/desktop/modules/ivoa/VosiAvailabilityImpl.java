@@ -6,23 +6,15 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.xml.datatype.Duration;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.xmlbeans.GDuration;
-import org.apache.xmlbeans.GDurationBuilder;
 import org.apache.xmlbeans.XmlDateTime;
-import org.apache.xmlbeans.XmlDuration;
 import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.impl.values.XmlDateTimeImpl;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.ivoa.AvailabilityBean;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Interface;
@@ -88,9 +80,9 @@ public class VosiAvailabilityImpl implements VosiAvailability {
             }
             return result;
         } catch (IOException e) {
-            throw new ServiceException("Failed to contact availability service",e);
+            throw new ServiceException("Failed to contact service",e);
         } catch (XMLStreamException x) {
-            throw new ServiceException("Failed to parse response",x);
+            throw new ServiceException("Failed to read availability information from service",x);
         } finally {
             try {
                 if (in != null) {

@@ -544,7 +544,7 @@ public void xquerySearchSave(String xquery, File saveLocation) throws InvalidArg
         }
 
         private final XMLStreamWriter os;
-        public void process(XMLStreamReader r) throws Exception {
+        public void process(XMLStreamReader r) throws XMLStreamException  {
             STAXUtils.copy(r,this.os);
         }
     }
@@ -612,7 +612,7 @@ public void xquerySearchSave(String xquery, File saveLocation) throws InvalidArg
             return this.indexes.toArray(new URI[indexes.size()]);
         }
 
-        public void process(XMLStreamReader r) throws Exception {            
+        public void process(XMLStreamReader r) throws XMLStreamException {            
             while (r.hasNext()) {
                 r.next();
                 if (r.isStartElement() && "identifier".equals(r.getLocalName())) {
@@ -720,7 +720,7 @@ public void xquerySearchSave(String xquery, File saveLocation) throws InvalidArg
 
         private final ResourceConsumer resourceConsumer;
 
-        public void process(XMLStreamReader r) throws Exception {
+        public void process(XMLStreamReader r)  {
             ResourceStreamParser parser = new ResourceStreamParser(r);
             while(parser.hasNext()) {
                 Resource resource = (Resource)parser.next();

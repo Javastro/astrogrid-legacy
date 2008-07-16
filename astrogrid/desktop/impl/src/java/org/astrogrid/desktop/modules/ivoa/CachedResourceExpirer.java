@@ -8,8 +8,10 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.List;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import net.sf.ehcache.CacheException;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
@@ -117,8 +119,11 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
          return firstCreation.toDateTime(DateTimeZone.UTC); // convert from local timezone to UTC (the benefits of living in india)
     }
 
-    /** stream processor callback - used to process the update query */
-    public void process(XMLStreamReader r) throws Exception {
+    /** stream processor callback - used to process the update query 
+     * @throws XMLStreamException 
+     * @throws CacheException 
+     * @throws IllegalStateException */
+    public void process(XMLStreamReader r) throws  XMLStreamException {
         DateTime timestamp = null;
         while (r.hasNext()) {
             r.next();

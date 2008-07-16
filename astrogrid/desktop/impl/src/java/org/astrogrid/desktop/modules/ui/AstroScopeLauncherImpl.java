@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.86 2008/05/28 12:28:01 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.87 2008/07/16 13:58:06 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,6 +68,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.ResourceConsumer;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -865,7 +866,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                         retrievers = temporal.createRetrievers(s,start,end,this.ra,this.dec,this.radius,this.radius);
                     }                                    
             } else {
-                throw new RuntimeException("Programming error - unknown subtype of protocol " + p.getClass().getName());
+                throw new ProgrammerError("unknown subtype of protocol " + p.getClass().getName());
             }
             // now register these retreivers with the system and start them running - do all this on the edt.
             SwingUtilities.invokeLater(new Runnable() {

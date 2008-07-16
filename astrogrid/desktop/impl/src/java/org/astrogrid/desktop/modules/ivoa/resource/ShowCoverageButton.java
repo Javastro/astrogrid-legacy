@@ -3,21 +3,13 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 
-import javax.swing.JButton;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.resource.HasCoverage;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.StcResourceProfile;
-import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.CSH;
@@ -45,7 +37,7 @@ public class ShowCoverageButton extends ResourceDisplayPaneEmbeddedButton implem
         final Resource r = getResourceDisplayPane(e).getCurrentResource();
         if (! (r instanceof HasCoverage)) {
             // very unlikley.
-            throw new RuntimeException("Programming error - current resource has no coverage");
+            throw new org.astrogrid.desktop.modules.system.ProgrammerError("Current resource has no coverage");
         }
         ConfirmDialog.newConfirmDialog(this,"Not yet implemented"
                 ,"We can't format the coverage information yet. Show the XML source?"

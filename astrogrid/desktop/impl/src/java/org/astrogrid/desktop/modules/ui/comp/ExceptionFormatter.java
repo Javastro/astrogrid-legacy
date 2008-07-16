@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -35,6 +32,8 @@ import net.sourceforge.hivelock.SecurityException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
@@ -182,7 +181,8 @@ public class ExceptionFormatter {
         bd.getBanner().setIcon(UIManager.getIcon("OptionPane.errorIcon"));
         bd.setDialogMode(BaseDialog.CLOSE_DIALOG);
         bd.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        JLinkButton lb = new JLinkButton("Show details" + UIComponentMenuBar.ELLIPSIS);
+        JLinkButton lb = new JLinkButton("Show technical error report" + UIComponentMenuBar.ELLIPSIS);
+        lb.setFont(UIConstants.SMALL_DIALOG_FONT);
         
         JPanel content = (JPanel)bd.getContentPane();
         content.setLayout(new BorderLayout());

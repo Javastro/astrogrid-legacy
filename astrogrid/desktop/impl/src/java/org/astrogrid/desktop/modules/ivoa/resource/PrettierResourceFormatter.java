@@ -164,13 +164,14 @@ public final class PrettierResourceFormatter {
                 sb.append("This resource describes a <b>Registry&nbsp;Service</b>");
                 sb.br();
                 RegistryService rs = (RegistryService)r;
-                sb.appendLabel("Full&nbsp;Registry?");
-                sb.append(rs.isFull() ? "true" : "false");
+                sb.appendLabel("Registry&nbsp;Type");
+                sb.append(rs.isFull() ? "Full" : "Partial");
                 sb.br();
                 //@todo hyperlink these managed auths.
                 sb.appendTitledSequence("Managed&nbsp;Authorities",rs.getManagedAuthorities());
             }
             // cone service, siap service - nothing additional - covered in the formatService call
+            sb.br();
             formatServiceCapabilities(sb, s);
         }
         
@@ -451,257 +452,258 @@ public final class PrettierResourceFormatter {
 	        if (c instanceof CeaServerCapability) {
 	            sb.append("This resource describes a <b>Remote&nbsp;Application&nbsp;(CEA)&nbsp;Service</b>");
 	            sb.br();
+	            formatCapabilityDescription(sb, c);
 	            sb.appendTitledURIs("Provided&nbsp;Tasks",(((CeaServerCapability)c).getManagedApplications()));
-	        } else
-	            if (c instanceof HarvestCapability) {
-	                sb.append("<b>Harvest&nbsp;Capability</b>");
-	                sb.br();
-	                sb.appendLabel("Maximum&nbsp;Records&nbsp;Harvested");
-	                sb.append(((HarvestCapability)c).getMaxRecords());
-	                sb.br();
-	            } else 
-	                if (c instanceof SearchCapability) {
-	                    SearchCapability sc = (SearchCapability)c;
-	                    sb.append("<b>Search&nbsp;Capability</b>");
-	                    sb.br();
-	                    if (sc.getMaxRecords() > 0) {
-	                        sb.appendLabel("Maximum&nbsp;Records&nbsp;Returned");
-	                        sb.append(sc.getMaxRecords());
-	                        sb.append("&nbsp; ");
-	                    }
-	                    sb.appendLabel("Extension&nbsp;Search&nbsp;Support");
-	                    sb.append(sc.getExtensionSearchSupport() );
-	                    sb.append("&nbsp; ");
-	                    sb.appendTitledSequenceNoBR("Additional&nbsp;Protocols",sc.getOptionalProtocol());
-	                    sb.br();
-	                } else  
-	                    if (c instanceof ConeCapability) {
-	                        ConeCapability cc = (ConeCapability)c;
-	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");
-	                        sb.br();
-	                        sb.appendLabel("Verbose&nbsp;Parameter&nbsp;Supported?");
-	                        sb.append(cc.isVerbosity() ? "true" : "false");
-	                        sb.append("&nbsp; ");
-	                        if (cc.getMaxSR() > 0.0) {
-	                            sb.appendLabel("Maxumum&nbsp;Search&nbsp;Radius");
-	                            sb.append(cc.getMaxSR());
-	                            sb.append("&nbsp; ");
-	                        }
-	                        if (cc.getMaxRecords() > 0) {
-	                            sb.appendLabel("Maximum&nbsp;Results&nbsp;Returned");
-	                            sb.append(cc.getMaxRecords());
-	                            sb.br();
-	                        }
-	                        if (cc.getTestQuery() != null) {
-	                            sb.br();
-	                            sb.append("<object classid='")
-	                            .append(TestQueryButton.class.getName())
-	                            .append("'>")
-	                            .append("<param name='capabilityIndex' value='")
-	                            .append(capabilitiesIndex)
-	                            .append("' >")
-	                            .append("</object>")
-	                            ;	                            
-	                            sb.appendTitledObjectNoBR("RA",cc.getTestQuery().getRa());
-	                            sb.appendTitledObjectNoBR("Dec",cc.getTestQuery().getDec());
-	                            sb.appendTitledObjectNoBR("SR",cc.getTestQuery().getSr());
-	                            if (cc.getTestQuery().getVerb() != 0) {
-	                                sb.appendTitledObjectNoBR("Verbose",cc.getTestQuery().getVerb());
-	                            }
-	                            sb.appendTitledObjectNoBR("Catalog",cc.getTestQuery().getCatalog());
-	                            sb.appendTitledObjectNoBR("Extra&nbsp;Params",cc.getTestQuery().getExtras());
-	                            sb.br();
-	                        }
-	                    } else if (c instanceof SiapCapability) {
-	                        SiapCapability cc = (SiapCapability)c;
-	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/siap16.png'>&nbsp;This resource describes a <b>Image&nbsp;Access&nbsp;Service&nbsp;(SIAP)</b>");
-	                        sb.br();
-	                        sb.appendTitledObjectNoBR("Service&nbsp;Type",cc.getImageServiceType());
-	                        if (cc.getMaxFileSize() > 0) {
-	                            sb.appendLabel("Maximum&nbsp;File&nbsp;size");
-	                            sb.append(cc.getMaxFileSize());
-	                            sb.append("&nbsp; ");
-	                        }
-	                        if (cc.getMaxRecords() > 0) {
-	                            sb.appendLabel("Maximum&nbsp;Results&nbsp;Returned");
-	                            sb.append(cc.getMaxRecords());
-                                sb.append("&nbsp; ");	                            
-	                        }	   
-	                        sb.br();
-	                        SkySize sz = cc.getMaxImageExtent();
-	                        if (sz != null) {
-	                            sb.appendLabel("Maximum&nbsp;Image&nbsp;Extent");
-	                            sb.append(sz.getLat()).append(",&nbsp;").append(sz.getLong());
-	                            sb.append("&nbsp; ");
-	                        }
-	                        ImageSize isz = cc.getMaxImageSize();
-	                        if (isz != null) {
-	                            sb.appendLabel("Maximum&nbsp;Image&nbsp;Size");
-	                            sb.append(isz.getLat()).append(",&nbsp;").append(isz.getLong());
-	                            sb.append("&nbsp; ");
-	                        }
-	                        sz = cc.getMaxQueryRegionSize();
-	                        if (sz != null) {
-	                            sb.appendLabel("Maximum&nbsp;Query&nbsp;Size");
-	                            sb.append(sz.getLat()).append(",").append(sz.getLong());
-	                            sb.append("&nbsp; ");
-	                        }
-                            if (cc.getTestQuery() != null) {
-                                sb.br();
-                                sb.append("<object classid='")
-                                .append(TestQueryButton.class.getName())
-                                .append("'>")
-                                .append("<param name='capabilityIndex' value='")
-                                .append(capabilitiesIndex)
-                                .append("' >")
-                                .append("</object>")
-                                ;                               
-                                sb.appendTitledObjectNoBR("Long",cc.getTestQuery().getPos().getLong() );                                
-                                sb.appendTitledObjectNoBR("Lat",cc.getTestQuery().getPos().getLat());
-                                sb.appendTitledObjectNoBR("Size",cc.getTestQuery().getSize().getLong()
-                                            +",&nbsp;" + cc.getTestQuery().getSize().getLat());  
-                                if (cc.getTestQuery().getVerb() != 0) {
-                                    sb.appendTitledObjectNoBR("Verbose",cc.getTestQuery().getVerb());
-                                }
-                                sb.appendTitledObjectNoBR("Extra&nbsp;Params",cc.getTestQuery().getExtras());
-                                sb.br();
-                            }                        
-	                        sb.br();
-	                    } else if (c instanceof StapCapability) {
-	                        StapCapability sc = (StapCapability)c;
-	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/latest16.png'>&nbsp;This resource describes a <b>Time&nbsp;Series&nbsp;Access&nbsp;Service&nbsp(STAP)</b>");
-	                        sb.br();
-	                        if (sc.getMaxRecords() > 0) {
-	                            sb.appendLabel("Max&nbsp;Records");
-	                            sb.append(sc.getMaxRecords());
-	                            sb.append("&nbsp; ");
-	                        }
-	                        sb.appendLabel("Positioning&nbsp;Supported");
-	                        sb.append(sc.isSupportPositioning());
-	                        sb.append("&nbsp; ");
-	                        sb.appendTitledSequence("Supported&nbsp;Formats",sc.getSupportedFormats());
-                            if (sc.getTestQuery() != null) {
-                                sb.br();
-                                sb.append("<object classid='")
-                                .append(TestQueryButton.class.getName())
-                                .append("'>")
-                                .append("<param name='capabilityIndex' value='")
-                                .append(capabilitiesIndex)
-                                .append("' >")
-                                .append("</object>")
-                                ;                               
-                                sb.appendTitledObjectNoBR("Start",sc.getTestQuery().getStart());
-                                sb.appendTitledObjectNoBR("End",sc.getTestQuery().getEnd());
-                                if (sc.getTestQuery().getPos() != null) {
-                                    sb.appendTitledObjectNoBR("Long",sc.getTestQuery().getPos().getLong());                                    
-                                    sb.appendTitledObjectNoBR("Lat",sc.getTestQuery().getPos().getLat());
-                                }
-                                if (sc.getTestQuery().getSize() != null) {
-                                    sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize().getLong()
-                                            + ",&nbsp;" + sc.getTestQuery().getSize().getLat());                                                                        
-                                }
-                                sb.br();
-                            }	                       
-	                    } else if (c instanceof SsapCapability) {
-	                        SsapCapability sc = (SsapCapability)c;
-	                        sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;Access&nbsp;Service&nbsp;(SSAP)</b>");
-	                        sb.br();
-	                        sb.appendTitledObjectNoBR("Compliance",sc.getComplianceLevel());
-	                        sb.appendTitledSequenceNoBR("Creation&nbsp;Types",sc.getCreationTypes());
-	                        sb.appendTitledSequenceNoBR("Data&nbsp;Sources",sc.getDataSources());
-	                        sb.br();
-	                        if (sc.getMaxRecords() > 0) {
-	                            sb.appendLabel("Max&nbsp;Records");
-	                            sb.append(sc.getMaxRecords());
-	                            sb.append("&nbsp; ");
-	                        }
-	                        if (sc.getDefaultMaxRecords() > 0) {
-	                            sb.appendLabel("Default&nbsp;Max&nbsp;Records");
-	                            sb.append(sc.getDefaultMaxRecords());
-	                            sb.append("&nbsp; ");
-	                        }
-	                        if (sc.getMaxFileSize() > 0) {
-	                            sb.appendLabel("Max&nbsp;Filesize");
-	                            sb.append(sc.getMaxFileSize());
-                                sb.append("&nbsp; ");
-	                        }
-                            sb.br();
-                            if (sc.getMaxAperture() > 0.0) {
-                                sb.appendLabel("Max&nbsp;Aperture");
-                                sb.append(sc.getMaxAperture());
-                                sb.append("&nbsp; ");
-                            }
-                            if (sc.getMaxSearchRadius() > 0.0) {
-                                sb.appendLabel("Max&nbsp;Search&nbsp;Radius");
-                                sb.append(sc.getMaxSearchRadius());
-                            }
-                            sb.br();                            
-                            sb.appendTitledSequence("Supported&nbsp;Frames",sc.getSupportedFrames());
-                            sb.append("&nbsp; ");      
-                            if (sc.getTestQuery() != null) {
-                                sb.br();
-                                sb.append("<object classid='")
-                                .append(TestQueryButton.class.getName())
-                                .append("'>")
-                                .append("<param name='capabilityIndex' value='")
-                                .append(capabilitiesIndex)
-                                .append("' >")
-                                .append("</object>")
-                                ;                               
-                                sb.appendTitledObjectNoBR("Long",sc.getTestQuery().getPos().getLong());
-                                sb.appendTitledObjectNoBR("Lat",sc.getTestQuery().getPos().getLat());
-                                sb.appendTitledObjectNoBR("Ref Frame",sc.getTestQuery().getPos().getRefframe());                              
-                                sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize());
-                                sb.appendTitledObjectNoBR("Query",sc.getTestQuery().getQueryDataCmd());
-                                sb.br();
-                            }            
-	                    } else if (c.getStandardID() != null && StringUtils.containsIgnoreCase(c.getStandardID().toString(),"availability")) { // loose rule for availability.
-                            sb.append("This resource provides a <b>Service&nbsp;Availability&nbsp;Check</b>");
-                            sb.br();
-                            sb.append("<object classid='")
-                            .append(TestAvailabilityButton.class.getName())
-                            .append("'>")
-                            .append("</object>"); 
-                            sb.br();
-	                    }	else { // take a guess.
-	                        String capType = c.getType();
-	                        String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
-	                        ? StringUtils.substringAfterLast( capType,":")
-	                                : capType;
-	                            if ("WebBrowser".equals(capTypeUnprefixed)) {
-	                            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/browser16.png'>&nbsp;This resource describes a <b>Web&nbsp;Interface</b>");
-	                            sb.br();
-	                        } else if (SystemFilter.isBoringCapability(c)) {
-	                               sb.append("This resource descibes an <b>Technical System Service</b>");
-	                                sb.br();   
-	                                sb.appendTitledObject("Type",capTypeUnprefixed);
-	                                sb.appendTitledObject("StandardID",c.getStandardID());
-	                        } else {
-	                            sb.append("This resource descibes an <b>Service</b>");
-	                            sb.br();   
-	                            sb.appendTitledObject("Type",capTypeUnprefixed);
-	                            sb.appendTitledObject("StandardID",c.getStandardID());
-	                        }
-	                       
-	                    }
-	        // validation, and description.
-	        formatValidation(sb,c.getValidationLevel());
-	        if (StringUtils.isNotEmpty(c.getDescription())) {
-	            sb.append(c.getDescription());
+	        } else   if (c instanceof HarvestCapability) {
+	            sb.append("<b>Harvest&nbsp;Capability</b>");
 	            sb.br();
+	            formatCapabilityDescription(sb, c);
+	            sb.appendLabel("Maximum&nbsp;Records&nbsp;Harvested");
+	            sb.append(((HarvestCapability)c).getMaxRecords());
+	            sb.br();
+	        } else    if (c instanceof SearchCapability) {
+	            SearchCapability sc = (SearchCapability)c;
+	            sb.append("<b>Search&nbsp;Capability</b>");
+	            sb.br();
+	            formatCapabilityDescription(sb, c);
+	            if (sc.getMaxRecords() > 0) {
+	                sb.appendLabel("Maximum&nbsp;Records&nbsp;Returned");
+	                sb.append(sc.getMaxRecords());
+	                sb.append("&nbsp; ");
+	            }
+	            sb.appendLabel("Extension&nbsp;Search&nbsp;Support");
+	            sb.append(sc.getExtensionSearchSupport() );
+	            sb.append("&nbsp; ");
+	            sb.appendTitledSequenceNoBR("Additional&nbsp;Protocols",sc.getOptionalProtocol());
+	            sb.br();
+	        } else     if (c instanceof ConeCapability) {
+	            ConeCapability cc = (ConeCapability)c;
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");
+	            sb.br();
+	            formatCapabilityDescription(sb, c);
+	            sb.appendLabel("Verbose&nbsp;Parameter");
+	            sb.append(cc.isVerbosity() ? "supported" : "unsupported");
+	            sb.append("&nbsp; ");
+	            if (cc.getMaxSR() > 0.0) {
+	                sb.appendLabel("Maxumum&nbsp;Search&nbsp;Radius");
+	                sb.append(cc.getMaxSR());
+	                sb.append("&nbsp; ");
+	            }
+	            if (cc.getMaxRecords() > 0) {
+	                sb.appendLabel("Maximum&nbsp;Results&nbsp;Returned");
+	                sb.append(cc.getMaxRecords());
+	            }
+	            sb.br();
+	            if (cc.getTestQuery() != null) {
+	                sb.append("<object classid='")
+	                .append(TestQueryButton.class.getName())
+	                .append("'>")
+	                .append("<param name='capabilityIndex' value='")
+	                .append(capabilitiesIndex)
+	                .append("' >")
+	                .append("</object>")
+	                ;	                            
+	                sb.appendTitledObjectNoBR("RA",cc.getTestQuery().getRa());
+	                sb.appendTitledObjectNoBR("Dec",cc.getTestQuery().getDec());
+	                sb.appendTitledObjectNoBR("SR",cc.getTestQuery().getSr());
+	                if (cc.getTestQuery().getVerb() != 0) {
+	                    sb.appendTitledObjectNoBR("Verbose",cc.getTestQuery().getVerb());
+	                }
+	                sb.appendTitledObjectNoBR("Catalog",cc.getTestQuery().getCatalog());
+	                sb.appendTitledObjectNoBR("Extra&nbsp;Params",cc.getTestQuery().getExtras());
+	                sb.br();
+	            }
+	        } else if (c instanceof SiapCapability) {
+	            SiapCapability cc = (SiapCapability)c;
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/siap16.png'>&nbsp;This resource describes a <b>Image&nbsp;Access&nbsp;Service&nbsp;(SIAP)</b>");
+	            sb.br();
+	            formatCapabilityDescription(sb, c);
+	            sb.appendTitledObjectNoBR("Service&nbsp;Type",cc.getImageServiceType());
+	            if (cc.getMaxFileSize() > 0) {
+	                sb.appendLabel("Maximum&nbsp;File&nbsp;size");
+	                sb.append(cc.getMaxFileSize());
+	                sb.append("&nbsp; ");
+	            }
+	            if (cc.getMaxRecords() > 0) {
+	                sb.appendLabel("Maximum&nbsp;Results&nbsp;Returned");
+	                sb.append(cc.getMaxRecords());
+	                sb.append("&nbsp; ");	                            
+	            }	   
+	            sb.br();
+	            SkySize sz = cc.getMaxImageExtent();
+	            if (sz != null) {
+	                sb.appendLabel("Maximum&nbsp;Image&nbsp;Extent");
+	                sb.append(sz.getLat()).append(",&nbsp;").append(sz.getLong());
+	                sb.append("&nbsp; ");
+	            }
+	            ImageSize isz = cc.getMaxImageSize();
+	            if (isz != null) {
+	                sb.appendLabel("Maximum&nbsp;Image&nbsp;Size");
+	                sb.append(isz.getLat()).append(",&nbsp;").append(isz.getLong());
+	                sb.append("&nbsp; ");
+	            }
+	            sz = cc.getMaxQueryRegionSize();
+	            if (sz != null) {
+	                sb.appendLabel("Maximum&nbsp;Query&nbsp;Size");
+	                sb.append(sz.getLat()).append(",").append(sz.getLong());
+	                sb.append("&nbsp; ");
+	            }
+	            if (cc.getTestQuery() != null) {
+	                sb.br();
+	                sb.append("<object classid='")
+	                .append(TestQueryButton.class.getName())
+	                .append("'>")
+	                .append("<param name='capabilityIndex' value='")
+	                .append(capabilitiesIndex)
+	                .append("' >")
+	                .append("</object>")
+	                ;                               
+	                sb.appendTitledObjectNoBR("Long",cc.getTestQuery().getPos().getLong() );                                
+	                sb.appendTitledObjectNoBR("Lat",cc.getTestQuery().getPos().getLat());
+	                sb.appendTitledObjectNoBR("Size",cc.getTestQuery().getSize().getLong()
+	                        +",&nbsp;" + cc.getTestQuery().getSize().getLat());  
+	                if (cc.getTestQuery().getVerb() != 0) {
+	                    sb.appendTitledObjectNoBR("Verbose",cc.getTestQuery().getVerb());
+	                }
+	                sb.appendTitledObjectNoBR("Extra&nbsp;Params",cc.getTestQuery().getExtras());
+	                sb.br();
+	            }                        
+	            sb.br();
+	        } else if (c instanceof StapCapability) {
+	            StapCapability sc = (StapCapability)c;
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/latest16.png'>&nbsp;This resource describes a <b>Time&nbsp;Series&nbsp;Access&nbsp;Service&nbsp(STAP)</b>");
+	            sb.br();
+	            formatCapabilityDescription(sb, c);
+	            if (sc.getMaxRecords() > 0) {
+	                sb.appendLabel("Max&nbsp;Records");
+	                sb.append(sc.getMaxRecords());
+	                sb.append("&nbsp; ");
+	            }
+	            sb.appendLabel("Positioning&nbsp;Supported");
+	            sb.append(sc.isSupportPositioning());
+	            sb.append("&nbsp; ");
+	            sb.appendTitledSequence("Supported&nbsp;Formats",sc.getSupportedFormats());
+	            if (sc.getTestQuery() != null) {
+	                sb.br();
+	                sb.append("<object classid='")
+	                .append(TestQueryButton.class.getName())
+	                .append("'>")
+	                .append("<param name='capabilityIndex' value='")
+	                .append(capabilitiesIndex)
+	                .append("' >")
+	                .append("</object>")
+	                ;                               
+	                sb.appendTitledObjectNoBR("Start",sc.getTestQuery().getStart());
+	                sb.appendTitledObjectNoBR("End",sc.getTestQuery().getEnd());
+	                if (sc.getTestQuery().getPos() != null) {
+	                    sb.appendTitledObjectNoBR("Long",sc.getTestQuery().getPos().getLong());                                    
+	                    sb.appendTitledObjectNoBR("Lat",sc.getTestQuery().getPos().getLat());
+	                }
+	                if (sc.getTestQuery().getSize() != null) {
+	                    sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize().getLong()
+	                            + ",&nbsp;" + sc.getTestQuery().getSize().getLat());                                                                        
+	                }
+	                sb.br();
+	            }	                       
+	        } else if (c instanceof SsapCapability) {
+	            SsapCapability sc = (SsapCapability)c;
+	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;Access&nbsp;Service&nbsp;(SSAP)</b>");
+	            sb.br();
+	            formatCapabilityDescription(sb, c);
+	            sb.appendTitledObjectNoBR("Compliance",sc.getComplianceLevel());
+	            sb.appendTitledSequenceNoBR("Creation&nbsp;Types",sc.getCreationTypes());
+	            sb.appendTitledSequenceNoBR("Data&nbsp;Sources",sc.getDataSources());
+	            sb.br();
+	            if (sc.getMaxRecords() > 0) {
+	                sb.appendLabel("Max&nbsp;Records");
+	                sb.append(sc.getMaxRecords());
+	                sb.append("&nbsp; ");
+	            }
+	            if (sc.getDefaultMaxRecords() > 0) {
+	                sb.appendLabel("Default&nbsp;Max&nbsp;Records");
+	                sb.append(sc.getDefaultMaxRecords());
+	                sb.append("&nbsp; ");
+	            }
+	            if (sc.getMaxFileSize() > 0) {
+	                sb.appendLabel("Max&nbsp;Filesize");
+	                sb.append(sc.getMaxFileSize());
+	                sb.append("&nbsp; ");
+	            }
+	            sb.br();
+	            if (sc.getMaxAperture() > 0.0) {
+	                sb.appendLabel("Max&nbsp;Aperture");
+	                sb.append(sc.getMaxAperture());
+	                sb.append("&nbsp; ");
+	            }
+	            if (sc.getMaxSearchRadius() > 0.0) {
+	                sb.appendLabel("Max&nbsp;Search&nbsp;Radius");
+	                sb.append(sc.getMaxSearchRadius());
+	            }
+	            sb.br();                            
+	            sb.appendTitledSequence("Supported&nbsp;Frames",sc.getSupportedFrames());
+	            sb.append("&nbsp; ");      
+	            if (sc.getTestQuery() != null) {
+	                sb.br();
+	                sb.append("<object classid='")
+	                .append(TestQueryButton.class.getName())
+	                .append("'>")
+	                .append("<param name='capabilityIndex' value='")
+	                .append(capabilitiesIndex)
+	                .append("' >")
+	                .append("</object>")
+	                ;                               
+	                sb.appendTitledObjectNoBR("Long",sc.getTestQuery().getPos().getLong());
+	                sb.appendTitledObjectNoBR("Lat",sc.getTestQuery().getPos().getLat());
+	                sb.appendTitledObjectNoBR("Ref Frame",sc.getTestQuery().getPos().getRefframe());                              
+	                sb.appendTitledObjectNoBR("Size",sc.getTestQuery().getSize());
+	                sb.appendTitledObjectNoBR("Query",sc.getTestQuery().getQueryDataCmd());
+	                sb.br();
+	            }            
+	        } else if (c.getStandardID() != null && StringUtils.containsIgnoreCase(c.getStandardID().toString(),"availability")) { // loose rule for availability.
+	            sb.append("This resource provides a <b>Service&nbsp;Availability&nbsp;Check</b>");
+	            sb.br();
+	            formatCapabilityDescription(sb, c);
+	            sb.append("<object classid='")
+	            .append(TestAvailabilityButton.class.getName())
+	            .append("'>")
+	            .append("</object>"); 
+	            sb.br();
+	        }	else { // take a guess.
+	            String capType = c.getType();
+	            String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
+	            ? StringUtils.substringAfterLast( capType,":")
+	                    : capType;
+	            if ("WebBrowser".equals(capTypeUnprefixed)) {
+	                sb.append("<img src='classpath:/org/astrogrid/desktop/icons/browser16.png'>&nbsp;This resource describes a <b>Web&nbsp;Interface</b>");
+	                sb.br();
+	                formatCapabilityDescription(sb, c);
+	            } else if (SystemFilter.isBoringCapability(c)) {
+	                sb.append("This resource descibes an <b>Technical System Service</b>");
+	                sb.br();
+	                sb.appendTitledObject("Type",capTypeUnprefixed);
+	                sb.appendTitledObject("StandardID",c.getStandardID());	                            
+	                formatCapabilityDescription(sb, c);
+	            } else {
+	                sb.append("This resource descibes an <b>Service</b>");
+	                sb.br();   	                            
+	                sb.appendTitledObject("Type",capTypeUnprefixed);
+	                sb.appendTitledObject("StandardID",c.getStandardID());
+	                formatCapabilityDescription(sb, c);	                            
+	            }
+
 	        }
 
 	        // examine the interfaces..
 	        for (int j = 0 ; j < c.getInterfaces().length; j++) {	            
 	            Interface iface = c.getInterfaces()[j];
-	            	sb.appendTitledObjectNoBR("Interface Type",formatInterfaceType(iface));
+	            sb.appendTitledObjectNoBR("Interface Type",formatInterfaceType(iface));
 	            sb.appendTitledObjectNoBR("Role",iface.getRole());
 	            sb.appendTitledObjectNoBR("Version",iface.getVersion());
 	            final SecurityMethod[] securityMethods = iface.getSecurityMethods();
 	            if (securityMethods.length >0) { // just notify the user that security is required
 	                sb.br().append("<img src='classpath:/org/astrogrid/desktop/icons/lock16.png'>&nbsp;This service requires Community Login");
 	                sb.br();
-	                    
+
 	            }
 	            /* don't think the user will ever want to see the details.
 	            if (securityMethods.length > 0) {
@@ -714,13 +716,13 @@ public final class PrettierResourceFormatter {
 	                    sb.appendURI(sm.getStandardID());
 	                }
 	            }
-	            */
+	             */
 	            final AccessURL[] accessUrls = iface.getAccessUrls();
 	            if (accessUrls != null) {
 	                if (accessUrls.length == 1) {
 	                    sb.appendLabel("Access&nbsp;URL");
 	                } else if (accessUrls.length > 1) {
-                        sb.appendLabel("Access&nbsp;URLs");	                    
+	                    sb.appendLabel("Access&nbsp;URLs");	                    
 	                }
 	                for (int k = 0; k < accessUrls.length; k++) {
 	                    if (k > 0) {
@@ -732,16 +734,16 @@ public final class PrettierResourceFormatter {
 	            if (iface instanceof WebServiceInterface) {
 	                WebServiceInterface wInterface = (WebServiceInterface)iface;
 	                final URI[] wsdlURLs = wInterface.getWsdlURLs();
-                    if (wsdlURLs.length > 0) {
-                        sb.br();
-                        sb.appendLabel("WSDL");
-                        for (int w = 0; w < wsdlURLs.length; w++) {
-                            if (w > 0) {
-                                sb.append(", ");
-                            }
-                            sb.appendURI(wsdlURLs[w]);
-                        }
-                    } 
+	                if (wsdlURLs.length > 0) {
+	                    sb.br();
+	                    sb.appendLabel("WSDL");
+	                    for (int w = 0; w < wsdlURLs.length; w++) {
+	                        if (w > 0) {
+	                            sb.append(", ");
+	                        }
+	                        sb.appendURI(wsdlURLs[w]);
+	                    }
+	                } 
 	            }  else if (iface instanceof ParamHttpInterface) {
 	                ParamHttpInterface phi = (ParamHttpInterface)iface;
 	                sb.br();
@@ -762,8 +764,8 @@ public final class PrettierResourceFormatter {
 	                            sb.append("&nbsp; ");
 	                        }
 	                        if (inputParam.getUnit() != null) {
-                                sb.append(inputParam.getUnit());
-                                sb.append("&nbsp; ");	                            
+	                            sb.append(inputParam.getUnit());
+	                            sb.append("&nbsp; ");	                            
 	                        }
 	                        if (inputParam.getDataType() != null) {
 	                            SimpleDataType dataType = inputParam.getDataType();
@@ -792,6 +794,22 @@ public final class PrettierResourceFormatter {
 
 	    }
 	}
+
+
+
+
+    /**
+     * @param sb
+     * @param c
+     */
+    private static void formatCapabilityDescription(HtmlBuilder sb, Capability c) {
+        // validation, and description.
+        formatValidation(sb,c.getValidationLevel());
+        if (StringUtils.isNotEmpty(c.getDescription())) {
+            sb.append(c.getDescription());
+            sb.br();
+        }
+    }
 
 	
 	/** create a readable description for a type of 

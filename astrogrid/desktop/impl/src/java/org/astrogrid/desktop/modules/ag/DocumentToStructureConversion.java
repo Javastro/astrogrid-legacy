@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
@@ -74,7 +75,7 @@ private static void convertParameterToHash(Hashtable<String,Object> parameterSet
             vect.add(newParam);
             parameterSet.put(v.getName(),vect);
         } else {
-            throw new IllegalStateException("Programming error - unexpected " + existingParam);
+            throw new  ProgrammerError("Unexpected " + existingParam);
         }
         
     } else {

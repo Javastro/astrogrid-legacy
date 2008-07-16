@@ -14,9 +14,9 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import net.sf.ehcache.Ehcache;
-
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -190,7 +190,13 @@ public class NameResolvingPositionTextField extends PositionTextField implements
 			protected void doError(Throwable ex) {
 			    if (this == latest) {
 			        setText(inputPos); // put things back as they were.
-			        parent.showTransientError("Unable to resolve " + inputPos,ExceptionFormatter.formatException(ex));
+			        if (ex instanceof NotFoundException ) {
+			            parent.showTransientError("Unable to resolve " + inputPos,ExceptionFormatter.formatException(ex));
+			        } else if (ex instanceof ServiceException) {
+			            parent.showError("Sesame service is unavailable",ex);
+			        } else{
+			            super.doError(ex);
+			        }
 			        fireResolveFailed();
 			    }
 			}

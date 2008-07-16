@@ -7,16 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.astrogrid.acr.ivoa.resource.Capability;
-import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.ivoa.resource.SsapCapability;
-import org.astrogrid.acr.ivoa.resource.SiapCapability;
-import org.astrogrid.acr.ivoa.resource.StapCapability;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 
 /** static button class that performs a test query.
@@ -41,19 +39,19 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
     
     public void actionPerformed(ActionEvent e) {
             final ResourceDisplayPane displayPane = getResourceDisplayPane(e);
-            Resource r = displayPane.getCurrentResource();
+            final Resource r = displayPane.getCurrentResource();
             if (!(r instanceof Service)) {
-                throw new RuntimeException("Programming error - expected a service");                
+                throw new ProgrammerError("Expected a service");                
             }
             final Capability[] capabilities = ((Service)r).getCapabilities();
             if (capabilityIndex >= capabilities.length) {
-                throw new RuntimeException("Programming error - capability index out of range");
+                throw new ProgrammerError("capability index out of range");
             }
             final Capability cap = capabilities[capabilityIndex];
             final UIComponent uiParent = getUIComponent(e);
             setText("Testing");
             setIcon(IconHelper.loadIcon("loader.gif"));
-            (new BackgroundWorker(uiParent,"Running test query") {
+            (new BackgroundWorker(uiParent,"Testing " + r.getTitle(),BackgroundWorker.VERY_SHORT_TIMEOUT) {
 
                 protected Object construct() throws Exception {
                     boolean b = displayPane.getCapabilityTester().testCapability(cap);
@@ -71,8 +69,8 @@ public class TestQueryButton extends ResourceDisplayPaneEmbeddedButton implement
                 }
                 protected void doError(Throwable ex) {
                     setText("Test Failed");
-                    setIcon(IconHelper.loadIcon("no16.png"));                      
-                    super.doError(ex);
+                    setIcon(IconHelper.loadIcon("no16.png"));
+                    setToolTipText(ExceptionFormatter.formatException(ex));
                 }
                 
             }).start();

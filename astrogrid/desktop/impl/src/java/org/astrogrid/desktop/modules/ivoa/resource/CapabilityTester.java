@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Capability;
 
 /** unified interface to testing a capability.
@@ -20,5 +21,7 @@ public interface CapabilityTester {
      * @return true if the capability was tested successfully. Returns false if the capability could not be tested
      * (if the capability was tested, but failed, an exception is thrown).
      */
-    public boolean testCapability(Capability cap) throws Exception;
+    public boolean testCapability(Capability cap) throws ServiceException;
+    
+    
 }

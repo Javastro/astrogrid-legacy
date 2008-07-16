@@ -10,7 +10,7 @@ import java.util.EventObject;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
-import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 
@@ -32,12 +32,12 @@ public class ResourceDisplayPaneEmbeddedButton extends JButton {
     protected ResourceDisplayPane getResourceDisplayPane(EventObject e) {
         Container ancestor = SwingUtilities.getAncestorNamed(ResourceDisplayPane.class.getName(),(Component)e.getSource());
         if (ancestor == null) {
-            throw new RuntimeException("Programming error - no ancestor available");
+            throw new ProgrammerError("No ancestor available");
         }
         if (ancestor instanceof ResourceDisplayPane) {
            return  ((ResourceDisplayPane)ancestor);          
         } else {
-            throw new RuntimeException("Programming error - ancestor is not a ResourceDisplayPane "
+            throw new ProgrammerError("Ancestor is not a ResourceDisplayPane "
                     + ancestor.getClass().getName());
         }
          
@@ -46,12 +46,12 @@ public class ResourceDisplayPaneEmbeddedButton extends JButton {
     protected UIComponent getUIComponent(EventObject e) {
         Container ancestor = SwingUtilities.getAncestorOfClass(UIComponent.class,(Component)e.getSource());
         if (ancestor == null) {
-            throw new RuntimeException("Programming error - no ancestor available");
+            throw new ProgrammerError("No ancestor available");
         }
         if (ancestor instanceof UIComponent) {
            return  ((UIComponent)ancestor);          
         } else {
-            throw new RuntimeException("Programming error - ancestor is not a ResourceDisplayPane "
+            throw new ProgrammerError("Ancestor is not a ResourceDisplayPane "
                     + ancestor.getClass().getName());
         }
          

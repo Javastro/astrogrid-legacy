@@ -42,6 +42,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
@@ -124,7 +125,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			JComponent c1 = (JComponent) i1.next();
 			Preference p1 = (Preference)c1.getClientProperty(Preference.class);
 			if (! (c1 instanceof ValueAccess)) {
-				throw new IllegalStateException("Programming error: Encountered a component that was not a value access: " + c1);
+				throw new ProgrammerError(" Encountered a component that was not a value access: " + c1);
 			}
 			((ValueAccess)c1).setValue(p1.getValue()); // set field to latest value from preference
 			
@@ -150,7 +151,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 	                JComponent c = (JComponent) i.next();
 	                Preference p = (Preference) c.getClientProperty(Preference.class);
 	                if (! (c instanceof ValueAccess)) {
-	                    throw new IllegalStateException("Programming error: Encountered a component that was not a value access: " + c);
+	                    throw new ProgrammerError(" Encountered a component that was not a value access: " + c);
 	                }
 	                String editedValue = ((ValueAccess)c).getValue();
 	                p.setValue(editedValue); // only firest events if a value change has happened.

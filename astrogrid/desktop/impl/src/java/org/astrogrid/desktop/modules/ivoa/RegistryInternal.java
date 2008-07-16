@@ -81,7 +81,7 @@ public interface RegistryInternal extends org.astrogrid.acr.ivoa.Registry, Selft
 // more low-level interface - to raw xml
 	/** interface to a component that consumes a response stream */
 	public static interface StreamProcessor {
-		void process(XMLStreamReader r) throws Exception;
+		void process(XMLStreamReader r) throws javax.xml.stream.XMLStreamException;
 		
 	}
 	
