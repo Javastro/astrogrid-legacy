@@ -140,7 +140,7 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
                         if (element.getValue() instanceof Resource) {
                             Resource res = (Resource)element.getValue();
                             DateTime cached = new DateTime(res.getUpdated()); // or I could get a date from the cache itself - but the resource date will be in the same timezone
-                            if (latest.compareTo(cached) >= 0) {
+                            if (latest.compareTo(cached) > 0) {
                                 resourceCache.remove(u);   
                             }
                         } else {
