@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="fix" issue="2763">
+        test query no longer reports a failure as an error
+    </action>
     <action dev="nw" type="fix" issue="2494">
         sesame service endpoint can now be altered.
     </action>
