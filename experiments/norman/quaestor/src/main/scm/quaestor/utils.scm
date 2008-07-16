@@ -22,6 +22,7 @@
   parse-http-accept-header
   acceptable-mime
   parse-query-string
+  string-split
 
   ;; Transaction support functions.  Should these perhaps be moved
   ;; wholesale into scheme-wrapper-support.scm ?
@@ -51,11 +52,15 @@
          string-prefix?
          string-downcase
          string-index
-         string-index-right)
+         string-index-right
+         string-null?)
 
 ;(import debugging)                      ;for print-stack-trace
 
-
+(define-syntax unless
+  (syntax-rules ()
+    ((_ test form)
+     (if (not test) form))))
 
 ;; predicates used in contracts
 (define-java-classes
@@ -244,13 +249,13 @@
     (define-java-classes
       <java.util.regex.pattern>)
     (lambda (jheader)
-      (if (not commas)
-          (begin (set! commas
-                       (compile (java-null <java.util.regex.pattern>)
-                                (->jstring " *, *")))
-                 (set! content-type
-                       (compile (java-null <java.util.regex.pattern>)
-                                (->jstring "([^/]+)/([^;]+)(?:; *(?:q=([0-9.]+))?.*)?")))))
+      (unless commas
+              (begin (set! commas
+                           (compile (java-null <java.util.regex.pattern>)
+                                    (->jstring " *, *")))
+                     (set! content-type
+                           (compile (java-null <java.util.regex.pattern>)
+                                    (->jstring "([^/]+)/([^;]+)(?:; *(?:q=([0-9.]+))?.*)?")))))
       (let ((key-and-mimes
              (remove
               (lambda (x) (not x))
@@ -414,6 +419,23 @@
         (else
          (cons qs #f))))
 
+;; STRING-SPLIT : string char [number] -> (listof string)
+;; The function unaccountably not in srfi-13.  Split the string at occurrences of the
+;; char, skipping empty strings.  If present, the number indicates where to start searching.
+(define (string-split s ch . start-arg)
+  (let ((start (if (null? start-arg) 0 (car start-arg)))
+        (len (string-length s)))
+    (cond ((>= start len)
+           '())
+          ((string-index s ch start)
+           => (lambda (i)
+                (if (= i start)
+                    (string-split s ch (+ start 1))
+                    (cons (substring s start i)
+                          (string-split s ch (+ i 1))))))
+          (else
+           (list (substring s start len))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Support functions for the HTTP transaction
@@ -438,18 +460,18 @@
 ;;    string          : set the content-type
 ;;    (string . string) : set an extra response header
 
-;; This version calls a checker internally,
-;; to assert that what it's about to return does conform to what the WADL says.
-;; The CHECKER argument is either #f or a procedure
-;;   checker : method:symbol
-;;             request-path:(listof string)
-;;             status:symbol
-;;             content-type:string
-;;             output:string-or-procedure
-;;             headers:alist
-;;             -> void
+;; This version calls a checker internally, to assert that what it's about
+;; to return conforms to what the WADL says.
+;; The RESPONSE-MATCHES-WADL? argument is either #f or a procedure
+;;   response-matches-wadl? : method:symbol
+;;                            request-path:(listof string)
+;;                            status:symbol
+;;                            content-type:string
+;;                            output:string-or-procedure
+;;                            headers:alist
+;;                            -> void
 ;; which takes the details about to be returned and throws an error if they're not appropriate.
-(define (checked-service-http-call request response method-handler checker)
+(define (checked-service-http-call request response method-handler response-matches-wadl?)
   (define (set-http-response-status! status)
     (define-generic-java-methods set-status)
     (set-status response (java-retrieve-static-object '|javax.servlet.http.HttpServletResponse| status)))
@@ -572,19 +594,27 @@
       ;; hmmmmm, RECEIVE seemed not to work here, so do it by hand
       ;; (peculiar -- no time to worry about it now...)
       (call-with-values call-handler-and-return-response
-        (lambda (status content-type handler-output headers)
-          (if checker
+        (lambda (status-symbol content-type handler-output headers)
+          (if response-matches-wadl?
               ;; Here check that the response is one documented by the WADL file.
               ;; Note that if the OUTPUT is a procedure, then we can't check its content-type.
               ;; Perhaps rework this part of the interface, to avoid the second argument to
               ;; the output procedure, and so oblige this to commit to a content-type beforehand.
-              (checker (string->symbol (string-downcase (->string (get-method request)))) ; request
-                       (cons (let ((s (->string (get-servlet-path request))))
-                               (substring s 1 (string-length s))) ; hacky: presumes that the servlet is of the form '/foo'
-                             (request->path-list request))
-                       status content-type handler-output headers))
+              (let ((method (string->symbol (string-downcase (->string (get-method request)))))
+                    (request-path (cons (let ((s (->string (get-servlet-path request))))
+                                          (substring s 1 (string-length s))) ; hacky: presumes that the servlet is of the form '/foo'
+                                        (request->path-list request)))
+                    (status-number (->number (java-retrieve-static-object '|javax.servlet.http.HttpServletResponse| status-symbol))))
+                (unless (response-matches-wadl? method request-path
+                                                status-number content-type handler-output headers)
+                        (error 'checked-service-http-call
+                               "Request ~a ~a produced undocumented response: status=~a content-type=~a"
+                               method
+                               request-path
+                               status-number
+                               content-type))))
 
-          (set-http-response-status! status)
+          (set-http-response-status! status-symbol)
           (if content-type
               (set-content-type response (->jstring content-type)))
           (for-each (lambda (header-pair)
@@ -701,9 +731,11 @@
           ((= (->number (java-string-length path-string)) 0)
            '())
           (else
-           (remove (lambda (str) (= (string-length str) 0))
-                   (map ->string
-                        (->list (split path-string (->jstring "/")))))))))
+           (string-split (->string path-string) #\/)
+;;            (remove (lambda (str) (= (string-length str) 0))
+;;                    (map ->string
+;;                         (->list (split path-string (->jstring "/")))))
+           ))))
 ;; The same, except that the path-list components are URL-decoded
 ;; (which I don't now think is necessary)
 ;; (define (request->path-list-decoded request)

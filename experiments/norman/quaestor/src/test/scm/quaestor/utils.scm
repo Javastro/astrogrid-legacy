@@ -134,6 +134,31 @@
                "query=value"
                "query=value=another")))
 
+(expect string-split-plain
+        '(("one" "two")
+          ("one" "two")
+          ("one" "two")
+          ("one")
+          ("one")
+          ())
+        (map (lambda (s) (string-split s #\;))
+             '("one;two"
+               "one;;two"
+               ";one;;two;;;"
+               "one"
+               ";one;"
+               "")))
+(expect string-split-start
+        '(("one" "two")
+          ("two")
+          ("wo")
+          ())
+        (map (lambda (p) (string-split (car p) #\; (cdr p)))
+             '(("one;two" . 0)
+               ("one;two" . 4)
+               ("one;two" . 5)
+               ("one;two" . 99))))
+
 (expect java-retrieve-static-object
         '(#t #t #t)
         (map ->boolean
