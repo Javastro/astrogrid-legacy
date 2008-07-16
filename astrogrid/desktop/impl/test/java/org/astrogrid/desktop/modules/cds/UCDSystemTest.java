@@ -24,7 +24,7 @@ public class UCDSystemTest extends InARTestCase {
 	/**
 	 * 
 	 */
-	public static final String SAMPLE_UCD_1_PLUS = "phot.mag;em.opt.B";
+	public static final String SAMPLE_UCD_1_PLUS = "ivoa:phot.mag;em.opt.B";
 
 	/*
 	 * @see TestCase#setUp()
@@ -46,7 +46,7 @@ public class UCDSystemTest extends InARTestCase {
 	 */
 	public void testUCDList() throws ServiceException {
 		String s= ucd.UCDList();
-		assertNonEmptyResponse(s);
+		assertNonEmptyResponse(s);		
 
 	}
 
@@ -64,7 +64,7 @@ public class UCDSystemTest extends InARTestCase {
 	public void testResolveUCD() throws ServiceException {
 		String s = ucd.resolveUCD(SAMPLE_UCD);
 		assertNonEmptyResponse(s);
-		
+		assertEquals("Johnson magnitude V (JHN)",s);
 
 	}
 
@@ -82,14 +82,16 @@ public class UCDSystemTest extends InARTestCase {
 	public void testTranslate() throws ServiceException {
 		String s = ucd.translate(SAMPLE_UCD);
 		assertNonEmptyResponse(s);
+		assertEquals("phot.mag;em.opt.V",s);
 	}
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.cds.UCDImpl.upgrade(String)'
 	 */
 	public void testUpgrade() throws ServiceException {
-		String s = ucd.upgrade(SAMPLE_UCD);
+		String s = ucd.upgrade("pos.gal.lat");
 		assertNonEmptyResponse(s);
+		assertEquals("pos.galactic.lat",s);
 	}
 
 	/*
@@ -98,6 +100,7 @@ public class UCDSystemTest extends InARTestCase {
 	public void testValidate() throws ServiceException {
 		String s = ucd.validate(SAMPLE_UCD_1_PLUS);
 		assertNonEmptyResponse(s);
+		assertEquals("0",s);
 	}
 
 	/*
@@ -106,17 +109,15 @@ public class UCDSystemTest extends InARTestCase {
 	public void testExplain() throws ServiceException {
 		String s = ucd.explain(SAMPLE_UCD_1_PLUS);
 		assertNonEmptyResponse(s);
+		assertEquals("Photometric magnitude / Optical band between 400 and 500 nm",s);
 	}
 
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.cds.UCDImpl.assign(String)'
-	 */
-	public void testAssign() throws ServiceException {
-		String s = ucd.explain(SAMPLE_UCD_1_PLUS);
-		assertNonEmptyResponse(s);
-		String u = ucd.assign(s);
-		assertEquals(SAMPLE_UCD_1_PLUS,u.trim());
+	public void testAssign() throws Exception {
+	    String s= ucd.assign("V magnitude");
+	    assertNonEmptyResponse(s);
+	    assertEquals("phot.mag;em.opt.V",s);
 	}
+	
 	
     public static Test suite() {
         return new ARTestSetup(new TestSuite(UCDSystemTest.class));

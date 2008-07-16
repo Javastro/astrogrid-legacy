@@ -40,7 +40,6 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 /** Implementation of the sesame interface using the simple http-request interface.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 15, 20082:04:05 PM
- * @todo should the httpclient be a separate shared component?
  */
 public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
     /**
@@ -55,14 +54,14 @@ public class SesameRestImpl implements SesameInternal, PropertyChangeListener {
 
     protected final XMLInputFactory inputFactory;
     private static final URI DEFAULT_ENDPOINT = URI.create("http://vizier.u-strasbg.fr/viz-bin/nph-sesame/");
-    public SesameRestImpl(Ehcache cache, Preference endpoint) {
+    public SesameRestImpl(HttpClient http,Ehcache cache, Preference endpoint) {
         super();
         this.cache = cache;
         inputFactory = XMLInputFactory.newInstance(); 
         this.endpoint = endpoint;
         endpoint.addPropertyChangeListener(this);
         endpoint.initializeThroughListener(this);
-        http = new HttpClient();
+        this.http = http;
         base = DEFAULT_ENDPOINT.toString();
     }
 

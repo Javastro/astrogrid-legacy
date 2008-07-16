@@ -1,4 +1,4 @@
-/*$Id: UCDImpl.java,v 1.9 2008/04/23 10:54:10 nw Exp $
+/*$Id: UCDImpl.java,v 1.10 2008/07/16 17:33:57 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,141 +10,127 @@
 **/
 package org.astrogrid.desktop.modules.cds;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.NameValuePair;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.UCD;
-import org.astrogrid.desktop.modules.cds.ucd.UCDService;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Implementaton of the UCD service
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
-public class UCDImpl implements UCD {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(UCDImpl.class);
+public class UCDImpl extends BaseCDSClient implements UCD{
 
-    /** Construct a new UCDImpl
-     * @throws MalformedURLException 
-     * 
-     */
-    public UCDImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
-        super();
-        this.endpoint = endpoint;
-        serv = null; //@todo implement new axis delegate new UCDServiceLocator();    
+    public UCDImpl(HttpClient http,Preference endpoint)  {
+        super(http,endpoint);
     } 
-    public static final String UCD_WS_GLU_TAG = "CDS/ws/UCD.WS";
-	private final UCDService serv;
-	private final Preference endpoint;
+
     /**
      * @see org.astrogrid.acr.cds.UCD#UCDList()
      */
     public String UCDList() throws ServiceException {
-        try {
-            String s= getUcd().UCDList();
-            return s;
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","UCDList")
+        });
+        return executeHttpMethod(meth);
     }
 
     /**
      * @see org.astrogrid.acr.cds.UCD#resolveUCD(java.lang.String)
      */
     public String resolveUCD(String arg0) throws ServiceException {
-        try {
-            return getUcd().resolveUCD(arg0);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","resolveUCD")
+                ,new NameValuePair("ucd",arg0)
+        });
+        return executeHttpMethod(meth);
     }
 
     /**
      * @see org.astrogrid.acr.cds.UCD#UCDofCatalog(java.lang.String)
      */
     public String UCDofCatalog(String arg0) throws ServiceException {
-        try {
-            return getUcd().UCDofCatalog(arg0);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","UCDofCatalog")
+                ,new NameValuePair("catalog_designation",arg0)
+        });
+        return executeHttpMethod(meth);     
     }
 
     /**
      * @see org.astrogrid.acr.cds.UCD#translate(java.lang.String)
      */
     public String translate(String arg0) throws ServiceException {
-        try {
-            return getUcd().translate(arg0);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","translate")
+                ,new NameValuePair("ucd",arg0)
+        });
+        return executeHttpMethod(meth);      
     }
 
     /**
      * @see org.astrogrid.acr.cds.UCD#upgrade(java.lang.String)
      */
     public String upgrade(String arg0) throws ServiceException {
-        try {
-            return getUcd().upgrade(arg0);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","upgrade")
+                ,new NameValuePair("ucd",arg0)
+        });
+        return executeHttpMethod(meth);     
     }
 
     /**
      * @see org.astrogrid.acr.cds.UCD#validate(java.lang.String)
      */
     public String validate(String arg0) throws ServiceException {
-        try {
-            return getUcd().validate(arg0);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","validate")
+                ,new NameValuePair("ucd",arg0)
+        });
+        return executeHttpMethod(meth);       
     }
 
     /**
      * @see org.astrogrid.acr.cds.UCD#explain(java.lang.String)
      */
     public String explain(String arg0) throws ServiceException {
-        try {
-            return getUcd().explain(arg0);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","explain")
+                ,new NameValuePair("ucd",arg0)
+        });
+        return executeHttpMethod(meth);     
     }
 
     /**
      * @see org.astrogrid.acr.cds.UCD#assign(java.lang.String)
      */
     public String assign(String arg0) throws ServiceException {
-        try {
-            return getUcd().assign(arg0);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","assign")
+                ,new NameValuePair("descr",arg0)
+        });
+        return executeHttpMethod(meth);       
     }
 
-	/**
-	 * @return the value
-	 * @throws javax.xml.rpc.ServiceException 
-	 * @throws MalformedURLException 
-	 */
-	protected org.astrogrid.desktop.modules.cds.ucd.UCD getUcd() throws MalformedURLException, javax.xml.rpc.ServiceException {
-		return	serv.getUCD(new URL(endpoint.getValue()));
-	}
 
 }
 
 
 /* 
 $Log: UCDImpl.java,v $
+Revision 1.10  2008/07/16 17:33:57  nw
+Complete - task 372: re-implement CDS tasks
+
 Revision 1.9  2008/04/23 10:54:10  nw
 removed implementations of these - as clashses with 1.5 'enum' reserved word.
 

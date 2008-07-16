@@ -1074,6 +1074,12 @@ UPDATE CHECKER
 	<contribution configuration-id="hivemind.Startup">
 		<startup object="service:upgrade" />
 	</contribution>
- </module> 
  
+ <!--  shared httpclient component -->
+ 
+    <service-point id="httpclient" visibility="public" interface="org.apache.commons.httpclient.HttpClient">
+        <create-instance class="org.apache.commons.httpclient.HttpClient" />
+    </service-point>
+ 
+ </module> 
  

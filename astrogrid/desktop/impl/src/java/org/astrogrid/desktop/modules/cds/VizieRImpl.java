@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.8 2008/04/23 10:54:09 nw Exp $
+/*$Id: VizieRImpl.java,v 1.9 2008/07/16 17:33:57 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,120 +12,144 @@ package org.astrogrid.desktop.modules.cds;
 
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.NameValuePair;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.VizieR;
-import org.astrogrid.desktop.modules.cds.vizier.VizieRService;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.w3c.dom.Document;
 
 /** Implementation of the vizier service
  * 
- * @todo later, if demand, cache delegate between uses, and listen for preference
- * updates before invalidating it.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
-public class VizieRImpl implements VizieR {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(VizieRImpl.class);
+public class VizieRImpl extends BaseCDSClient implements VizieR {
 
-    /** Construct a new VizieRImpl
-     * @throws MalformedURLException 
-     * 
-     */
-    public VizieRImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {        
-        super();
-        serv = null; //@fixme implement new delegate new VizieRServiceLocator();
-        this.endpoint = endpoint;
+    public VizieRImpl(HttpClient http,Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {        
+        super(http,endpoint);
+
     }
-    public static final String VIZIER_WS_GLU_TAG= "CDS/ws/VizieR.WS";
-	private final VizieRService serv;
-	private final Preference endpoint;
+
     /**
      * @see org.astrogrid.acr.cds.VizieR#cataloguesMetaData(java.lang.String, double, java.lang.String, java.lang.String)
      */
-    public Document cataloguesMetaData(String arg0, double arg1, String arg2, String arg3)
+    public Document cataloguesMetaData(String target, double radius, String unit, String text)
             throws ServiceException {
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","cataloguesMetaData")
+                ,new NameValuePair("target",target)
+                ,new NameValuePair("radius",Double.toString(radius))
+                ,new NameValuePair("unit",unit)
+                ,new NameValuePair("text",text)
+        });
+        
+        String r=  executeHttpMethod(meth);
         try {
-            String r= createVizDelegate().cataloguesMetaData(arg0,arg1,arg2,arg3);
             ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
         } catch (Exception e) {
             throw new ServiceException(e);
-        }
+        }      
     }
 
-    public Document cataloguesMetaDataWavelength(String arg0, double arg1, String arg2, String arg3, String arg4)
+    public Document cataloguesMetaDataWavelength(String target, double radius, String unit, String text, String wavelength)
             throws ServiceException {
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","cataloguesMetaData")
+                ,new NameValuePair("target",target)
+                ,new NameValuePair("radius",Double.toString(radius))
+                ,new NameValuePair("unit",unit)
+                ,new NameValuePair("text",text)
+                ,new NameValuePair("wavelength",wavelength)                
+        });
+        
+        String r=  executeHttpMethod(meth);
         try {
-            String r= createVizDelegate().cataloguesMetaData(arg0,arg1,arg2,arg3,arg4);
             ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
         } catch (Exception e) {
             throw new ServiceException(e);
-        }
+        }      
     }
 
     /**
      * @see org.astrogrid.acr.cds.VizieR#cataloguesData(java.lang.String, double, java.lang.String, java.lang.String)
      */
-    public Document cataloguesData(String arg0, double arg1, String arg2, String arg3)
+    public Document cataloguesData(String target, double radius, String unit, String text)
             throws ServiceException {
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","cataloguesData")
+                ,new NameValuePair("target",target)
+                ,new NameValuePair("radius",Double.toString(radius))
+                ,new NameValuePair("unit",unit)
+                ,new NameValuePair("text",text)
+        });
+        
+        String r=  executeHttpMethod(meth);
         try {
-            String r= createVizDelegate().cataloguesData(arg0,arg1,arg2,arg3);
             ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
         } catch (Exception e) {
             throw new ServiceException(e);
-        }
+        }      
     }
 
     
-    public Document cataloguesDataWavelength(String arg0, double arg1, String arg2, String arg3, String arg4)
+    public Document cataloguesDataWavelength(String target, double radius, String unit, String text, String wavelength)
             throws ServiceException {
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","cataloguesData")
+                ,new NameValuePair("target",target)
+                ,new NameValuePair("radius",Double.toString(radius))
+                ,new NameValuePair("unit",unit)
+                ,new NameValuePair("text",text)
+                ,new NameValuePair("wavelength",wavelength)                 
+        });
+        
+        String r=  executeHttpMethod(meth);
         try {
-            String r= createVizDelegate().cataloguesData(arg0,arg1,arg2,arg3,arg4);
             ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
             return XMLUtils.newDocument(is);
         } catch (Exception e) {
             throw new ServiceException(e);
-        }
+        }      
     }
 
     /**
      * @see org.astrogrid.acr.cds.VizieR#metaAll()
      */
     public Document metaAll() throws ServiceException {
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","metaAll")
+        });
+        
+        String r=  executeHttpMethod(meth);
         try {
-        String r = createVizDelegate().metaAll();
-        ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
-        return XMLUtils.newDocument(is);
+            ByteArrayInputStream is = new ByteArrayInputStream(r.getBytes());
+            return XMLUtils.newDocument(is);
         } catch (Exception e) {
             throw new ServiceException(e);
-        }
+        }            
     }
 
-	/**
-	 * @return the viz
-	 * @throws javax.xml.rpc.ServiceException 
-	 * @throws MalformedURLException 
-	 */
-	protected org.astrogrid.desktop.modules.cds.vizier.VizieR createVizDelegate() throws MalformedURLException, javax.xml.rpc.ServiceException {
-		return   serv.getVizieR(new URL(endpoint.getValue()));
-	}
 
 }
 
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.9  2008/07/16 17:33:57  nw
+Complete - task 372: re-implement CDS tasks
+
 Revision 1.8  2008/04/23 10:54:09  nw
 removed implementations of these - as clashses with 1.5 'enum' reserved word.
 

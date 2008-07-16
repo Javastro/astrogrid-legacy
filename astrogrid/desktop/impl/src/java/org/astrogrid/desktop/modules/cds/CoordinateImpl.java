@@ -1,4 +1,4 @@
-/*$Id: CoordinateImpl.java,v 1.8 2008/04/23 10:54:09 nw Exp $
+/*$Id: CoordinateImpl.java,v 1.9 2008/07/16 17:33:57 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,91 +11,102 @@
 package org.astrogrid.desktop.modules.cds;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.NameValuePair;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Coordinate;
-import org.astrogrid.desktop.modules.cds.astrocoo.AstroCoo;
-import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooService;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Implementation of the Coordinate service
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
-public class CoordinateImpl implements Coordinate {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(CoordinateImpl.class);
+public class CoordinateImpl extends BaseCDSClient implements Coordinate {
+
 
     /** Construct a new CoordinateImpl
      * @throws MalformedURLException 
      * 
      */
-    public CoordinateImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
-        super();
-        serv = null; //@fixme - impelemnt a new axis delegate new AstroCooServiceLocator();
-        this.endpoint = endpoint;
+    public CoordinateImpl(HttpClient http,Preference endpoint)  {
+        super(http,endpoint);
     }
-    private final Preference endpoint;
-    public final static String COORDINATE_WS_GLU_TAG = "CDS/ws/AstroCoo.WS";
-	private final AstroCooService serv;   
+
     /**
      * @see org.astrogrid.acr.cds.Coordinate#convert(double, double, double, int)
      */
     public String convert(double arg0, double arg1, double arg2, int arg3) throws ServiceException {
-        try {
-            return getCoo().convert(arg0,arg1,arg2,arg3);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+            HttpMethod meth = buildHttpMethod();
+            meth.setQueryString(new NameValuePair[] {
+                    new NameValuePair("method","convert")
+                    ,new NameValuePair("x",Double.toString(arg0))
+                    ,new NameValuePair("y",Double.toString(arg1))
+                    ,new NameValuePair("z",Double.toString(arg2))
+                    ,new NameValuePair("precision",Integer.toString(arg3))
+            });
+            return executeHttpMethod(meth);
     }
 
-    public String convertL(double arg0, double arg1, int arg2) throws ServiceException {
-        try {
-            return getCoo().convert(arg0,arg1,arg2);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+    
+
+    public String convertL(double lon, double lat, int precision) throws ServiceException {
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","convert")
+                ,new NameValuePair("lon",Double.toString(lon))
+                ,new NameValuePair("lat",Double.toString(lat))
+                ,new NameValuePair("precision",Integer.toString(precision))
+        });
+        return executeHttpMethod(meth);
     }
 
-    public String convertE(int arg0, int arg1, double arg2, double arg3, double arg4, int arg5, double arg6, double arg7)
+    public String convertE(int frame1, int frame2, double x, double y, double z
+            , int precision, double equinox1, double equinox2)
             throws ServiceException {
-        try {
-            return getCoo().convert(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","convert")
+                ,new NameValuePair("frame1",Integer.toString(frame1))
+                ,new NameValuePair("frame2",Integer.toString(frame2))                
+                ,new NameValuePair("x",Double.toString(x))
+                ,new NameValuePair("y",Double.toString(y))
+                ,new NameValuePair("z",Double.toString(z))
+                ,new NameValuePair("precision",Integer.toString(precision))
+                ,new NameValuePair("equinox1",Double.toString(equinox1))
+                ,new NameValuePair("equinox2",Double.toString(equinox2))                
+        });
+        return executeHttpMethod(meth);
     }
 
-    public String convertLE(int arg0, int arg1, double arg2, double arg3, int arg4, double arg5, double arg6)
+    public String convertLE(int frame1, int frame2, double lon, double lat, 
+            int precision, double equinox1, double equinox2)
             throws ServiceException {
-        try {
-            return getCoo().convert(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        HttpMethod meth = buildHttpMethod();
+        meth.setQueryString(new NameValuePair[] {
+                new NameValuePair("method","convert")
+                ,new NameValuePair("frame1",Integer.toString(frame1))
+                ,new NameValuePair("frame2",Integer.toString(frame2))                
+                ,new NameValuePair("lon",Double.toString(lon))
+                ,new NameValuePair("lat",Double.toString(lat))
+                ,new NameValuePair("precision",Integer.toString(precision))
+                ,new NameValuePair("equinox1",Double.toString(equinox1))
+                ,new NameValuePair("equinox2",Double.toString(equinox2))                
+        });
+        return executeHttpMethod(meth);
     }
 
-	/**
-	 * @return the coo
-	 * @throws javax.xml.rpc.ServiceException 
-	 * @throws MalformedURLException 
-	 */
-	protected AstroCoo getCoo() throws MalformedURLException, javax.xml.rpc.ServiceException {
-		return  serv.getAstroCoo(new URL(endpoint.getValue()));
-
-
-	}
+    
 
 }
 
 
 /* 
 $Log: CoordinateImpl.java,v $
+Revision 1.9  2008/07/16 17:33:57  nw
+Complete - task 372: re-implement CDS tasks
+
 Revision 1.8  2008/04/23 10:54:09  nw
 removed implementations of these - as clashses with 1.5 'enum' reserved word.
 

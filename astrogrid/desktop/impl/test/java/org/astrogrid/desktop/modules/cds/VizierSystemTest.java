@@ -8,12 +8,10 @@ import javax.xml.transform.TransformerException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.VizieR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import static org.custommonkey.xmlunit.XMLAssert.*;
 import org.w3c.dom.Document;
 
 /**
@@ -87,7 +85,7 @@ public class VizierSystemTest extends InARTestCase{
 	 */
 	private void assertIsRoughlyVotable(Document doc) throws Exception {
 		assertNotNull(doc);
-		assertXpathExists("/VOTABLE",doc);
+		assertEquals("VOTABLE",doc.getDocumentElement().getLocalName());
 	}
 	
     public static Test suite() {
