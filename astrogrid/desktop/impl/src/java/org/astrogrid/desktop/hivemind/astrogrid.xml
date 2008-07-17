@@ -133,7 +133,7 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 	</contribution>
 
 <contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="astrogrid.community.defaultCommunity" value="uk.ac.le.star" />
+		<default symbol="astrogrid.community.default.ivorn" value="ivo://uk.ac.le.star/community" />
 	</contribution>	
 
 	<!--
@@ -188,7 +188,7 @@ LOGIN DIALOGUE -->
                 <service>system.browser</service>
                 <service>ivoa.registry</service>
                 <service>community</service>
-                <string>${astrogrid.community.defaultCommunity}</string>
+                <string>${astrogrid.community.default.ivorn}</string>
             </construct>
 		</invoke-factory>
 	</implementation>

@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.18 2008/07/16 15:27:54 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.19 2008/07/17 17:55:32 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,17 +15,17 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.prefs.Preferences;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.MutableComboBoxModel;
 import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
@@ -42,6 +42,13 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.UniqueList;
+import ca.odell.glazedlists.swing.EventComboBoxModel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -60,22 +67,54 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     private final JComboBox commField_;
     private final JTextField userField_;
     private final JPasswordField passField_;
-    private final String defaultCommunity;
+    private final URI defaultCommunityIvorn;
     private final Preferences prefs;
     private final Community comm;
 
+    private final EventList communityList =new BasicEventList();
     private Timer vomonRecheckTimer;
+    
+    private static String USER_PREFERENCE_KEY = "username";
+    private static String COMMUNITY_PREFERENCE_KEY = "community.ivorn";
+    
     /**
      * Constructs a new dialog.
      * @throws MalformedURLException 
      * @throws ServiceException 
+     * @throws URISyntaxException 
      */
-    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String defaultCommunity) throws MalformedURLException, ServiceException {
+    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String defaultCommunity) throws MalformedURLException, ServiceException, URISyntaxException {
         super(coxt,"Virtual Observatory Login","dialog.login");
         this.comm = comm;
-    	this.defaultCommunity = defaultCommunity;
-    	final MutableComboBoxModel model = new DefaultComboBoxModel();
-    	//retreive a list of communities in a background thread
+    	this.defaultCommunityIvorn = new URI(defaultCommunity); // if this throws, is a system misconfiguration - fail fast.
+        prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
+    	
+    	final EventComboBoxModel model = new EventComboBoxModel(
+    	        new SortedList(
+    	                new UniqueList(communityList, GlazedLists.beanPropertyComparator(Resource.class,"id")) // unique list by ID
+    	        , GlazedLists.beanPropertyComparator(Resource.class,"title")) // sorted list by title
+    	);
+    	// retrieve the resource for the user's preferred community.
+    	// if there is one, it's most probably cached..
+    	final URI preferredCommunity = new URI(prefs.get(COMMUNITY_PREFERENCE_KEY,defaultCommunityIvorn.toString()));
+    	    (new BackgroundWorker(this,"Finding user's preferred community",Thread.MAX_PRIORITY) {
+    	        {
+    	            setTransient(true);
+    	        }    	    
+    	        @Override
+    	        protected Object construct() throws Exception {
+    	            return reg.getResource(preferredCommunity);
+    	        }
+    	        @Override
+    	        protected void doFinished(Object result) {
+    	            if (result != null) {
+    	                communityList.add(result);
+    	                model.setSelectedItem(result);
+    	            }
+    	        }
+    	    }).start();    	            
+    	
+    	//retreive a list of communities in a background thread - will take more time than jsut getting the preferred communtiy.
     	(new BackgroundWorker(this,"Listing known communities",Thread.MAX_PRIORITY) {
     	    {
     	        setTransient(true);
@@ -83,40 +122,46 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	        
             protected Object construct() throws Exception {
                 return reg.xquerySearch(
-                    "for $r in //vor:Resource[capability/@standardID='" + 
+                    "//vor:Resource[capability/@standardID='" + 
                     StandardIds.AG_ACCOUNTS +  
-                    "' and not (@status='deleted' or @status='inactive')] order by $r/identifier return $r"
+                    "' and not (@status='deleted' or @status='inactive')]"
                 );
             }
-            protected void doFinished(Object result) {
-                Resource[] knownCommunities = (Resource[])result;
-
-                // Add each community that we get from the registry.
-                // But if it has the same name as an existing string value 
-                // (probably from the user prefs) remove the string so that
-                // the combo box doesn't contain apparent duplicates.
-                for (int i = 0; i < knownCommunities.length; i++) {
-                    Resource community = knownCommunities[i];
-                    String cName = mkCommunityString(community);
-                    for (int j = model.getSize() - 1; j >= 0; j--) {
-                        Object el = model.getElementAt(j);
-                        if (el instanceof String && el.equals(cName)) {
-                            model.removeElementAt(j);
-                        }
-                    }
-                    model.addElement(community);
-                    if (cName.equals(model.getSelectedItem())) {
-                        model.setSelectedItem(community);
-                    }
+            protected void doFinished(Object knownCommunities) {
+                for (Resource r :(Resource[]) knownCommunities) {
+                    communityList.add(r);
                 }
             }
     	}).start();
-    	FormLayout fl = new FormLayout("20dlu:grow,right:p,2dlu,100dlu,20dlu:grow","5dlu,p,5dlu,p,2dlu,p,2dlu,p,5dlu,p,5dlu");
+    	
+    	// assemble the community combo box
+    	commField_ = new JComboBox(model);
+    	   commField_.setEditable(false);
+           commField_.setRenderer(new BasicComboBoxRenderer() {
+               public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                  super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
+                   if (value != null) {
+                       if (value instanceof Resource) {
+                           Resource r = (Resource) value;
+                          //    String s = "<html>" + r.getTitle() + "<br><i>" + r.getId(); // can't get the 2-line to display correctly in the form - combo box doesn't expand.
+                           String s = r.getTitle();
+                           setText(s);
+                           setIcon(monitor.suggestIconFor(r));
+                           setToolTipText(monitor.getTooltipInformationFor(r));
+                       } else if (value instanceof String) { // just used in prototyping the size
+                           setText((String)value);
+                       }
+                   }
+                   return this;
+               }
+           });      
+ 
+    	// assemble the form
+    	FormLayout fl = new FormLayout("10dlu:grow,right:d,2dlu,150dlu,10dlu:grow","5dlu,p,5dlu,p,2dlu,p,2dlu,p,5dlu,p,5dlu");
     	fl.setColumnGroups(new int[][]{{1,5}});
     	PanelBuilder pb = new PanelBuilder(fl);    	
     	CellConstraints cc = new CellConstraints();
-    	commField_ = new JComboBox(model);
-    	pb.addTitle("Enter your login details",cc.xyw(2,2,3));
+    	pb.addTitle("Enter your login details",cc.xyw(2,2,4));
     	pb.addLabel("Community",cc.xy(2,4));
     	pb.add(commField_,cc.xy(4,4));
     	
@@ -128,10 +173,8 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         passField_ = new JPasswordField();
         pb.add(passField_,cc.xy(4,8));
 
-
         JButton registerButton = new JLinkButton("Click here to register..");
-        registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");
-        
+        registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");        
         registerButton.addActionListener(new ActionListener() {           
         	public void actionPerformed(ActionEvent e) {
         	    new BackgroundWorker(SwingLoginDialogue.this,"Opening registration page") {
@@ -146,31 +189,14 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         pb.add(registerButton,cc.xyw(2,10,3));
 
         JPanel p = pb.getPanel(); // main panel of the form.
-        prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
-        userField_.setText(prefs.get("username",""));
-        primSetCommunity();
-        commField_.setEditable(false); // don't allow manual edits.
-        commField_.setRenderer(new BasicComboBoxRenderer() {
-   
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
-		
-				if (value instanceof Resource) {
-					Resource r = (Resource) value;
-					String s = mkCommunityString(r); //@future when registry moves to v1.0, add in more data display here
-					setText(s);
-					setIcon(monitor.suggestIconFor(r));
-					setToolTipText(monitor.getTooltipInformationFor(r));
-				} else {
-					setText(value.toString());
-				}
-				return this;
-			}
-        });
-        if (! isVomonPopulated(monitor, model)) {
+ 
+        userField_.setText(prefs.get(USER_PREFERENCE_KEY,""));
+             
+        /* makes the combo box irritatatingly twitchy - remove.
+        if (! isVomonPopulated(monitor, communityList)) {
             vomonRecheckTimer = new Timer(5000,new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (isVomonPopulated(monitor,model)) { // now loaded, so wiggle the selection and then stop the timer.
+                    if (isVomonPopulated(monitor,communityList)) { // now loaded, so wiggle the selection and then stop the timer.
                         Object o = model.getSelectedItem();
                         model.setSelectedItem(null);
                         model.setSelectedItem(o);
@@ -181,6 +207,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
             vomonRecheckTimer.setRepeats(true);
             vomonRecheckTimer.start();
         }
+        */
         // configure the dialogue.
         JPanel mainPanel = getMainPanel();
         mainPanel.add(p,BorderLayout.CENTER);
@@ -196,24 +223,21 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      * @return
      */
     private boolean isVomonPopulated(final VoMonInternal monitor,
-            final MutableComboBoxModel model) {
-        int sz = model.getSize();
-        boolean monitorKnows = false;
-        for (int i = 0; i < sz; i++) {
-            Object o = model.getElementAt(i);
-            if (o instanceof Resource && monitor.suggestIconFor((Resource)o) != null) {
-                monitorKnows = true;
-                break;
-            }
+            final List<Resource> resources) {
+        for (Resource r : resources) {
+            
+            if ( monitor.suggestIconFor(r) != null) {
+                return true;
+            }       
         }
-        return monitorKnows;
+        return false;
     }
 
     //overridden to save inputs as preferences.
     public void ok() {
         
-        prefs.put("community",getCommunity());
-        prefs.put("username",getUser());
+        prefs.put(COMMUNITY_PREFERENCE_KEY,((Resource)commField_.getSelectedItem()).getId().toString());
+        prefs.put(USER_PREFERENCE_KEY,getUser());
         
         // user pressed ok - so try to login
         new BackgroundWorker(this,"Logging in",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
@@ -232,49 +256,18 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         }.start();
         
     }
-    
 
-    private void primSetCommunity() {
-    	String community = prefs.get("community",defaultCommunity);
-    	// find mactching string in llist.
-    	for (int i =0; i < commField_.getItemCount(); i++) {
-    		Object r =  commField_.getItemAt(i);
-    		if (matches(community,r)) {
-    			commField_.setSelectedIndex(i);
-    			return;
-    		}
-    	}
-    	// value isn't on the list - need to insert it by hand.
-    	commField_.insertItemAt(community,0);
-    	commField_.setSelectedIndex(0);
-    }
-    
-    private boolean matches(String communityName, Object r) {
-    	if (r instanceof Resource) {
-    		return mkCommunityString((Resource) r).equals(communityName);
-    	} else {
-    	return communityName.equals(r.toString());
-    	}
-    }
 
     /**
      * Returns the content of the community text entry field.
      *
      * @return  community identifier
+     * @todo once community can acept it, should change this to full ivorn.
      */
     private String getCommunity() {
-    	Object o = commField_.getSelectedItem();
-    	if (o instanceof Resource) {
-    		return mkCommunityString((Resource)o);
-    	} else {
-    		return o.toString();
-    	}
+    	Object o = commField_.getSelectedItem();    	
+    	return ((Resource)o).getId().getAuthority();
     }
-
-    private static String mkCommunityString(Resource r) {
-    	return r.getId().getAuthority();
-    }
- 
 
     /**
      * Returns the content of the user text entry field.
@@ -310,6 +303,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.19  2008/07/17 17:55:32  nw
+Complete - task 432: prevent community list in login dialogue from reordering.
+
 Revision 1.18  2008/07/16 15:27:54  nw
 merged guy's security refactoring.
 
