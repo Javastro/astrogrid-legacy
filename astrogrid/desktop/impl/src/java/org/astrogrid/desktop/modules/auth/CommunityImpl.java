@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.13 2008/07/16 15:27:54 nw Exp $
+/*$Id: CommunityImpl.java,v 1.14 2008/07/17 12:58:47 gtr Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,6 +87,10 @@ public class CommunityImpl implements CommunityInternal {
         try {
             ui.setStatusMessage("Logging in..");
             guard.signOn(userName, password, 3600*12, communityIvorn);
+            logger.info("User's certificate chain is in the name of " +
+                        guard.getX500Principal());
+            guard.setSsoUsername(userName);
+            guard.setSsoPassword(password);
             
             // snitch now they've successfully logged in.
             ui.setLoggedIn(true);
@@ -113,7 +117,7 @@ public class CommunityImpl implements CommunityInternal {
     }
     
     /**
-     * Determines whether the usre is currently logged in to the IVO.
+     * Determines whether the user is currently logged in to the IVO.
      * The user is deemed to be logged in if he has a principal arising from
      * authentication at a community service.
      */
@@ -236,6 +240,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.14  2008/07/17 12:58:47  gtr
+The user name and password are explicitly recorded in the security guard s.t. the can be propagated to the UserInformation object on demand.
+
 Revision 1.13  2008/07/16 15:27:54  nw
 merged guy's security refactoring.
 
