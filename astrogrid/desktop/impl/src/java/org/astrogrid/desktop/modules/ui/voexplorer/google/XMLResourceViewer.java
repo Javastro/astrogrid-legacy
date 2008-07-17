@@ -25,7 +25,6 @@ import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 /** displays raw xml of resource.
- * 		@todo work out how to get drag-n-drop working on this.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20072:33:10 PM
  */
