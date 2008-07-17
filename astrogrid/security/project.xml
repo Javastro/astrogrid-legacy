@@ -206,7 +206,7 @@
         <groupId>bouncycastle</groupId>
         <type>jar</type>
         <artifactId>bcprov-jdk15</artifactId>
-        <version>139</version>
+        <version>140</version>
       </dependency>
       
       <dependency>
