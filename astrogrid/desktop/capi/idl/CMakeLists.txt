@@ -1,0 +1,10 @@
+set (IDL_INC_DIR "/" CACHE PATH "IDL include directory")
+set (IDL_LIB_DIR "/" CACHE PATH "IDL library directory")
+
+include_directories(${ACRCAPI_SOURCE_DIR}/core ${ACRCAPI_SOURCE_DIR}/xmlrpc ${IDL_INC_DIR} ${ACRCAPI_SOURCE_DIR})
+link_directories(${IDL_LIB_DIR})
+add_library(acr_idl SHARED idl_acr.cpp idlhelper.cpp IDLStruct.cpp)
+set_target_properties(acr_idl PROPERTIES PREFIX "" SUFFIX ".so")
+add_executable (idl_test main.cpp)
+target_link_libraries(acr_idl acr-capi idl)
+target_link_libraries(idl_test acr_idl acr-capi idl)
