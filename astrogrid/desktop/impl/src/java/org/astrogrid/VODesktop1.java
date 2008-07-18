@@ -34,7 +34,6 @@ public class VODesktop1 {
   		
 		System.setProperty("workbench.mode","true");
 		System.setProperty("voexplorer.mode","true");
-    	l.addModuleByName("background");
     	l.addModuleByName("ui");
     	l.addModuleByName("dialogs");
     	l.addModuleByName("plastic");

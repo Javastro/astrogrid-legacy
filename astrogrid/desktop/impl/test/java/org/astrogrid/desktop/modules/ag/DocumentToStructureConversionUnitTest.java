@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import net.sf.ehcache.Ehcache;
 
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
@@ -46,7 +45,6 @@ public class DocumentToStructureConversionUnitTest extends TestCase {
                 ,createMock(FileSystemManager.class)
                 ,createMock(RegistryInternal.class)
                 ,createMock(AdqlInternal.class)
-                ,createMock(Ehcache.class)
                 );
     }
 

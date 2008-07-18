@@ -239,7 +239,6 @@ APPLICATIONS
 				<service>system.vfs</service>
 				<service>ivoa.registry</service>
 				<service>ivoa.adql</service>
-				<object>cache:applicationResources</object>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -248,21 +247,6 @@ APPLICATIONS
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
 	
-	<contribution configuration-id="ivoa.caches">
- small cache of resources that have been treated as applications.
-		 not entirely happy about thios one - will do for now.
-		 makes workflow builder much more responsive.	
-         TODO: is this still needed?
-		<cache name="applicationResources"
-			maxElementsInMemory="20"
-			maxElementsOnDisk="100"
-			overflowToDisk="true"
-			diskPersistent="true"
-			timeToLiveSeconds="${ivo.registry.cacheLife}"
-			timeToIdleSeconds="${ivo.registry.cacheLife}"
-            registrySensitive="true"
-		/>
-	</contribution>
 
 
 <!-- 
@@ -296,6 +280,34 @@ REMOTE PROCESS MANAGER
 			<listener interface="org.astrogrid.acr.astrogrid.RemoteProcessListener" />
 		</service>
 	</contribution>		
+    
+                
+<!--  
+===============================
+CEA EXECUTION STRATEGY
+ -->
+    <service-point id="ceaStrategy"  visibility="private" interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">
+        Strategy for executing remote cea applications.
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ag.CeaStrategyImpl" >
+                <service>ivoa.registry</service>
+                <service>votech.vomon</service>
+                <service>applications</service>
+                <service>community</service>
+                <service>system.vfs</service>                
+                <service>builtin.sessionManager</service>
+                <service>system.scheduler</service>                                 
+            </construct>
+        </invoke-factory>   
+    </service-point>
+
+    <implementation service-id="ceaStrategy" if="property background.ceaStrategy.disabled">
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
+    </implementation>                   
+
+    <contribution configuration-id="processStrategies">
+        <object>service:ceaStrategy</object> 
+    </contribution>
     
 <!-- 
 ==========================

@@ -432,17 +432,7 @@
                 <dist.bundle>true</dist.bundle>
                 <strip>true</strip>
             </properties>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-cea-server</artifactId>
-            <version>${astrogrid.applications.version}</version>
-            <type>jar</type>
-            <properties>
-                <dist.bundle>true</dist.bundle>
-                <strip>true</strip>
-            </properties>
-        </dependency>  
+        </dependency> 
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-client</artifactId>

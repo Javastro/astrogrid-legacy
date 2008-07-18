@@ -147,25 +147,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 		
 		}
 	}
-	/**
-	 * @TEST unit test this.
-	 * @author Noel.Winstanley@manchester.ac.uk
-	 * @since Apr 17, 20085:25:23 PM
-	 */
-	public static class KnowledgeAddingResourceArrayBuilder implements StreamProcessor {
-		protected Resource[] rs;
-		public Resource[] getResult() {
-			return this.rs;
-		}
-		public void process(XMLStreamReader r)  {
-			ResourceStreamParser parser = new ResourceStreamParser(r,true);
-			rs= (Resource[]) IteratorUtils.toArray(parser,Resource.class);
-		
-		}
-	}
-	
-	
-	
+
 
 	/** adpater class that takes care of making a stream reader look like a handler */
 	private static class StreamProcessorHandler extends AbstractHandler {

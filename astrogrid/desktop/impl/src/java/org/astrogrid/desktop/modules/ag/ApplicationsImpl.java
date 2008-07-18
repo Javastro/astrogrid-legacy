@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.32 2008/06/06 13:39:58 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.33 2008/07/18 17:15:52 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,9 +24,6 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +34,6 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.astrogrid.CeaServerCapability;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
@@ -51,7 +47,6 @@ import org.astrogrid.common.bean.BaseBean;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ivoa.AdqlInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -75,16 +70,14 @@ public class ApplicationsImpl implements ApplicationsInternal {
      * 
      */
     public ApplicationsImpl(RemoteProcessManager manager,FileSystemManager vfs, 
-    		RegistryInternal nuReg, AdqlInternal adql,
-    		Ehcache applicationResourceCache) throws  ACRException{
+    		RegistryInternal nuReg, AdqlInternal adql) throws  ACRException{
         this.manager = manager;
         this.vfs = vfs;
         this.adql = adql;
         this.nuReg = nuReg;
-        this.applicationResourceCache = applicationResourceCache;
         this.manipulator = new ToolManipulator();
        }
-    protected final Ehcache applicationResourceCache;
+    
     protected final RegistryInternal nuReg;
     protected final RemoteProcessManager manager;
     private final FileSystemManager vfs;
@@ -140,28 +133,18 @@ public class ApplicationsImpl implements ApplicationsInternal {
         return getCeaApplication(uri);
     }
     
-	public CeaApplication getCeaApplication(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
-		net.sf.ehcache.Element el = applicationResourceCache.get(arg0);
-		if (el != null) {
-			return (CeaApplication)el.getValue();
-		} else {
-		KnowledgeAddingResourceArrayBuilder proc = new KnowledgeAddingResourceArrayBuilder();
+    public CeaApplication getCeaApplication(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+        Resource resource = nuReg.getResource(arg0);
+        if (resource == null) {
+            throw new NotFoundException(arg0.toString());
+        }
+        if (resource instanceof CeaApplication) { 
+            return (CeaApplication)resource;
+        } else {
+            throw new InvalidArgumentException("Not a CEA Application " + arg0);
+        }	
 
-		nuReg.getResourceStream(arg0,proc );
-		Resource[] arr = proc.getResult();
-		if (arr == null || arr.length < 1) {
-			throw new NotFoundException(arg0.toString());
-		}
-		Resource r = arr[0];
-		if (r instanceof CeaApplication) { // anything else that can be made to look like a cea app - cone, siap, etc, will be packaged as one too.
-			applicationResourceCache.put(new Element(arg0,r));
-			return (CeaApplication)r;
-		} else {
-			throw new InvalidArgumentException("Not a recognized kind of application: " + arg0);
-		}			
-		}
-			
-	}
+    }
 
     
  
@@ -448,6 +431,9 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.33  2008/07/18 17:15:52  nw
+Complete - task 433: Strip out unused internal CEA
+
 Revision 1.32  2008/06/06 13:39:58  nw
 refactored applicationsImpl in prep for reinstating CDS tasks.
 

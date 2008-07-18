@@ -1,60 +1,0 @@
-<?xml version="1.0"?><module id="background" version="1.0.0" 
-	package="org.astrogrid.desktop.modules.background">Module of background services	<dependency module-id="system" />	<dependency module-id="astrogrid"/>			<!--  
-===============================
-CEA EXECUTION STRATEGY
- -->	<service-point id="ceaStrategy" interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">		Strategy for executing remote cea applications.		<invoke-factory>			<construct class="CeaStrategyImpl" >				<service>tasks</service>				<service>ivoa.registry</service>
-				<service>votech.vomon</service>				<service>astrogrid.applications</service>                <service>astrogrid.community</service>
-                <service>system.vfs</service>                
-				<service>builtin.sessionManager</service>
-				<service>system.scheduler</service>		                						</construct>		</invoke-factory>		</service-point>	<implementation service-id="ceaStrategy" if="property background.ceaStrategy.disabled">		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />		</implementation>					
-
-	<contribution configuration-id="astrogrid.processStrategies">
-		<object>service:ceaStrategy</object> 
-	</contribution>
-
-	
-<!--  =================
-CEA Server components --><service-point id="tasks" interface="TasksInternal">		Minimalistic Internal CEA server.		<invoke-factory>			<construct class="WorkbenchCeaComponentManager" >				<service>controller</service>				<service>query</service>				<service>appDescLib</service>			</construct>		</invoke-factory>		</service-point>	<implementation service-id="tasks" if="property background.tasks.disabled">		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />		</implementation>			<!-- work-around for hivemind limitation -->	  <service-point id="envFactory" visibility="private" interface="IApplicationDescriptionEnvironmentFactory">
-	  Factory for application description environment. necessary as the core class has no interface or no-arg constructor.		  <invoke-factory  model="primitive">
-		  <construct class="ApplicationDescriptionEnvironmentFactory">
-		  	<service>idGen</service>
-		  	<service>authResolver</service>
-		  	<service>protocols</service>
-		  </construct>
-		  </invoke-factory>	</service-point>		<service-point id="execHist" visibility="private" interface="org.astrogrid.applications.manager.persist.ExecutionHistory">
-		Execution history manager		<invoke-factory model="primitive">		<construct class="ManagingFileStoreExecutionHistory">				<string>${astrogrid.workdir}${file.separator}cea</string>			</construct>		</invoke-factory>	</service-point>
-	  <service-point id="ret" visibility="private" interface="org.astrogrid.applications.manager.ApplicationEnvironmentRetriver">
-	  	Execution environment retriever.		  <invoke-factory model="primitive">			  <construct class="org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever" >				  <service>execHist</service>			  </construct>		</invoke-factory>	</service-point>							<service-point id="appDescLib" visibility="private" interface="IBestMatchApplicationDescriptionLibrary">		
-	A library of application descriptions, with custom 'matching' rules.		<invoke-factory model="primitive">			<construct class="BestMatchApplicationDescriptionLibrary">				<service>ivoa.registry</service>				<object>service-property:envFactory:instance</object>				<configuration>applicationDescriptions</configuration>			</construct>		</invoke-factory>	</service-point>	
-	
-	<configuration-point id="applicationDescriptions" schema-id="system.objects">
-		List of application descriptions for use in embedded cea server. Each
-		must implement ApplicationDescription.
-	</configuration-point>
-		<service-point id="controller" visibility="private" interface="ManagingExecutionController">		
-		cea controller component		<invoke-factory model="primitive">			<construct class="ManagingExecutionControllerImpl">				<service>appDescLib</service>				<service>execHist</service>				<service>system.executor</service>			</construct>		</invoke-factory>	</service-point>			<service-point id="query" visibility="private" interface="org.astrogrid.applications.manager.QueryService">		
-	cea query component.		<invoke-factory model="primitive">			<construct class="org.astrogrid.applications.manager.DefaultQueryService">				<service>execHist</service>				<service>ret</service>			</construct>		</invoke-factory>	</service-point>			
-
-<!-- SMALLER COMPONENTS of the cea server.. - used within ApplicationDescriptionEnvFactory 
-	-->
-		<service-point id="idGen" visibility="private" interface="org.astrogrid.applications.manager.idgen.IdGen">
-			<create-instance model="primitive" class="TimeBasedIdGen"/>
-		</service-point>
-
-		<service-point id="authResolver" visibility="private" interface="org.astrogrid.applications.manager.AppAuthorityIDResolver">
-			<create-instance model="primitive"  class="InProcessAuthorityIDResolver" />
-		</service-point>		
-
-		<service-point id="protocols" visibility="private" interface="org.astrogrid.applications.parameter.protocol.ProtocolLibrary">
-			<create-instance model="primitive" class="org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary" />
-		</service-point>							<!--=================================
- APPLICATION DESCRIPTIONS
- these are 'apps' that are lodged within the embedded cea server.
-  -->				<service-point id="siapAppDesc" visibility="private" interface="org.astrogrid.applications.description.ApplicationDescription">		An application that invokes a remote siap service
-		<invoke-factory model="primitive">			<construct class="SiapApplicationDescription">				  <object>service-property:envFactory:instance</object>								<service>ivoa.siap</service>				<service>astrogrid.myspace</service>			</construct>		</invoke-factory>	</service-point>		<service-point id="coneAppDesc" visibility="private" interface="org.astrogrid.applications.description.ApplicationDescription">
-		An application that invokes a remote cone service		<invoke-factory model="primitive">			<construct class="ConeApplicationDescription">				  <object>service-property:envFactory:instance</object>								<service>ivoa.cone</service>				<service>astrogrid.myspace</service>			</construct>		</invoke-factory>	</service-point>								
-	<!--  registers this apps with the cea server -->	<contribution configuration-id="applicationDescriptions">		
-		<object>service:siapAppDesc</object>
-		<object>service:coneAppDesc</object>			
-	</contribution>
- </module> 

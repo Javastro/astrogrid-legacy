@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessStrategy.java,v 1.7 2007/09/21 16:35:14 nw Exp $
+/*$Id: RemoteProcessStrategy.java,v 1.8 2008/07/18 17:15:52 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
  *
  */
 public interface RemoteProcessStrategy{
+    /** returns true of this strategy can manage a task described by the parameter exec id. */
     boolean canProcess(URI execId) ;
     /** dual-use method, for efficiency.
      * returns null if can't process. If can process, return value is used for snitching - extract some kind of name from the document
@@ -38,6 +39,9 @@ public interface RemoteProcessStrategy{
 
 /* 
 $Log: RemoteProcessStrategy.java,v $
+Revision 1.8  2008/07/18 17:15:52  nw
+Complete - task 433: Strip out unused internal CEA
+
 Revision 1.7  2007/09/21 16:35:14  nw
 improved error reporting,
 various code-review tweaks.

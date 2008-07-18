@@ -8,7 +8,6 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.framework.AllFrameworkIntegrationTests;
-import org.astrogrid.desktop.modules.background.AllBackgroundIntegrationTests;
 import org.astrogrid.desktop.modules.cds.AllCdsIntegrationTests;
 import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
 import org.astrogrid.desktop.modules.plastic.AllPlasticIntegrationTests;
@@ -32,7 +31,6 @@ public class AbsolutelyAllIntegrationTests {
         inar.addTest(AllFrameworkIntegrationTests.suite());
         inar.addTest(org.astrogrid.desktop.modules.system.transformers.AllTransformerIntegrationTests.suite());
         inar.addTest(AllCdsIntegrationTests.suite());
-        inar.addTest(AllBackgroundIntegrationTests.suite());
         inar.addTest(AllVotechIntegrationTests.suite());
 		inar.addTest(AllPlasticIntegrationTests.suite());
 		return new ARTestSetup(inar);

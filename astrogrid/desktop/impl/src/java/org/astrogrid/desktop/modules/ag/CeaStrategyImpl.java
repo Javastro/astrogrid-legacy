@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.36 2008/05/09 11:32:10 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.1 2008/07/18 17:15:52 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.modules.background;
+package org.astrogrid.desktop.modules.ag;
 
 import java.io.StringWriter;
 import java.net.URI;
@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,9 +39,6 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -51,12 +46,6 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
-import org.astrogrid.desktop.modules.ag.AbstractProcessMonitor;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.CeaHelper;
-import org.astrogrid.desktop.modules.ag.ProcessMonitor;
-import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
-import org.astrogrid.desktop.modules.ag.TimerDrivenProcessMonitor;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
@@ -75,7 +64,6 @@ import org.w3c.dom.Document;
 /** remote process strargey for cea.
  * see RemoteProcessManagerImpl
  * periodically poll remote cea servers, injjct messages into the system
- *  - temporary, until cea actually calls back into the workbench.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
  * @TODO remove the concrete myspace ivorn hack
  *
@@ -426,137 +414,13 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 	}
 	
-	/** monitor for a single local cea task 
-	 * 
-	 * peeks directly into the local cea engine to get stuff - by implementing observer
-	 * @todo if we ever expose this functionality, add more message reporting.
-	 * */
-	private class LocalTaskMonitor extends AbstractProcessMonitor implements Observer, ProcessMonitor.Advanced {
-
-		private Application application;
-		private final Tool tool;
-        private final CeaApplication appDesc;
-        private String ceaid;
-		public LocalTaskMonitor(Tool t, CeaApplication appDesc) throws ServiceException {
-		    super(vfs);
-			this.tool = t;
-            this.appDesc = appDesc;
-			this.name = appDesc.getTitle();
-			if (appDesc.getInterfaces().length > 1) { // more than one interface
-				this.name = tool.getInterface() + " - " + this.name;
-			}			
-			this.description = appDesc.getContent().getDescription();
-		}
-		// observer interface.
-	    public void update(final Observable o, final Object arg) {
-	    	if (arg instanceof Status) {
-	    		Status stat = (Status)arg;    
-	    		fireStatusChanged(stat.toExecutionPhase().toString());
-
-	    		if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR)) {// send a results notification.
-	    			fireResultsReceived(cvtResultList2Map(application.getResult()));
-	    		}
-	    	} else if (arg instanceof MessageType) {
-	    		MessageType mt = (MessageType)arg;
-	    		ExecutionMessage em = new ExecutionMessage(
-	    				getId().toString()
-	    				,mt.getLevel().toString()
-	    				,mt.getPhase().toString()
-	    				,mt.getTimestamp()
-	    				,mt.getContent()
-	    		);
-	    		addMessage(em);
-	    	}
-	    }
-	    //@todo should override something so that starttime and endtime are correctly set.
-	    
-	    // overridden methods - look directly at the application.
-		public String getStatus() {
-			return application.getStatus().toExecutionPhase().toString();
-		}
-		
-		public Map getResults() throws ServiceException, SecurityException,
-		NotFoundException, InvalidArgumentException {
-			try {
-				ResultListType results = ceaInternal.getQueryService().getResults(ceaid);
-				return cvtResultList2Map(results);
-			} catch (CeaException e) {
-				throw new ServiceException(e);
-			}              
-		}
-
-
-		/**
-		 * @param results
-		 * @return
-		//@todo should override filesystem so that it is populated too
-		 */
-		private Map cvtResultList2Map(ResultListType results) {
-			Map map = new HashMap();
-			ParameterValue[] vals = results.getResult();        
-			for (int i = 0; i < vals.length; i++) {
-				map.put(vals[i].getName(),vals[i].getValue());
-			}
-			return map;
-		}
-
-					
-		public void cleanUp() {
-			super.cleanUp();
-			// remove the local record.
-            ceaInternal.getExecutionController().delete(ceaid);
-		}
-        public void start(URI serviceId) throws ServiceException {
-            // service id is ignored.
-            start();
-        }
-
-        public void start() throws ServiceException { 
-            try {
-                this.ceaid = ceaInternal.getExecutionController().init(tool,appDesc.getId().toString());
-                setId(ceaHelper.mkLocalTaskURI(ceaid));
-
-                // register an interest to messages and status changes.
-                this.application = ceaInternal.getExecutionController().getApplication(ceaid);
-                // now, once everythiong is ready, start the application
-                    if (! ceaInternal.getExecutionController().execute(ceaid)) {
-                        error("Failed to start application, for unknown reason");
-                    } else {
-                        // attach myself as a listener for further events.
-                        this.application.addObserver(this);
-                    }
-                } catch (CeaException x) {
-                    error("Failed to start application",x);
-                }       
-            
-        }       
-		public void halt() throws NotFoundException, InvalidArgumentException,
-				ServiceException, SecurityException {
-	        try { 
-	             ceaInternal.getExecutionController().abort(ceaid);	           
-	        } catch (CeaException e) { //@todo improve this - match subtypes to different kinds of excpeiton.
-	            throw new ServiceException(e);
-	        }		
-		}
-        public Tool getInvocationTool() {
-            return tool;
-        }
-        public CeaApplication getApplicationDescription() {
-            return appDesc;
-        }
-        public void refresh() throws ServiceException {
-            // does nothing - as this monitor is callback-driven anyhow, no way to poll on demand.
-        }
-
-	}
-    /**
+	/**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(CeaStrategyImpl.class);
 
     private final ApplicationsInternal apps;
     private final CeaHelper ceaHelper;
-    private final TasksInternal ceaInternal;
     private final CommunityInternal community;
 	private final SessionManagerInternal sess;
 	private final SchedulerInternal sched; 
@@ -567,8 +431,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     /** Construct a new CeaStrategyImpl
      * 
      */
-    public CeaStrategyImpl(TasksInternal ceaInternal
-            , Registry reg
+    public CeaStrategyImpl(Registry reg
             ,VoMon vomon
             , ApplicationsInternal apps
             , CommunityInternal community
@@ -577,7 +440,6 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         super();         
         this.apps = apps;
         this.vomon = vomon;
-        this.ceaInternal =ceaInternal;
         this.vfs = vfs;
         this.ceaHelper = new CeaHelper(reg,community);
         this.community = community;
@@ -597,11 +459,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         }         
     }
 
-    /**
+    /** @todo make this rule more precise when we've got more than one kind of strategy.
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#canProcess(java.net.URI)
      */
     public boolean canProcess(URI execId) {
-        return "ivo".equals(execId.getScheme()) || "local".equals(execId.getScheme());
+        return "ivo".equals(execId.getScheme()) ;
     }
 
     public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException {
@@ -628,14 +490,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                         logger.debug("MarshalException",x);
                     } 
                 }
-        
-                if (ceaInternal.getAppLibrary().hasMatch(info)) {
-                    logger.info("Dispatching to local cea server");
-                    return new LocalTaskMonitor(tool,info);
-                } else {
+
                     logger.info("Dispatching to remote cea server");
                     return new RemoteTaskMonitor(tool,info);
-                }
         
         }
     
@@ -656,6 +513,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.1  2008/07/18 17:15:52  nw
+Complete - task 433: Strip out unused internal CEA
+
 Revision 1.36  2008/05/09 11:32:10  nw
 Incomplete - task 392: joda time
 

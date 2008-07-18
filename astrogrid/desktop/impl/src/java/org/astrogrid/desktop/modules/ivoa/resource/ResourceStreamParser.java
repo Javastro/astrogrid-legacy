@@ -56,7 +56,6 @@ import org.astrogrid.acr.ivoa.resource.InputParam;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Organisation;
 import org.astrogrid.acr.ivoa.resource.ParamHttpInterface;
-import org.astrogrid.acr.ivoa.resource.RegistryCapability;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -142,16 +141,8 @@ public final class ResourceStreamParser implements Iterator {
 	
 	/** construct a new stream parser from an xml input stream */
 	public ResourceStreamParser(XMLStreamReader in) {
-		this(in,false);
+	    this.in = new TrimmingXMLStreamReader(in);
 	}
-	/** construct a new stream parser from an xml input stream
-	 * parser will use additional hard-coded protocol information to add more to registry entries.
-	 *  */
-	public ResourceStreamParser(XMLStreamReader in,boolean addProtocolKnowledge) {
-		this.in = new TrimmingXMLStreamReader(in);
-		this.addProtocolKnowledge = addProtocolKnowledge;
-	}
-	protected final boolean addProtocolKnowledge;
 	protected final XMLStreamReader in;
 	private Object current;
 	/** iterator interface - returns true when there's still another resource present in the stream */
@@ -308,20 +299,10 @@ public final class ResourceStreamParser implements Iterator {
                     // adjust ifaces based on what we've learned.
                     if (cap instanceof ConeCapability) {
                         ifaces.add(ConeService.class);
-                        m.put("findConeCapability",cap);
-                        if (addProtocolKnowledge) {
-                            ifaces.add(CeaApplication.class);
-                            m.put("getParameters", ConeProtocolKnowledge.parameters);
-                            m.put("getInterfaces",ConeProtocolKnowledge.ifaces);        
-                        }                        
+                        m.put("findConeCapability",cap);                       
                     } else if (cap instanceof SiapCapability) {
                         ifaces.add(SiapService.class);
-                        m.put("findSiapCapability",cap);
-                        if (addProtocolKnowledge) {
-                            ifaces.add(CeaApplication.class);
-                            m.put("getParameters", SiapProtocolKnowledge.parameters);
-                            m.put("getInterfaces",SiapProtocolKnowledge.ifaces);        
-                        }                        
+                        m.put("findSiapCapability",cap);                 
                     } else  if (cap instanceof CeaServerCapability) {
                         ifaces.add(CeaService.class);
                         m.put("findCeaServerCapability",cap);
