@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.14 2008/07/17 12:58:47 gtr Exp $
+/*$Id: CommunityImpl.java,v 1.15 2008/07/18 11:56:54 gtr Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,21 +91,21 @@ public class CommunityImpl implements CommunityInternal {
                         guard.getX500Principal());
             guard.setSsoUsername(userName);
             guard.setSsoPassword(password);
+            logger.info(accountIvorn + " is authenticated.");
+            
+            informUi();
+            notifyListeners(true);
             
             // snitch now they've successfully logged in.
-            ui.setLoggedIn(true);
             Map m = new HashMap();
             m.put("username", accountIvorn);
-            snitch.snitch("LOGIN", m);      
-            notifyListeners(true);
-            logger.info(accountIvorn + " is authenticated.");
+            snitch.snitch("LOGIN", m);
         } 
         catch (Exception e) {
+            informUi();
+            notifyListeners(false);
             throw new ServiceException(e);
         } 
-        finally {
-            informUi();
-        }   
     }
 
     public void logout() {
@@ -214,7 +214,7 @@ public class CommunityImpl implements CommunityInternal {
     private void informUi() {
       
       // Want to produce a tooltip from the authentication information when logged in
-      // however, donn't want to build this for all views - prefer to build it once in the model.
+      // however, don't want to build this for all views - prefer to build it once in the model.
       // however, there's no place to pass this info back to the views - so using a hack by stuffing it in 'actionCommand'
       // of the login model.
       if (isLoggedIn()) {
@@ -240,6 +240,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.15  2008/07/18 11:56:54  gtr
+I rearranged the code that informs the UI of log-in events so as to make the logged-in indicatior work.
+
 Revision 1.14  2008/07/17 12:58:47  gtr
 The user name and password are explicitly recorded in the security guard s.t. the can be propagated to the UserInformation object on demand.
 
