@@ -120,7 +120,7 @@ public class QuaestorTest
                 + ">. <> dc:description \"My metadata-started knowledgebase\"; dc:creator \"Norman\"; quaestor:requiredReasoner [ quaestor:level \"simpleRDFS\" ].";
 
         // Try this for alternative MIME types
-        String[] mimeTypes = { "text/rdf+n3", "application/x-turtle" };
+        String[] mimeTypes = { "text/rdf+n3", "text/turtle" };
         
         try {
             for (String mime : mimeTypes) {
@@ -192,7 +192,7 @@ public class QuaestorTest
         // the actual content is a bit of a fuss to check
 
         // check handling of Accept headers
-        String[] mimeTypes = { "text/rdf+n3", "application/n3", "application/x-turtle" };
+        String[] mimeTypes = { "text/rdf+n3", "application/n3", "text/turtle" };
         for (String mime : mimeTypes) {
 
             r = QuaestorConnection.httpGet(makeKbUrl("ontology"), mime);
@@ -231,7 +231,7 @@ public class QuaestorTest
         // Make a successful query. and check XML response
         r = QuaestorConnection.httpPost(makeKbUrl(), query, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "application/xml");
+        assertContentType(r, "application/sparql-results+xml");
         assertNotNull(r.getContentAsString());
         // don't check actual content string -- it's a bunch of XML
 
@@ -265,7 +265,7 @@ public class QuaestorTest
         String encodedQuery = java.net.URLEncoder.encode(query, "UTF-8");
         r = QuaestorConnection.httpGet(makeKbUrl("?query="+encodedQuery));
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "application/xml");
+        assertContentType(r, "application/sparql-results+xml");
         assertNotNull(r.getContentAsString());
 
         // the same, requesting text/plain
@@ -295,7 +295,7 @@ public class QuaestorTest
 
         r = QuaestorConnection.httpPost(url, query, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "application/xml");
+        assertContentType(r, "application/sparql-results+xml");
         String[] correctResponses = {
             "<?xml version=\"1.0\"?>",
             "<sparql xmlns=\"http://www.w3.org/2005/sparql-results#\">",
@@ -484,7 +484,7 @@ public class QuaestorTest
         URL pickup = new URL(rpc.getResponseString());
         HttpResult r = QuaestorConnection.httpGet(pickup);
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "application/xml");
+        assertContentType(r, "application/sparql-results+xml");
         assertNotNull(r.getContentAsString());
 
         // getting it a second time should fail

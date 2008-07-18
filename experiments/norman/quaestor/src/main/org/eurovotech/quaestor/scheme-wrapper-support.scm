@@ -52,41 +52,72 @@
                     (apply proc args)))))
 
 ;; MAKE-FC : symbol -> procedure
+;; MAKE-FC : boolean -> void
+;; MAKE-FC : java-object -> void
+;; MAKE-FC : output-port -> void
 ;;
 ;; Make a SISC failure continuation.  Return a two-argument procedure
 ;; which can be used as the handler for with-failure-continuation.
 ;; See REPORT-EXCEPTION for an error procedure which allows you to override
 ;; the status given here.
-(define (make-fc status)
-;(define/contract (make-fc (status symbol?) -> procedure?)
-  (lambda (error-record cont)
-    (let* ((msg-or-pair (error-message error-record))
-           (show-debugging? (not (pair? msg-or-pair))))
-      (list (if (pair? msg-or-pair)
-                (car msg-or-pair)
-                status)
-            `("Server failure"
-              (p "Something's rather unfortunately gone badly wrong.")
-              (pre ,(format #f "~%Error: ~a~%" (if (pair? msg-or-pair) (cdr msg-or-pair) msg-or-pair)))
-;; I don't think this extra debugging info is helpful
-;;               (pre ,(if show-debugging?
-;;                         (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-;;                                 (format-error-record error-record)
-;;                                 (let ((c (chatter)))
-;;                                   (cond ((list? c) ;normal case
-;;                                          (apply string-append
-;;                                                 (map (lambda (x)
-;;                                                        (format #f "[chatter: ~a]~%" x))
-;;                                                      c)))
-;;                                         ((not c) ;no chatter
-;;                                          "")
-;;                                         (else ;can't happen!
-;;                                          (format #f
-;;                                                  "[Can't happen: (chatter) produced ~s]" c))))
-;;                                 (with-output-to-string
-;;                                   (lambda () (print-stack-trace cont))))
-;;                         (format #f "~%Error: ~a~%" (cdr msg-or-pair))))
-              )))))
+;;
+;; If the argument is a boolean, then instead switch on or off the display
+;; of a stack trace on errors.
+;;
+;; The last two are for logging.  In each case, use the object to log to;
+;; the java-object must be something which has a log(String) method on it.
+(define make-fc
+  (let ((show-stack-trace-on-error? #f)
+        (logger (lambda (fmt . args) (apply format `(#t ,fmt . ,args)))))
+    (lambda (fc-arg)
+      (cond ((symbol? fc-arg)
+             ;; normal case
+             (lambda (error-record cont)
+               (let* ((msg-or-pair (error-message error-record))
+                      (show-debugging? (not (pair? msg-or-pair)))
+                      (msg (if (pair? msg-or-pair) (cdr msg-or-pair) msg-or-pair))
+                      ;; I'm not convinced this extra debugging info is helpful
+                      (full-msg (and show-stack-trace-on-error?
+                                     (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
+                                             (format-error-record error-record)
+                                             (let ((c (chatter)))
+                                               (cond ((list? c) ;normal case
+                                                      (apply string-append
+                                                             (map (lambda (x)
+                                                                    (format #f "[chatter: ~a]~%" x))
+                                                                  c)))
+                                                     ((not c) ;no chatter
+                                                      "")
+                                                     (else ;can't happen!
+                                                      (format #f
+                                                              "[Can't happen: (chatter) produced ~s]" c))))
+                                             (with-output-to-string
+                                               (lambda () (print-stack-trace cont)))))))
+                 (logger "MAKE-FC: ~a~%~a~%" msg (or full-msg ""))
+                 (list (if (pair? msg-or-pair)
+                           (car msg-or-pair)
+                           fc-arg)
+                       `("That didn't work"
+                         (p "Something's unfortunately gone wrong.")
+                         (pre ,(format #f "~%Error: ~a~%" msg))
+                         (p "For further information, see the server logs")
+;;                          ,(if full-msg
+;;                               `(pre ,full-msg)
+;;                               '(p "For further information, see the server logs"))
+                         )))))
+            ((boolean? fc-arg)
+             (set! show-stack-trace-on-error? fc-arg))
+            ((java-object? fc-arg)
+             (set! logger
+                   (lambda (log-format . args)
+                     (define-generic-java-methods log)
+                     (log fc-arg (->jstring (apply format `(#f ,log-format . ,args)))))))
+            ((output-port? fc-arg)
+             (set! logger
+                   (lambda args
+                     (apply format (cons fc-arg args)))))
+            (else
+             (error 'make-fc "Bad argument to make-fc: ~s" fc-arg))))))
 
 ;; Format the given error record, as passed as the first argument of a
 ;; failure-continuation.  This ought to be able to handle most of the
@@ -237,11 +268,13 @@
                      (lambda (log-format . args)
                        (define-generic-java-methods log)
                        (log fmt (->jstring (apply format `(#f ,(string-append "chatter:" log-format) . ,args))))))
+               (make-fc fmt)
                #t)
               ((output-port? fmt)
                (set! log-it
                      (lambda args
                        (apply format (cons fmt args))))
+               (make-fc fmt)
                #t)
               (else #f))))))
 

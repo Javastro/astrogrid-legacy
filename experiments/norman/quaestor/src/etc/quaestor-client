@@ -289,7 +289,8 @@
 (define (get-language-from-extension filename)
   (let ((ext (file-name-extension filename))
         (ext-map '((".n3"  . "text/rdf+n3")
-                   (".ttl" . "application/x-turtle")     ;MIME type for Turtle http://www.dajobe.org/2004/01/turtle/
+                   (".ttl" . "text/turtle") ;http://www.w3.org/TeamSubmission/turtle/#sec-mediaReg
+                   ;(".ttl" . "application/x-turtle")     ; text/turtle is preferred to this
                    (".rdf" . "application/rdf+xml")
                    (".rdfs" . "application/rdf+xml")
                    (".owl" . "application/rdf+xml")
@@ -302,7 +303,7 @@
 
 ;; ACCEPT-ALL : string
 ;; a string denoting an accept-all value for the Accept header
-(define ACCEPT-ALL "text/rdf+n3,application/x-turtle,application/rdf+xml")
+(define ACCEPT-ALL "text/rdf+n3,text/turtle,application/rdf+xml")
 
 ;; Generate a curl header option, representing the given HEADER and VALUE.
 ;; Return either a list of two elements, or an empty list, if value is #f.

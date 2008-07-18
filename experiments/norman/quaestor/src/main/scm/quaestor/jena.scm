@@ -140,19 +140,29 @@
 ;; Used in both directions.
 (define mime-lang-mappings
   '( ;; default type -- leave this first, so rdf:mime-type-list can strip it
-    ("*/*"                 . "N3")      ;Notation3 is the default type
-    ("text/rdf+n3"         . "N3")
+    ("*/*"                 . "N3")    ;Notation3 is the default type
+
     ;; ...http://www.w3.org/DesignIssues/Notation3
     ;; (and there's apparently an IANA registration pending)
-    ("application/n3"      . "N3")
+    ("text/rdf+n3"         . "N3")
+
     ;; ...http://infomesh.net/2002/notation3/#mimetype
     ;; (but deprecated in the Notation3 page above)
-    ("application/x-turtle" . "N3")     ;MIME type for Turtle http://www.dajobe.org/2004/01/turtle/
-    ("application/rdf+xml" . "RDF/XML")
+    ("application/n3"      . "N3")
+
+    ;;MIME type for Turtle http://www.dajobe.org/2004/01/turtle/
+    ("application/x-turtle" . "N3")
+
+    ;;Now preferred to application/x-turtle
+    ;; see http://www.w3.org/TeamSubmission/turtle/#sec-mediaReg
+    ("text/turtle"         . "N3")
+
     ;; ...http://www.w3.org/TR/rdf-syntax-grammar/#section-MIME-Type
     ;; Generic RDF MIME type: http://www.ietf.org/rfc/rfc3870.txt
-    ("text/plain"          . "N-TRIPLE")
+    ("application/rdf+xml" . "RDF/XML")
+
     ;; ...http://www.dajobe.org/2001/06/ntriples/
+    ("text/plain"          . "N-TRIPLE")
     ))
 
 ;; RDF:MIME-TYPE->LANGUAGE : string-or-false -> string-or-false
@@ -446,8 +456,9 @@
 ;; URL; otherwise (it's a scheme string), it's transformed into an RDF
 ;; literal of string type.
 ;;
-;; Precisely one of SUBJECT, PREDICATE and OBJECT must be #f: we return a list
+;; If precisely one of SUBJECT, PREDICATE and OBJECT is #f, we return a list
 ;; of RDFNode objects, one for each of the statements which matches the pattern.
+;; If more than one of SUBJECT, PREDICATE and OBJECT is #f, we return a list of Statements.
 (define/contract (rdf:select-statements (model     jena-model?)
                                         (subject   (or (not subject)
                                                        (jena-resource? subject)
@@ -531,12 +542,8 @@
                                       (->jstring object))))))
     (if accessor
         (map accessor
-             (jobject->list (list-statements model
-                                             qsubject
-                                             qpredicate
-                                             qobject)))
-        (error 'rdf:select-statements
-               "Bad call : more than one #f slot"))))
+             (jobject->list (list-statements model qsubject qpredicate qobject)))
+        (jobject->list (list-statements model qsubject qpredicate qobject)))))
 
 ;; RDF:GET-REASONER : string -> reasoner
 ;;

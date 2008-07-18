@@ -454,9 +454,7 @@
                             block-elems
                             para-elems)))
      (else
-      (error (format #f
-                      "Unrecognised type of object (~s) in sexp-xml:sexp->xml"
-                      s))))))
+      (error 'sexp->xml (format #f "Unrecognised type of object: ~s" s))))))
 
 
 ;; Write out an element with attributes, and formatting depending on the

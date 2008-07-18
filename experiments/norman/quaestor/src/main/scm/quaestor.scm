@@ -39,7 +39,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.54 $ $Date: 2008/07/15 16:19:21 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.55 $ $Date: 2008/07/18 21:35:42 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -234,9 +234,6 @@
     (with/fc
         (make-fc '|SC_BAD_REQUEST|)
       (lambda ()
-        (define-generic-java-methods
-          set-content-type
-          get-output-stream)
         (let ((model (kb:get model-name)))
           (or model
               (error 'get-model-query
@@ -244,18 +241,15 @@
           (sparql:make-query-runner model
                                     (url-decode-to-jstring encoded-query)
                                     (request->accept-mime-types request))))))
-  (let ((qp (parse-query-string query-string)))
-    (and (= (length path-info-list) 1)
-         (car qp)
-         (string=? (car qp) "query")
-         ;; the world is calling...
-         (if (cdr qp)
-             (list '|SC_OK|
-                   (sparql-encoded-query (request->kb-uri request)
-                                         (cdr qp)))
-             (no-can-do request
-                        '|SC_BAD_REQUEST|
-                        "found empty SPARQL query in GET request")))))
+  (and (= (length path-info-list) 1)
+       query-string
+       (let ((qp (parse-query-string query-string)))
+         (cond ((assq 'query qp)
+                => (lambda (query-spec)
+                     (list '|SC_OK|
+                           (sparql-encoded-query (request->kb-uri request)
+                                                 (cdr query-spec)))))
+               (else #f)))))
 
 ;; Retrieve the submodel named by the two-element path-info-list, and
 ;; write it to the response.  Return #t if successful, or set a

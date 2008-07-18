@@ -17,6 +17,7 @@
               ("text/rdf+n3"                         . "N3")      
               ("text/rdf+n3; charset=utf-8"          . "N3")      
               ("application/x-turtle"                . "N3")
+              ("text/turtle"                         . "N3")
               ("application/rdf+xml"                 . "RDF/XML") 
               ("application/rdf+xml; charset=wibble" . "RDF/XML") 
               ("*/*"                                 . "N3")      
@@ -130,10 +131,6 @@
 
     (expect-failure select-failure      ;error: no #f slot
                     (rdf:select-statements test-model res name norman))
-    (expect-failure select-failure2     ;error: two #f slots
-                    (rdf:select-statements test-model res #f #f))
-    (expect-failure select-failure3     ;error: two #f slots
-                    (rdf:select-statements test-model #f name #f))
 
     (expect select-subjects
             (list norman-string) ; '("http://example.org#norman")
@@ -226,6 +223,35 @@
                                    norman-string 
                                    "http://example.org/wibble"
                                    #f))
+
+    ;; selecting multiple statements
+    (let ((one-stmt (list (format #f "~a ~a ~a" norman-string "http://purl.org/dc/elements/1.1/name" "Norman"))))
+      (define (format-statement stmt)
+        (define-generic-java-methods get-subject get-predicate get-object)
+        (format #f "~a ~a ~a"
+                (->string (to-string (get-subject stmt)))
+                (->string (to-string (get-predicate stmt)))
+                (->string (to-string (get-object stmt)))))
+      (expect select-multiple-1
+              one-stmt
+              (map format-statement
+                   (rdf:select-statements test-model #f "http://purl.org/dc/elements/1.1/name" #f)))
+      (expect select-multiple-2
+              one-stmt
+              (map format-statement
+                   (rdf:select-statements test-model #f #f "Norman")))
+      (expect select-multiple-3
+              one-stmt
+              (map format-statement
+                   (rdf:select-statements test-model norman-string #f #f)))
+      (expect select-multiple-4
+              (append
+               (list "http://example.org#MyClass http://www.w3.org/2000/01/rdf-schema#subClassOf http://example.org#MySuperClass"
+                     "http://example.org#MyClass http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2000/01/rdf-schema#Class")
+               one-stmt)
+              (map format-statement
+                   (rdf:select-statements test-model #f #f #f))))
+
 
     ;; now a couple of similar queries using rdf:select-object/string
     (expect select-objects-string       ;object is a literal

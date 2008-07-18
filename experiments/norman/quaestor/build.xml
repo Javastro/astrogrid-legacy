@@ -78,8 +78,8 @@
   <property name="app.path"      value="/${app.name}"/>
   <!-- Versions: make odd-numbered versions stable (-ish), and even-numbered
        ones intermediate beta releases. -->
-  <property name="app.version"   value="0.4.7"/>
-  <property name='release.date'  value='2008 June 23'/>
+  <property name="app.version"   value="0.4.8"/>
+  <property name='release.date'  value='2008 July 18'/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.client"  value="${build.home}/client"/>

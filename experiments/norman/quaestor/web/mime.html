@@ -28,17 +28,19 @@ XML, using the
 <a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >SPARQL response XML 
 schema</a>.</dd>
 
-<dt><code>application/x-turtle</code></dt>
-<dd><a href='http://www.dajobe.org/2004/01/turtle/' >Turtle</a> is a
+<dt><code>text/turtle</code></dt>
+<dd><a href='http://www.w3.org/TeamSubmission/turtle/' >Turtle</a> is a
 well-established but still experimental text syntax for RDF.  It's
 very closely related to Notation3, but without some of that syntax's
 non-RDF extensions.  The MIME type is not yet registered, but
-<code>application/turtle</code> is being requested.</dd>
+<code>text/turtle</code> is being requested; Turtle has also been served
+with the MIME type <code>application/x-turtle</code>.</dd>
 
 <dt><code>application/xml</code></dt>
 <dd>This is the MIME type which should accompany a POSTed SPARQL
 query.  See the <a href='http://www.w3.org/TR/rdf-sparql-query/'
->specification</a> for more details.</dd>
+>specification</a> for more details.  The <code>application/sparql-query</code>
+should generally be preferred, as being more specific.</dd>
 
 <dt><code>text/csv</code> (SELECT query responses only)</dt>
 <dd>Comma-separated-value output, conforming to RFC 4180.  The

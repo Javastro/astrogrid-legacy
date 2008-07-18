@@ -116,14 +116,16 @@
              '()))
 
 (expect parse-query-string
-        '((#f . #f)
-          (#f . #f)
-          (#f . #f)
-          (#f . "value")
-          ("query" . #f)
-          ("query" . #f)
-          ("query" . "value")
-          ("query" . "value=another"))
+        '(() () () ()
+          ((query . ""))
+          ((query . ""))
+          ((query . "value"))
+          ((query . "value=another"))
+          ((query . "value") (q2 . "v2"))
+          ((query . "value") (q2 . "v2"))
+          ((query . "value"))
+          ((query . "value") (q2 . ""))
+          ((query . "value") (q2 . "")))
         (map PARSE-QUERY-STRING
              '(#f
                ""
@@ -132,7 +134,12 @@
                "query"
                "query="
                "query=value"
-               "query=value=another")))
+               "query=value=another"
+               "query=value&q2=v2"
+               "&query=value&&q2=v2&"
+               "query=value&=v2"
+               "query=value&q2"
+               "query=value&&q2=&&&")))
 
 (expect string-split-plain
         '(("one" "two")

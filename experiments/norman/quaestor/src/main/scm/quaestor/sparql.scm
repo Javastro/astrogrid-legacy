@@ -410,15 +410,15 @@
 
   (case query-type
     ((select)
-     (let ((handlers `(("application/xml" .
+     (let ((handlers `(("application/sparql-results+xml" . ;see http://www.w3.org/TR/rdf-sparql-XMLres/#mime
                         ,(lambda (result stream set-type)
-                           (set-type "application/xml")
+                           (set-type "application/sparql-results+xml")
                            (output-as-xml (java-null <result-set-formatter>)
                                           stream
                                           result)))
-                       ("application/sparql-results+xml" . ;see http://www.w3.org/TR/rdf-sparql-XMLres/#mime
+                       ("application/xml" .
                         ,(lambda (result stream set-type)
-                           (set-type "application/sparql-results+xml")
+                           (set-type "application/xml")
                            (output-as-xml (java-null <result-set-formatter>)
                                           stream
                                           result)))
@@ -455,7 +455,13 @@
                                   mime-types best-type))))))
 
     ((ask)
-     (let ((handlers `(("application/xml" .
+     (let ((handlers `(("application/sparql-results+xml" . ;see http://www.w3.org/TR/rdf-sparql-XMLres/#mime
+                        ,(lambda (result stream set-type)
+                           (set-type "application/sparql-results+xml")
+                           (output-as-xml (java-null <result-set-formatter>)
+                                          stream
+                                          result)))
+                       ("application/xml" .
                         ,(lambda (result stream set-type)
                            (set-type "application/xml")
                            (output-as-xml (java-null <result-set-formatter>)

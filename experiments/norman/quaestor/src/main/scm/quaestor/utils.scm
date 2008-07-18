@@ -47,7 +47,8 @@
          sexp-xml:sexp->xml
          sexp-xml:escape-string-for-xml)
 (import* srfi-1
-         remove)
+         remove
+         filter-map)
 (import* srfi-13
          string-prefix?
          string-downcase
@@ -392,32 +393,23 @@
             (merge-lists (sort-list left <=)
                          (cons pe (sort-list right <=)))))))))
 
-;; parse-query-string string -> pair-of-strings
+;; PARSE-QUERY-STRING : string -> (listof (symbol . string))
 ;;
-;; Given a query string "keyword=value", parse it into a pair of strings
-;; representing the text before and after the equals sign.  If either
-;; is missing, replace it with #f.  If the query is #f, return (#f . #f)
-;;
-;; Very simple-minded.  Query strings can be more generic than this,
-;; but they're not, in this application.
-(define/contract (parse-query-string (qs (or (not qs) (string? qs)))
-                                     -> pair?)
-  (cond ((not qs)
-         '(#f . #f))
-        ((string-index qs #\=)
-         => (lambda (index)
-              (let ((k (substring qs 0 index))
-                    (v (substring qs (+ index 1) (string-length qs))))
-                (cons (if (> (string-length k) 0)
-                          k
-                          #f)
-                      (if (> (string-length v) 0)
-                          v
-                          #f)))))
-        ((= (string-length qs) 0)
-         '(#f . #f))
-        (else
-         (cons qs #f))))
+;; Given a query string "keyword=value&...", parse it into a list of pairs,
+;; each of which has the query parameter in its car, and the value in its cdr.
+;; Skip empty or malformed (no keyword) queries; "keyword" or "keyword=" both parse
+;; OK as having no value
+(define/contract (parse-query-string (qs (or (not qs) (string? qs))) -> list?)
+  (if (not qs)
+      '()
+      (filter-map (lambda (v)
+                    (cond ((string-index v #\=)
+                           => (lambda (index)
+                                (and (> index 0)
+                                     (cons (string->symbol (substring v 0 index))
+                                           (substring v (+ index 1) (string-length v))))))
+                          (else (cons (string->symbol v) ""))))
+                  (string-split qs #\&))))
 
 ;; STRING-SPLIT : string char [number] -> (listof string)
 ;; The function unaccountably not in srfi-13.  Split the string at occurrences of the
@@ -604,7 +596,11 @@
                     (request-path (cons (let ((s (->string (get-servlet-path request))))
                                           (substring s 1 (string-length s))) ; hacky: presumes that the servlet is of the form '/foo'
                                         (request->path-list request)))
-                    (status-number (->number (java-retrieve-static-object '|javax.servlet.http.HttpServletResponse| status-symbol))))
+                    (status-number (->number (java-retrieve-static-object '|javax.servlet.http.HttpServletResponse| status-symbol)))
+                    (request-query-params (cond ((request->query-string request)
+                                                 => (lambda (qs)
+                                                      (map car (parse-query-string qs))))
+                                                (else #f))))
                 (unless (response-matches-wadl? method request-path
                                                 status-number content-type handler-output headers)
                         (error 'checked-service-http-call
@@ -627,7 +623,8 @@
                 ((procedure? handler-output)
                  (handler-output (get-output-stream response)
                                  (lambda (mime-type)
-                                   (set-content-type response (->jstring mime-type)))))
+                                   (set-content-type response (->jstring mime-type))))
+                 #t)                    ;produce no further output
                 (else
                  (error 'service-http-call "Impossible output: ~s" handler-output))))))))
 
@@ -675,7 +672,8 @@
                ((car resp)
                 (get-output-stream response)
                 (lambda (mime-type)
-                  (set-content-type response (->jstring mime-type)))))
+                  (set-content-type response (->jstring mime-type))))
+               #t)                      ;produce no further output
 
               ((and (list? (car resp))
                     (string? (caar resp)))
@@ -700,7 +698,7 @@
                     (string? (cdar resp)))
                ;; pair of strings -- set an extra response header
                (set-header response (->jstring (caar resp)) (->jstring (cdar resp)))
-               (loop (cdr resp seen-status? seen-content-type?)))
+               (loop (cdr resp) seen-status? seen-content-type?))
 
               (else
                ;; ooops
