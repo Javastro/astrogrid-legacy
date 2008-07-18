@@ -11,6 +11,10 @@
   <shortDescription>CEA server for HTTP applications</shortDescription>
   <description>A CEA application-server for HTTP applications. The service provides
     CEA's standard SOAP interface, "CEC".</description>
+    
+  <siteAddress>terror.star.le.ac.uk</siteAddress>
+  <siteDirectory>/software_docs/cea-http-${pom.currentVersion}</siteDirectory>
+  
   <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
   <inceptionYear>2003</inceptionYear>
   <developers>
