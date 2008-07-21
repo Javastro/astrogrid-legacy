@@ -425,7 +425,7 @@
     <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-scripting</artifactId>
-            <!--  refactor login so that this is not required anymore -->
+            <!-- only required for a single stilts utility class used in TablesImpl -->
             <version>${astrogrid.scripting.version}</version>
             <type>jar</type>
             <properties>
