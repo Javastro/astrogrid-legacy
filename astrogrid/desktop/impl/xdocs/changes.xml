@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="fix">
+    astroscope: recognizes fits files as spectra, so they can be sent via plastic
+    </action>
     <action dev="nw" type="add">
     voexplorer: added indication when tabular metadata view contains data
     </action> 

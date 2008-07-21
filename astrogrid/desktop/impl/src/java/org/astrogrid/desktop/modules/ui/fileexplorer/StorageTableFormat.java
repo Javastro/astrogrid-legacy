@@ -83,7 +83,7 @@ public class StorageTableFormat implements AdvancedTableFormat {
 	public static String  findBestContentType(FileObject o) throws FileSystemException {
 	    if (o.getType().hasContent()) {
 	        String cType =  o.getContent().getContentInfo().getContentType();
-	        while (StringUtils.isEmpty(cType) && o instanceof DelegateFileObject && !(o instanceof AstroscopeFileObject)) {
+	        while (StringUtils.isEmpty(cType) && AstroscopeFileObject.isOnlyDelegateFileObject(o)) {
 	            o = ((DelegateFileObject)o).getDelegateFile();
 	            cType = o.getContent().getContentInfo().getContentType();
 	        }

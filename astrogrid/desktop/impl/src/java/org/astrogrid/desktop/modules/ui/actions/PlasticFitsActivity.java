@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,12 +14,11 @@ import javax.swing.JMenuItem;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.votech.plastic.CommonMessageConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
@@ -106,9 +104,7 @@ private final PlasticScavenger scav;
 	        public void run() {
 	            for (Iterator i = l.iterator(); i.hasNext();) {
 	                FileObject f = (FileObject) i.next();
-	                while (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
-	                    f = ((DelegateFileObject)f).getDelegateFile();
-	                }			
+	                f = AstroscopeFileObject.findInnermostFileObject(f);
 	                sendLoadImageMessage(f);
 	            }
 	        }

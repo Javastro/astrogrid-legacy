@@ -5,9 +5,7 @@ package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -20,14 +18,11 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.AbstractFileObject;
-import org.apache.commons.vfs.provider.DelegateFileObject;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeIterator;
-import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.store.Ivorn;
-import org.codehaus.xfire.attachments.Attachment;
 
 /** fileobject for myspace.
  * implemented roughly using the  FileManagerClient. Would be more efficient
@@ -46,9 +41,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
     /** special-case optimization where the file object to copy from is http - can pass an call to myspace to do the copy directly, rather than the client reading the data. */
     public void copyFrom(FileObject file, FileSelector selector)
             throws FileSystemException {
-        while (file instanceof DelegateFileObject) {
-            file = ((DelegateFileObject)file).getDelegateFile();
-        }
+        file = AstroscopeFileObject.findInnermostFileObject(file);
         if (file.getURL().getProtocol().equals("http")
                 && ( selector == Selectors.SELECT_ALL  || selector == Selectors.SELECT_FILES || selector == Selectors.SELECT_SELF || selector == Selectors.SELECT_SELF_AND_CHILDREN)) {
             // unlikely any other kind of selector swould be intentionally used, but there miught be some pathological cases.

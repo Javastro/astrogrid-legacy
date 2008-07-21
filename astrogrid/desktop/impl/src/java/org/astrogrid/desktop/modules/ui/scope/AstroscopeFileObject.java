@@ -10,20 +10,16 @@ import java.util.Map;
 
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileContentInfo;
-import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSelector;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.NameScope;
 import org.apache.commons.vfs.RandomAccessContent;
-import org.apache.commons.vfs.impl.DefaultFileContentInfo;
-import org.apache.commons.vfs.provider.AbstractFileName;
-import org.apache.commons.vfs.provider.AbstractFileObject;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
-import org.apache.commons.vfs.provider.DefaultFileContent;
 import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.apache.commons.vfs.util.RandomAccessMode;
+
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** Delegate file object that allows information to be provided
  * rather than detected.
@@ -218,4 +214,59 @@ public class AstroscopeFileObject extends DelegateFileObject {
 
 
     private final String mime;
+
+
+    /** the node inthe result tree that this result is associated with */
+    private TreeNode node;
+    /**
+     * @param node
+     */
+    public final void setNode(TreeNode node) {
+        this.node = node;
+    }
+    /** access the result-tree-node that this result is associated with */
+    public final TreeNode getNode() {
+        return this.node;
+    }
+    
+    // helper methods for working with delegte file objects.
+    /** determine if fo is a delegate, but NOT an astroscopeFileObject */
+    public static final boolean isOnlyDelegateFileObject(FileObject fo) {
+        return (fo instanceof DelegateFileObject && ! (fo instanceof AstroscopeFileObject));
+    }
+   
+    /** determin if fo is a delegate of any kind( including an astroscope file object) */
+    public static final boolean isDelegateOrAstroscopeFileObject(FileObject fo) {
+        return fo instanceof DelegateFileObject;
+    }
+    
+    /** return the Astroscope fileObject that this delegates to
+     * 
+     * @param fo a file object
+     * @return the AstroscopeFIleObject that this fiileObject dlegates to, or null if there is no astroscopefileobject in the delegattion chain..
+     */
+    public static final AstroscopeFileObject findAstroscopeFileObject(FileObject fo) {
+        fo = findAstroscopeOrInnermostFileObject(fo);
+        return fo instanceof AstroscopeFileObject ? (AstroscopeFileObject)fo : null;
+    }
+  
+    /** return the innermost file object that this delegates to
+     * @return the innermost file - never null */
+    public static final FileObject findInnermostFileObject(FileObject fo) {
+        while (isDelegateOrAstroscopeFileObject(fo)) {
+            fo = ((DelegateFileObject)fo).getDelegateFile();
+        }
+        return fo;
+    }
+
+    
+    /** return AstroscopeFileObject that this file objct delegates to, or if none present, the innermost file object that this delegates to
+     * @return the file object - never null */
+    public static final FileObject findAstroscopeOrInnermostFileObject(FileObject fo) {
+        while (isOnlyDelegateFileObject(fo)) {
+            fo = ((DelegateFileObject)fo).getDelegateFile();
+        }
+        return fo;
+    }
+    
 }

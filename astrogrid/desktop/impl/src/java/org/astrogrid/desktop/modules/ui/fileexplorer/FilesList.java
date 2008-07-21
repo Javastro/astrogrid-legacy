@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
@@ -93,9 +92,8 @@ public class FilesList extends JList {
         if (item == null) {
             return null;
         }
-        while (item instanceof DelegateFileObject && !(item instanceof AstroscopeFileObject)) {
-            item = ((DelegateFileObject)item).getDelegateFile();
-        }
+        item = AstroscopeFileObject.findAstroscopeOrInnermostFileObject(item);
+
         HtmlBuilder sb = new HtmlBuilder();
            sb.append("URI: ").append(item.getName().getURI());
            try {

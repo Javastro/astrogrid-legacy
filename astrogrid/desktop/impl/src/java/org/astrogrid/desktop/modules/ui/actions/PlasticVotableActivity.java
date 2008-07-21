@@ -3,9 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
+
 import java.awt.event.ActionEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -15,21 +15,18 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 
-import static org.apache.commons.io.IOUtils.*;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
-import org.astrogrid.io.Piper;
 import org.votech.plastic.CommonMessageConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
@@ -136,9 +133,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	            Object o = i.next();
 	            if (o instanceof FileObject) {                    
 	                FileObject f = (FileObject) o;
-	                while (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
-	                    f = ((DelegateFileObject)f).getDelegateFile();
-	                }
+	                f = AstroscopeFileObject.findInnermostFileObject(f);
 	                (new LoadVotableWorker(f)).start();
 	                
 	            } else if (o instanceof CatalogService) {

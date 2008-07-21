@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,12 +14,11 @@ import javax.swing.JMenuItem;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -90,7 +88,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
         return super.createHidingMenuItem();
     }
 	protected boolean invokable(FileObject f) {
-		try {
+		try {	    
 			return VoDataFlavour.MIME_FITS_SPECTRUM.equals(f.getContent().getContentInfo().getContentType());
 
 		} catch (FileSystemException x) {
@@ -106,17 +104,19 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 		    public void run() {
 		        for (Iterator i = l.iterator(); i.hasNext();) {
 		            FileObject f = (FileObject) i.next();
-		            while (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
-		                f = ((DelegateFileObject)f).getDelegateFile();
-		            }			
-		            sendLoadSpectrumMessage(f);
+		            AstroscopeFileObject astroscopeFileObject = AstroscopeFileObject.findAstroscopeFileObject(f);
+		            if (astroscopeFileObject != null) {
+		                sendLoadSpectrumMessage(astroscopeFileObject);
+		            }	else {
+		                sendLoadSpectrumMessage(f);
+		            }
 		        }	
 		    }
 		};
         confirmWhenOverThreshold(sz,"Send all " + sz + " files?",r);
 	}
-
-	private void sendLoadSpectrumMessage(final FileObject f) {
+	/** extended verion, when additional metadata is available */
+	private void sendLoadSpectrumMessage(final AstroscopeFileObject f) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 //		    {
 //		        setTransient(true);
@@ -126,8 +126,9 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 				URL url = f.getURL();
 				l.add(url.toString());// url
 				l.add(f.getName().getBaseName());
-				Hashtable t = new Hashtable(f.getContent().getAttributes());
+				Hashtable t = new Hashtable(f.getNode().getAttributes());
 				l.add(t);// some kind of map here.
+				System.err.println(t);
 				scav.getTupp().singleTargetPlasticMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}
@@ -136,6 +137,27 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 			}			
 		}).start();		
 	}
+	
+    private void sendLoadSpectrumMessage(final FileObject f) {
+        (new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
+//          {
+//              setTransient(true);
+//          }
+            protected Object construct() throws Exception {
+                List l = new ArrayList();
+                URL url = f.getURL();
+                l.add(url.toString());// url
+                l.add(f.getName().getBaseName());
+                Hashtable t = new Hashtable(f.getContent().getAttributes());
+                l.add(t);// some kind of map here.
+                scav.getTupp().singleTargetPlasticMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
+                return null;
+            }
+            protected void doFinished(Object result) {
+                parent.showTransientMessage("Message sent to " + plas.getName(),"");    
+            }           
+        }).start();     
+    }	
 	
 	/**
 	 * 

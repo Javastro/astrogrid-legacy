@@ -24,9 +24,9 @@ import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 import com.l2fprod.common.swing.BaseDialog;
 
@@ -140,7 +140,7 @@ public class RenameActivity extends AbstractFileActivity {
 	
 	protected boolean invokable(FileObject f) { 
 		try {
-            return (! (f instanceof DelegateFileObject)
+            return (! AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
                     && f.isWriteable());
         } catch (FileSystemException x) {
             return false;

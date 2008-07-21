@@ -9,34 +9,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.apache.commons.collections.BidiMap;
-import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.FileChangeEvent;
-import org.apache.commons.vfs.FileListener;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileType;
-import org.apache.commons.vfs.provider.AbstractFileObject;
-import org.apache.commons.vfs.provider.DelegateFileObject;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
-import org.astrogrid.desktop.modules.ui.fileexplorer.FilesTable;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
 
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTree;
-import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.Node;
 import edu.berkeley.guir.prefuse.graph.Tree;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
@@ -186,7 +173,7 @@ public  final class VizModel {
 	 * @param result the file object that contains the contents of the result.
 	 * @param the tree node to cache the freshly created file object in.
 	 */
-	public synchronized void addResultFor(Retriever abstractRetriever,String name,FileObject result, FileProducingTreeNode node) throws FileSystemException {
+	public synchronized void addResultFor(Retriever abstractRetriever,String name,AstroscopeFileObject result, FileProducingTreeNode node) throws FileSystemException {
 	        final String retDir = mkFileName(abstractRetriever);
 	        int renameCount = 0;	        
 	        final String prefix = StringUtils.substringBeforeLast(name,".");
@@ -209,8 +196,9 @@ public  final class VizModel {
 	            
 	            // now find the image, based on the filename.
 	             Image image = iconFinder.find(candidate).getImage();
-
-                ((FileProducingTreeNode)node).setFileObject(candidate,image);
+	             //tie both together.
+                node.setFileObject(candidate,image);
+                result.setNode(node);
 	}
 	
 	/**

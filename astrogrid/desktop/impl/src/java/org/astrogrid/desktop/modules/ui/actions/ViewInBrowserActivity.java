@@ -15,11 +15,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileUtil;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -60,10 +60,7 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 		(new BackgroundWorker(uiParent.get(),"Displaying " + fo.getName().getBaseName(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			protected Object construct() throws Exception {
-			    FileObject f = fo;
-                while (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
-                    f = ((DelegateFileObject)f).getDelegateFile();
-                }
+			    FileObject f = AstroscopeFileObject.findAstroscopeFileObject(fo);
 			    URL u = f.getURL();
 			    if (! (u.getProtocol().equals("file") || u.getProtocol().equals("http") || u.getProtocol().equals("ftp"))) { // pass it to the browser directly.
 			        // download file to temporary location, and then open it

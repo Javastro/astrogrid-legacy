@@ -8,13 +8,15 @@ import java.util.List;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.FileManagerFactory;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 /** action to reveal a file.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
+ * 
+ * NB: I've changed the implementation from going down one delegate step to going down all delegate steps to the innermost. seems most sensible.
  */
 public class RevealFileActivity extends AbstractFileActivity {
 
@@ -24,8 +26,8 @@ public class RevealFileActivity extends AbstractFileActivity {
 	
     // applies to all non-local files and folders.
 	protected boolean invokable(FileObject f) { 
-            return f instanceof DelegateFileObject
-                    && ! ((DelegateFileObject)f).getDelegateFile().getName().getScheme().equals("tmp")
+            return AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
+                    && ! AstroscopeFileObject.findInnermostFileObject(f).getName().getScheme().equals("tmp")
                     ;
 
 	}
@@ -48,12 +50,7 @@ public class RevealFileActivity extends AbstractFileActivity {
     
 	public void actionPerformed(ActionEvent e) {
 		final List l = computeInvokable();
-		logger.debug(l);
-        final DelegateFileObject del = (DelegateFileObject)l.get(0);
-        FileObject fo = del.getDelegateFile();
-        logger.debug(fo);		
-	
-        mgr.show(fo);
+        mgr.show(AstroscopeFileObject.findInnermostFileObject((FileObject)l.get(0)));
 		
 	}
 	

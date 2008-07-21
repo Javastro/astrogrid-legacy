@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.KeyStroke;
@@ -13,9 +12,9 @@ import javax.swing.KeyStroke;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -25,7 +24,7 @@ public class DuplicateActivity extends AbstractFileActivity {
 
     protected boolean invokable(FileObject f) {
         try {
-            return (! (f instanceof DelegateFileObject)
+            return (! AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
                     && f.getParent().isWriteable());
         } catch (FileSystemException x) {
             return false;

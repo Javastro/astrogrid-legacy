@@ -32,8 +32,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.AstroscopeFileObject;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 
 import ca.odell.glazedlists.EventList;
@@ -183,7 +183,7 @@ public class FileModelTransferHandler extends TransferHandler{
                                break;
                            }
                            FileObject fo = (FileObject)o;
-                            if (fo instanceof DelegateFileObject || ! fo.isWriteable()) {
+                            if (AstroscopeFileObject.isDelegateOrAstroscopeFileObject(fo) || ! fo.isWriteable()) {
                                 moveAllowed = false;
                                 break;
                             }
