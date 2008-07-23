@@ -11,6 +11,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <map>
 
 #include "idl_export.h"
@@ -26,9 +27,12 @@ public:
 	virtual IDL_VPTR makeIDLVar(void);
 	virtual IDL_STRUCT_TAG_DEF makeStag(const std::string & name);
 	virtual void fillData(void *);
+	int getType(void) {return idlType;}
 
 protected:
     IDL_VPTR var; // the IDL variable definition
+	int idlType;
+
 };
 
 class IDLStruct : public IDLBase {
@@ -52,6 +56,7 @@ public:
 	IDLArray(const XmlRpcValue & v);
 	virtual ~IDLArray();
 	virtual IDL_STRUCT_TAG_DEF makeStag(const std::string & name);
+	virtual void fillData(void *);
 protected:
 std::vector<IDLBase *> *mvec;
 
@@ -68,7 +73,6 @@ public:
 
 protected:
 	XmlRpcValue xmlrv;
-	int idlType;
 
 };
 

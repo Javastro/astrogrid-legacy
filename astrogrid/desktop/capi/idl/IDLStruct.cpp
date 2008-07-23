@@ -58,7 +58,13 @@ IDLStruct::IDLStruct(const XmlRpcValue & v)
     {
     	std::cerr << "member="<<membernames.at(i)<<"\n";
     	XmlRpcValue const vv = const_cast<XmlRpcValue&>(v)[membernames.at(i)];
-    	mmap->insert(std::pair<std::string, IDLBase *>(membernames.at(i), IDLBase::factory(vv) ));
+    	std::string s = membernames.at(i);
+ 	    std::transform(s.begin(),
+ 	                  s.end(),
+ 	                  s.begin(),
+ 	                  (int(*)(int))std::toupper);
+
+    	mmap->insert(std::pair<std::string, IDLBase *>(s, IDLBase::factory(vv) ));
     }
 
 }
@@ -88,7 +94,8 @@ IDL_VPTR IDLStruct::makeIDLVar(void)
 	for (i = mmap->begin(); i != mmap->end(); i++, j++)
 	{
 	   IDL_MEMINT offset;
-	   offset = IDL_StructTagInfoByName(sdef, const_cast<char *>(i->first.c_str()), IDL_MSG_LONGJMP, NULL);
+	   std::string s = i->first;
+	   offset = IDL_StructTagInfoByName(sdef, const_cast<char *>(s.c_str()), IDL_MSG_LONGJMP, NULL);
 	   i->second->fillData(var->value.s.arr->data + offset);
 	}
    return var;
@@ -118,6 +125,26 @@ IDLArray::~IDLArray(){
 	mvec->clear();
 }
 
+void IDLArray::fillData(void * data)
+{
+	int n = mvec->size();
+	if(n == 0)
+	{
+		*((char **)data) = NULL;
+	}
+	else{
+		IDL_VPTR arrayvar;
+		IDL_MEMINT dim[1];
+		dim[0] = n;
+	    IDLBase* base = mvec->at(0);
+	    *((char **)data) = IDL_MakeTempArray( base->getType(), 1, dim, IDL_ARR_INI_ZERO, &arrayvar);
+        for (int i = 0; i < n; i++){
+        	IDLBase* elem = mvec->at(i);
+        	elem->fillData((char *)data + arrayvar->value.arr->elt_len*i);
+        }
+	}
+}
+
 IDL_STRUCT_TAG_DEF IDLArray::makeStag(const std::string & name) {
 	IDL_STRUCT_TAG_DEF stag = (*mvec)[0]->makeStag(name); // assume that the vector is of one type - I think that it has to be for IDL anyway...
 	// add the dimensionality
@@ -135,7 +162,8 @@ void IDLBase::fillData(void * data){
 IDL_STRUCT_TAG_DEF IDLBase::makeStag(const std::string & name)
 {
     IDL_STRUCT_TAG_DEF stag;
-	stag.name = const_cast<char *>(name.c_str());
+    std::string s = name;
+	stag.name = const_cast<char *>(s.c_str());
 	stag.flags=0;
     return stag;
 
