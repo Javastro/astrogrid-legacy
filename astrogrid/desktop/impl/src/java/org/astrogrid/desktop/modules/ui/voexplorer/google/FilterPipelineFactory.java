@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -28,7 +29,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
@@ -60,7 +60,7 @@ public class FilterPipelineFactory   {
 
 
 	private final Preference advanced;
-
+	private final static String SYSTEM_TOGGLE_KEY = "system.toggle.key";
     public FilterPipelineFactory(SortedList items, PipelineStrategy[] strategies, AnnotationService annotationService, Preference advanced) {
 		this.advanced = advanced;
         int pipelineSize = 3;
@@ -69,7 +69,7 @@ public class FilterPipelineFactory   {
 		systemToggle = new JCheckBoxMenuItem("Show Technical System Resources",false); 
 		systemToggle.setToolTipText("Show technical system resources");	
 		systemFilteredItems = new FilterList(items
-				,new NotToggleMatcherEditor(systemToggle,new SystemFilter()));
+				,new NotToggleMatcherEditor(systemToggle,PREFERENCES,SYSTEM_TOGGLE_KEY,new SystemFilter()));
         // incremental text field..
 		SearchField sf = new SearchField("Filter results");
         sf.setToolTipText("Filter list of resources using text string");
@@ -123,6 +123,7 @@ public class FilterPipelineFactory   {
 	private final JCollapsiblePane filterPane;
 	private final JToggleButton toggleButton;
     private final FilterList systemFilteredItems;
+    private static final Preferences PREFERENCES = Preferences.userNodeForPackage(FilterPipelineFactory.class);
 	
 	/** toggle button to control filtering of system resources */
 	public JCheckBoxMenuItem getSystemToggleButton() {
@@ -473,15 +474,24 @@ public class FilterPipelineFactory   {
 		}
 	}
 	
-	/** matcher editor which can be turned on/off by a toggle button */
+	/** matcher editor which can be turned on/off by a toggle button - and records this fact in a preference object */
 	private static class NotToggleMatcherEditor extends AbstractMatcherEditor implements ItemListener{
-		/**
+		private final Preferences preferences;
+        private final String key;
+
+        /**
 		 * Construct a matcher editor which applies the supplied matcher only when the toggle is 'false'
 		 * @param control
+		 * @param preferences 
 		 * @param matcher
 		 */
-		public NotToggleMatcherEditor(JCheckBoxMenuItem control, Matcher matcher) {
-			control.addItemListener(this);
+		public NotToggleMatcherEditor(JCheckBoxMenuItem control, final Preferences preferences, final String key, Matcher matcher) {
+		    
+			this.preferences = preferences;
+            this.key = key;
+            // load inital state of control from preferences.
+            control.setSelected(preferences.getBoolean(key,control.isSelected()));
+            control.addItemListener(this);
 			realMatcher = matcher;
 			if (! control.isSelected()) {
 				fireConstrained(realMatcher);
@@ -493,10 +503,12 @@ public class FilterPipelineFactory   {
 		private final Matcher realMatcher;
 
 		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() != ItemEvent.SELECTED) {
-				fireConstrained(realMatcher);
+		    boolean selected = e.getStateChange() == ItemEvent.SELECTED;
+		    preferences.putBoolean(key,selected);
+			if (selected) {
+			    fireMatchAll();
 			} else {
-				fireMatchAll();
+			    fireConstrained(realMatcher);
 			}
 		}
 		
