@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.9 2007/10/22 10:29:54 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.10 2008/07/30 11:05:34 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import java.rmi.registry.Registry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.Finder;
-import org.astrogrid.acr.system.RmiServer;
 
 /** Abstract class for implementations of the RmiServer
  * implements the scanning bit.
@@ -40,6 +39,18 @@ public abstract class AbstractRmiServerImpl implements RmiServerInternal{
         inetAddress = MyInetAddress.myAddress();
     }
     
+    /** Set the internet address this server is to listen on.
+     * 
+     * if not explicitly set, implementation tries to find a sensible default
+     * @param netAddress dotted ip address or server name. null or empty strings are ignored.
+     * 
+     * @throws UnknownHostException 
+     */
+    public void setInetAddress(String netAddress) throws UnknownHostException {
+        if (netAddress != null && netAddress.trim().length() > 0) {
+            this.inetAddress = InetAddress.getByName(netAddress);
+        }
+    }
     
     /** actually start the service up 
      * @throws Exception */
@@ -165,6 +176,9 @@ public abstract class AbstractRmiServerImpl implements RmiServerInternal{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.10  2008/07/30 11:05:34  nw
+Complete - task 79: connect to localhost or to network port??
+
 Revision 1.9  2007/10/22 10:29:54  nw
 factored common inet-address code into separate helper class.
 

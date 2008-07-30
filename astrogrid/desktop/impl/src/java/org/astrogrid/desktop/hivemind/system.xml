@@ -294,13 +294,17 @@ System module.
 			<description>network port number to scan up to</description>		
 			<units>number</units>
 		</preference>
+        <preference name="system.webserver.inetAddress" default-value="127.0.0.1"
+        requires-restart="true" advanced="true">
+            <ui-name>Network address</ui-name>
+            <description>Network address that webserver and RMI Server should accept connections from. Leave blank to use DNS assigned address</description>
+        </preference>
 	</contribution>
 	
 	<contribution configuration-id="hivemind.FactoryDefaults">					
 		<default symbol="system.webserver.contextName" value=""/> <!-- indicates auto-generate -->
 		<default symbol="system.webserver.disableConnectionFile" value="false" />
 		<default symbol="system.webserver.connectionFile" value="${user.home}${file.separator}.astrogrid-desktop" />
-		<default symbol="system.webserver.inetAddress" value="" /><!--  preference? -->
 	</contribution>
 
 	<configuration-point id="servlets">
@@ -362,7 +366,7 @@ System module.
     </configuration-point>
 		
 	<contribution configuration-id="servlets" if="not (property system.xmlrpc.disabled)">
-		<servlet name="xmlrpc" path="/xmlrpc" servletClass="org.astrogrid.desktop.modules.system.XmlRpcServlet" />
+		<servlet name="xmlrpc" path="/xmlrpc" servletClass="org.astrogrid.desktop.modules.system.XMLRPC3Servlet" />
 	</contribution>
 	
 	<contribution configuration-id="servlets" if="not (property system.html.disabled)">
@@ -372,11 +376,32 @@ System module.
 	<contribution configuration-id="servletContext">
 		<attribute name="module-registry" object="service:builtin.acr"/>
 		<attribute name="converter" object="service:framework.converter"/>
+        <attribute name="xmlrpc" object="service:xmlrpc" />
 		<attribute name="plainResultTransformer" object="service:framework.plainResultTransformer" />
 		<attribute name="htmlResultTransformer" object="service:framework.htmlResultTransformer" />
 		<attribute name="rpcResultTransformer" object="service:framework.rpcResultTransformer" />
 	</contribution>
 	
+<!-- XMLRPC server - used from within the xmlrpc servlet 
+=====================================
+-->    
+
+    <service-point id="xmlrpc" visibility="private" interface="org.apache.xmlrpc.webserver.XmlRpcServletServer">
+        XMLRPC server -  used from within the xmlrpc servlet 
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.system.ArXmlRpcServer">
+                <service>builtin.acr</service>
+                <service>framework.rpcResultTransformer</service>
+                <service>framework.converter</service>
+                <service>apihelp</service>             
+            </construct>
+        </invoke-factory>
+    </service-point>        
+
+    <implementation service-id="xmlrpc"  if="property system.xmlrpc.disabled">
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>   
+
 <!-- 
 ==========================================
 SYSTEM TRAY
@@ -460,7 +485,8 @@ SYSTEM TRAY
 				<set property="scanStartPort" value="${system.rmi.startScanPort}" />
 				<set property="scanEndPort" value="${system.rmi.endScanPort}" />
 				<set property="disableConnectionFile" value="${system.rmi.disableConnectionFile}" />				
-			</construct>
+                <set property="inetAddress" value="${system.webserver.inetAddress}" /> <!--  uses same inet address as webserver -->
+        	</construct>
 		</invoke-factory>	
 	</service-point>	
 
