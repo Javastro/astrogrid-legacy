@@ -11,22 +11,25 @@ import unittest
 
 class Report(unittest.TestCase):
     def testSizeProblem(self):
-        #verifies that the query itself isn't at fault.
+        #verifies that the query itself isn't at fault.(without retrieving all the data)
         q = ar.ivoa.cone.getRegistryXQuery()
-        print q
         sizingQuery = "let $sizeResults := ( " + q + ") return <size>{count($sizeResults)}</size>"
-        print sizingQuery
-        print ar.ivoa.registry.xquerySearchXML(sizingQuery)
-    def testReport(self):
-        #the actual report. I suspect it's something in the xml return that's the problem.
+        result =  ar.ivoa.registry.xquerySearchXML(sizingQuery)
+        
+    def notestReport(self):
+        #the actual report. takes ages to complete, so not run as a test
+        #
         q = ar.ivoa.cone.getRegistryXQuery()
         print q
-        print ar.ivoa.registry.xquerySearch(q)
+        ar.ivoa.registry.xquerySearch(q)
+    def testRetrieveResourceWithOffendingharacter(self):
+        #a smaller query, that returns the same kind of offending resource.
+        #therre's only one of these in the registry at the moment.
+        ar.ivoa.registry.getResource('ivo://KeckObs/TKRS')
+   
         
 
 def suite():
-    #suite = unittest.TestSuite()
-    #return suite
     return unittest.TestLoader().loadTestsFromTestCase(Report)
 
 

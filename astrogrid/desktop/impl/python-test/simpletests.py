@@ -10,8 +10,6 @@ class SimpleTest(unittest.TestCase):
         
 
 def suite():
-    #suite = unittest.TestSuite()
-    #return suite
     return unittest.TestLoader().loadTestsFromTestCase(SimpleTest)
 
 

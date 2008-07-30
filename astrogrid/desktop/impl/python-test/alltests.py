@@ -11,6 +11,11 @@ import __builtin__
 import simpletests
 import bug2460
 import bug2790
+import bug2157
+import CdsCoordinate
+import CdsSesame
+import CdsVizier
+import IvoaSiap
 
 
 def setupAR():
@@ -29,6 +34,12 @@ if __name__ == '__main__':
         simpletests.suite()
         ,bug2460.suite()
         ,bug2790.suite()
+        ,bug2157.suite()
+        ,CdsCoordinate.suite()
+        ,CdsSesame.suite()
+        ,CdsVizier.suite()
+        ,IvoaSiap.suite()
+        
                                    ])
     #run the tests.
     unittest.TextTestRunner(verbosity=2).run(alltests)

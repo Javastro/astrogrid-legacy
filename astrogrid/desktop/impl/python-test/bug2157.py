@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#Test
+#Test that myspace files can be overwritten.
 
 import unittest
 
@@ -41,8 +41,6 @@ class Bug2157(unittest.TestCase):
 
 
 def suite():
-    #suite = unittest.TestSuite()
-    #return suite
     return unittest.TestLoader().loadTestsFromTestCase(Bug2157)
 
 

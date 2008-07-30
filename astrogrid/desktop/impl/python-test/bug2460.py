@@ -50,14 +50,19 @@ class Report(unittest.TestCase):
         if progress['status'] == "ERROR":
             self.fail("Query ended in error")
         results = self.apps.getResults(execId)
-        print results
+        #print results
         resultLoc = results['Result']
-        self.assertNotEquals("results now returns ivo:// location",output,resultLoc)
-        self.assertEquals("results is not the myspace location",self.ms.getReadContentURL(output),resultLoc)
+        self.assertNotEquals(output,resultLoc,msg="results now returns ivo:// location")
+        altResultLoc = self.ms.getReadContentURL(output)
+        # read content url isn't necessarily the same as the op location.
+        #self.assertEquals(msg="results is not the myspace location",self.ms.getReadContentURL(output),resultLoc)
+        #however, both URLs should point to the same content
+        import urllib
+        content = urllib.urlopen(resultLoc).read()
+        content1 = urllib.urlopen(altResultLoc).read()  
+        self.assertEquals(content,content1,msg="Results content differs")
         
 def suite():
-    #suite = unittest.TestSuite()
-    #return suite
     return unittest.TestLoader().loadTestsFromTestCase(Report)
 
 
