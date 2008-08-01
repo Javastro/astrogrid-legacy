@@ -338,8 +338,7 @@ public class JettySchemeServer {
                         mapkeys.append(key);
                     }
             
-                    PrintWriter out = LazyOutputStream.getLazyOutputStream(response)
-                            .getWriter();
+                    PrintWriter out = response.getWriter();
                     out.println
                             ("Method " + method + " not implemented for servletPath <"
                              + servletPath
@@ -357,18 +356,19 @@ public class JettySchemeServer {
                         .append(rq.getPathInfo());
                 Log.info(msg.toString());
 
-                // following statuses will very probably be overridden within the
-                // quaestorMethod procedure, but they're here in order to provide
-                // sane defaults.
-                //response.setContentType("text/plain");
+                // The following status will very probably be overridden within the
+                // quaestorMethod procedure, but it's here in order to provide
+                // a sane default.
                 response.setStatus(response.SC_NOT_IMPLEMENTED);
+                // Don't set a default content-type here: it sounds like a good idea, but it means that a
+                // content type is included even if the final status is 204 No Content -- that's not actually
+                // _wrong_, but it's not neat and could cause confusion.
 
                 try {
                     Object val = SchemeWrapper.getInstance().eval(proc, new Object[] { rq, response });
                     //Log.info("Jetty value: " + val);
                     if (val instanceof String) {
-                        // I don't _think_ we actually need LazyOutputStream any more
-                        PrintWriter out = LazyOutputStream.getLazyOutputStream(response).getWriter();
+                        PrintWriter out = response.getWriter();
                         out.print(val);
                         out.flush();
                     }

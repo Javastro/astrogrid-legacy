@@ -5,7 +5,11 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
- * A lazy output handler.  A {@link javax.servlet.ServletResponse}
+ * A lazy output handler.
+ *
+ * THIS CLASS IS NO LONGER USED (DELETE IT?)
+ *
+ * A {@link javax.servlet.ServletResponse}
  * object may have either its <code>getOutputStream</code> method called,
  * or its <code>getWriter</code> method, but not both.
  * However two parts of a code (for example the body of a code and

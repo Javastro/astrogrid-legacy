@@ -36,7 +36,7 @@
   content-headers-ok?
   request->header-alist
   request->accept-mime-types
-  response->lazy-output-stream
+  ;response->lazy-output-stream
   no-can-do
   tabulate-request-information
   response-page
@@ -890,14 +890,13 @@
 ;; don't call GET-OUTPUT-STREAM on the underlying response unless and
 ;; until we need to, thus leaving any error handler free to do so instead.
 ;; May be called multiple times (unlike GET-OUTPUT-STREAM).
-(define (response->lazy-output-stream response)
-  (define-java-classes
-    (<lazy-output-stream> |org.eurovotech.quaestor.LazyOutputStream|))
-  (define-generic-java-methods
-    get-output-stream
-    get-lazy-output-stream)
-  (get-output-stream (get-lazy-output-stream (java-null <lazy-output-stream>)
-                                             response)))
+;; (define (response->lazy-output-stream response)
+;;   (define-java-classes
+;;     (<lazy-output-stream> |org.eurovotech.quaestor.LazyOutputStream|))
+;;   (define-generic-java-methods
+;;     get-output-stream
+;;     get-lazy-output-stream)
+;;   (get-output-stream (get-lazy-output-stream (java-null <lazy-output-stream>) response)))
 
 ;; Given a RESPONSE, set the response status to the given RESPONSE-CODE,
 ;; and produce a status page using the given format and arguments.

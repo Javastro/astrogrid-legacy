@@ -114,8 +114,7 @@ public class TomcatSchemeServlet extends GenericServlet implements QuaestorServl
                 mapkeys.append(key);
             }
             
-            PrintWriter out = LazyOutputStream.getLazyOutputStream(response)
-                    .getWriter();
+            PrintWriter out = response.getWriter();
             out.println
                     ("Method " + method + " not implemented for context <"
                      + context
@@ -142,9 +141,7 @@ public class TomcatSchemeServlet extends GenericServlet implements QuaestorServl
                         .eval(proc,
                               new Object[] { request, response });
                 if (val instanceof String) {
-                    PrintWriter out =
-                            LazyOutputStream.getLazyOutputStream(response)
-                            .getWriter();
+                    PrintWriter out = response.getWriter();
                     out.print(val);
                     out.flush();
                 }
