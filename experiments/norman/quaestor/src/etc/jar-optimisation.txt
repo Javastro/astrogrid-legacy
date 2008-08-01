@@ -1,0 +1,140 @@
+
+I've had a couple of goes with proguard
+(http://proguard.sourceforge.net), but without much success Jena and
+SDB overlap quite a lot, and do some reflection.  The proguard
+configuration file in quaestorlib-proguard.pro seems to produce fewer
+errors than naming jars individually, but they seem more intractable,
+and it looks as if the only way to go is to try and ferret out the
+dependencies by hand.  I think there may be a few inconsistencies in
+these jar files, with methods potentially, but not actually, calling
+non-existent methods.
+
+There's a discussion of some alternatives at
+http://schmidt.devlib.org/java/class-file-optimizers.html
+
+Of the ones mentioned there, I tried jarg:
+
+  % java -Xmx128m  -jar ../t/jarg.jar quaestor-lib-0.4.8-alt.jar
+
+...but that failed with a message 'Unknown or invalid constant type at
+2' and an obfuscated stack trace.  Bah.
+
+I tried JoGa, but that ground away and then collapsed.
+
+JODE appears to be just decompilation.
+
+JarOpt <http://www.fightingquaker.com/jaropt/> isn't mentioned in that
+list, but I had the most (albeit incomplete) success with it.  I added
+the following stanza to the build.xml:
+
+  <taskdef name='JarOpt'
+           classname='org.cmc.jaroptimizer.JarOptTask'
+           classpath='jaropt.jar'/>
+<target name='jaropt'>
+    <!--JarOpt src='${dist.home}/${quaestor.lib.jar}'
+            dst='${quaestor.lib.jar}-stripped'-->
+    <JarOpt src='all.jar'
+            dst='all.jar-stripped'
+            stripNonClassFiles='false'
+            verbose='true'
+            printDependencies='true'>
+      <includePattern>org.eurovotech.quaestor.*</includePattern>
+      <includePattern>sisc.*</includePattern>
+<includePattern>com.hp.hpl.jena.query.QueryExecutionFactory</includePattern>
+<includePattern>com.hp.hpl.jena.query.QueryFactory</includePattern>
+<includePattern>com.hp.hpl.jena.query.ResultSet</includePattern>
+<includePattern>com.hp.hpl.jena.query.ResultSetFormatter</includePattern>
+<includePattern>com.hp.hpl.jena.rdf.model.ModelFactory</includePattern>
+<includePattern>com.hp.hpl.jena.rdf.model.Property</includePattern>
+<includePattern>com.hp.hpl.jena.rdf.model.RDFErrorHandler</includePattern>
+<includePattern>com.hp.hpl.jena.rdf.model.RDFNode</includePattern>
+<includePattern>com.hp.hpl.jena.rdf.model.Resource</includePattern>
+<includePattern>com.hp.hpl.jena.rdf.model.ResourceFactory</includePattern>
+<includePattern>com.hp.hpl.jena.reasoner.ReasonerRegistry</includePattern>
+<includePattern>com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory</includePattern>
+<includePattern>com.hp.hpl.jena.sdb.SDB</includePattern>
+<includePattern>com.hp.hpl.jena.sdb.SDBFactory</includePattern>
+<includePattern>com.hp.hpl.jena.sdb.StoreDesc</includePattern>
+<includePattern>com.hp.hpl.jena.sdb.store.StoreFactory</includePattern>
+<includePattern>com.hp.hpl.jena.vocabulary.ReasonerVocabulary</includePattern>
+<includePattern>org.xml.sax.ContentHandler</includePattern>
+<includePattern>org.xml.sax.ErrorHandler</includePattern>
+<includePattern>org.xml.sax.InputSource</includePattern>
+    </JarOpt>
+  </target>
+
+The list is based on the output from extract-classes.scsh, copied
+below.  That ran to completion, and produced a jar file which
+start-jetty.sh was able to start, but which crashed after the first
+few protocol-tests, with some error in an initialiser, apparently from
+within a call to rdf:new-empty-model, which seems to depend only on
+com.hp.hpl.jena.rdf.model.ModelFactory.  There are a variety of errors
+which jaropt throws up, partly to do with unrecognised opcodes
+(perhaps it's targeted at an earlier Java language version), but they
+didn't seem to stop it working.  When jaropt did finish, it reported a
+cut in size of only 50% or so, which is less of a cut than I was
+hoping for.  If that figure is realistic, perhaps there's less to be
+gained in doing this than I thought.
+
+
+
+Below is extract-classes.scsh
+
+#! /opt/local/bin/scsh -s
+!#
+
+;; Scoot through a SISC input file (on stdin), extracting each of
+;; the define-java-class or define-java-classes forms, and printing
+;; the java class which is being referred to.
+
+(define (split-at-hyphens str)
+  ((infix-splitter #\-) str))
+
+(define (process-sexp s)
+  (define (unmunge-class-name class)
+    (cond ((regexp-search (rx (: bos #\<
+                                 (submatch (: (* (* lower-case) #\.)))
+                                 (submatch (* (or alphanumeric #\-)))
+                                 #\> eos))
+                          (symbol->string class))
+           => (lambda (m)
+                (apply string-append
+                       (cons (match:substring m 1)
+                             (map (lambda (part)
+                                    (string-set! part 0 (char-upcase (string-ref part 0)))
+                                    part)
+                                  (split-at-hyphens (match:substring m 2)))))))
+          (else
+           (error "??malformed munged class: ~a~%" class))))
+  (define (print-class-name cl)
+    (display
+     (cond ((symbol? cl)
+            (unmunge-class-name cl))
+           ((list? cl)
+            (if (= (length cl) 1)
+                (unmunge-class-name (car cl))
+                (let ((class-name (symbol->string (cadr cl))))
+                  (substring class-name 1 (- (string-length class-name) 1)))))
+           (else
+            (error "unexpected class spec: ~s~%" cl))))
+    (newline))
+  (cond ((null? s))
+        ((eq? (car s) 'define-java-class)
+         (print-class-name (cdr s)))
+        ((eq? (car s) 'define-java-classes)
+         (for-each print-class-name (cdr s)))
+;;         ((eq? (car s) 'is-java-type?)
+;;          (print-class-name (cddr s)))
+        ((eq? (car s) 'java-new)
+         (print-class-name (cadr s)))
+        (else
+         (for-each (lambda (x)
+                     (and (list? x) (process-sexp x)))
+                   (cdr s)))))
+
+(let loop ((sexp (read)))
+  (process-sexp sexp)
+  (let ((next (read)))
+    (or (eof-object? next)
+        (loop next))))
+
