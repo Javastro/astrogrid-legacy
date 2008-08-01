@@ -272,6 +272,7 @@ public class JettySchemeServer {
     private static class JettySchemeHandler 
             extends org.mortbay.jetty.handler.AbstractHandler {
         private java.util.Map<String,Procedure> requestHandlerMap;
+        private java.util.regex.Pattern servletPattern = java.util.regex.Pattern.compile("^/*(/[^/]+)/*(/.*)?");
 
         public JettySchemeHandler() {
             // Constructor has nothing exciting to do
@@ -283,10 +284,11 @@ public class JettySchemeServer {
                            int dispatch)
                 throws java.io.IOException, ServletException {
 
-            Request rq
-                    = request instanceof Request
-                    ? (Request)request
-                    : HttpConnection.getCurrentConnection().getRequest();
+            Request rq;
+            if (request instanceof Request)
+                rq = (Request)request;
+            else
+                rq = HttpConnection.getCurrentConnection().getRequest();
 
             assert target.indexOf("/") == 0;
 
@@ -294,17 +296,18 @@ public class JettySchemeServer {
             // stack, but safer for it not to be null.
             rq.setContextPath("");
 
-            // Separate out the servletPath (the thing keyed in the requestHandlerMap
-            // and in quaestor.scm) and the path info (everything else)
+            // Separate out the servlet path ("/foo") from the path-info (everything after that),
+            // avoiding getting confused by multiple leading slashes
+            java.util.regex.Matcher m = servletPattern.matcher(target);
             String servletPath;
-            int slashIndex = target.indexOf("/", 1);
-            if (slashIndex < 0) {
-                // only one slash in the target
-                servletPath = target;
-                rq.setPathInfo("");
+            if (m.matches()) {
+                servletPath = m.group(1);
+                rq.setPathInfo(m.group(2));
             } else {
-                servletPath = target.substring(0, slashIndex);
-                rq.setPathInfo(target.substring(slashIndex));
+                // the only case where the pattern doesn't match is if 'target' is just a sequence of slashes
+                // (or if the 'target' doesn't start with a slash, but we've asserted that it does, above)
+                servletPath = "/";
+                rq.setPathInfo("");
             }
             rq.setServletPath(servletPath);
 
@@ -357,13 +360,14 @@ public class JettySchemeServer {
                 // following statuses will very probably be overridden within the
                 // quaestorMethod procedure, but they're here in order to provide
                 // sane defaults.
-                response.setContentType("text/plain");
+                //response.setContentType("text/plain");
                 response.setStatus(response.SC_NOT_IMPLEMENTED);
 
                 try {
                     Object val = SchemeWrapper.getInstance().eval(proc, new Object[] { rq, response });
-                    Log.info("Jetty value: " + val);
+                    //Log.info("Jetty value: " + val);
                     if (val instanceof String) {
+                        // I don't _think_ we actually need LazyOutputStream any more
                         PrintWriter out = LazyOutputStream.getLazyOutputStream(response).getWriter();
                         out.print(val);
                         out.flush();

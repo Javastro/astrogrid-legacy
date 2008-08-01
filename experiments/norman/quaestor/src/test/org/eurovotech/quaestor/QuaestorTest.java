@@ -47,7 +47,7 @@ public class QuaestorTest
             quaestorURL = new URL(System.getProperty("quaestor.url",
                                                      "http://localhost:8080/quaestor"));
 
-            String normalisedPath = quaestorURL.getPath(); // make sure there's only one / at the end
+            String normalisedPath = quaestorURL.getPath(); // make sure there's a / at the end of the path
             if (! normalisedPath.endsWith("/"))
                 normalisedPath = normalisedPath + "/";
 
@@ -79,6 +79,20 @@ public class QuaestorTest
     public void testGetKnowledgebaseList()
             throws Exception {
         HttpResult r = QuaestorConnection.httpGet(new URL(contextURL, "kb"));
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/html");
+        assertNotNull(r.getContentAsString());
+    }
+
+    public void testURLvariants()
+            throws Exception {
+        // Paths with extra slashes in them
+        String qProtocol = quaestorURL.getProtocol();
+        String qHost = quaestorURL.getHost();
+        int qPort = quaestorURL.getPort();
+        String qPath = quaestorURL.getPath();
+        HttpResult r = QuaestorConnection.httpGet(new URL(qProtocol, qHost, qPort, "//" + qPath + "////kb"));
+        // should have the same results as the previous test
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/html");
         assertNotNull(r.getContentAsString());
