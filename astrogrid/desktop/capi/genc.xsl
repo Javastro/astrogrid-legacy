@@ -40,7 +40,7 @@
          <t from="boolean" to="BOOL" fmt="%d" idlType="i" idlConv="IDL_GettmpInt" idlDecl="IDL_TYP_INT" />
          <t from="float" to="double" fmt="%f"  idlType="d" idlDecl="IDL_TYP_DOUBLE"/>
          <t from="Calendar" to="ACRDate" /><!-- use the time type from <time.h> -->
-         <t from="Date" to="ACRDate" />
+         <t from="Date" to="ACRDate" idlType="str.s" idlConv="acridl_StrToSTRING" idlDecl="IDL_TYP_STRING"  /> <!--  FIXME not really good enough for dates -->
          <t from="double" to="double" fmt="%f"  idlType="d" idlDecl="IDL_TYP_DOUBLE"/>
          <t from="int" to="int" fmt="%d" idlType="i" idlConv="IDL_GettmpInt" idlDecl="IDL_TYP_INT"/>
          <t from="long" to="long" fmt="%f" idlType="i" idlConv="IDL_GettmpInt" idlDecl="IDL_TYP_INT"/>
@@ -872,7 +872,7 @@ struct  </xsl:text>
       <xsl:text>   </xsl:text>
         <xsl:choose>
            <xsl:when test="$typeMap/map/t[@from = current()/@type]/@idlType">
-                      <xsl:value-of select="concat('   _args[',position()-1, '] = argv[',position()-1,']-&gt;value.',$typeMap/map/t[@from = current()/@type]/@idlType,';',$nl)" />
+                      <xsl:value-of select="concat('   _args[',position()-1, '] = argv[',position()-1,']-&gt;value.',$typeMap/map/t[@from = current()/@type]/@idlType,'; //',@name,$nl)" />
            </xsl:when>
            <xsl:otherwise>
                <xsl:value-of select="concat('//FIXME type too complex for IDL? - ',@name,' ',@type,$nl)"/>
