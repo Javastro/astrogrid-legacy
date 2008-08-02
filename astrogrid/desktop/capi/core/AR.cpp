@@ -1,6 +1,6 @@
 /*
-* A simple AR client based on the xml-rpc interface 
-* Uses http://xmlrpcpp.sourceforge.net/ which is nice and simple, and works
+* A simple AR client based on the xml-rpc interface
+* Uses modified version of http://xmlrpcpp.sourceforge.net/ which is nice and simple, and works
 */
 
 #include "AR.h"
@@ -12,7 +12,7 @@
 #else
 	const char * HOMEVAR = "HOME";
 #endif
-	
+
 
 
 namespace astrogrid
@@ -29,12 +29,12 @@ AR::~AR()
 	if (server) delete server;
 }
 
-bool AR::execute(const string& command, XmlRpcValue& args, XmlRpcValue& results) 
+bool AR::execute(const string& command, XmlRpcValue& args, XmlRpcValue& results)
 {
-	cerr << command;
+//	cerr << command;
 	bool retval = server->execute(command.c_str(), args, results);
 
-	cerr << results << endl;
+//	cerr << results << endl;
 	return retval;
 }
 
@@ -46,15 +46,15 @@ void AR::refresh()
     	cerr << "Must have defined an environment variable " << HOMEVAR << " pointing to your home directory" << endl;
     	throw "Must have defined an environment variable pointing to your home directory" ;
     }
-	
+
 	//
 	// Note, we should really be loading .astrogrid-desktop here, not .plastic, and parsing that.
 	// However, they both contain the xmlrpc server url, so out of sheer laziness I'm using .plastic.
 	//
-	string plasticLocation = home + "/.plastic";    
+	string plasticLocation = home + "/.plastic";
 
 	ifstream fin(plasticLocation.c_str());
-    if ( !fin.is_open() ) 
+    if ( !fin.is_open() )
     {
       cerr << "Unable to open .plastic file - please ensure the AstroRuntime is running."<< endl;
       exit(1);
@@ -62,11 +62,11 @@ void AR::refresh()
 
     JavaProperties props;
     props.load(fin);
-    fin.close();   
+    fin.close();
 	URL hubUrl(props.get("plastic.xmlrpc.url"));
 //	cout << "Hub is listening on "<<props.get("plastic.xmlrpc.url")<<endl;
 //	cout << hubUrl.getHost() << " : " << hubUrl.getPort() << " " << hubUrl.getPath();
-	
+
 
   // Create a client and connect to the server at hostname:port
     if (server) delete server;
@@ -81,11 +81,11 @@ void AR::refresh()
  */
 extern "C" {
 int init_ar() {
-	
+
 	myAR = new astrogrid::AR();
   	XmlRpcValue noArgs, result;
 
-	
+
 }
 }
 extern astrogrid::AR* myAR = NULL; //declaration to actually cause storage to be allowcated
