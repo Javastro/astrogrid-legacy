@@ -15,13 +15,11 @@
  */
 
 #include "IDLStruct.h"
-
 IDLBase::IDLBase(){
 }
 IDLBase::~IDLBase(){
-	std::cerr << "deleting base";
+//	std::cerr << "deleting base";
 }
-
 
 IDLBase * IDLBase::factory(const XmlRpcValue & v) {
 
@@ -86,7 +84,7 @@ IDLStruct::IDLStruct(const XmlRpcValue & v)
 
 IDL_VPTR IDLStruct::makeIDLVar(const std::string & name)
 {
-	std::cerr << "making struc var\n";
+//	std::cerr << "making struc var\n";
 	makeStag(name);
 	//now fill data...
 
@@ -107,7 +105,7 @@ IDL_STRUCT_TAG_DEF IDLStruct::makeStag(const std::string & name) {
 }
 
 IDL_STRUCT_TAG_DEF IDLStruct::makeStags(const std::string & name, const std::map<std::string, IDLBase *> & allTags) {
-	std::cerr << "making struct stag name=" << name <<"\n";
+//	std::cerr << "making struct stag name=" << name <<"\n";
 	unionTags = allTags;
 	IDL_STRUCT_TAG_DEF stag = IDLBase::makeStag(name);
 	stag.dims = 0;
@@ -116,13 +114,13 @@ IDL_STRUCT_TAG_DEF IDLStruct::makeStags(const std::string & name, const std::map
 	int j = 0;
 	for (i = unionTags.begin(); i != unionTags.end(); i++, j++)// just iterate over all the tags - cannot have different struct definitions for each member of an array... - would have been nice to have poointers to null
 	{
-	   std::cerr << i->first << " :";
+//	   std::cerr << i->first << " :";
 
 	      IDLBase* ib = i->second;
           s_tags[j] = i->second->makeStag(i->first);
 
-          std::cerr << " FOUNDTAG="<< i->first <<"\n";
-       std::cerr <<"IN STRUCT name="<<name<<"  tag="<< s_tags[j].name << " " << (s_tags[j].dims == 0 ? 0 : s_tags[j].dims[1]) << " " <<s_tags[j].type <<"\n";
+//          std::cerr << " FOUNDTAG="<< i->first <<"\n";
+//       std::cerr <<"IN STRUCT name="<<name<<"  tag="<< s_tags[j].name << " " << (s_tags[j].dims == 0 ? 0 : s_tags[j].dims[1]) << " " <<s_tags[j].type <<"\n";
 	}
 	//hacky way to ensure that there is a zero at the end of the array....needed by the IDL stuff
 	int * endofarray = (int *)&s_tags[allTags.size()];
@@ -131,7 +129,7 @@ IDL_STRUCT_TAG_DEF IDLStruct::makeStags(const std::string & name, const std::map
 	sdef = IDL_MakeStruct(0, &s_tags[0]);
 	stag.type = sdef;
 	stag.flags = 0;
-	std::cerr << "finished struct stag name ="<<name<<"\n";
+//	std::cerr << "finished struct stag name ="<<name<<"\n";
 	return stag;
 }
 
@@ -142,7 +140,7 @@ std::map<std::string, IDLBase *> IDLStruct::getTags(void){
 }
 
 void IDLStruct::fillData(void * data){
-  	std::cout << "filling data for a struct\n";
+//  	std::cerr << "filling data for a struct\n";
 	std::map<std::string, IDLBase*>::iterator i;
 
 	//iterate over the tags
@@ -151,14 +149,14 @@ void IDLStruct::fillData(void * data){
 	   IDL_MEMINT offset;
 	   std::string s = i->first;
 	   offset = IDL_StructTagInfoByName(sdef, const_cast<char *>(s.c_str()), IDL_MSG_LONGJMP, NULL);
- 	   std::cerr << "filling data for " << s << " offset="<<offset ;
+// 	   std::cerr << "filling data for " << s << " offset="<<offset ;
    	   std::map<std::string, IDLBase *>::iterator im;
   	   if((im = mmap->find(i->first)) != mmap->end()){
-  		   std::cerr << " DATA\n";
+//  		   std::cerr << " DATA\n";
   		   im->second->fillData((char *)data + offset);
 
   	   } else {
-  		   std::cerr << " NULL\n";
+//  		   std::cerr << " NULL\n";
   		   *((char **) data + offset) = NULL;
   	   }
 	}
@@ -176,6 +174,17 @@ IDLArray::~IDLArray(){
 	mvec->clear();
 }
 
+IDL_VPTR IDLArray::makeIDLVar(const std::string & name){
+	//FIXME this is not working....
+	IDL_VPTR tmpvar = IDL_Gettmp(); // this is a dummy array definition just here because of the way that filldata for arrays has been written - should probably be rewritten to make nicer
+
+	fillData(&tmpvar->value.arr); // actually creates the array variable as well as filling it...
+    std::cerr << "filled array \n";
+	IDL_Deltmp(tmpvar);
+    return var;
+}
+
+
 void IDLArray::fillData(void * data)
 {
 	int n = mvec->size();
@@ -184,37 +193,36 @@ void IDLArray::fillData(void * data)
 		*((char **)data) = NULL;// this is a IDL_PTR to NULL - IDL at the command level does reasonable things...
 	}
 	else{
-		IDL_VPTR arrayvar;
 		IDL_MEMINT dim[1];
 		dim[0] = n;
 	    IDLBase* base = mvec->at(0);
 	    bool isStruct = false;
 	    IDL_StructDefPtr savedSdef = NULL;
 	    if(base->getType() == IDL_TYP_STRUCT){ // yuk - IDL treats arrays of structs differently....
-            std::cerr << "making array data - structure \n";
+//            std::cerr << "making array data - structure \n";
 	    	isStruct = true;
             IDLStruct * str = (IDLStruct *)base;
-            *((char **)data) =IDL_MakeTempStructVector(str->sdef, (IDL_MEMINT)n, &arrayvar, IDL_TRUE);
+            *((char **)data) =IDL_MakeTempStructVector(str->sdef, (IDL_MEMINT)n, &var, IDL_TRUE);
             savedSdef = str->sdef;
 
 	    } else {
-		    *((char **)data) = IDL_MakeTempArray( base->getType(), 1, dim, IDL_ARR_INI_ZERO, &arrayvar);
-  	           std::cerr << "making array data - type=" << base->getType() <<"\n";
+		    *((char **)data) = IDL_MakeTempArray( base->getType(), 1, dim, IDL_ARR_INI_ZERO, &var);
+//  	           std::cerr << "making array data - type=" << base->getType() <<"\n";
 	    }
         for (int i = 0; i < n; i++){
         	IDLBase* elem = mvec->at(i);
         	if(savedSdef != NULL){
         		((IDLStruct *)elem)->sdef = savedSdef;// set the structure definition of each of the structures in the array to be equal to the first on - this does not get initialized in array otherwise
         	}
-          	std::cerr << "fill i=" << i << " at " << arrayvar->value.arr->elt_len*i <<"\n";
-        	elem->fillData((char *)data + arrayvar->value.arr->elt_len*i);
+//          	std::cerr << "fill i=" << i << " at " << arrayvar->value.arr->elt_len*i <<"\n";
+        	elem->fillData((char *)data + var->value.arr->elt_len*i);
         }
 	}
 }
 
 IDL_STRUCT_TAG_DEF IDLArray::makeStag(const std::string & name) {
 	IDL_STRUCT_TAG_DEF stag;
-	std::cerr << "makeStag array ";
+//	std::cerr << "makeStag array ";
 	if(mvec->size() >0){
 		if((*mvec)[0]->getType() == IDL_TYP_STRUCT)
 		{
@@ -236,7 +244,7 @@ IDL_STRUCT_TAG_DEF IDLArray::makeStag(const std::string & name) {
 
 		}
 		else {
-           std::cerr << " not struct\n";
+//           std::cerr << " not struct\n";
 	       stag = (*mvec)[0]->makeStag(name); // assume that the vector is of one type - I think that it has to be for IDL anyway...
 
 		}
@@ -246,7 +254,7 @@ IDL_STRUCT_TAG_DEF IDLArray::makeStag(const std::string & name) {
 		stag.dims = dims;
 	}
 	else {
-		  std::cerr << " NULL array\n";
+//		  std::cerr << " NULL array\n";
 		 stag = IDLBase::makeStag(name);
 		 stag.type=(void *)IDL_TYP_PTR; //USE a pointer - seems that pointer to NULL is just about the only way of specifying NULL
 		 stag.dims=0;
@@ -276,7 +284,7 @@ IDL_VPTR IDLBase::makeIDLVar(const std::string & name){
 
 IDL_STRUCT_TAG_DEF IDLAtomic::makeStag(const std::string & name)
 {
-	std::cerr<< "make Stag atomic name="<<name<<"\n";
+//	std::cerr<< "make Stag atomic name="<<name<<"\n";
     IDL_STRUCT_TAG_DEF stag = IDLBase::makeStag(name);
 	stag.dims = 0;
 	stag.type = (void *)idlType;
@@ -329,7 +337,9 @@ void IDLInt::fillData(void * data){
 	*((IDL_INT*)data) = (int)xmlrv;
 }
 void IDLString::fillData(void * data){
-	IDL_StrStore((IDL_STRING*)data, (char *)xmlrv);
+	char * s = xmlrv;
+	IDL_STRING* sptr = (IDL_STRING*)data;
+	IDL_StrStore(sptr, s);
 }
 
 void IDLAtomic::fillData(void * data){
@@ -342,4 +352,5 @@ IDL_VPTR IDLAtomic::makeIDLVar(const std::string & name){
    var->type = idlType;
 // not sure about   var.flags;
    fillData((void *)&var->value);
+   return var;
 }

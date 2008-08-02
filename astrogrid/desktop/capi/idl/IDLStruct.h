@@ -42,6 +42,8 @@ public:
 	virtual ~IDLArray();
 	virtual IDL_STRUCT_TAG_DEF makeStag(const std::string & name);
 	virtual void fillData(void *);
+	virtual IDL_VPTR makeIDLVar(const std::string & name);
+
 protected:
 std::vector<IDLBase *> *mvec;
 
