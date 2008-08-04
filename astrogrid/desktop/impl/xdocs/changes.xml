@@ -1,4 +1,5 @@
 
+
 	<document>
 	<!-- see http://maven.apache.org/reference/plugins/changes/index.html 
 	     
@@ -15,6 +16,15 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="fix" issue="2692">
+    Plastic: connect to external hub if already running.
+    </action>
+    <action dev="nw" type="fix" issue="2785, 2151, 1799">
+    Changed default address for AR and plastic connections to 'localhost'    
+    </action>
+    <action dev="nw" type="fix" issue="2790">
+    xmlrpc is now tolerant of a wider character set in data returned from registry.
+    </action>
     <action dev="nw" type="fix">
     astroscope: recognizes fits files as spectra, so they can be sent via plastic
     </action>

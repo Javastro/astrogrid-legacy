@@ -121,7 +121,17 @@
                 <!--  public interface - although these could be sliced, think it's best to leave all unchanged -->
             </properties>
         </dependency>
-        <!--  plastic support libraries. -->
+        <!--  plastic support libraries.-->
+        <dependency>
+            <artifactId>plaskit</artifactId>
+            <groupId>starlink</groupId>
+            <type>jar</type>
+            <version>3.0</version>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>
+            </properties>
+        </dependency>
         <dependency>
             <groupId>org.votech.ds6.plastic</groupId>
             <artifactId>plastic</artifactId>
@@ -134,7 +144,7 @@
                 <version-held>2008-04-14</version-held>   
             </properties>
         </dependency>
-        <!--
+                <!--
         *******************************
          container system - hivemind     -->
         <!--  don't plan to strip these - too important - and all used.-->
@@ -259,17 +269,48 @@
                 <version-checked>2008-04-14</version-checked>                
             </properties>
         </dependency>
-        <dependency>
+         
+         <!--  new xmlrpc -->
+  <dependency>
             <groupId>xmlrpc</groupId>
-            <artifactId>xmlrpc</artifactId>
-            <version>1.2-b1</version>
+            <artifactId>xmlrpc-client</artifactId>
+            <version>3.1</version>
             <type>jar</type>
             <properties>
                 <dist.bundle>true</dist.bundle>
-                <strip>true</strip>
-                <version-held>2008-04-14</version-held>                
+                <strip>true</strip>             
             </properties>
         </dependency>
+  <dependency>
+            <groupId>xmlrpc</groupId>
+            <artifactId>xmlrpc-server</artifactId>
+            <version>3.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>             
+            </properties>
+        </dependency>
+  <dependency>
+            <groupId>xmlrpc</groupId>
+            <artifactId>xmlrpc-common</artifactId>
+            <version>3.1</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>         
+            </properties>
+        </dependency>      
+  <dependency>
+            <groupId>xmlrpc</groupId>
+            <artifactId>ws-commons-util</artifactId>
+            <version>1.0.2</version>
+            <type>jar</type>
+            <properties>
+                <dist.bundle>true</dist.bundle>
+                <strip>true</strip>         
+            </properties>
+        </dependency>                               
         <!--  ****************************
         ASTROGRID LIBRARIES
          -->
@@ -1143,16 +1184,6 @@
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
         </dependency>
         <!--  libraries used for testing -->
-        <dependency>
-            <artifactId>plastic</artifactId>
-            <type>jar</type>
-            <groupId>starlink</groupId>
-            <version>20060808-unsigned</version>
-            <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
-            <properties>
-                <testing.jar>true</testing.jar>
-            </properties>
-        </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
