@@ -10,7 +10,6 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.framework.AllFrameworkIntegrationTests;
 import org.astrogrid.desktop.modules.cds.AllCdsIntegrationTests;
 import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
-import org.astrogrid.desktop.modules.plastic.AllPlasticIntegrationTests;
 import org.astrogrid.desktop.modules.system.pref.AllPreferenceIntegrationTests;
 import org.astrogrid.desktop.modules.votech.AllVotechIntegrationTests;
 
@@ -22,7 +21,7 @@ import org.astrogrid.desktop.modules.votech.AllVotechIntegrationTests;
 public class AbsolutelyAllIntegrationTests {
 
 	public static Test suite() {
-		TestSuite inar = new TestSuite("All Integration tests");
+		final TestSuite inar = new TestSuite("All Integration tests");
 		inar.addTest(org.astrogrid.acr.AllAcrIntegrationTests.suite());
 		inar.addTest(org.astrogrid.desktop.modules.ag.AllAstrogridIntegrationTests.suite());
 		inar.addTest(org.astrogrid.desktop.modules.system.AllSystemIntegrationTests.suite());
@@ -32,7 +31,6 @@ public class AbsolutelyAllIntegrationTests {
         inar.addTest(org.astrogrid.desktop.modules.system.transformers.AllTransformerIntegrationTests.suite());
         inar.addTest(AllCdsIntegrationTests.suite());
         inar.addTest(AllVotechIntegrationTests.suite());
-		inar.addTest(AllPlasticIntegrationTests.suite());
 		return new ARTestSetup(inar);
 	}
 	

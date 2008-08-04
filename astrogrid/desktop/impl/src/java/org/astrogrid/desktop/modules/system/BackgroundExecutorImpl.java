@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.17 2008/04/25 08:59:01 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.18 2008/08/04 16:37:23 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.util.Iterator;
 
@@ -24,15 +23,12 @@ import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
-import ca.odell.glazedlists.impl.sort.ComparableComparator;
-
 import EDU.oswego.cs.dl.util.concurrent.BoundedPriorityQueue;
 import EDU.oswego.cs.dl.util.concurrent.Channel;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 import EDU.oswego.cs.dl.util.concurrent.Semaphore;
-import EDU.oswego.cs.dl.util.concurrent.Slot;
 import EDU.oswego.cs.dl.util.concurrent.SynchronousChannel;
-import EDU.oswego.cs.dl.util.concurrent.WaiterPreferenceSemaphore;
+import ca.odell.glazedlists.impl.sort.ComparableComparator;
 
 /** Implementation of the background executor. 
  * Provides a thread pool (configurable with keys) that processes new background tasks. Appears to be much faster - UI more responsive - than
@@ -56,35 +52,37 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 and has an 'express' slot which bypasses all others. */
     public static class ExpressBoundedPriorityQueue extends BoundedPriorityQueue {
 
-        public ExpressBoundedPriorityQueue(int arg0) throws Throwable{            
+        public ExpressBoundedPriorityQueue(final int arg0) throws Throwable{            
                 super(arg0,new ComparableComparator(),ObservableWaiterPreferenceSemaphore.class);
         }
         /** returns true if somethin is blocked waiting for a queue item */
         public boolean isConsumerWaiting() {
-            boolean b = ((ObservableWaiterPreferenceSemaphore)takeGuard_).isConsumerWaiting();         
+            final boolean b = ((ObservableWaiterPreferenceSemaphore)takeGuard_).isConsumerWaiting();         
             return b;
         }
         /** express slot. */
-        private Channel express = new SynchronousChannel();
+        private final Channel express = new SynchronousChannel();
         
         /** offer an object, but only if it can be taken by a consumer in this time. */
-        public boolean offerIfTaken(Object x,long msecs) throws InterruptedException {
+        public boolean offerIfTaken(final Object x,final long msecs) throws InterruptedException {
             if (isConsumerWaiting()) { // there's a task already waiting on the queue - stick it in there.
                 return false;
             }
             return express.offer(x,msecs);              
         }
         
-        public Object poll(long arg0) throws InterruptedException {
-            Object o = express.poll(0);
+        @Override
+        public Object poll(final long arg0) throws InterruptedException {
+            final Object o = express.poll(0);
             if (o != null) {
                 return o;
             }            
             return super.poll(arg0);
         }
         
+        @Override
         public Object take() throws InterruptedException {
-            Object o = express.poll(0); // take it, if it's waiting.
+            final Object o = express.poll(0); // take it, if it's waiting.
             if (o != null) {
                 return o;
             }
@@ -103,7 +101,7 @@ and has an 'express' slot which bypasses all others. */
        * Create a Semaphore with the given initial number of permits.
       **/
 
-      public ObservableWaiterPreferenceSemaphore(long initial) {  super(initial); }
+      public ObservableWaiterPreferenceSemaphore(final long initial) {  super(initial); }
 
       /** Number of waiting threads **/
       protected long waits_ = 0;   
@@ -113,8 +111,11 @@ and has an 'express' slot which bypasses all others. */
           return waits_ > 0;
       }
       
-      public void acquire() throws InterruptedException {
-        if (Thread.interrupted()) throw new InterruptedException();
+      @Override
+    public void acquire() throws InterruptedException {
+        if (Thread.interrupted()) {
+            throw new InterruptedException();
+        }
         synchronized(this) {
           /*
             Only take if there are more permits than threads waiting
@@ -136,7 +137,7 @@ and has an 'express' slot which bypasses all others. */
                 }
               }
             }
-            catch(InterruptedException ex) { 
+            catch(final InterruptedException ex) { 
               --waits_;
               notify();
               throw ex;
@@ -145,20 +146,23 @@ and has an 'express' slot which bypasses all others. */
         }
       }
 
-      public boolean attempt(long msecs) throws InterruptedException {
-        if (Thread.interrupted()) throw new InterruptedException();
+      @Override
+    public boolean attempt(final long msecs) throws InterruptedException {
+        if (Thread.interrupted()) {
+            throw new InterruptedException();
+        }
 
         synchronized(this) {
           if (permits_ > waits_) { 
             --permits_;
             return true;
           }
-          else if (msecs <= 0)   
+          else if (msecs <= 0) {
             return false;
-          else {
+        } else {
             ++waits_;
             
-            long startTime = System.currentTimeMillis();
+            final long startTime = System.currentTimeMillis();
             long waitTime = msecs;
             
             try {
@@ -178,7 +182,7 @@ and has an 'express' slot which bypasses all others. */
                 }
               }
             }
-            catch(InterruptedException ex) { 
+            catch(final InterruptedException ex) { 
               --waits_;
               notify();
               throw ex;
@@ -187,15 +191,19 @@ and has an 'express' slot which bypasses all others. */
         }
       }
 
-      public synchronized void release() {
+      @Override
+    public synchronized void release() {
         ++permits_;
         notify();
       }
 
       /** Release N permits **/
-      public synchronized void release(long n) {
+      @Override
+    public synchronized void release(final long n) {
         permits_ += n;
-        for (long i = 0; i < n; ++i) notify();
+        for (long i = 0; i < n; ++i) {
+            notify();
+        }
       }
     }
       
@@ -204,7 +212,7 @@ and has an 'express' slot which bypasses all others. */
 
         private final ExpressBoundedPriorityQueue queue;
 
-        TimeoutPooledExecutor(ExpressBoundedPriorityQueue arg0,int maxThreads,int startThreads,  SessionManagerInternal ss) {
+        TimeoutPooledExecutor(final ExpressBoundedPriorityQueue arg0,final int maxThreads,final int startThreads,  final SessionManagerInternal ss) {
             super(arg0,maxThreads);
             this.queue = arg0;
             this.ss = ss;
@@ -214,14 +222,23 @@ and has an 'express' slot which bypasses all others. */
         }
         private final SessionManagerInternal ss;
         
-        public void interrupt(Runnable r) {
+        
+        /** overridden to run tasks in submitting thread that are submitted after shutdown 
+         * as AR shutdown process is unordered, seems best to do this.
+         * */
+        @Override
+        public void shutdownAfterProcessingCurrentlyQueuedTasks() {
+            super.shutdownAfterProcessingCurrentlyQueuedTasks(new RunWhenBlocked(){});
+        }
+
+        public void interrupt(final Runnable r) {
             // need to find thread that's processing this task.
-            for (Iterator i = threads_.keySet().iterator(); i.hasNext(); ) {
-                TimeoutAwareWorker w = (TimeoutAwareWorker)i.next();
+            for (final Iterator i = threads_.keySet().iterator(); i.hasNext(); ) {
+                final TimeoutAwareWorker w = (TimeoutAwareWorker)i.next();
                 if (r.equals(w.getCurrentTask())) {
-                    Thread t = (Thread)threads_.get(w);
+                    final Thread t = (Thread)threads_.get(w);
                     if (t != null) {
-                        try { t.interrupt(); } catch (Exception ex) {
+                        try { t.interrupt(); } catch (final Exception ex) {
                             //ignored
                         }
                     }
@@ -231,7 +248,8 @@ and has an 'express' slot which bypasses all others. */
         
         /** overridden to give express execution to Thread.MAX_PRIORITY
          * */ 
-        public void execute(Runnable arg0) throws InterruptedException {
+        @Override
+        public void execute(final Runnable arg0) throws InterruptedException {
             if (arg0 instanceof BackgroundWorker  //always
                     && ((BackgroundWorker)arg0).getInfo().getPriority() == Thread.MAX_PRIORITY // top priority.
                     && ! queue.isConsumerWaiting() // no threads waiting on the queue 
@@ -254,11 +272,12 @@ and has an 'express' slot which bypasses all others. */
         }
         
         // overridden to provide own custom worker - that provides timeout functionality.
-        protected void addThread(Runnable arg0) {
+        @Override
+        protected void addThread(final Runnable arg0) {
             
-            Worker worker = new TimeoutAwareWorker(arg0);
+            final Worker worker = new TimeoutAwareWorker(arg0);
             // rest copied from parent source.
-            Thread thread = getThreadFactory().newThread(worker);
+            final Thread thread = getThreadFactory().newThread(worker);
             thread.setDaemon(true);
             thread.setName("Executor Worker Thread-" + poolSize_);
             thread.setPriority(Thread.MIN_PRIORITY + 2);
@@ -279,13 +298,13 @@ and has an 'express' slot which bypasses all others. */
                                 o = c.take(); // wait until passed a timeout value.
                             } while (! (o instanceof BackgroundWorker)); // must have gotten out-of-step - lets try again..
                         
-                        BackgroundWorker bw = (BackgroundWorker)o;
-                        Object result = c.poll(bw.getInfo().getTimeout()); // wait for the prescribed timeout.
+                        final BackgroundWorker bw = (BackgroundWorker)o;
+                        final Object result = c.poll(bw.getInfo().getTimeout()); // wait for the prescribed timeout.
                         if (result == null) {
                             bw.getControl().setTimedOut(true);
                             executionThread.interrupt(); // abort executioin thread
                         }
-                        } catch (InterruptedException e) {
+                        } catch (final InterruptedException e) {
                             // dunno.will this ever happen?
                             logger.warn("Timer thread interupted");
                         }
@@ -300,7 +319,7 @@ and has an 'express' slot which bypasses all others. */
                 return firstTask_;
             }
             /** constructor */
-            protected TimeoutAwareWorker(Runnable firstTask) { 
+            protected TimeoutAwareWorker(final Runnable firstTask) { 
                 super(firstTask);
                 this.c = new SynchronousChannel();
                 this.timerThread = getThreadFactory().newThread(new Timer());
@@ -310,14 +329,15 @@ and has an 'express' slot which bypasses all others. */
                 this.timerThread.start();
                 }
             
+            @Override
             public void run() {
                 try {
                     this.executionThread = Thread.currentThread();
                     do {
                         if (firstTask_ != null) {                         
                             if (firstTask_ instanceof BackgroundWorker) {
-                            	BackgroundWorker bw = (BackgroundWorker)firstTask_;
-                            	long timeout = bw.getInfo().getTimeout();
+                            	final BackgroundWorker bw = (BackgroundWorker)firstTask_;
+                            	final long timeout = bw.getInfo().getTimeout();
                             	if (timeout  > 0L ) {
                             		c.put(bw);
                             	}
@@ -334,7 +354,7 @@ and has an 'express' slot which bypasses all others. */
                         }
                         firstTask_ = getTask();
                     } while (firstTask_ != null);                   
-                }  catch (InterruptedException ex) {  // fall through    
+                }  catch (final InterruptedException ex) {  // fall through    
                 } finally {
                     firstTask_ = null;
                     workerDone(this);
@@ -344,7 +364,7 @@ and has an 'express' slot which bypasses all others. */
     }
     
     private static final Object NULL_OBJ = new Object();
-    public BackgroundExecutorImpl(UIContext ui, SessionManagerInternal ss) {
+    public BackgroundExecutorImpl(final UIContext ui, final SessionManagerInternal ss) {
         this.ui = ui;        
         this.ss = ss;
     }
@@ -357,7 +377,7 @@ and has an 'express' slot which bypasses all others. */
     public void init() {        
         try {
             this.chan = new ExpressBoundedPriorityQueue(queueSize);
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             throw new ApplicationRuntimeException("Failed to create executor priority queue",t);
         }        
         // create an executer with a queue of queue size,
@@ -374,21 +394,21 @@ and has an 'express' slot which bypasses all others. */
     
     
     
-    public void executeWorker(BackgroundWorker worker) {
+    public void executeWorker(final BackgroundWorker worker) {
         try {
             logger.debug("executing worker");
         	// this is called by Thread.start(), and any other ways to execute this worker
         	// so we've waited till the last moment, and now capture the permissions / session
         	// of the calling thread, so it'll be passed into the background thread.
         	if (worker.getControl().getPrincipal() == null) { // if a principal has already been set, that's fine
-        		Principal p = ss.currentSession();
+        		final Principal p = ss.currentSession();
         		if (p != null) {
         		    logger.debug("setting principal to " + p.getName());
         		    worker.getControl().setPrincipal(p);
         		}
         	}
             exec.execute(worker);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             logger.warn("Didn't expect to be interrupted",e);
         }
     }
@@ -396,6 +416,7 @@ and has an 'express' slot which bypasses all others. */
     /** first converts from a runnable to a BackgroundWorker, attached to the parent ui */
     public void execute(final Runnable arg0) throws InterruptedException {
         this.executeWorker(new BackgroundWorker(ui,"Background Task"){
+            @Override
             protected Object construct() throws Exception {
                 arg0.run();
                 return null;
@@ -406,18 +427,18 @@ and has an 'express' slot which bypasses all others. */
     /**
      * @see org.astrogrid.desktop.modules.system.BackgroundExecutor#interrupt(java.lang.Runnable)
      */
-    public void interrupt(Runnable r) {
+    public void interrupt(final Runnable r) {
         exec.interrupt(r);
     }
 
 
 
-    public void setQueueSize(int queueSize) {
+    public void setQueueSize(final int queueSize) {
         this.queueSize = queueSize;
     }
 
 
-    public void setStartThreads(int startThreads) {
+    public void setStartThreads(final int startThreads) {
         this.startThreads = startThreads;
     }
 
@@ -429,7 +450,7 @@ and has an 'express' slot which bypasses all others. */
         return null;
     }
 
-    public void executeLaterEDT(Runnable r) {
+    public void executeLaterEDT(final Runnable r) {
         if (SwingUtilities.isEventDispatchThread()) {
             r.run();
         } else {
@@ -446,6 +467,11 @@ and has an 'express' slot which bypasses all others. */
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.18  2008/08/04 16:37:23  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.17  2008/04/25 08:59:01  nw
 refactored to ease testing.
 

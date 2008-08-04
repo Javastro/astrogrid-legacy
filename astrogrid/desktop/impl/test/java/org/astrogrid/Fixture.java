@@ -3,6 +3,9 @@
  */
 package org.astrogrid;
 
+import static junit.framework.Assert.*;
+import static org.easymock.EasyMock.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,16 +13,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.SwingUtilities;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.vfs.CacheStrategy;
-import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileReplicator;
 import org.apache.commons.vfs.impl.PrivilegedFileReplicator;
 import org.apache.commons.vfs.provider.ftp.FtpFileProvider;
@@ -27,8 +27,15 @@ import org.apache.commons.vfs.provider.local.DefaultLocalFileProvider;
 import org.apache.commons.vfs.provider.ram.RamFileProvider;
 import org.apache.commons.vfs.provider.sftp.SftpFileProvider;
 import org.apache.commons.vfs.provider.temp.TemporaryFileProvider;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.alternatives.InThreadExecutor;
 import org.astrogrid.desktop.modules.ag.vfs.DesktopFilesCache;
@@ -37,14 +44,10 @@ import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HivemindFileSystemManager;
 import org.astrogrid.desktop.modules.system.QueryRespectingUrlFileProvider;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-
-import static junit.framework.Assert.*;
-import static org.easymock.EasyMock.*;
 /** class of static assertions and helper methods to create test fixtures.
  * @author Noel Winstanley
  * @since Jun 14, 20065:22:53 PM
@@ -152,6 +155,32 @@ public class Fixture {
         FileUtils.forceDeleteOnExit(bd);       
         return bd;
 	}
+	
+	/** create an xmlrpc client configured to connect to the running AR 
+	 * @throws ACRException 
+	 * @throws NotFoundException 
+	 * @throws InvalidArgumentException 
+	 * @throws MalformedURLException 
+	 * 
+	 */
+	public static XmlRpcClient createXmlRpcClient(ACR ar) throws InvalidArgumentException, NotFoundException, ACRException, MalformedURLException {
+	    WebServer serv = (WebServer)ar.getService(WebServer.class);
+	    assertNotNull("no webserver present",serv);
+	    return createXmlRpcClient(new URL(serv.getRoot(),"xmlrpc"));
+	}
+	
+	/** create an an xmlrpc client configured to connect to an arbitrary endpoint */
+	   public static XmlRpcClient createXmlRpcClient(URL endpoint) { 
+	       XmlRpcClient x = new XmlRpcClient();
+	        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+	        config.setServerURL(endpoint);     
+	        x.setConfig(config);
+	        return x;
+	    }
+	
+	
+	
+
 
 
 }

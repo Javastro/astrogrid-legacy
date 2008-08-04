@@ -40,34 +40,39 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
     /** variant which is invokable  on any kind of file not accepted by default implementation, only appears on the main menu */
     public static class Fallback extends PlasticVotableActivity  {
 
-        public Fallback(PlasticApplicationDescription plas, PlasticScavenger scav) {
+        public Fallback(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
             super(plas, scav);
-            String title = getText();
+            final String title = getText();
             setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
         }
-        protected boolean invokable(FileObject f) {
+        @Override
+        protected boolean invokable(final FileObject f) {
             try {
                 return ! super.invokable(f) && f.getType().hasContent();
-            } catch (FileSystemException x) {
+            } catch (final FileSystemException x) {
                 return false;
             }
         }
-        protected boolean invokable(Resource r) {
+        @Override
+        protected boolean invokable(final Resource r) {
             return false ; // only ever for files.
         }
         //don't allow invokcation on multiple resources though - too dodgy.
-        public void manySelected(FileObject[] list) {
+        @Override
+        public void manySelected(final FileObject[] list) {
             noneSelected();
         }
         
         // create components but keep them invisible.
+        @Override
         public JLinkButton createLinkButton() {
-            JLinkButton b = new JLinkButton(this);
+            final JLinkButton b = new JLinkButton(this);
             b.setVisible(false);
             return b;
         }
+        @Override
         public JMenuItem createHidingMenuItem() {
-            JMenuItem i = new JMenuItem(this);
+            final JMenuItem i = new JMenuItem(this);
             i.setVisible(false);
             return i;
         }
@@ -79,7 +84,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticVotableActivity(PlasticApplicationDescription plas, PlasticScavenger scav) {
+	public PlasticVotableActivity(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
 		super();
 		setHelpID("activity.plastic.votable");
 		this.plas = plas;
@@ -89,22 +94,25 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	
     /// use a hiding item - so that this and the 'fallback' implementation appear to 
     // be the same item - should never see both at once.
+    @Override
     public JMenuItem createMenuItem() {
         return super.createHidingMenuItem();
     }
 	
     
-	protected boolean invokable(FileObject f) {
+	@Override
+    protected boolean invokable(final FileObject f) {
 		try {
 			final FileContent content = f.getContent();
             return VoDataFlavour.MIME_VOTABLE.equals(content.getContentInfo().getContentType());
-		} catch (FileSystemException x) {
+		} catch (final FileSystemException x) {
 			return false;
 		}
 	}
 	
 
-    protected boolean invokable(Resource r) {
+    @Override
+    protected boolean invokable(final Resource r) {
         return ConeProtocol.isCdsCatalog(r);
     }
 
@@ -115,7 +123,8 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	    supportedProtocols.add("file");
 	}
 	
-	public void actionPerformed(ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
         final List sources = new ArrayList();
         sources.addAll(computeInvokableResources());
         sources.addAll( computeInvokableFiles());
@@ -125,40 +134,40 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
             }
         });
 	}
-	public void doit(List sources) {
+	public void doit(final List sources) {
 
 
 	    if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
-	        for (Iterator i = sources.iterator(); i.hasNext();) {
-	            Object o = i.next();
+	        for (final Iterator i = sources.iterator(); i.hasNext();) {
+	            final Object o = i.next();
 	            if (o instanceof FileObject) {                    
 	                FileObject f = (FileObject) o;
 	                f = AstroscopeFileObject.findInnermostFileObject(f);
 	                (new LoadVotableWorker(f)).start();
 	                
 	            } else if (o instanceof CatalogService) {
-	                CatalogService vizCatalog = (CatalogService) o;
-	                URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
+	                final CatalogService vizCatalog = (CatalogService) o;
+	                final URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
 	                (new LoadVotableWorker(s,vizCatalog.getTitle())).start();
  
 	            } else if (o instanceof URI) {
-	                URI u= (URI)o;
+	                final URI u= (URI)o;
 	                (new LoadVotableWorker(u,u.toString())).start();                  
 	            }						    
 	        }
 	    } else { // fallback
-	        for (Iterator i = sources.iterator(); i.hasNext();) {			    
-	            Object o = i.next();
+	        for (final Iterator i = sources.iterator(); i.hasNext();) {			    
+	            final Object o = i.next();
 	            if (o instanceof FileObject) {
 	                (new LoadVotableInlineWorker((FileObject)o)).start();
 	                
                 } else if (o instanceof CatalogService) {
-                    CatalogService vizCatalog = (CatalogService)o;
-                    URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
+                    final CatalogService vizCatalog = (CatalogService)o;
+                    final URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
                     (new LoadVotableInlineWorker(s,vizCatalog.getTitle())).start();
                     
 	            } else if (o instanceof URI) {
-	                URI u = (URI)o;
+	                final URI u = (URI)o;
 	                (new LoadVotableInlineWorker(u,u.toString())).start();				    
 	            }
 	        }			
@@ -174,14 +183,14 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         /**
          * 
          */
-        public LoadVotableInlineWorker(FileObject fo) {
+        public LoadVotableInlineWorker(final FileObject fo) {
             super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
             this.fo = fo;
             this.id = fo.getName().getBaseName();
             this.uri = null;
             //setTransient(true);
         }
-        public LoadVotableInlineWorker(URI uri, String id) {
+        public LoadVotableInlineWorker(final URI uri, final String id) {
             super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
             this.uri = uri;
             this.id = id;
@@ -189,31 +198,33 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
             //setTransient(true);
         }   	
 
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
                 logger.debug("Sending inline message");			    
 				InputStream is = null;
 				try {
-					List l = new ArrayList();
+					final List l = new ArrayList();
 					if (fo != null) {
 					    is = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB * 10);
 					} else { // must be auri then.
 					    is = MonitoringInputStream.create(this,uri.toURL(),MonitoringInputStream.ONE_KB * 10);
 					}
 					reportProgress("Opened file");
-					String hopefullyNotVeryBig = IOUtils.toString(is);
+					final String hopefullyNotVeryBig = IOUtils.toString(is);
 					reportProgress("Downloaded file");
 					// inline value.
 					l.add(hopefullyNotVeryBig);
 					//URL url = f.getURL();
 					l.add(id); // identifier.					
-					scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
+					scav.getTupp().singleTargetFireAndForgetMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
 					reportProgress("Sent plastic message");
 					return null;
 				} finally {
 				    closeQuietly(is);
 				}
 			}
-			protected void doFinished(Object result) {
+			@Override
+            protected void doFinished(final Object result) {
 			    parent.showTransientMessage("Message sent","to " + plas.getName());		
 			}				
 	}
@@ -225,14 +236,15 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
      */
 	private class LoadVotableWorker extends LoadVotableInlineWorker {
 
-        public LoadVotableWorker(FileObject fo) {
+        public LoadVotableWorker(final FileObject fo) {
             super(fo);
         }
-        public LoadVotableWorker(URI uri, String id) {
+        public LoadVotableWorker(final URI uri, final String id) {
             super(uri,id);
         }        
 
-			protected Object construct() throws Exception {
+			@Override
+            protected Object construct() throws Exception {
 			    // first check if it's applicable, and if not fallback.
 			    URL url;
 			    if (fo != null) {				        
@@ -246,10 +258,10 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 			        return super.construct(); // fallback.
 			    } else {
                     reportProgress("Sending URL message");			        
-			        List l = new ArrayList();
+			        final List l = new ArrayList();
 			        l.add(url.toString());// url
 			        l.add(id);	
-			        scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
+			        scav.getTupp().singleTargetFireAndForgetMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
 			        reportProgress("Plastic message sent");
 			        return null;
 			    }

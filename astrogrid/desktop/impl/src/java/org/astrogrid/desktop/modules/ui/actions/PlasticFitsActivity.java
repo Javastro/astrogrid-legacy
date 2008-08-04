@@ -32,34 +32,38 @@ public class PlasticFitsActivity extends AbstractFileActivity {
     
     public static class Fallback extends PlasticFitsActivity {
 
-    public Fallback(PlasticApplicationDescription plas, PlasticScavenger scav) {
+    public Fallback(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
         super(plas, scav);
-        String title = getText();
+        final String title = getText();
         setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
     }
-    protected boolean invokable(FileObject f) {
+    @Override
+    protected boolean invokable(final FileObject f) {
         try {
             return ! super.invokable(f) && f.getType().hasContent();
-        } catch (FileSystemException x) {
+        } catch (final FileSystemException x) {
             return false;
         }
     }
-    protected boolean invokable(Resource r) {
+    protected boolean invokable(final Resource r) {
         return false ; // only ever for files.
     }
     //don't allow invokcation on multiple resources though - too dodgy.
-    public void manySelected(FileObject[] list) {
+    @Override
+    public void manySelected(final FileObject[] list) {
         noneSelected();
     }
     
     // create components but keep them invisible.
+    @Override
     public JLinkButton createLinkButton() {
-        JLinkButton b = new JLinkButton(this);
+        final JLinkButton b = new JLinkButton(this);
         b.setVisible(false);
         return b;
     }
+    @Override
     public JMenuItem createHidingMenuItem() {
-        JMenuItem i = new JMenuItem(this);
+        final JMenuItem i = new JMenuItem(this);
         i.setVisible(false);
         return i;
     }
@@ -72,7 +76,7 @@ private final PlasticScavenger scav;
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticFitsActivity(PlasticApplicationDescription plas, PlasticScavenger scav) {
+	public PlasticFitsActivity(final PlasticApplicationDescription plas, final PlasticScavenger scav) {
 		super();
 		setHelpID("activity.plastic.fits");
 		this.plas = plas;
@@ -82,34 +86,37 @@ private final PlasticScavenger scav;
 
     /// use a hiding item - so that this and the 'fallback' implementation appear to 
     // be the same item - should never see both at once.
+    @Override
     public JMenuItem createMenuItem() {
         return super.createHidingMenuItem();
     }
-	protected boolean invokable(FileObject f) {
+	@Override
+    protected boolean invokable(final FileObject f) {
 		try {
 			final FileContent content = f.getContent();
             final String contentType = content.getContentInfo().getContentType();
             return VoDataFlavour.MIME_FITS_IMAGE.equals(contentType)
                 || VoDataFlavour.MIME_FITS_TABLE.equals(contentType)
                 || VoDataFlavour.MIME_FITS_SPECTRUM.equals(contentType);
-		} catch (FileSystemException x) {
+		} catch (final FileSystemException x) {
 			return false;
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 	    final List l = computeInvokable();
-	    Runnable r = new Runnable() {
+	    final Runnable r = new Runnable() {
 
 	        public void run() {
-	            for (Iterator i = l.iterator(); i.hasNext();) {
+	            for (final Iterator i = l.iterator(); i.hasNext();) {
 	                FileObject f = (FileObject) i.next();
 	                f = AstroscopeFileObject.findInnermostFileObject(f);
 	                sendLoadImageMessage(f);
 	            }
 	        }
 	    };
-	    int sz = l.size();
+	    final int sz = l.size();
 	    confirmWhenOverThreshold(sz,"Sent all " + sz + " files?",r);
 	}
 
@@ -118,15 +125,17 @@ private final PlasticScavenger scav;
 //		    {
 //		        setTransient(true);
 //		    }
-			protected Object construct() throws Exception {
-				List l = new ArrayList();
+			@Override
+            protected Object construct() throws Exception {
+				final List l = new ArrayList();
 				
-				URL url = f.getURL();
+				final URL url = f.getURL();
 				l.add(url.toString());
-				scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.FITS_LOAD_FROM_URL,l,plas.getId());
+				scav.getTupp().singleTargetFireAndForgetMessage(CommonMessageConstants.FITS_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}
-			protected void doFinished(Object result) {
+			@Override
+            protected void doFinished(final Object result) {
 			    parent.showTransientMessage("Message sent to " + plas.getName(),"");
 			}			
 		}).start();		

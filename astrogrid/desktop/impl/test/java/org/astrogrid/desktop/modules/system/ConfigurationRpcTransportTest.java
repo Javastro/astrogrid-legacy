@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRpcTransportTest.java,v 1.5 2007/06/18 17:45:03 nw Exp $
+/*$Id: ConfigurationRpcTransportTest.java,v 1.6 2008/08/04 16:37:24 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,58 +10,52 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.astrogrid.Fixture;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Aug-2005
  *
  */
-public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest{
-    protected void setUp() throws Exception {
-        super.setUp();
-        WebServer serv = (WebServer)getACR().getService(WebServer.class);
-        assertNotNull(serv);
-        client = new ConfigurationXmlRpcClient(serv.getUrlRoot() + "xmlrpc");
-        super.conf = client;
-    } 
-    protected ConfigurationXmlRpcClient client;
-    protected void tearDown() throws Exception {
-    	super.tearDown();
-    	client = null;
-    }
+public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest {
     public static Test suite() {
         return new ARTestSetup(new TestSuite(ConfigurationRpcTransportTest.class));
+    } 
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        super.conf = new ConfigurationXmlRpcClient(Fixture.createXmlRpcClient(getACR()));
     }
-    /** naive unthreadsafe xmlrpc-based stub for the configuraiton service */
-public static class ConfigurationXmlRpcClient implements Configuration {
+
+    public static class ConfigurationXmlRpcClient implements Configuration {
+
 	
-	public ConfigurationXmlRpcClient(String rpcUrl) throws MalformedURLException {
-		client = new XmlRpcClient(rpcUrl);
-	}
-	public ConfigurationXmlRpcClient(URL rpcUrl) {
-		client = new XmlRpcClient(rpcUrl);
-		v = new Vector();
-	}	
-	protected Vector v = new Vector();
-	public final XmlRpcClient client;
+        public ConfigurationXmlRpcClient(XmlRpcClient client) {
+            super();
+            this.client = client;
+        }
+
+        public ConfigurationXmlRpcClient(URL endpoint) {
+            super();
+            this.client = Fixture.createXmlRpcClient(endpoint);
+
+        }
+        
+	protected final  XmlRpcClient client;
+
 	public String getKey(String arg0) {
-		v.clear();
-		v.add(arg0);
 		try {
-			String s =  (String)client.execute("system.configuration.getKey",v);
+			String s =  (String)client.execute("system.configuration.getKey",new Object[]{arg0});
 			return s.equals("NULL") ? null : s;
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -69,57 +63,59 @@ public static class ConfigurationXmlRpcClient implements Configuration {
 		}
 	}
 
-	public Map list() throws ACRException {
-		v.clear();
+	public Map list() throws ACRException {	
 		try {
-			return (Map)client.execute("system.configuration.list",v);
+			return (Map)client.execute("system.configuration.list",new Object[]{});
 		} catch (Exception e) {
 			throw new ACRException(e.getMessage());
 		}
 	}
 
 	public String[] listKeys() throws ACRException {
-		v.clear();
 		try {
-			Vector a = (Vector)client.execute("system.configuration.listKeys",v);
-			return (String[])a.toArray(new String[]{});
+			Object[] a  = (Object[])client.execute("system.configuration.listKeys",new Object[]{});
+			String[] arr = new String[a.length];
+			for (int i = 0; i < arr.length; i++) {
+			    arr[i] = (String)a[i];
+			}
+			return arr;
 		} catch (Exception e) {
 			throw new ACRException(e.getMessage());
 		}
 	}
 
 	public void removeKey(String arg0) {
-		v.clear();
-		v.add(arg0);
 		try {
-			client.execute("system.configuration.removeKey",v);
+			client.execute("system.configuration.removeKey",new Object[]{arg0});
 		} catch (Exception e) {
 			fail(e.getMessage());
 			throw new RuntimeException("never reached");		
 		}
 	}
+	public void reset() throws ServiceException {
+		throw new RuntimeException("Unimplemented");
+	}
 
-	public boolean setKey(String arg0, String arg1) {
-		v.clear();
-		v.add(arg0);
-		v.add(arg1);
+    public boolean setKey(String arg0, String arg1) {
 		try {
-			return( (Boolean)client.execute("system.configuration.setKey",v)).booleanValue()	;
+			return( (Boolean)client.execute("system.configuration.setKey",new Object[]{arg0,arg1})).booleanValue()	;
 		} catch (Exception e) {
 			fail(e.getMessage());
 			throw new RuntimeException("never reached");			
 		}
 	}
-	public void reset() throws ServiceException {
-		throw new RuntimeException("Unimplemented");
-	}
-}
+    }
   
 }
 
 
 /* 
 $Log: ConfigurationRpcTransportTest.java,v $
+Revision 1.6  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.5  2007/06/18 17:45:03  nw
 fixed test to work with interface change.
 

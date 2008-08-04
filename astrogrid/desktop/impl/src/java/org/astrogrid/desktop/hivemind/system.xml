@@ -181,6 +181,7 @@ System module.
 	 			<service>plasticList</service>
 	 			<configuration>windowFactories</configuration>
                 <string>${system.ui.launchApp}</string>
+                <service>tupperware</service>
 	 		</construct>
 	 	</invoke-factory>
 	 </service-point>
@@ -394,6 +395,8 @@ System module.
                 <service>framework.rpcResultTransformer</service>
                 <service>framework.converter</service>
                 <service>apihelp</service>             
+                <service>plastic.hub</service>
+                <service>tupperware</service>
             </construct>
         </invoke-factory>
     </service-point>        
@@ -485,7 +488,6 @@ SYSTEM TRAY
 				<set property="scanStartPort" value="${system.rmi.startScanPort}" />
 				<set property="scanEndPort" value="${system.rmi.endScanPort}" />
 				<set property="disableConnectionFile" value="${system.rmi.disableConnectionFile}" />				
-                <set property="inetAddress" value="${system.webserver.inetAddress}" /> <!--  uses same inet address as webserver -->
         	</construct>
 		</invoke-factory>	
 	</service-point>	
@@ -923,24 +925,29 @@ MAC SETUP
 
   
 <!--  ================================
-	TUPPERWARE
+	TUPPERWARE - Client side of PLASTIC
 	 -->
 	<service-point id="tupperware"
 		interface="org.astrogrid.desktop.modules.system.TupperwareInternal">
 		Plastic container for rest of workbench.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.TupperwareImpl">
+                <event-listener service-id="builtin.shutdown" /> 
 				<service>ui</service>
-				<service>plastic.hub</service>
-				<string>${system.ui.title}</string>
-				<string>http://help.astrogrid.org</string>
+				<string>${interop.app.name}</string>
+				<string>${interop.app.description}</string>
+                <string>${interop.app.icon}</string>
+                <string>${interop.app.ivorn}</string>
+                <object>service-property:system.webserver:root</object>      
 				<configuration>plasticMessageHandlers</configuration>
 				<service>plasticList</service>
+                <service>plastic.hub</service>
+                <service>httpclient</service>
 			</construct>
 		</invoke-factory>
 	</service-point>
 		
-	<implementation service-id="tupperware"  if="(property system.tupperware.disabled) or (property plastic.hub.disabled)">
+	<implementation service-id="tupperware"  if="(property system.tupperware.disabled) ">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>
 	
@@ -948,6 +955,14 @@ MAC SETUP
 	List of handlers to register as processors of plastic messages.
 	Should all be instances of org.votech.plastic.incoming.handlers.MessageHandler
 	</configuration-point>
+        
+    <contribution configuration-id="hivemind.FactoryDefaults">   
+        <default symbol="interop.app.name" value="VO Desktop" />    
+        <default symbol="interop.app.description" value="AstroGrid VO Desktop: see http://www.astrogrid.org" />
+        <default symbol="interop.app.icon" value="http://technology.astrogrid.org/raw-attachment/wiki/vodesktopResources/AGlogo.png" />
+        <default symbol="interop.app.ivorn" value="ivo://org.astrogrid/ar" />           
+    </contribution>
+    
 
 <!-- ========================================
 XML Persistence --> 
@@ -1042,7 +1057,6 @@ PLASTIC LIST MODEL -->
 		<create-instance class="ca.odell.glazedlists.BasicEventList" />
 	</service-point>
 
-
 <!-- 
 ================================
 UPDATE CHECKER
@@ -1104,7 +1118,12 @@ UPDATE CHECKER
  <!--  shared httpclient component -->
  
     <service-point id="httpclient" visibility="public" interface="org.apache.commons.httpclient.HttpClient">
-        <create-instance class="org.apache.commons.httpclient.HttpClient" />
+        <invoke-factory>
+            <construct class="org.apache.commons.httpclient.HttpClient">
+                   <set-object property="httpConnectionManager"
+                 value="instance:org.apache.commons.httpclient.MultiThreadedHttpConnectionManager" />               
+            </construct>
+        </invoke-factory>
     </service-point>
  
  </module> 

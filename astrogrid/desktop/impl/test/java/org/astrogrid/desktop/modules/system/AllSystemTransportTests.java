@@ -1,4 +1,4 @@
-/*$Id: AllSystemTransportTests.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: AllSystemTransportTests.java,v 1.4 2008/08/04 16:37:24 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,12 +30,8 @@ public class AllSystemTransportTests {
         suite.addTestSuite(ConfigurationRmiTransportTest.class);
         suite.addTestSuite(ConfigurationRpcTransportTest.class);
         suite.addTestSuite(WebServerRmiTransportTest.class);
-        suite.addTestSuite(WebServerRpcTransportTest.class);
         suite.addTestSuite(ApiHelpRmiTransportTest.class);
         suite.addTestSuite(ApiHelpRpcTransportTest.class);
-        suite.addTestSuite(HtmlTransportIntegrationTest.class);
-        suite.addTestSuite(XmlRpcTransportIntegrationTest.class);    
-        suite.addTestSuite(RmiTransportIntegrationTest.class);
         return new ARTestSetup(suite);
     }
 }
@@ -43,6 +39,11 @@ public class AllSystemTransportTests {
 
 /* 
 $Log: AllSystemTransportTests.java,v $
+Revision 1.4  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

@@ -281,7 +281,7 @@ DATA CONVERTORS - string -> object
 		<register output="org.w3c.dom.Document" converter="instance:org.astrogrid.desktop.modules.system.converters.DocumentConverter" />
 		<register output="java.util.List" converter="instance:org.astrogrid.desktop.modules.system.converters.CollectionConvertor" />
 		<register output="java.lang.Object" array="true" converter="instance:org.astrogrid.desktop.modules.system.converters.ArrayConvertor"/>
-	</contribution>	
+    </contribution>	
 	
 
  

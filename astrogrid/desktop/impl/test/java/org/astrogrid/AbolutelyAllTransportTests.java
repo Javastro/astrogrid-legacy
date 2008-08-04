@@ -11,7 +11,7 @@ import org.astrogrid.desktop.modules.cds.AllCdsTransportTests;
 import org.astrogrid.desktop.modules.ivoa.AllIvoaTransportTests;
 import org.astrogrid.desktop.modules.system.AllSystemTransportTests;
 
-/**All tests that exercise the rmi / xmlrpc transports.
+/**All tests that exercise the rmi transport. xmlrpc is exercised separately from python tests.
  * most are based on system tests - so aren't easily repeatable, and slow.
  * @author Noel Winstanley
  * @since Jun 12, 20062:27:48 PM

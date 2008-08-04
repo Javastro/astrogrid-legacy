@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.12 2007/10/07 10:40:05 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.13 2008/08/04 16:37:23 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,12 +35,13 @@ import org.apache.commons.collections.Transformer;
  * Output should just be primitives,  maps, vectors.
  * 
  * @modified added type information - to indicate which sunclass is being returned
+ * @todo can now let List and Map pass through - xmlrpc lib accepts more than just vector and hashtable.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2005
  *
  */
 public class TypeStructureTransformer implements Transformer {
 	
-	public TypeStructureTransformer(Transformer trans) {
+	public TypeStructureTransformer(final Transformer trans) {
 		this.trans = trans;
 	}
 	// transformer used to perform recursion.
@@ -97,11 +98,11 @@ public class TypeStructureTransformer implements Transformer {
        // change it - - just transform the contents (which hopefully is more efficient than creating a whole new structure)
        
        if (arg0 instanceof Hashtable) {
-    	   Hashtable t = (Hashtable)arg0;
-    	   for (Iterator  i = t.keySet().iterator(); i.hasNext(); ) {
-    		   Object key = i.next();
-    		   Object value = t.get(key);
-    		   Object tranKey = trans.transform(key);
+    	   final Hashtable t = (Hashtable)arg0;
+    	   for (final Iterator  i = t.keySet().iterator(); i.hasNext(); ) {
+    		   final Object key = i.next();
+    		   final Object value = t.get(key);
+    		   final Object tranKey = trans.transform(key);
     		   if (tranKey != key) { // intentional - not using equals(). want to see whether key has been passed through unchanged
     			   // transformed key is different - so better remove old binding.
     			   i.remove(); // will remove that key.
@@ -112,10 +113,10 @@ public class TypeStructureTransformer implements Transformer {
        }
         // case for all other map types..
         if (arg0 instanceof Map) {
-            Map m = (Map)arg0;
-            Hashtable h = new Hashtable(m.size());
-            for (Iterator i = m.entrySet().iterator(); i.hasNext(); ) {
-                Map.Entry e = (Map.Entry)i.next();
+            final Map m = (Map)arg0;
+            final Hashtable h = new Hashtable(m.size());
+            for (final Iterator i = m.entrySet().iterator(); i.hasNext(); ) {
+                final Map.Entry e = (Map.Entry)i.next();
                 h.put(trans.transform(e.getKey()),
                 		e.getValue() == null ? "null" : trans.transform(e.getValue()));
                 //this null check is an interim fix - but probably need to be handling nulls better throughout.
@@ -132,9 +133,9 @@ public class TypeStructureTransformer implements Transformer {
         
         // special case for vector - as it's a supported type, transform it's contents in-place.
         if (arg0 instanceof Vector) {
-        	Vector v = (Vector)arg0;
+        	final Vector v = (Vector)arg0;
         	for (int i = 0; i < v.size(); i++) {
-        		Object o = v.get(i);
+        		final Object o = v.get(i);
         		v.set(i,trans.transform(o));
         	}
         	return v;
@@ -142,26 +143,26 @@ public class TypeStructureTransformer implements Transformer {
         
         // recursively transform a collection.
         if (arg0 instanceof Collection) {
-            Collection col = (Collection)arg0;
-            Vector v = new Vector(col.size());
-            for (Iterator i = col.iterator(); i.hasNext(); ) {
+            final Collection col = (Collection)arg0;
+            final Vector v = new Vector(col.size());
+            for (final Iterator i = col.iterator(); i.hasNext(); ) {
                 v.add(trans.transform(i.next()));
             }
             return v;
         }
                        
         // we got a bean of some kind. lets hope it doesn't contain cycles..
-        Map result = new Hashtable();
-        DynaBean db = new WrapDynaBean(arg0);
-        DynaClass dc = db.getDynaClass();
-        DynaProperty[] props = dc.getDynaProperties();
+        final Map result = new Hashtable();
+        final DynaBean db = new WrapDynaBean(arg0);
+        final DynaClass dc = db.getDynaClass();
+        final DynaProperty[] props = dc.getDynaProperties();
         for (int i =0; i < props.length; i++) {            
-            String name = props[i].getName();
+            final String name = props[i].getName();
             if (name == null || "class".equals(name)) { // don't want to persist this one - causes an infinite loop.
                 continue;
             } // don't want the following either.
           
-            Class type = props[i].getType();
+            final Class type = props[i].getType();
             if (type == null 
                     || InputStream.class.isAssignableFrom( type) 
                     || OutputStream.class.isAssignableFrom(type )
@@ -172,16 +173,16 @@ public class TypeStructureTransformer implements Transformer {
            //in the future, we might need to also handle indexed and mapped properties
             // however, AR API doesn't use these at present.
             try {
-                Object value = db.get(name);
+                final Object value = db.get(name);
                 if (value != null) { // hashtable can't handle nulls..
                     result.put(name,trans.transform(value));
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 // thrown by dynabean for properties with only a setter - ignore.
             }
         }
         //modified - add originating class type information.
-        Vector iVector = getTypeInformation(arg0);
+        final Vector iVector = getTypeInformation(arg0);
         result.put("__interfaces",iVector);
         return result;
     }
@@ -194,12 +195,12 @@ public class TypeStructureTransformer implements Transformer {
      * @param arg0 the object to inspect.
      * @return a vector of strings.
      */
-    private Vector getTypeInformation(Object arg0) {
+    private Vector getTypeInformation(final Object arg0) {
         Class beanClass = arg0.getClass();
-        Vector iVector = new Vector();
+        final Vector iVector = new Vector();
         iVector.add(beanClass.getName());
         do {
-            Class[] interfaces = beanClass.getInterfaces();
+            final Class[] interfaces = beanClass.getInterfaces();
             for(int i = 0; i < interfaces.length; i++) {
                 iVector.add(interfaces[i].getName());
             }
@@ -213,6 +214,11 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.13  2008/08/04 16:37:23  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.12  2007/10/07 10:40:05  nw
 added serialization of classnames
 

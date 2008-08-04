@@ -21,7 +21,6 @@ public class AllIvoaSystemTests {
 		suite.addTestSuite(SsapSystemTest.class);
 		suite.addTestSuite(ConeSystemTest.class);
 
-		//suite.addTestSuite(SkyNodeSystemTest.class);
 		suite.addTest(AllRegistrySystemTests.suite());		
 		return new ARTestSetup(suite,true);
 	}

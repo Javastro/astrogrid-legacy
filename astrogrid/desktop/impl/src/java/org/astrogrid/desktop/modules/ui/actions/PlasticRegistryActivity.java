@@ -11,7 +11,6 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -23,10 +22,11 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 	private final PlasticApplicationDescription plas;
 
     private final PlasticScavenger scav;
-	protected boolean invokable(Resource r) {
+	@Override
+    protected boolean invokable(final Resource r) {
 		return true;
 	}
-	public PlasticRegistryActivity(final PlasticApplicationDescription descr, PlasticScavenger scav) {
+	public PlasticRegistryActivity(final PlasticApplicationDescription descr, final PlasticScavenger scav) {
 		super();
 		setHelpID("activity.plastic.resource");
 		this.plas = descr;
@@ -35,13 +35,15 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 	}
 
 	  // create components but keep them invisible.
+    @Override
     public JLinkButton createLinkButton() {
-        JLinkButton b = new JLinkButton(this);
+        final JLinkButton b = new JLinkButton(this);
         b.setVisible(false);
         return b;
     }
+    @Override
     public JMenuItem createHidingMenuItem() {
-        JMenuItem i = new JMenuItem(this);
+        final JMenuItem i = new JMenuItem(this);
         i.setVisible(false);
         return i;
     }
@@ -49,10 +51,11 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 //	    return super.createHidingMenuItem();
 //	}
 
-	public void actionPerformed(ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
 		final List l = computeInvokable();
-		int sz = l.size();
-		Runnable r = new Runnable() {
+		final int sz = l.size();
+		final Runnable r = new Runnable() {
 
             public void run() {
                 switch(l.size()) {
@@ -71,8 +74,8 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
                         if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
                             sendLoadListMessage(l);
                         } else {
-                            for (Iterator i = l.iterator(); i.hasNext();) {
-                                Resource r = (Resource) i.next();					
+                            for (final Iterator i = l.iterator(); i.hasNext();) {
+                                final Resource r = (Resource) i.next();					
                                 sendLoadMessage(r);
                             }
                         }			
@@ -86,14 +89,16 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 //		    {
 //		        setTransient(true);
 //		    }
-			protected Object construct() throws Exception {
-				List l = new ArrayList();
+			@Override
+            protected Object construct() throws Exception {
+				final List l = new ArrayList();
 				l.add(r.getId().toString());
-				scav.getTupp().singleTargetPlasticMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD,l,plas.getId());
+				scav.getTupp().singleTargetFireAndForgetMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD,l,plas.getId());
 				return null;
 			}
 			// indicate when hand-off happended.
-			protected void doFinished(Object result) {
+			@Override
+            protected void doFinished(final Object result) {
                 parent.showTransientMessage("Message sent to " + plas.getName(),"");		
 			}
 		}).start();
@@ -104,19 +109,21 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 		    {
 		        setTransient(true);
 		    }
-			protected Object construct() throws Exception {
-				List l = new ArrayList();
+			@Override
+            protected Object construct() throws Exception {
+				final List l = new ArrayList();
 				// marshall the args..
-				List us = new ArrayList(resources.size());
+				final List us = new ArrayList(resources.size());
 				l.add(us);
 				for (int i = 0; i < resources.size(); i++) {
-					Resource r = (Resource)resources.get(i);
+					final Resource r = (Resource)resources.get(i);
 					us.add(r.getId().toString());
 				}
-				scav.getTupp().singleTargetPlasticMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST,l,plas.getId());
+				scav.getTupp().singleTargetFireAndForgetMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST,l,plas.getId());
 				return null;
 			}
-			protected void doFinished(Object result) {
+			@Override
+            protected void doFinished(final Object result) {
                 parent.showTransientMessage("Message sent to " + plas.getName(),"");	
 			}			
 		}).start();					

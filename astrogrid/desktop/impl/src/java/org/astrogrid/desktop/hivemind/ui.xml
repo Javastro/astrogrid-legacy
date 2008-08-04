@@ -598,7 +598,7 @@ ACTIONS
 			<inject object="service:system.browser" />		
 		</object>	
 		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
-			<inject object="service:system.plasticList" />
+            <inject object="service:system.plasticList" />
 			<inject object="service:system.tupperware" />
             <inject object="service:system.systray" />
 		</object>

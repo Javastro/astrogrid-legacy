@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.8 2008/04/23 11:21:27 nw Exp $
+/*$Id: ARTestSetup.java,v 1.9 2008/08/04 16:37:24 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop;
 
 import java.io.InputStream;
-import java.security.Principal;
 import java.util.Properties;
 
 import junit.extensions.TestSetup;
@@ -20,8 +19,6 @@ import junit.framework.Test;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.desktop.framework.SessionManagerInternal;
-import org.astrogrid.desktop.modules.plastic.AllPlasticIntegrationTests;
 
 /** sets up a fixture of a running in-process workbench,
  *
@@ -55,11 +52,11 @@ public class ARTestSetup extends TestSetup{
     /** Construct a new ACRTestSetup
      * @param arg0
      */
-    public ARTestSetup(Test arg0) {
+    public ARTestSetup(final Test arg0) {
         this(arg0,false);
     }
 
-    public ARTestSetup(Test arg0,boolean doLogin) {
+    public ARTestSetup(final Test arg0,final boolean doLogin) {
         super(arg0);
         
         this.doLogin = doLogin;
@@ -70,6 +67,7 @@ public class ARTestSetup extends TestSetup{
     protected boolean doLogin;
     protected boolean iCreatedFixture;
 
+    @Override
     protected void setUp() throws Exception {
     	if (fixture == null) { // no previous / parent test setup fixture created it..
     		iCreatedFixture = true;
@@ -81,6 +79,7 @@ public class ARTestSetup extends TestSetup{
     	}
     }
 
+    @Override
     protected void tearDown()  throws Exception{
     	if (iCreatedFixture) {
     		logger.info("Stopping AR as fixture");
@@ -98,27 +97,27 @@ public class ARTestSetup extends TestSetup{
      */
     private void login() {
     	try {
-    		Community comm = (Community)fixture.getACR().getService(Community.class);
+    		final Community comm = (Community)fixture.getACR().getService(Community.class);
     		if (! comm.isLoggedIn()) {	    		
     			logger.info("Logging in");            
     			try {
-    				Properties props = new Properties();
-    				InputStream is = ARTestSetup.class.getResourceAsStream("test-user.properties");
+    				final Properties props = new Properties();
+    				final InputStream is = ARTestSetup.class.getResourceAsStream("test-user.properties");
     				props.load(is);
-    				String username = props.getProperty(AG_TEST_USERNAME);
+    				final String username = props.getProperty(AG_TEST_USERNAME);
     				System.setProperty(AG_TEST_USERNAME,username);
-    				String password = props.getProperty(AG_TEST_PASSWORD);
+    				final String password = props.getProperty(AG_TEST_PASSWORD);
     				System.setProperty(AG_TEST_PASSWORD,password);
-    				String community = props.getProperty(AG_TEST_COMMUNITY);
+    				final String community = props.getProperty(AG_TEST_COMMUNITY);
     				System.setProperty(AG_TEST_COMMUNITY,community);
     				comm.login(username,password,community);
     				logger.info("Logged in as " + username + " / " + community);
-    			} catch (Throwable e) { // try ui login.
+    			} catch (final Throwable e) { // try ui login.
     				logger.error("Failed to read login settings from astrogrid.properties - prompting using GUI",e);
     				comm.guiLogin();
     			}
     		}
-    	} catch (Throwable e) {
+    	} catch (final Throwable e) {
     		logger.error("Fixture failed to login",e);
     		fail("Fixture failed to login: " + e.getMessage());
     	}
@@ -131,14 +130,13 @@ public class ARTestSetup extends TestSetup{
 		try {
     		logger.info("Creating AR fixture");			
     		System.setProperty("builtin.shutdown.exit", "false");
-    		System.setProperty(AllPlasticIntegrationTests.NOTIFICATION_KEY,"false");
     		System.setProperty("java.awt.headless","true"); // headless.
 			fixture = new BuildInprocessWorkbench();
 			//if needed add furtyher config in here - e.g. different java.util.properties base class,
 			// custom system properties, etc.
 			fixture.start();
     		logger.info("AR Fixture started");
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			logger.error("AR fixture threw exception on startup",e);
 			fail("AR fixture threw exception on startup" + e.getMessage());
 		}
@@ -154,6 +152,11 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.9  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.8  2008/04/23 11:21:27  nw
 configure to run headless.
 

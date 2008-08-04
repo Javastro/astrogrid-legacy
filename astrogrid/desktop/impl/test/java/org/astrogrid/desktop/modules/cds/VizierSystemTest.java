@@ -40,7 +40,7 @@ public class VizierSystemTest extends InARTestCase{
 	 * Test method for 'org.astrogrid.desktop.modules.cds.VizieRImpl.cataloguesMetaData(String, double, String, String)'
 	 */
 	public void testCataloguesMetaData() throws Exception {
-		Document doc = viz.cataloguesMetaData("m32",0.1,"arcmin","");
+		Document doc = viz.cataloguesMetaData("m32",0.1,"arcsec","");
 		assertIsRoughlyVotable(doc);
 	}
 
@@ -48,7 +48,7 @@ public class VizierSystemTest extends InARTestCase{
 	 * Test method for 'org.astrogrid.desktop.modules.cds.VizieRImpl.cataloguesMetaDataWavelength(String, double, String, String, String)'
 	 */
 	public void testCataloguesMetaDataWavelength() throws Exception {
-		Document doc = viz.cataloguesMetaDataWavelength("m32",0.1,"arcmin","","optical");
+		Document doc = viz.cataloguesMetaDataWavelength("m32",0.1,"arcsec","","optical");
 		assertIsRoughlyVotable(doc);
 	}
 

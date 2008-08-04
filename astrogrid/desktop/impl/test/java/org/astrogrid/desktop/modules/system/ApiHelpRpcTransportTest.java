@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRpcTransportTest.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: ApiHelpRpcTransportTest.java,v 1.4 2008/08/04 16:37:24 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,18 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.xmlrpc.XmlRpcClient;
+import org.astrogrid.Fixture;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.acr.system.ApiHelp;
-import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 
 /** repeat of apihelp tests, via xmlrpc interface - exercise this transport, and make sure configuration is correct
@@ -31,14 +31,12 @@ import org.astrogrid.desktop.ARTestSetup;
 public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements ApiHelp {
     protected void setUp() throws Exception {
         super.setUp();
-        WebServer serv = (WebServer)getACR().getService(WebServer.class);
-        assertNotNull(serv);
-        client = new XmlRpcClient(serv.getUrlRoot() + "xmlrpc");
-        v = new Vector();
+        client = Fixture.createXmlRpcClient(getACR());
+        v = new ArrayList();
         help = this ; // test clas iimplements service interface
     }
-    protected XmlRpcClient client;
-    protected Vector v ;
+    protected org.apache.xmlrpc.client.XmlRpcClient client;
+    protected List v ;
     protected void tearDown() throws Exception {
     	super.tearDown();
     	client = null;
@@ -56,7 +54,7 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 		v.add(arg0);
 		v.add(Integer.toString(arg1));
 		//v.add(new Integer(arg1));
-		Vector v1 = new Vector();
+		List v1 = new ArrayList();
 		if (arg2 != null) {
 			for (int i = 0; i < arg2.length; i++) {
 				v1.add(arg2[i] == null ? "NULL" : arg2[i].toString());
@@ -103,8 +101,12 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 		v.clear();
 		v.add(arg0);
 		try {
-			Vector a = (Vector)client.execute("system.apihelp.listComponentsOfModule",v);
-			return (String[])a.toArray(new String[]{});
+			Object[] a = (Object[])client.execute("system.apihelp.listComponentsOfModule",v);
+            String[] s = new String[a.length];
+            for (int i = 0; i < a.length; i++) {
+                s[i] = (String)a[i];
+            }
+            return s;
 		} catch (Exception e) {
 			throw new NotFoundException(e);
 		}
@@ -113,8 +115,12 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 	public String[] listMethods() {
 		v.clear();
 		try {
-			Vector a = (Vector)client.execute("system.apihelp.listMethods",v);
-			return (String[])a.toArray(new String[]{});
+			Object[] a = (Object[])client.execute("system.apihelp.listMethods",v);
+			String[] result = new String[a.length];
+			for (int i = 0; i < a.length; i++) {
+			    result[i] = (String)a[i];
+			}
+			return result;
 		} catch (Exception e) {
 			fail(e.getMessage());
 			throw new RuntimeException("never reached");
@@ -125,8 +131,12 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 		v.clear();
 		v.add(arg0);
 		try {
-			Vector a = (Vector)client.execute("system.apihelp.listMethodsOfComponent",v);
-			return (String[])a.toArray(new String[]{});
+			Object[] a = (Object[])client.execute("system.apihelp.listMethodsOfComponent",v);
+            String[] s = new String[a.length];
+            for (int i = 0; i < a.length; i++) {
+                s[i] = (String)a[i];
+            }
+            return s;
 		} catch (Exception e) {
 			throw new NotFoundException(e);
 		}
@@ -140,8 +150,12 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 	public String[] listModules() {
 		v.clear();
 		try {
-			Vector a = (Vector)client.execute("system.apihelp.listModules",v);
-			return (String[])a.toArray(new String[]{});
+			Object[] a = (Object[])client.execute("system.apihelp.listModules",v);
+			String[] s = new String[a.length];
+			for (int i = 0; i < a.length; i++) {
+			    s[i] = (String)a[i];
+			}
+			return s;
 		} catch (Exception e) {
 			fail(e.getMessage());
 			throw new RuntimeException("never reached");
@@ -163,12 +177,17 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 		v.clear();
 		v.add(arg0);
 		try {
-			Vector a = (Vector)client.execute("system.apihelp.methodSignature",v);
-			for (int i = 0; i < a.size(); i++) {
-				Vector b = (Vector)a.get(i);
-				a.set(i,b.toArray(new String[]{}));
+			Object[] a = (Object[])client.execute("system.apihelp.methodSignature",v);
+			String[][] result = new String[a.length][];
+			for (int i = 0; i < a.length; i++) {
+				Object[] b = (Object[])a[i];
+				String[] c = new String[b.length];
+				for (int j = 0; j < b.length; j++) {
+				    c[j] = (String)b[j];
+				}
+				result[i] = c;
 			}	
-			return (String[][])a.toArray(new String[][]{});
+			return result;
 		} catch (Exception e) {
 			throw new NotFoundException(e);
 		}
@@ -191,6 +210,11 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 
 /* 
 $Log: ApiHelpRpcTransportTest.java,v $
+Revision 1.4  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

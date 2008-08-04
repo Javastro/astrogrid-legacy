@@ -16,40 +16,25 @@
 		</acr-module>
 	</contribution>
 	
-	<!--  start hub when program runs. -->
-	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="hub"/> 
-	</contribution>
 
 
-
-	<!-- ========================
-	HUB
-	 -->
-	
-	<service-point id="hub" interface="org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal">
-		Plastic hub
-        <interceptor service-id="system.edt" >
-            <exclude method="get*" />
-            <exclude method="set*" />
-        </interceptor>   
-		<interceptor service-id="system.throbber" />		
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.plastic.PlasticHubImpl"
-				initialize-method="start">
-				<event-listener service-id="builtin.shutdown" />					
-                <string>${astrogrid.desktop.version}</string>
-				<service>system.ui</service>
-                <service>system.executor</service>
-				<service>namegen</service>
-				<service>system.rmi</service>
-				<service>system.webserver</service>
-				<service>system.systray</service>	
-				<service>prettyPrinter</service>
-				<object>preference:org.votech.plastic.notificationsenabled</object>	
-			</construct>
-		</invoke-factory>
-	</service-point>
+<!--  this is just the hub implementation - it sholdn't be accessed from other components that wish to send plastic messages.
+ -->
+    <service-point id="hub"  interface="org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal">
+        Plastic hub
+        <interceptor service-id="system.throbber" />        
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.plastic.PlaskitPlasticHub"  >               
+                <event-listener service-id="builtin.shutdown" /> 
+                <string>${astrogrid.desktop.version}</string>    
+                <object>service-property:system.rmi:port</object>
+                <object>service-property:system.webserver:root</object>        
+                <object>preference:org.votech.plastic.notificationsenabled</object>
+                <service>system.systray</service> 
+                <service>system.httpclient</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
 
 	<implementation service-id="hub" if="property plastic.hub.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
@@ -69,29 +54,6 @@
 			<units>boolean</units>
 		</preference>
 	</contribution>
-	
-	<!-- supporting service -->
-	<!-- 
-	NAME GENERATOR
-	 -->
-	<service-point id="namegen" visibility="private" interface="org.astrogrid.common.namegen.NameGen">
-		Unique name generator
-		<create-instance model="primitive" class="org.astrogrid.common.namegen.InMemoryNameGen" />
-	</service-point>
-	<!-- 
-	PRETTY PRINTER
-	 -->
-	<service-point id="prettyPrinter" visibility="private" interface="org.astrogrid.desktop.modules.plastic.PrettyPrinterInternal">
-		Pretty printer component.
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.plastic.PrettyPrinterImpl" >
-				<service>system.browser</service>
-			</construct>
-		</invoke-factory>	
-	</service-point>	
-	
-
-	
 	
  </module>
  

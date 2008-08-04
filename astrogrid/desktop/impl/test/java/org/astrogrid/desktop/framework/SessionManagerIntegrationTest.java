@@ -6,7 +6,6 @@ package org.astrogrid.desktop.framework;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.Principal;
-import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -14,7 +13,7 @@ import net.ladypleaser.rmilite.RemoteInvocationException;
 import net.sourceforge.jwebunit.WebTester;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.xmlrpc.XmlRpcClient;
+import org.astrogrid.Fixture;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.Finder.RmiAcr;
@@ -203,15 +202,12 @@ public class SessionManagerIntegrationTest extends InARTestCase {
 	public static class SessionTestXmlRpcClient implements SessionTest {
 
 		public SessionTestXmlRpcClient(URL rpcUrl) {
-			client = new XmlRpcClient(rpcUrl);
-			v = new Vector();
+			client = Fixture.createXmlRpcClient(rpcUrl);		
 		}	
-		protected Vector v = new Vector();
-		public final XmlRpcClient client;
+		public final org.apache.xmlrpc.client.XmlRpcClient client;
 		public String get() {
 			try {
-			v.clear();
-			String s = (String)client.execute("test.sessiontest.get",v);
+			String s = (String)client.execute("test.sessiontest.get",new Object[]{});
 			return s.equals("NULL") ? null :s;
 			} catch (Exception e) {
 				fail(e.getMessage());
@@ -219,13 +215,10 @@ public class SessionManagerIntegrationTest extends InARTestCase {
 			}			
 		}
 		public void put(String arg0) {
-			v.clear();
-			v.add(arg0);
 			try {
-				client.execute("test.sessiontest.put",v);
+				client.execute("test.sessiontest.put",new Object[]{arg0});
 			} catch (Exception e) {
-				fail(e.getMessage());
-				throw new RuntimeException("never reached");							
+				fail(e.getMessage());						
 			}
 		}
 		

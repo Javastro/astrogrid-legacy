@@ -1,12 +1,14 @@
 package org.astrogrid.desktop.modules.auth;
 
-import ca.odell.glazedlists.EventList;
 import java.awt.event.ActionEvent;
 import java.util.Map;
+
 import javax.swing.ButtonModel;
 import javax.swing.DefaultButtonModel;
 import javax.swing.JMenu;
+
 import junit.framework.TestCase;
+
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.config.SimpleConfig;
@@ -17,7 +19,8 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitor;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.security.SecurityGuard;
+
+import ca.odell.glazedlists.EventList;
 
 /**
  * JUnit tests for CommunityImpl.
@@ -30,7 +33,8 @@ public class CommunityImplUnitTest extends TestCase {
    * To allow unit testing, some of the objects used by the security guard
    * must make mockeries of themselves.
    */
-  public void setUp() {
+  @Override
+public void setUp() {
     SimpleConfig.getSingleton().setProperty(
       "org.astrogrid.security.community.RegistryClient.mock",
       "true"
@@ -42,10 +46,10 @@ public class CommunityImplUnitTest extends TestCase {
   }
 
   public void testGoodUser() throws Exception {
-    Preference dontSnitch = new Preference();
+    final Preference dontSnitch = new Preference();
     dontSnitch.setDefaultValue("false");
-    SnitchImpl snitch = new SnitchImpl(null, null, null, null, dontSnitch);
-    CommunityImpl sut = 
+    final SnitchImpl snitch = new SnitchImpl(null, null, null, null, dontSnitch);
+    final CommunityImpl sut = 
         new CommunityImpl(new MockUiContext(), 
                           null, 
                           snitch,
@@ -122,11 +126,11 @@ public class CommunityImplUnitTest extends TestCase {
       return null;
     }
 
-    public void registerWindow(UIComponent window) {
+    public void registerWindow(final UIComponent window) {
       // Do nothing.
     }
 
-    public void unregisterWindow(UIComponent window) {
+    public void unregisterWindow(final UIComponent window) {
       // Do nothing.
     }
 
@@ -154,16 +158,20 @@ public class CommunityImplUnitTest extends TestCase {
       // Do nothing.
     }
 
-    public void setLoggedIn(boolean b) {
+    public void setLoggedIn(final boolean b) {
       // Do nothing.
     }
 
-    public void setStatusMessage(String string) {
+    public void setStatusMessage(final String string) {
       // Do nothing.
     }
 
-    public void actionPerformed(ActionEvent actionEvent) {
+    public void actionPerformed(final ActionEvent actionEvent) {
       // Do nothing.
+    }
+
+    public JMenu createInteropMenu() {
+        return null;
     }
   }
   

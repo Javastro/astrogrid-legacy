@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import static org.easymock.EasyMock.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,23 +12,20 @@ import java.util.Map;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
-import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.util.SelfTester;
 
-import static org.easymock.EasyMock.*;
-
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -34,7 +33,8 @@ import junit.framework.TestCase;
  */
 public class UIContextImplUnitTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		conf = createNiceMock(Configuration.class);
 		exec = createNiceMock(BackgroundExecutor.class);
@@ -57,6 +57,7 @@ public class UIContextImplUnitTest extends TestCase {
 		        ,plasticList
 		        ,windowFactories
 		        ,"test"
+		        ,null
 		);
 	}
 
@@ -71,7 +72,8 @@ public class UIContextImplUnitTest extends TestCase {
     private HashMap windowFactories;
     private BasicEventList plasticList;
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		cxt = null;
 		conf = null;
@@ -114,7 +116,7 @@ public class UIContextImplUnitTest extends TestCase {
     
 	
 	public void testWindowFactories() throws Exception {
-	    Map map = cxt.getWindowFactories();
+	    final Map map = cxt.getWindowFactories();
 	    assertNotNull(map);
 	    assertTrue(map.isEmpty());
     }
@@ -134,7 +136,7 @@ public class UIContextImplUnitTest extends TestCase {
 	    }
 
 	public void testGetLoggedInModel() {
-		ButtonModel model = cxt.getLoggedInModel();
+		final ButtonModel model = cxt.getLoggedInModel();
 		edtWait();
 		assertFalse(model.isEnabled());
 		cxt.setLoggedIn(true);
@@ -146,7 +148,7 @@ public class UIContextImplUnitTest extends TestCase {
 	}
 
 	public void testGetThrobbingModel() {
-		ButtonModel model = cxt.getThrobbingModel();
+		final ButtonModel model = cxt.getThrobbingModel();
 		assertFalse(model.isEnabled());
 		cxt.startThrobbing();
 		edtWait();
@@ -167,7 +169,7 @@ public class UIContextImplUnitTest extends TestCase {
 	}
 
 	public void testGetVisibleModel() {
-		ButtonModel visibleModel = cxt.getVisibleModel();
+		final ButtonModel visibleModel = cxt.getVisibleModel();
 		assertFalse(visibleModel.isEnabled());
 		cxt.show();
 		edtWait();
@@ -179,13 +181,13 @@ public class UIContextImplUnitTest extends TestCase {
 
 	
 	public void testGetVisibleModelWithWindows() {
-		UIComponent w1 = createMock(UIComponent.class);
+		final UIComponent w1 = createMock(UIComponent.class);
 		w1.setVisible(true);
 		w1.setVisible(false);
 		replay(w1);
 		
 		cxt.registerWindow(w1);
-		ButtonModel visibleModel = cxt.getVisibleModel();
+		final ButtonModel visibleModel = cxt.getVisibleModel();
 		assertFalse(visibleModel.isEnabled());
 		cxt.show();
 		edtWait();
@@ -210,7 +212,7 @@ public class UIContextImplUnitTest extends TestCase {
 		// just check it doesn't crap out.
 	}
 	public void testStatusMessageWithWindow() throws Exception {
-        UIComponent w1 = createMock(UIComponent.class);
+        final UIComponent w1 = createMock(UIComponent.class);
 		w1.setStatusMessage("foo");
 		replay(w1);
 		cxt.registerWindow(w1);
@@ -224,10 +226,10 @@ public class UIContextImplUnitTest extends TestCase {
 	// test that status only goes to the first in the list.
 	public void testStatusMessageWithWindows() throws Exception {
 
-	      UIComponent w1 = createMock(UIComponent.class);
+	      final UIComponent w1 = createMock(UIComponent.class);
 		w1.setStatusMessage("foo");
 		cxt.registerWindow(w1);
-        UIComponent w2 = createMock(UIComponent.class);	
+        final UIComponent w2 = createMock(UIComponent.class);	
         replay(w1,w2);
 		cxt.registerWindow(w2);
 		
@@ -239,7 +241,7 @@ public class UIContextImplUnitTest extends TestCase {
 	
 	public void testGetWindowList() {
 		assertEquals(0,cxt.getWindowList().size());
-		UIComponent comp = createNiceMock(UIComponent.class);
+		final UIComponent comp = createNiceMock(UIComponent.class);
 		cxt.registerWindow(comp);
 		assertEquals(1,cxt.getWindowList().size());
 		assertSame(comp,cxt.getWindowList().get(0));
@@ -253,12 +255,12 @@ public class UIContextImplUnitTest extends TestCase {
 	}
 	
 	public void testWindowListImmutable() throws Exception {
-		EventList windowList = cxt.getWindowList();
+		final EventList windowList = cxt.getWindowList();
 		assertEquals(0,windowList.size());
 		try {
 			windowList.add(new Object());
 			fail("expected to chuck");
-		} catch (UnsupportedOperationException e) {
+		} catch (final UnsupportedOperationException e) {
 		}
 		assertEquals("mutated window list",0,windowList.size());		
 	}
@@ -270,7 +272,7 @@ public class UIContextImplUnitTest extends TestCase {
 		assertNotNull(found);
 		assertTrue(found instanceof HeadlessUIComponent);
 		// register a real window.
-		UIComponent comp =createNiceMock(UIComponent.class);
+		final UIComponent comp =createNiceMock(UIComponent.class);
 		cxt.registerWindow(comp);
 		assertEquals(1,cxt.getWindowList().size());		
 		found = cxt.findMainWindow();
@@ -292,9 +294,9 @@ public class UIContextImplUnitTest extends TestCase {
 				public void run() {
 				}
 			});
-		} catch (InterruptedException x) {
+		} catch (final InterruptedException x) {
 			fail(x.getMessage());
-		} catch (InvocationTargetException x) {
+		} catch (final InvocationTargetException x) {
 			fail(x.getMessage());
 		}
 	}

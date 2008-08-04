@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.8 2007/04/18 15:47:04 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.9 2008/08/04 16:37:24 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,25 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.astrogrid.Fixture;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-
 /** tests xmlrpc transport
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
@@ -38,9 +41,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     protected void setUp() throws Exception {
             super.setUp();
             reg = getACR();
-            WebServer serv = (WebServer)reg.getService(WebServer.class);
-            assertNotNull(serv);
-            client = new XmlRpcClient(serv.getUrlRoot() + "xmlrpc");
+            client = Fixture.createXmlRpcClient(getACR());
             v = new Vector();
         }
         protected ACR reg;
@@ -54,20 +55,20 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         }
 
     public void testInstrospection1() throws XmlRpcException, IOException {
-        List results = (List)client.execute("system.listMethods",new Vector());
+        Object[] results = (Object[])client.execute("system.listMethods",new Vector());
         assertNotNull(results);
-        assertTrue(results.contains("system.configuration.list"));
+        assertThat(results,hasItemInArray((Object)"system.configuration.list"));
     }
     
     public void testInstrospection2() throws XmlRpcException, IOException {
         v.add("system.configuration.setKey");
-        List results = (List)client.execute("system.methodSignature",v);
+        Object[] results = (Object[]) client.execute("system.methodSignature",v);
         assertNotNull(results);
-        assertEquals(1,results.size());
-        List l = (List)results.get(0);
-        assertEquals(3, l.size());
-        assertEquals("string",l.get(1));
-        assertEquals("string",l.get(2));
+        assertEquals(1,results.length);
+        Object[] l = (Object[])results[0];
+        assertEquals(3, l.length);
+        assertEquals("string",l[1]);
+        assertEquals("string",l[2]);
     }
     
     public void testInstrospection3() throws XmlRpcException, IOException {
@@ -82,7 +83,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         v.add(val);
         Object o = client.execute("system.configuration.setKey",v);
         assertNotNull(o);
-        assertTrue(o instanceof Boolean);
+        assertThat(o,is(Boolean.class));
         
         v.clear();        
         v.add("xmltest");
@@ -95,7 +96,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         v.add("xmltest");
         o = client.execute("system.configuration.removeKey",v);
         assertNotNull(o);
-        assertTrue(o instanceof String);
+        assertThat(o, is(String.class));
         assertEquals("OK",o);
         
     }
@@ -105,8 +106,8 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     	Object o = client.execute("test.transporttest.throwCheckedException",v);
     	fail("expected to puke");
     	} catch (XmlRpcException e){
-    		assertTrue(e.getMessage().indexOf("NotFound") != -1);
-    		assertNull(e.getCause()); // pity - but too much to hope for really.
+    	    assertThat(e.getMessage(),containsString("NotFound"));
+    	    assertNull(e.getCause()); // pity - but too much to hope for really.
     	}
     }
     
@@ -115,7 +116,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         	Object o = client.execute("test.transporttest.throwUncheckedException",v);
         	fail("expected to puke");
         	} catch (XmlRpcException e){
-        		assertTrue(e.getMessage().indexOf("NullPointer") != -1);
+                assertThat(e.getMessage(),containsString("NullPointer"));
         		assertNull(e.getCause()); // pity - but too much to hope for really.
         	}    
         }
@@ -125,9 +126,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         	Object o = client.execute("test.transporttest.throwUncheckedExceptionOfUnknownType",v);
         	fail("expected to puke");
         	} catch (XmlRpcException e){
-   
-        		System.out.println(e.getMessage());
-        		assertTrue(e.getMessage().indexOf("AnUnknownRuntimeException") != -1);
+                assertThat(e.getMessage(),containsString("AnUnknownRuntimeException"));        		
         		assertNull(e.getCause()); // pity - but too much to hope for really.
         	}    
         }
@@ -137,7 +136,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     	v.add(bytes);
         Object o = client.execute("test.transporttest.echoByteArray",v);
         assertNotNull(o);
-        assertTrue(o instanceof byte[]);
+        assertThat(o,is(byte[].class));
         assertNotSame(bytes,o);
         assertTrue(Arrays.equals(bytes,(byte[])o));
     }
@@ -159,7 +158,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
         	client.execute("system.apihelp.listComponentsOfModule",v);
         	fail("expected to chuck");
         } catch (XmlRpcException e) {
-        	assertTrue(e.getMessage().indexOf("Incorrect number of parameters") != -1);
+            assertThat(e.getMessage(),containsString("Incorrect number of parameters"));   
         }
 
     }
@@ -188,6 +187,11 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.9  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.8  2007/04/18 15:47:04  nw
 tidied up voexplorer, removed front pane.
 

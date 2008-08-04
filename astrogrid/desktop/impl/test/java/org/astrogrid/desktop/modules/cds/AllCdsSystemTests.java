@@ -20,8 +20,6 @@ public class AllCdsSystemTests {
 		suite.addTestSuite(CoordinateSystemTest.class);
 		suite.addTestSuite(SesameSystemTest.class);
 		suite.addTestSuite(UCDSystemTest.class);
-		//FIXME tooo slow. client needs to be downgraded to use HTTP access.
-		// then a test like this would be realistic.
 		suite.addTestSuite(VizierSystemTest.class); 
 		
 		

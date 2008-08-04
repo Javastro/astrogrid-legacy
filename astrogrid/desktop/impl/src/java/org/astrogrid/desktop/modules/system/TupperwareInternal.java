@@ -5,11 +5,10 @@ package org.astrogrid.desktop.modules.system;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import javax.swing.Action;
 
-import ca.odell.glazedlists.EventList;
+import org.apache.xmlrpc.XmlRpcHandler;
 
 /**
  * Tupperware is a plastic container that keeps things fresh.
@@ -21,27 +20,25 @@ import ca.odell.glazedlists.EventList;
  * @author Noel Winstanley
  * @since Jun 5, 20063:11:05 PM
  */
-public interface TupperwareInternal {
+public interface TupperwareInternal extends XmlRpcHandler {
 
 	// send messages.
 	/** send a message to a single named application */
-	public Object singleTargetPlasticMessage(URI message, List args, URI target) ;
+	public Object singleTargetRequestResponseMessage(URI message, List args, URI target) ;
+	
+	/** send a messagge to a single named application, don't wait for response */
+	public void singleTargetFireAndForgetMessage(URI message, List args, URI target);
 	
 	
-	/** access an event list that contains {@link PlasticApplicationDescription} objects
-	 * for each registered application. */
-	public EventList getRegisteredApplications();
+	/** access an action that can be used to connect to a plastic hub */
+	public Action connectAction();
+	
+	/** access an action that can be used to disconnect from a hub */
+	public Action disconnectAction();
+	
+	/** access an action that can be used to start an internal hub */
+	public Action startInternalHubAction();
 
-	
-	public Map broadcastPlasticMessage(URI message, List args) ;
-	
-	public void  broadcastPlasticMessageAsynch(URI message, List args) ;
-	
-	/** returns true if something is registered which will accept the 
-	 * parameter kind of message
-	 * @param message
-	 * @return if there or one or more receivers.
-	 */
-	public boolean somethingAccepts(URI message);
+
 	
 }

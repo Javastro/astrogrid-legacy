@@ -18,9 +18,7 @@ public class AllIvoaTransportTests {
 		TestSuite suite = new TestSuite(
 				"Transport Tests for ivoa module.");
 		suite.addTestSuite(SiapRmiTransportTest.class);
-		suite.addTestSuite(SiapRpcTransportTest.class);
 		suite.addTestSuite(ConeRmiTransportTest.class);
-		suite.addTestSuite(ConeRpcTransportTest.class);
 	
 		return new ARTestSetup(suite,true);
 	}

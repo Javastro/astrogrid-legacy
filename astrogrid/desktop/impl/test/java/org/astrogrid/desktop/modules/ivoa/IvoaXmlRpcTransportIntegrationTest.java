@@ -1,4 +1,4 @@
-/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.3 2007/03/08 17:43:50 nw Exp $
+/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.4 2008/08/04 16:37:21 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,16 +13,13 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.xmlrpc.XmlRpcClient;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.WebServer;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.astrogrid.Fixture;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.XmlRpcTransportIntegrationTest;
@@ -39,20 +36,12 @@ public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
      */
     protected void setUp() throws Exception {
             super.setUp();
-            reg = getACR();
-            WebServer serv = (WebServer)reg.getService(WebServer.class);
-            assertNotNull(serv);
-            client = new XmlRpcClient(serv.getUrlRoot() + "xmlrpc");
-            v = new Vector();
+            client = Fixture.createXmlRpcClient(getACR());
         }
-        protected ACR reg;
         protected XmlRpcClient client;
-        protected Vector v ;
         protected void tearDown() throws Exception {
         	super.tearDown();
-        	reg = null;
         	client = null;
-        	v = null;
         }
 
 
@@ -64,12 +53,11 @@ public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
     	assertNotNull(is);
     	StringWriter sw = new StringWriter();
     	Piper.pipe(new InputStreamReader(is),sw);
-    	v.add(sw.toString());
-    	List results = (List)client.execute("ivoa.externalRegistry.buildResources",v);
+    	Object[] results = (Object[])client.execute("ivoa.externalRegistry.buildResources",new Object[]{sw.toString()});
     	assertNotNull(results);
-    	assertEquals(3,results.size());
-    	for (int i = 0; i < results.size(); i++) {
-    		assertTrue(results.get(i) instanceof Map);
+    	assertEquals(3,results.length);
+    	for (int i = 0; i < results.length; i++) {
+    		assertTrue(results[i] instanceof Map);
     		//@future - more testing of structure here??
     	}
     }
@@ -82,6 +70,11 @@ public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: IvoaXmlRpcTransportIntegrationTest.java,v $
+Revision 1.4  2008/08/04 16:37:21  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.3  2007/03/08 17:43:50  nw
 first draft of voexplorer
 

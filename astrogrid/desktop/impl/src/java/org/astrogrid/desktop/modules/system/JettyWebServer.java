@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.19 2008/07/08 08:59:00 nw Exp $
+/*$Id: JettyWebServer.java,v 1.20 2008/08/04 16:37:23 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -36,8 +37,9 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.modules.system.contributions.ServletContextContribution;
@@ -53,8 +55,8 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHttpContext;
 import org.mortbay.jetty.servlet.WebApplicationContext;
 import org.mortbay.util.InetAddrPort;
-
-/** Factory to create a webserver, listening to a random port, with a hashed key path.
+/**
+ing to a random port, with a hashed key path.
   * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  *
  */
@@ -87,7 +89,7 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
 
     private final List<WebappContribution> webapps;
 
-    public JettyWebServer(List servlets,List contextObjects, List<WebappContribution> webapps )  {
+    public JettyWebServer(final List servlets,final List contextObjects, final List<WebappContribution> webapps )  {
         super();
         this.webapps = webapps;
         SplashWindow.reportProgress("Starting Astro Runtime HTTP interface...");
@@ -134,19 +136,57 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
             
             server.destroy();
             */        
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             logger.warn("InterruptedException",e);
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             logger.warn("throwable while halting..",t);
         }
 
     }
+    
+
+    static int findSparePort(final int scanStartPort,final int scanEndPort, final InetAddress addr) throws Exception { 
+        if (scanEndPort < scanStartPort) {
+            throw new Exception("scanEndPort (" + scanEndPort + ") is smaller than scanStartPort (" + scanStartPort + ")");
+        }
+        logger.info("Will scan for spare port, from " + scanStartPort + " to " + scanEndPort);
+        for (int i = scanStartPort; i < scanEndPort; i++) {
+            if (checkPort(i,addr)) {
+                return i;
+            }            
+        } 
+        // JL Note. Added address to exception.
+        // It is possible to be looking at the wrong address!
+        throw new Exception( "Could not find a free port between " 
+                           + scanStartPort + " and " + scanEndPort
+                           + " for address " + addr.toString() ) ;        
+    }
+  
+    /** will return true if this port can be connected to */
+    static boolean checkPort(final int i,final InetAddress addr) {
+        ServerSocket ss = null;
+        try {
+            ss = new ServerSocket(i,50,addr);  
+            return true;
+        } catch (final IOException e) { 
+            // oh well, that port is already taken. try another.
+        } finally {
+            if (ss != null) {
+                try {
+                    ss.close();
+                } catch (final IOException e) {
+                    // ignore.
+                }
+            }
+        }
+        return false;
+    }
 
     public void init() throws Exception  {
         if (port < 1) { // not been set.
-            port = AbstractRmiServerImpl.findSparePort(scanStartPort,scanEndPort,inetAddress);
+            port = findSparePort(scanStartPort,scanEndPort,inetAddress);
         } else {
-            if (!AbstractRmiServerImpl.checkPort(port,inetAddress)) {
+            if (!checkPort(port,inetAddress)) {
                 throw new Exception("Cannot connect on specified port " + port);
             }       
         }
@@ -172,8 +212,8 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
                 
         // now work through any additional web apps listed in the configuration.
         boolean rootContextProvided = false;
-        for (WebappContribution webapp : webapps) {            
-            WebApplicationContext appContext = server.addWebApplication(webapp.getContext(),webapp.getLocation());
+        for (final WebappContribution webapp : webapps) {            
+            final WebApplicationContext appContext = server.addWebApplication(webapp.getContext(),webapp.getLocation());
             appContext.setDefaultsDescriptor(this.getClass().getResource("webdefault.xml").toString()); // our own custom descriptor (resource in this package).
             populateContextAttributes(appContext); // all webapps get the context objects too.
             rootContextProvided = rootContextProvided || webapp.getContext().equals("/");
@@ -182,11 +222,11 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
         //if there's not already something at the root,  this places something on the root of the web server.
         // otherwise jetty generates a helpful error page listing all available contexts - not what we want.
         if (!rootContextProvided) {
-            HttpContext root = new HttpContext();
+            final HttpContext root = new HttpContext();
             root.setContextPath("/");
             root.addHandler(new AbstractHttpHandler() {
-                public void handle(String pathInContext, String pathParams
-                        , HttpRequest req, HttpResponse resp) throws HttpException, IOException {
+                public void handle(final String pathInContext, final String pathParams
+                        , final HttpRequest req, final HttpResponse resp) throws HttpException, IOException {
                     resp.sendError(HttpResponse.__403_Forbidden,"Astro Runtime - Forbidden");
                 }
             });
@@ -198,22 +238,22 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
     /**
      * 
      */
-    private void populateContextServlets(ServletHttpContext cxt) {
-        for (Iterator i = servlets.iterator(); i.hasNext(); ) {
-            ServletsContribution d = (ServletsContribution)i.next();
+    private void populateContextServlets(final ServletHttpContext cxt) {
+        for (final Iterator i = servlets.iterator(); i.hasNext(); ) {
+            final ServletsContribution d = (ServletsContribution)i.next();
             logger.info("Adding servlet " + d.getName());
             try {
                 cxt.addServlet(d.getName(),d.getPath(),d.getServletClass().getName());
-            } catch (Exception x) {
+            } catch (final Exception x) {
                 logger.error("Failed to deploy servlet " + d.getName(),x);
             } 
         }
     }
 
     // populate a context with attribute objects..
-	private void populateContextAttributes(ServletHttpContext cxt) {
-		for (Iterator i = contextObjects.iterator(); i.hasNext(); ) {
-            ServletContextContribution contrib = (ServletContextContribution)i.next();
+	private void populateContextAttributes(final ServletHttpContext cxt) {
+		for (final Iterator i = contextObjects.iterator(); i.hasNext(); ) {
+            final ServletContextContribution contrib = (ServletContextContribution)i.next();
             logger.debug("Adding context object " + contrib.getName());
             cxt.getServletContext().setAttribute(contrib.getName(),contrib.getObject());
         }
@@ -224,24 +264,24 @@ public String lastChance() {
     return null;
 }
 
-public void setConnectionFile(String connectionFile) {
+public void setConnectionFile(final String connectionFile) {
     this.connectionFile = new File(connectionFile);
 }
-public void setContextName(String contextName) {
+public void setContextName(final String contextName) {
     this.defaultContextName = contextName;
 }
-public void setPort(int port) {
+public void setPort(final int port) {
     this.port = port;
 }
-public void setScanEndPort(int scanEndPort) {
+public void setScanEndPort(final int scanEndPort) {
     this.scanEndPort = scanEndPort;
 }
-public void setScanStartPort(int scanStartPort) {
+public void setScanStartPort(final int scanStartPort) {
     this.scanStartPort = scanStartPort;
 }
 /* generates a random string */
 private void generateContextName() {
-    Random r = new Random();
+    final Random r = new Random();
     defaultContextName = Long.toString(Math.abs(r.nextLong()),16);        
 }
 private void recordDetails() throws IOException {
@@ -249,7 +289,7 @@ private void recordDetails() throws IOException {
         connectionFile.delete();
     }
     connectionFile.deleteOnExit();
-    PrintWriter pw = new PrintWriter(new FileWriter(connectionFile));
+    final PrintWriter pw = new PrintWriter(new FileWriter(connectionFile));
     pw.println(urlRoot);
     pw.close();
 }
@@ -264,20 +304,18 @@ public boolean isDisableConnectionFile() {
 /**
  * @param disableConnectionFile the disableConnectionFile to set
  */
-public void setDisableConnectionFile(boolean disableConnectionFile) {
+public void setDisableConnectionFile(final boolean disableConnectionFile) {
 	this.disableConnectionFile = disableConnectionFile;
 }
 
 /** Set the internet address this server is to listen on.
  * 
- * defaults to localhost. set this to configure machines with
- * more than one network catd / internet address.
- * 
+ * if not explicitly set, implementation tries to find a sensible default
  * @param netAddress dotted ip address or server name. null or empty strings are ignored.
  * 
  * @throws UnknownHostException 
  */
-public void setInetAddress(String netAddress) throws UnknownHostException {
+public void setInetAddress(final String netAddress) throws UnknownHostException {
 	if (netAddress != null && netAddress.trim().length() > 0) {
 		this.inetAddress = InetAddress.getByName(netAddress);
 	}
@@ -285,9 +323,9 @@ public void setInetAddress(String netAddress) throws UnknownHostException {
 
 // webServerinternal interfvace - for context management.
 
-public URL createContext(String sessionId) {
+public URL createContext(final String sessionId) {
 	logger.info("Creating context for session " + sessionId);
-	ServletHttpContext cxt = (ServletHttpContext)server.addContext(sessionId);
+	final ServletHttpContext cxt = (ServletHttpContext)server.addContext(sessionId);
 	populateContextAttributes(cxt);
 	populateContextServlets(cxt);
 	// previously, I'd tried a lighter-weight approach using a forwarder - to forward
@@ -299,33 +337,33 @@ public URL createContext(String sessionId) {
 //	cxt.addHandler(forw);
 	try {
 		cxt.start();
-	} catch (Exception e) {
+	} catch (final Exception e) {
 		logger.fatal("Failed to start context for session " + sessionId);
 	}
 	return getContextBase(sessionId);
 }
 
-public void dropContext(String sessionId) {
+public void dropContext(final String sessionId) {
 	logger.info("Dropping context for session " + sessionId);
-	HttpContext context = findContext(sessionId);
+	final HttpContext context = findContext(sessionId);
 	if (context != null) {
 		server.removeContext(context);
 	try {
 		context.stop();
-	} catch (InterruptedException x) {
+	} catch (final InterruptedException x) {
 		logger.info("InterruptedException",x);
 	}
 	}
 }
 
-public URL getContextBase(String sessionId) {
-	HttpContext context = findContext(sessionId);
+public URL getContextBase(final String sessionId) {
+	final HttpContext context = findContext(sessionId);
 	if (context == null) {
 		return null;
 	}
 	try {
 		return  new URL("http",inetAddress.getHostAddress(),port,"/" +  sessionId + "/");
-	} catch (MalformedURLException x) {
+	} catch (final MalformedURLException x) {
 		logger.error("MalformedURLException in getContextBase",x);
 		return null; // unlikely
 	}
@@ -336,12 +374,12 @@ public URL getContextBase(String sessionId) {
 	 * @param sessionId
 	 * @return
 	 */
-	private HttpContext findContext (String sessionId) {
-		HttpContext[] contexts = server.getContexts();
+	private HttpContext findContext (final String sessionId) {
+		final HttpContext[] contexts = server.getContexts();
 		if (logger.isDebugEnabled()) {
 			logger.debug(ArrayUtils.toString(contexts));
 		}
-		String cxtPath = "/" + sessionId; // workaround for oddness
+		final String cxtPath = "/" + sessionId; // workaround for oddness
 		for (int i = 0; i < contexts.length; i++) {			
 			if (cxtPath.equals(contexts[i].getContextPath())) {
 				return contexts[i];
@@ -351,32 +389,33 @@ public URL getContextBase(String sessionId) {
 	}
 
     public Test getSelftest() {
-        TestSuite ts = new TestSuite("Internal webserver");
+        final TestSuite ts = new TestSuite("Internal webserver");
         ts.addTest(new TestCase("AR connection file"){
+            @Override
             protected void runTest() {
-                File f = new File(SystemUtils.getUserHome(),".astrogrid-desktop");
+                final File f = new File(SystemUtils.getUserHome(),".astrogrid-desktop");
                 assertTrue("~/.astrogrid-desktop not present",f.exists());
                 FileReader fr = null;
                 URL endpoint = null;
                 try {
                     fr = new FileReader(f);
-                    String str = new BufferedReader(fr).readLine();
+                    final String str = new BufferedReader(fr).readLine();
                     assertNotNull("~/.astrogrid-desktop is empty",str);
                     endpoint = new URL(str);
-                } catch (MalformedURLException ex) {
+                } catch (final MalformedURLException ex) {
                     logger.info("unable to parse contents",ex);
                     fail("unable to parse contents of ~/.astrogrid-desktop");
-                } catch (FileNotFoundException x) {
+                } catch (final FileNotFoundException x) {
                     // just tested for this.
                     fail("~/.astrogrid-desktop not present");                    
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     logger.info("unable to read ~/.astrogrid-desktop");
                     fail("unable to read ~/.astrogrid-desktop");
                 } finally {
                     if (fr != null) {
                         try {
                             fr.close();
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             // ho hum
                         }
                     }
@@ -387,32 +426,33 @@ public URL getContextBase(String sessionId) {
                 assertEquals("incorrect endpoint in ~/.astrogrid-desktop",getRoot(),endpoint);
                 try {
                     endpoint.openConnection().connect();
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     logger.error("unable to connect to internal webserver",x);
                     fail("unable to connect to internal webserver");
                 }
             }
         });
         ts.addTest(new TestCase("HTML access to AR"){
+            @Override
             protected void runTest() {
                 InputStream is = null;
                 try {
-                    URL endpoint = new URL(getRoot(),"system/webserver/getRoot/plain");
+                    final URL endpoint = new URL(getRoot(),"system/webserver/getRoot/plain");
                     is = endpoint.openStream();
-                    String val = new BufferedReader(new InputStreamReader(is)).readLine();
+                    final String val = new BufferedReader(new InputStreamReader(is)).readLine();
                     assertNotNull("no response from webserver",val);                    
                     assertEquals("webserver didn't repond with expected result",getRoot().toString(),val.trim());
-                } catch (MalformedURLException x) {
+                } catch (final MalformedURLException x) {
                     logger.error("unable to construct html call url",x);
                     fail("Unable to construct html call url");
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     logger.error("unable to call html interface",x);
                     fail("Unable to call html interface");
                 } finally {
                     if (is != null) {
                         try {
                             is.close();
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             // don't care
                         }
                     }
@@ -420,21 +460,26 @@ public URL getContextBase(String sessionId) {
             }
         });
         ts.addTest(new TestCase("XMLRPC access to AR") {
+            @Override
             protected void runTest() { //@todo test passing a parameter to the server too??
                 XmlRpcClient client;
                 try {
-                    client = new XmlRpcClient(new URL(getRoot(),"xmlrpc"));
-                    Object result = client.execute("system.webserver.getRoot",new Vector());
+                    client = new XmlRpcClient();
+                    final XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+                    config.setServerURL(new URL(getRoot(),"xmlrpc"));
+                    client.setConfig(config);
+                            
+                    final Object result = client.execute("system.webserver.getRoot",new Vector());
                     assertNotNull("no response from xmlrpc server",result);
                     assertTrue("unexpected response from xmlrpc server",result instanceof String);
                     assertEquals("xmlrpc server didn't respond with expected result",getRoot().toString(),result);
-                } catch (MalformedURLException x) {
+                } catch (final MalformedURLException x) {
                     logger.error("unable to contruct xmlrpc endpoint",x);
                     fail("unable to construct xmlrpc endpoint");
-                } catch (XmlRpcException x) {
+                } catch (final XmlRpcException x) {
                     logger.error("xmlrpc failure",x);
                     fail("xmlrpc failure");
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     logger.error("IO Failure", x);
                     fail("IO failure");
                 }
@@ -448,6 +493,11 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.20  2008/08/04 16:37:23  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.19  2008/07/08 08:59:00  nw
 Added ability to deploy external war in embedded jetty.
 

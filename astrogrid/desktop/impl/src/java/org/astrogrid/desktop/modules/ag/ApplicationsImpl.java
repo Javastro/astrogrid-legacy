@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.33 2008/07/18 17:15:52 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.34 2008/08/04 16:37:24 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -106,7 +106,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
     }
    
 	public String getRegistryAdqlQuery() {
-	     return "Select * from Registry where " +
+	     return "Select * from Registry r where " +
 	     " (@xsi:type like '%CeaApplicationType')" ; //+
 	     //@issue" and ( not( @status = 'inactive' or @status = 'deleted') )";
 	}
@@ -431,6 +431,11 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.34  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.33  2008/07/18 17:15:52  nw
 Complete - task 433: Strip out unused internal CEA
 

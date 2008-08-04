@@ -3,28 +3,18 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.ButtonModel;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
-import org.apache.commons.collections.Factory;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.builtin.Shutdown;
-import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 
 import ca.odell.glazedlists.EventList;
 
@@ -128,5 +118,9 @@ public interface UIContext  extends UI, ActionListener{
 	 *  to hide 'owner', hide all, and create new windows of various UI types (if available)
 	 */
 	public JMenu createWindowMenu( ) ;
+	
+	/** create a new menu, which shows operations for interoperability */
+	public JMenu createInteropMenu();
+	
 
 }

@@ -72,7 +72,7 @@ public class SiapSystemTest extends InARTestCase {
 	}
 
 
-	
+	//@fixme
 	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
 		String q = siap.getRegistryAdqlQuery();
 		assertNotNull(q);

@@ -7,6 +7,7 @@ package org.astrogrid;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.astrogrid.desktop.modules.ag.vfs.AllVfsUnitTests;
 import org.astrogrid.desktop.modules.auth.AllAuthUnitTests;
 import org.astrogrid.desktop.modules.system.AllSystemUnitTests;
 import org.astrogrid.desktop.modules.system.ui.AllSystemUiUnitTests;
@@ -28,7 +29,7 @@ import org.astrogrid.desktop.thirdparty.AllThirdPartyUnitTests;
 public class AbsolutelyAllUnitTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("All unit tests for workbench");
+		final TestSuite suite = new TestSuite("All unit tests for workbench");
 		suite.addTest(AllThirdPartyUnitTests.suite());
 
 		suite.addTest(AllStartupUnitTests.suite());
@@ -49,9 +50,9 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(org.astrogrid.desktop.modules.ivoa.resource.AllResourceUnitTests.suite());
 		
 		suite.addTest(org.astrogrid.desktop.modules.ag.AllAstrogridUnitTests.suite());
+		suite.addTest(AllVfsUnitTests.suite());
 		suite.addTest(AllAuthUnitTests.suite());
-		
-		suite.addTest(org.astrogrid.desktop.modules.plastic.AllPlasticUnitTests.suite());		
+			
 		suite.addTest(AllVotechUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.util.AllUtilUnitTests.suite());
 		

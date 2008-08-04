@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.15 2008/03/05 10:59:22 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.16 2008/08/04 16:37:23 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.UnknownHostException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -34,7 +31,6 @@ import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import net.ladypleaser.rmilite.RemoteInvocationException;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandler;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
@@ -80,7 +76,7 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
      * @throws UnknownHostException 
      * 
      */
-    public RmiLiteRmiServerImpl(ACRInternal acr, Map listenerInterfaces, SessionManagerInternal sess) throws UnknownHostException  {
+    public RmiLiteRmiServerImpl(final ACRInternal acr, final Map listenerInterfaces, final SessionManagerInternal sess) throws UnknownHostException  {
         super();
         SplashWindow.reportProgress("Starting AstroRuntime RMI Interface...");
         this.acr = acr;
@@ -89,43 +85,69 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
     }
 
 
-    public void init() throws Exception {
-        super.init();// selects correct port, etc.
-		registry = LocateRegistry.createRegistry(getPort());        
-        logger.debug("Started RMI Server");       
-        for (Iterator i = acr.moduleIterator(); i.hasNext(); ) {
+    public void init() throws IOException  {
+        if (port < 1) {
+            if (scanEndPort < scanStartPort) {
+                throw new IOException("scanEndPort (" + scanEndPort + ") is smaller than scanStartPort (" + scanStartPort + ")");
+            }
+            logger.info("Will scan for spare port, from " + scanStartPort + " to " + scanEndPort);
+            for (int i = scanStartPort; i < scanEndPort; i++) {
+                try {
+                    registry = LocateRegistry.createRegistry(i);
+                    // if we've passed this point, it's ok, we've found an available port.
+                    port = i;
+                    break; // break out of the loop
+                } catch (final IOException e) {
+                    // no matter, keep scanning.
+                    registry = null;
+                }
+            } 
+            if (registry == null) {
+                // JL Note. Added address to exception.
+                // It is possible to be looking at the wrong address!
+                throw new IOException( "Could not find a free port between " 
+                        + scanStartPort + " and " + scanEndPort ) ;
+            }
+        } else {
+            registry = LocateRegistry.createRegistry(getPort());
+        }
+        logger.info("Rmi Server will listen on port " + port );  
+        if (! disableConnectionFile) {
+            recordDetails();
+        }             
+        for (final Iterator i = acr.moduleIterator(); i.hasNext(); ) {
             registerServicesInModule((Module)i.next());
         }
     }
  
-    private void registerServicesInModule(Module module) {
+    private void registerServicesInModule(final Module module) {
         // special case - don't bother if there's no components..
         if (! module.getDescriptor().componentIterator().hasNext()) {
             return;
         }
-        String moduleName = module.getDescriptor().getName();
+        final String moduleName = module.getDescriptor().getName();
         logger.debug("Registering components in " + moduleName);
-        for (Iterator i = module.getDescriptor().componentIterator(); i.hasNext(); ) {
-            ComponentDescriptor cd = (ComponentDescriptor)i.next();
-            String componentName = cd.getName();
-            Class iface = cd.getInterfaceClass();            
+        for (final Iterator i = module.getDescriptor().componentIterator(); i.hasNext(); ) {
+            final ComponentDescriptor cd = (ComponentDescriptor)i.next();
+            final String componentName = cd.getName();
+            final Class iface = cd.getInterfaceClass();            
             List listeners= (List)listenerInterfaces.get(moduleName + "." + componentName);
             if (listeners == null) { // most likely.
                 listeners = Collections.EMPTY_LIST;
             }
             try {
-                Object impl = module.getComponent(componentName);                
+                final Object impl = module.getComponent(componentName);                
                 publish(iface,impl,(Class[])listeners.toArray(new Class[listeners.size()]));
          
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 logger.error("Failed to publish " + componentName,e1);
             }
         }
     }
 
     // copied from rmiLite impl of Server
-    private void publish(Class iface, Object impl, Class[] exportedInterfaces) throws RemoteException {
-    	RemoteInvocationHandler handler = new SessionAwareRemoteInvocationHandlerImpl(impl, new HashSet(Arrays.asList(exportedInterfaces)));
+    private void publish(final Class iface, final Object impl, final Class[] exportedInterfaces) throws RemoteException {
+    	final RemoteInvocationHandler handler = new SessionAwareRemoteInvocationHandlerImpl(impl, new HashSet(Arrays.asList(exportedInterfaces)));
     	registry.rebind(iface.getName(), handler);
     }
 
@@ -133,20 +155,20 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
     public void halting() {
       //  need to shut down the rmi registry.
         try {
-            Registry reg= LocateRegistry.getRegistry(getPort());
-            for (Iterator i = acr.moduleIterator(); i.hasNext(); ) {
-                Module m = (Module)i.next();
-                for (Iterator j = m.getDescriptor().componentIterator(); j.hasNext(); ) {
-                    ComponentDescriptor cd = (ComponentDescriptor)j.next();
-                    String regKey = cd.getInterfaceClass().getName();
+            final Registry reg= LocateRegistry.getRegistry(getPort());
+            for (final Iterator i = acr.moduleIterator(); i.hasNext(); ) {
+                final Module m = (Module)i.next();
+                for (final Iterator j = m.getDescriptor().componentIterator(); j.hasNext(); ) {
+                    final ComponentDescriptor cd = (ComponentDescriptor)j.next();
+                    final String regKey = cd.getInterfaceClass().getName();
                     try {
                         reg.unbind(regKey);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         logger.warn("Failed to deregister " + regKey + " from rmi server",e);
                     }
                 }                
             }
-        } catch (RemoteException e) {
+        } catch (final RemoteException e) {
             logger.warn("Failed to deregister all from rmi server",e);
         }
        
@@ -177,24 +199,24 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 		 * @param exportedInterfaces
 		 * @throws RemoteException
 		 */
-		public SessionAwareRemoteInvocationHandlerImpl(Object impl, Set exportedInterfaces) throws RemoteException {
+		public SessionAwareRemoteInvocationHandlerImpl(final Object impl, final Set exportedInterfaces) throws RemoteException {
 			super(impl, exportedInterfaces);
 		}
 
-		public Object invoke(String sessionId, String methodName, Class[] paramTypes, Object[] args) throws RemoteException {
-			Principal p = session.findSessionForKey(sessionId);
+		public Object invoke(final String sessionId, final String methodName, final Class[] paramTypes, final Object[] args) throws RemoteException {
+			final Principal p = session.findSessionForKey(sessionId);
 			if (p == null) {
 				throw new RemoteException("Invalid session " + sessionId);
 			}
 			session.adoptSession(p);
 			try {
 				return super.invoke(methodName,paramTypes,args);
-			} catch (RemoteInvocationException ex) { // re-map runtime exceptions which are not known client-side.
-			    Throwable cause = ex.getCause();
+			} catch (final RemoteInvocationException ex) { // re-map runtime exceptions which are not known client-side.
+			    final Throwable cause = ex.getCause();
 			    if (cause != null 
 			            && cause instanceof RuntimeException
 			            && ! cause.getClass().getName().startsWith("java")) {
-			        RemoteInvocationException replacement = new RemoteInvocationException(methodName
+			        final RemoteInvocationException replacement = new RemoteInvocationException(methodName
 			                , new RuntimeException(cause.getClass().getName() + " : " + cause.getMessage()));
 			        throw replacement;
 			    } else {
@@ -205,10 +227,11 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 			}
 		}
 		
-		public Object invoke(String arg0, Class[] paramTypes, Object[] args) throws RemoteException {
+		@Override
+        public Object invoke(final String arg0, final Class[] paramTypes, final Object[] args) throws RemoteException {
 		
 			if (paramTypes.length > 0 && paramTypes[0].equals(Void.class)) { // a meta-parameter indicating the session to invoke this method in
-				String sessionId = (String)args[0];
+				final String sessionId = (String)args[0];
 				return this.invoke(sessionId,arg0,(Class[])ArrayUtils.remove(paramTypes,0),ArrayUtils.remove(args,0));
 			} else { //no session id provided.
 				return this.invoke(session.getDefaultSessionId(),arg0, paramTypes, args);
@@ -218,30 +241,31 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
     }
 
     public Test getSelftest() {
-        TestSuite ts = new TestSuite("RMI");
+        final TestSuite ts = new TestSuite("RMI");
         ts.addTest(new TestCase("RMI connection file"){
+            @Override
             protected void runTest()  {
-                File f = new File(SystemUtils.getUserHome(),".acr-rmi-port");
+                final File f = new File(SystemUtils.getUserHome(),".acr-rmi-port");
                 assertTrue("~/.acr-rmi-port not present",f.exists());
                 FileReader fr = null;
                 try {
                     fr = new FileReader(f);
-                    String str = new BufferedReader(fr).readLine();
+                    final String str = new BufferedReader(fr).readLine();
                     assertNotNull("~/.acr-rmi-port is empty",str);
-                    int port = Integer.parseInt(str);
+                    final int port = Integer.parseInt(str);
                     assertEquals("incorrect port in ~/.acr-rmi-port",getPort(),port);
-                } catch (NumberFormatException ex) {
+                } catch (final NumberFormatException ex) {
                     fail("unable to parse contents of ~/.acr-rmi-port");
-                } catch (FileNotFoundException x) {
+                } catch (final FileNotFoundException x) {
                     // just tested for this.
                     fail("~/.acr-rmi-port not present");                    
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     fail("unable to read ~/.acr-rmi-port");
                 } finally {
                     if (fr != null) {
                         try {
                             fr.close();
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             // ho hum
                         }
                     }
@@ -249,13 +273,15 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
             }
         });
         ts.addTest(new TestCase("RMI access to AR") {
+            @Override
             protected void runTest()  {
-                Finder f = new Finder() {
+                final Finder f = new Finder() {
                     // overridden to only ever try to connect external, and not to cache.
-                    public ACR find(boolean ignored, boolean alsoIgnored) {
+                    @Override
+                    public ACR find(final boolean ignored, final boolean alsoIgnored) {
                         try {
                             return connectExternal();
-                        } catch (Exception ex) {
+                        } catch (final Exception ex) {
                             logger.info("Failed to connect to AR",ex);
                             fail("failure when connecting to AR");
                             return null; // never reached
@@ -264,15 +290,15 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
                 };
                 // ok. got a connection. now try doing some stuff with it.
                 try {
-                    ACR ar = f.find(false,false);
+                    final ACR ar = f.find(false,false);
                     assertNotNull("failed to connect to AR",ar);
-                    RmiServer arRmi = (RmiServer) ar.getService(RmiServer.class);
+                    final RmiServer arRmi = (RmiServer) ar.getService(RmiServer.class);
                     assertEquals("rmi service didn't respond with expected result",getPort(),arRmi.getPort());
-                } catch (InvalidArgumentException x) {
+                } catch (final InvalidArgumentException x) {
                     fail("error while retreiving AR component");
-                } catch (NotFoundException x) {
+                } catch (final NotFoundException x) {
                     fail("unable to locate required AR component");
-                } catch (ACRException x) {
+                } catch (final ACRException x) {
                     fail("error when connecting to AR");
                 }
             }
@@ -285,6 +311,11 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.16  2008/08/04 16:37:23  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.15  2008/03/05 10:59:22  nw
 added progress reporting to splashscreen
 

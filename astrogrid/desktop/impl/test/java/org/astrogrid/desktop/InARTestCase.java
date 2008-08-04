@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import org.apache.hivemind.Registry;
@@ -11,7 +13,6 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.framework.ACRInternal;
-
 /** Subclass of test case that runs in-ar.
  * @author Noel Winstanley
  * @since Jan 8, 200712:10:53 PM
@@ -77,7 +78,10 @@ public class InARTestCase extends TestCase {
 		assertTrue(clazz.isInstance(r));
 		Object r1 =  reg.getService(name);
 		assertNotNull(r1);
-		assertSame(r,r1);
+		//assertSame(r,r1); won't be the same for the case of RMI. check the same interfaces are supported on both objects instead.
+		assertEquals(Arrays.asList(r.getClass().getInterfaces())
+		        ,Arrays.asList(r1.getClass().getInterfaces())
+		        );
 		return r;
 	}
 	

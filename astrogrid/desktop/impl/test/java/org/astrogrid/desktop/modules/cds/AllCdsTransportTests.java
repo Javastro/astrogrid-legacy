@@ -23,11 +23,7 @@ public class AllCdsTransportTests {
 		suite.addTestSuite(SesameRmiTransportTest.class);
 		suite.addTestSuite(UCDRmiTransportTest.class);
 		suite.addTestSuite(VizierRmiTransportTest.class);		
-		
-		suite.addTestSuite(CoordinateRpcTransportTest.class);
-		suite.addTestSuite(SesameRpcTransportTest.class);
-		suite.addTestSuite(UCDRpcTransportTest.class);
-		suite.addTestSuite(VizierRpcTransportTest.class);			
+			
 		
 		return new ARTestSetup(suite);
 	}

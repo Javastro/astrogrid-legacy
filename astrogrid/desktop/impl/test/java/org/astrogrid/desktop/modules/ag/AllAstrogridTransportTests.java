@@ -1,4 +1,4 @@
-/*$Id: AllAstrogridTransportTests.java,v 1.5 2008/04/23 11:24:19 nw Exp $
+/*$Id: AllAstrogridTransportTests.java,v 1.6 2008/08/04 16:37:24 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,9 +32,7 @@ public class AllAstrogridTransportTests {
         TestSuite suite = new TestSuite("Transport Tests for AstroGrid Module");
 
         suite.addTestSuite(MyspaceRmiTransportTest.class);
-        suite.addTestSuite(MyspaceRpcTransportTest.class);  
         suite.addTestSuite(ApplicationsRmiTransportTest.class);
-        suite.addTestSuite(ApplicationsRpcTransportTest.class); 
 
         return new ARTestSetup(suite,true);       
     }
@@ -43,6 +41,11 @@ public class AllAstrogridTransportTests {
 
 /* 
 $Log: AllAstrogridTransportTests.java,v $
+Revision 1.6  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.5  2008/04/23 11:24:19  nw
 removed obsolete tests.
 

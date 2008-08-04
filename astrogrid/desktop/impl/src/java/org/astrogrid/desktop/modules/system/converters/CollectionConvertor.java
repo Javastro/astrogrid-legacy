@@ -23,7 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Convert a comma-delimited string into a Collection
+ * Convert a comma-delimited string, or an object array,  into a Collection
  * @author John Taylor
  *
  */
@@ -33,7 +33,7 @@ public class CollectionConvertor implements Converter {
      */
     private static final Log logger = LogFactory.getLog(CollectionConvertor.class);
 
-    public Object convert(Class arg0, Object arg1) {
+    public Object convert(final Class arg0, final Object arg1) {
         Collection result;
         Class resultType = arg0;
         if (!Collection.class.isAssignableFrom(arg0)) {
@@ -59,18 +59,27 @@ public class CollectionConvertor implements Converter {
         
         try {
             result = (Collection) resultType.newInstance();
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             logger.error("Could not convert object ",e);
             throw new IllegalArgumentException("Can't create collection type: " + arg0.getName());
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             logger.error("Could not convert object ",e);
             throw new IllegalArgumentException("Can't create collection type : " + arg0.getName());
         }
         
-        String s= arg1.toString();
-        if (s.trim().length() == 0) return result;//empty List in this case
-        String[] tokenized = StringUtils.split(s,',');
-        result.addAll(Arrays.asList(tokenized));
+        if (arg1.getClass().isArray()) {
+            final Object[] arr = (Object[])arg1;
+            result.addAll(Arrays.asList(arr));
+        } else if (arg1 instanceof Collection) {
+            result.addAll((Collection)arg1);
+        } else {
+            final String s= arg1.toString();
+            if (s.trim().length() == 0) {
+                return result;
+            }//empty List in this case
+            final String[] tokenized = StringUtils.split(s,',');
+            result.addAll(Arrays.asList(tokenized));
+        }
         return result;
     }
  
@@ -78,6 +87,11 @@ public class CollectionConvertor implements Converter {
 
 /* 
 $Log$
+Revision 1.7  2008/08/04 16:37:24  nw
+Complete - task 441: Get plastic upgraded to latest XMLRPC
+
+Complete - task 430: upgrade to latest xmlrpc lib
+
 Revision 1.6  2007/01/29 16:45:09  nw
 cleaned up imports.
 
