@@ -42,7 +42,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
     private NameResolvingPositionTextField positionField;
     private DecSexToggle toggle;
 
-    public PositionFormElement(ParameterValue ra, ParameterBean raDesc, ParameterValue dec, ParameterBean decDesc,  UIComponent parent,ResourceChooserInternal chooser, Sesame ses) {
+    public PositionFormElement(final ParameterValue ra, final ParameterBean raDesc, final ParameterValue dec, final ParameterBean decDesc,  final UIComponent parent,final ResourceChooserInternal chooser, final Sesame ses) {
         super(ra /*ignored*/,new CompositeParameterBean(raDesc,decDesc)
         ,chooser);
         this.ra = ra;
@@ -56,6 +56,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
            CSH.setHelpIDString(getEditor(),"task.form.position");           
     }
 
+    @Override
     protected JComponent createEditor() {
         // setup default values.
         if (StringUtils.isEmpty(ra.getValue()) ) {
@@ -69,15 +70,15 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
 
         positionField = new NameResolvingPositionTextField(parent,ses);
         positionField.addPropertyChangeListener(NameResolvingPositionTextField.VALUE_PROPERTY,this);
-        toggle = new DecSexToggle();
-        toggle.addListener(positionField);
-        try {
+        try { 
             positionField.setPosition(ra.getValue() + "," + dec.getValue());
-        } catch (ParseException x) {
+        } catch (final ParseException x) {
             logger.error("ParseException",x);
         }
+        toggle = new DecSexToggle();
+        toggle.addListener(positionField);
 
-        Box p = Box.createVerticalBox();
+        final Box p = Box.createVerticalBox();
         p.add(positionField);
         p.add(toggle.getDegreesRadio());
         p.add(toggle.getSexaRadio());
@@ -88,20 +89,21 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
     // disabled this, it'll never get called.
     // as this is the case, means that all alterations to values of ra and dec occur within
     // this class only - and not in the base class.
+    @Override
     protected String getStringValue() {
         throw new RuntimeException("unimplemented - as should never be called");
     }
 
     // copy contents of position field back into ra and dec.
     public void updateParameters() {
-        Point2D position = positionField.getPosition();
+        final Point2D position = positionField.getPosition();
         logger.debug("updating position to" + position);
         ra.setValue(Double.toString(position.getX()));
         dec.setValue(Double.toString(position.getY()));
     }
 
 
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
         updateParameters();
     }
 
@@ -109,7 +111,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
      * just used for UI display. */
     private static class CompositeParameterBean extends ParameterBean {
 
-        public CompositeParameterBean(ParameterBean raDesc, ParameterBean decDesc) {
+        public CompositeParameterBean(final ParameterBean raDesc, final ParameterBean decDesc) {
             super(raDesc.getName() // unimportant
                     , raDesc.getUiName() + ","+ decDesc.getUiName()
                     ,raDesc.getUiName() + " : " + raDesc.getDescription() 
