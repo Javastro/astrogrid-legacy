@@ -72,15 +72,13 @@ public class IndexCachingRegistryImpl implements RegistryInternal{
     protected static final Log logger = LogFactory
             .getLog(IndexCachingRegistryImpl.class);
 
-    private final Preference preventOversizeQueries;
-
-    private final int oversizeThreshold;
+    /** limit to number of resources to request in a single query - any larger lists will be split at this threshold */
+    private final int splitQueryThreshold;
 
     /**
      * @param reg
      * @param endpoint
      * @param fallbackEndpoint
-     * @param preventOversizeQueries boolean preference to abort when faced with an overlarge query.
      * @param resource
      * @param document
      * @param index cache of result indexes.
@@ -88,14 +86,13 @@ public class IndexCachingRegistryImpl implements RegistryInternal{
      */
     public IndexCachingRegistryImpl(final ExternalRegistryInternal reg,
             final Preference endpoint, final Preference fallbackEndpoint, 
-            final Preference preventOversizeQueries, final int oversizeThreshold
+             final int splitQueryThreshold
             ,final Ehcache resource,
             final Ehcache document,final Ehcache index) throws URISyntaxException {
         this.reg = reg;
         this.endpoint = endpoint;
         this.fallbackEndpoint =fallbackEndpoint;
-        this.preventOversizeQueries = preventOversizeQueries;
-        this.oversizeThreshold = oversizeThreshold;
+        this.splitQueryThreshold = splitQueryThreshold;
         this.outputFactory = XMLOutputFactory.newInstance();    
         this.resourceCache  = resource;
         this.documentCache = document;
@@ -214,9 +211,6 @@ public class IndexCachingRegistryImpl implements RegistryInternal{
             if (cachedIndex != null) {
                 logger.debug("found cached index");
                 final URI[] indexes = (URI[])cachedIndex.getValue();
-                if (preventOversizeQueries.asBoolean() && indexes.length > oversizeThreshold) {
-                    throw new ServiceException("Prevented an oversize query that would return " + indexes.length + " results");
-                }
                 resourceConsumer.estimatedSize(indexes.length);
                 for (final URI index : indexes) {
                     fetcher.fetchFromCache(index);
@@ -233,7 +227,7 @@ public class IndexCachingRegistryImpl implements RegistryInternal{
                logger.debug("Index size " + indexes.length);
                resourceConsumer.estimatedSize(indexes.length);
             }
-            final Set<URI> misses = fetcher.getMisses();
+            final Set<URI> misses = fetcher.getMisses();          
             if (! misses.isEmpty()) { // query for the remainder
                 logger.debug("Querying for remaining resources");
                 queryForResourceList(misses, resourceConsumer);
@@ -515,31 +509,66 @@ public void xquerySearchSave(final String xquery, final File saveLocation) throw
      */
     private void queryForResourceList(final Set<URI> uriList,
             final ResourceConsumer resourceConsumer) throws ServiceException {
-        xquerySearchStream(mkListResourcesQuery (uriList)
-                ,new ResourceListProcessor(resourceConsumer, uriList));
+        final Iterator<URI> iterator = uriList.iterator();
+        // take a copy of the set, so we don't get any concurrent modification exceptions from the iterator.
+        final Set<URI> remainders = new HashSet<URI>(uriList);
+        final ResourceListProcessor processor = new ResourceListProcessor(resourceConsumer, remainders);
+        while(iterator.hasNext()) { // split a large query into a sequence of smaller ones.
+            xquerySearchStream(mkListResourcesQuery(iterator),processor);
+        }
         // check whether we've got any uri left - these are ones not present in the reg - mark them as unknown.
-        for (final URI uri : uriList) {
+        for (final URI uri : remainders) {
             final Element element = new Element(uri,MISSING_RESOURCE);
             element.setTimeToLive(60 * 60); // just mark it missing for a short amount of time - 1 hour.           
             resourceCache.put(element);
             
         }                
     }
+
     /** build an xquery to retrieve a list of resources
-     * @param uriList set of URI to retrieve 
+     * alternative implementation method - allows to choose between different impls
+     * @param iterator provides the uri to retrieve. Will consume some of the items in the iteraotr, but not necessarily all of them.
      * @return an xquery string.
      */    
-    protected String mkListResourcesQuery(final Collection<URI> uriList) {
+    protected String mkListResourcesQuery(final Iterator<URI> iterator) {           
+        if (true) {
+            return mkListResourcesQueryUsingIdentifierClauses(iterator);
+        } else {// alternative implementaiton - dunno which is best yet.
+            return mkListResourcesQueryUsingIdentifierList(iterator);
+        }
+    }
+    //unused. would have to see whether this was any faster.
+    private String mkListResourcesQueryUsingIdentifierList( final Iterator<URI> iterator) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("//vor:Resource[not (@status = 'inactive' or @status= 'deleted') and ( ");
-        for (final Iterator<URI> i = uriList.iterator(); i.hasNext();) {
-            sb.append("identifier=");
-                
-            final URI u =  i.next();
+        sb.append("//vor:Resource[not (@status = 'inactive' or @status= 'deleted') and (( ");
+        for (int i = 0; i < splitQueryThreshold && iterator.hasNext(); i++) {       
+            final URI u =  iterator.next();
             sb.append("'")
             .append(u)
             .append("'");
-            if (i.hasNext()) {
+            if (iterator.hasNext() && i+1 < splitQueryThreshold) {
+                sb.append(" , ");
+            }        
+        }
+        sb.append(") = identifier)]");
+        final String xquery = sb.toString();
+        return xquery;
+    }
+
+
+    protected String mkListResourcesQueryUsingIdentifierClauses(final Iterator<URI> iterator) {
+        final StringBuilder sb = new StringBuilder();
+        //sb.append("//vor:Resource[not (@status = 'inactive' or @status= 'deleted') and ( "); // already know we're not getting inactive or deleted ones, don't we??
+        // hmm maybe not - is it possible for there to be more than one resource with the same id, but with different statuses.
+        sb.append("//vor:Resource[not (@status = 'inactive' or @status= 'deleted') and ( ");
+        for (int i = 0; i < splitQueryThreshold && iterator.hasNext(); i++) {  
+            sb.append("identifier=");
+                
+            final URI u =  iterator.next();
+            sb.append("'")
+            .append(u)
+            .append("'");
+            if (iterator.hasNext() && i+1 < splitQueryThreshold) {
                 sb.append(" or ");
             }        
         }
@@ -729,9 +758,9 @@ public void xquerySearchSave(final String xquery, final File saveLocation) throw
             expectedResources = uriList;
         }
         private final Set<URI> expectedResources ;
-
         private final ResourceConsumer resourceConsumer;
 
+        
         public void process(final XMLStreamReader r)  {
             final ResourceStreamParser parser = new ResourceStreamParser(r);
             while(parser.hasNext()) {

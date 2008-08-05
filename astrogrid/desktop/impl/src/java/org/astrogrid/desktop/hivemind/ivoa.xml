@@ -45,14 +45,19 @@
                 <service>externalRegistry</service>
                <object>preference:org.astrogrid.registry.query.endpoint</object>
                <object>preference:org.astrogrid.registry.query.altendpoint</object>
-               <object>preference:performance.prevent.oversize.registry.query</object>
-              <int>${registry.query.oversize.threshold}</int>               
+              <int>${registry.large.query.threshold}</int>               
                 <object>cache:resources</object>
                 <object>cache:documents</object>
                 <object>cache:indexes</object>      
             </construct>
     </invoke-factory>
     </service-point>
+    
+    
+    <contribution configuration-id="hivemind.FactoryDefaults">
+        <!--  size above which a differenty query strategy is used. -->
+        <default symbol="registry.large.query.threshold" value="300" /> 
+    </contribution> 
     
         <!--  run periodically -->  
     <contribution configuration-id="system.scheduledTasks">
