@@ -9,6 +9,8 @@ class LargeRegistryQuery(unittest.TestCase):
         #a huge query. takes ages to complete.
         #want to check - that the 'prevent overlarge queries' preference doesn't affect this
         #and that the query does get back, eventually, without barfing.
+        
+        #ok. now barfes to to memory exhaustion. result! (of a kind)
         q = ar.ivoa.cone.getRegistryXQuery()
         rs = ar.ivoa.registry.xquerySearch(q)
         print len(rs)
