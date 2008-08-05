@@ -1,7 +1,5 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.awt.Image;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -16,12 +14,9 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl.ListServicesRegistryQuerier;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
@@ -85,7 +80,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     protected String subName = "";
 
     
-    public AbstractRetriever(Service information,Capability cap,NodeSocket socket,VizModel model,double ra, double dec) {
+    public AbstractRetriever(final Service information,final Capability cap,final NodeSocket socket,final VizModel model,final double ra, final double dec) {
         super(model.getParent(),information.getTitle(),SHORT_TIMEOUT,Thread.MIN_PRIORITY+3);
         this.ra = ra;
         this.dec = dec;
@@ -102,7 +97,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
      *  within the same service.  May be the empty string if only one retriever
      *  per parent service.
      */
-    public void setSubName(String subName) {
+    public void setSubName(final String subName) {
         this.subName = subName;
     }
 
@@ -125,7 +120,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     /** returns terse string describing this retriever
      */
     public String getLabel() {
-        StringBuffer sbuf = new StringBuffer()
+        final StringBuffer sbuf = new StringBuffer()
            .append(getService().getId())
            .append('_')
            .append(getServiceType());
@@ -136,6 +131,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         return sbuf.toString();
     }
 
+    @Override
     public String toString() {
         return getLabel();
     }
@@ -146,9 +142,11 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws IOException*/
-    protected final void parseTable(InputSource source, VotableHandler tableHandler) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
-        XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-        VotableContentHandler votHandler = new VotableContentHandler(false);
+    protected final void parseTable(final InputSource source, final VotableHandler tableHandler) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
+        final SAXParserFactory newInstance = SAXParserFactory.newInstance();
+        newInstance.setValidating(false);
+        final XMLReader parser = newInstance.newSAXParser().getXMLReader();
+        final VotableContentHandler votHandler = new VotableContentHandler(false);
         votHandler.setReadHrefTables(true);
         votHandler.setVotableHandler(tableHandler);
         parser.setContentHandler(votHandler);
@@ -166,14 +164,14 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
 
 
 	    /** utility method - converts an object using toString(), and then trims it if not null */
-	    protected final String safeTrim(Object o) {
+	    protected final String safeTrim(final Object o) {
 	    	if (o == null) {
 	    		return "";
 	    	} 
 	    	if (o.getClass().isArray()) {
 	    		return ArrayUtils.toString(o) ;
 	    	}
-	    	String s = o.toString();
+	    	final String s = o.toString();
 	    	if (s == null) {
 	    		return "";
 	    	}
@@ -186,13 +184,13 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
 	     * @param startNode starting point to search downwards from. if null, use {@link #getRootNode()}
 	     * @return treenode with matching label, or null;
 	     */
-	    protected  TreeNode findNode(String label, TreeNode startNode) {
+	    protected  TreeNode findNode(final String label, TreeNode startNode) {
 	        if(startNode == null)  {
 	            startNode = model.getTree().getRoot();
 	        }
-	        Iterator iter = startNode.getChildren();
+	        final Iterator iter = startNode.getChildren();
 	        while(iter.hasNext()) {
-	            TreeNode n = (TreeNode)iter.next();
+	            final TreeNode n = (TreeNode)iter.next();
 	            if(n.getAttribute(AbstractRetriever.LABEL_ATTRIBUTE).equals(label)) {
 	                return n;
 	            }
@@ -200,7 +198,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
 	        return null;
 	    }
 
-    public BasicTableHandler(TreeNode serviceNode) {
+    public BasicTableHandler(final TreeNode serviceNode) {
            this.serviceNode = serviceNode;
        }
        protected TreeNode serviceNode;
@@ -225,7 +223,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
      * @see uk.ac.starlink.votable.TableHandler#startTable(uk.ac.starlink.table.StarTable)
      */
 
-    public void startTable(StarTable starTable) throws SAXException {
+    public void startTable(final StarTable starTable) throws SAXException {
             reportProgress("Parsing response");
     	newTableExtensionPoint(starTable);
     	// get the info.
@@ -248,8 +246,8 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     	}
         titles = new String[starTable.getColumnCount()];
         for (int col = 0; col < starTable.getColumnCount(); col++) {
-            ColumnInfo columnInfo = starTable.getColumnInfo(col);
-            String ucd = columnInfo.getUCD();
+            final ColumnInfo columnInfo = starTable.getColumnInfo(col);
+            final String ucd = columnInfo.getUCD();
             if (ucd != null) {
                 if (ucd.equalsIgnoreCase("POS_EQ_RA_MAIN")) {
                     raCol = col;
@@ -263,11 +261,11 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     }
    // extension point for subclasses - override thie to be passed each 
     // column info object - use for extracting other positions.
-   protected void startTableExtensionPoint(int col,ColumnInfo columnInfo) {
+   protected void startTableExtensionPoint(final int col,final ColumnInfo columnInfo) {
    }
 
    // exention point for suibclasses. override this to be passed in each new table object
-   protected void newTableExtensionPoint(StarTable st) {
+   protected void newTableExtensionPoint(final StarTable st) {
    }
 
        /**
@@ -279,15 +277,15 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         * @param objectdec objects dec from results of a service/votable
         * @return distance between two points.
         */
-       protected final double getOffset(double queryra, double querydec, double objectra, double objectdec) {           
+       protected final double getOffset(final double queryra, final double querydec, final double objectra, final double objectdec) {           
            return uk.ac.starlink.ttools.func.Coords.skyDistanceDegrees(queryra,querydec,objectra,objectdec);
        }  
        
-       protected final String chopValue(String doubleValue, int scale) {
+       protected final String chopValue(final String doubleValue, final int scale) {
      	   // @todo would it be more efficient to use a NumberFormatter here? - this has Round_half_up behaviour too.
     	   try {
     	   return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
-    	   } catch (NumberFormatException e) {
+    	   } catch (final NumberFormatException e) {
     		   return "unknown";
     	   }
        }
@@ -295,16 +293,16 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     /** called once for each row in the table
      * @see uk.ac.starlink.votable.TableHandler#rowData(java.lang.Object[])
      */
-    public void rowData(Object[] row) throws SAXException {
+    public void rowData(final Object[] row) throws SAXException {
         if (!isWorthProceeding()) { // no point, not enough metadata 
             message = "Insufficient table metadata";
             throw new DalProtocolException(message);
         }
         resultCount++; 
-        String rowRa = safeTrim(row[raCol]);
-        String rowDec = safeTrim(row[decCol]);                                 
-        DefaultTreeNode valNode = createValueNode();
-        String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
+        final String rowRa = safeTrim(row[raCol]);
+        final String rowDec = safeTrim(row[decCol]);                                 
+        final DefaultTreeNode valNode = createValueNode();
+        final String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
         valNode.setAttribute(LABEL_ATTRIBUTE,"*");
         valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
         // unused
@@ -314,7 +312,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         // handle further parsing in subclasses.
         rowDataExtensionPoint(row,valNode);
         
-        StringBuffer tooltip = new StringBuffer();
+        final StringBuffer tooltip = new StringBuffer();
         tooltip.append("<html><p>Position (decimal degrees): ").append(rowRa).append(", ").append(rowDec);
         try {
         tooltip.append("<br>Position (sexagesimal): ")
@@ -322,7 +320,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         .append(",").append(PositionUtils.getDECSexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))));
 
         for (int v = 0; v < row.length; v++) {
-            Object o = row[v];
+            final Object o = row[v];
             if (o == null || omitRowFromTooltip(v)) {
                 continue;
             }
@@ -333,10 +331,10 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         }        
         tooltip.append("</p></html>");
         valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  
-        double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
-        String offsetVal = chopValue(String.valueOf(offset),6);
+        final double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
+        final String offsetVal = chopValue(String.valueOf(offset),6);
         TreeNode offsetNode = findNode(offsetVal, serviceNode);
-        String tempAttr;
+        final String tempAttr;
         if(offsetNode == null) { // not found offset node.
             offsetNode = new DefaultTreeNode();
             offsetNode.setAttribute(LABEL_ATTRIBUTE,offsetVal);
@@ -357,15 +355,15 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         // now have found or created point node. add new result to this.
         
        pointNode.addChild(new DefaultEdge(pointNode,valNode));
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
        	 logger.warn("Failed to parse",e);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (final ArrayIndexOutOfBoundsException e) {
           	 logger.warn("Failed to parse",e);
           }          
     }
 
     /** maybe overridden by subclasses to skip row data from tooltip */
-    protected boolean omitRowFromTooltip(int rowIndex) {
+    protected boolean omitRowFromTooltip(final int rowIndex) {
         return false;
     }
     
@@ -374,7 +372,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
 		return new DefaultTreeNode();
 	}
     /** extension point for subclasses to add more row parsing here. */
-    protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
+    protected void rowDataExtensionPoint(final Object[] row, final TreeNode valNode) {
     }
 
     /** called at the end - tots up node sizing, an resets variables.
@@ -394,19 +392,19 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     }
 
 // methods for inspecting votable content outside tables.
-    public void info(String name, String value, String content)
+    public void info(final String name, final String value, final String content)
             throws SAXException {
         // unused in this impl
     }
 
 
-    public void param(String name, String value, String description)
+    public void param(final String name, final String value, final String description)
             throws SAXException {
         // unused in this impl        
     }
 
 
-    public void resource(String name, String id, String type)
+    public void resource(final String name, final String id, final String type)
             throws SAXException {
         // unused in this impl        
     }
@@ -416,7 +414,8 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     } //end of table parser.
 
 
-    protected final void doError(Throwable ex) {
+    @Override
+    protected final void doError(final Throwable ex) {
            model.getSummarizer().addQueryFailure(this,ex);
     }
     
@@ -424,6 +423,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     //bz 2724 - not always true. In all-voscope, if the queries for all siaps complete before reg query to list all cones completes, this gets triggered.
     // can't determine that we're the last ever retriever by checking progressvalue alone.
     // check the tasklist too, and verify that we're the last task - there's no other retrievers or queriers still in the queue.
+    @Override
     protected final void doAlways() {
        parent.setProgressValue(parent.getProgressValue() + 1); 
        if (parent.getProgressMax() <= parent.getProgressValue() && isLastQueryWorker()) {
@@ -435,8 +435,8 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     
     /** returns true if there's no other query tasks but us for this window on the task queue */
     private final boolean isLastQueryWorker() {
-        for (Iterator i =parent.getContext().getTasksList().iterator(); i.hasNext(); ) {
-            BackgroundWorker w = (BackgroundWorker)i.next();
+        for (final Iterator i =parent.getContext().getTasksList().iterator(); i.hasNext(); ) {
+            final BackgroundWorker w = (BackgroundWorker)i.next();
             if (w.getParent() == parent // belongs to this scope 
                     && w != this // not this retriever
                     && 
@@ -447,10 +447,11 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         return true;
     }
 
-    protected void doFinished(Object result) {        
+    @Override
+    protected void doFinished(final Object result) {        
         // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
         // concurrent modification exceptions
-        AstroscopeTableHandler th = (AstroscopeTableHandler)result;
+        final AstroscopeTableHandler th = (AstroscopeTableHandler)result;
         model.getSummarizer().addQueryResult(this,th);
         if (th.getResultCount() > 0) {
             nodeSocket.addNode(th.getServiceNode());
@@ -465,10 +466,10 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
      * @param serviceURL
      * @return a new tree node.
      */
-    protected TreeNode createServiceNode(final URL serviceURL, long sz,String tooltip) {
+    protected TreeNode createServiceNode(final URL serviceURL, final long sz,final String tooltip) {
         TreeNode serviceNode;
         try {
-            AstroscopeFileObject afo = model.createFileObject(
+            final AstroscopeFileObject afo = model.createFileObject(
                     serviceURL
                     ,sz == -1 ? AstroscopeFileObject.UNKNOWN_SIZE : sz // translate from one representation of unknown size to the other.
                     ,new Date().getTime()
@@ -481,7 +482,7 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
             }
             serviceNode = new FileProducingTreeNode();
             model.addResultFor(this,filename,afo,(FileProducingTreeNode)serviceNode);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.warn(service.getId() + " : Unable to create file object for serviceNode - falling back",e);
             serviceNode = new DefaultTreeNode(); // fall back to a default tree node.
         }

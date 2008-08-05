@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.18 2008/01/25 07:53:25 nw Exp $
+/*$Id: DALImpl.java,v 1.19 2008/08/05 14:02:47 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,6 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultCollector;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -69,7 +68,7 @@ public abstract class DALImpl implements Dal{
     /** Construct a new DALImpl
      * 
      */
-    public DALImpl(Registry reg, MyspaceInternal ms) {
+    public DALImpl(final Registry reg, final MyspaceInternal ms) {
         super();
         this.reg = reg;
         this.ms = ms;
@@ -86,27 +85,27 @@ public abstract class DALImpl implements Dal{
      * @throws InvalidArgumentException if arg0 is an unknown scheme of URI.
      * @throws NotFoundException if service cannot be resolved
      */
-    protected URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
+    protected URL resolveEndpoint(final URI arg0) throws InvalidArgumentException, NotFoundException {
     	if (arg0 == null || arg0.getScheme() == null) {
     		throw new InvalidArgumentException("No endpoint provided");
     	}
         if (arg0.getScheme().equals("http")) {
             try {
                 return arg0.toURL();
-            } catch (MalformedURLException e) {
+            } catch (final MalformedURLException e) {
                 throw new InvalidArgumentException(e);
             }
         } else if (arg0.getScheme().equals("ivo")) {
                 try {
-                    Resource r=  reg.getResource(arg0);
+                    final Resource r=  reg.getResource(arg0);
                     // hope for now we've only got one service capability.
                     if (! (r instanceof Service)) {
                     	throw new InvalidArgumentException(arg0 + " is not a known type of service");
                     }
-                    Service s = (Service)r;
-                    URL u = findAccessURL(s);
+                    final Service s = (Service)r;
+                    final URL u = findAccessURL(s);
                     return u != null ? u : findFirstAccessURL(s);
-                } catch (ServiceException e) {
+                } catch (final ServiceException e) {
                     throw new NotFoundException(e);
                 }
         } else {
@@ -128,7 +127,7 @@ public abstract class DALImpl implements Dal{
      * @return
      * @throws InvalidArgumentException
      */
-    protected URL findFirstAccessURL( Service s)
+    protected URL findFirstAccessURL( final Service s)
             throws InvalidArgumentException {
         if (s.getCapabilities().length == 0 || s.getCapabilities()[0].getInterfaces().length == 0 || s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0){
         	throw new InvalidArgumentException(s.getId() + " does not provide an access URL");
@@ -140,7 +139,7 @@ public abstract class DALImpl implements Dal{
      *  do we need to handle case of trailing '/' too?? or no filepath at all - just server name? may be this willnever happen 
      * @see org.astrogrid.acr.nvo.Cone#addOption(java.net.URL, java.lang.String, java.lang.String)
      */
-    public final URL addOption(URL arg0, String arg1, String arg2) throws InvalidArgumentException{
+    public final URL addOption(final URL arg0, final String arg1, final String arg2) throws InvalidArgumentException{
     	if (arg0 == null || arg1 == null ) {
     		throw new InvalidArgumentException("Nulls in " + arg0 + " " + arg1 + " " + arg2);
     	}  
@@ -167,47 +166,49 @@ public abstract class DALImpl implements Dal{
     		if (!found) {
     			newQuery += "&" + arg1 + "=" + encoded;
     		} 
-    		String preQuery = StringUtils.split(arg0.toString(),'?')[0];
+    		final String preQuery = StringUtils.split(arg0.toString(),'?')[0];
     		return new URL(preQuery + '?' + newQuery);
     		
     	}
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InvalidArgumentException(e);
         } 
     }
     
-    public final Map[] execute(URL arg0) throws ServiceException {
+    public final Map[] execute(final URL arg0) throws ServiceException {
 		try {
-			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-        TableContentHandler votHandler = new TableContentHandler(false);
+			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
+			newInstance.setValidating(false);
+            final XMLReader parser = newInstance.newSAXParser().getXMLReader();
+        final TableContentHandler votHandler = new TableContentHandler(false);
         votHandler.setReadHrefTables(true);
-        StructureBuilder sb = newStructureBuilder();
+        final StructureBuilder sb = newStructureBuilder();
         votHandler.setTableHandler(sb);
         parser.setContentHandler(votHandler);
         parser.parse(	arg0.toString());
         return sb.getResult();
-		} catch (Exception x) {
+		} catch (final Exception x) {
 			throw new ServiceException(new ExceptionFormatter().format(x));
 		}
 	}
 
 
     
-    public final Document executeVotable(URL arg0) throws ServiceException {
+    public final Document executeVotable(final URL arg0) throws ServiceException {
         try {
             return XMLUtils.newDocument(arg0.toString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ServiceException(e);
         }
     }
     /**
      * @see org.astrogrid.acr.nvo.Cone#getResults(java.net.URL)
      */
-    public final Document getResults(URL arg0) throws ServiceException {
+    public final Document getResults(final URL arg0) throws ServiceException {
     	return executeVotable(arg0);
     }
 
-    public final void saveResults(URL arg0, URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
+    public final void saveResults(final URL arg0, final URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
     	executeAndSave(arg0,arg1);
     }
     /**
@@ -216,32 +217,32 @@ public abstract class DALImpl implements Dal{
      * @throws SecurityException
      * @see org.astrogrid.acr.nvo.Cone#saveResults(java.net.URL, java.net.URI)
      */
-    public final void executeAndSave(URL arg0, URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
+    public final void executeAndSave(final URL arg0, final URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
         if (arg1.getScheme().equals("ivo")) { // save to myspace - can optimize this
             try {
                 ms.copyURLToContent(arg0,arg1);
-            } catch (NotFoundException e) {
+            } catch (final NotFoundException e) {
                 throw new InvalidArgumentException(e);
-            } catch (NotApplicableException e) {
+            } catch (final NotApplicableException e) {
                 throw new InvalidArgumentException(e);
             }
         } else {
             OutputStream os = null;
             try {
                 os = getOutputStream(arg1);
-                InputStream is = arg0.openStream();
+                final InputStream is = arg0.openStream();
                 Piper.pipe(is,os);
-            } catch (FileNotFoundException e) {
+            } catch (final FileNotFoundException e) {
             	throw new InvalidArgumentException(e);
-            } catch (MalformedURLException e) {
+            } catch (final MalformedURLException e) {
             	throw new InvalidArgumentException(e);            	
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new ServiceException(e);
             } finally {
                 if (os != null) {
                     try {
                         os.close();
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         logger.warn("Exception closing output stream",e);
                     }
                 }
@@ -249,23 +250,25 @@ public abstract class DALImpl implements Dal{
         }
     }
 
-	public final int saveDatasets(URL query, URI root) throws SecurityException, ServiceException, InvalidArgumentException {
+	public final int saveDatasets(final URL query, final URI root) throws SecurityException, ServiceException, InvalidArgumentException {
 		try {
-			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-        TableContentHandler votHandler = new TableContentHandler(false);
+			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
+			newInstance.setValidating(false);
+            final XMLReader parser = newInstance.newSAXParser().getXMLReader();
+        final TableContentHandler votHandler = new TableContentHandler(false);
         votHandler.setReadHrefTables(true);
-        DatasetSaver saver = newDatasetSaver();
+        final DatasetSaver saver = newDatasetSaver();
         saver.setRoot(root);
         votHandler.setTableHandler(saver);
         parser.setContentHandler(votHandler);
         parser.parse(	query.toString());
         return doSaveDatasets(saver);
 
-		} catch (SAXException x) {
+		} catch (final SAXException x) {
 			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (ParserConfigurationException x) {
+		} catch (final ParserConfigurationException x) {
 			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			throw new ServiceException(new ExceptionFormatter().format(x));
 		}		
 	}
@@ -276,39 +279,39 @@ public abstract class DALImpl implements Dal{
 	 * @throws ServiceException
 	 * @throws SecurityException
 	 */
-	private int doSaveDatasets(DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
+	private int doSaveDatasets(final DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
 		int saved = 0;
-		for (Iterator i = saver.getResult().entrySet().iterator(); i.hasNext(); ) {
+		for (final Iterator i = saver.getResult().entrySet().iterator(); i.hasNext(); ) {
 			saved++;
-        	Map.Entry entry = (Map.Entry)i.next();
-        	URL u = (URL)entry.getKey();
-        	URI location = (URI)entry.getValue();
+        	final Map.Entry entry = (Map.Entry)i.next();
+        	final URL u = (URL)entry.getKey();
+        	final URI location = (URI)entry.getValue();
         	if (location.getScheme().equals("ivo")) {
                 try {
                     ms.copyURLToContent(u,location);
-                } catch (NotFoundException e) {
+                } catch (final NotFoundException e) {
                     throw new InvalidArgumentException(e);
-                } catch (NotApplicableException e) {
+                } catch (final NotApplicableException e) {
                     throw new InvalidArgumentException(e);
                 }        		
         	} else {
         	     OutputStream os = null;
                  try {
                 	 os = getOutputStream(location);
-                     InputStream is = u.openStream();
+                     final InputStream is = u.openStream();
                      Piper.pipe(is,os);
                  
-                 } catch (FileNotFoundException x) {
+                 } catch (final FileNotFoundException x) {
                 	 throw new InvalidArgumentException(x);
-                 } catch (MalformedURLException x) {
+                 } catch (final MalformedURLException x) {
                 	 throw new InvalidArgumentException(x);
-                 }  catch (IOException e) {
+                 }  catch (final IOException e) {
                      throw new ServiceException(e);
 				} finally {
                      if (os != null) {
                          try {
                              os.close();
-                         } catch (Exception e) {
+                         } catch (final Exception e) {
                              logger.warn("Exception closing output stream",e);
                          }
                      }
@@ -325,7 +328,7 @@ public abstract class DALImpl implements Dal{
 	 * @throws MalformedURLException
 	 * @todo move this elsewhere
 	 */
-	private OutputStream getOutputStream(URI location) throws FileNotFoundException, IOException, MalformedURLException {
+	private OutputStream getOutputStream(final URI location) throws FileNotFoundException, IOException, MalformedURLException {
 		OutputStream os;
 		if (location.getScheme().equals("file")) { //FIXME - this code needs to be factored out and reused
 			 os = new FileOutputStream(new File(location));
@@ -335,12 +338,14 @@ public abstract class DALImpl implements Dal{
 		return os;
 	}
 
-	public final int saveDatasetsSubset(URL query, URI root, List rows) throws SecurityException, ServiceException, InvalidArgumentException {
+	public final int saveDatasetsSubset(final URL query, final URI root, final List rows) throws SecurityException, ServiceException, InvalidArgumentException {
 		try {
-			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-        TableContentHandler votHandler = new TableContentHandler(false);
+			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
+			newInstance.setValidating(false);
+            final XMLReader parser = newInstance.newSAXParser().getXMLReader();
+        final TableContentHandler votHandler = new TableContentHandler(false);
         votHandler.setReadHrefTables(true);
-        DatasetSaver saver = newDatasetSaver();
+        final DatasetSaver saver = newDatasetSaver();
         saver.setRoot(root);
         saver.setSubset(rows);
         votHandler.setTableHandler(saver);
@@ -348,11 +353,11 @@ public abstract class DALImpl implements Dal{
         parser.parse(	query.toString());
         return doSaveDatasets(saver);
 
-		} catch (SAXException x) {
+		} catch (final SAXException x) {
 			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (ParserConfigurationException x) {
+		} catch (final ParserConfigurationException x) {
 			throw new ServiceException(new ExceptionFormatter().format(x));
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			throw new ServiceException(new ExceptionFormatter().format(x));
 		}		        
 
@@ -369,7 +374,7 @@ public abstract class DALImpl implements Dal{
 		}
 		protected String[] keys;
 		int colCount;
-		public void startTable(StarTable t) throws SAXException {
+		public void startTable(final StarTable t) throws SAXException {
 		      DescribedValue qStatus = t.getParameterByName("Error");
 		        if (qStatus != null) {
 		            String message = qStatus.getInfo().getDescription();
@@ -389,7 +394,7 @@ public abstract class DALImpl implements Dal{
 			colCount = t.getColumnCount();
 			keys = new String[colCount];
 			for (int col = 0; col < colCount; col++) {
-				ColumnInfo nfo = t.getColumnInfo(col);
+				final ColumnInfo nfo = t.getColumnInfo(col);
 				keys[col] = nfo.getUCD() != null ? nfo.getUCD() : nfo.getName();
 			}
 		}
@@ -397,8 +402,8 @@ public abstract class DALImpl implements Dal{
 		    // does nothing
 		}
 
-		public void rowData(Object[] cells) throws SAXException {
-			LinkedHashMap map = new LinkedHashMap();
+		public void rowData(final Object[] cells) throws SAXException {
+			final LinkedHashMap map = new LinkedHashMap();
 			for (int col = 0; col < colCount; col++) {
 				map.put(keys[col],cells[col]);
 			}
@@ -413,11 +418,11 @@ public abstract class DALImpl implements Dal{
 	}
 	/** table handler that saves linked data to disk */
 	protected static class DatasetSaver implements TableHandler {
-		public void setSubset(List rows) {
+		public void setSubset(final List rows) {
 			subset = true;
 			this.rows = rows;
 		}
-		public void setRoot(URI root)  {
+		public void setRoot(final URI root)  {
 			if (! root.toString().endsWith("/")) {
 				this.root = URI.create(root.toString() + "/");
 			} else {
@@ -428,7 +433,7 @@ public abstract class DALImpl implements Dal{
 		private List rows;
 		private URI root;
 		private int currentRow;
-		private Map result = new LinkedHashMap();
+		private final Map result = new LinkedHashMap();
 		
 		private int urlIx = -1;
 		private int formatIx = -1;
@@ -437,10 +442,10 @@ public abstract class DALImpl implements Dal{
 			return result;
 		}
 		int colCount;
-		public void startTable(StarTable t) throws SAXException {
+		public void startTable(final StarTable t) throws SAXException {
 			colCount = t.getColumnCount();
 			for (int col = 0; col < colCount; col++) {
-				ColumnInfo nfo = t.getColumnInfo(col);
+				final ColumnInfo nfo = t.getColumnInfo(col);
 				if ("VOX:Image_AccessReference".equalsIgnoreCase(nfo.getUCD())) {
 					urlIx = col;
 				} else if ("VOX:Image_Format".equalsIgnoreCase(nfo.getUCD())) {
@@ -452,7 +457,7 @@ public abstract class DALImpl implements Dal{
 		    //does nothing
 		}
 
-		public void rowData(Object[] cells) throws SAXException {
+		public void rowData(final Object[] cells) throws SAXException {
 			if (!subset || rows.contains(new Integer(currentRow))) {
 					String format = null;
 					if (formatIx > -1) {
@@ -462,7 +467,7 @@ public abstract class DALImpl implements Dal{
 					result.put(new URL(cells[urlIx].toString()),
 							URI.create(root.toString() + "data-" + currentRow + format )
 							);
-					} catch (MalformedURLException e) {
+					} catch (final MalformedURLException e) {
 						logger.warn("Failed to construct url",e); // @todo find a way to report this to client..
 					}
 			}
@@ -475,6 +480,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.19  2008/08/05 14:02:47  nw
+configured the parser.
+
 Revision 1.18  2008/01/25 07:53:25  nw
 Complete - task 134: Upgrade to reg v1.0
 

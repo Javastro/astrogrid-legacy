@@ -3,19 +3,21 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import static org.easymock.EasyMock.*;
+
 import java.io.InputStream;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
-import static org.easymock.EasyMock.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import uk.ac.starlink.table.StarTable;
-import junit.framework.TestCase;
 
 /** Unit test for the extended table handler.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -27,17 +29,21 @@ public class VotableContentHandlerUnitTest extends TestCase {
     private VotableHandler h;
     private XMLReader parser;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         h = createStrictMock(VotableHandler.class);
         
-        parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-        VotableContentHandler votHandler = new VotableContentHandler(false);
+        final SAXParserFactory newInstance = SAXParserFactory.newInstance();
+        newInstance.setValidating(false);
+        parser = newInstance.newSAXParser().getXMLReader();
+        final VotableContentHandler votHandler = new VotableContentHandler(false);
         votHandler.setReadHrefTables(false);
         votHandler.setVotableHandler(h);
         parser.setContentHandler(votHandler);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         h = null;
@@ -53,9 +59,9 @@ public class VotableContentHandlerUnitTest extends TestCase {
         expectDataTable();
                        
         replay(h);
-        InputStream is = TablesImplUnitTest.class.getResourceAsStream("siap.vot");
+        final InputStream is = TablesImplUnitTest.class.getResourceAsStream("siap.vot");
         assertNotNull("siap.vot not found",is);
-        InputSource src = new InputSource(is);
+        final InputSource src = new InputSource(is);
         parser.parse(src);
         verify(h);
     }
@@ -69,9 +75,9 @@ public class VotableContentHandlerUnitTest extends TestCase {
         
                        
         replay(h);
-        InputStream is = this.getClass().getResourceAsStream("resources.vot");
+        final InputStream is = this.getClass().getResourceAsStream("resources.vot");
         assertNotNull("resources.vot not found",is);
-        InputSource src = new InputSource(is);
+        final InputSource src = new InputSource(is);
         parser.parse(src);
         verify(h);
     }
@@ -99,9 +105,9 @@ public class VotableContentHandlerUnitTest extends TestCase {
         h.info("a","b","c");        
                        
         replay(h);
-        InputStream is = this.getClass().getResourceAsStream("infos.vot");
+        final InputStream is = this.getClass().getResourceAsStream("infos.vot");
         assertNotNull("resources.vot not found",is);
-        InputSource src = new InputSource(is);
+        final InputSource src = new InputSource(is);
         parser.parse(src);
         verify(h);        
     }
@@ -124,9 +130,9 @@ public class VotableContentHandlerUnitTest extends TestCase {
         expectDataTable();    
         replay(h);
         
-        InputStream is =this.getClass().getResourceAsStream("bz1729.votable");
+        final InputStream is =this.getClass().getResourceAsStream("bz1729.votable");
         assertNotNull("bz1729.votable not found",is);
-        InputSource src = new InputSource(is);
+        final InputSource src = new InputSource(is);
         parser.parse(src);
         verify(h);
     }
