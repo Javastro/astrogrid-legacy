@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.87 2008/07/16 13:58:06 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.88 2008/08/05 16:40:39 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -123,7 +124,9 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroScopeInternal, DecSexListener, FocusListener {
 
-        
+    private static final Preferences PREFERENCES = Preferences.userNodeForPackage(AstroScopeLauncherImpl.class);
+    private static final String SHOW_ASTROSCOPE_POPUPS_KEY = "show.astroscope.popups";
+         
 
 	//@future add a application-wide tooltip formatter class - code seems to be repeated in different places at the moment.
 	public static final int TOOLTIP_WRAP_LENGTH = 50;
@@ -137,15 +140,15 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		nf.setMaximumFractionDigits(6);
 	}
 
-	public AstroScopeLauncherImpl(UIContext context
-			, IterableObjectBuilder protocolsBuilder
+	public AstroScopeLauncherImpl(final UIContext context
+			, final IterableObjectBuilder protocolsBuilder
 			,  final ActivityFactory activityBuilder
-			, TypesafeObjectBuilder uiBuilder
+			, final TypesafeObjectBuilder uiBuilder
 			, final EventList history
-			,FileSystemManager vfs
-			,Sesame ses
-			,SnitchInternal snitch
-			,IconFinder iconFinder)  {
+			,final FileSystemManager vfs
+			,final Sesame ses
+			,final SnitchInternal snitch
+			,final IconFinder iconFinder)  {
 		super(context,"All-VO Astroscope","window.scope");
 		this.history = history;
 		this.snitch = snitch;
@@ -158,11 +161,11 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		        ,PlasticScavenger.class
 		        ,InfoActivity.class
 		});
-		JPopupMenu popup = acts.getPopupMenu();
+		final JPopupMenu popup = acts.getPopupMenu();
 		// create summary after acts - as it relies upon
 		this.servicesList = uiBuilder.createScopeServicesList(this,acts);
 
-		for (Iterator i = protocolsBuilder.creationIterator(); i.hasNext(); ) {
+		for (final Iterator i = protocolsBuilder.creationIterator(); i.hasNext(); ) {
 			protocols.add((DalProtocol)i.next());
 		}
 		
@@ -178,7 +181,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		// build the ui.
 		this.setSize(1000, 707); // same proportions as A4,
 		setIconImage(IconHelper.loadIcon("scope16.png").getImage());   
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"1dlu,m,1dlu,m,1dlu"
 				,"p," + protocols.getRowspec() 
 				+ ",bottom:max(20dlu;p),p,p,p,p,p" // spatial
@@ -187,8 +190,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				+ ",bottom:max(20dlu;p),fill:p:grow" //process
 				);
 		layout.setColumnGroups(new int[][]{ {2, 4} });		
-		CellConstraints cc = new CellConstraints();
-		PanelBuilder builder = new PanelBuilder(layout);
+		final CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout);
 		
 		int row = 1;
 // services
@@ -198,8 +201,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		// display in 2 columns
 		TemporalDalProtocol tempStap = null;;
 		boolean leftCol = true;
-		for (Iterator i = protocols.iterator(); i.hasNext(); leftCol = ! leftCol ) {
-			DalProtocol p = (DalProtocol)i.next();
+		for (final Iterator i = protocols.iterator(); i.hasNext(); leftCol = ! leftCol ) {
+			final DalProtocol p = (DalProtocol)i.next();
 			builder.add(p.getCheckBox(),cc.xy(leftCol ? 2 : 4,row));
 			// while we're iterating through, look out for the stap protocol - we want to add extra logic here.
 			if (p instanceof TemporalDalProtocol) {
@@ -251,8 +254,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		noPosition.setToolTipText("To query with no postion, only 'Timed Data' can be selected");
 		noPosition.setSelected(false);
 		noPosition.addItemListener(new ItemListener() { // disables other fields when selected.
-			public void itemStateChanged(ItemEvent e) {
-				boolean b = e.getStateChange() == ItemEvent.DESELECTED;
+			public void itemStateChanged(final ItemEvent e) {
+				final boolean b = e.getStateChange() == ItemEvent.DESELECTED;
 				posText.setEnabled(b);
 				regionText.setEnabled(b);
 				dsToggle.getDegreesRadio().setEnabled(b);
@@ -261,12 +264,12 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
     	});
 		// listen to what other protocols are enabled - and if they're selected, disable this control.
 		protocols.getList().addListEventListener(new ListEventListener() {
-			public void listChanged(ListEvent arg0) {
+			public void listChanged(final ListEvent arg0) {
 				while (arg0.hasNext()) {
 					arg0.next();
 					// don't care about the event - just need to check all other protocols.
-					for (Iterator i = protocols.iterator(); i.hasNext();) {
-						DalProtocol p = (DalProtocol) i.next();
+					for (final Iterator i = protocols.iterator(); i.hasNext();) {
+						final DalProtocol p = (DalProtocol) i.next();
 						if (p != stap && p.getCheckBox().isSelected()) {
 							noPosition.setSelected(false);
 							noPosition.setEnabled(false);
@@ -294,7 +297,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         startCal.setEditable(true);
         startCal.setMaximumSize(new Dimension(50,50));
        // startCal.setAlignmentX(LEFT_ALIGNMENT);
-        Calendar setStartCal = startCal.getCalendar();
+        final Calendar setStartCal = startCal.getCalendar();
         setStartCal.set(2000,0,1,0,0,0);
         startCal.setDate(setStartCal.getTime());
         builder.add(startCal,cc.xyw(2,row,3));
@@ -309,17 +312,17 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         endCal.setEditable(true);
         endCal.setMaximumSize(new Dimension(50,50));
        // endCal.setAlignmentX(LEFT_ALIGNMENT);
-        Calendar setEndCal = endCal.getCalendar();
+        final Calendar setEndCal = endCal.getCalendar();
         setEndCal.set(2000,0,2,0,0,0);
         endCal.setDate(setEndCal.getTime());
         builder.add(endCal,cc.xyw(2,row,3));
 		
         // configure all this as hidable when stap isn't in use.
         if (stap != null) {
-        	JCheckBox checkBox = stap.getCheckBox();
+        	final JCheckBox checkBox = stap.getCheckBox();
         	checkBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
-					boolean b = e.getStateChange() == ItemEvent.SELECTED;
+				public void itemStateChanged(final ItemEvent e) {
+					final boolean b = e.getStateChange() == ItemEvent.SELECTED;
 					noPosition.setVisible(b);
 					temporalTitle.setVisible(b);
 					temporalLabel1.setVisible(b);
@@ -371,15 +374,15 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		// done building the left side.
 		final JPanel searchPanel = builder.getPanel();
 		CSH.setHelpIDString(searchPanel,"scope.searchPanel");
-		KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+		final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
 		final String CMD = "pressButton";
 		searchPanel.getInputMap(searchPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, CMD);
 		searchPanel.getActionMap().put(CMD, new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				submitButton.doClick(); 
 			}
 		});		
-		JPanel pane = getMainPanel();
+		final JPanel pane = getMainPanel();
 		pane.add(searchPanel,BorderLayout.WEST);
 		
 	// main part of the window
@@ -387,11 +390,17 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		
 		pane.add(flip, BorderLayout.CENTER);
 		showTransientWarnings = new JCheckBoxMenuItem("Show Popup Warnings");
-		showTransientWarnings.setSelected(true);
+		showTransientWarnings.setSelected(PREFERENCES.getBoolean(SHOW_ASTROSCOPE_POPUPS_KEY,true));
         showTransientWarnings.setToolTipText("Show warnings about service failures in transient popup windows");
-		
-		UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
-            protected void populateEditMenu(EditMenuBuilder emb) {
+		showTransientWarnings.addItemListener(new ItemListener() {
+		    public void itemStateChanged(final ItemEvent e) {
+		        PREFERENCES.putBoolean(SHOW_ASTROSCOPE_POPUPS_KEY
+		                ,ItemEvent.SELECTED == e.getStateChange());
+		    }
+		});
+		final UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
+            @Override
+            protected void populateEditMenu(final EditMenuBuilder emb) {
                 //@fixme hook these operations into the result displays.
                 emb.cut() // fields only
                     .copy() // fields & results
@@ -401,33 +410,41 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                     .invertSelection(); // results only.
             }
 
-            protected void populateFileMenu(FileMenuBuilder fmb) {
+            @Override
+            protected void populateFileMenu(final FileMenuBuilder fmb) {
                 fmb
                 // @todo select services - requires reg google - maybe. or may just leave it.
                     .windowOperation(searchAction)
                     .windowOperation(haltAction)
                     .separator();
-                for(Iterator i = protocols.iterator(); i.hasNext() ; ) {
-                    DalProtocol p = (DalProtocol)i.next();
+                for(final Iterator i = protocols.iterator(); i.hasNext() ; ) {
+                    final DalProtocol p = (DalProtocol)i.next();
                     fmb.checkbox(p.getMenuItemCheckBox());
                 }
                 fmb.separator();
                 fmb.closeWindow();
             }
             
+            @Override
             protected void constructAdditionalMenus() {
-                MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
+                final MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
                        .windowOperation(topAction)
                        .windowOperation(upAction)
                        .separator();
-                    JRadioButtonMenuItem radial = new JRadioButtonMenuItem(flip.getRadialAction());
-                    JRadioButtonMenuItem hyper = new JRadioButtonMenuItem(flip.getHyperbolicAction());
-                    JRadioButtonMenuItem services = new JRadioButtonMenuItem(flip.getServicesAction());
-                    ButtonGroup bg = new ButtonGroup();
+                    final JRadioButtonMenuItem radial = new JRadioButtonMenuItem(flip.getRadialAction());
+                    final JRadioButtonMenuItem hyper = new JRadioButtonMenuItem(flip.getHyperbolicAction());
+                    final JRadioButtonMenuItem services = new JRadioButtonMenuItem(flip.getServicesAction());
+                    final ButtonGroup bg = new ButtonGroup();
                     bg.add(radial);
                     bg.add(hyper);
                     bg.add(services);
-                    radial.setSelected(true);
+                    if (VizualizationsPanel.HYPERBOLIC_VIEW.equals(flip.currentlyShowing())) {
+                        hyper.setSelected(true);
+                    } else if (VizualizationsPanel.RADIAL_VIEW.equals(flip.currentlyShowing())) {
+                        radial.setSelected(true);
+                    } else if (VizualizationsPanel.SERVICES_VIEW.equals(flip.currentlyShowing())) {
+                        services.setSelected(true);
+                    }
                        vmb.radiobox(radial)
                            .radiobox(hyper)
                            .radiobox(services)
@@ -440,11 +457,11 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                 
                 final JMenu historyMenu = new JMenu("History");
                 historyMenu.setMnemonic(KeyEvent.VK_H);
-                FilterList filteredHistory = new FilterList(history,new ProtocolsMatcherEditor());
+                final FilterList filteredHistory = new FilterList(history,new ProtocolsMatcherEditor());
                 // map the history list to menu items, and display in the history menu.
                 new EventListMenuManager(new FunctionList(filteredHistory,new FunctionList.Function() {
-                    public Object evaluate(Object arg0) {
-                        PositionHistoryItem i = (PositionHistoryItem)arg0;
+                    public Object evaluate(final Object arg0) {
+                        final PositionHistoryItem i = (PositionHistoryItem)arg0;
                         return new HistoryMenuItem(i);
                     }
                 }),historyMenu,false);
@@ -453,7 +470,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                 add(historyMenu);
                 historyMenu.setEnabled(true); // can start off not.
                 
-                MenuBuilder rmb = new MenuBuilder("Result",KeyEvent.VK_R);
+                final MenuBuilder rmb = new MenuBuilder("Result",KeyEvent.VK_R);
                 rmb
                     .windowOperation(acts.getActivity(ViewInBrowserActivity.class))
                     .windowOperation(acts.getActivity(SimpleDownloadActivity.class))
@@ -465,7 +482,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		setJMenuBar(menuBar);
 
 		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
+			@Override
+            public void windowClosing(final WindowEvent e) {
 				// halt all my background processes.
 				haltQuery();
 			}
@@ -498,7 +516,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	private final JCheckBox noPosition;
 	private final ScopeServicesList servicesList;
     private final JCheckBoxMenuItem showTransientWarnings;
-    private TemporalDalProtocol stap;	
+    private final TemporalDalProtocol stap;	
 
     public final boolean isTransientWarnings() {
         return showTransientWarnings.isSelected();
@@ -510,16 +528,20 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	
 // DecSexListener interface
 	// another listener to the decSex toggle - convert node display
-	public void degreesSelected(EventObject e) {
-		toggleAndConvertNodes(vizModel.getTree().getRoot(),false);
-		vizualizations.reDrawGraphs();		
+	public void degreesSelected(final EventObject e) {
+	    if (isShowing()) {
+	        toggleAndConvertNodes(vizModel.getTree().getRoot(),false);
+	        vizualizations.reDrawGraphs();
+	    }
 	}
-	public void sexaSelected(EventObject e) {
-		toggleAndConvertNodes(vizModel.getTree().getRoot(),true);
-		vizualizations.reDrawGraphs();		
+	public void sexaSelected(final EventObject e) {
+	    if (isShowing()) {
+	        toggleAndConvertNodes(vizModel.getTree().getRoot(),true);
+	        vizualizations.reDrawGraphs();
+	    }
 	}
 //	 coordinate conversion stuff.
-	private void toggleAndConvertNodes(TreeNode nd,boolean fromDegrees) {
+	private void toggleAndConvertNodes(final TreeNode nd,final boolean fromDegrees) {
 		String ndVal = null;  
 		String posVal = null;
 		boolean foundOffset = false;
@@ -534,7 +556,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			nd.setAttribute(AbstractRetriever.LABEL_ATTRIBUTE,nf.format(val));
 			nd.setAttribute(AbstractRetriever.TOOLTIP_ATTRIBUTE,String.valueOf(val));
 			for(int i = 0;i < nd.getChildCount();i++) {
-				TreeNode childNode = nd.getChild(i);
+				final TreeNode childNode = nd.getChild(i);
 				//should be a position string.
 				ndVal = childNode.getAttribute(AbstractRetriever.LABEL_ATTRIBUTE);
 				if(fromDegrees) {
@@ -547,8 +569,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			}
 		}//if
 		for(int i = 0;i < nd.getChildCount();i++) {
-			if(!foundOffset)
-				toggleAndConvertNodes(nd.getChild(i), fromDegrees);
+			if(!foundOffset) {
+                toggleAndConvertNodes(nd.getChild(i), fromDegrees);
+            }
 		}
 	}	
 	
@@ -560,9 +583,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	    if (resources.size() == 1) {
 	        sb.append(" - ").append(((Resource)resources.get(0)).getTitle());
 	    } 
-	    for (DalProtocol p : protocols) {                 
+	    for (final DalProtocol p : protocols) {                 
 	        p.getCheckBox().setEnabled(false); // no point showing these - there's no option.
-	        CountServices cs = new CountServices();
+	        final CountServices cs = new CountServices();
 	        p.processSuitableServicesInList(resources,cs);
 	        if (cs.length > 0) {
 	                    p.getCheckBox().setSelected(true);
@@ -579,27 +602,27 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	    }
 	    setTitle(sb.toString());
 	    // find the first resource in the list which has a testQuery of some kind.
-	    for (Resource r : resources) {
+	    for (final Resource r : resources) {
             if (r instanceof SiapService &&  ((SiapService)r).findSiapCapability().getTestQuery() != null) {
-                Query testQuery = ((SiapService)r).findSiapCapability().getTestQuery();
+                final Query testQuery = ((SiapService)r).findSiapCapability().getTestQuery();
                 posText.setPosition(testQuery.getPos().getLong(),testQuery.getPos().getLat()); //@todo check I've got these the correct way rouind.
                 regionText.setRadius(testQuery.getSize().getLong()); // can only set region to a single dim - not both. no matter.
                 break; // no need to continue
             }
             if (r instanceof ConeService && ((ConeService)r).findConeCapability().getTestQuery() != null) {
-                org.astrogrid.acr.ivoa.resource.ConeCapability.Query testQuery = ((ConeService)r).findConeCapability().getTestQuery();
+                final org.astrogrid.acr.ivoa.resource.ConeCapability.Query testQuery = ((ConeService)r).findConeCapability().getTestQuery();
                 posText.setPosition(testQuery.getRa(),testQuery.getDec()); //
                 regionText.setRadius(testQuery.getSr()); 
                 break; // no need to continue
             }
             if (r instanceof SsapService && ((SsapService)r).findSsapCapability().getTestQuery() != null) {
-                org.astrogrid.acr.ivoa.resource.SsapCapability.Query testQuery = ((SsapService)r).findSsapCapability().getTestQuery();
+                final org.astrogrid.acr.ivoa.resource.SsapCapability.Query testQuery = ((SsapService)r).findSsapCapability().getTestQuery();
                 posText.setPosition(testQuery.getPos().getLong(),testQuery.getPos().getLat()); //@todo check I've got these the correct way rouind.
                 regionText.setRadius(testQuery.getSize());                 
                 break; // no need to continue
             }
             if (r instanceof StapService && ((StapService)r).findStapCapability().getTestQuery() != null) {
-                org.astrogrid.acr.ivoa.resource.StapCapability.Query testQuery = ((StapService)r).findStapCapability().getTestQuery();
+                final org.astrogrid.acr.ivoa.resource.StapCapability.Query testQuery = ((StapService)r).findStapCapability().getTestQuery();
                 posText.setPosition(testQuery.getPos().getLong(),testQuery.getPos().getLat()); //@todo check I've got these the correct way rouind.
                 regionText.setRadius(testQuery.getSize().getLong());
                 try {
@@ -607,7 +630,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                     startCal.setDate(dt.toDate() );
                     dt = new DateTime(testQuery.getEnd());
                     endCal.setDate(dt.toDate());
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     logger.warn("Failed to set date",e);
                 }
                 break; // no need to continue
@@ -620,14 +643,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	private static class CountServices implements ResourceConsumer {
 
 	    public int length = 0;
-        public void process(Resource s) {
+        public void process(final Resource s) {
             length++;
         }
-        public void estimatedSize(int i) {
+        public void estimatedSize(final int i) {
         }
 	}
 	
-	   public void runSubsetAsHelioscope(List<? extends Resource> resources) {
+	   public void runSubsetAsHelioscope(final List<? extends Resource> resources) {
 	       runSubset(resources);
 	       setTitle("All-VO Helioscope: standard set of timed solar data services");
 	   }
@@ -639,7 +662,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 	/** perform a query */
 	protected void query() {
-	    for (Iterator i = protocols.iterator(); i.hasNext(); ) {
+	    for (final Iterator i = protocols.iterator(); i.hasNext(); ) {
             final DalProtocol p =(DalProtocol)i.next();
             final TreeNode rootNode = vizModel.getTree().getRoot();
             if (!p.getCheckBox().isSelected()) {
@@ -651,7 +674,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
             } else {
                 // previously this protocol has been removed - splice it back in
                 if (!rootNode.isChild(p.getPrimaryNode())) {
-                    DefaultEdge edge = new DefaultEdge(rootNode,p.getPrimaryNode());
+                    final DefaultEdge edge = new DefaultEdge(rootNode,p.getPrimaryNode());
                     //blemish - code coopied verbatim from vizModel
                     edge.setAttribute(AbstractRetriever.WEIGHT_ATTRIBUTE,"3");                  
                     rootNode.addChild(edge);
@@ -662,21 +685,24 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	       
 		// slightly tricky - what we do depends on whether posText is currently in the middle of resolving a name or not.
 		final String positionString = posText.getObjectName(); // grab this first, in case we need it in a mo.
-		Point2D position = posText.getPosition();	
+		final Point2D position = posText.getPosition();	
 		if (Double.isNaN(position.getX())) { // position is not a number - indicates that it's currently being resolved.
 			// so we'll resolve it ourselves - simplest thing to do - if we've got the position string..
 			// hopefully we've got something we can work with..
 			if (positionString != null) {
 				(new BackgroundOperation("Resolving object " + positionString,BackgroundWorker.SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
-					protected Object construct() throws Exception {
+					@Override
+                    protected Object construct() throws Exception {
 						return ses.resolve(positionString.trim());
 					}
-					protected void doError(Throwable ex) {
+					@Override
+                    protected void doError(final Throwable ex) {
 						showError("Simbad failed to resolve " + positionString,ex);
 					}
-					protected void doFinished(Object result) {
-						SesamePositionBean pb = (SesamePositionBean)result;
-						Point2D pos = new Point2D.Double(pb.getRa(),pb.getDec());
+					@Override
+                    protected void doFinished(final Object result) {
+						final SesamePositionBean pb = (SesamePositionBean)result;
+						final Point2D pos = new Point2D.Double(pb.getRa(),pb.getDec());
 						// now on with the query
 						queryBody(pos);
 					}
@@ -691,7 +717,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 	}	
 	/** actually do the query */
-	private void queryBody(Point2D position) {  
+	private void queryBody(final Point2D position) {  
 		setStatusMessage("" + position.getX() + ',' + position.getY());
 		topAction.setEnabled(true);
 		upAction.setEnabled(true);
@@ -709,7 +735,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 		final double radius = regionText.getRadius();
 
-		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
+		for (final Iterator i = protocols.iterator(); i.hasNext(); ) {
 			final DalProtocol p =(DalProtocol)i.next();
 			final TreeNode rootNode = vizModel.getTree().getRoot();
 			if (p.getCheckBox().isSelected()) {
@@ -718,8 +744,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 	}
 	protected void haltQuery() {
-		for (Iterator i = getContext().getTasksList().iterator(); i.hasNext(); ) {
-		    BackgroundWorker w = (BackgroundWorker)i.next();
+		for (final Iterator i = getContext().getTasksList().iterator(); i.hasNext(); ) {
+		    final BackgroundWorker w = (BackgroundWorker)i.next();
 		    // halts all retrievers and list-services queries for this window - leaving other tasks (e.g. downloads, plastic interactions) untouched.
 		   
 		    if (w.parent == this &&
@@ -743,14 +769,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	 * Call this at an appropriate point withing 'query()' to save searcg state to history.
 	 */
 	protected void storeHistoryItem() {
-		PositionHistoryItem shi = new PositionHistoryItem();
+		final PositionHistoryItem shi = new PositionHistoryItem();
 		if (posText.isShowing() && posText.isEnabled()) {
 		    shi.setPosition(posText.getPositionAsSesameBean());
 		    // blank out aliases - as long, and unneeded. - for storage efficiency.
 		    shi.getPosition().setAliases(null);
 		}
 		if (regionText.isShowing() && regionText.isEnabled()) {
-		    double radius = regionText.getRadius();
+		    final double radius = regionText.getRadius();
 		    shi.setRadius(new DoubleDimension(radius,radius));
 		}
 		if (startCal.isShowing() && startCal.isEnabled()) {
@@ -783,28 +809,28 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         }
         private final Matcher timeMatcher = new Matcher() {
 
-            public boolean matches(Object item) {
+            public boolean matches(final Object item) {
                 return ((PositionHistoryItem)item).getStartTime() != null;               
             }
         };
         private final Matcher spaceMatcher = new Matcher() {
 
-            public boolean matches(Object item) {
+            public boolean matches(final Object item) {
                 return ((PositionHistoryItem)item).getPosition() != null;
             }
         };
 
-        public void propertyChange(PropertyChangeEvent evt) {
+        public void propertyChange(final PropertyChangeEvent evt) {
             updateFilter();
         }
 
-        public void itemStateChanged(ItemEvent e) {
+        public void itemStateChanged(final ItemEvent e) {
             updateFilter();
         }
         
         private void updateFilter() {
-            boolean time= stap.getCheckBox().isSelected();
-            boolean space = posText.isEnabled();
+            final boolean time= stap.getCheckBox().isSelected();
+            final boolean space = posText.isEnabled();
             if (time && space) {
                 fireMatchAll(); // even though some won't cover all inputs
             } else if (time) {
@@ -827,8 +853,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         private final double ra;
         private final DalProtocol p;
 
-        private ListServicesRegistryQuerier(double radius, double dec, double ra,
-                DalProtocol p) {
+        private ListServicesRegistryQuerier(final double radius, final double dec, final double ra,
+                final DalProtocol p) {
             super("Searching for " + p.getName() + " Services",  BackgroundWorker.LONG_TIMEOUT, Thread.MAX_PRIORITY);
             this.radius = radius;
             this.dec = dec;
@@ -836,6 +862,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
             this.p = p;
         }
 
+        @Override
         protected Object construct() throws Exception {
         	if (resourceList == null) {
         		this.p.processAllServices(this);
@@ -846,20 +873,20 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         }
 
         // called in 'construct' for each service in turn.
-        public void process(Resource r) {
+        public void process(final Resource r) {
             if (! (r instanceof Service)) {
                 return; // got some kind of garbage - ignore. 
             }
-            Service s = (Service)r;
+            final Service s = (Service)r;
             // build a set of retrievers for this service.
             final AbstractRetriever[] retrievers; 
             if (this.p instanceof SpatialDalProtocol) {
-                SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
+                final SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
                     retrievers = spatial.createRetrievers(s,this.ra,this.dec,this.radius,this.radius);
             } else if (this.p instanceof TemporalDalProtocol) {
-                TemporalDalProtocol temporal = (TemporalDalProtocol)this.p;
-                Date start = startCal.getDate();
-                Date end = endCal.getDate();
+                final TemporalDalProtocol temporal = (TemporalDalProtocol)this.p;
+                final Date start = startCal.getDate();
+                final Date end = endCal.getDate();
                     if (noPosition.isSelected()) { // zero out the positional fields
                         retrievers = temporal.createRetrievers(s,start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN);
                     } else {
@@ -892,7 +919,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
             });
         }
         
-        protected void doFinished(Object result) {
+        @Override
+        protected void doFinished(final Object result) {
             // do nothing.
         }
 
@@ -909,7 +937,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		/**
 		 * @param i
 		 */
-		public HistoryMenuItem(PositionHistoryItem i) {
+		public HistoryMenuItem(final PositionHistoryItem i) {
 			this.shi = i;
 			if (dsToggle.isDegrees()) {
 				this.degreesSelected(null);
@@ -922,7 +950,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		private final PositionHistoryItem shi;
 
 		// loads what fields this history object provides back into the form.
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 		        if (shi.getPosition() != null) {
 					posText.setPosition(shi.getPosition().getRa(),shi.getPosition().getDec());
 		        }
@@ -937,11 +965,11 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		        }
 		}
 
-		public void degreesSelected(EventObject ignored) {
+		public void degreesSelected(final EventObject ignored) {
 			buildMenuLabel();
 		}
 
-        public void sexaSelected(EventObject ignored) {
+        public void sexaSelected(final EventObject ignored) {
             buildMenuLabel();
         }		
 
@@ -949,7 +977,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
          * 
          */
 		private void buildMenuLabel() {
-		    StrBuilder sb = new StrBuilder();
+		    final StrBuilder sb = new StrBuilder();
 		    if (shi.getPosition() != null) { // assume that whatever applies to position applies to radius too.
 		        if (shi.getPosition().getOName() != null) {
 		            sb.append(shi.getPosition().getOName()).append(", ");
@@ -961,8 +989,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		                .append(',')
 		                .append(nf.format(shi.getPosition().getDec()))
 		                .append(", radius: ");
-		                double rw = shi.getRadius().getWidth();
-		                double rh = shi.getRadius().getHeight();
+		                final double rw = shi.getRadius().getWidth();
+		                final double rh = shi.getRadius().getHeight();
 		                if (rw == rh) {
 		                    sb.append(nf.format(rw));
 		                }
@@ -977,8 +1005,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		                        shi.getPosition().getRa()
 		                        ,shi.getPosition().getDec()))
 		                .append(" radius: "); 
-		                double rw = shi.getRadius().getWidth();
-		                double rh = shi.getRadius().getHeight();
+		                final double rw = shi.getRadius().getWidth();
+		                final double rh = shi.getRadius().getHeight();
 		                if (rw == rh) {
 		                    sb.append(RadiusTextField.formatAsArcsec(rw)).append('"');
 		                }
@@ -988,7 +1016,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		                      .append(RadiusTextField.formatAsArcsec(rh)).append('"');
 		                }		                
 		            }
-		        } catch (NumberFormatException e) {
+		        } catch (final NumberFormatException e) {
 		            // don't care too much.
 		        }
 		    }
@@ -1004,11 +1032,11 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	}
 	
 // focus listener interface - links in the activities, etc.
-	public void focusChanged(FocusEvent arg0) {
+	public void focusChanged(final FocusEvent arg0) {
 		final boolean somethingSelected = vizModel.getSelectionFocusSet().size() > 0;
 		clearAction.setEnabled(somethingSelected);
 		if (somethingSelected) {
-			Transferable tran = vizModel.getSelectionTransferable();
+			final Transferable tran = vizModel.getSelectionTransferable();
 			if (tran == null) { // unlikely
 				acts.clearSelection();
 			} else {
@@ -1030,10 +1058,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			this.setEnabled(false);           
 		}
 
-		public void actionPerformed(ActionEvent e) {
-			FocusSet set = vizModel.getSelectionFocusSet();
-			for (Iterator i = set.iterator(); i.hasNext();) {
-				TreeNode n = (TreeNode) i.next();
+		public void actionPerformed(final ActionEvent e) {
+			final FocusSet set = vizModel.getSelectionFocusSet();
+			for (final Iterator i = set.iterator(); i.hasNext();) {
+				final TreeNode n = (TreeNode) i.next();
 				// i.remove();
 				n.setAttribute("selected", "false");
 			}
@@ -1052,7 +1080,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,UIComponentMenuBar.MENU_KEYMASK));
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			submitButton.enableA();
 			haltQuery();
 		}
@@ -1060,30 +1088,30 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 	/** search action - listens to position field and is only enabled when position field is valiud.*/
 	protected class SearchAction extends AbstractAction implements NameResolvingPositionTextField.ResolutionListener {
-		public SearchAction(NameResolvingPositionTextField pos) {		    
+		public SearchAction(final NameResolvingPositionTextField pos) {		    
 			super("Search",IconHelper.loadIcon("search32.png"));
 			this.putValue(SHORT_DESCRIPTION,"Find data for this Position");
 			this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));
 			pos.addResolutionListener(this);
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			submitButton.enableB();
-			Map m = new HashMap();
+			final Map m = new HashMap();
 			m.put("name","VO Scope");
 			snitch.snitch("SUBMIT",m);
 			query();		
 		}
 		//enable the search button
-        public void resolved(ResolutionEvent ev) {
+        public void resolved(final ResolutionEvent ev) {
             setEnabled(true);
         }
         // even though the resolve failed, enable the search button.
-        public void resolveFailed(ResolutionEvent ev) {
+        public void resolveFailed(final ResolutionEvent ev) {
             setEnabled(true);
         }
         // disable the 'search button'
-        public void resolving(ResolutionEvent ev) {
+        public void resolving(final ResolutionEvent ev) {
             setEnabled(false);
         }
 	}
@@ -1099,7 +1127,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_T,UIComponentMenuBar.MENU_KEYMASK));
 			this.setEnabled(false);
 		}
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			vizualizations.refocusMainNodes();
 			vizualizations.reDrawGraphs();
 		}
@@ -1113,7 +1141,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.MENU_KEYMASK));
 	            this.setEnabled(false);
 	        }
-	        public void actionPerformed(ActionEvent e) {
+	        public void actionPerformed(final ActionEvent e) {
 	            vizualizations.moveUp();
 	            vizualizations.reDrawGraphs();
 	        }
@@ -1127,7 +1155,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	           super("Clear History");
 	          
 	       }
-	       public void actionPerformed(ActionEvent e) {
+	       public void actionPerformed(final ActionEvent e) {
 	           ConfirmDialog.newConfirmDialog(AstroScopeLauncherImpl.this,"Clear History","All history entries will be lost - continue?"
 	                   ,new Runnable() {
 	               public void run() {

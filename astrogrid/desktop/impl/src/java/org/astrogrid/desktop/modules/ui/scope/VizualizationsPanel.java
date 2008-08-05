@@ -6,23 +6,20 @@ package org.astrogrid.desktop.modules.ui.scope;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Iterator;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.KeyStroke;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
+
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
-
-import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
@@ -58,7 +55,10 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
     private final Vizualization hyperbolicViz;
     private final ScopeServicesList table;
     
-    public VizualizationsPanel(VizualizationController viz,Vizualization radialViz, Vizualization hyperbolicViz, ScopeServicesList table) {
+    private static final Preferences PREFERENCES = Preferences.userNodeForPackage(VizualizationsPanel.class);
+    private static final String PREFERRED_VIEW_KEY = "preferred.view";
+ 
+    public VizualizationsPanel(final VizualizationController viz,final Vizualization radialViz, final Vizualization hyperbolicViz, final ScopeServicesList table) {
         this.viz = viz;
         this.radialViz = radialViz;
         this.hyperbolicViz = hyperbolicViz;
@@ -66,7 +66,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
         this.vizSelected = viz.getVizModel().getSelectionFocusSet();   
         this.queryResults = table.getQueryResults();
         this.tableSelected = table.getCurrentResourceModel().getTogglingSelected();
-      //not sunching view selection at the moment... 
+      //not synching view selection at the moment... 
         //vizSelected.addFocusListener(this);
         //tableSelected.addListEventListener(this); // listen to this for selection changes
         this.displayedResources = table.getCurrentDisplayedResources();
@@ -76,22 +76,31 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
         add(HYPERBOLIC_VIEW,hyperbolicViz.getDisplay());
         add(SERVICES_VIEW,table);
         getShowServicesFiltersAction().setEnabled(false);
+        
+        // load preference.
+        final String view = PREFERENCES.get(PREFERRED_VIEW_KEY,RADIAL_VIEW);
+        if (HYPERBOLIC_VIEW.equals(view)) {
+            getHyperbolicAction().actionPerformed(null);
+        } else if (SERVICES_VIEW.equals(view)) {
+            getServicesAction().actionPerformed(null);
+        }
+        // if it's RADIAL_VIEW, no need to do anything - were already in that mode.
     }
 
 //prefuse listener interface
- public void focusChanged(FocusEvent arg0) {
+ public void focusChanged(final FocusEvent arg0) {
          if (servicesHasPrecedence) {//services tab is driving.
              return; // ignore in this case.
          }
          switch(arg0.getEventType()) {
          case FocusEvent.FOCUS_ADDED:
-             Entity[] added = arg0.getAddedFoci();
+             final Entity[] added = arg0.getAddedFoci();
              for (int i = 0; i < added.length; i++) {
                  if (added[i].getAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Retriever r = queryResults.findRetriever((TreeNode)added[i]);
+                     final Retriever r = queryResults.findRetriever((TreeNode)added[i]);
                      if (r != null) {
-                         Service s = new RetrieverService(r);
+                         final Service s = new RetrieverService(r);
                          if (! tableSelected.contains(s)) {
                              tableSelected.add(s); 
                          }
@@ -100,13 +109,13 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
              }
              break;
          case FocusEvent.FOCUS_REMOVED:
-             Entity[] removed = arg0.getRemovedFoci();
+             final Entity[] removed = arg0.getRemovedFoci();
              for (int i = 0; i < removed.length; i++) {
                  if (removed[i].getAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Retriever r = queryResults.findRetriever((TreeNode)removed[i]);
+                     final Retriever r = queryResults.findRetriever((TreeNode)removed[i]);
                      if (r != null) {
-                         Service s = new RetrieverService(r);
+                         final Service s = new RetrieverService(r);
                          if (tableSelected.contains(s)) {
                              tableSelected.remove(s); 
                          }
@@ -116,13 +125,13 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
              break;
          case FocusEvent.FOCUS_SET:
              tableSelected.clear();
-             for (Iterator i = arg0.getFocusSet().iterator(); i.hasNext();) {
-                 TreeNode t = (TreeNode)i.next();
+             for (final Iterator i = arg0.getFocusSet().iterator(); i.hasNext();) {
+                 final TreeNode t = (TreeNode)i.next();
                  if (t.getAttribute(AbstractRetriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Retriever r = queryResults.findRetriever(t);
+                     final Retriever r = queryResults.findRetriever(t);
                      if (r != null) {
-                         Service s = new RetrieverService(r);
+                         final Service s = new RetrieverService(r);
                          if (! tableSelected.contains(s)) {
                              tableSelected.add(s); 
                          }
@@ -133,15 +142,15 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
  }
 
 // table listener interface.
- public void listChanged(ListEvent ev) {
+ public void listChanged(final ListEvent ev) {
      if (ev.getSourceList() == tableSelected) { // selection changed event
          if (! servicesHasPrecedence) {
              return;
          }     
          clearPrefuseSelection();    
          for(int i = 0; i < tableSelected.size(); i++) {
-             RetrieverService s = (RetrieverService)tableSelected.get(i);
-             TreeNode t = queryResults.findTreeNode(s.getRetriever());
+             final RetrieverService s = (RetrieverService)tableSelected.get(i);
+             final TreeNode t = queryResults.findTreeNode(s.getRetriever());
              if (t != null) {
                  DoubleClickMultiSelectFocusControl.selectSubtree(t,vizSelected);
              }
@@ -149,15 +158,21 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
         viz.reDrawGraphs();     
      }
  }
-
+ 
+/** overridden to record current view in preferences */ 
+ @Override
+public void show(final String viewName) {
+    super.show(viewName);
+    PREFERENCES.put(PREFERRED_VIEW_KEY,viewName);
+}
 /**
  * 
  */
 private void clearPrefuseSelection() {
     // just synch the two views - too fiddly to compute the differences.
      // especially as prefuse might have non-service subtrees selected anyhow.
-     for (Iterator i = vizSelected.iterator(); i.hasNext(); ) {
-         TreeNode n = (TreeNode)i.next();
+     for (final Iterator i = vizSelected.iterator(); i.hasNext(); ) {
+         final TreeNode n = (TreeNode)i.next();
          n.setAttribute("selected","false");
      }
      vizSelected.clear();
@@ -171,7 +186,7 @@ private void clearPrefuseSelection() {
          putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
          putValue(SHORT_DESCRIPTION,"view the results as a radial graph");            
      }
-     public void actionPerformed(ActionEvent e) {
+     public void actionPerformed(final ActionEvent e) {
          if (servicesHasPrecedence) { // we've flipped from services view - clear selection
              clearPrefuseSelection();
              viz.reDrawGraphs();           
@@ -187,7 +202,7 @@ private void clearPrefuseSelection() {
          putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));
          putValue(SHORT_DESCRIPTION,"view the results as a hyperbolic graph (shows all nodes, compressed towards the edges)");            
      }
-     public void actionPerformed(ActionEvent e) {
+     public void actionPerformed(final ActionEvent e) {
          if (servicesHasPrecedence) { // we've flipped from services view - clear selection
              clearPrefuseSelection();      
              viz.reDrawGraphs();               
@@ -203,7 +218,7 @@ private void clearPrefuseSelection() {
          putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_3,UIComponentMenuBar.MENU_KEYMASK));
          putValue(SHORT_DESCRIPTION,"view the results in a table of queried tables");
      }
-     public void actionPerformed(ActionEvent e) {
+     public void actionPerformed(final ActionEvent e) {
          // select all files contents.         
          tableSelected.clear();
          if (table.getCurrentDisplayedResources().size() > 0) {
@@ -219,9 +234,9 @@ protected final Action servicesAction = new ServicesAction() ;
 protected final Action radialAction = new RadialAction() ;
 protected final Action hyperbolicAction = new HyperbolicAction();
 
-private static final String RADIAL_VIEW = "radial";
-private static final String HYPERBOLIC_VIEW = "hyperbolic";
-private static final String SERVICES_VIEW = "services";
+public static final String RADIAL_VIEW = "radial";
+public static final String HYPERBOLIC_VIEW = "hyperbolic";
+public static final String SERVICES_VIEW = "services";
 public final Action getServicesAction() {
     return this.servicesAction;
 }
@@ -234,23 +249,23 @@ public final Action getHyperbolicAction() {
 /** attribute set when this branch is to be filtered out of the results view */
 public static final String SERVICE_FILTERED_ATTR = "service-filtered";
 /** a resource is removed from the list */
-public void dispose(Object sourceValue, Object transformedValue) {
-    RetrieverService res = (RetrieverService)sourceValue;
-    TreeNode node = queryResults.findTreeNode(res.getRetriever());
+public void dispose(final Object sourceValue, final Object transformedValue) {
+    final RetrieverService res = (RetrieverService)sourceValue;
+    final TreeNode node = queryResults.findTreeNode(res.getRetriever());
     if (node != null) {
         node.setAttribute(SERVICE_FILTERED_ATTR,"true");
     }
 }
 
 // shouldn't really ever happen.
-public Object reevaluate(Object sourceValue, Object transformedValue) {
+public Object reevaluate(final Object sourceValue, final Object transformedValue) {
     return null;
 }
 
 /** called when an item appears in the list */
-public Object evaluate(Object sourceValue) {
-    RetrieverService res = (RetrieverService)sourceValue;
-    TreeNode node = queryResults.findTreeNode(res.getRetriever());
+public Object evaluate(final Object sourceValue) {
+    final RetrieverService res = (RetrieverService)sourceValue;
+    final TreeNode node = queryResults.findTreeNode(res.getRetriever());
     if (node != null) {        
         node.setAttribute(SERVICE_FILTERED_ATTR,"false");
     }
