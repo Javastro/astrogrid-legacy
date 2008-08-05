@@ -18,6 +18,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
+import org.astrogrid.desktop.modules.ui.voexplorer.QuerySizeIndicator.QuerySizeListener;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.KeywordSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
@@ -35,16 +36,19 @@ import com.jgoodies.forms.layout.FormLayout;
 
  * @since Apr 26, 20077:21:19 PM
  */
-public class SmartListEditingPanel extends EditingPanel implements ActionListener, ListEventListener, DocumentListener {
+public class SmartListEditingPanel extends EditingPanel implements ActionListener, ListEventListener, DocumentListener, QuerySizeListener {
 
-	public SmartListEditingPanel(UIComponent parent,QuerySizer sizer) {
+	public SmartListEditingPanel(final UIComponent parent,final QuerySizer sizer) {
 	    CSH.setHelpIDString(this,"reg.edit.smart");
-		FormLayout layout= new FormLayout(
+        sizing = new QuerySizeIndicator(parent,sizer);
+        sizing.addQuerySizeListener(this);
+        
+	    final FormLayout layout= new FormLayout(
 				"2dlu, right:d, 1dlu, max(30dlu;d):grow, 4dlu, d, 1dlu, d, 3dlu" // cols
 				,"d,top:d:grow,d,max(30dlu;d),d" // rows
 		);
-		PanelBuilder builder = new PanelBuilder(layout,this);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout,this);
+		final CellConstraints cc = new CellConstraints();
 		int row = 1;
 		
 		builder.addLabel("The search named:",cc.xy(2,row));
@@ -75,10 +79,11 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		text.getDocument().addDocumentListener(this);
 		builder.add(new JScrollPane(text),cc.xyw(2,row,7));
 		row++;
-		sizing = new QuerySizeIndicator(parent,sizer);
+
 		builder.add(sizing,cc.xyw(2,row,4));
 		builder.add(ok,cc.xy(6,row));
-		builder.add(cancel,cc.xy(8,row));		
+		builder.add(cancel,cc.xy(8,row));	
+		ok.setEnabled(false); // we know the editor starts out with an invalid query.
 		this.invalidate();
 	}
 
@@ -87,21 +92,22 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	private final FlipPanel flip = new FlipPanel();
 	private final QuerySizeIndicator sizing;
 
-	public void setCurrentlyEditing(ResourceFolder currentlyEditing) {
+	@Override
+    public void setCurrentlyEditing(final ResourceFolder currentlyEditing) {
 		if (! (currentlyEditing instanceof SmartList)) {
 			throw new IllegalArgumentException("Not an instanceof SmartList");
 		}
 		super.setCurrentlyEditing(currentlyEditing);
-		SmartList sl = (SmartList)getCurrentlyEditing();
+		final SmartList sl = (SmartList)getCurrentlyEditing();
 		if (sl.getQuery() != null) {
-			SRQL srql = sl.getQuery();
+			final SRQL srql = sl.getQuery();
 			sizing.setValue(srql);
 			if (qb.canDisplayQuery(srql)) { // simple query
 			        qb.setQuery(srql);
 			        showForm();
 			} else { // complex query
 			    showTooComplex();
-				String qText = (String) srql.accept(vis);
+				final String qText = (String) srql.accept(vis);
 				text.getDocument().removeDocumentListener(this); // temporarily remove listener, to prevent event-cycles. hope this isn't too expensive
 				text.setText(qText);
 				text.getDocument().addDocumentListener(this);
@@ -112,9 +118,10 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		}
 	}
 	/** load the edits made into the currentlyEdited resource */
-	public void loadEdits() {
+	@Override
+    public void loadEdits() {
 		super.loadEdits();
-		SmartList sl = (SmartList)getCurrentlyEditing();		
+		final SmartList sl = (SmartList)getCurrentlyEditing();		
 		if (isFormShowing()) {
 			sl.setQuery(qb.getQuery());
 		} else if (isTooComplexShowing()){ // is a complex query, git it from the text box
@@ -126,19 +133,19 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 // integration with QuerySizeIndicator..
 	
 // called when query building form alters.
-	public void listChanged(ListEvent arg0) {
+	public void listChanged(final ListEvent arg0) {
 		formTimer.restart();
 	}
 //	document listener interface	
-	public void changedUpdate(DocumentEvent e) {
+	public void changedUpdate(final DocumentEvent e) {
 		textTimer.restart();
 	}
 
-	public void insertUpdate(DocumentEvent e) {
+	public void insertUpdate(final DocumentEvent e) {
 		textTimer.restart();
 	}
 
-	public void removeUpdate(DocumentEvent e) {
+	public void removeUpdate(final DocumentEvent e) {
 		textTimer.restart();
 	}
 	
@@ -154,17 +161,17 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	}};
 
 	// hooks things together - called by the timer - so once the use has finished editing.
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource().equals(formTimer)) {
 			final SRQL query = qb.getQuery();
 			// set this running straight away.
 			sizing.setValue(query);
-			String qText = (String) query.accept(vis);
+			final String qText = (String) query.accept(vis);
 			text.getDocument().removeDocumentListener(this); // temporarily remove listener, to prevent event-cycles. hope this isn't too expensive
 			text.setText(qText);
 			text.getDocument().addDocumentListener(this);
 		} else if (e.getSource().equals(textTimer)) {
-			SRQL srql = parseSrqlTextBox();
+			final SRQL srql = parseSrqlTextBox();
 			if (srql == null) {
 			    showError();
 			} else {
@@ -192,7 +199,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	}
 	private void showForm() {
         flip.show(QB);	    
-        ok.setEnabled(true);
+        ok.setEnabled(shouldOkBeEnabled());
 	}
 	private void showError() {
 	    flip.show(ERROR);
@@ -200,7 +207,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	}
 	private void showTooComplex() {
 	    flip.show(COMPLEX);
-	    ok.setEnabled(true);
+	    ok.setEnabled(shouldOkBeEnabled());
 	}
 
 	private final KeywordSRQLVisitor vis = new KeywordSRQLVisitor();
@@ -209,17 +216,27 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	private static final String ERROR = "error";
 	
 	private SRQL parseSrqlTextBox() {
-		String q = text.getText();
-		SRQLParser p = new SRQLParser(q);
+		final String q = text.getText();
+		final SRQLParser p = new SRQLParser(q);
 		try {
 			return  p.parse();
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			return null;
 		}
 	}
 
 	// validation 
-	protected boolean shouldOkBeEnabled() {
-		return super.shouldOkBeEnabled() && ! isErrorShowing(); 
+	@Override
+    protected boolean shouldOkBeEnabled() {
+		return super.shouldOkBeEnabled() && ! isErrorShowing() && sizing.isValidQuery();
 	}
+	
+	// called when we see an invalid query
+    public void invalidQuery() {
+        ok.setEnabled(false);
+    }
+    // called when we see a valid query
+    public void validQuery() {
+        ok.setEnabled(shouldOkBeEnabled());
+    }
 }

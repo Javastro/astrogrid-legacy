@@ -12,6 +12,7 @@ import net.sf.ehcache.Element;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.HeadClauseSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
@@ -27,11 +28,18 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
 public class QuerySizerImpl implements QuerySizer {
 	private final RegistryInternal reg;
 	private final Ehcache cache;
+    private final Preference preventLargeQueries;
+    private final int oversizeThreshold;
+    private final int goodThreshold;
 	
-	public QuerySizerImpl(final RegistryInternal reg, Ehcache cache) {
+	public QuerySizerImpl(final RegistryInternal reg, final Ehcache cache, final Preference preventLargeQueries
+	        ,final int goodThreshold, final int oversizeThreshold) {
 		super();
 		this.reg = reg;
 		this.cache = cache;
+        this.preventLargeQueries = preventLargeQueries;
+        this.goodThreshold = goodThreshold;
+        this.oversizeThreshold = oversizeThreshold;
 	}
 	
 	public synchronized Integer regSize() { // synchronize this, so query to reg is only run one time.
@@ -40,31 +48,31 @@ public class QuerySizerImpl implements QuerySizer {
 	/** the query that returns all 'active' resources. use with caution */
 	public static final String ALL_QUERY = "//vor:Resource[not (@status='inactive' or @status='deleted')]";
 	
-	public Integer size(SRQL query) {
+	public Integer size(final SRQL query) {
 		try {
 		final String q = queryBuilder.build(query,null);
 		return size(q);
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			// query is currently incomplete.
 			return ERROR;
 		}
 	}
 	
-	public Integer size(String query) {
-		String sizingQuery = constructSizingQuery(query);
-		Element result = cache.get(sizingQuery);
+	public Integer size(final String query) {
+		final String sizingQuery = constructSizingQuery(query);
+		final Element result = cache.get(sizingQuery);
 		if (result != null) {
 			return (Integer)result.getValue();
 		} else {
 			try {
 				final SizingStreamProcessor proc = new SizingStreamProcessor();
 				reg.xquerySearchStream(sizingQuery,proc);
-				Integer computed = proc.getResult();
+				final Integer computed = proc.getResult();
 				if (! computed.equals(ERROR)) {
 					cache.put(new Element(sizingQuery,computed));
 				}
 				return computed;
-			} catch (ServiceException x) {
+			} catch (final ServiceException x) {
 				return ERROR;
 			}
 		}
@@ -75,7 +83,7 @@ public class QuerySizerImpl implements QuerySizer {
      * @param query
      * @return
      */
-    public static String constructSizingQuery(String query) {
+    public static String constructSizingQuery(final String query) {
         if (query == null) {
             throw new IllegalArgumentException("null query");
         }
@@ -95,13 +103,13 @@ public class QuerySizerImpl implements QuerySizer {
 	
 	private static class SizingStreamProcessor implements StreamProcessor {
 		private Integer size = ERROR;
-		public void process(XMLStreamReader r) throws XMLStreamException {
+		public void process(final XMLStreamReader r) throws XMLStreamException {
 				r.next();
 				// a bit unexpected, but works. - seems like the wrapper xml isn't being passed back by the reg client.
-				String szString = r.getText();
+				final String szString = r.getText();
 					try{
 						size = Integer.valueOf(szString);
-					} catch (NumberFormatException e) {
+					} catch (final NumberFormatException e) {
 					    //ignored
 					}
 		}
@@ -109,5 +117,17 @@ public class QuerySizerImpl implements QuerySizer {
 			return size;
 		}
 	}
+
+    public boolean isPreventOversizeQueries() {
+        return preventLargeQueries.asBoolean();
+    }
+
+    public int getOversizeThreshold() {
+        return oversizeThreshold;
+    }
+
+    public int getGoodThreshold() {
+        return goodThreshold;
+    }
 	
 }

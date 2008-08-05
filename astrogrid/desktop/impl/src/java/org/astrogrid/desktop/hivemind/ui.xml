@@ -643,10 +643,18 @@ ACTIONS
 	 		<construct class="org.astrogrid.desktop.modules.ui.voexplorer.QuerySizerImpl">
 	 			<service>ivoa.registry</service>
 	 			<object>cache:querySizes</object>
-	 		</construct>
+              <object>preference:performance.prevent.oversize.registry.query</object>                
+              <int>${registry.query.good.threshold}</int>
+	 		  <int>${registry.query.oversize.threshold}</int>
+            </construct>
 	 	</invoke-factory>
 	 </service-point>
 	 
+    <contribution configuration-id="hivemind.FactoryDefaults">
+        <default symbol="registry.query.good.threshold" value="500" />     
+        <default symbol="registry.query.oversize.threshold" value="1500" /> 
+    </contribution>      
+     
 	 <contribution configuration-id="ivoa.caches">
 	 	Cache for query sizes
 	 	<cache name="querySizes"

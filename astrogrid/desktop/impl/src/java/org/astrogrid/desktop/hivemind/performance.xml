@@ -34,7 +34,15 @@ Performance Configuration
                 <br>(default is 5 seconds). Set to 0 to always show progress dialogues, -1 to never show progress dialogues.
                 ]]></description> 
                 <units>seconds</units>
-            </preference>                     
+            </preference>       
+            <preference name="performance.prevent.oversize.registry.query"
+                advanced="false" default-value="true" requires-restart="false">
+                    <ui-name>Prevent oversized registry queries</ui-name>
+                    <description><![CDATA[<html>Prevent the execution of registry queries that will return huge numbers of matches.
+                    <br>Recommended to prevent user error from overloading the registry service or user interface.
+                    ]]></description>
+                    <units>boolean</units>
+             </preference>              
     </contribution>
     
  </module>

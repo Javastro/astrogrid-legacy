@@ -45,6 +45,8 @@
                 <service>externalRegistry</service>
                <object>preference:org.astrogrid.registry.query.endpoint</object>
                <object>preference:org.astrogrid.registry.query.altendpoint</object>
+               <object>preference:performance.prevent.oversize.registry.query</object>
+              <int>${registry.query.oversize.threshold}</int>               
                 <object>cache:resources</object>
                 <object>cache:documents</object>
                 <object>cache:indexes</object>      

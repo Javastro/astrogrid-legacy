@@ -20,6 +20,17 @@ public interface QuerySizer {
 	/** compute the size of an xquery */
 	public Integer size(String query);
 
+	/** check whether system should actively prevent overlarge Qs */
+	public boolean isPreventOversizeQueries();
+	
+	/** retrieve the number of results over which a query is considered 'oversize' */
+	public int getOversizeThreshold() ;
+	
+	/** retrive the number of results over which a query is considered 'not good' 
+	 * this will be less than <tt>getOversizeThreshold()</tt>
+	 * */
+	public int getGoodThreshold();
+	
 	//Represents an error occurring.
 	public final static Integer ERROR = new Integer(-1);
 }
