@@ -357,7 +357,13 @@ public class PlaskitPlasticHub extends MinimalHub implements PlasticHubListenerI
             logger.debug("getName(id=" + id + ") - start");
         }
 
-        final String returnString = super.getName(id);
+        String returnString = super.getName(id);
+        // avoid nulls here - occasionally a naughty script might register with null, and this is ok,
+        // apart from when the response is trasferred to the caller over xmlrpc - no way to represent null
+        // and so it's getting type convertted into an object[]/
+        if (returnString == null) {
+            returnString = "";
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("getName() - end - return value=" + returnString);
         }
