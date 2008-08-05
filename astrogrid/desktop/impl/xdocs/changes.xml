@@ -16,6 +16,9 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="fix" issue="2805">
+    Task Runner: File selection dialogue navigates to vospace where necessary
+    </action>
     <action dev="nw" type="add">
     UI: Remember user's preferred views for nextime
     </action>

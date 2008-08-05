@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.17 2008/02/29 15:06:47 mbt Exp $
+/*$Id: ResourceChooserImpl.java,v 1.18 2008/08/05 15:42:18 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,44 +24,44 @@ import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 public class ResourceChooserImpl implements ResourceChooserInternal {
  
 
-    public ResourceChooserImpl(UIContext context,TypesafeObjectBuilder builder) {
+    public ResourceChooserImpl(final UIContext context,final TypesafeObjectBuilder builder) {
     		dialog = new FileExplorerDialog(context, builder);
         getDialog().pack();
     }
     private final FileExplorerDialog dialog;
     
     // public  API
-    public  URI chooseResource(String title,boolean enableMySpace) {
-         FileExplorerDialog d = getDialog();
+    public  URI chooseResource(final String title,final boolean enableMySpace) {
+         final FileExplorerDialog d = getDialog();
         d.setTitle(title);
         d.setVospaceEnabled(enableMySpace);
         d.setLocationRelativeTo(null);
-        d.setVisible(true);
+        d.show();
         d.requestFocus();
         d.toFront();
         return d.getUri();        
     }
     
-    public  URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
+    public  URI fullChooseResource(final String title,final boolean enableMySpace,final boolean enableLocalFile,final boolean enableURI) {
         getDialog().setLocalEnabled(enableLocalFile);
         getDialog().setUrlEnabled(enableURI);
         return chooseResource(title,enableMySpace);        
     }
 
-    public URI chooseFolder(String arg0, boolean arg1) {
+    public URI chooseFolder(final String arg0, final boolean arg1) {
         getDialog().setChooseDirectories(true);
         return chooseResource(arg0,arg1);
     }
 
-    public URI fullChooseFolder(String arg0, boolean arg1, boolean arg2,
-            boolean arg3) {
+    public URI fullChooseFolder(final String arg0, final boolean arg1, final boolean arg2,
+            final boolean arg3) {
         getDialog().setChooseDirectories(true);
         return fullChooseResource(arg0,arg1,arg2,arg3);
     }    
     
 ///// Internal API
 
-    public  URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
+    public  URI chooseResourceWithParent(final String title,final boolean enableMySpace,final boolean enableLocalFile, final boolean enableURI,final Component comp) {
     	getDialog().setLocationRelativeTo(comp);
         getDialog().setTitle(title);
         getDialog().setLocalEnabled(enableLocalFile);
@@ -71,7 +71,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
         return getDialog().getUri(); 
     }    
 
-    public  URI chooseDirectoryWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
+    public  URI chooseDirectoryWithParent(final String title,final boolean enableMySpace,final boolean enableLocalFile, final boolean enableURI,final Component comp) {
         getDialog().setChooseDirectories(true);
         return chooseResourceWithParent(title, enableMySpace, enableLocalFile, enableURI, comp);
     }
@@ -94,6 +94,10 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.18  2008/08/05 15:42:18  nw
+RESOLVED - bug 2805: mis-leading field when trying to save output file in running a task
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2805
+
 Revision 1.17  2008/02/29 15:06:47  mbt
 More sensible dialogue usage
 
