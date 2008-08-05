@@ -17,6 +17,9 @@
 <body>
 <release version="2008.2.rc1" date="unreleased">
     <action dev="nw" type="add">
+    UI: Remember user's preferred views for nextime
+    </action>
+    <action dev="nw" type="add">
     voexplorer: added mode to protect registry from overlarge novice queries.
     </action>
     <action dev="nw" type="fix" issue="2692">

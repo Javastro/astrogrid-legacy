@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -98,6 +99,9 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		return parent;
 	}
 	
+	   private static final Preferences PREFERENCES = Preferences.userNodeForPackage(StorageView.class);
+	   private static final String PREFERRED_VIEW_KEY = "preferred.view";
+	
 	/**
 	 * Logger for this class
 	 */
@@ -112,7 +116,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 			setEnabled(false);
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			navigator.refresh();
 		}
 	}
@@ -122,8 +126,8 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 			super("Go",IconHelper.loadIcon("go22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Go: load the specfied location");
 		}
-		public void actionPerformed(ActionEvent e) {
-			String s = location.getText();
+		public void actionPerformed(final ActionEvent e) {
+			final String s = location.getText();
 			//@todo add some input validation here
 			navigator.move(s);
 		}
@@ -136,7 +140,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	        putValue(SHORT_DESCRIPTION,"Navigate to a provided URI");
 	        putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));	        
 	    }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             location.selectAll();
             location.requestFocusInWindow();
         }
@@ -150,15 +154,15 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             putValue(SHORT_DESCRIPTION,"Select and open a local folder");     
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.SHIFT_MENU_KEYMASK));                        
         }
-        public void actionPerformed(ActionEvent e) {
-            JDirectoryChooser chooser = new JDirectoryChooser(SystemUtils.getUserHome());
+        public void actionPerformed(final ActionEvent e) {
+            final JDirectoryChooser chooser = new JDirectoryChooser(SystemUtils.getUserHome());
             chooser.setShowingCreateDirectory(false);
-            int code = chooser.showOpenDialog(mainPanel);
+            final int code = chooser.showOpenDialog(mainPanel);
             if (code == JDirectoryChooser.APPROVE_OPTION) {
                 try {
-                    URL f = chooser.getSelectedFile().toURL();
+                    final URL f = chooser.getSelectedFile().toURL();
                     navigator.move(f.toString());
-                } catch (MalformedURLException ex) {
+                } catch (final MalformedURLException ex) {
                     parent.showTransientError("Unable to open file",ExceptionFormatter.formatException(ex));
                 }
             }
@@ -173,7 +177,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		       
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			goButton.enableA();
 			StorageView.this.getParent().haltMyTasks();
 		}
@@ -188,9 +192,10 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			mainPanel.show("list");
 			fileList.requestFocusInWindow();
+			PREFERENCES.put(PREFERRED_VIEW_KEY,mainPanel.currentlyShowing());
 			
 		}		
 	}
@@ -205,9 +210,10 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 
 		}
 
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			mainPanel.show("table");
 			fileTable.requestFocusInWindow();
+			PREFERENCES.put(PREFERRED_VIEW_KEY,mainPanel.currentlyShowing());			
 		}		
 	}
 	
@@ -219,17 +225,17 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_K,UIComponentMenuBar.MENU_KEYMASK));
 			setEnabled(false);
 		}
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 		    
-			StorageFolder f = new StorageFolder();
+			final StorageFolder f = new StorageFolder();
 			try {
 				//@todo work out a more sensible icon in some cases.
-				FileObject fo = navigator.current();
+				final FileObject fo = navigator.current();
 				f.setFile(fo);
 				f.setUriString(fo.getName().getURI());
 				f.setName(fo.getName().getBaseName());
 				foldersList.add(f); // and this is automatically persisted.
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				parent.showTransientError("Failed to add bookmark",ExceptionFormatter.formatException(ex));
 			}
 		}
@@ -246,17 +252,17 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
             setEnabled(true);
         }
-        public void actionPerformed(ActionEvent e) {
-            JFileChooser chooser = new JFileChooser(SystemUtils.getUserHome());
+        public void actionPerformed(final ActionEvent e) {
+            final JFileChooser chooser = new JFileChooser(SystemUtils.getUserHome());
             chooser.setDialogTitle("Choose files to upload");
             chooser.setApproveButtonText("Upload");
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             chooser.setMultiSelectionEnabled(true);
-            int code = chooser.showOpenDialog(getParent().getComponent());
+            final int code = chooser.showOpenDialog(getParent().getComponent());
             if (code == JFileChooser.APPROVE_OPTION) {
-                FileObject base = navigator.current();
-                File[] files = chooser.getSelectedFiles();
-                CopyCommand[] commands = new CopyCommand[files.length];
+                final FileObject base = navigator.current();
+                final File[] files = chooser.getSelectedFiles();
+                final CopyCommand[] commands = new CopyCommand[files.length];
                 for (int i = 0; i < files.length; i++) {
                     commands[i] = new CopyCommand(files[i]);
                 }
@@ -279,7 +285,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
              * 
              */
             private final FileObject base;
-            private JTextField tf = new JTextField(20);
+            private final JTextField tf = new JTextField(20);
             private void init (){
                 baseName = base.getName().getBaseName();
                 if (StringUtils.isEmpty(baseName)) {
@@ -303,32 +309,34 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
             }
 
 
-            private NewFolderDialog(FileObject base)
+            private NewFolderDialog(final FileObject base)
             throws HeadlessException {
                 this.base = base;
                 init();
             }
-            private NewFolderDialog(Dialog d,FileObject base)
+            private NewFolderDialog(final Dialog d,final FileObject base)
             throws HeadlessException {
                 super(d);
                 this.base = base;
                 init();
             }
-            private NewFolderDialog(Frame f,FileObject base)
+            private NewFolderDialog(final Frame f,final FileObject base)
             throws HeadlessException {
                 super(f);
                 this.base = base;
                 init();
             }
+            @Override
             public void ok() {
                 (new BackgroundWorker(StorageView.this.getParent(),"Creating subfolder of " + this.baseName,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
                     
+                    @Override
                     protected Object construct() throws Exception {
-                        String nuName = tf.getText();
+                        final String nuName = tf.getText();
                         if (StringUtils.isEmpty(nuName)) {
                             return null; // bail out.
                         }
-                        FileObject f = base.resolveFile(nuName);
+                        final FileObject f = base.resolveFile(nuName);
                         if (f.exists()) {
                             return nuName + " already exists";
                         }
@@ -339,13 +347,14 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
                             }
                            });	                        
                         f.createFolder();
-                        FileSystem fs =base.getFileSystem();
+                        final FileSystem fs =base.getFileSystem();
                         if (fs instanceof AbstractFileSystem) {
                             ((AbstractFileSystem)fs).fireFileChanged(base);
                         }
                         return null;
                     }
-                    protected void doFinished(Object result) {
+                    @Override
+                    protected void doFinished(final Object result) {
                         if (result == null && isVisible()) {
                             NewFolderDialog.super.ok();
                         } else {
@@ -363,11 +372,11 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.MENU_KEYMASK));
 	        setEnabled(true);
 	    }
-	    public void actionPerformed(ActionEvent e) {
+	    public void actionPerformed(final ActionEvent e) {
 	        // work out where we are at the moment.
 	        final FileObject base =navigator.current();
-	        Component pc = parent.getComponent();
-	        Window w = pc instanceof Window
+	        final Component pc = parent.getComponent();
+	        final Window w = pc instanceof Window
 	                 ? (Window) pc
 	                 : SwingUtilities.getWindowAncestor(pc);
 	        
@@ -389,21 +398,21 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     private final FileSystemManager vfs;
 
 
-		public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList unfilteredfoldersList, FileSystemManager vfs, IconFinder iconFinder, Community comm) {
+		public StorageView(final UIComponent parent, final ActivitiesManager actsManager,final EventList unfilteredfoldersList, final FileSystemManager vfs, final IconFinder iconFinder, final Community comm) {
     		this.parent = parent;
             this.vfs = vfs;
     		foldersListFilter = new MutableMatcherEditor();
             this.foldersList = new FilterList(unfilteredfoldersList,foldersListFilter);
     		
-            ButtonGroup bg = new ButtonGroup();
+            final ButtonGroup bg = new ButtonGroup();
             bg.add(iconsMenuItem);
             bg.add(listMenuItem);
             iconsMenuItem.setSelected(true);
             
     		// core model.
-            SearchField filter = new SearchField("Filter files");	
+            final SearchField filter = new SearchField("Filter files");	
             CSH.setHelpIDString(filter,"files.filter");
-            MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
+            final MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
             navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
             comm.addUserLoginListener(this);
             navigator.addNavigationListener(this);
@@ -412,16 +421,16 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     		folders.addListSelectionListener(this);
     		folders.setName(STORAGE_VIEW);
        // toolbar
-    	    FormLayout layout = new FormLayout(
+    	    final FormLayout layout = new FormLayout(
     	    		//      back fore      up            label             location             stop, refresh bookmark newFolder views        filter
     	    		"1dlu,d,d,1dlu,d,1dlu,right:d,1dlu,80dlu:grow,0dlu,d,d,d,d,0dlu,d,0dlu,50dlu,1dlu" // cols
     	    		,"pref"); // rows
-    	    PanelBuilder builder = new PanelBuilder(layout);
-    	    CellConstraints cc = new CellConstraints();
-    	    int c = 1;
+    	    final PanelBuilder builder = new PanelBuilder(layout);
+    	    final CellConstraints cc = new CellConstraints();
+    	    final int c = 1;
     	    int r = 2;
     	    // previous button
-    	    RangeList historyRange = new RangeList(navigator.getPreviousList());
+    	    final RangeList historyRange = new RangeList(navigator.getPreviousList());
     	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
     	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
             CSH.setHelpIDString(back,"files.back");
@@ -470,7 +479,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
     	    r++;
     	    // can't be bothered making this track the menu entries, so just make it invisible if the menu is available.
-    	    BasicEventList views = new BasicEventList();
+    	    final BasicEventList views = new BasicEventList();
     	    views.add(icons);
     	    views.add(list);    	   
     	    viewsCombo = new ActionComboBox(views);
@@ -495,6 +504,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     	    tableScroll.getViewport().setBackground(Color.WHITE);
             mainPanel.add(tableScroll,"table");
+            mainPanel.show(PREFERENCES.get(PREFERRED_VIEW_KEY,"list"));
     
       // finally, select first item in the views list, to start the whole thing going.
     	    folders.clearSelection();
@@ -541,19 +551,19 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	 * default - not shown.
 	 * @param b
 	 */
-    public void setShowViewComboInMenuBar(boolean b) {
+    public void setShowViewComboInMenuBar(final boolean b) {
         viewsCombo.setVisible(b);
     }
     
 	/** create and configure a button from an action */
-	private JButton createMainButton(Action act) {
-		JButton b = new JButton(act);
+	private JButton createMainButton(final Action act) {
+		final JButton b = new JButton(act);
 		configureButton(b);
 		return b;	
 	}
 
 	/** confugure a button - ensures that all have same look */
-	private void configureButton(JButton b) {
+	private void configureButton(final JButton b) {
 		b.setBorderPainted(false);
 		b.setRolloverEnabled(true);
 		//future -  make this a preference, or something.
@@ -580,12 +590,12 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 
 
 	// listens to clicks on storage folders and file list
-	public void valueChanged(ListSelectionEvent e) {
+	public void valueChanged(final ListSelectionEvent e) {
 		if (e.getValueIsAdjusting()) {
 			return;
 		}
 		if (e.getSource() == folders) {
-			StorageFolder f =  (StorageFolder)folders.getSelectedValue();
+			final StorageFolder f =  (StorageFolder)folders.getSelectedValue();
 			if (f != null) { 
 			    navigator.move(f);
 			}
@@ -593,7 +603,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	}
 
 	// listen to navigation 
-    public void moved(NavigationEvent e) {
+    public void moved(final NavigationEvent e) {
         back.setEnabled( navigator.hasPrevious());
         forward.setEnabled(navigator.hasNext());        
         goButton.enableA();
@@ -603,7 +613,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         //  notifyStorageTasks();        
         if (e instanceof BookmarkNavigationEvent) {
             bookmark.setEnabled(false);
-            StorageFolder bookmark = ((BookmarkNavigationEvent)e).getBookmark();
+            final StorageFolder bookmark = ((BookmarkNavigationEvent)e).getBookmark();
             // if this item isn't already selected, select it.
             if (! bookmark.equals(folders.getSelectedValue())) {
                 folders.setSelectedValue(bookmark,true); 
@@ -631,11 +641,11 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     }
 
     // listen to login / logout events.
-    public void userLogin(UserLoginEvent arg0) {
+    public void userLogin(final UserLoginEvent arg0) {
         // ignored.
     }
 
-    public void userLogout(UserLoginEvent arg0) {
+    public void userLogout(final UserLoginEvent arg0) {
         // clear anything that might have references to myspace, and move home.
         navigator.reset();
 
@@ -648,7 +658,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         return this.location;
     }
     
-    public void setSingleSelectionMode(boolean singleSelection) {
+    public void setSingleSelectionMode(final boolean singleSelection) {
         navigator.getModel().setSelectionMode(singleSelection ? ListSelectionModel.SINGLE_SELECTION : ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
     }
     
@@ -656,7 +666,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
      * 
      * @param m a matcher that works on FileObjects and also 'StorageFolders'
      */
-    public void installFilter(Matcher m) {
+    public void installFilter(final Matcher m) {
         navigator.getModel().installFilter(m);
         foldersListFilter.setMatcher(m);
     }

@@ -61,9 +61,10 @@ public class FilterPipelineFactory   {
 
 	private final Preference advanced;
 	private final static String SYSTEM_TOGGLE_KEY = "system.toggle.key";
-    public FilterPipelineFactory(SortedList items, PipelineStrategy[] strategies, AnnotationService annotationService, Preference advanced) {
+	private final static String SHOW_BROWSER_KEY = "show.browser";
+    public FilterPipelineFactory(final SortedList items, final PipelineStrategy[] strategies, final AnnotationService annotationService, final Preference advanced) {
 		this.advanced = advanced;
-        int pipelineSize = 3;
+        final int pipelineSize = 3;
 		
 		// system filters..
 		systemToggle = new JCheckBoxMenuItem("Show Technical System Resources",false); 
@@ -71,7 +72,7 @@ public class FilterPipelineFactory   {
 		systemFilteredItems = new FilterList(items
 				,new NotToggleMatcherEditor(systemToggle,PREFERENCES,SYSTEM_TOGGLE_KEY,new SystemFilter()));
         // incremental text field..
-		SearchField sf = new SearchField("Filter results");
+		final SearchField sf = new SearchField("Filter results");
         sf.setToolTipText("Filter list of resources using text string");
 		FilterList filteredItems = new FilterList(systemFilteredItems
 				, new TextComponentMatcherEditor(sf.getWrappedDocument(), new ResourceTextFilterator(annotationService)));
@@ -79,17 +80,17 @@ public class FilterPipelineFactory   {
 		
 		// collapsible filters.
 		filterPane = new JCollapsiblePane();
-		filterPane.setCollapsed(true);
+		filterPane.setCollapsed(PREFERENCES.getBoolean(SHOW_BROWSER_KEY,true));
 		// create the pipeline, plumbing together the various items.
 		final EventList pipeline = new BasicEventList();	
 		for (int i = 0; i < pipelineSize; i++) {
-			PipelineItem p = new PipelineItem(i,filteredItems,strategies,filterPane);
+			final PipelineItem p = new PipelineItem(i,filteredItems,strategies,filterPane);
 			pipeline.add(p);
 			filteredItems = new FilterList(filteredItems,p.getItemsMatcherEditor());
 		}
 		totallyFilteredItems = filteredItems;
 
-		JEventListPanel pipelineDisplay = new JEventListPanel(pipeline, new PipelineFormat());
+		final JEventListPanel pipelineDisplay = new JEventListPanel(pipeline, new PipelineFormat());
 		pipelineDisplay.setElementColumns(3);
 		filterPane.add(pipelineDisplay);
 		
@@ -101,7 +102,7 @@ public class FilterPipelineFactory   {
 		toggleAction.putValue(Action.SHORT_DESCRIPTION,"Filter resource list using metadata");
 		filterPane.addPropertyChangeListener("collapsed",new PropertyChangeListener() {
 
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(final PropertyChangeEvent evt) {
                 if (filterPane.isCollapsed()) {
                     toggleAction.putValue(Action.NAME,"Show Metadata Browser");
 		            toggleAction.putValue(Action.SHORT_DESCRIPTION,"Filter resource list using metadata");
@@ -109,6 +110,7 @@ public class FilterPipelineFactory   {
                     toggleAction.putValue(Action.NAME,"Hide Metadata Browser");
                     toggleAction.putValue(Action.SHORT_DESCRIPTION,"View unfiltered resource list");
                 }
+                PREFERENCES.putBoolean(SHOW_BROWSER_KEY,filterPane.isCollapsed());
             }
 		});
 		
@@ -118,7 +120,7 @@ public class FilterPipelineFactory   {
 	}
 	
 	private final EventList totallyFilteredItems;
-	private JCheckBoxMenuItem systemToggle;	
+	private final JCheckBoxMenuItem systemToggle;	
 	private final JTextField textField;
 	private final JCollapsiblePane filterPane;
 	private final JToggleButton toggleButton;
@@ -171,7 +173,8 @@ public class FilterPipelineFactory   {
 		/** create a matcher for the base list, from these items */
 		public abstract Matcher createMatcher(List selected);
 
-		public final String toString() {
+		@Override
+        public final String toString() {
 			return getName();
 		}
 		
@@ -186,13 +189,23 @@ public class FilterPipelineFactory   {
 	private static class PipelineItem extends JPanel implements ItemListener, PropertyChangeListener {
 		private final ItemSelect itemsMatcherEditor;
 
-		public PipelineItem(int ix,final EventList items, PipelineStrategy[] strategies, JCollapsiblePane parentPane) {
-			// use position ix in the strat list  as our starting strategy.
-			//@todo later load  in user's selection from preferences
-			PipelineStrategy startingStrategy = strategies[ix];
+		/** preference key foreach of  the preferred strategy */
+		private final String PREFERRED_STRATEGY_KEY;
+
+        private final JComboBox itemChooser;
+		
+		public PipelineItem(final int ix,final EventList items, final PipelineStrategy[] strategies, final JCollapsiblePane parentPane) {
+		    PREFERRED_STRATEGY_KEY = "preferred.strategy." + ix; // unique key for each of the (3) pipeline items.
+		    // see if the user has a preference of which strategy to use.
+		    int preferredIx = PREFERENCES.getInt(PREFERRED_STRATEGY_KEY,ix);
+		    if (preferredIx < 0 || preferredIx >=strategies.length) {
+		        // found nonsense, fallback.
+		        preferredIx = ix;
+		    }
+			final PipelineStrategy startingStrategy = strategies[preferredIx];
 			itemsMatcherEditor = new ItemSelect(startingStrategy,items);
 
-			final JComboBox itemChooser = new JComboBox(strategies);
+			itemChooser = new JComboBox(strategies);
 			itemChooser.addItemListener(this);
 			itemChooser.setSelectedItem(startingStrategy); // fires the event handler to initialize stuff.
 
@@ -207,11 +220,12 @@ public class FilterPipelineFactory   {
 			setPreferredSize(new Dimension(100,160));
 		}
 		/** called when a different strategy was selected - splice this into the pipeline. */
-		public void itemStateChanged(ItemEvent e) { 
+		public void itemStateChanged(final ItemEvent e) { 
 			if (e.getStateChange() == ItemEvent.SELECTED) {
-				PipelineStrategy ps = (PipelineStrategy)e.getItem();
+				final PipelineStrategy ps = (PipelineStrategy)e.getItem();
 				if (itemsMatcherEditor.getCurrentStrategy() != ps) {
 					itemsMatcherEditor.setStrategy(ps);
+					PREFERENCES.putInt(PREFERRED_STRATEGY_KEY,itemChooser.getSelectedIndex());
 				}
 			}
 		}
@@ -223,7 +237,7 @@ public class FilterPipelineFactory   {
 			return itemsMatcherEditor;
 		}
 		/** called when filter pane collapses - clears any filters */
-		public void propertyChange(PropertyChangeEvent evt) {
+		public void propertyChange(final PropertyChangeEvent evt) {
 			// reset on collapsed=true
 			if (evt.getNewValue().equals(Boolean.TRUE)) {
 				if (itemsMatcherEditor.getJList().getSelectedIndex() != -1) {
@@ -242,7 +256,7 @@ public class FilterPipelineFactory   {
 	 */
 	public static class ItemSelect extends AbstractMatcherEditor implements ListSelectionListener, Runnable {
 
-		public ItemSelect(PipelineStrategy mf, EventList items) {
+		public ItemSelect(final PipelineStrategy mf, final EventList items) {
 			this.list = new JList();
 			this.items = items;
 			setStrategy(mf);
@@ -265,10 +279,10 @@ public class FilterPipelineFactory   {
 			}
 				
 		
-		final public void setStrategy(PipelineStrategy strategy) {
+		final public void setStrategy(final PipelineStrategy strategy) {
 			this.strategy = strategy;
 			// hang onto previous values.
-			TransformedList oldView = view;
+			final TransformedList oldView = view;
 			EventListModel oldModel = null;
 			TogglingEventSelectionModel oldSelectionModel = null;
 			list.removeListSelectionListener(this); //going to get a bit 'noisy' so stop listening.
@@ -279,9 +293,9 @@ public class FilterPipelineFactory   {
 			}
 
 			view = strategy.createView(items);
-			EventList unq = new SortedList(new UniqueList(view));
-			EventListModel listModel = new EventListModel(unq);			
-			TogglingEventSelectionModel selectionModel = new TogglingEventSelectionModel(new EventSelectionModel(unq));
+			final EventList unq = new SortedList(new UniqueList(view));
+			final EventListModel listModel = new EventListModel(unq);			
+			final TogglingEventSelectionModel selectionModel = new TogglingEventSelectionModel(new EventSelectionModel(unq));
 
 			selectionModel.setSelectionMode(EventSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			this.selected = selectionModel.getSelected();
@@ -298,7 +312,7 @@ public class FilterPipelineFactory   {
 			SwingUtilities.invokeLater(this);
 		}
 		/** called when selection in list changes */
-		public void valueChanged(ListSelectionEvent e) {
+		public void valueChanged(final ListSelectionEvent e) {
 			if (e.getValueIsAdjusting()) {
 				return; // ignore these. another one will be along in a moment..
 			}
@@ -328,11 +342,12 @@ public class FilterPipelineFactory   {
 			super("0dlu, pref,4dlu","0dlu,fill:pref:grow,0dlu","4dlu","4dlu",new String[] {"2,2"}); 
 		}
 
-		public int getComponentsPerElement() {
+		@Override
+        public int getComponentsPerElement() {
 			return 1;
 		}
 
-		public JComponent getComponent(final Object element, int component) {
+		public JComponent getComponent(final Object element, final int component) {
 			return (JComponent)element;
 		}
 
@@ -361,11 +376,11 @@ public class FilterPipelineFactory   {
 	    boolean gestureStarted = false;
 	    	
 		
-		public void addListSelectionListener(ListSelectionListener arg0) {
+		public void addListSelectionListener(final ListSelectionListener arg0) {
 			this.esm.addListSelectionListener(arg0);
 		}
 
-		public void addSelectionInterval(int arg0, int arg1) {
+		public void addSelectionInterval(final int arg0, final int arg1) {
 			this.esm.addSelectionInterval(arg0, arg1);
 		}
 
@@ -374,7 +389,8 @@ public class FilterPipelineFactory   {
 		}
 
 
-		public boolean equals(Object obj) {
+		@Override
+        public boolean equals(final Object obj) {
 			return this.esm.equals(obj);
 		}
 
@@ -399,14 +415,15 @@ public class FilterPipelineFactory   {
 			return this.esm.getValueIsAdjusting();
 		}
 
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			return this.esm.hashCode();
 		}
 
-		public void insertIndexInterval(int arg0, int arg1, boolean arg2) {
+		public void insertIndexInterval(final int arg0, final int arg1, final boolean arg2) {
 			this.esm.insertIndexInterval(arg0, arg1, arg2);
 		}
-		public boolean isSelectedIndex(int arg0) {
+		public boolean isSelectedIndex(final int arg0) {
 			return this.esm.isSelectedIndex(arg0);
 		}
 
@@ -414,28 +431,28 @@ public class FilterPipelineFactory   {
 			return this.esm.isSelectionEmpty();
 		}
 
-		public void removeIndexInterval(int arg0, int arg1) {
+		public void removeIndexInterval(final int arg0, final int arg1) {
 			this.esm.removeIndexInterval(arg0, arg1);
 		}
 
-		public void removeListSelectionListener(ListSelectionListener arg0) {
+		public void removeListSelectionListener(final ListSelectionListener arg0) {
 			this.esm.removeListSelectionListener(arg0);
 		}
 
-		public void removeSelectionInterval(int arg0, int arg1) {
+		public void removeSelectionInterval(final int arg0, final int arg1) {
 			this.esm.removeSelectionInterval(arg0, arg1);
 		}
 
-		public void setAnchorSelectionIndex(int arg0) {
+		public void setAnchorSelectionIndex(final int arg0) {
 			this.esm.setAnchorSelectionIndex(arg0);
 		}
 
-		public void setLeadSelectionIndex(int arg0) {
+		public void setLeadSelectionIndex(final int arg0) {
 			this.esm.setLeadSelectionIndex(arg0);
 		}
 
 
-	    public void setSelectionInterval(int index0, int index1) {
+	    public void setSelectionInterval(final int index0, final int index1) {
 		if (isSelectedIndex(index0) && !gestureStarted) {
 		    this.esm.removeSelectionInterval(index0, index1);
 		}
@@ -445,11 +462,11 @@ public class FilterPipelineFactory   {
 		gestureStarted = true;
 	    }		
 		
-		public void setSelectionMode(int arg0) {
+		public void setSelectionMode(final int arg0) {
 			this.esm.setSelectionMode(arg0);
 		}
 
-	    public void setValueIsAdjusting(boolean isAdjusting) {
+	    public void setValueIsAdjusting(final boolean isAdjusting) {
 		if (isAdjusting == false) {
 		    gestureStarted = false;
 		}
@@ -457,7 +474,8 @@ public class FilterPipelineFactory   {
 		
 	    }			
 
-		public String toString() {
+		@Override
+        public String toString() {
 			return this.esm.toString();
 		}
 
@@ -485,7 +503,7 @@ public class FilterPipelineFactory   {
 		 * @param preferences 
 		 * @param matcher
 		 */
-		public NotToggleMatcherEditor(JCheckBoxMenuItem control, final Preferences preferences, final String key, Matcher matcher) {
+		public NotToggleMatcherEditor(final JCheckBoxMenuItem control, final Preferences preferences, final String key, final Matcher matcher) {
 		    
 			this.preferences = preferences;
             this.key = key;
@@ -502,8 +520,8 @@ public class FilterPipelineFactory   {
 
 		private final Matcher realMatcher;
 
-		public void itemStateChanged(ItemEvent e) {
-		    boolean selected = e.getStateChange() == ItemEvent.SELECTED;
+		public void itemStateChanged(final ItemEvent e) {
+		    final boolean selected = e.getStateChange() == ItemEvent.SELECTED;
 		    preferences.putBoolean(key,selected);
 			if (selected) {
 			    fireMatchAll();
