@@ -124,6 +124,7 @@ class Plastic(unittest.TestCase):
         
         import time
         self.hub.requestAsynch(myId,self.ECHO,['msg'])
+        self.assertFalse(fn.seen)
         time.sleep(5)
         self.assertTrue(fn.seen)
         fn.seen = False
