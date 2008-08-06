@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.voexplorer.strategy;
 
 import java.util.List;
 
-import org.astrogrid.desktop.modules.ui.scope.QueryResults;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.RetrieverService;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
@@ -36,10 +35,9 @@ public class ResultsStrategy extends PipelineStrategy {
     @Override
     public Matcher createMatcher(final List selected) {
         return new Matcher() {
-            private final QueryResults queryResults = services.getQueryResults();
             public boolean matches(final Object arg0) {
                 final Retriever r = ((RetrieverService)arg0).getRetriever();
-                final QueryResult result = queryResults.getResult(r);
+                final QueryResult result = services.getQueryResults().getResult(r);
                 if (result == null) {
                     return false;
                 } 
@@ -52,10 +50,9 @@ public class ResultsStrategy extends PipelineStrategy {
     public TransformedList createView(final EventList base) {
         return new FunctionList(base,
                 new FunctionList.Function() {
-            private final QueryResults queryResults = services.getQueryResults();
             public Object evaluate(final Object arg0) {
                 final Retriever r = ((RetrieverService)arg0).getRetriever();
-                final QueryResult result = queryResults.getResult(r);
+                final QueryResult result = services.getQueryResults().getResult(r);
                 if (result == null) {
                     return "Failed";
                 }
