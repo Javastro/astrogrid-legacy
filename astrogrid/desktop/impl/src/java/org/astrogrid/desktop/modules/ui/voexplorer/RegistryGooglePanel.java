@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.35 2008/07/15 23:17:33 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.36 2008/08/06 15:14:00 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -118,7 +118,6 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * Implementation of the registry-google chooser.
  * @todo implement using standard xquery
- * @todo optimize query - no //vor:resouc
  */
 public class RegistryGooglePanel extends JPanel
 implements ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
@@ -152,7 +151,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
          * @param basicList result list to take reading from in 'basic' mode.
          * @param filteredList the filtered list.
          */
-        public SearchSummaryFormatter(JLabel lab, Preference advanced, List advancedList, List basicList, List filteredList) {
+        public SearchSummaryFormatter(final JLabel lab, final Preference advanced, final List advancedList, final List basicList, final List filteredList) {
             super();
             this.lab = lab;
             this.advanced = advanced;
@@ -166,14 +165,14 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
         private List searchCountSource;
         private int searchCount = 0;
         private int filterCount = 0;
-        public void setTitle(String t) {
+        public void setTitle(final String t) {
             title = t;
             update();
         }
         
         public void recount() {
-            int f = filteredList.size();
-            int s = searchCountSource.size();
+            final int f = filteredList.size();
+            final int s = searchCountSource.size();
             if (f != filterCount || s != searchCount) {
                 filterCount = f;
                 searchCount = s;
@@ -203,7 +202,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
             lab.setText(sb.toString());
         }
         // triggered when preference changes.
-        public void propertyChange(PropertyChangeEvent evt) {
+        public void propertyChange(final PropertyChangeEvent evt) {
             if (evt.getSource() == this.advanced) {
                 if (advanced.asBoolean()) {
                     searchCountSource = advancedList;
@@ -220,7 +219,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * and caching the result */
 	private abstract class Worker extends BackgroundWorker implements ResourceConsumer {
 		
-        public Worker(UIComponent parent, String message) {
+        public Worker(final UIComponent parent, final String message) {
 			super(parent,message,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
 			fireLoadStarted();
 		}
@@ -280,7 +279,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		}
 
 		
-		protected void runQuery(String xq) throws ServiceException {
+		protected void runQuery(final String xq) throws ServiceException {
 		    // check bulk cache.
 		    reportProgress("Running query");
 		    if (bypassCache) {		        
@@ -290,7 +289,8 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		    }
 		// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
 		}
-		protected void doFinished(Object result) {
+		@Override
+        protected void doFinished(final Object result) {
 			//resourceTable.selectAll(); dislike this.
 		    if (! isInterrupted()) {
 		        parent.setProgressMax(0);
@@ -300,7 +300,8 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		    }
 			
 		}		
-		protected void doAlways() {
+		@Override
+        protected void doAlways() {
 		    // think it should fire even on interrupt.
 		   // if (! isInterrupted()) {
 		        fireLoadCompleted();
@@ -316,18 +317,19 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 		private final SRQL q;
 
-		public SRQLWorker(UIComponent parent,  SRQL q) {
+		public SRQLWorker(final UIComponent parent,  final SRQL q) {
 			super(parent, "Loading query");
 			this.q = q;	
 		}
-		public SRQLWorker(String title,UIComponent parent,  SRQL q) {
+		public SRQLWorker(final String title,final UIComponent parent,  final SRQL q) {
 			super(parent, "Loading " + title);
 			this.q = q;	
 		}
-		protected Object construct() throws Exception {   
+		@Override
+        protected Object construct() throws Exception {   
 		        reportProgress("Building Query");
 				// produce a query from the search parse tree.
-				String briefXQuery = briefXQueryBuilder.build(this.q,null);
+				final String briefXQuery = briefXQueryBuilder.build(this.q,null);
 				runQuery(briefXQuery);
 				return null;
 		}
@@ -338,16 +340,17 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 		private final String q;
 
-		public XQueryWorker(UIComponent parent, String query) {
+		public XQueryWorker(final UIComponent parent, final String query) {
 			super(parent,"Loading query");
 			this.q = query;	
 		}
-		public XQueryWorker(String title,UIComponent parent, String query) {
+		public XQueryWorker(final String title,final UIComponent parent, final String query) {
 			super(parent,"Loading " + title);
 			this.q = query;	
 		}
 		
-		protected Object construct() throws Exception {   
+		@Override
+        protected Object construct() throws Exception {   
 			runQuery(q);
 			return null;
 		}
@@ -359,18 +362,19 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 */
 	private final class ListWorker extends Worker{
 
-		public ListWorker(UIComponent parent, Collection<URI> ids) {
+		public ListWorker(final UIComponent parent, final Collection<URI> ids) {
 			super(parent, "Loading List");
 			this.ids = ids;
 		}
 		
-		public ListWorker(String title,UIComponent parent, Collection<URI> ids) {
+		public ListWorker(final String title,final UIComponent parent, final Collection<URI> ids) {
 			super(parent, "Loading " + title);
 			this.ids = ids;
 		}		
 		private final Collection<URI> ids;
 		
-		protected Object construct() throws Exception {   
+		@Override
+        protected Object construct() throws Exception {   
 		    reportProgress("Running query");
             if (bypassCache) {      
                 reg.consumeResourceListReload(ids,this);                
@@ -413,7 +417,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     private final Action expandAction;
 
 	
-	public void setPopup(JPopupMenu popup) {
+	public void setPopup(final JPopupMenu popup) {
 		resourceTable.setPopup(popup);
 	}
 
@@ -428,16 +432,16 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * @param pref controls whether to display 'advanced' features of the ui.
 	 */
 	public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg
-			,TypesafeObjectBuilder uiBuilder
-			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {
+			,final TypesafeObjectBuilder uiBuilder
+			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, final Preference advancedPreference) {
 	    this(parent,reg,uiBuilder,createDefaultViews(parent,uiBuilder)
 	        ,vm,iconFac,annServer,advancedPreference);
 	}
 	
 	/** constructor for extension that allows an alternate set of resource viewers to be provided */
     protected RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg
-            ,TypesafeObjectBuilder uiBuilder, ResourceViewer[] viewers
-            , final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {	
+            ,final TypesafeObjectBuilder uiBuilder, final ResourceViewer[] viewers
+            , final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, final Preference advancedPreference) {	
 		super();    
 		this.parent = parent;
 		this.uiBuilder = uiBuilder;
@@ -459,37 +463,22 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		edtItems.addListEventListener(this);
 		
 		// sorted view of this model . all ui component should attach to this.
-		SortedList sortedItems = new SortedList(items,new ResourceTitleComparator());
+		final SortedList sortedItems = new SortedList(items,new ResourceTitleComparator());
 		
-		PipelineStrategy[] pStrategies = new PipelineStrategy[] {
-				new SubjectsStrategy()
-				, new WavebandStrategy()
-				,new TypeStrategy()
-				, new TypesStrategy()
-				, new org.astrogrid.desktop.modules.ui.voexplorer.strategy.ServiceTypeStrategy()
-				,new UcdStrategy()
-				, new ContentLevelStrategy()
-				,new PublisherStrategy()
-				,new AuthorityStrategy()
-				,new CreatorStrategy()
-				, new CapabilityStrategy()
-				,new TagStrategy(annServer)
-				, new SourceStrategy()
-				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
-				};
-		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
+		final PipelineStrategy[] pStrategies = createPipeStrategies();
+		final FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
 		filteredItems = mPipeline.getFilteredItems();
         // item currenlty selected in table list.
 		currentResourceInView = new EventSelectionModel(filteredItems);
 		currentResourceInView.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
-		FormLayout form = new FormLayout(
+		final FormLayout form = new FormLayout(
 				"2dlu,d:grow,60dlu,0dlu,d,1dlu" // cols
 				,"d" // rows
 				);
-		PanelBuilder builder = new PanelBuilder(form);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(form);
+		final CellConstraints cc = new CellConstraints();
 
         final JLabel summaryLabel = builder.addLabel("Resources",cc.xy(2,1));
         summaryLabel.setForeground(Color.DARK_GRAY);
@@ -505,7 +494,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
         builder.add(expandButton,cc.xy(5, 1));
         this.expandAction = expandButton.getAction();
 		toolbar = builder.getPanel();
-		Box topBox = Box.createVerticalBox();
+		final Box topBox = Box.createVerticalBox();
 		this.add(topBox,BorderLayout.NORTH);
 		topBox.add(toolbar);
 		
@@ -532,19 +521,21 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
         // arrange for the column model of the table to be configurable by the user.
         resourceColumnModel = createResourceColumnModel(tableFormat.getDefaultColumns(),resourceTable);
         resourceTable.setColumnModel(resourceColumnModel);
-        Action colsAct = new AbstractAction(null, IconHelper.loadIcon("configure14.png")) {
+        final Action colsAct = new AbstractAction(null, IconHelper.loadIcon("configure14.png")) {
             final JPopupMenu colMenu = createColumnsMenu("").getPopupMenu();
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(final ActionEvent evt) {
                 colMenu.show((Component) evt.getSource(), 0, 0);
             }
         };
         tableScroller.setCorner(JScrollPane.UPPER_RIGHT_CORNER, new JButton(colsAct));
         tableScroller.setMinimumSize(new Dimension(50,100));
         resourceColumnModel.addColumnModelListener(new TableColumnModelAdapter() {
-            public void columnAdded(TableColumnModelEvent evt) {
+            @Override
+            public void columnAdded(final TableColumnModelEvent evt) {
                 adjustScrolling();
             }
-            public void columnRemoved(TableColumnModelEvent evt) {
+            @Override
+            public void columnRemoved(final TableColumnModelEvent evt) {
                 adjustScrolling();
             }
         });
@@ -567,7 +558,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 			    // using an internal class here, as registryGooglePanel already implements 
 			    // change listener, and there's no easy way to distinguish between the different emitters.
 			    ((EditableResourceViewer)resourceViewers[i]).addChangeListener(new ChangeListener(){
-			        public void stateChanged(ChangeEvent e) {
+			        public void stateChanged(final ChangeEvent e) {
 			            resourceTableModel.fireTableRowsUpdated(
 			                    currentResourceInView.getMinSelectionIndex()
 			                    ,currentResourceInView.getMaxSelectionIndex()
@@ -577,7 +568,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 			}
 		}	
 		// stitch middle and bottom together.
-		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,tableScroller,tabPane);
+		final JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,tableScroller,tabPane);
 		split.setResizeWeight(1.0); // all goes to the top. necessary for appearing filterwheels to work correctly		
 		split.setDividerLocation(250);
 		split.setDividerSize(6);
@@ -585,8 +576,31 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		add(split,BorderLayout.CENTER);		
 	}
 
+    /** override to specify a different set of filterwheels.
+     * @param annServer
+     * @return
+     */
+    protected PipelineStrategy[] createPipeStrategies() {
+        return new PipelineStrategy[] {
+				new SubjectsStrategy()
+				, new WavebandStrategy()
+				,new TypeStrategy()
+				, new TypesStrategy()
+				, new org.astrogrid.desktop.modules.ui.voexplorer.strategy.ServiceTypeStrategy()
+				,new UcdStrategy()
+				, new ContentLevelStrategy()
+				,new PublisherStrategy()
+				,new AuthorityStrategy()
+				,new CreatorStrategy()
+				, new CapabilityStrategy()
+				,new TagStrategy(annServer)
+				, new SourceStrategy()
+				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
+				};
+    }
+
 	/** create a default set of resource views */
-	protected static ResourceViewer[] createDefaultViews(UIComponent parent,TypesafeObjectBuilder uiBuilder) {
+	protected static ResourceViewer[] createDefaultViews(final UIComponent parent,final TypesafeObjectBuilder uiBuilder) {
 		return new ResourceViewer[] {
 		        uiBuilder.createAnnotatedResourceView()
 		        ,uiBuilder.createTableResourceView()
@@ -612,7 +626,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
      * @param  resourceTable  table whose columns are to be controlled
      * @return   new column model which can be used with <code>resourceTable</code>
      */
-    private ResettableAdjustableColumnModel createResourceColumnModel(String[] defaultColNames,JTable resourceTable) {
+    private ResettableAdjustableColumnModel createResourceColumnModel(final String[] defaultColNames,final JTable resourceTable) {
         final ResettableAdjustableColumnModel colModel = 
             new ResettableAdjustableColumnModel(
                     resourceTable.getColumnModel()
@@ -622,23 +636,26 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
         // initialise visible column list with persisted value from prefs
         final Preferences prefs = Preferences.userNodeForPackage(this.getClass()); //NWW find the class name dynamically, so subclasses have their own preferences.
-        String colNameList = prefs.get(COLUMNS_KEY, null);
-        String[] colNames = colNameList == null ? defaultColNames
+        final String colNameList = prefs.get(COLUMNS_KEY, null);
+        final String[] colNames = colNameList == null ? defaultColNames
                                                 : colNameList.split("\t");
         if (! colModel.setVisibleColumnsByName(colNames)) {
-            boolean ok = colModel.setVisibleColumnsByName(defaultColNames);
+            final boolean ok = colModel.setVisibleColumnsByName(defaultColNames);
             assert ok;
         }
 
         // write subsequent changes to visible list to prefs
         colModel.addColumnModelListener(new TableColumnModelAdapter() {
-            public void columnAdded(TableColumnModelEvent evt) {
+            @Override
+            public void columnAdded(final TableColumnModelEvent evt) {
                 saveState();
             }
-            public void columnMoved(TableColumnModelEvent evt) {
+            @Override
+            public void columnMoved(final TableColumnModelEvent evt) {
                 saveState();
             }
-            public void columnRemoved(TableColumnModelEvent evt) {
+            @Override
+            public void columnRemoved(final TableColumnModelEvent evt) {
                 saveState();
             }
             private void saveState() {
@@ -652,7 +669,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     private static class ResettableAdjustableColumnModel extends AdjustableColumnModel {
         private final String[] defaultColNames;
         public ResettableAdjustableColumnModel(
-                TableColumnModel baseColumnModel, TableModel tableModel,String[] defaultColNames) {
+                final TableColumnModel baseColumnModel, final TableModel tableModel,final String[] defaultColNames) {
             super(baseColumnModel, tableModel);
             this.defaultColNames = defaultColNames;
         }
@@ -663,7 +680,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     }
 	
 	/** called to create the central table - may be overridden by subclasses */
-	protected ResourceTable createTable(EventTableModel model,EventList list) {
+	protected ResourceTable createTable(final EventTableModel model,final EventList list) {
 		return new ResourceTable(model,list,vomon);
 	}
 
@@ -671,17 +688,17 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     private void adjustScrolling() {
         int prefWidth = 0;
         for (int ic = 0; ic < resourceColumnModel.getColumnCount(); ic++ ) {
-            TableColumn tcol = resourceColumnModel.getColumn(ic);
+            final TableColumn tcol = resourceColumnModel.getColumn(ic);
             prefWidth += Math.max(tcol.getPreferredWidth(), tcol.getWidth());
         }
-        boolean hscroll = prefWidth > tableScroller.getWidth();
+        final boolean hscroll = prefWidth > tableScroller.getWidth();
         resourceTable.setAutoResizeMode(hscroll ? JTable.AUTO_RESIZE_OFF : JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
     }
 
 // view updating methods	
 
 	/** triggered when resource list contents change - glazeed lists will always call this on the EDT*/
-	public void listChanged(ListEvent arg0) {
+	public void listChanged(final ListEvent arg0) {
 		while(arg0.next()) { // I assume this is the correct pattern
 			if (arg0.getType() == ListEvent.DELETE) {// delete is only ever a clear.
 				for (int i = 0; i < resourceViewers.length; i++) {
@@ -694,7 +711,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 	}
 	/** triggered when contents of table change */
-	public void tableChanged(TableModelEvent e) {
+	public void tableChanged(final TableModelEvent e) {
 		if (e.getType() != TableModelEvent.UPDATE) { // only interested in add or delete events.
 		    summary.recount();
 			final int viewSize = resourceTableModel.getRowCount();
@@ -706,30 +723,30 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}
 	
 	/** trigger when which reosurce is selected changes */
-	public void valueChanged(ListSelectionEvent e) {
+	public void valueChanged(final ListSelectionEvent e) {
 		if (e.getValueIsAdjusting()) {
 			return;
 		}
 		updateViewers();
 	}
 	/** triggered when selected tab changes */
-	public void stateChanged(ChangeEvent evt) {
+	public void stateChanged(final ChangeEvent evt) {
 	        currentlyDisplaying = null; // view has changed, so need to re-render.
 	        updateViewers();
 	}
 	protected Resource currentlyDisplaying;// tries to make things idempotent.
 	/** controller that takes care of displayng the current resource in the currently visible viewer */
 	protected void updateViewers() {
-		List l  = currentResourceInView.getSelected();
+		final List l  = currentResourceInView.getSelected();
 		if (l.isEmpty()) {
 			return;
 		}
-		Resource res = (Resource)l.get(0); //@todo make this work nicely when I've got a multiple selection going on - want to show latest selection.
+		final Resource res = (Resource)l.get(0); //@todo make this work nicely when I've got a multiple selection going on - want to show latest selection.
 		if (res == currentlyDisplaying) { // list has changed, but selected item is the same.
 			return;
 		}
 		currentlyDisplaying = res;
-		int ix = tabPane.getSelectedIndex();
+		final int ix = tabPane.getSelectedIndex();
 		if (ix > -1) {
 			resourceViewers[ix].display(res);
 		}
@@ -775,15 +792,15 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
      * @param   name   menu name
      * @return   new menu giving column visiblity options
      */
-    public JMenu createColumnsMenu(String name) {
-        CheckBoxMenu menu = resourceColumnModel.makeCheckBoxMenu(name);
+    public JMenu createColumnsMenu(final String name) {
+        final CheckBoxMenu menu = resourceColumnModel.makeCheckBoxMenu(name);
         menu.insertAction(new AbstractAction("Show Defaults") {
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(final ActionEvent evt) {
                 resourceColumnModel.reset();
             }
         });
         menu.insertAction(new AbstractAction("Show All") {
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(final ActionEvent evt) {
                 resourceColumnModel.setAllVisible();
             }
         });
@@ -797,12 +814,12 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}
 	
 	/** set scope to just display this list of resources */
-	public void displayIdSet(Collection<URI> idList) {
+	public void displayIdSet(final Collection<URI> idList) {
 	    summary.setTitle("ID Set");
 		(new ListWorker(parent,idList)).start();		
 	}
 	
-	public void displayIdSet(String title,Collection<URI> idList) {
+	public void displayIdSet(final String title,final Collection<URI> idList) {
 	    summary.setTitle(title);
 		(new ListWorker(title,parent,idList)).start();		
 	}
@@ -811,21 +828,21 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	/** set scope to display results of this query
 	 * @param query - an xquery
 	 */
-	public void displayQuery(String query) {	
+	public void displayQuery(final String query) {	
 	    summary.setTitle("XQuery");
 		(new XQueryWorker(parent,query)).start();
 	}
 	
-	public void displayQuery(String title,String query) {
+	public void displayQuery(final String title,final String query) {
         summary.setTitle(title);	
 		(new XQueryWorker(title,parent,query)).start();
 	}	
 	
-	public void displayQuery(SRQL query) {
+	public void displayQuery(final SRQL query) {
 	    summary.setTitle("Query");
 		(new SRQLWorker(parent,query)).start();
 	}
-	public void displayQuery(String title,SRQL query) {
+	public void displayQuery(final String title,final SRQL query) {
         summary.setTitle(title);		
 		(new SRQLWorker(title,parent,query)).start();
 	}
@@ -833,7 +850,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	
 	/** set whether user is permitted to select multiple resources 
 	 * @param multiple if true, multiple selection is permitted.*/
-	public void setMultipleResources(boolean multiple) {
+	public void setMultipleResources(final boolean multiple) {
 	    resourceTable.setSelectionMode(
 	            multiple ? ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE
 	                    : ListSelectionModel.SINGLE_SELECTION
@@ -846,24 +863,25 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}
 
 	// event notification for loading.
-	public void addLoadListener(LoadListener l) {
+	public void addLoadListener(final LoadListener l) {
 		listenerList.add(LoadListener.class,l);
 	}
-	public void removeLoadListener(LoadListener l) {
+	public void removeLoadListener(final LoadListener l) {
 		listenerList.remove(LoadListener.class,l);
 	}
 
 	protected void fireLoadStarted() {
 		clear();
-		      Object[] listeners = listenerList.getListenerList();
+		      final Object[] listeners = listenerList.getListenerList();
 		      // Process the listeners last to first, notifying
 		      // those that are interested in this event
 		      LoadEvent loadEvent = null;
 		      for (int i = listeners.length-2; i>=0; i-=2) {
 		          if (listeners[i]==LoadListener.class) {
 		              // Lazily create the event:
-		              if (loadEvent == null)
-		                  loadEvent = new LoadEvent(this);
+		              if (loadEvent == null) {
+                        loadEvent = new LoadEvent(this);
+                    }
 		              ((LoadListener)listeners[i+1]).loadStarted(loadEvent);
 		          }
 		      }		
@@ -871,15 +889,16 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	
 	protected void fireLoadCompleted() {
 	    bypassCache = false;
-	      Object[] listeners = listenerList.getListenerList();
+	      final Object[] listeners = listenerList.getListenerList();
 	      // Process the listeners last to first, notifying
 	      // those that are interested in this event
 	      LoadEvent loadEvent = null;
 	      for (int i = listeners.length-2; i>=0; i-=2) {
 	          if (listeners[i]==LoadListener.class) {
 	              // Lazily create the event:
-	              if (loadEvent == null)
-	                  loadEvent = new LoadEvent(this);
+	              if (loadEvent == null) {
+                    loadEvent = new LoadEvent(this);
+                }
 	              ((LoadListener)listeners[i+1]).loadCompleted(loadEvent);
 	          }
 	      }			
@@ -892,7 +911,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	
 	public static class LoadEvent extends EventObject {
 		
-		public LoadEvent(Object source) {
+		public LoadEvent(final Object source) {
 			super(source);
 		}
 	}
@@ -914,6 +933,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.36  2008/08/06 15:14:00  nw
+added results filterwheel to astroscope services table.
+
 Revision 1.35  2008/07/15 23:17:33  nw
 Complete - task 428: optimize srql translator output
 

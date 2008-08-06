@@ -28,6 +28,8 @@ import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
+import org.astrogrid.desktop.modules.ui.voexplorer.strategy.ResultsStrategy;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
@@ -64,6 +66,17 @@ public class ScopeServicesList extends RegistryGooglePanel
 		summary.setTitle("Query Results");
 		CSH.setHelpIDString(this,"scope.viz.services");
 	} 
+	
+	/** exteded to add a new strategy for filtering on results. */
+	@Override
+	protected PipelineStrategy[] createPipeStrategies() {
+	    
+	    final PipelineStrategy[] supers =  super.createPipeStrategies();
+	    final PipelineStrategy[] more = new PipelineStrategy[supers.length + 1];
+	    System.arraycopy(supers,0,more,0,supers.length);
+	    more[more.length-1] = new ResultsStrategy(this);
+	    return more;	                                                   
+	}
 
 	protected static  ResourceViewer[] createServicesListViews(final AstroScopeLauncherImpl parent, final TypesafeObjectBuilder uiBuilder, final ActivitiesManager acts) {
 	    return (ResourceViewer[])ArrayUtils.addAll(

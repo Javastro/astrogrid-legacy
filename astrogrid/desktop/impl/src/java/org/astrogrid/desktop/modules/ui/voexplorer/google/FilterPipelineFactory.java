@@ -61,7 +61,7 @@ public class FilterPipelineFactory   {
 
 	private final Preference advanced;
 	private final static String SYSTEM_TOGGLE_KEY = "system.toggle.key";
-	private final static String SHOW_BROWSER_KEY = "show.browser";
+	private final static String SHOW_BROWSER_KEY = "show.browser.";
     public FilterPipelineFactory(final SortedList items, final PipelineStrategy[] strategies, final AnnotationService annotationService, final Preference advanced) {
 		this.advanced = advanced;
         final int pipelineSize = 3;
@@ -80,7 +80,8 @@ public class FilterPipelineFactory   {
 		
 		// collapsible filters.
 		filterPane = new JCollapsiblePane();
-		filterPane.setCollapsed(PREFERENCES.getBoolean(SHOW_BROWSER_KEY,true));
+		// append the length of the strategies, so we get 2 keys -one for voexplorer, one for astroscope services view.
+		filterPane.setCollapsed(PREFERENCES.getBoolean(SHOW_BROWSER_KEY + strategies.length,true));
 		// create the pipeline, plumbing together the various items.
 		final EventList pipeline = new BasicEventList();	
 		for (int i = 0; i < pipelineSize; i++) {
@@ -110,7 +111,8 @@ public class FilterPipelineFactory   {
                     toggleAction.putValue(Action.NAME,"Hide Metadata Browser");
                     toggleAction.putValue(Action.SHORT_DESCRIPTION,"View unfiltered resource list");
                 }
-                PREFERENCES.putBoolean(SHOW_BROWSER_KEY,filterPane.isCollapsed());
+                
+                PREFERENCES.putBoolean(SHOW_BROWSER_KEY + strategies.length,filterPane.isCollapsed());
             }
 		});
 		
@@ -195,7 +197,12 @@ public class FilterPipelineFactory   {
         private final JComboBox itemChooser;
 		
 		public PipelineItem(final int ix,final EventList items, final PipelineStrategy[] strategies, final JCollapsiblePane parentPane) {
-		    PREFERRED_STRATEGY_KEY = "preferred.strategy." + ix; // unique key for each of the (3) pipeline items.
+		    PREFERRED_STRATEGY_KEY = "preferred.strategy."
+		        + strategies.length //make this key unique to different arrays of strategies
+		        // or at least different by length - which is enough to differentiate between
+		        // voexplorer, and the embedded version within astroscope.
+		        + "."
+		        + ix ; // unique key for each of the (3) pipeline items.
 		    // see if the user has a preference of which strategy to use.
 		    int preferredIx = PREFERENCES.getInt(PREFERRED_STRATEGY_KEY,ix);
 		    if (preferredIx < 0 || preferredIx >=strategies.length) {

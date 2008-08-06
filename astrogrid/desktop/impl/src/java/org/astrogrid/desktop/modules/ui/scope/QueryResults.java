@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.vfs.FileObject;
+
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** class that keeps a summary of the query result of each retriever
@@ -13,10 +14,10 @@ public final class QueryResults {
     private final Map m = new HashMap();
     private final Map nodeMap = new HashMap();
     
-    public QueryResults.QueryResult getResult(Retriever r) {
+    public QueryResults.QueryResult getResult(final Retriever r) {
         return (QueryResults.QueryResult) m.get(r);
     }
-    void addResult(QueryResults.QueryResult qr) {
+    void addResult(final QueryResults.QueryResult qr) {
         if (qr == null) {
             throw new IllegalArgumentException("null query result");
         }
@@ -29,8 +30,8 @@ public final class QueryResults {
     }
     
     /** for a given retriever, find the associated tree node, if any */
-    public TreeNode findTreeNode(Retriever r) {
-        QueryResults.QueryResult result = getResult(r);
+    public TreeNode findTreeNode(final Retriever r) {
+        final QueryResults.QueryResult result = getResult(r);
         if (result != null) {
             return result.node;
         } else {
@@ -39,14 +40,14 @@ public final class QueryResults {
         }
     }
     /** for a given tree node, find the associated retriever */
-    public Retriever findRetriever(TreeNode t) {
+    public Retriever findRetriever(final TreeNode t) {
         return (Retriever)nodeMap.get(t);
     }
     /** associate a node with a query result.
      * @param qr
      * @param serviceNode
      */
-    public void associateNode(QueryResults.QueryResult qr, TreeNode node) {
+    public void associateNode(final QueryResults.QueryResult qr, final TreeNode node) {
         if (qr == null) {
             throw new IllegalArgumentException("null query result");
         }
@@ -62,7 +63,7 @@ public final class QueryResults {
     }
 /** structure representing a single query result */
 public static final class QueryResult {
-    public QueryResult(Retriever r,FileObject resultsDir) {
+    public QueryResult(final Retriever r,final FileObject resultsDir) {
         this.retriever = r;
         this.resultsDir = resultsDir;
     }
@@ -86,7 +87,26 @@ public static final class QueryResult {
            return count;
        }
    }
+
+/** helper method to format the result count for the results filterwheel. */
+public Object getSummarizedResultCount() {
+    if (error != null || count == null) {
+        return "Failed";             
+    } else {
+        switch(count.intValue()) {
+            case -1:
+                return "Pending";
+            case 0:
+                return "No results";
+            default:
+                return "Results";
+        }
+    }
+    
 }
+}
+
+
    /** constant for result count of a service that has not yet been queried */
    public static final Integer PENDING = new Integer(-1);
 }
