@@ -30,7 +30,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 public class SiapRetrieval extends AbstractRetriever {
 
 
-    public SiapRetrieval(Service service, SiapCapability cap, URI acurl, NodeSocket socket,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
+    public SiapRetrieval(final Service service, final SiapCapability cap, final URI acurl, final NodeSocket socket,final VizModel model, final Siap siap,final double ra, final double dec, final double raSize,final double decSize)  {
         super(service,cap,socket,model,ra,dec);
         this.accessUrl = acurl;
         this.raSize = raSize;
@@ -41,13 +41,14 @@ public class SiapRetrieval extends AbstractRetriever {
     private final double raSize;
     private final double decSize;
     private final Siap siap;
+    @Override
     protected Object construct() throws Exception{
         reportProgress("Constructing query");        
-            URL siapURL = siap.constructQueryS(accessUrl, ra, dec,raSize,decSize);
-            StringBuffer sb = new StringBuffer();
+            final URL siapURL = siap.constructQueryS(accessUrl, ra, dec,raSize,decSize);
+            final StringBuffer sb = new StringBuffer();
             sb.append("<html>Title: ").append(service.getTitle())
                 .append("<br>ID: ").append(service.getId());
-            String subName = getSubName();
+            final String subName = getSubName();
             if (subName != null && subName.trim().length() > 0) {
                 sb.append(" - ").append(subName);
             }
@@ -56,18 +57,18 @@ public class SiapRetrieval extends AbstractRetriever {
 //                .append(service.getContent().getDescription()!= null 
 //                			?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
 //            }
-            String serviceType = ((SiapService)service).findSiapCapability().getImageServiceType();
+            final String serviceType = ((SiapService)service).findSiapCapability().getImageServiceType();
             if (StringUtils.isNotEmpty(serviceType) ){
                 sb.append("</p><br>Service Type: ").append(serviceType);
             }
-            sb.append("</html>");
+            //sb.append("</html>");
                   
             // build subtree for this service
             reportProgress("Querying service");
             final MonitoringInputStream monitorStream = MonitoringInputStream.create(this,siapURL,MonitoringInputStream.ONE_KB );
-            TreeNode serviceNode = createServiceNode(siapURL,monitorStream.getSize(),sb.toString());
-            InputSource source = new InputSource(monitorStream);
-            AstroscopeTableHandler th = new SiapTableHandler(serviceNode);
+            final TreeNode serviceNode = createServiceNode(siapURL,monitorStream.getSize(),sb.toString());
+            final InputSource source = new InputSource(monitorStream);
+            final AstroscopeTableHandler th = new SiapTableHandler(serviceNode);
             parseTable(source, th);
             return th;           
     }
@@ -79,7 +80,7 @@ public class SiapRetrieval extends AbstractRetriever {
     public class SiapTableHandler extends BasicTableHandler {
 
 
-        public SiapTableHandler(TreeNode serviceNode) {
+        public SiapTableHandler(final TreeNode serviceNode) {
             super(serviceNode);
         }
         int imgCol = -1;
@@ -90,18 +91,21 @@ public class SiapRetrieval extends AbstractRetriever {
         private boolean skipNextTable = false;
         private boolean resultsTableParsed = false;
         
-        public void resource(String name, String id, String type)
+        @Override
+        public void resource(final String name, final String id, final String type)
                 throws SAXException {
             skipNextTable = ! "results".equals(type);
         }
         
-        public void startTable(StarTable starTable) throws SAXException {
+        @Override
+        public void startTable(final StarTable starTable) throws SAXException {
             if (skipNextTable || resultsTableParsed) {
                 return;
             }
                 super.startTable(starTable);
         }
-        public void rowData(Object[] row) throws SAXException {
+        @Override
+        public void rowData(final Object[] row) throws SAXException {
             if (skipNextTable || resultsTableParsed) {
                 return;
             }
@@ -110,8 +114,9 @@ public class SiapRetrieval extends AbstractRetriever {
         }
        
         
-        protected void startTableExtensionPoint(int col,ColumnInfo columnInfo) {
-            String ucd = columnInfo.getUCD();
+        @Override
+        protected void startTableExtensionPoint(final int col,final ColumnInfo columnInfo) {
+            final String ucd = columnInfo.getUCD();
             if (ucd == null) {
                 return;
             }
@@ -128,19 +133,21 @@ public class SiapRetrieval extends AbstractRetriever {
         } 
      }
         
-        protected boolean omitRowFromTooltip(int rowIndex) {
+        @Override
+        protected boolean omitRowFromTooltip(final int rowIndex) {
             return rowIndex ==dataLinkCol || rowIndex == imgCol;
         }
         
-        protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
+        @Override
+        protected void rowDataExtensionPoint(final Object[] row, final TreeNode valNode) {
             try {
-                URL imgURL = new URL(safeTrim(row[imgCol]));
+                final URL imgURL = new URL(safeTrim(row[imgCol]));
                 valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL.toString());
 
                 long size;
                 try {
                     size = Long.parseLong(safeTrim(row[sizeCol])) ;
-                } catch (Throwable t) { // not found, or can't parse
+                } catch (final Throwable t) { // not found, or can't parse
                     size = AstroscopeFileObject.UNKNOWN_SIZE;
                 }
 
@@ -151,7 +158,7 @@ public class SiapRetrieval extends AbstractRetriever {
                     title  = "untitled";
                 }
                 
-                String type = safeTrim(row[formatCol]);
+                final String type = safeTrim(row[formatCol]);
                 valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
 
                 valNode.setAttribute(LABEL_ATTRIBUTE
@@ -161,8 +168,8 @@ public class SiapRetrieval extends AbstractRetriever {
                               ? "unknown size"
                               : FileUtils.byteCountToDisplaySize(size)));
                 try {
-                    long date = new Date().getTime(); //@fixme work out this 
-                    AstroscopeFileObject fileObject = model.createFileObject(imgURL
+                    final long date = new Date().getTime(); //@fixme work out this 
+                    final AstroscopeFileObject fileObject = model.createFileObject(imgURL
                             ,size
                             ,date
                             ,StringUtils.containsIgnoreCase(type,"fits") ? VoDataFlavour.MIME_FITS_IMAGE : type
@@ -172,20 +179,22 @@ public class SiapRetrieval extends AbstractRetriever {
                     filenameBuilder.append(".");
                     filenameBuilder.append(StringUtils.substringAfterLast(type,"/"));
                     model.addResultFor(SiapRetrieval.this,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);
-                } catch (FileSystemException e) {
+                } catch (final FileSystemException e) {
                     logger.warn(service.getId() + " : Unable to create result file object - skipping row ",e);
                 }
-            } catch(MalformedURLException e) {
+            } catch(final MalformedURLException e) {
                 logger.warn(service.getId() + " : Unable to parse url in service response - skipping row",e);
             }
         }        
 
         private final StrBuilder filenameBuilder = new StrBuilder(64);
         
-	public DefaultTreeNode createValueNode() {
+	@Override
+    public DefaultTreeNode createValueNode() {
 	    return new FileProducingTreeNode();
 	}
         
+    @Override
     protected boolean isWorthProceeding() {
     	if (imgCol == -1) {// maybe it's a non-standard service - give it a second chance.
     		imgCol = dataLinkCol;
@@ -194,6 +203,7 @@ public class SiapRetrieval extends AbstractRetriever {
     }  
     
     // extended - resets our new variables too.
+    @Override
     public void endTable() throws SAXException {
         if (skipNextTable || resultsTableParsed) {
             return;
@@ -211,6 +221,7 @@ public class SiapRetrieval extends AbstractRetriever {
         
     } // end table handler class.
 
+    @Override
     public String getServiceType() {
         return SIAP;
     }

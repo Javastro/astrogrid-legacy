@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.21 2008/04/25 08:59:36 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.22 2008/08/06 18:54:47 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,28 +10,22 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
-import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -47,7 +41,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @TEST
  */
 public class SsapRetrieval extends AbstractRetriever {
-    public SsapRetrieval(Service service,SsapCapability cap,URI acurl,NodeSocket socket,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
+    public SsapRetrieval(final Service service,final SsapCapability cap,final URI acurl,final NodeSocket socket,final VizModel model,final Ssap ssap,final double ra,final double dec,final double raSize, final double decSize) {
         super(service,cap,socket,model,ra,dec);
         this.accessUrl = acurl;
         this.ssap = ssap;
@@ -58,13 +52,14 @@ public class SsapRetrieval extends AbstractRetriever {
     protected final URI accessUrl;
     protected final double raSize;
     protected final double decSize;
+    @Override
     protected Object construct() throws Exception {
         reportProgress("Constructing query");        
-        URL ssapURL =  ssap.constructQueryS(accessUrl,ra,dec,raSize,decSize);
-        StringBuffer sb = new StringBuffer();
+        final URL ssapURL =  ssap.constructQueryS(accessUrl,ra,dec,raSize,decSize);
+        final StringBuffer sb = new StringBuffer();
         sb.append("<html>Title: ").append(service.getTitle())
             .append("<br>ID: ").append(service.getId());
-        String subName = getSubName();
+        final String subName = getSubName();
         if (subName != null && subName.trim().length() > 0) {
             sb.append(" - ").append(subName);
         }
@@ -73,15 +68,15 @@ public class SsapRetrieval extends AbstractRetriever {
 //                .append(service.getContent().getDescription()!= null 
 //                			?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
 //            }
-                sb.append("</html>"); 
+          //      sb.append("</html>"); 
         // build subtree for this service
                 reportProgress("Querying service");
         final MonitoringInputStream monitorStream = MonitoringInputStream.create(this,ssapURL,MonitoringInputStream.ONE_KB );
-        TreeNode serviceNode = createServiceNode(ssapURL
+        final TreeNode serviceNode = createServiceNode(ssapURL
                 ,monitorStream.getSize()
                 ,sb.toString());
-        InputSource source = new InputSource(monitorStream);
-        AstroscopeTableHandler th = new SsapTableHandler(serviceNode);
+        final InputSource source = new InputSource(monitorStream);
+        final AstroscopeTableHandler th = new SsapTableHandler(serviceNode);
         parseTable(source, th); 
         return th;                 
     }
@@ -114,7 +109,7 @@ public class SsapRetrieval extends AbstractRetriever {
     public class SsapTableHandler extends BasicTableHandler {
 
 
-        public SsapTableHandler(TreeNode serviceNode) {
+        public SsapTableHandler(final TreeNode serviceNode) {
             super(serviceNode);
         }
         int urlCol = -1;
@@ -132,18 +127,21 @@ public class SsapRetrieval extends AbstractRetriever {
         private boolean resultsTableParsed = false;
         
 
-        public void resource(String name, String id, String type)
+        @Override
+        public void resource(final String name, final String id, final String type)
                 throws SAXException {
             skipNextTable = ! "results".equals(type);
         }
         
-        public void startTable(StarTable starTable) throws SAXException {
+        @Override
+        public void startTable(final StarTable starTable) throws SAXException {
             if (skipNextTable || resultsTableParsed) {
                 return;
             }
                 super.startTable(starTable);
         }
-        public void rowData(Object[] row) throws SAXException {
+        @Override
+        public void rowData(final Object[] row) throws SAXException {
             if (skipNextTable || resultsTableParsed) {
                 return;
             }
@@ -152,11 +150,12 @@ public class SsapRetrieval extends AbstractRetriever {
         }
        
         
-        protected void startTableExtensionPoint(int col, ColumnInfo columnInfo) {            
+        @Override
+        protected void startTableExtensionPoint(final int col, final ColumnInfo columnInfo) {            
             super.startTableExtensionPoint(col, columnInfo);
-            DescribedValue utypeDV = columnInfo.getAuxDatumByName("utype");
+            final DescribedValue utypeDV = columnInfo.getAuxDatumByName("utype");
             if (utypeDV != null) {
-                String utype = utypeDV.getValueAsString(300);
+                final String utype = utypeDV.getValueAsString(300);
                 if (StringUtils.isNotBlank(utype)) {
                     // use 'contains' as they sometimes seem to come with a 'ssa:' prefix
                     if (StringUtils.containsIgnoreCase(utype,SPECTRA_URL_UTYPE)) {
@@ -174,7 +173,7 @@ public class SsapRetrieval extends AbstractRetriever {
                     return;
                 }
             }
-            String ucd  = columnInfo.getUCD();
+            final String ucd  = columnInfo.getUCD();
             if (StringUtils.isBlank(ucd)) {
                 return;
             }
@@ -201,9 +200,10 @@ public class SsapRetrieval extends AbstractRetriever {
             }
         }
         
-        protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
+        @Override
+        protected void rowDataExtensionPoint(final Object[] row, final TreeNode valNode) {
             try {
-                URL url = new URL(safeTrim(row[urlCol]));
+                final URL url = new URL(safeTrim(row[urlCol]));
                 valNode.setAttribute(SPECTRA_URL_ATTRIBUTE,url.toString());
 
                 String title;
@@ -233,11 +233,11 @@ public class SsapRetrieval extends AbstractRetriever {
                 }
                 
                 if (spectrumScaleqCol > -1) {                 
-                    StrBuilder sb = new StrBuilder();
-                    Object o = row[spectrumScaleqCol];
+                    final StrBuilder sb = new StrBuilder();
+                    final Object o = row[spectrumScaleqCol];
                     // sometimes seems to be a string, sometimes a double array
                     if (o.getClass().isArray() && o.getClass().getComponentType() == Double.TYPE) {
-                        double[] is = (double[]) o;
+                        final double[] is = (double[]) o;
                         for (int i = 0; i < is.length ; i++) {
                             sb.append(is[i]);
                             sb.append(" ");
@@ -273,7 +273,7 @@ public class SsapRetrieval extends AbstractRetriever {
                         parse = new Date();
                     }
                     
-                    AstroscopeFileObject fileObject = model.createFileObject(url
+                    final AstroscopeFileObject fileObject = model.createFileObject(url
                             ,AstroscopeFileObject.UNKNOWN_SIZE
                             ,parse.getTime()
                             ,StringUtils.containsIgnoreCase(type,"fits") ? VoDataFlavour.MIME_FITS_SPECTRUM : type
@@ -281,7 +281,7 @@ public class SsapRetrieval extends AbstractRetriever {
                     filenameBuilder.clear();
                     filenameBuilder.append(StringUtils.replace(title,"/","_"));
                     if (obsIdCol != -1) {
-                        Object o = row[obsIdCol];
+                        final Object o = row[obsIdCol];
                         if (o != null) {
                             filenameBuilder.append(" (")
                             .append(StringUtils.replace(o.toString(),"/","_"))
@@ -291,10 +291,10 @@ public class SsapRetrieval extends AbstractRetriever {
                     filenameBuilder.append(".");
                     filenameBuilder.append(StringUtils.substringAfterLast(type,"/"));
                     model.addResultFor(SsapRetrieval.this,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);                    
-                } catch (FileSystemException e) {
+                } catch (final FileSystemException e) {
                     logger.warn(service.getId() + " : Unable to create result file object - skipping row",e);
                 }
-            }catch (MalformedURLException e) {
+            }catch (final MalformedURLException e) {
                 logger.warn(service.getId() + " : Unable to parse url in service response - skipping row",e);
             }
         }
@@ -306,14 +306,17 @@ public class SsapRetrieval extends AbstractRetriever {
         private final DateFormat dfA = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         private final DateFormat dfB = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 
-    	public DefaultTreeNode createValueNode() {
+    	@Override
+        public DefaultTreeNode createValueNode() {
     	    return new FileProducingTreeNode();
    	}        
     	
-    	protected boolean omitRowFromTooltip(int rowIndex) {
+    	@Override
+        protected boolean omitRowFromTooltip(final int rowIndex) {
     	    return rowIndex == urlCol;
     	}
         
+        @Override
         protected boolean isWorthProceeding() {
             return super.isWorthProceeding() && urlCol >= 0; // minimal subset of stuff.
         }
@@ -331,6 +334,7 @@ public class SsapRetrieval extends AbstractRetriever {
                 //@todo should I require units too?
         } */       
         
+        @Override
         public void endTable() throws SAXException {
             if (skipNextTable || resultsTableParsed) {
                 return;
@@ -347,6 +351,7 @@ public class SsapRetrieval extends AbstractRetriever {
             
         }
     }// end table handler class.
+    @Override
     public String getServiceType() {
         return SSAP;
     }
@@ -355,6 +360,9 @@ public class SsapRetrieval extends AbstractRetriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.22  2008/08/06 18:54:47  nw
+removed closing html tag.
+
 Revision 1.21  2008/04/25 08:59:36  nw
 extracted interface from retriever, to ease unit testing.
 
