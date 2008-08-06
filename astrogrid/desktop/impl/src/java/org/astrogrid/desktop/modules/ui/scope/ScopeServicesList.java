@@ -31,8 +31,6 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
-import ca.odell.glazedlists.EventList;
-
 /** specialized subtype of registrygooglepanel that displays summary
  * of queries retrievers.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -41,6 +39,10 @@ import ca.odell.glazedlists.EventList;
 public class ScopeServicesList extends RegistryGooglePanel
 	implements QueryResultCollector{
 
+    /**
+     * 
+     */
+    private static final int RETRIEVERS_COUNT_TO_FLIP_TO_SERVICES_VIEW = 50;
     private final AstroScopeLauncherImpl astroscope;
     /**
 	 * @param reg
@@ -113,7 +115,20 @@ public class ScopeServicesList extends RegistryGooglePanel
             }
 	    } finally {
 	        items.getReadWriteLock().writeLock().unlock();
-	    }        
+	    }   
+	    
+	    // now check what size the list has grown to, and flip astroscope views if needed.
+	    // it's possible that if the user then flips back, this might flip back again
+	    // when more services are added - tough.
+	    if (items.size() > RETRIEVERS_COUNT_TO_FLIP_TO_SERVICES_VIEW
+	            && ! astroscope.currentlyServicesTable()) {
+	        // show warning.
+	        astroscope.showTransientWarning("Large Number of Services to Query"
+	                ,"Switching to the 'Services Table' display" +
+	                		"<br>The previous display can be accessed from the 'View' menu"
+	                );
+	        astroscope.flipToServicesTable();
+	    }
 	}
 
 	public void addQueryFailure(final Retriever ri, final Throwable t) {
@@ -157,12 +172,7 @@ public class ScopeServicesList extends RegistryGooglePanel
         }
     }
 	
-	/** give access to the table contents 
-	 * @todo remove this if unused later
-	 * */
-	public EventList getList() {
-		return edtItems;
-	}
+
 
 	/** extends the resource table format with two additional columns */
 	private class ServicesListTableFormat extends ResourceTableFomat{

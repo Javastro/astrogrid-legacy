@@ -17,6 +17,9 @@
 <body>
 <release version="2008.2.rc1" date="unreleased">
     <action dev="nw" type="add">
+        astroscope: when a large query is encountered, user is warned and display flips to services table
+    </action>
+    <action dev="nw" type="add">
     astroscope: added transient warning when search radius is greater than 1.0
     </action>
     <action dev="nw" type="fix" issue="2805">

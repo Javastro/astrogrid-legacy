@@ -80,11 +80,11 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
         // load preference.
         final String view = PREFERENCES.get(PREFERRED_VIEW_KEY,RADIAL_VIEW);
         if (HYPERBOLIC_VIEW.equals(view)) {
-            getHyperbolicAction().actionPerformed(null);
+            flipToHyperbolicView();
         } else if (SERVICES_VIEW.equals(view)) {
-            getServicesAction().actionPerformed(null);
+            flipToServicesTable();
         } else if (RADIAL_VIEW.equals(view)) {
-            getRadialAction().actionPerformed(null);
+            flipToRadialView();
         }
     }
 
@@ -282,6 +282,33 @@ public Action getShowServicesFiltersAction() {
     return table.getExpandAction();
 }
 
+/** true if currently showing the radial view */
+    public boolean currentlyRadial() {
+        return VizualizationsPanel.RADIAL_VIEW.equals(currentlyShowing());
+    }
+    
+    /** true if currently showing the hyperbolic view */
+    public boolean currentlyHyperbolic() {
+        return VizualizationsPanel.HYPERBOLIC_VIEW.equals(currentlyShowing());
+    }
+    
+    /** true is currenlty showing the services table */
+    public boolean currentlyServicesTable() {
+        return VizualizationsPanel.SERVICES_VIEW.equals(currentlyShowing());
+    }
 
+    /** show the services table */
+    private void flipToServicesTable() {
+        getServicesAction().actionPerformed(null);               
+    }
+    
+    /** show the radial view */
+    private void flipToRadialView() {
+        getRadialAction().actionPerformed(null);
+    }
 
+    /** show the hyperbolic view */
+    private void flipToHyperbolicView() {
+        getHyperbolicAction().actionPerformed(null);
+    }  
 }

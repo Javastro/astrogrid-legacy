@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.90 2008/08/06 11:32:28 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.91 2008/08/06 12:53:02 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -124,6 +124,10 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroScopeInternal, DecSexListener, FocusListener {
 
+    /**
+     * 
+     */
+    private static final int SEARCH_RADIUS_WARNING_THRESHOLD = 1;
     private static final Preferences PREFERENCES = Preferences.userNodeForPackage(AstroScopeLauncherImpl.class);
     private static final String SHOW_ASTROSCOPE_POPUPS_KEY = "show.astroscope.popups";
          
@@ -433,21 +437,21 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                        .separator();
                     final JRadioButtonMenuItem radial = new JRadioButtonMenuItem(flip.getRadialAction());
                     final JRadioButtonMenuItem hyper = new JRadioButtonMenuItem(flip.getHyperbolicAction());
-                    final JRadioButtonMenuItem services = new JRadioButtonMenuItem(flip.getServicesAction());
+                    servicesRadioButton = new JRadioButtonMenuItem(flip.getServicesAction());
                     final ButtonGroup bg = new ButtonGroup();
                     bg.add(radial);
                     bg.add(hyper);
-                    bg.add(services);
-                    if (VizualizationsPanel.HYPERBOLIC_VIEW.equals(flip.currentlyShowing())) {
+                    bg.add(servicesRadioButton);
+                    if (flip.currentlyHyperbolic()) {
                         hyper.setSelected(true);
-                    } else if (VizualizationsPanel.RADIAL_VIEW.equals(flip.currentlyShowing())) {
+                    } else if (flip.currentlyRadial()) {
                         radial.setSelected(true);
-                    } else if (VizualizationsPanel.SERVICES_VIEW.equals(flip.currentlyShowing())) {
-                        services.setSelected(true);
+                    } else if (flip.currentlyServicesTable()) {
+                        servicesRadioButton.setSelected(true);
                     }
                        vmb.radiobox(radial)
                            .radiobox(hyper)
-                           .radiobox(services)
+                           .radiobox(servicesRadioButton)
                        .separator()                           
                        .windowOperationWithIcon(flip.getShowServicesFiltersAction())
                        .separator()
@@ -500,7 +504,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	final ActivitiesManager acts;	
 	protected final VizualizationsPanel flip;
 
-	protected final Action clearAction = new ClearSelectionAction();
+
+    protected final Action clearAction = new ClearSelectionAction();
 
 	protected final DecSexToggle dsToggle;
 	protected final NameResolvingPositionTextField posText;
@@ -516,7 +521,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	private final JCheckBox noPosition;
 	private final ScopeServicesList servicesList;
     private final JCheckBoxMenuItem showTransientWarnings;
-    private final TemporalDalProtocol stap;	
+    private final TemporalDalProtocol stap;
+    /** radio button that switches to services view */
+    private JRadioButtonMenuItem servicesRadioButton;	
 
     public final boolean isTransientWarnings() {
         return showTransientWarnings.isSelected();
@@ -684,6 +691,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	       clearTree();
 	       
 		// slightly tricky - what we do depends on whether posText is currently in the middle of resolving a name or not.
+	       ///@todo not working nicely at the moment - need to rethink all this.
 		final String positionString = posText.getObjectName(); // grab this first, in case we need it in a mo.
 		final Point2D position = posText.getPosition();	
 		if (Double.isNaN(position.getX())) { // position is not a number - indicates that it's currently being resolved.
@@ -734,10 +742,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		final double dec = position.getY();
 
 		final double radius = regionText.getRadius();
-		if (radius > 1) { // issue warning.
+		if (radius > SEARCH_RADIUS_WARNING_THRESHOLD) { // issue warning.
 		  showTransientWarning("Large Search Radius","Some services may not allow this large a search radius; others may return limited results, or fail to respond at all. " +
 		           "<br>Check the resource descriptions of the services you are querying for details."
-		          + (! flip.SERVICES_VIEW.equals(flip.currentlyShowing()) ?
+		          + (! currentlyServicesTable() ?
 		  		    "<br>If too many results are returned, it may help to switch to 'View > as Services Table' "
 		          : "")
 		  );  
@@ -1173,9 +1181,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	       }
 	}
 
-    public final ActivitiesManager getActs() {
-        return this.acts;
-    }
+
 
     public final ScopeServicesList getServicesList() {
         return this.servicesList;
@@ -1183,6 +1189,19 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
     public final BiStateButton getSubmitButton() {
         return this.submitButton;
+    }
+
+
+    /** reutnrs true if currenlty showing the services table */
+    public boolean currentlyServicesTable() {
+        return this.flip.currentlyServicesTable();
+    }
+
+
+    /** flip to the services table
+     */
+    public void flipToServicesTable() {
+        servicesRadioButton.doClick();
     }
 
 }
