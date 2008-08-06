@@ -1,5 +1,7 @@
 package org.astrogrid.security;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Socket;
@@ -70,13 +72,22 @@ public class SecurityGuard implements X509KeyManager {
   protected Subject subject;
 
   protected AccessPolicy accessPolicy;
+  
+  /**
+   * The client delegate for talking to the registry service.
+   * This is lazily initialized: it is left null by the constructors
+   * and a RegistryClient is instantiated when needed. The 
+   * {#setRegistryClient} method can be used to inject a client for testing.
+   */
+  protected RegistryClient registry;
 
   /**
    * Constructs a SecurityGuard with empty
    * JAAS subjects.
    */
-  public SecurityGuard () {
+  public SecurityGuard() {
     this.subject = new Subject();
+    this.accessPolicy = null;
   }
 
   /**
@@ -84,8 +95,9 @@ public class SecurityGuard implements X509KeyManager {
    * given JAAS subject for grid credentials.
    * No SSO credentials are set.
    */
-  public SecurityGuard (Subject s) {
+  public SecurityGuard(Subject s) {
     this.subject = this.cloneSubject(s);
+    this.accessPolicy = null;
   }
   
   /**
@@ -96,11 +108,21 @@ public class SecurityGuard implements X509KeyManager {
    *
    * @param sg The source of the credentials.
    */
-   public SecurityGuard (SecurityGuard sg) {
+   public SecurityGuard(SecurityGuard sg) {
      this.subject = this.cloneSubject(sg.getSubject());
      this.accessPolicy = sg.accessPolicy;
   }
 
+  /**
+   * Injects a registry client.
+   * This is typically done for unit testing, where a MockRegistryClient
+   * is used.
+   *
+   * @param registry The registry client.
+   */
+  public void setRegistryClient(RegistryClient registry) {
+    this.registry = registry;
+  }
   
   /**
    * Retrieves the entire JAAS subject.
@@ -506,6 +528,48 @@ public class SecurityGuard implements X509KeyManager {
   }
   
   /**
+   * Changes the password protecting a source of credentials.
+   */
+  public void changePassword(String username,
+                             String oldPassword,
+                             String newPassword,
+                             URI    source) throws URISyntaxException, 
+                                                   IOException,
+                                                   GeneralSecurityException, 
+                                                   RegistryException {
+    
+    // Change the password at a community-accounts service.
+    if (source.getScheme().equals("ivo")) {
+      SsoClient s = new SsoClient(findAccountsService(source));
+      try {
+        s.changePassword(username, oldPassword, newPassword, this);
+      } catch (IOException ex) {
+        throw new GeneralSecurityException("Failed to change the password", ex);
+      }
+    }
+    
+    // Change the password on a key-store in a local file.
+    else if (source.getScheme().equals("file")) {
+      KeyStore store = KeyStore.getInstance("JKS");
+      store.load(source.toURL().openStream(), oldPassword.toCharArray());
+      loadKeyStoreEntry(username, oldPassword, store);
+      store.setKeyEntry(username,
+                        this.getPrivateKey(),
+                        newPassword.toCharArray(),
+                        this.getCertificateChain());
+      store.store(new FileOutputStream(new File(source)), 
+                  newPassword.toCharArray());
+    }
+    
+    // Other sources are assumed to be inaccessible key-stores.
+    else {
+      throw new IOException("Can't change the password on " +
+                            source.toString() +
+                            " - can't write to that kind of URI.");
+    }
+  }
+  
+  /**
    * Configures an HTTPS connection. TLS is set as the protocol.
    * Authentication of the server is disabled. If the connection is not an
    * HTTPS connection then this method returns silently. This method must be
@@ -672,7 +736,9 @@ public class SecurityGuard implements X509KeyManager {
    * @throws RegistryException If the registry does not respond.
    */
   private String findAccountsService(URI community) throws RegistryException {
-    RegistryClient registry = new RegistryClient();
+    if (this.registry == null) {
+      registry = new RegistryClient();
+    }
     return registry.getEndpointByIdentifier(
                community.toString(), 
                "ivo://org.astrogrid/std/Community/accounts"

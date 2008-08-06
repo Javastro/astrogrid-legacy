@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2.a06</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2.a05">
+      <p>
+        V2008.2.a06 is the sixth alpha-version in the development leading
+        to the 2008.2 release. This version supports v3 of the accounts protocol.
+      </p>
+      
+      <subsection name="Password changing">
+        <p>
+          This release of the facade supports the changing of a user's 
+          account-password. The API is <i>SecurityGuard.changePassword()</i>,
+          and it takes the URI for the source of credentials as an argument.
+        </p>
+        <p>
+          Two kinds of credential sources allow the password to be changed.
+        </p>
+        <ul>
+          <li>Community accounts protocol of version 3 or later;
+          the URI is the IVORN for the community, e.g.
+          <i>ivo://some.university/community</i>.</li>
+          <li>A Java key-store, of type JKS, held in a local file; the URI
+          refers to the file, e.g. <i>file:/some/path/credentials.jks</i>.</li>
+        </ul>
+        <p>
+          For other sources of credentials, e.g. a key-store fetched by HTTP,
+          the password cannot be changed by the security guard.
+        </p>
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>

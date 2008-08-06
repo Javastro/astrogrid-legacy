@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>  
+<project>
   <pomVersion>3</pomVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <name>Security Facade</name>
-  <currentVersion>2008.2.a05</currentVersion>
+  <currentVersion>2008.2.a06</currentVersion>
   <shortDescription>APIs for single-sign-on security.</shortDescription>
   
   <description>
@@ -75,6 +75,11 @@
      <id>2008.2.a04</id>
      <name>2008.2.a04</name>
      <tag>v2008_2_a04</tag>
+   </version>
+      <version>
+     <id>2008.2.a05</id>
+     <name>2008.2.a05</name>
+     <tag>v2008_2_a05</tag>
    </version>
  </versions>
  
@@ -277,6 +282,66 @@
         <version>2.4</version>
         <type>jar</type>
       </dependency>
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-community-common</artifactId>
+        <version>2008.0.01</version>
+        <type>jar</type>
+      </dependency>
+      
+      <!-- These are only for testing. They are not needed in an
+           application that uses the artifact of this Maven project. -->
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-community-server</artifactId>
+        <version>2008.2.a01</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>6.1.11</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>6.1.11</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty-servlet-tester</artifactId>
+        <version>6.1.11</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor-jdo</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>jta</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.7.1</version>
+            <type>jar</type>
+            <url>http://www.hsqldb.org/</url>
+        </dependency>
       
     </dependencies>
 

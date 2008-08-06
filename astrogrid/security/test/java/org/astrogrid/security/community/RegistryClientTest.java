@@ -25,7 +25,7 @@ public class RegistryClientTest extends TestCase {
    *
    */
   public void testResolveKnown() throws Exception {
-    RegistryClient sut = new RegistryClient();
+    RegistryClient sut = new RegistryClient(new MockRegistry());
     String accounts = sut.getEndpointByIdentifier("ivo://org.astrogrid.new-registry/community",
                                                   "ivo://org.astrogrid/std/Community/accounts");
     assertNotNull(accounts);
@@ -40,7 +40,7 @@ public class RegistryClientTest extends TestCase {
    * returns a null endpoint which must be trapped - see BZ2521.
    */
   public void testResolveUnknown() throws Exception {
-    RegistryClient sut = new RegistryClient();
+    RegistryClient sut = new RegistryClient(new MockRegistry());
     try {
       sut.getEndpointByIdentifier("ivo://bogus/not-there",
                                   "ivo://org.astrogrid/std/Community/accounts");

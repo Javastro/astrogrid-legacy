@@ -4,6 +4,7 @@
 
 package org.astrogrid.security.community;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,7 +12,10 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.AccessControlException;
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.cert.CertPath;
@@ -30,7 +34,7 @@ import org.bouncycastle.openssl.PEMWriter;
  *
  * @author Guy Rixon
  */
-public class SsoClient extends Mockery {
+public class SsoClient {
   
   /**
    * The URI for the SSO or "accounts" service.
@@ -74,17 +78,6 @@ public class SsoClient extends Mockery {
     assert password != null;
     assert lifetime > 0;
     assert guard != null;
-    
-    // If this is a test, load no credentials.
-    // @TODO: load some fake credentials.
-    if (isMock()) {
-      if (userName.equals("frog") && password.equals("croakcroak")) {
-        return;
-      }
-      else {
-        throw new IOException();
-      }
-    }
   
     // Derive the URL from which to read the give user's credentials.
     URL proxyUrl = getProxyUrl(userName);
@@ -148,12 +141,6 @@ public class SsoClient extends Mockery {
                    SecurityGuard guard) throws IOException {
     assert userName != null;
     assert guard != null;
-    
-    // If this is a test, load no credentials.
-    // @TODO: load some fake credentials.
-    if (isMock()) {
-      return;
-    }
   
     // Derive the URL from which to read the give user's homespace.
     URL homeUrl = getHomeUrl(userName);
@@ -192,6 +179,66 @@ public class SsoClient extends Mockery {
   }
   
   /**
+   * Changes the user's password.
+   * The request is authenticated by the old password.
+   *
+   * @param userName The user name known to the community.
+   * @param oldPassword The old password known to the community.
+   * @param newPassword The replacement password.
+   */
+  public void changePassword(String        userName,
+                             String        oldPassword,
+                             String        newPassword,
+                             SecurityGuard guard) throws AccessControlException,
+                                                         GeneralSecurityException,
+                                                         IOException {
+    assert userName != null;
+    assert oldPassword != null;
+    assert newPassword != null;
+    assert guard != null;
+    
+    // Derive the URL from which to read the give user's credentials.
+    URL accountUrl = getAccountUrl(userName);
+      
+    // Open a connection to the web resource.
+    HttpURLConnection connection =  (HttpURLConnection) (accountUrl.openConnection());
+    connection.setDoOutput(true);
+    connection.setRequestMethod("POST");
+      
+    // Set up HTTPS if necessary. This makes the connection accept
+    // any server identified by X509 credentials, regardless of the
+    // content of those credentials.
+    guard.configureHttps(connection);
+      
+    // Send the passwords as parameters.
+    // They go into the body of the request.
+    OutputStream os = connection.getOutputStream();
+    OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+    osw.write("oldPassword=");
+    osw.write(URLEncoder.encode(oldPassword, "UTF-8"));
+    osw.write("&newPassword=");
+    osw.write(URLEncoder.encode(newPassword, "UTF-8"));
+    osw.flush();
+    osw.close();
+    
+    switch (connection.getResponseCode()) {
+      case HttpURLConnection.HTTP_OK:
+      case HttpURLConnection.HTTP_NO_CONTENT:
+        break;
+      case HttpURLConnection.HTTP_FORBIDDEN:
+        throw new AccessControlException("Failed to change the password: access was denied");
+      case HttpURLConnection.HTTP_BAD_REQUEST:
+        throw new IllegalArgumentException("Failed to change the password: parameters were wrong");
+      case HttpURLConnection.HTTP_NOT_FOUND:
+        throw new FileNotFoundException("Failed to change the password: no such account");
+      case HttpURLConnection.HTTP_INTERNAL_ERROR:
+        throw new GeneralSecurityException("Failed to change the password: community service failed internally");
+      default:
+        throw new IOException("Failed to change the password; HTTP code " + connection.getResponseCode());
+    }
+  }
+  
+  /**
    * Reads a certificate chain from a stream.
    */
   protected CertPath readCertificates(InputStream is) 
@@ -210,6 +257,19 @@ public class SsoClient extends Mockery {
     catch (Exception e) {
       // This cannot happen in service unless there is a bug.
       throw new RuntimeException("Failed to construct a URL for a user proxy", e);
+    }
+  }
+  
+  /**
+   * Generates the URL for the web resource representing the user.
+   */
+  private URL getAccountUrl(String userName) {
+    try {
+      return new URL(endpoint + "/" + userName);
+    }
+    catch (Exception e) {
+      // This cannot happen in service unless there is a bug.
+      throw new RuntimeException("Failed to construct a URL for a user's account", e);
     }
   }
   

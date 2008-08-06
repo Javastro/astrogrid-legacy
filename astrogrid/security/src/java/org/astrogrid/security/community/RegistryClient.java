@@ -7,7 +7,7 @@ import org.astrogrid.registry.client.query.v1_0.RegistryService;
 /**
  * A wrapper for the registry delegate to resolve IVORNs endpoints.
  */
-public class RegistryClient extends Mockery {
+public class RegistryClient {
   
   /**
    * Our Registry delegate.
@@ -19,16 +19,17 @@ public class RegistryClient extends Mockery {
    * The configuration may impose a mockery of the registry for testing.
    */
   public RegistryClient() {
-    super();
-    
-    // This consults the AstroGrid configuration to determine the endpoint
-    // of the registry.
-    if (isMock()) {
-      this.registry = new MockRegistry();
-    }
-    else {
-      this.registry = new RegistryDelegateFactory().createQueryv1_0();
-    }
+    this.registry = new RegistryDelegateFactory().createQueryv1_0();
+  }
+  
+  /**
+   * Constructs a resolver using a given stub for the registry.
+   * This constructor is for unit testing: pass a MockRegistry here.
+   *
+   * @param registry The stub for the registry service (may be a mock object).
+   */
+  public RegistryClient(RegistryService registry) {
+    this.registry = registry;
   }
   
   /**

@@ -24,6 +24,8 @@ import org.w3c.dom.Document;
  */
 public class MockRegistry implements RegistryService {
   
+  final static public int ACCOUNTS_PORT = 6666;
+  
   /**
    * Constructs a MockRegistry.
    */
@@ -137,7 +139,7 @@ public class MockRegistry implements RegistryService {
       String resourceKey = ivorn.getPath();
       if (resourceKey.equals("/community") || resourceKey.equals("/other-community")) {
         if (standardId.equals("ivo://org.astrogrid/std/Community/accounts")) {
-          return "http://org.astrogrid" + resourceKey + "/accounts";
+          return "http://localhost:" + ACCOUNTS_PORT + resourceKey + "/accounts";
         }
         else if (standardId.equals("ivo://org.astrogrid/std/Community/v1.0#MyProxy")) {
           return "myproxy://org.astrogrid:7512";
