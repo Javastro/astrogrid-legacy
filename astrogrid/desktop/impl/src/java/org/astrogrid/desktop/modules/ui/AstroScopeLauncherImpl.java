@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.91 2008/08/06 12:53:02 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.92 2008/08/06 14:09:58 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -458,7 +458,19 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
                        .checkbox(showTransientWarnings)
                        ;                
                 add(vmb.create());
-                
+                // toggle viz-specific actions off when services actions are on.
+                flip.getShowServicesFiltersAction().addPropertyChangeListener(new PropertyChangeListener() {
+                    public void propertyChange(final PropertyChangeEvent evt) {
+                        if ("enabled".equals(evt.getPropertyName())) {
+                            topAction.setEnabled(! flip.getShowServicesFiltersAction().isEnabled());
+                            upAction.setEnabled(! flip.getShowServicesFiltersAction().isEnabled());
+                        }
+                    }
+                });
+                // initialize these actions too.
+                topAction.setEnabled(!flip.getShowServicesFiltersAction().isEnabled());
+                upAction.setEnabled(!flip.getShowServicesFiltersAction().isEnabled());
+                //history menu
                 final JMenu historyMenu = new JMenu("History");
                 historyMenu.setMnemonic(KeyEvent.VK_H);
                 final FilterList filteredHistory = new FilterList(history,new ProtocolsMatcherEditor());
