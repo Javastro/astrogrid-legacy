@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.88 2008/08/05 16:40:39 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.89 2008/08/06 11:25:18 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -734,7 +734,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		final double dec = position.getY();
 
 		final double radius = regionText.getRadius();
-
+		if (radius > 1) { // issue warning.
+		  showTransientWarning("Large Search Radius","Some services may not allow this large a search radius; others may return limited results, or fail to respond at all. " +
+		           "<br>Check the resource descriptions of the services you are querying for details."
+		          + (! flip.SERVICES_VIEW.equals(flip.currentlyShowing()) ?
+		  		    "<br>If too many results are returned, it may help to switch to the 'Services Table' View "
+		          : "")
+		  );  
+		}
 		for (final Iterator i = protocols.iterator(); i.hasNext(); ) {
 			final DalProtocol p =(DalProtocol)i.next();
 			final TreeNode rootNode = vizModel.getTree().getRoot();

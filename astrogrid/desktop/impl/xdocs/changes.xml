@@ -16,6 +16,9 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="add">
+    astroscope: added transient warning when search radius is greater than 1.0
+    </action>
     <action dev="nw" type="fix" issue="2805">
     Task Runner: File selection dialogue navigates to vospace where necessary
     </action>
