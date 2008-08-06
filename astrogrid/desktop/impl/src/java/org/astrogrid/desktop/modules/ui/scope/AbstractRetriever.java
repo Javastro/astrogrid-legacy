@@ -69,7 +69,11 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
     /** attribute giving the offset value for the result */
     public static final String OFFSET_ATTRIBUTE = "offset";
     /** attribute giving the tooltip for this node */
-    public static final String TOOLTIP_ATTRIBUTE = "tooltip";        
+    public static final String TOOLTIP_ATTRIBUTE = "tooltip";
+    /** attribute giving a formatted ra,dec for this node - used in ResultsFileTable */
+    public static final String POS_ATTRIBUTE = "position";
+    /** attribute giving a formatted offset dfor this node - usd in ResultsFileTable */
+    public static final String OFFSET_DISPLAY_ATTRIBUTE = "displayOffset";        
   //  private static final int MAX_INLINE_IMAGE_SIZE = 100000;
     protected final double ra;
     protected final double dec;
@@ -305,9 +309,10 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         final String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
         valNode.setAttribute(LABEL_ATTRIBUTE,"*");
         valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
-        // unused
+        
         valNode.setAttribute(RA_ATTRIBUTE,rowRa); // these might come in handy for searching later.
         valNode.setAttribute(DEC_ATTRIBUTE,rowDec);
+        valNode.setAttribute(POS_ATTRIBUTE,positionString);
 
         // handle further parsing in subclasses.
         rowDataExtensionPoint(row,valNode);
@@ -329,10 +334,12 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
             .append( ": ")
             .append(safeTrim(o));
         }        
-        tooltip.append("</p></html>");
+        tooltip.append("</p>");
         valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  
         final double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
         final String offsetVal = chopValue(String.valueOf(offset),6);
+        valNode.setAttribute(OFFSET_DISPLAY_ATTRIBUTE,offsetVal); // formatted value, just for display.
+        // now find correct offset node to add to.
         TreeNode offsetNode = findNode(offsetVal, serviceNode);
         final String tempAttr;
         if(offsetNode == null) { // not found offset node.

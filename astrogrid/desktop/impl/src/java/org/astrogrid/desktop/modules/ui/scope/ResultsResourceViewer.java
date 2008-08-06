@@ -13,37 +13,28 @@ import java.net.URLEncoder;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.StyleSheet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileType;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
-import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
-import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesTable;
-import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.scope.QueryResults.QueryResult;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
@@ -57,27 +48,25 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
 public class ResultsResourceViewer extends FlipPanel implements ResourceViewer , ActionListener, FileNavigator.NavigationListener{
 
     private final AstroScopeLauncherImpl parent;
-    private FileNavigator navigator;
-    private JEditorPane pane;
+    private final FileNavigator navigator;
+    private final JEditorPane pane;
     
     private static String CLEAR = "clear";
     private static String TABLE = "table";
     private static String ERROR = "error";
     
-    public ResultsResourceViewer(AstroScopeLauncherImpl parent
-            , TypesafeObjectBuilder uiBuilder
-            , ActivitiesManager acts) {
+    public ResultsResourceViewer(final AstroScopeLauncherImpl parent
+            , final TypesafeObjectBuilder uiBuilder
+            , final ActivitiesManager acts) {
         this.parent = parent;
-        JPanel clear = new JPanel();
+        final JPanel clear = new JPanel();
         clear.setBorder(null);
         add(clear,CLEAR);
         
         navigator = uiBuilder.createFileNavigator(parent,acts);
         navigator.addNavigationListener(this);
-        resultsTable = new NavigableFilesTable(navigator);
-        resultsTable.setBorder(null);
-        resultsTable.getActionMap().remove(UIComponentMenuBar.EditMenuBuilder.PASTE); // don't allow pasting into this view.
-        JScrollPane sp = new JScrollPane(resultsTable,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        resultsTable = new ResultsFilesTable(navigator);
+        final JScrollPane sp = new JScrollPane(resultsTable,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         sp.getViewport().setBackground(Color.WHITE);        
         add(sp,TABLE);
 
@@ -87,12 +76,12 @@ public class ResultsResourceViewer extends FlipPanel implements ResourceViewer ,
         pane.setEditable(false);
    // not so good - we can lose formatting if this is enabled.    pane.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);      // this key is only defined on 1.5 - no effect on 1.4
         pane.setFont(UIConstants.SANS_FONT);  
-        JScrollPane errorScroll = new JScrollPane(pane,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        final JScrollPane errorScroll = new JScrollPane(pane,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         errorFiles = new NavigableFilesList(navigator);
         errorFiles.setPreferredSize(new Dimension(50,50));
-        JPanel errorPanel = new JPanel(new BorderLayout());
-        JButton errButton = new JButton("Email Error Report"+ UIComponentMenuBar.ELLIPSIS,IconHelper.loadIcon("person16.png"));
+        final JPanel errorPanel = new JPanel(new BorderLayout());
+        final JButton errButton = new JButton("Email Error Report"+ UIComponentMenuBar.ELLIPSIS,IconHelper.loadIcon("person16.png"));
         errButton.setToolTipText("Create an error-report email which you can email to the curators of this service");
         errButton.addActionListener(this);
         errorPanel.add(errorScroll,BorderLayout.NORTH);
@@ -109,11 +98,11 @@ public class ResultsResourceViewer extends FlipPanel implements ResourceViewer ,
 	    
 	}
 private final HtmlBuilder sb = new HtmlBuilder();
-private NavigableFilesList errorFiles;
+private final NavigableFilesList errorFiles;
 private RetrieverService service;
-private NavigableFilesTable resultsTable;
+private final NavigableFilesTable resultsTable;
 
-public void display(Resource res) {
+public void display(final Resource res) {
     
     if ( res instanceof RetrieverService) {
         service = (RetrieverService)res;
@@ -133,7 +122,7 @@ public void display(Resource res) {
 
             pane.setText(sb.toString());
             pane.setCaretPosition(0);
-            FileObject f = result.resultsDir;
+            final FileObject f = result.resultsDir;
             if (f.exists()) {                
                 navigator.move(f); // show what response we got.
                 errorFiles.setVisible(true);
@@ -144,14 +133,14 @@ public void display(Resource res) {
             show(ERROR);
             return;
         } else { // display files list then
-            FileObject f = result.resultsDir;
+            final FileObject f = result.resultsDir;
                 if (f.exists()) {
                     navigator.move(f);
                     show(TABLE);
                     return;            
                 } 
         }
-            } catch (FileSystemException e) { // unlikely, as all virtual
+            } catch (final FileSystemException e) { // unlikely, as all virtual
             }
            
         // fall thru - either unexpected - not got a service,
@@ -161,18 +150,18 @@ public void display(Resource res) {
 }
 	
 
-	public void addTo(JTabbedPane t) {        
+	public void addTo(final JTabbedPane t) {        
         // assembled everything, so now add ourselves as a tab        
         t.addTab( "Results",IconHelper.loadIcon("filetable16.png"),this,"Shows results from selected service");
 	}
 
-    public void actionPerformed(ActionEvent e) {
-        BrowserControl browser = parent.getContext().getBrowser();
-        Contact[] contacts = service.getCuration().getContacts();
-        StrBuilder sb = new StrBuilder("mailto:");
+    public void actionPerformed(final ActionEvent e) {
+        final BrowserControl browser = parent.getContext().getBrowser();
+        final Contact[] contacts = service.getCuration().getContacts();
+        final StrBuilder sb = new StrBuilder("mailto:");
         boolean emailFound = false;
         for (int i = 0; i < contacts.length; i++) {
-            Contact c = contacts[i];
+            final Contact c = contacts[i];
             if (StringUtils.isNotEmpty(c.getEmail())) {
                 emailFound = true;
                 sb.appendSeparator(",");
@@ -191,16 +180,16 @@ public void display(Resource res) {
             sb.append(StringUtils.replace(URLEncoder.encode(result.error),"+","%20"));
         }
         try {
-            URL url = new URL(sb.toString());
+            final URL url = new URL(sb.toString());
             browser.openURL(url);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             parent.showError("Unable to create email error report",ex);
         }
     }
 
     // navigation interface.
-    public void moved(NavigationEvent e) {
-        EventSelectionModel selection = navigator.getModel().getSelection();
+    public void moved(final NavigationEvent e) {
+        final EventSelectionModel selection = navigator.getModel().getSelection();
         selection.clearSelection();
         selection.invertSelection(); // should select all.     
     }

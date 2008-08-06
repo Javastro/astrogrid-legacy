@@ -16,6 +16,9 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="add">
+    astroscope: added position and offset columns to results table.
+    </action>
     <action dev="nw" type="fix">
     astroscope: resource table and coverage metadata now shown in services table details,
     added 'Results' filterwheel to services table.    
