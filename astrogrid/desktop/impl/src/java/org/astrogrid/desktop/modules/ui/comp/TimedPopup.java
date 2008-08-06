@@ -66,23 +66,23 @@ public class TimedPopup {
          * @param message
          * @param owner
          */
-        private PopupDismisser(Popup popup, Component message, Component owner) {
+        private PopupDismisser(final Popup popup, final Component message, final Component owner) {
             this.popup = popup;
             this.message = message;
             this.owner = owner;
             this.message.addMouseListener(this);
         }
 
-        public void actionPerformed(ActionEvent e) {
-            Object o = popupsForComponent.get(this.owner);
+        public void actionPerformed(final ActionEvent e) {
+            final Object o = popupsForComponent.get(this.owner);
             if (o != null) {
                 if (o == this.message) {
                     // single popup - remove the binding altogether.
                     popupsForComponent.remove(this.owner);
                 } else if (o instanceof List) {
-                    List l = (List)o;
+                    final List l = (List)o;
                     // set this list slot to null - indicates it can be reused.
-                    int ix = l.indexOf(this.message);
+                    final int ix = l.indexOf(this.message);
                     if (ix != -1) {
                         l.set(ix,null);
                     }
@@ -92,7 +92,8 @@ public class TimedPopup {
             this.popup.hide();
             
         }
-        public void mouseClicked(MouseEvent e) {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
             actionPerformed(null);
         }
     }
@@ -102,11 +103,11 @@ public class TimedPopup {
      * @param title the title of the error
      * @param message the content of the error
      */
-    public static void showErrorMessage(Component owner,String title, String message) {
-        JLabel l = new JLabel("<html><b>" + title + "</b><br>" + WordUtils.wrap(message,100,"<br>",false));
+    public static void showErrorMessage(final Component owner,final String title, final String message) {
+        final JLabel l = new JLabel("<html><b>" + title + "</b><br>" + WordUtils.wrap(message,100,"<br>",false));
         l.setIcon(UIManager.getIcon("OptionPane.errorIcon")); // wish these magic keys were documented somewhere.
         l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        showMessage(owner,l);
+        showMessage(owner,l,UIConstants.POPUP_DISMISS_TIME*2);
     }
     /**
      * display a transient information message
@@ -114,8 +115,8 @@ public class TimedPopup {
      * @param title the title of the message
      * @param message the content of the message
      */
-    public static void showInfoMessage(Component owner,String title, String message) {
-        JLabel l = new JLabel("<html><b>" + title + "</b><br>" + message);
+    public static void showInfoMessage(final Component owner,final String title, final String message) {
+        final JLabel l = new JLabel("<html><b>" + title + "</b><br>" + message);
         l.setIcon(UIManager.getIcon("OptionPane.informationIcon")); // wish these magic keys were documented somewhere.
         l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         showMessage(owner,l);        
@@ -127,11 +128,11 @@ public class TimedPopup {
      * @param title the title of the error
      * @param message the content of the error
      */
-    public static void showWarningMessage(Component owner,String title, String message) {
-        JLabel l = new JLabel("<html><b>" + title + "</b><br>" + message);
+    public static void showWarningMessage(final Component owner,final String title, final String message) {
+        final JLabel l = new JLabel("<html><b>" + title + "</b><br>" + message);
         l.setIcon(UIManager.getIcon("OptionPane.warningIcon")); // wish these magic keys were documented somewhere.
         l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        showMessage(owner,l);        
+        showMessage(owner,l,UIConstants.POPUP_DISMISS_TIME * 2);        
     }
     
     
@@ -141,7 +142,7 @@ public class TimedPopup {
      * @param owner the component to display the popup above of
      * @param msg the text of the popup message
      */
-    public static void showMessage(Component owner,String msg) {
+    public static void showMessage(final Component owner,final String msg) {
         showMessage(owner,msg,UIConstants.POPUP_DISMISS_TIME);
     }
 
@@ -151,7 +152,7 @@ public class TimedPopup {
      * @param msg the text of the popup message
      * @param period milliseconds to display the mesage for
      */
-    public static void showMessage(Component owner, String msg, int period) {
+    public static void showMessage(final Component owner, final String msg, final int period) {
         final JLabel label = new JLabel(msg);
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         showMessage(owner,label,period);
@@ -162,7 +163,7 @@ public class TimedPopup {
      * @param owner the component to display the popup above of
      * @param message the component to display as the content of the popup
      */
-    public static void showMessage(java.awt.Component owner,Component message) {
+    public static void showMessage(final java.awt.Component owner,final Component message) {
         showMessage(owner,message,UIConstants.POPUP_DISMISS_TIME);
     }
 
@@ -172,14 +173,14 @@ public class TimedPopup {
      * @param message the component to display as the content of the popup
      * @param period milliseconds to display the mesage for
      */
-    public static void showMessage(final Component owner, final Component message, int period) {
+    public static void showMessage(final Component owner, final Component message, final int period) {
         if (! owner.isShowing()) {
             return; // owning window isn't visible, so don't show the popup.
         }
-        Object o = popupsForComponent.get(owner);
+        final Object o = popupsForComponent.get(owner);
         int xoffset = 0;
         int yoffset = 0;
-        Dimension d = new Dimension();
+        final Dimension d = new Dimension();
         if (o == null) {
             popupsForComponent.put(owner,message);
         } else { // already got some popups.
@@ -188,15 +189,15 @@ public class TimedPopup {
                 xoffset = d.width + 1;
                 yoffset = d.height + 1;
                 //store new popup too.
-                List l = new ArrayList();
+                final List l = new ArrayList();
                 l.add(o);
                 l.add(message);
                 popupsForComponent.put(owner,l);
             } else if (o instanceof List) {
-                List l = (List)o;
+                final List l = (List)o;
                 boolean foundSlot = false;
                 for (int i = 0; i < l.size(); i++) {
-                    Object e = l.get(i);
+                    final Object e = l.get(i);
                     if (e == null) {
                         // found a vacant slot - stop here.
                         l.set(i,message);
@@ -213,11 +214,11 @@ public class TimedPopup {
             }
         }
       
-        Point loc = owner.getLocationOnScreen(); // top left corner of owner
+        final Point loc = owner.getLocationOnScreen(); // top left corner of owner
         
         //want to place bottom left corner of message in center of owner, and then take stacking into account 
-        int x =loc.x + (owner.getWidth() / 2)  ; //xoffset not used
-        int y = loc.y + (owner.getHeight() / 2) - message.getPreferredSize().height - yoffset;
+        final int x =loc.x + (owner.getWidth() / 2)  ; //xoffset not used
+        final int y = loc.y + (owner.getHeight() / 2) - message.getPreferredSize().height - yoffset;
         
         
         final javax.swing.Popup popup = popupFac.getPopup(owner,message,x,y);
@@ -225,7 +226,7 @@ public class TimedPopup {
 
         // setup a new timer to clean up - remove the popup, and it's entry in the map.
         final ActionListener handler = new PopupDismisser(popup, message, owner);
-        Timer timer = new Timer(period, handler);
+        final Timer timer = new Timer(period, handler);
         timer.setRepeats(false);
         timer.start();
        popup.show();
@@ -238,19 +239,19 @@ public class TimedPopup {
      *  */
     private static final Map popupsForComponent = new WeakHashMap();
     // main method for testing.
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
        final javax.swing.JComponent l = new JTree();
-       JPanel p = new javax.swing.JPanel(new BorderLayout());
+       final JPanel p = new javax.swing.JPanel(new BorderLayout());
        p.add(l,BorderLayout.CENTER);
-       JButton b = new JButton("new popup");
+       final JButton b = new JButton("new popup");
        b.addActionListener(new ActionListener() {
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             showMessage(l,"hi there");
         }
        });
        p.add(b,BorderLayout.NORTH);
-        JFrame f = new JFrame();
+        final JFrame f = new JFrame();
         f.getContentPane().add(p);
         f.setSize(200,200);
         f.show();
