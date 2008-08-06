@@ -83,8 +83,9 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
             getHyperbolicAction().actionPerformed(null);
         } else if (SERVICES_VIEW.equals(view)) {
             getServicesAction().actionPerformed(null);
+        } else if (RADIAL_VIEW.equals(view)) {
+            getRadialAction().actionPerformed(null);
         }
-        // if it's RADIAL_VIEW, no need to do anything - were already in that mode.
     }
 
 //prefuse listener interface
