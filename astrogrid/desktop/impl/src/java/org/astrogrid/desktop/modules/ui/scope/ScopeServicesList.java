@@ -219,13 +219,14 @@ public class ScopeServicesList extends RegistryGooglePanel
         }
 
         private final static String RESULTS_NAME = "Results"; // integer, comparableComparator
-        private final static String SUBNAME_NAME = "SubName";
+        private final static String SUBNAME_NAME = "Sub Title";
 
 	    
 	    @Override
         public String[] getDefaultColumns() {
 	        return new String[] {
-	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,SUBNAME_NAME,CAPABILITY_NAME,
+	                //STATUS_NAME,
+	                FLAG_NAME,RESULTS_NAME,LABEL_NAME,SUBNAME_NAME,CAPABILITY_NAME,
 	        };
 	    }
 	}

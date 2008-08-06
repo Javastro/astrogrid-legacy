@@ -70,24 +70,28 @@ public class ResourceTableFomat extends ModularTableFormat {
         this.annService = annService;
         this.capBuilder = capBuilder;
 
-        List columnList = new ArrayList();
+        final List columnList = new ArrayList();
 
         columnList.add(new IconColumn(STATUS_NAME) {
-            public Icon getValue(Resource res) {
+            @Override
+            public Icon getValue(final Resource res) {
                 return vomon.suggestIconFor(res);
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(40);
                 tcol.setMaxWidth(40);
             }
-            public String getToolTipText(Resource res) {
+            @Override
+            public String getToolTipText(final Resource res) {
                 return vomon.getTooltipInformationFor(res);
             }
         });
 
         columnList.add(new StringColumn(LABEL_NAME) {
             final StrBuilder result = new StrBuilder(64);
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 if (res == null) {
                     return "";
                 }
@@ -96,9 +100,9 @@ public class ResourceTableFomat extends ModularTableFormat {
                 Color highlight = null;
                 int highlightLevel = Integer.MAX_VALUE;
                 // check for overrides.
-                for (Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
-                    Annotation a = (Annotation)i.next();
-                    String t = StringUtils.trimToNull(a.getAlternativeTitle());
+                for (final Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
+                    final Annotation a = (Annotation)i.next();
+                    final String t = StringUtils.trimToNull(a.getAlternativeTitle());
                     // am getting an odd NPE from the next line - think it might be a race condition.
                     // will check for a.getSource() != null too.
                     if (t != null && a.getSource() != null && a.getSource().getSortOrder() <= titleLevel) {
@@ -106,7 +110,7 @@ public class ResourceTableFomat extends ModularTableFormat {
                         titleLevel = a.getSource().getSortOrder();
                     }
                     if (a instanceof UserAnnotation) {
-                        UserAnnotation u = (UserAnnotation)a;
+                        final UserAnnotation u = (UserAnnotation)a;
                         if (u.getHighlight() != null && ! (u.getHighlight().equals(Color.BLACK) || u.getHighlight().equals(Color.WHITE)) 
                                 && u.getSource().getSortOrder() <= highlightLevel) {
                             highlight = u.getHighlight();
@@ -122,7 +126,7 @@ public class ResourceTableFomat extends ModularTableFormat {
                 }
                 if (highlight != null) {
                     result.append("<body color='#");
-                    int i = highlight.getRGB();
+                    final int i = highlight.getRGB();
                     result.append(Integer.toHexString(i).substring(2,8));
                     result.append("'>");
                 }
@@ -133,97 +137,112 @@ public class ResourceTableFomat extends ModularTableFormat {
                 }
                 return result.toString();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(300);
             }
-            public String getToolTipText(Resource res) {
+            @Override
+            public String getToolTipText(final Resource res) {
                 return res.getTitle();
             }
         });
 
         columnList.add(new IconColumn(CAPABILITY_NAME) {
-            public Icon getValue(Resource res) {
+            @Override
+            public Icon getValue(final Resource res) {
                 return capBuilder.buildIcon(res);
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(80);
                 tcol.setMaxWidth(100);
                 tcol.setResizable(true);
                 // using a custom renderer here as want the icon to be left aligned - 
                 // otherwise it doesn't display correctly.
-                DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
+                final DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
                     {
                         setHorizontalAlignment(SwingConstants.LEFT);
                     }
-                    protected void setValue(Object value) {
+                    @Override
+                    protected void setValue(final Object value) {
                         setIcon((Icon)value);
                     }
                 };                
                 tcol.setCellRenderer(r);
             }
-            public String getToolTipText(Resource res) {
+            @Override
+            public String getToolTipText(final Resource res) {
                 return capBuilder.getTooltip(getValue(res));
             }
         });
 
         columnList.add(new StringColumn(DATE_NAME) {
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 String date = res.getUpdated();
                 if (date == null) {
                     date = res.getCreated();
                 }
                 return date == null ? "" : date.substring(0,10);
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(90);
                 tcol.setMaxWidth(90);
             }
         });
 
         columnList.add(new StringColumn(SHORT_NAME) {
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 return res.getShortName();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(150);
             }
         });
 
         columnList.add(new StringColumn(SUBJECT_NAME) {
             final StrBuilder sbuf = new StrBuilder();
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 sbuf.clear();
-                String[] subjects = res.getContent().getSubject();
+                final String[] subjects = res.getContent().getSubject();
                 sbuf.appendWithSeparators(subjects,", ");
                 return sbuf.toString();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(150);
             }
         });
 
         columnList.add(new StringColumn(PUBLISHER_NAME) {
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 return resourceNameToString(res.getCuration().getPublisher());
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(150);
             }
         });
 
         columnList.add(new StringColumn(CONTACT_NAME) {
             final StrBuilder sbuf = new StrBuilder();
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 sbuf.clear();
-                Contact[] contacts = res.getCuration().getContacts();
+                final Contact[] contacts = res.getCuration().getContacts();
                 if (contacts.length > 0) {
-                    Contact contact = contacts[0];
-                    String name = resourceNameToString(contact.getName());
+                    final Contact contact = contacts[0];
+                    final String name = resourceNameToString(contact.getName());
                     if (name != null) {
                         sbuf.append(name)
                             .append(' ');
                     }
-                    String mail = contact.getEmail();
+                    final String mail = contact.getEmail();
                     if (mail != null) {
                         sbuf.append('<')
                             .append(mail)
@@ -235,16 +254,18 @@ public class ResourceTableFomat extends ModularTableFormat {
                 }
                 return sbuf.toString();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(200);
             }
         });
 
         columnList.add(new StringColumn(CREATOR_NAME) {
             final StrBuilder sbuf = new StrBuilder();
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 sbuf.clear();
-                Creator[] creators = res.getCuration().getCreators();
+                final Creator[] creators = res.getCuration().getCreators();
                 if (creators.length > 0) {
                     sbuf.append(resourceNameToString(creators[0].getName()));
                     if (creators.length > 1) {
@@ -253,34 +274,40 @@ public class ResourceTableFomat extends ModularTableFormat {
                 }
                 return sbuf.toString();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(200);
             }
         });
 
         columnList.add(new StringColumn(ID_NAME) {
-            public String getValue(Resource res) {
-                URI id = res.getId();
+            @Override
+            public String getValue(final Resource res) {
+                final URI id = res.getId();
                 return id == null ? "" : id.toString();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(200);
             }
         });
 
         columnList.add(new StringColumn(TYPE_NAME) {
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 return res.getType();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(150);
             }
         });
         
         columnList.add(new StringColumn(SOURCE_NAME) {
 
-            protected String getValue(Resource res) {
-                Source source = res.getContent().getSource();
+            @Override
+            protected String getValue(final Resource res) {
+                final Source source = res.getContent().getSource();
                 if (source != null && source.getValue() != null) {
                     return source.getValue();
                 } 
@@ -289,23 +316,26 @@ public class ResourceTableFomat extends ModularTableFormat {
         });
         columnList.add(new StringColumn(WAVEBAND_NAME) {
             final StrBuilder sbuf = new StrBuilder();
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 sbuf.clear();
                 if (res instanceof HasCoverage) {
-                    String[] bands = ((HasCoverage)res).getCoverage().getWavebands();
+                    final String[] bands = ((HasCoverage)res).getCoverage().getWavebands();
                     sbuf.appendWithSeparators(bands,", ");
                 }
                 return sbuf.toString();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(150);
             }
         });
         columnList.add(new StringColumn(VALIDATION_NAME) {
             final StrBuilder sbuf = new StrBuilder();
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 sbuf.clear();
-                Validation[] validations = res.getValidationLevel();
+                final Validation[] validations = res.getValidationLevel();
                 // find the highest validation level. (typically will be only one.)
                 int bestValidation = -1;
                 for (int i = 0; i < validations.length; i++) {
@@ -318,28 +348,33 @@ public class ResourceTableFomat extends ModularTableFormat {
                 }
                
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(50);
                 tcol.setMaxWidth(50);
             }
         });
 
         columnList.add(new StringColumn(VERSION_NAME) {
-            public String getValue(Resource res) {
+            @Override
+            public String getValue(final Resource res) {
                 return res.getCuration().getVersion();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(75);
             }
         });
         
         columnList.add(new IconColumn(FLAG_NAME) {
             final Icon FLAG = IconHelper.loadIcon("flag16.png"); 
-            protected Icon getValue(Resource res) {
-                UserAnnotation a = annService.getUserAnnotation(res);
+            @Override
+            protected Icon getValue(final Resource res) {
+                final UserAnnotation a = annService.getUserAnnotation(res);
                  return a != null && a.isFlagged() ?  FLAG : null;
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(40);
                 tcol.setMaxWidth(40);
             }                        
@@ -348,12 +383,13 @@ public class ResourceTableFomat extends ModularTableFormat {
         columnList.add(new StringColumn(TAG_NAME) {
             final Set tags = new HashSet();
             final StrBuilder sb = new StrBuilder();
-            protected String getValue(Resource res) {
+            @Override
+            protected String getValue(final Resource res) {
                 tags.clear();
                 sb.clear();
-                for (Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
-                    Annotation a = (Annotation)i.next();
-                    Set ts = a.getTags();
+                for (final Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
+                    final Annotation a = (Annotation)i.next();
+                    final Set ts = a.getTags();
                     if (ts != null) {
                         tags.addAll(ts);
                     }
@@ -361,7 +397,8 @@ public class ResourceTableFomat extends ModularTableFormat {
                 sb.appendWithSeparators(tags,", ");
                 return sb.toString();
             }
-            public void configureColumn(TableColumn tcol) {
+            @Override
+            public void configureColumn(final TableColumn tcol) {
                 tcol.setPreferredWidth(150);
             }
         });
@@ -375,8 +412,8 @@ public class ResourceTableFomat extends ModularTableFormat {
      *
      * @param  colModel  column model
      */
-    public void configureColumnModel(TableColumnModel colModel) {
-        int ncol = colModel.getColumnCount();
+    public void configureColumnModel(final TableColumnModel colModel) {
+        final int ncol = colModel.getColumnCount();
         for (int icol = 0; icol < ncol; icol++) {
             ((Column) getColumn(icol)).configureColumn(colModel.getColumn(icol));
         }
@@ -389,7 +426,7 @@ public class ResourceTableFomat extends ModularTableFormat {
      * @param   icol  index of column in which <code>res</code> appears
      * @return   tooltip string
      */
-    public String getToolTipText(Resource res, int icol) {
+    public String getToolTipText(final Resource res, final int icol) {
         return ((Column) getColumn(icol)).getToolTipText(res);
     }
 
@@ -400,7 +437,8 @@ public class ResourceTableFomat extends ModularTableFormat {
      */
     public String[] getDefaultColumns() {
         return new String[] {
-            STATUS_NAME, FLAG_NAME,LABEL_NAME, CAPABILITY_NAME, DATE_NAME,
+            //STATUS_NAME, don't seem to work at the moment. 
+            FLAG_NAME,LABEL_NAME, CAPABILITY_NAME, VALIDATION_NAME,DATE_NAME,
         };
     }
 
@@ -414,7 +452,7 @@ public class ResourceTableFomat extends ModularTableFormat {
      * @param   rname  resource name
      * @return   stringified version
      */
-    private static String resourceNameToString(ResourceName rname) {
+    private static String resourceNameToString(final ResourceName rname) {
         return rname == null ? ""
                              : rname.getValue();
     }
@@ -432,7 +470,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  comparator  default comparator to use for this column;
          *                     use null for a non-comparable column
          */
-        public Column(String name, Class clazz, Comparator comparator) {
+        public Column(final String name, final Class clazz, final Comparator comparator) {
             super(name, clazz, comparator);
         }
 
@@ -444,7 +482,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          *
          * @param  tcol  column to configure
          */
-        public void configureColumn(TableColumn tcol) {
+        public void configureColumn(final TableColumn tcol) {
             //by default does nothing
         }
 
@@ -456,7 +494,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  res  column cell content
          * @return   tooltop describing <code>res</code>
          */
-        public String getToolTipText(Resource res) {
+        public String getToolTipText(final Resource res) {
             return null;
         }
     }
@@ -471,7 +509,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          *
          * @param name  column name
          */
-        public StringColumn(String name) {
+        public StringColumn(final String name) {
             this(name, false);
         }
 
@@ -481,7 +519,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  name  column name
          * @param  caseSensitive    true iff comparisons should be case sensitive
          */
-        public StringColumn(String name, boolean caseSensitive) {
+        public StringColumn(final String name, final boolean caseSensitive) {
             super(name, String.class, caseSensitive ? GlazedLists.comparableComparator() : GlazedLists.caseInsensitiveComparator());
         }
 
@@ -493,7 +531,8 @@ public class ResourceTableFomat extends ModularTableFormat {
          */
         protected abstract String getValue(Resource res);
 
-        public Object getColumnValue(Object obj) {
+        @Override
+        public Object getColumnValue(final Object obj) {
             return obj instanceof Resource ? getValue((Resource) obj)
                                            : null;
         }
@@ -509,7 +548,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          *
          * @param   name  column name
          */
-        IconColumn(String name) {
+        IconColumn(final String name) {
             super(name, Icon.class, ICON_COMPARATOR);
         }
 
@@ -521,19 +560,20 @@ public class ResourceTableFomat extends ModularTableFormat {
          */
         protected abstract Icon getValue(Resource res);
 
-        public Object getColumnValue(Object obj) {
+        @Override
+        public Object getColumnValue(final Object obj) {
             return obj instanceof Resource ? getValue((Resource) obj)
                                            : null;
         }
 
         /** compare 2 icons. */
         private static final Comparator ICON_COMPARATOR = new Comparator() {
-            public int compare(Object arg0, Object arg1) {
-                Icon a = (Icon)arg0;
-                Icon b = (Icon)arg1;
+            public int compare(final Object arg0, final Object arg1) {
+                final Icon a = (Icon)arg0;
+                final Icon b = (Icon)arg1;
                 return map(a) - map(b); 
             }
-            private int map(Icon a) {
+            private int map(final Icon a) {
                 if (a == null) {
                     return 0;
                 }
