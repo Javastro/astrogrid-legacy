@@ -657,7 +657,7 @@ public void xquerySearchSave(final String xquery, final File saveLocation) throw
                 r.next();
                 if (r.isStartElement() && "identifier".equals(r.getLocalName())) {
                     try {
-                        final URI u = new URI(r.getElementText());
+                        final URI u = new URI(StringUtils.trim(r.getElementText()));
                         indexes.add(u);
                         fetcher.fetchFromCache(u);
                     } catch (final URISyntaxException e) {
