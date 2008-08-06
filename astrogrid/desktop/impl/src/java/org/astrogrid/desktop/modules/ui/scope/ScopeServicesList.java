@@ -111,7 +111,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 	    items.getReadWriteLock().writeLock().lock();
 	    try {
             for (int i = 0; i < retrievers.length; i++) {
-                items.add(new RetrieverService(retrievers[i]));
+                items.add(RetrieverService.create(retrievers[i]));
             }
 	    } finally {
 	        items.getReadWriteLock().writeLock().unlock();
@@ -159,7 +159,7 @@ public class ScopeServicesList extends RegistryGooglePanel
         // Creating a new RetrieverService here will not give an object which
         // is actually in the table alredy, but it will have the correct
         // equivalence relations (equals()/hashCode()).
-        final Service ri = new RetrieverService(abstractRetriever);
+        final Service ri = RetrieverService.create(abstractRetriever);
 
         final int ix = items.indexOf(ri);
         if (ix != -1) {

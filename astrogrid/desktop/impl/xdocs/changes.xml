@@ -16,6 +16,9 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="fix">
+    astroscope: resource table and coverage metadata now shown in services table.
+    </action>
     <action dev="nw" type="add">
         astroscope: when a large query is encountered, user is warned and display flips to services table
     </action>

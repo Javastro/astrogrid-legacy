@@ -58,6 +58,12 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
     private static final Preferences PREFERENCES = Preferences.userNodeForPackage(VizualizationsPanel.class);
     private static final String PREFERRED_VIEW_KEY = "preferred.view";
  
+    /**
+     * @param viz the controller
+     * @param radialViz radial vizualization
+     * @param hyperbolicViz hyperbolic vizualization
+     * @param table services table
+     */
     public VizualizationsPanel(final VizualizationController viz,final Vizualization radialViz, final Vizualization hyperbolicViz, final ScopeServicesList table) {
         this.viz = viz;
         this.radialViz = radialViz;
@@ -101,7 +107,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
                      // found a service node - add the equivalent resource, and add to glazed side.
                      final Retriever r = queryResults.findRetriever((TreeNode)added[i]);
                      if (r != null) {
-                         final Service s = new RetrieverService(r);
+                         final Service s = RetrieverService.create(r);
                          if (! tableSelected.contains(s)) {
                              tableSelected.add(s); 
                          }
@@ -116,7 +122,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
                      // found a service node - add the equivalent resource, and add to glazed side.
                      final Retriever r = queryResults.findRetriever((TreeNode)removed[i]);
                      if (r != null) {
-                         final Service s = new RetrieverService(r);
+                         final Service s = RetrieverService.create(r);
                          if (tableSelected.contains(s)) {
                              tableSelected.remove(s); 
                          }
@@ -132,7 +138,7 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener, Lis
                      // found a service node - add the equivalent resource, and add to glazed side.
                      final Retriever r = queryResults.findRetriever(t);
                      if (r != null) {
-                         final Service s = new RetrieverService(r);
+                         final Service s = RetrieverService.create(r);
                          if (! tableSelected.contains(s)) {
                              tableSelected.add(s); 
                          }
