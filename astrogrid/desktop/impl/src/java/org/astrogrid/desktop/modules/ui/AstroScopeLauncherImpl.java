@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.89 2008/08/06 11:25:18 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.90 2008/08/06 11:32:28 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -738,7 +738,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		  showTransientWarning("Large Search Radius","Some services may not allow this large a search radius; others may return limited results, or fail to respond at all. " +
 		           "<br>Check the resource descriptions of the services you are querying for details."
 		          + (! flip.SERVICES_VIEW.equals(flip.currentlyShowing()) ?
-		  		    "<br>If too many results are returned, it may help to switch to the 'Services Table' View "
+		  		    "<br>If too many results are returned, it may help to switch to 'View > as Services Table' "
 		          : "")
 		  );  
 		}
