@@ -1,8 +1,5 @@
 package org.astrogrid.community.server.policy.manager ;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-
 import java.rmi.RemoteException ;
 
 import org.astrogrid.community.common.policy.data.GroupData ;
@@ -25,15 +22,7 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException ;
  * Server side implementation of the PolicyManager service.
  *
  */
-public class PolicyManagerImpl
-    extends CommunityServiceImpl
-    implements PolicyManager
-    {
-    /**
-     * Our debug logger.
-     *
-     */
-    private static Log log = LogFactory.getLog(PolicyManagerImpl.class);
+public class PolicyManagerImpl extends CommunityServiceImpl implements PolicyManager {
 
     /**
      * Public constructor, using default database configuration.
@@ -60,64 +49,24 @@ public class PolicyManagerImpl
         }
 
     /**
-     * Public constructor, using a parent service.
-     *
-     */
-    public PolicyManagerImpl(CommunityServiceImpl parent)
-        {
-        super(parent) ;
-        //
-        // Initialise our local managers.
-        initManagers() ;
-        }
-
-    /**
      * Initialise our local managers, passing a reference to 'this' as their parent.
      * @todo Refactor this into default initialiser.
      *
      */
     private void initManagers()
         {
-        accountManager    = new AccountManagerImpl(this)    ;
-        resourceManager   = new ResourceManagerImpl(this)   ;
-        permissionManager = new PermissionManagerImpl(this) ;
-
-        /*
-         * The GroupManager needs access to the current AccountManagerImpl because Castor maintains an
-         * in-memory cache of AccountData objects, with read-write locks.
-         */
-        groupManager = new GroupManagerImpl(this, accountManager) ;
-        permissionManager = new PermissionManagerImpl(this,groupManager, resourceManager);
-
+        accountManager    = new AccountManagerImpl(this.getDatabaseConfiguration());
         }
-
-    /**
-     * Our GroupManager.
-     *
-     */
-    private GroupManagerImpl groupManager ;
 
     /**
      * Our AccountManager.
      *
      */
-    private AccountManagerImpl accountManager ;
-
-    /**
-     * Our ResourceManager
-     *
-     */
-    private ResourceManagerImpl resourceManager ;
-
-    /**
-     * Our PermissionManager
-     *
-     */
-    private PermissionManagerImpl permissionManager ;
+    private AccountManagerImpl accountManager;
 
     /**
      * Add a new Account, given the Account ident.
-     * @param  ident The Account identifier.
+     * @param ident The Account identifier.
      * @return An AccountData for the Account.
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityPolicyException If the identifier is already in the database.
@@ -215,7 +164,7 @@ public class PolicyManagerImpl
     public GroupData addGroup(String ident)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.addGroup(ident) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -230,7 +179,7 @@ public class PolicyManagerImpl
     public GroupData addGroup(GroupData group)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.addGroup(group) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -245,7 +194,7 @@ public class PolicyManagerImpl
     public GroupData getGroup(String ident)
         throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.getGroup(ident) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -260,7 +209,7 @@ public class PolicyManagerImpl
     public GroupData setGroup(GroupData group)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.setGroup(group) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -275,7 +224,7 @@ public class PolicyManagerImpl
     public GroupData delGroup(String ident)
         throws RemoteException, CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.delGroup(ident) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -287,7 +236,7 @@ public class PolicyManagerImpl
     public Object[] getLocalGroups()
         throws CommunityServiceException
         {
-        return groupManager.getLocalGroups() ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -304,7 +253,7 @@ public class PolicyManagerImpl
     public GroupMemberData addGroupMember(String account, String group)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.addGroupMember(account, group) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -322,7 +271,7 @@ public class PolicyManagerImpl
     public GroupMemberData delGroupMember(String account, String group)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return groupManager.delGroupMember(account, group) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -337,7 +286,7 @@ public class PolicyManagerImpl
     public Object[] getGroupMembers(String group)
         throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        return groupManager.getGroupMembers(group) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
     
     
@@ -354,12 +303,12 @@ public class PolicyManagerImpl
     public GroupMemberData getGroupMember(String account, String group)
         throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        return groupManager.getGroupMember(account, group) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }    
     
     /**
      * Request a list of Group Members.
-     * @param group The Group identifier.
+     *
      * @return An array of GroupMemberData objects.
      * @throws CommunityIdentifierException If one of the identifiers is not valid.
      * @throws CommunityPolicyException If the group is not local.
@@ -369,7 +318,7 @@ public class PolicyManagerImpl
     public Object[] getGroupMembers()
         throws RemoteException, CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
         {
-        return groupManager.getGroupMembers() ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
     
 
@@ -384,7 +333,7 @@ public class PolicyManagerImpl
     public Object[] getLocalAccountGroups(String account)
         throws CommunityServiceException, CommunityIdentifierException
         {
-        return groupManager.getLocalAccountGroups(account) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -397,12 +346,12 @@ public class PolicyManagerImpl
     public ResourceData addResource()
         throws RemoteException, CommunityServiceException
         {
-        return resourceManager.addResource();
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
      * Request a Resource details.
-     * @param The resource identifier.
+     * @param ident The resource identifier.
      * @return The requested ResourceData object.
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityResourceException If unable to locate the resource.
@@ -413,7 +362,7 @@ public class PolicyManagerImpl
    public ResourceData getResource(String ident)
         throws RemoteException, CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        return resourceManager.getResource(ident);
+     throw new CommunityServiceException("This operation is not supported.");
         }
    
    /**
@@ -427,13 +376,13 @@ public class PolicyManagerImpl
     */
   public Object[] getResources() throws RemoteException
        {
-       return resourceManager.getResources();
+    throw new RemoteException("This operation is not supported.");
        }
    
 
     /**
      * Update a Resource details.
-     * @param The ResourceData to update.
+     * @param resource The ResourceData to update.
      * @return The updated ResourceData.
      * @throws CommunityIdentifierException If the resource identifier is not valid.
      * @throws CommunityResourceException If unable to locate the resource.
@@ -444,12 +393,12 @@ public class PolicyManagerImpl
     public ResourceData setResource(ResourceData resource)
         throws RemoteException, CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        return resourceManager.setResource(resource);
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
      * Delete a Resource object.
-     * @param The resource identifier.
+     * @param ident The resource identifier.
      * @return The original ResourceData.
      * @throws CommunityIdentifierException If the resource identifier is not valid.
      * @throws CommunityResourceException If unable to locate the resource.
@@ -460,7 +409,7 @@ public class PolicyManagerImpl
     public ResourceData delResource(String ident)
         throws RemoteException, CommunityIdentifierException, CommunityResourceException, CommunityServiceException
         {
-        return resourceManager.delResource(ident);
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -470,7 +419,7 @@ public class PolicyManagerImpl
     public PolicyPermission addPermission(String resource, String group, String action)
         throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return permissionManager.addPermission(resource, group, action) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -480,7 +429,7 @@ public class PolicyManagerImpl
     public PolicyPermission getPermission(String resource, String group, String action)
     throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return permissionManager.getPermission(resource, group, action) ;
+        throw new CommunityServiceException("This operation is not supported.");
         }
     
     /**
@@ -488,7 +437,7 @@ public class PolicyManagerImpl
      *
      */
     public Object[] getPermissions() {
-        return permissionManager.getPermissions() ;
+      return new Object[0];
     }
     
 
@@ -499,7 +448,7 @@ public class PolicyManagerImpl
     public PolicyPermission setPermission(PolicyPermission permission)
     throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
-        return permissionManager.setPermission(permission) ;
+      throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**
@@ -509,7 +458,7 @@ public class PolicyManagerImpl
     public boolean delPermission(String resource, String group, String action)
        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException    
         {
-        return permissionManager.delPermission(resource, group, action) ;
+        throw new CommunityServiceException("This operation is not supported.");
         }
 
     /**

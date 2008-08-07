@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.common.policy.manager.PolicyManager;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
-import org.astrogrid.community.server.database.configuration.TestDatabaseConfigurationFactory;
 import org.astrogrid.config.SimpleConfig;
 
 /**
@@ -31,6 +30,8 @@ public class PolicyManagerTest
     public void setUp() throws Exception {
       SimpleConfig.getSingleton().setProperty("org.astrogrid.community.default.vospace",
                                               "ivo://foo.bar/vospace");
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.community.dbconfigurl",
+                                              this.getClass().getResource("/test-database-001.xml"));
     }
 
     /**
@@ -114,8 +115,7 @@ public class PolicyManagerTest
 
 
     private PolicyManager getSut() throws Exception {
-      DatabaseConfiguration c = 
-          new TestDatabaseConfigurationFactory().testDatabaseConfiguration();
+      DatabaseConfiguration c = new DatabaseConfiguration("test-database-001");
       c.resetDatabaseTables();
       PolicyManagerImpl m = new PolicyManagerImpl(c);
       m.useMockVoSpace();

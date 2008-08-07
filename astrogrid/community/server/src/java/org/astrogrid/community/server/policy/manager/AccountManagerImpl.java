@@ -1,48 +1,33 @@
 package org.astrogrid.community.server.policy.manager ;
 
-import java.net.URI;
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-
 import java.util.Vector ;
 import java.util.Collection ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.PropertyNotFoundException;
+import org.astrogrid.community.common.exception.CommunityPolicyException;
+import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
+import org.astrogrid.community.common.policy.data.AccountData;
+import org.astrogrid.community.common.policy.manager.AccountManager;
+import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
+import org.astrogrid.community.server.service.CommunityServiceImpl;
+import org.astrogrid.filemanager.common.NodeIvorn;
+import org.astrogrid.filemanager.common.AccountIdent;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.client.delegate.NodeDelegate;
 import org.astrogrid.filemanager.resolver.FileManagerResolverException;
-
+import org.astrogrid.filemanager.resolver.NodeDelegateResolver;
+import org.astrogrid.filemanager.resolver.NodeDelegateResolverImpl;
+import org.astrogrid.store.Ivorn;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.QueryResults;
-import org.exolab.castor.jdo.ObjectNotFoundException ;
-import org.exolab.castor.jdo.DuplicateIdentityException ;
-
-import org.astrogrid.store.Ivorn ;
-
-import org.astrogrid.config.Config ;
-import org.astrogrid.config.SimpleConfig ;
-import org.astrogrid.config.PropertyNotFoundException ;
-
-import org.astrogrid.community.common.policy.data.GroupData ;
-import org.astrogrid.community.common.policy.data.AccountData ;
-import org.astrogrid.community.common.policy.data.GroupMemberData ;
-
-import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
-
-import org.astrogrid.community.common.policy.manager.AccountManager ;
-
-import org.astrogrid.community.server.service.CommunityServiceImpl ;
-import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
-
-import org.astrogrid.community.common.exception.CommunityPolicyException     ;
-import org.astrogrid.community.common.exception.CommunityServiceException    ;
-import org.astrogrid.community.common.exception.CommunityIdentifierException ;
-
-import org.astrogrid.filemanager.common.NodeIvorn;
-import org.astrogrid.filemanager.common.AccountIdent;
-import org.astrogrid.filemanager.client.NodeMetadata;
-import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.client.delegate.NodeDelegate;
-import org.astrogrid.filemanager.resolver.NodeDelegateResolver ;
-import org.astrogrid.filemanager.resolver.NodeDelegateResolverImpl;
+import org.exolab.castor.jdo.ObjectNotFoundException;
+import org.exolab.castor.jdo.DuplicateIdentityException;
 
 /**
  * Server side implmenetation of the AccountManager service.
@@ -64,32 +49,6 @@ public class AccountManagerImpl
      */
     protected static Config config = SimpleConfig.getSingleton() ;
 
-    /**
-     * The default public group.
-     * @todo This should be in a config file, not hard coded.
-     *
-     */
-    private static String DEFAULT_GROUP_NAME = "everyone" ;
-
-    /**
-     * The default public group.
-     * @todo This should be in a config file, not hard coded.
-     * @todo Find a better way of initialising it.
-     *
-     */
-    private static Ivorn DEFAULT_GROUP_IVORN ;
-
-    static {
-        try {
-            DEFAULT_GROUP_IVORN = CommunityAccountIvornFactory.createLocal(
-                DEFAULT_GROUP_NAME
-                ) ;
-            }
-        catch (Exception ouch)
-            {
-            }
-        }
-    
     protected boolean useMockNodeDelegate = false;
 
     /**
@@ -108,16 +67,6 @@ public class AccountManagerImpl
     public AccountManagerImpl(DatabaseConfiguration config)
         {
         super(config) ;
-        }
-
-    /**
-     * Public constructor, using a parent service.
-     * @param parent A parent CommunityServiceImpl.
-     *
-     */
-    public AccountManagerImpl(CommunityServiceImpl parent)
-        {
-        super(parent) ;
         }
 
     /**
@@ -162,26 +111,7 @@ public class AccountManagerImpl
       // Therefore, make a new account object in which the name is the
       // required primary key for the DB.
       AccountData account = internalAccount(externalAccount);
-      System.out.println("Recorded account is named " + account.getIdent());
-      String string = account.getIdent();
-        
-      //
-      // Create the corresponding Group object.
-      GroupData group = new GroupData() ;
-      group.setIdent(string) ;
-      group.setType(GroupData.SINGLE_TYPE) ;
-      //
-      // Add the account to the group.
-      GroupMemberData groupmember = new GroupMemberData() ;
-      groupmember.setAccount(string) ;
-      groupmember.setGroup(string) ;
-      //
-      // Add the account to the guest group.
-      GroupMemberData guestmember = new GroupMemberData() ;
-      guestmember.setAccount(string) ;
-        guestmember.setGroup(
-           DEFAULT_GROUP_IVORN.toString()
-                ) ;
+      log.debug("Recorded account is named " + account.getIdent());
             
       // Record the account. use a DB transaction s.t. either 
       // all of the information is recorded or none. This includes
@@ -193,8 +123,6 @@ public class AccountManagerImpl
         database = this.getDatabase() ;
         database.begin();
         database.create(account);
-        database.create(group);
-        database.create(groupmember);
         allocateSpace(account);
         database.commit() ;
       }
@@ -417,189 +345,45 @@ public class AccountManagerImpl
         }
 
     /**
-     * Delete an Account.
+     * Deletes an Account.
      * @param  ident The Account identifier.
      * @return The AccountData for the old Account.
      * @throws CommunityIdentifierException If the identifier is not valid.
      * @throws CommunityServiceException If there is an internal error in the service.
-     * @todo Need to have a mechanism for tidying up references to a remote Account.
-     * @todo Need to have a mechanism for tidying up references to an old Account.
-     * @todo Need to have a mechanism for notifying other Communities that the Account has been deleted.
-     * @todo Verify that the finally gets executed, even if a new Exception is thrown.
-     *
      */
-    protected AccountData delAccount(CommunityIvornParser ident)
-        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("AccountManagerImpl.delAccount()") ;
-        System.out.println("  ident : " + ident) ;
-        //
-        // Check for null ident.
-        if (null == ident)
-            {
-            throw new CommunityIdentifierException(
-                "Null identifier"
-                ) ;
-            }
+  protected AccountData delAccount(CommunityIvornParser ident) throws CommunityServiceException, 
+                                                                      CommunityIdentifierException, 
+                                                                      CommunityPolicyException {
+    if (null == ident){
+      throw new CommunityIdentifierException("Null identifier");
+    }
 
-	    //
-	    // @todo Refactor this.
-	    AccountData account  = null ;
-
-            //
-            // Try update the database.
-            Database    database = null ;
-            try {
-              
-                // Find the primary key for this account in the DB tables.
-                String string = primaryKey(ident);
-                System.out.println("Looking for " + string);
-                //
-                // Open our database connection.
-                database = this.getDatabase() ;
-                //
-                // Begin a new database transaction.
-                database.begin();
-                //
-                // Load the Account from the database.
-                account = (AccountData) database.load(AccountData.class, string) ;
-                //
-                // If we found the Account.
-                if (null != account)
-                    {
-                    System.out.println("  PASS : found account") ;
-                    //
-                    // Find the group for this account (if it exists).
-                    OQLQuery groupQuery = database.getOQLQuery(
-                        "SELECT groups FROM org.astrogrid.community.common.policy.data.GroupData groups WHERE groups.ident = $1"
-                        );
-                    //
-                    // Bind the query param.
-                    groupQuery.bind(string) ;
-                    //
-                    // Execute our query.
-                    QueryResults groups = groupQuery.execute();
-                    if (null != groups)
-                        {
-                        System.out.println("  PASS : found groups") ;
-                        }
-                    else {
-                        System.out.println("  FAIL : null groups") ;
-                        }
-                    //
-                    // Find all of the group memberships for this account.
-                    OQLQuery memberQuery = database.getOQLQuery(
-                        "SELECT members FROM org.astrogrid.community.common.policy.data.GroupMemberData members WHERE members.account = $1"
-                        );
-                    //
-                    // Bind the query param.
-                    memberQuery.bind(string) ;
-                    //
-                    // Execute our query.
-                    QueryResults members = memberQuery.execute();
-                    if (null != members)
-                        {
-                        System.out.println("  PASS : found members") ;
-                        }
-                    else {
-                        System.out.println("  FAIL : null members") ;
-                        }
-                    //
-                    // Load all the permissions for this group.
-                    OQLQuery permissionQuery = database.getOQLQuery(
-                        "SELECT permissions FROM org.astrogrid.community.common.policy.data.PolicyPermission permissions WHERE permissions.group = $1"
-                        );
-                    //
-                    // Bind the query param.
-                    permissionQuery.bind(string) ;
-                    //
-                    // Execute our query.
-                    QueryResults permissions = permissionQuery.execute();
-                    if (null != permissions)
-                        {
-                        System.out.println("  PASS : found permissions") ;
-                        }
-                    else {
-                        System.out.println("  FAIL : null permissions") ;
-                        }
-                    //
-                    // Delete the permissions.
-                    while (permissions.hasMore())
-                        {
-                        System.out.println("  STEP : deleting permission") ;
-                        database.remove(permissions.next()) ;
-                        }
-                    //
-                    // Delete the group memberships.
-                    while (members.hasMore())
-                        {
-                        System.out.println("  STEP : deleting membership") ;
-                        database.remove(members.next()) ;
-                        }
-                    //
-                    // Delete the Group.
-                    while (groups.hasMore())
-                        {
-                        System.out.println("  STEP : deleting group") ;
-                        database.remove(groups.next()) ;
-                        }
-                    //
-                    // Delete the Account.
-                    database.remove(account) ;
-                    }
-                System.out.println("  PASS : finished deleting") ;
-                //
-                // Commit the transaction.
-                database.commit() ;
-                System.out.println("  PASS : done commit") ;
-                }
-            //
-            // If we couldn't find the object.
-            catch (ObjectNotFoundException ouch)
-                {
-                //
-                // Cancel the database transaction.
-                rollbackTransaction(database) ;
-                //
-                // Throw a new Exception.
-                throw new CommunityPolicyException(
-                    "Account not found",
-                    ident.toString()
-                    ) ;
-                }
-            //
-            // If anything else went bang.
-            catch (Exception ouch)
-                {
-                //
-                // Log the exception.
-                logException(
-                    ouch,
-                    "AccountManagerImpl.delAccount()"
-                    ) ;
-                //
-                // Cancel the database transaction.
-                rollbackTransaction(database) ;
-                //
-                // Throw a new Exception.
-                throw new CommunityServiceException(
-                    "Database transaction failed",
-                    ident.toString(),
-                    ouch
-                    ) ;
-                }
-            //
-            // Close our database connection.
-            finally
-                {
-                closeConnection(database) ;
-                }
-            //
-            // Return the original Account details.
-            return externalAccount(account);
-        }
+    AccountData account  = null;
+    Database    database = null;
+    try {
+      String key = primaryKey(ident);
+      database = this.getDatabase();
+      database.begin();
+      account = (AccountData) database.load(AccountData.class, key);
+      database.remove(account);
+      database.commit();
+      return externalAccount(account);
+    }
+    catch (ObjectNotFoundException ouch) {
+      rollbackTransaction(database);
+      throw new CommunityPolicyException("Account not found", ident.toString());
+    }
+    catch (Exception ouch) {
+      logException(ouch, "AccountManagerImpl.delAccount()");
+      rollbackTransaction(database);
+      throw new CommunityServiceException("Database transaction failed",
+                                          ident.toString(),
+                                          ouch);
+    }
+    finally {
+      closeConnection(database);
+    }  
+  }
 
     /**
      * Request a list of local Accounts.
@@ -773,7 +557,7 @@ public class AccountManagerImpl
      * The config property key for our default VoSpace ivorn.
      *
      */
-    private static final String DEFAULT_VOSPACE_PROPERTY = "org.astrogrid.community.default.vospace" ;
+    protected static final String DEFAULT_VOSPACE_PROPERTY = "org.astrogrid.community.default.vospace" ;
 
   /**
    * Get the IVORN for the configured, default VOSpace.

@@ -10,8 +10,7 @@ import org.exolab.castor.jdo.DatabaseNotFoundException ;
 import org.astrogrid.community.common.service.CommunityService ;
 import org.astrogrid.community.common.service.data.ServiceStatusData ;
 
-import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
-import org.astrogrid.community.server.database.configuration.DatabaseConfigurationFactory ;
+import org.astrogrid.community.server.database.configuration.DatabaseConfiguration;
 
 /**
  * A base class for our server classes.
@@ -35,85 +34,26 @@ public class CommunityServiceImpl
     protected static final String DEFAULT_DATABASE_NAME = "org.astrogrid.community.database" ;
 
     /**
-     * Our default database description, 'astrogrid-community-database.xml'.
-     *
-     */
-    protected static final String DEFAULT_DATABASE_XML = "astrogrid-community-database.xml" ;
-
-    /**
-     * Our default database SQL script, 'astrogrid-community-database.sql'.
-     *
-     */
-    protected static final String DEFAULT_DATABASE_SQL = "astrogrid-community-database.sql" ;
-
-    /**
      * Public constructor, using default database configuration.
      *
      */
-    public CommunityServiceImpl()
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityServiceImpl()") ;
-        log.debug("  Class  : " + this.getClass()) ;
-        //
-        // Create our database configuration factory.
-        DatabaseConfigurationFactory factory = new DatabaseConfigurationFactory() ;
-        //
-        // Load our default database configuration.
-        try {
-            this.setDatabaseConfiguration(
-                factory.loadDatabaseConfiguration(
-                    DEFAULT_DATABASE_NAME,
-                    DEFAULT_DATABASE_XML,
-                    DEFAULT_DATABASE_SQL
-                    )
-                ) ;
-            }
-        //
-        // Catch anything that went BANG.
-        catch (Exception ouch)
-            {
-            this.logException(ouch, "Initialising default database configuration") ;
-            }
-        }
+  public CommunityServiceImpl() {
+    try {
+      this.databaseConfiguration = new DatabaseConfiguration(DEFAULT_DATABASE_NAME);    
+    }
+    catch (Exception ouch) {
+      throw new RuntimeException("Can't get the database configuration", ouch);
+    }
+  }
 
     /**
      * Public constructor, using specific database configuration.
      *
      */
-    public CommunityServiceImpl(DatabaseConfiguration config)
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityServiceImpl()") ;
-        log.debug("  Class  : " + this.getClass()) ;
-        log.debug("  Config : " + config) ;
-        //
-        // Set our database configuration.
-        this.setDatabaseConfiguration(config) ;
-        }
+  public CommunityServiceImpl(DatabaseConfiguration config) {
+    this.databaseConfiguration = config;
+  }
 
-    /**
-     * Public constructor, using parent service.
-     *
-     */
-    public CommunityServiceImpl(CommunityServiceImpl parent)
-        {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("CommunityServiceImpl()") ;
-        log.debug("  Class  : " + this.getClass()) ;
-        log.debug("  Parent : " + parent.getClass()) ;
-        //
-        // Use our parent's database configuration 
-        if (null != parent)
-            {
-            this.setDatabaseConfiguration(
-                parent.getDatabaseConfiguration()
-                ) ;
-            }
-        }
 
     /**
      * Service health check.
@@ -156,15 +96,6 @@ public class CommunityServiceImpl
      */
     private DatabaseConfiguration databaseConfiguration ;
 
-    /**
-     * Set our database configuration.
-     * This makes it easier to run JUnit tests with a different database configurations.
-     *
-     */
-    public void setDatabaseConfiguration(DatabaseConfiguration config)
-        {
-        this.databaseConfiguration = config ;
-        }
 
     /**
      * Acces to our database configuration.

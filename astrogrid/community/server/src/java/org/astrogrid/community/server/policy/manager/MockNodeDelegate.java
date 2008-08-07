@@ -1,18 +1,14 @@
 package org.astrogrid.community.server.policy.manager;
 
-import java.rmi.RemoteException;
 import org.apache.axis.types.URI;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.delegate.AxisNodeWrapper;
 import org.astrogrid.filemanager.client.delegate.NodeDelegate;
 import org.astrogrid.filemanager.common.AccountIdent;
-import org.astrogrid.filemanager.common.DuplicateNodeFault;
-import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.Ivorn;
 import org.astrogrid.filemanager.common.Node;
 import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.filemanager.common.NodeName;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.filemanager.common.NodeTypes;
 import org.astrogrid.filemanager.common.TransferInfo;
 

@@ -7,13 +7,10 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.net.URL;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
-import org.exolab.castor.jdo.JDO;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.DatabaseNotFoundException;
+import org.exolab.castor.jdo.JDOManager;
 import org.exolab.castor.jdo.PersistenceException;
 import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.QueryResults;
@@ -47,390 +44,111 @@ import org.exolab.castor.mapping.MappingException;
  * @author Guy Rixon
  */
 public class DatabaseConfiguration {
-  
-    private static Log log = LogFactory.getLog(DatabaseConfiguration.class);
     
-    /**
-     * The configuration key leading to the database-configuration.
-     */
-    public static String DB_CONFIG_PROPERTY = 
-        "org.astrogrid.community.dbconfigurl";
-
-    /**
-     * The default name of our database.
-     *
-     */
-    public static final String DEFAULT_DATABASE_NAME = "database" ;
-
-    /**
-     * The default resource name for our JDO config file.
-     *
-     */
-    public static final String DEFAULT_DATABASE_XML = "database.xml" ;
-
-    /**
-     * The default SQL file name.
-     */
-    public static final String DEFAULT_DATABASE_SQL = "database.sql" ;
-
   /**
-   * Constructs a DatabaseConfiguration using default names for the
-   * configuration files. Always use this constructor for production
-   * builds. When using this constructor, the property named by
-   * DB_CONFIG_PROPERTY should be set.
-   *
-   * @see DB_CONFIG_PROPERTY
-   * @see DEFAULT_DATABASE_NAME
-   * @see DEFAULT_DATABASE_XML
+   * The configuration key leading to the database-configuration.
    */
-  public DatabaseConfiguration() throws IOException, MappingException {
-    this(DEFAULT_DATABASE_NAME, DEFAULT_DATABASE_XML, DEFAULT_DATABASE_SQL);
-  }
+  public final static String DB_CONFIG_PROPERTY = "org.astrogrid.community.dbconfigurl";
+ 
+  /**
+   * The name of the default script-file for creating the database schema.
+   * This file is packaged with the classes and should be loaded as a class
+   * resource.
+   */
+  private static final String DEFAULT_SCRIPT = "/astrogrid-community-database.sql";
 
   /**
-   * Constucts a DataBaseConfiguration using given names for the
-   * configuration files. This should only be used for unit testing when
-   * several different configurations are needed. When using this constructor,
-   * the property named by DB_CONFIG_PROPERTY must not be set (it defeats the
-   * use of the given names). The names of the configuration files are
-   * taken to be the name of the database with .xml and .sql appended.
+   * Constucts a DataBaseConfiguration with the database configuration
+   * named in the general configuration. I.e., the property named
+   * {@link #DB_CONFIG_PROPERTY} in the general configuration must contain
+   * the URL from which the database-configuration is read. The database
+   * configuration must, in turn, contain detailed of the database with the
+   * name given as a method argument.
    *
-   * @see DB_CONFIG_PROPERTY
+   * @param name The name of the database.
+   * @see #DB_CONFIG_PROPERTY
    */
   public DatabaseConfiguration(String name) throws IOException, MappingException {
-    this(name, (name + ".xml"), (name + ".sql"));
+    this(name,
+         SimpleConfig.getSingleton().getUrl(DB_CONFIG_PROPERTY));
   }
   
-
   /**
-   * Constucts a DataBaseConfiguration using given names for the
-   * configuration files. This should only be used for unit testing when
-   * several different configurations are needed. When using this constructor,
-   * the property named by DB_CONFIG_PROPERTY must not be set (it defeats the
-   * use of the given names).
+   * Constructs a DatabaseConfiguration with given URLs for the database
+   * configuration-file and the initialization script.
    *
-   * @param xml  - The Castor JDO config file.
-   * @param sql  - The SQL script to create the tables.
-   *
-   * @see DB_CONFIG_PROPERTY
+   * @param name The name of the database.
+   * @param jdoConfig The URL for the JDO configuration file.
    */
-  public DatabaseConfiguration(String name, String xml, String sql)
-    throws IOException, MappingException {
-    System.out.println("") ;
-    System.out.println("----\"----") ;
-    System.out.println("DatabaseConfiguration()") ;
-    System.out.println("  Name : '" + name + "'") ;
-    System.out.println("  XML  : '" + xml + "'") ;
-    System.out.println("  SQL  : '" + sql + "'") ;
-        
-    this.setDatabaseName(name);
-      
-    // Setting a resource causes the item to be loaded from the classpath;
-    // in practice, this means that it comes from the jar holding the
-    // current class. Setting a URL loads the item from somewhere else,
-    // typically somewhere that survives a redeployment of the community
-    // web-application.
-    try {
-      setDatabaseConfigUrl(SimpleConfig.getSingleton().getUrl(DB_CONFIG_PROPERTY));
-    } catch (PropertyNotFoundException e) {
-      setDatabaseConfigResource(xml);
-    }
-    setDatabaseScriptResource(sql);
+  public DatabaseConfiguration(String name,
+                               URL    jdoConfig) throws MappingException, 
+                                                        IOException {
+    // Check that the configuration URL is readable. 
+    // If it is not, Castor may hang.
+    jdoConfig.openStream();
+    JDOManager.loadConfiguration(jdoConfig.toExternalForm());
+    this.databaseEngine = JDOManager.createInstance(name);
   }
 
-    /**
-     * Get a new JDO database connection.
-     * This will open a connection, even if the database files are not there.
-     *
-     */
-    public Database getDatabase()
-        throws DatabaseNotFoundException, PersistenceException
-        {
-        //
-        // If we have a JDO engine.
-        if (null != this.databaseEngine)
-            {
-            return this.databaseEngine.getDatabase() ;
-            }
-        //
-        // If we don't have a JDO engine.
-        else {
-            return null ;
-            }
-        }
+  /**
+   * Get a new JDO database-connection.
+   *
+   * @throws PersistenceException If the DB files are missing.
+   */
+  public Database getDatabase() throws PersistenceException {
+    return this.databaseEngine.getDatabase();
+  }
 
-    /**
-     * Our JDO database name - this must match the name in the database config.
-     *
-     */
-    private String databaseName = null ;
 
-    /**
-     * Get our JDO database name.
-     *
-     */
-    public String getDatabaseName()
-        {
-        return this.databaseName ;
-        }
+  /**
+   * Get our JDO database name.
+   */
+  public String getDatabaseName() {
+    return this.databaseEngine.getDatabaseName();
+  }
 
-    /**
-     * Set our JDO database name.
-     * Setting this may trigger a re-load of the JDO engine.
-     * @param name - The database name.
-     *
-     */
-    public void setDatabaseName(String name)
-        throws IOException
-        {
-        //
-        // Set our database name.
-        this.databaseName = name ;
-        //
-        // If the name is not null.
-        if (null != this.databaseName)
-            {
-            //
-            // Re-load our JDO engine.
-            this.loadDatabaseEngine() ;
-            }
-        }
 
-    /**
-     * Our JDO configuration resource.
-     *
-     */
-    private String databaseConfigResource = null ;
-
-    /**
-     * Get our JDO configuration resource name.
-     *
-     */
-    public String getDatabaseConfigResource()
-        {
-        return this.databaseConfigResource ;
-        }
-
-    /**
-     * Set our JDO configuration file name.
-     * This will look for a resource in the local classpath.
-     * Setting this may trigger a re-load of the JDO config and engine.
-     * @param name - The JDO config resource name.
-     *
-     * TODO - Change to a use generic filename.
-     * TODO - Look for a local file as well as a resource.
-     */
-    public void setDatabaseConfigResource(String resource)
-        throws IOException, MappingException
-        {
-        //
-        // Set our config name.
-        this.databaseConfigResource = resource ;
-        //
-        // If the config name is null
-        if (null == this.databaseConfigResource)
-            {
-            //
-            // Reset the config url.
-            this.setDatabaseConfigUrl(null) ;
-            }
-        //
-        // If the config name is not null
-        else {
-            //
-            // Try to get a resource URL for our database config.
-            ClassLoader loader = this.getClass().getClassLoader() ;
-            URL url = loader.getResource(this.databaseConfigResource) ;
-            //
-            // If we couldn't find the resource.
-            if (null == url)
-                {
-                //
-                // Clear the config URL.
-                this.setDatabaseConfigUrl(null) ;
-                //
-                // Throw a FileNotFoundException.
-                String message = "Failed to find database config : '" + this.databaseConfigResource + "'" ;
-                throw new FileNotFoundException(message) ;
-                }
-            //
-            // If we did find the resource.
-            else {
-                //
-                // Set the new config URL.
-                this.setDatabaseConfigUrl(url) ;
-                }
-            }
-        }
-
-    /**
-     * Our JDO configuration URL.
-     *
-     */
-    private URL databaseConfigUrl = null ;
-
-    /**
-     * Get our JDO configuration URL.
-     *
-     */
-    public URL getDatabaseConfigUrl()
-        {
-        return this.databaseConfigUrl ;
-        }
-
-    /**
-     * Set our JDO configuration URL.
-     * Setting this may trigger a re-load of the JDO config and engine.
-     * @param url - The JDO configuration URL.
-     *
-     */
-    public void setDatabaseConfigUrl(URL url)
-        throws IOException, MappingException
-        {
-        //
-        // Set the current URL.
-        this.databaseConfigUrl = url ;
-        //
-        // If the URL is not null.
-        if (null != this.databaseConfigUrl)
-            {
-            //
-            // Re-load our database config.
-            this.loadDatabaseConfig() ;
-            }
-        }
-
-    /**
-     * Load our database configuration.
-     *
-     */
-    protected void loadDatabaseConfig()
-        throws IOException, MappingException
-        {
-        //
-        // If the config URL is not null.
-        if (null != this.databaseConfigUrl)
-            {
-            //
-            // Load the JDO configuration.
-            JDO.loadConfiguration(this.databaseConfigUrl.toString()) ;
-            //
-            // If we have a database engine.
-            if (null != this.databaseEngine)
-                {
-                //
-                // Set our engine configuration.
-                this.databaseEngine.setConfiguration(this.databaseConfigUrl.toString()) ;
-                }
-            }
-        }
 
     /**
      * Our JDO database engine.
      *
      */
-    private JDO databaseEngine = null ;
+    private JDOManager databaseEngine = null ;
 
     /**
-     * Access to our JDO engine.
-     *
+     * Gives a description of the database via the DB engine.
      */
-    public JDO getDatabaseEngine()
-        {
-        return this.databaseEngine ;
-        }
+    public String getDatabaseDescription() {
+      return this.databaseEngine.getDescription();
+    }
 
-    /**
-     * Create our JDO database engine.
-     *
-     */
-    protected void loadDatabaseEngine()
-        throws IOException
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("DatabaseConfiguration:loadDatabaseEngine()") ;
-        System.out.println("  Name   : '" + this.databaseName + "'" ) ;
-        System.out.println("  Config : '" + this.databaseConfigUrl + "'" ) ;
-        //
-        // If we have a database name.
-        if (null != this.databaseName)
-            {
-            //
-            // Create our JDO engine.
-            this.databaseEngine = new JDO(this.databaseName) ;
-            //
-            // If we didn't get an engine.
-            if (null == this.databaseEngine)
-                {
-                String message = "Failed to create JDO engine : '" + databaseName + "'" ;
-                throw new FileNotFoundException(message) ;
-                }
-            //
-            // If we have a config URL.
-            if (null != this.databaseConfigUrl)
-                {
-                //
-                // Set the JDO configuration.
-                this.databaseEngine.setConfiguration(this.databaseConfigUrl.toString()) ;
-                }
-            }
-        }
 
-    /**
-     * Our database SQL script, used to create our database tables.
-     *
-     */
-    private String databaseScriptResource = null ;
-
-//
-// TODO - Change this to handle URLs as well.
-//
-
-    /**
-     * Get our database SQL script resource name.
-     *
-     */
-    public String getDatabaseScriptResource()
-        {
-        return this.databaseScriptResource ;
-        }
-
-    /**
-     * Set our database SQL script resource name.
-     * @param resource - The resource name of our database SQL script.
-     * TODO - Change this to handle URLs instead.
-     *
-     */
-    public void setDatabaseScriptResource(String resource)
-        {
-        this.databaseScriptResource = resource ;
-        }
-
-    /**
-     * Create our database tables.
-     *
-     */
-    public void resetDatabaseTables()
-        throws IOException, DatabaseNotFoundException, PersistenceException
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("DatabaseConfiguration:resetDatabaseTables()") ;
-        //
-        // If we have a database script.
-        if (null != this.databaseScriptResource)
-            {
-            //
-            // Try executing the database script.
-            executeSQL(this.databaseScriptResource) ;
-            }
-//
-// PATCH - Force a reload of our JDO engine.
-// Was put in to fix PasswordData problem.
-// Didn't work.
-//this.loadDatabaseEngine() ;
-        }
+  /**
+   * Creates the database schema using the default script.
+   */
+  public void resetDatabaseTables() throws IOException, 
+                                           DatabaseNotFoundException, 
+                                           PersistenceException {
+    URL u = this.getClass().getResource(DEFAULT_SCRIPT);
+    if (u == null) {
+      throw new FileNotFoundException("Can't find the default script on the " +
+                                      "classpath with which to reset the database.");
+    }
+    else {
+      resetDatabaseTables(u);
+    }
+  }
+    
+  /**
+   * Creates the database schema using a given script.
+   *
+   * @param script The URL for the SQL-script file.
+   */
+  public void resetDatabaseTables(URL script) throws IOException, 
+                                                     DatabaseNotFoundException, 
+                                                     PersistenceException {
+    executeSQL(script);
+  }
 
     /**
      * Execute a SQL resource.

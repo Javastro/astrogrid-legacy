@@ -1,86 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+<project>
 
-    <!--+
-        | Extend the common project descriptor.
-        +-->
-    <extend>../maven/project.xml</extend>
-
-    <!--+
-        | The short name of the project.
-        +-->
-    <id>astrogrid-community-server</id>
+  <pomVersion>3</pomVersion>  
     
-    <currentVersion>2008.1</currentVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-community-server</artifactId>
+  <id>astrogrid-community-server</id>
+  <name>Community service library</name>
+  <currentVersion>2008.2.a01</currentVersion>
+  <shortDescription>Classes for the community web-application</shortDescription>
+  <description>This project builds the jar of classes needed for the community web-application.</description>
     
-    <!--+
-        | The full name of the project.
-        +-->
-    <name>Community server</name>
+  <siteAddress>terror.star.le.ac.uk</siteAddress>
+  <siteDirectory>/software_docs/community-server-${pom.currentVersion}</siteDirectory>
+  <distributionSite>katajuta.star.le.ac.uk</distributionSite>
+  <distributionDirectory>/var/www/html/maven/org.astrogrid/jars</distributionDirectory>
+  
+  
+  <inceptionYear>2003</inceptionYear>
 
-    <!--+
-        | The Java package name of the project.
-        +-->
-    <package>org.astrogrid.community.server</package>
+  <developers>
+    <developer>
+      <id>dave</id>
+      <name>Dave Morris</name>
+      <organization>IoA, Cambridge</organization>
+      <roles>
+        <role>Original developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>gtr</id>
+      <name>Guy Rixon</name>
+      <organization>IoA Cambridge</organization>
+      <roles>
+        <role>Maintainer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Gary Gilchrist</name>
+      <organization>University of Leicester</organization>
+      <roles>
+        <role>Tester</role>
+      </roles>
+      <timezone>0</timezone>
+    </contributor>
+    <contributor>
+      <name>Mark Holliman</name>
+      <organization>WFAU, Edinburgh</organization>
+      <roles>
+        <role>Tester</role>
+      </roles>
+      <timezone>0</timezone>
+    </contributor>
+  </contributors>
+  
+  <reports>
+    <report>maven-license-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report> maven-linkcheck-plugin </report>
+    <report>maven-pmd-plugin</report>
+  </reports>
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org/</url>
+    <logo>http://www.astrogrid.org/images/AGlogo.png</logo>
+  </organization>
 
-    <!--+
-        | A short description of the project.
-        | The short description should be limited to a single line.
-        +-->
-    <shortDescription>
-        Community Server Area
-    </shortDescription>
+  <repository>
+    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/server</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/server</developerConnection>
+  </repository>
+  
+    <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <resources>  
+      <resource>
+        <directory>src/config/database</directory>
+        <includes>
+          <include>*.xml</include>
+          <include>*.sql</include>
+        </includes>
+      </resource>
+    </resources>
+    <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+        <include>**/*TestCase.java</include>
+      </includes>
+      <excludes>
+        <exclude>**/*Test.frog</exclude>
+      </excludes>
+      <resources>  
+        <resource>
+          <directory>src/config/database</directory>
+          <includes>
+            <include>*.xml</include>
+            <include>*.sql</include>
+          </includes>
+        </resource>
+        <resource>
+          <directory>src/pem</directory>
+          <includes>
+            <include>*.pem</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+  </build>
 
-    <!--+
-        | A detailed description of the project.
-        | This is used to generate the front page of the projects web site. 
-        +-->
-    <description>
-        <![CDATA[
-            Server side of the Community and implemenation of the various Web Service methods.  See the Webapp portion though
-          on the deployment and setup of the community.
-        ]]>
-    </description>
 
-    <!--+
-        | Our cvs repository location.
-        +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/server
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/server
-        </developerConnection>
-    </repository>
-
-    <!--+
-        | The external libraries required to build our component.
-        +-->
     <dependencies>
-        <!--+
-            | The AstroGrid common components.
-            +-->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-common</artifactId>
-            <version>2007.2.01</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
-        <!--+
-            | The Community common components.
-            +-->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-community-common</artifactId>
+        <version>2008.0</version>
+        <type>jar</type>
+        <url>http://www.astrogrid.org/</url>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-common</artifactId>
+        <version>2007.2.01</version>
+        <type>jar</type>
+        <url>http://www.astrogrid.org/</url>
+      </dependency>
+        
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-security</artifactId>
+        <version>2008.2.a05</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.14</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-jglobus</artifactId>
+        <version>1.4</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>bouncycastle</groupId>
+        <artifactId>bcprov-jdk15</artifactId>
+        <version>139</version>
+        <type>jar</type>
+      </dependency>
+      
        <!--+
             | The FileManager client.
             +-->
@@ -150,8 +239,15 @@
             +-->
         <dependency>
             <groupId>castor</groupId>
+            <artifactId>castor-jdo</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>castor</groupId>
             <artifactId>castor</artifactId>
-            <version>0.9.5</version>
+            <version>1.2</version>
             <type>jar</type>
             <url>http://www.castor.org/</url>
         </dependency>
@@ -251,45 +347,35 @@
           <version>1.5.1</version>
           <type>jar</type>
         </dependency>
+        
+      <dependency>
+        <groupId>servletapi</groupId>
+        <artifactId>servletapi</artifactId>
+        <version>2.4</version>
+        <type>jar</type>
+      </dependency>
+      
+      <!-- These are only for testing. They are not needed in an
+           application that uses the artifact of this Maven project. -->
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>6.1.11</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>6.1.11</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty-servlet-tester</artifactId>
+        <version>6.1.11</version>
+        <type>jar</type>
+      </dependency>
          
     </dependencies>
-
-    <!--+
-        | The build properties for our project.
-        +-->
-    <build>
-        <!--+
-            | The location of our Java source code.
-            +-->
-        <sourceDirectory>src/java</sourceDirectory>
-        <!--+
-            | The location of our JUnit source code.
-            +-->
-        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
-        <!--+
-            | Our JUnit test classes.
-            +-->
-        <unitTest>
-            <includes>
-              <include>**/*Test.java</include>
-              <include>**/*TestCase.java</include>
-            </includes>
-            <excludes>
-              <exclude>**/*Test.frog</exclude>
-            </excludes>
-            <!--+
-                | The resources for our tests.
-                +-->
-            <resources>
-                <resource>
-                    <directory>target/database/config</directory>
-                    <includes>
-                        <include>*.xml</include>
-                        <include>*.sql</include>
-                    </includes>
-                </resource>
-            </resources>
-        </unitTest>
-    </build>
 
 </project>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<!DOCTYPE databases PUBLIC
+    "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+    "http://castor.exolab.org/jdo-conf.dtd">
+
+<jdo-conf>
+  <database name="test-database-004" engine="hsql">
+    <driver class-name="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:mem:test-database-004">
+      <param name="user" value="sa"/>
+      <param name="password" value=""/>
+    </driver>
+    <mapping href="astrogrid-community-mapping.xml"/>
+  </database>
+  <transaction-demarcation mode="local"/>
+</jdo-conf>

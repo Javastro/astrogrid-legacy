@@ -296,8 +296,6 @@ public class CertificateAuthority {
                                            String    password,
                                            UserFiles userFiles) throws Exception {
     
-    // Generate the certificate request.
-    String dn = this.rootDn + "/CN=" + commonName;
     String kp = userFiles.getKeyFile().getAbsolutePath();
     String cp = userFiles.getCertificateFile().getAbsolutePath();
     String mp = this.myProxyDirectory.getAbsolutePath();
