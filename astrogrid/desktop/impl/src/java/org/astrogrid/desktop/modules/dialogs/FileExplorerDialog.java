@@ -413,7 +413,6 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
             for (int i = 0 ; i < model.getSize(); i++) {
                 final StorageFolder folder = (StorageFolder) model.getElementAt(i);
                 if (matches (folder)) {
-                    System.err.println("moving to " + folder);
                     view.getNavigator().move(folder);
                     break;
                 }

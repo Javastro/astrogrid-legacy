@@ -136,7 +136,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 				l.add(f.getName().getBaseName());
 				final Hashtable t = new Hashtable(f.getNode().getAttributes());
 				l.add(t);// some kind of map here.
-				System.err.println(t);
+				//System.err.println(t);
 				scav.getTupp().singleTargetFireAndForgetMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}
