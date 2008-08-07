@@ -798,10 +798,20 @@
     get-context-path get-servlet-path
     to-string concat)
   (define-java-classes (<url> |java.net.URL|))
-  (let ((include-servlet-path? (and (not (null? with-servlet?))
-                                    (car with-servlet?))))
-;;     (chatter "server-name=~s  server-port=~s  context-path=~s  servlet-path=~s  include-servlet?=~a"
+  (define (header-host req) ;get the intended target (virtual?) host from the HTTP/1.1 'Host' header
+    (define-generic-java-methods get-header)
+    (let* ((hhj (get-header req (->jstring "hOsT")))
+           (hhs (->string-or-empty hhj)))
+      (cond ((= (string-length hhs) 0)  ;'Host:' header was null; return #f
+             #f)
+            ((string-index hhs #\:)     ;includes a port
+             => (lambda (idx) (->jstring (substring hhs 0 idx))))
+            (else hhj))))
+ (let ((include-servlet-path? (and (not (null? with-servlet?))
+                                   (car with-servlet?))))
+;;     (chatter "server-name=~s  header-host=~s  server-port=~s  context-path=~s  servlet-path=~s  include-servlet?=~a"
 ;;              (->string-or-empty (get-server-name request))
+;;              (or (header-host request) "<none>")
 ;;              (->string-or-empty (get-server-port request))
 ;;              (->string-or-empty (get-context-path request))
 ;;              (->string-or-empty (get-servlet-path request))
@@ -810,7 +820,7 @@
      (to-string
       (java-new <url>
                 (->jstring "http")
-                (get-server-name request)
+                (or (header-host request) (get-server-name request))
                 (let ((port (get-server-port request)))
                   ;; avoid adding the explicit port number, if it's on port 80
                   (if (= (->number port) 80)
