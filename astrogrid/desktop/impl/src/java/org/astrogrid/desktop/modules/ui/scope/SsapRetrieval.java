@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.22 2008/08/06 18:54:47 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.23 2008/08/07 11:52:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui.scope;
+
+import static org.apache.commons.lang.StringUtils.containsIgnoreCase;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -25,6 +27,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SsapCapability;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
@@ -87,9 +90,14 @@ public class SsapRetrieval extends AbstractRetriever {
     // latest SSA spec has replaced useage of UCD by utype - but is poorly implemented at present
     // so keeping both systems at present.
     // only implemented a partial list of the utypes for now - even less than for the ucd.
-    public static final String SPECTRA_URL_ATTRIBUTE = "DATA_LINK";
+    public static final String SPECTRA_URL_LEGACY_ATTRIBUTE = "DATA_LINK";
+    public static final String SPECTRA_URL_UCD = "meta.ref.url";
+    public static final String POS_UCD = "pos.eq";
+    public static final String RA_UCD = "pos.eq.ra";
+    public static final String DEC_UCD = "pos.eq.dec";
     public static final String SPECTRA_URL_UTYPE = "Access.Reference";
     public static final String SPECTRA_TITLE_ATTRIBUTE = "VOX:Image_Title";
+    public static final String SPECTRA_TITLE_UCD = "meta.id"; // matches meta.id;meta.main and meta.id;meta.dataset
     public static final String SPECTRA_TITLE_UTYPE = "Target.Name";
     public static final String SPECTRA_AXES_ATTRIBUTE = "VOX:Spectrum_axes";
     public static final String SPECTRA_DIMEQ_ATTRIBUTE = "VOX:Spectrum_dimeq"; 
@@ -112,6 +120,7 @@ public class SsapRetrieval extends AbstractRetriever {
         public SsapTableHandler(final TreeNode serviceNode) {
             super(serviceNode);
         }
+        int posCol = -1; // combined ra,dec col - grr.
         int urlCol = -1;
         int titleCol = -1;
         int formatCol = -1;
@@ -134,6 +143,15 @@ public class SsapRetrieval extends AbstractRetriever {
         }
         
         @Override
+        public void info(final String name, final String value, final String content)
+                throws SAXException {
+            // assume we're inside the 'result' resource.
+            if ("QUERY_STATUS".equals(name) && ! "OK".equalsIgnoreCase(value)) {
+                throw new DalProtocolException(content != null ? content : value);
+            }
+        }
+                
+        @Override
         public void startTable(final StarTable starTable) throws SAXException {
             if (skipNextTable || resultsTableParsed) {
                 return;
@@ -148,55 +166,65 @@ public class SsapRetrieval extends AbstractRetriever {
            super.rowData(row);
             
         }
-       
-        
+             
         @Override
         protected void startTableExtensionPoint(final int col, final ColumnInfo columnInfo) {            
             super.startTableExtensionPoint(col, columnInfo);
             final DescribedValue utypeDV = columnInfo.getAuxDatumByName("utype");
+            final String ucd  = columnInfo.getUCD();
+
+            if (columnInfo.isArray() 
+                    &&  (ucd != null && containsIgnoreCase(ucd,POS_UCD))
+                    ) { // could test utypes here too, but there's so many of em.
+                posCol = col;
+                return;
+            }
             if (utypeDV != null) {
                 final String utype = utypeDV.getValueAsString(300);
                 if (StringUtils.isNotBlank(utype)) {
                     // use 'contains' as they sometimes seem to come with a 'ssa:' prefix
-                    if (StringUtils.containsIgnoreCase(utype,SPECTRA_URL_UTYPE)) {
+                    if (containsIgnoreCase(utype,SPECTRA_URL_UTYPE)) {
                         urlCol = col;
-                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_TITLE_UTYPE)) {
+                    } else if (containsIgnoreCase(utype,SPECTRA_TITLE_UTYPE)) {
                         titleCol = col;
-                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_DIMEQ_UTYPE)) {
+                    } else if (containsIgnoreCase(utype,SPECTRA_DIMEQ_UTYPE)) {
                         spectrumDimeqCol = col;
-                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_SCALEQ_UTYPE)) {
+                    } else if (containsIgnoreCase(utype,SPECTRA_SCALEQ_UTYPE)) {
                         spectrumScaleqCol = col;
-                    } else if (StringUtils.containsIgnoreCase(utype,SPECTRA_FORMAT_UTYPE)) {
+                    } else if (containsIgnoreCase(utype,SPECTRA_FORMAT_UTYPE)) {
                         formatCol = col;
                     }
-                    //if utype was provided, don't even bother looking at ucd.
-                    return;
                 }
             }
-            final String ucd  = columnInfo.getUCD();
-            if (StringUtils.isBlank(ucd)) {
-                return;
-            }
-            if (ucd.equalsIgnoreCase(SPECTRA_URL_ATTRIBUTE)) {
-                urlCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_TITLE_ATTRIBUTE)) {
-                titleCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_FORMAT_ATTRIBUTE)) {
-                formatCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_AXES_ATTRIBUTE)) {
-                spectrumAxesCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_DIMEQ_ATTRIBUTE)) {
-                spectrumDimeqCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_SCALEQ_ATTRIBUTE)) {
-                spectrumScaleqCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_UNITS_ATTRIBUTE)){
-                spectrumUnitsCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_OBS_ID_ATTRIBUTE)) {
-                obsIdCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_START_TIME_ATTRIBUTE)) {
-                startTimeCol = col;
-            } else if (ucd.equalsIgnoreCase(SPECTRA_END_TIME_ATTRIBUTE)) {
-                endTimeCol= col;
+
+            if (ucd != null) {
+                if (containsIgnoreCase(ucd,SPECTRA_URL_LEGACY_ATTRIBUTE)
+                        || containsIgnoreCase(ucd,SPECTRA_URL_UCD)) {
+                    urlCol = col;
+                } else if (containsIgnoreCase(ucd,RA_UCD)) {
+                    raCol = col;
+                } else if (containsIgnoreCase(ucd,DEC_UCD)) {
+                    decCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_TITLE_ATTRIBUTE)
+                        || containsIgnoreCase(ucd,SPECTRA_TITLE_UCD)) {
+                    titleCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_FORMAT_ATTRIBUTE)) {
+                    formatCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_AXES_ATTRIBUTE)) {
+                    spectrumAxesCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_DIMEQ_ATTRIBUTE)) {
+                    spectrumDimeqCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_SCALEQ_ATTRIBUTE)) {
+                    spectrumScaleqCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_UNITS_ATTRIBUTE)){
+                    spectrumUnitsCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_OBS_ID_ATTRIBUTE)) {
+                    obsIdCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_START_TIME_ATTRIBUTE)) {
+                    startTimeCol = col;
+                } else if (containsIgnoreCase(ucd,SPECTRA_END_TIME_ATTRIBUTE)) {
+                    endTimeCol= col;                    
+                }
             }
         }
         
@@ -204,7 +232,7 @@ public class SsapRetrieval extends AbstractRetriever {
         protected void rowDataExtensionPoint(final Object[] row, final TreeNode valNode) {
             try {
                 final URL url = new URL(safeTrim(row[urlCol]));
-                valNode.setAttribute(SPECTRA_URL_ATTRIBUTE,url.toString());
+                valNode.setAttribute(SPECTRA_URL_LEGACY_ATTRIBUTE,url.toString());
 
                 String title;
                 if (titleCol > -1) {
@@ -217,6 +245,9 @@ public class SsapRetrieval extends AbstractRetriever {
                 String type;
                 if (formatCol > -1) {
                     type = safeTrim(row[formatCol]);
+                    if (type.equals("FITS")) { // make it a bit more standard.
+                        type = VoDataFlavour.MIME_FITS_SPECTRUM;
+                    }
                 } else {
                     type="unknown";
                 }
@@ -289,7 +320,13 @@ public class SsapRetrieval extends AbstractRetriever {
                         }
                     }
                     filenameBuilder.append(".");
-                    filenameBuilder.append(StringUtils.substringAfterLast(type,"/"));
+                    String suffix = StringUtils.substringAfterLast(type,"/");
+                    // work around for ESO
+                    final int nonsense = StringUtils.indexOfAny(suffix,";, ?'\"");
+                    if (nonsense != -1) {
+                        suffix = suffix.substring(0,nonsense);
+                    }
+                    filenameBuilder.append(suffix);
                     model.addResultFor(SsapRetrieval.this,filenameBuilder.toString(),fileObject,(FileProducingTreeNode)valNode);                    
                 } catch (final FileSystemException e) {
                     logger.warn(service.getId() + " : Unable to create result file object - skipping row",e);
@@ -312,13 +349,50 @@ public class SsapRetrieval extends AbstractRetriever {
    	}        
     	
     	@Override
+    	protected String getRaFromRow(final Object[] row) {
+            if (posCol != -1) {
+                final Object o = row[posCol];
+                if (o instanceof double[]){
+                    return Double.toString(((double[])o)[0]);
+                } else if(o instanceof float[]) {
+                    return Float.toString(((float[])o)[0]);
+                } else {
+                    throw new ProgrammerError("Unexpected array type " + o.getClass().getName());
+                }
+            }    	    
+    	    return super.getRaFromRow(row);
+    	}
+    	@Override
+    	protected String getDecFromRow(final Object[] row) {
+    	    if (posCol != -1) {
+    	        final Object o = row[posCol];
+    	        if (o instanceof double[]){
+    	            return Double.toString(((double[])o)[1]);
+    	        } else if(o instanceof float[]) {
+    	            return Float.toString(((float[])o)[1]);
+    	        } else {
+    	            throw new ProgrammerError("Unexpected array type " + o.getClass().getName());
+    	        }
+    	    }
+    	    //otherwise do this.
+    	    return super.getDecFromRow(row);
+    	    
+    	}
+    	@Override
         protected boolean omitRowFromTooltip(final int rowIndex) {
     	    return rowIndex == urlCol;
     	}
         
         @Override
-        protected boolean isWorthProceeding() {
-            return super.isWorthProceeding() && urlCol >= 0; // minimal subset of stuff.
+        protected void isWorthProceeding() throws InsufficientMetadataException {
+            // minimal subset of stuff.
+            if (posCol == -1) { // check for ra and dec then
+                super.isWorthProceeding();
+            }
+            if(urlCol == -1) {
+                throw new InsufficientMetadataException("Access Reference column not detected");
+            }
+        
         }
         //make it hyper-strict - to make life easy for vospec
         /*
@@ -347,7 +421,8 @@ public class SsapRetrieval extends AbstractRetriever {
                 formatCol = -1;
                 endTimeCol = -1;
                 startTimeCol = -1;
-                obsIdCol = -1;                
+                obsIdCol = -1;     
+                posCol = -1;
             
         }
     }// end table handler class.
@@ -360,6 +435,10 @@ public class SsapRetrieval extends AbstractRetriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.23  2008/08/07 11:52:36  nw
+RESOLVED - bug 2767: VOExplore searching eso-ssap
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2767
+
 Revision 1.22  2008/08/06 18:54:47  nw
 removed closing html tag.
 

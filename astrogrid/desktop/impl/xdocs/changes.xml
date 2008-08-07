@@ -16,6 +16,9 @@
 	</head>
 <body>
 <release version="2008.2.rc1" date="unreleased">
+    <action dev="nw" type="fix" issue="2767">
+    astroscope: improved parsing of non-standard ssap services
+    </action>
     <action dev="nw" type="add">
     astroscope: added position and offset columns to results table.
     </action>

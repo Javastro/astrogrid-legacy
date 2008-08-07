@@ -16,11 +16,12 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 public class CatalogTerminalConeRetrieval extends ConeRetrieval {
     
 
-	public CatalogTerminalConeRetrieval(Service service, ConeCapability cap, URI acurl, NodeSocket socket, VizModel model, Cone cone, double ra, double dec, double sz) {
+	public CatalogTerminalConeRetrieval(final Service service, final ConeCapability cap, final URI acurl, final NodeSocket socket, final VizModel model, final Cone cone, final double ra, final double dec, final double sz) {
 		super(service, cap, acurl, socket, model, cone, ra, dec, sz);
 	}
 
-	protected BasicTableHandler createTableHandler(TreeNode serviceNode) {
+	@Override
+    protected BasicTableHandler createTableHandler(final TreeNode serviceNode) {
 		return new CatalogTerminalTableHandler(serviceNode);
 	}
 	
@@ -30,18 +31,17 @@ public class CatalogTerminalConeRetrieval extends ConeRetrieval {
 		/**
 		 * @param serviceNode
 		 */
-		public CatalogTerminalTableHandler(TreeNode serviceNode) {
+		public CatalogTerminalTableHandler(final TreeNode serviceNode) {
 			super(serviceNode);
 		}
 		/** overridden - don't care about data - just want to count the rows */
-		public void rowData(Object[] row) throws SAXException {
-	        if (!isWorthProceeding()) { // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
-	            message = "Insufficient table metadata";
-	            throw new DalProtocolException(message);
-	        }
+		@Override
+        public void rowData(final Object[] row) throws SAXException {
+		    isWorthProceeding();
 	        resultCount++;
 		}
-		public void endTable() throws SAXException {
+		@Override
+        public void endTable() throws SAXException {
 			serviceNode.setAttribute(RESULT_COUNT,Integer.toString(resultCount));
 		super.endTable();
 		}

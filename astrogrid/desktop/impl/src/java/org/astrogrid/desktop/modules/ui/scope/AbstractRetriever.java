@@ -298,13 +298,10 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
      * @see uk.ac.starlink.votable.TableHandler#rowData(java.lang.Object[])
      */
     public void rowData(final Object[] row) throws SAXException {
-        if (!isWorthProceeding()) { // no point, not enough metadata 
-            message = "Insufficient table metadata";
-            throw new DalProtocolException(message);
-        }
+        isWorthProceeding();
         resultCount++; 
-        final String rowRa = safeTrim(row[raCol]);
-        final String rowDec = safeTrim(row[decCol]);                                 
+        final String rowRa = getRaFromRow(row);
+        final String rowDec = getDecFromRow(row);                                 
         final DefaultTreeNode valNode = createValueNode();
         final String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
         valNode.setAttribute(LABEL_ATTRIBUTE,"*");
@@ -369,6 +366,22 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
           }          
     }
 
+    /** factored out, may be overidden to source dec from elsewhere.
+     * @param row
+     * @return
+     */
+    protected String getDecFromRow(final Object[] row) {
+        return safeTrim(row[decCol]);
+    }
+
+    /** factored out, may be overidden to source ra from elsewhere
+     * @param row
+     * @return
+     */
+    protected String getRaFromRow(final Object[] row) {
+        return safeTrim(row[raCol]);
+    }
+
     /** maybe overridden by subclasses to skip row data from tooltip */
     protected boolean omitRowFromTooltip(final int rowIndex) {
         return false;
@@ -392,10 +405,17 @@ public abstract class AbstractRetriever extends BackgroundWorker implements Retr
         titles = null;
     }
  
-    //test whether this table has sufficient metadata to make it worth parsing.
-    // otherwise, we just skip it.
-    protected boolean isWorthProceeding() {
-        return raCol >= 0 && decCol >= 0; 
+    /**test whether this table has sufficient metadata to make it worth parsing.
+     otherwise, we just skip it.
+     if table is acceptable, just passes, else should throw a descriptive exception. 
+     */
+    protected void isWorthProceeding() throws InsufficientMetadataException {
+        if (raCol == -1) {
+            throw new InsufficientMetadataException("RA column not detected");
+        }
+        if (decCol == -1) {
+            throw new InsufficientMetadataException("Dec column not detected");
+        }        
     }
 
 // methods for inspecting votable content outside tables.

@@ -150,10 +150,7 @@ public class StapRetrieval extends AbstractRetriever {
 		 */
 		@Override
         public void rowData(final Object[] row) throws SAXException {
-			if (!isWorthProceeding()) { // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
-				message = "Insufficient table metadata";
-				return;
-			}
+		    isWorthProceeding();
 			resultCount++;
 
 			//String rowRa = row[raCol].toString();
@@ -318,8 +315,10 @@ public class StapRetrieval extends AbstractRetriever {
 		}
 
 		@Override
-        protected boolean isWorthProceeding() {
-			return accessCol >= 0;
+        protected void isWorthProceeding() throws InsufficientMetadataException {
+		    if (accessCol == -1) {
+		        throw new InsufficientMetadataException("Access Reference column not detected");
+		    }
 		}  
 
 		// extended - resets our new variables too.

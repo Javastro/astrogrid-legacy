@@ -22,23 +22,28 @@ public class VotableContentHandler extends TableContentHandler {
     
     /** extended handler interface that provides access to some of the votable wrapper elements too */
     public static interface VotableHandler extends TableHandler {
-        /** called when an INFO element is encountered anywhere outside a RESOURCE */
+        /** called when an INFO element is encountered anywhere outside a RESOURCE
+         * modified - also called when encountered inside a resource too - as there seems to 
+         * be no other way to get to this info.
+         *  */
         void info(String name,String value, String content) throws SAXException;
         /** called when a PARAM element is encountered anywhere outside a RESOURCE */
         void param(String name,String value, String description) throws SAXException;
         /** called when a RESOURCE is encountered */
         void resource(String name,String id, String type) throws SAXException;
     }
-    public VotableContentHandler(boolean strict) {
+    public VotableContentHandler(final boolean strict) {
         super(strict);
     }
 
     /** @deprecated prefer setVoTableHandler to take full advantage of the funtionalities of this subclass */
-    public void setTableHandler(TableHandler handler) {
+    @Deprecated
+    @Override
+    public void setTableHandler(final TableHandler handler) {
         super.setTableHandler(handler);
     }
     /** set the handler for this parse */
-    public void setVotableHandler(VotableHandler handler) {
+    public void setVotableHandler(final VotableHandler handler) {
         this.handler = handler;
         super.setTableHandler(handler);
         
@@ -64,10 +69,11 @@ public class VotableContentHandler extends TableContentHandler {
     /** used to store a description text content */
     private final StrBuilder description = new StrBuilder();
 
-    public void startElement(String namespaceURI, String localName,
-            String name, Attributes atts) throws SAXException {
-        String tagName =getTagName(namespaceURI,localName,name);
-        if (inResource == 0 && "INFO".equals(tagName)) {
+    @Override
+    public void startElement(final String namespaceURI, final String localName,
+            final String name, final Attributes atts) throws SAXException {
+        final String tagName =getTagName(namespaceURI,localName,name);
+        if (/*inResource == 0 &&*/ "INFO".equals(tagName)) {
             // store the name and value attributes
             inInfo = true;
             saveContent = true;
@@ -83,8 +89,8 @@ public class VotableContentHandler extends TableContentHandler {
         } else if ("RESOURCE".equals(tagName)) {
             // note that we're in a resource, and so should ignore any more INFO or PARAM until out of again.
             inResource +=1;
-            String resName = getAttribute(atts,"name");
-            String id = getAttribute(atts,"ID");
+            final String resName = getAttribute(atts,"name");
+            final String id = getAttribute(atts,"ID");
             String type = getAttribute(atts,"type");
             if (type == null) {
                 type = "results";
@@ -94,9 +100,10 @@ public class VotableContentHandler extends TableContentHandler {
         super.startElement(namespaceURI, localName, name, atts);
     }
     
-    public void endElement(String namespaceURI, String localName, String name)
+    @Override
+    public void endElement(final String namespaceURI, final String localName, final String name)
             throws SAXException {
-        String tagName = getTagName(namespaceURI,localName,name);
+        final String tagName = getTagName(namespaceURI,localName,name);
         if ("RESOURCE".equals(tagName)) {
             inResource -= 1;
         } else if (inParam && "DESCRIPTION".equals(tagName)) {
@@ -108,7 +115,7 @@ public class VotableContentHandler extends TableContentHandler {
             nameAttribute = null;
             valueAttribute = null;
             description.clear();
-        } else if (inResource == 0 && "INFO".equals(tagName)) {
+        } else if (/*inResource == 0 &&*/ "INFO".equals(tagName)) {
             handler.info(nameAttribute,valueAttribute,description.toString());
             inInfo = false;
             saveContent = false;
@@ -119,7 +126,8 @@ public class VotableContentHandler extends TableContentHandler {
         super.endElement(namespaceURI, localName, name);
     }
     
-    public void characters(char[] ch, int start, int length)
+    @Override
+    public void characters(final char[] ch, final int start, final int length)
             throws SAXException {
         if (saveContent) {
             description.append(ch,start,length);
@@ -137,8 +145,8 @@ public class VotableContentHandler extends TableContentHandler {
      * @param  name  normal VOTable name of the attribute
      * @return  value of attribute <tt>name</tt> or null if it doesn't exist
      */
-    private String getAttribute( Attributes atts, String name ) {
-        String val = atts.getValue( name );
+    private String getAttribute( final Attributes atts, final String name ) {
+        final String val = atts.getValue( name );
         return val != null ? val : atts.getValue( "", name );
     }
     
@@ -151,8 +159,8 @@ public class VotableContentHandler extends TableContentHandler {
      * @param  localName   local name
      * @param  qName   qualified name
      */
-    private String getTagName( String namespaceURI, String localName,
-                                 String qName ) {
+    private String getTagName( final String namespaceURI, final String localName,
+                                 final String qName ) {
         if ( localName != null && localName.length() > 0 ) {
             return localName;
         }

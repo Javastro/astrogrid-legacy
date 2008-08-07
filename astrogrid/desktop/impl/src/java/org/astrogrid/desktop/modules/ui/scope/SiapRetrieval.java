@@ -195,11 +195,14 @@ public class SiapRetrieval extends AbstractRetriever {
 	}
         
     @Override
-    protected boolean isWorthProceeding() {
+    protected void isWorthProceeding() throws InsufficientMetadataException{
     	if (imgCol == -1) {// maybe it's a non-standard service - give it a second chance.
     		imgCol = dataLinkCol;
     	}
-        return super.isWorthProceeding() && imgCol >= 0;
+    	if (imgCol == -1) {
+    	    throw new InsufficientMetadataException("Access Reference column not detected");
+    	}
+        super.isWorthProceeding();
     }  
     
     // extended - resets our new variables too.

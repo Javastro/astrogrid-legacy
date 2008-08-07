@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.19 2008/08/05 14:02:47 nw Exp $
+/*$Id: DALImpl.java,v 1.20 2008/08/07 11:52:36 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -144,6 +144,7 @@ public abstract class DALImpl implements Dal{
     		throw new InvalidArgumentException("Nulls in " + arg0 + " " + arg1 + " " + arg2);
     	}  
     	try {
+    	   // encoding the arg causes problems with 2 poorly implemented ssap services - my vote is to leave this as-is though.
     	final String encoded = arg2 == null ? "" : URLEncoder.encode(arg2,"UTF-8");
     	final String query = arg0.getQuery();
     	if (query == null) {
@@ -480,6 +481,10 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.20  2008/08/07 11:52:36  nw
+RESOLVED - bug 2767: VOExplore searching eso-ssap
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2767
+
 Revision 1.19  2008/08/05 14:02:47  nw
 configured the parser.
 
