@@ -31,7 +31,8 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
     private final FileSystemManager vfs;
 	
 	
-	protected boolean invokable(FileObject f) { 
+	@Override
+    protected boolean invokable(final FileObject f) { 
 		return true;
 	}
 
@@ -48,28 +49,31 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 	}
 	
 	// can only handle a single selection.
-	public void manySelected(FileObject[] list) {
+	@Override
+    public void manySelected(final FileObject[] list) {
 		noneSelected();
 	}
 	
-	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();
+	@Override
+    public void actionPerformed(final ActionEvent e) {
+		final List l = computeInvokable();
 		logger.debug(l);
 		final FileObject fo = (FileObject)l.get(0);
 		logger.debug(fo);
 		(new BackgroundWorker(uiParent.get(),"Displaying " + fo.getName().getBaseName(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
-			protected Object construct() throws Exception {
-			    FileObject f = AstroscopeFileObject.findAstroscopeFileObject(fo);
+			@Override
+            protected Object construct() throws Exception {
+			    final FileObject f = AstroscopeFileObject.findAstroscopeOrInnermostFileObject(fo);
 			    URL u = f.getURL();
 			    if (! (u.getProtocol().equals("file") || u.getProtocol().equals("http") || u.getProtocol().equals("ftp"))) { // pass it to the browser directly.
 			        // download file to temporary location, and then open it
 			        reportProgress("Downloading file to temporary location");
-			        String ext = StringUtils.substringAfterLast(fo.getName().getBaseName(),".");
-			        File tmpFile = File.createTempFile("view-in-browser","." + ext);
+			        final String ext = StringUtils.substringAfterLast(fo.getName().getBaseName(),".");
+			        final File tmpFile = File.createTempFile("view-in-browser","." + ext);
 			        tmpFile.deleteOnExit();
 			        logger.debug(tmpFile);
-			        FileObject tmp = vfs.resolveFile(tmpFile.toURI().toString());
+			        final FileObject tmp = vfs.resolveFile(tmpFile.toURI().toString());
 			        FileUtil.copyContent(fo,tmp);
 			        u = tmp.getURL();
 			    }
