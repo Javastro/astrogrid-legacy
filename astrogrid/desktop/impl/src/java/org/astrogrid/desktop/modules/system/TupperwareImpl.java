@@ -326,7 +326,11 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		    int progress = 0;
 		    setProgress(progress,opCount);
 		    final List noArgs = new ArrayList();
-		    final String ivorn = safeStringCast(singleTargetRequestResponseMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id));
+		    Object resp = singleTargetRequestResponseMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id);
+		    if (resp instanceof Object[]) { // not the type we expect, but what's come be used to symbolize 'null'
+		        resp = null;
+		    }
+            final String ivorn = safeStringCast(resp);
             setProgress(++progress,opCount);
 		    if (TupperwareImpl.this.vodesktop_ivorn.equals(ivorn)) {
 		    	return null; // it's only ourselves
