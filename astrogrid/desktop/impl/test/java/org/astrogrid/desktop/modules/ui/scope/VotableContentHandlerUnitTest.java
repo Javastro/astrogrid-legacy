@@ -55,6 +55,7 @@ public class VotableContentHandlerUnitTest extends TestCase {
         // set up expectations.
         // one resource
         h.resource(null,null,"results");
+        h.info("QUERY_STATUS","OK","");
         
         expectDataTable();
                        
@@ -70,9 +71,11 @@ public class VotableContentHandlerUnitTest extends TestCase {
     public void testParseMultipleNestedResource() throws Exception {
         // set up expectations.                
         h.resource(null,null,"results");
+        h.info("QUERY_STATUS","OK","");        
         h.resource("fred","42","results");
+        h.info("QUERY_STATUS","OK","");    
         h.resource("nested",null,"meta");
-        
+        h.info("QUERY_STATUS","OK","");          
                        
         replay(h);
         final InputStream is = this.getClass().getResourceAsStream("resources.vot");
@@ -95,11 +98,15 @@ public class VotableContentHandlerUnitTest extends TestCase {
         h.param("p1","v1","content");
         h.param("p2","v2","content2");
         h.resource(null,null,"results");
+        h.info("QUERY_STATUS","OK","");          
         h.info("n","v","c");
         h.resource("fred","42","results");
+        h.info("QUERY_STATUS","OK","");          
         h.resource("nested",null,"meta");
+        h.info("QUERY_STATUS","OK","");          
         h.info("na","va","co");
         h.resource(null,null,"results");
+        h.info("QUERY_STATUS","OK","");          
         
         expectDataTable();
         h.info("a","b","c");        
@@ -119,7 +126,8 @@ public class VotableContentHandlerUnitTest extends TestCase {
     public void testParseBz1729() throws Exception {
         // set up expectations.
         h.resource(null,null,"results");
-        
+        h.info("QUERY_STATUS","OK","");  
+        h.info("distinct_dataset","501","");
         expectDataTable();
         
         h.resource("FOV Extensions","FOV","meta");
