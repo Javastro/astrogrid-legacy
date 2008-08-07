@@ -15,7 +15,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.2.rc1" date="unreleased">
+<release version="2008.2.rc1" date="2008-8-7">
     <action dev="nw" type="fix" issue="2767">
     astroscope: improved parsing of non-standard ssap services
     </action>
@@ -36,7 +36,7 @@
     Task Runner: File selection dialogue navigates to vospace where necessary
     </action>
     <action dev="nw" type="add">
-    UI: Remember user's preferred views for nextime
+    UI: Remember user's preferred views for nex ttime
     </action>
     <action dev="nw" type="add">
     voexplorer: added mode to protect registry from overlarge novice queries.
@@ -45,10 +45,10 @@
     Plastic: connect to external hub if already running.
     </action>
     <action dev="nw" type="fix" issue="2785, 2151, 1799">
-    Changed default address for AR and plastic connections to 'localhost'    
+    AR: Changed default address for AR and plastic connections to 'localhost'    
     </action>
     <action dev="nw" type="fix" issue="2790">
-    xmlrpc is now tolerant of a wider character set in data returned from registry.
+    AR: xmlrpc is now tolerant of a wider character set in data returned from registry.
     </action>
     <action dev="nw" type="fix">
     astroscope: recognizes fits files as spectra, so they can be sent via plastic
@@ -57,52 +57,46 @@
     voexplorer: added indication when tabular metadata view contains data
     </action> 
     <action dev="nw" type="fix" issue="2763">
-        test query no longer reports a failure as an error
+        voexplorer: service test query no longer reports a failure as a ui error
     </action>
     <action dev="nw" type="fix" issue="2494">
         sesame service endpoint can now be altered.
     </action>
     <action dev="nw" type="fix" issue="2778">
-        File Explorer - 'new folder' dialogue now displays correctly.
+        File Explorer:  'new folder' dialogue now displays correctly.
     </action>
     <action dev="nw" type="fix">
         Voexplorer: Improved presentation of validation level.
     </action>
-</release>
-<release version="2008.1.snapshot03" date="unreleased">
     <action dev="nw" type="fix" issue="2253">
-        AR now accepts CEA tool structures with repeated parameters.
+        AR: now accepts CEA tool structures with repeated parameters.
     </action>
     <action dev="nw" type="update">
-        Altered registry resource caching scheme -faster and better cache usage.
+        VOExplorer : Altered registry resource caching scheme -faster and better cache usage.
     </action>
     <action dev="nw" type="add">
-        pre fill search form in astroscope with testquery parameters, if available.
+        Astroscope: pre fill search form  with testquery parameters, if available.
     </action>
-</release>
-<release version="2008.1.snapshot02" date="2008-05-12">
     <action dev="nw" type="fix">
-    Updated astroscope registry querying to process as a stream
+       Astroscope: Updated registry querying to process as a stream - improves performance
     </action>
     <action dev="nw" type="fix" issue="2718">
-    errors when sending plastic messages are now displayed in click-to-dismiss dialogues.
+        Plastic: errors when sending plastic messages are now displayed in click-to-dismiss dialogues.
     </action>
     <action dev="nw" type="fix">
-    slightly improved presentation of STC coverage - still no STC renderer through
+        Voexplorer: slightly improved presentation of STC coverage - still no STC renderer through
     </action>
     <action dev="nw" type="fix">
-    added waveband column to voexplorer / astroscope resource table
+        Voexplorer: added waveband column to voexplorer / astroscope resource table
     </action>
     <action dev="nw" type="fix">
-    Altered voexplorer, astroscope, AR to work with new CDS resource format.
+        VoExplorer, Astroscope , AR: Altered to work with new CDS resource format.
     </action>
-</release>
-<release version="2008.1.snapshot01" date="2008-04-29">
 <action dev="jl" type="fix" issue="2756">
-    Cures loss of focus after certain edits in QB
+   QB: Cures loss of focus after certain edits in QB
 </action>
 <action dev="jl" type="fix" issue="2757">
-    Tool tips for columns and tables in menus and tree view
+    QB: Tool tips for columns and tables in menus and tree view
 </action>
 <action dev="nw" type="update">
     Checked all dependent libraries for updates.
@@ -114,18 +108,18 @@ updated build and source to work with Java 1.5 (and start to take advantage of i
 Removed separate builds for asr, hub, etc.
 </action>
 <action dev="jl" type="fix" issue="2733">
-    ROUND and TRUNCATE fixed.
+    QB: ROUND and TRUNCATE fixed.
 </action>
 <action dev="jl" type="fix" issue="2735">
-    Fixed cardinalities for Maths and Trig functions.
+    QB: Fixed cardinalities for Maths and Trig functions.
 </action>
 <action dev="jl" type="fix" issue="2736">
-    Explicit joins are now carried out more tastefully.
+    QB: Explicit joins are now carried out more tastefully.
     The join condition is checked for tables. If required, tables
     are included automatically.
 </action>
     <action dev="nw" type="fix" issue="2724">
-        Fixed obscure race-condition in astroscope.
+        Astroscope: Fixed obscure race-condition.
     </action>
 </release>
 <release version="2008.1" date="2008-03-31" >
