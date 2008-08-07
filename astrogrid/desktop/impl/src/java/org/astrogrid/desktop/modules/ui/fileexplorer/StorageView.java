@@ -504,7 +504,12 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     	    tableScroll.getViewport().setBackground(Color.WHITE);
             mainPanel.add(tableScroll,"table");
-            mainPanel.show(PREFERENCES.get(PREFERRED_VIEW_KEY,"list"));
+            
+            if (PREFERENCES.get(PREFERRED_VIEW_KEY,"list").equals("list")) {
+                getIcons().doClick(); // misleading names - the constant 'list' corresponds to the icons view. really.
+            } else {
+                getList().doClick();
+            } 
     
       // finally, select first item in the views list, to start the whole thing going.
     	    folders.clearSelection();
