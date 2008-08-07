@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns:core="jelly:core" default="astrogrid-install-artifact">
-
-  <goal name="astrogrid-install-artifact" prereqs="war:install"/>
-  <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot"/>
-  <goal name="astrogrid-deploy-artifact"  prereqs="war:deploy"/>
-  <goal name="astrogrid-deploy-snapshot"  prereqs="war:deploy-snapshot"/>
-  <goal name="astrogrid-build-site"       prereqs="site"/>
-  <goal name="astrogrid-deploy-site"      prereqs="site:deploy"/>
+<project xmlns:core="jelly:core" default="war:install">
   
-
   <postGoal name="war:webapp">
 
     <property name="webapp.docs" location="${maven.war.webapp.dir}/docs"/>

@@ -10,7 +10,6 @@ import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.server.ca.CertificateAuthority;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
-import org.astrogrid.community.server.security.manager.SecurityManagerImpl;
 import org.astrogrid.community.server.sso.CredentialStore;
 import org.astrogrid.config.SimpleConfig;
 import org.bouncycastle.asn1.smime.SMIMEAttributes;
@@ -229,22 +228,6 @@ public class AccountBean {
     }
   }
   
-  /**
-   * Updates the user's password.
-   */
-  public void setPassword(String password) {
-    System.out.println("setting password " + password + " for " + this.userName);
-    if (this.stored) {
-      SecurityManagerImpl smi = new SecurityManagerImpl();
-      AccountData ad = getBasicAccount(this.userName);
-      try {
-        System.out.println("Setting password for " + ad.getIdent());
-        smi.setPassword(ad.getIdent(), password);
-      } catch (Exception ex) {
-        ex.printStackTrace();
-      }
-    }
-  }
   
   /**
    * Raises the basic account data from the community database.

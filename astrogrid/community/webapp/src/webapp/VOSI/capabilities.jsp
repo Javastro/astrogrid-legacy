@@ -22,7 +22,7 @@ String secure = (String) request.getAttribute("org.astrogrid.vosi.baseurlsecure"
 >
 
   <capability standardID="ivo://org.astrogrid/std/Community/accounts">
-    <interface xsi:type="vs:ParamHTTP" version="2" role="std">
+    <interface xsi:type="vs:ParamHTTP" version="3" role="std">
       <accessURL use="base"><%=secure%>/accounts</accessURL>
     </interface>
   </capability>

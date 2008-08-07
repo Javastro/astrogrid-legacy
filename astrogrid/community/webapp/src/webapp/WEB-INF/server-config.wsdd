@@ -13,47 +13,6 @@
 
  <handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
  <handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
- <service name="SecurityService" provider="java:RPC">
-
-  <operation name="checkPassword" qname="ns2:checkPassword" returnQName="checkPasswordReturn" returnType="ns1:SecurityToken" soapAction="" xmlns:ns1="http://data.security.common.community.astrogrid.org" xmlns:ns2="urn:service.security.common.community.astrogrid.org">
-   <parameter name="in0" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <parameter name="in1" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <fault class="org.astrogrid.community.common.exception.CommunitySecurityException" qname="ns2:fault" type="ns3:CommunitySecurityException" xmlns:ns3="http://exception.common.community.astrogrid.org"/>
-   <fault class="org.astrogrid.community.common.exception.CommunityServiceException" qname="ns2:fault" type="ns4:CommunityServiceException" xmlns:ns4="http://exception.common.community.astrogrid.org"/>
-   <fault class="org.astrogrid.community.common.exception.CommunityIdentifierException" qname="ns2:fault" type="ns5:CommunityIdentifierException" xmlns:ns5="http://exception.common.community.astrogrid.org"/>
-  </operation>
-  <operation name="checkToken" qname="ns7:checkToken" returnQName="checkTokenReturn" returnType="ns6:SecurityToken" soapAction="" xmlns:ns6="http://data.security.common.community.astrogrid.org" xmlns:ns7="urn:service.security.common.community.astrogrid.org">
-   <parameter name="in0" type="ns6:SecurityToken"/>
-   <fault class="org.astrogrid.community.common.exception.CommunitySecurityException" qname="ns7:fault" type="ns8:CommunitySecurityException" xmlns:ns8="http://exception.common.community.astrogrid.org"/>
-   <fault class="org.astrogrid.community.common.exception.CommunityServiceException" qname="ns7:fault" type="ns9:CommunityServiceException" xmlns:ns9="http://exception.common.community.astrogrid.org"/>
-   <fault class="org.astrogrid.community.common.exception.CommunityIdentifierException" qname="ns7:fault" type="ns10:CommunityIdentifierException" xmlns:ns10="http://exception.common.community.astrogrid.org"/>
-  </operation>
-  <operation name="splitToken" qname="ns11:splitToken" returnQName="splitTokenReturn" returnType="ns11:ArrayOf_xsd_anyType" soapAction="" xmlns:ns11="urn:service.security.common.community.astrogrid.org">
-   <parameter name="in0" type="ns12:SecurityToken" xmlns:ns12="http://data.security.common.community.astrogrid.org"/>
-   <parameter name="in1" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <fault class="org.astrogrid.community.common.exception.CommunitySecurityException" qname="ns11:fault" type="ns13:CommunitySecurityException" xmlns:ns13="http://exception.common.community.astrogrid.org"/>
-   <fault class="org.astrogrid.community.common.exception.CommunityServiceException" qname="ns11:fault" type="ns14:CommunityServiceException" xmlns:ns14="http://exception.common.community.astrogrid.org"/>
-   <fault class="org.astrogrid.community.common.exception.CommunityIdentifierException" qname="ns11:fault" type="ns15:CommunityIdentifierException" xmlns:ns15="http://exception.common.community.astrogrid.org"/>
-  </operation>
-  <operation name="getServiceStatus" qname="ns17:getServiceStatus" returnQName="getServiceStatusReturn" returnType="ns16:ServiceStatusData" soapAction="" xmlns:ns16="http://data.service.common.community.astrogrid.org" xmlns:ns17="urn:service.security.common.community.astrogrid.org">
-   <fault class="org.astrogrid.community.common.exception.CommunityServiceException" qname="ns17:fault" type="ns18:CommunityServiceException" xmlns:ns18="http://exception.common.community.astrogrid.org"/>
-  </operation>
-  <parameter name="allowedMethods" value="splitToken checkPassword getServiceStatus checkToken"/>
-  <parameter name="typeMappingVersion" value="1.2"/>
-  <parameter name="wsdlPortType" value="SecurityService"/>
-  <parameter name="className" value="org.astrogrid.community.server.security.service.SecurityServiceImpl"/>
-  <parameter name="wsdlServicePort" value="SecurityService"/>
-  <parameter name="wsdlTargetNamespace" value="urn:service.security.common.community.astrogrid.org"/>
-  <parameter name="wsdlServiceElement" value="SecurityServiceService"/>
-  <parameter name="schemaUnqualified" value="http://data.security.common.community.astrogrid.org,http://data.service.common.community.astrogrid.org,urn:service.security.common.community.astrogrid.org,http://exception.common.community.astrogrid.org"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns19:CommunityException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.common.exception.CommunityException" xmlns:ns19="http://exception.common.community.astrogrid.org"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns20:CommunityIdentifierException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.common.exception.CommunityIdentifierException" xmlns:ns20="http://exception.common.community.astrogrid.org"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns21:CommunityServiceException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.common.exception.CommunityServiceException" xmlns:ns21="http://exception.common.community.astrogrid.org"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns22:CommunitySecurityException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.common.exception.CommunitySecurityException" xmlns:ns22="http://exception.common.community.astrogrid.org"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns23:SecurityToken" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.common.security.data.SecurityToken" xmlns:ns23="http://data.security.common.community.astrogrid.org"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns24:ServiceStatusData" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.common.service.data.ServiceStatusData" xmlns:ns24="http://data.service.common.community.astrogrid.org"/>
-  <arrayMapping innerType="xsd:anyType" languageSpecificType="java:java.lang.Object[]" qname="ns25:ArrayOf_xsd_anyType" xmlns:ns25="urn:service.security.common.community.astrogrid.org" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
- </service>
 
  <service name="PolicyManager" provider="java:RPC">
   <operation name="getServiceStatus" qname="ns59:getServiceStatus" returnQName="getServiceStatusReturn" returnType="ns58:ServiceStatusData" soapAction="" xmlns:ns58="http://data.service.common.community.astrogrid.org" xmlns:ns59="urn:manager.policy.common.community.astrogrid.org">

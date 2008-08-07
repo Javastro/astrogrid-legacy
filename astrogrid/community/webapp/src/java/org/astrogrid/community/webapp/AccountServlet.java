@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.security.AccessControlException;
+import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.CertPath;
@@ -97,34 +98,59 @@ public class AccountServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-  throws ServletException, IOException {
-    
-    String userName = null;
-    String path = request.getPathInfo();
-    if (path.startsWith("/") && path.endsWith("/proxy")) {
-      userName = path.substring(1, path.lastIndexOf("/proxy"));
+  protected void doPost(HttpServletRequest  request, 
+                        HttpServletResponse response) throws IOException {
+
+    try {
+      String userName = null;
+      String path = request.getPathInfo();
+      if (path.startsWith("/") && path.endsWith("/proxy")) {
+        userName = path.substring(1, path.lastIndexOf("/proxy"));
+        postToProxy(request, userName, response);
+      }
+      else {
+        log.info("Request to account servlet for " + path + " is no good.");
+        response.sendError(response.SC_NOT_FOUND);
+        return;
+      }
     }
-    else {
-      log.info("Request to account servlet for " + path + " is no good.");
-      response.sendError(response.SC_NOT_FOUND);
+    catch (AccessControlException e) {
+      e.printStackTrace();
+      response.sendError(response.SC_FORBIDDEN, e.getMessage());
       return;
     }
+    catch (IllegalArgumentException e) {
+      e.printStackTrace();
+      response.sendError(response.SC_BAD_REQUEST, e.getMessage());
+      return;
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      response.sendError(response.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+      return;
+    }
+  }
+
+  
+  /**
+   * Handles a posted request to a proxy resource.
+   */
+  private void postToProxy(HttpServletRequest  request,
+                           String              userName,
+                           HttpServletResponse response) throws Exception {
     
     String password = request.getParameter("password");
     if (password == null|| password.length() == 0) {
       log.info("Certificate request failed for " + userName +
                "; no password was given.");
-      response.sendError(response.SC_BAD_REQUEST, "No password was given.");
-      return;
+      throw new AccessControlException("No password was given.");
     }
     
     String pemKey = request.getParameter("key");
     if (pemKey == null || pemKey.length() == 0) {
       log.info("Certificate request failed for " + userName +
                "; no public key was given.");
-      response.sendError(response.SC_BAD_REQUEST, "No public key was given.");
-      return;
+      throw new IllegalArgumentException("No public key was given.");
     }
     
     int lifetime;
@@ -132,8 +158,7 @@ public class AccountServlet extends HttpServlet {
     if (requestedLifetime == null || requestedLifetime.length() == 0) {
       log.info("Certificate request failed for " + userName +
                "; no lifetime was given.");
-      response.sendError(response.SC_BAD_REQUEST, "No lifetime was given.");
-      return;
+      throw new IllegalArgumentException("No lifetime was given.");
     }
     else {
       lifetime = Integer.parseInt(requestedLifetime);
@@ -153,44 +178,28 @@ public class AccountServlet extends HttpServlet {
       else {
         log.info("Certificate request failed for " + userName +
                  "; the public key is not a valid PEM object.");
-        response.sendError(response.SC_BAD_REQUEST, "The public key is not a valid PEM object.");
-        return;
+        throw new IllegalArgumentException("The public key is not a valid PEM object.");
       }
     }
     catch (Exception e) {
       e.printStackTrace();
-      response.sendError(response.SC_BAD_REQUEST, "The public key is not a valid PEM object.");
-      return;
+      throw new IllegalArgumentException("The public key is not a valid PEM object.");
     }
     
     // Check the password.
-    try {
-      this.store.authenticate(userName, password);
-      log.debug(userName + " has provided a valid password.");
-    }
-    catch (AccessControlException e) {
-      e.printStackTrace();
-      response.sendError(response.SC_FORBIDDEN, e.getMessage());
-      return;
-    }
+    this.store.authenticate(userName, password);
+    log.debug(userName + " has provided a valid password.");
     
     // Generate a proxy certificate using the given key.
     // Make up a certificate chain containing the proxy.
     CertPath chain = null;
     int nCerts = 0;
-    try {
-      List certificates = 
+    List certificates = 
           this.store.getCertificateChain(userName, password, key, lifetime);
-      chain = CertificateFactory.getInstance("X509").generateCertPath(certificates);
-      nCerts =  certificates.size();
-      log.debug("Proxy certificate has been generated; now " + 
-                nCerts + " certificates to send");
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      response.sendError(response.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-      return;
-    }
+    chain = CertificateFactory.getInstance("X509").generateCertPath(certificates);
+    nCerts =  certificates.size();
+    log.debug("Proxy certificate has been generated; now " + 
+              nCerts + " certificates to send");
     
     // Send the certificate chain in PkiPath format.
     response.setContentType("application/octet");
@@ -203,15 +212,41 @@ public class AccountServlet extends HttpServlet {
                userName);
     } catch (CertificateEncodingException ex) {
       ex.printStackTrace();
-      response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
-                         "Failed to encode the certificate chain as PkiPath.");
+      throw new Exception("Failed to encode the certificate chain as PkiPath.");
     }
     catch (IOException ex) {
       ex.printStackTrace();
-      response.sendError(response.SC_INTERNAL_SERVER_ERROR, 
-                         "Failed to send certificate chain to the client.");
+      throw new Exception("Failed to send certificate chain to the client.");
     }
   }
+  
+    protected void postToUser(HttpServletRequest  request,
+                              String              userName,
+                              HttpServletResponse response) throws GeneralSecurityException {
+      
+    String oldPassword = getParameter(request, "oldPassword");
+    String newPassword = getParameter(request, "newPassword");
+    String rptPassword = getParameter(request, "repeatNewPassword");
+    
+    assert userName != null;
+    
+    if (oldPassword == null) {
+      throw new IllegalArgumentException("No value was given for the current password.");
+    }
+    else if (newPassword.length() < 7) {
+       throw new IllegalArgumentException("Your password must be at least 7 characters long.");
+    }
+    else if (newPassword == null) {
+       throw new IllegalArgumentException("No value was given for the new password.");
+    }
+    else {
+      String verdict = null;
+      CredentialStore  cs = new CredentialStore();
+      System.out.println("Changing password for " + userName);
+      cs.changePassword(userName, oldPassword, newPassword);
+    }
+  }
+  
   
   /** 
    * Handles the HTTP GET method.
@@ -272,4 +307,27 @@ public class AccountServlet extends HttpServlet {
     }
     
   }
+  
+ 
+  /**
+   * Gets a parameter value.
+   * Missing parameters and parameters with empty values come back as null strings.
+   * Leading and trailing white space is removed from the values.
+   */
+  private String getParameter(HttpServletRequest request, String parameter) {
+    String value = request.getParameter(parameter);
+    if (value == null) {
+      return null;
+    }
+    else {
+      String trimmed = value.trim();
+      if (trimmed.length() == 0) {
+        return null;
+      }
+      else {
+        return trimmed;
+      }
+    }
+  }
+  
 }

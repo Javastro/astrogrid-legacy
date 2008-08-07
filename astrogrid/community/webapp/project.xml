@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-
+  
+  <pomVersion>3</pomVersion>
   <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-community</artifactId>
   <id>astrogrid-community</id>
   <name>Community Web Application</name>
-  <currentVersion>2008.1.03</currentVersion>
+  <currentVersion>2008.2.a01</currentVersion>
   <shortDescription>A web-application providing the community services.</shortDescription>
-  <description>Community is a AstroGrid web application to manage user accounts.</description>
+  <description>Community is a AstroGrid web-application to manage user accounts.</description>
   
   <siteAddress>terror.star.le.ac.uk</siteAddress>
   <siteDirectory>/software_docs/community-${pom.currentVersion}</siteDirectory>
@@ -19,13 +21,18 @@
       <id>dave</id>
       <name>Dave Morris</name>
       <organization>IoA, Cambridge</organization>
-      <roles>Original developer</roles>
+      <roles>
+        <role>Original developer</role>
+      </roles>
       <timezone>0</timezone>
     </developer>
     <developer>
       <id>gtr</id>
       <name>Guy Rixon</name>
       <organization>IoA Cambridge</organization>
+      <roles>
+        <role>maintainer</role>
+      </roles>
       <timezone>0</timezone>
     </developer>
   </developers>
@@ -33,13 +40,17 @@
     <contributor>
       <name>Gary Gilchrist</name>
       <organization>University of Leicester</organization>
-      <roles>Tester</roles>
+      <roles>
+        <role>Tester</role>
+      </roles>
       <timezone>0</timezone>
     </contributor>
     <contributor>
       <name>Mark Holliman</name>
       <organization>WFAU, Edinburgh</organization>
-      <roles>Tester</roles>
+      <roles>
+        <role>Tester</role>
+      </roles>
       <timezone>0</timezone>
     </contributor>
   </contributors>
@@ -49,23 +60,19 @@
     <report>maven-junit-report-plugin</report>
     <report>maven-javadoc-plugin</report>
     <report>maven-jxr-plugin</report>
-    <report> maven-linkcheck-plugin </report>
     <report>maven-pmd-plugin</report>
   </reports>
   
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/webapp
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/webapp
-        </developerConnection>
-    </repository>
+  <repository>
+    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/webapp</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/webapp</developerConnection>
+  </repository>
     
-    <organization>
-      <name>AstroGrid</name>
-      <url>http://www.astrogrid.org</url>
-    </organization>
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo.png</logo>
+  </organization>
  
     <build>
       <sourceDirectory>src/java</sourceDirectory>
@@ -74,18 +81,14 @@
         <includes>
           <include>**/*Test.java</include>
         </includes>
-        <resources>
-          <resource>
-            <!-- Credential files for testing the credential store. -->
-            <directory>src/pem</directory>
-            <includes>*.pem</includes>
-          </resource>
-        </resources>
       </unitTest>
       <resources>
         <resource> <!-- These are the configuration files used by JDO to find the DB -->
           <directory>src/config/database</directory>
-          <includes>*.xml *.sql</includes>
+          <includes>
+            <include>*.xml</include>
+            <include>*.sql</include>
+          </includes>
         </resource>  
       </resources>
     </build>
@@ -125,7 +128,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>2008.1</version>
+            <version>2008.2.a01</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -297,7 +300,17 @@
         <dependency>
             <groupId>castor</groupId>
             <artifactId>castor</artifactId>
-            <version>0.9.5</version>
+            <version>1.2</version>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor-jdo</artifactId>
+            <version>1.2</version>
             <type>jar</type>
             <url>http://www.castor.org/</url>
             <properties>

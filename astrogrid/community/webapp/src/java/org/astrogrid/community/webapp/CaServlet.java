@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.community.server.ca.CertificateAuthority;
 import org.astrogrid.community.server.ca.UserFiles;
-import org.astrogrid.community.server.security.manager.SecurityManagerImpl;
+import org.astrogrid.community.server.sso.CredentialStore;
 import org.astrogrid.config.SimpleConfig;
 
 /**
@@ -216,7 +216,7 @@ public class CaServlet extends HttpServlet {
     // Get the password from the community database.
     String password = null;
     try {
-      password = new SecurityManagerImpl().getPassword(userName);
+      password = new CredentialStore().getPassword(userName);
     }
     catch (Exception e) {
       e.printStackTrace();

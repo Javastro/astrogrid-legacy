@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
-import org.astrogrid.community.server.security.manager.SecurityManagerImpl;
 import org.astrogrid.community.server.sso.CredentialStore;
 import org.astrogrid.config.SimpleConfig;
 
@@ -103,11 +102,11 @@ public class AccountAdminServlet extends HttpServlet {
     
     // Update the passwords table of the community database.
     if (hasContent(password)) {
-      SecurityManagerImpl smi = new SecurityManagerImpl();
       try {
         CredentialStore cs = new CredentialStore();
-        cs.changeKeyPassword(userName, smi.getPassword(userName), password);
-        smi.setPassword(userName, password);
+        
+        String oldPassword = cs.getPassword(userName);
+        cs.resetDbPassword(userName, password);
         System.out.println("The password for " + userName + " is updated.");
       }
       catch (Exception e) {

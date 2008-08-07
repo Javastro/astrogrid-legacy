@@ -8,7 +8,7 @@ import org.astrogrid.community.common.exception.CommunityPolicyException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.policy.data.AccountData;
 import org.astrogrid.community.server.policy.manager.AccountManagerImpl;
-import org.astrogrid.community.server.security.manager.SecurityManagerImpl;
+import org.astrogrid.community.server.sso.CredentialStore;
 import org.astrogrid.config.SimpleConfig;
 
 /**
@@ -60,8 +60,8 @@ public class NewAccountServlet extends HttpServlet {
     }
     
     try {
-      SecurityManagerImpl smi = new SecurityManagerImpl();
-      smi.setPassword(userName.trim(), password);
+      CredentialStore cs = new CredentialStore();
+      cs.resetDbPassword(userName.trim(), password);
     }
     catch (Exception ex) {
       ex.printStackTrace();

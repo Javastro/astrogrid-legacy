@@ -62,6 +62,10 @@
           <p><input type="submit" value="Reset password"/></p>
         </form>
         <p>
+          If you reset a password here, you should allocate a new certificate to
+          the user in order that the user's credentials carry the same password.
+        </p>
+        <p>
          Your certificate authority is <jsp:include page="ca"/>.
         </p>
         <form action="ca" method="post">

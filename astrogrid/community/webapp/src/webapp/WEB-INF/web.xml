@@ -28,7 +28,7 @@
     <servlet-name>AccountServlet</servlet-name>
     <display-name>User accounts</display-name>
     <description>Allows users to extract certificate chains.</description>
-    <servlet-class>org.astrogrid.community.webapp.AccountServlet</servlet-class>
+    <servlet-class>org.astrogrid.community.server.sso.AccountServlet</servlet-class>
   </servlet>
   
   <servlet>

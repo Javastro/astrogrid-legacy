@@ -1,13 +1,12 @@
 package org.astrogrid.community.webapp;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.community.common.ivorn.CommunityIvornParser;
-import org.astrogrid.community.server.security.manager.SecurityManagerImpl;
-import org.astrogrid.community.server.security.service.SecurityServiceImpl;
 import org.astrogrid.community.server.sso.CredentialStore;
 
 /**
@@ -72,13 +71,9 @@ public class PasswordChangeServlet extends HttpServlet {
       String verdict = null;
       try {
         userName = userName.trim();
-        SecurityServiceImpl ss = new SecurityServiceImpl();
-        SecurityManagerImpl sm = new SecurityManagerImpl();
         CredentialStore     cs = new CredentialStore();
         System.out.println("Changing password for " + userName);
-        cs.changeKeyPassword(userName, oldPassword, newPassword);
-        ss.authenticate(userName, oldPassword);
-        sm.setPassword(userName, newPassword);
+        cs.changePassword(userName, oldPassword, newPassword);
         verdict = "Your password has been changed.";
       } 
       catch (Exception ex) {
@@ -104,7 +99,16 @@ public class PasswordChangeServlet extends HttpServlet {
    */
   private String getParameter(HttpServletRequest request, String parameter) {
     String value = request.getParameter(parameter);
-    return (value == null)? value : value.trim();
+    if (value == null) {
+      return null;
+    }
+    else {
+      try {
+        return URLDecoder.decode(value, "UTF-8").trim();
+      } catch (UnsupportedEncodingException ex) {
+        return null;
+      }
+    }
   }
   
   /**
