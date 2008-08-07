@@ -182,6 +182,7 @@
 ;;     (chatter fmt . args)  ; Format a message and return #t
 ;;     (chatter)             ; return list of messages, or #f if none
 ;;     (chatter #t)          ; ditto, but additionally clear the list
+;;     (chatter number?)     ; make the circular buffer this many elements long
 ;;     (chatter Object)      ; Object must have a log(String) method, return #t
 ;;     (chatter <output-port>) ; copy chatter to port, return #t
 ;; In the two last cases, subsequent calls to (chatter fmt . args) will put the
@@ -232,6 +233,8 @@
                      (append-circular-list chatter-list
                                            (apply format (cons #f msg))))
                #t)
+              ((number? (car msg))
+               (set! chatter-list (make-circular-list (car msg))))
               ((chatter-to-log (car msg))) ;try giving it to the log function
               (else
                (error "chatter: I don't know what you expect me to do with a ~s" msg)))))))
