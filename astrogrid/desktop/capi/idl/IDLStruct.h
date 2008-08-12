@@ -53,6 +53,7 @@ std::vector<IDLBase *> *mvec;
 
 class IDLStruct : public IDLBase {
 	friend void IDLArray::fillData(void * data);//needs to be a friend because of the way that IDL treats arrays of structs.
+	friend IDL_VPTR IDLArray::makeIDLVar(const std::string & name);
 public:
 	IDLStruct(const XmlRpcValue & v);
 	virtual ~IDLStruct();

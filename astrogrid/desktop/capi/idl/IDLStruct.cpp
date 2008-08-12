@@ -147,10 +147,12 @@ void IDLStruct::fillData(void * data){
 	for (i = unionTags.begin(); i != unionTags.end(); i++)
 	{
 	   IDL_MEMINT offset;
+	   IDL_VPTR member_var;
 	   std::string s = i->first;
-	   offset = IDL_StructTagInfoByName(sdef, const_cast<char *>(s.c_str()), IDL_MSG_LONGJMP, NULL);
-// 	   std::cerr << "filling data for " << s << " offset="<<offset ;
-   	   std::map<std::string, IDLBase *>::iterator im;
+	   offset = IDL_StructTagInfoByName(sdef, const_cast<char *>(s.c_str()), IDL_MSG_LONGJMP, &member_var);
+
+ 	   std::cerr << "filling data for " << s << " offset="<<offset <<"\n";
+    	   std::map<std::string, IDLBase *>::iterator im;
   	   if((im = mmap->find(i->first)) != mmap->end()){
 //  		   std::cerr << " DATA\n";
   		   im->second->fillData((char *)data + offset);
@@ -176,11 +178,24 @@ IDLArray::~IDLArray(){
 
 IDL_VPTR IDLArray::makeIDLVar(const std::string & name){
 	//FIXME this is not working....
-	IDL_VPTR tmpvar = IDL_Gettmp(); // this is a dummy array definition just here because of the way that filldata for arrays has been written - should probably be rewritten to make nicer
+	int n = mvec->size();
+	IDL_MEMINT dim[1];
+	dim[0] = n;
+    IDLBase* base = mvec->at(0);
+    bool isStruct = false;
+    char * arrdata;
+    if(base->getType() == IDL_TYP_STRUCT){ // yuk - IDL treats arrays of structs differently....
+//            std::cerr << "making array data - structure \n";
+    	isStruct = true;
+        IDLStruct * str = (IDLStruct *)base;
+        arrdata =IDL_MakeTempStructVector(str->sdef, (IDL_MEMINT)n, &var, IDL_TRUE);
 
-	fillData(&tmpvar->value.arr); // actually creates the array variable as well as filling it...
-    std::cerr << "filled array \n";
-	IDL_Deltmp(tmpvar);
+    } else {
+	    arrdata = IDL_MakeTempArray( base->getType(), 1, dim, IDL_ARR_INI_ZERO, &var);
+//  	           std::cerr << "making array data - type=" << base->getType() <<"\n";
+    }
+
+	fillData(arrdata); // actually creates the array variable as well as filling it...
     return var;
 }
 
@@ -198,15 +213,17 @@ void IDLArray::fillData(void * data)
 	    IDLBase* base = mvec->at(0);
 	    bool isStruct = false;
 	    IDL_StructDefPtr savedSdef = NULL;
+	    char * arrdata;
+	    IDL_VPTR arrvar; // need to create this temp var as otherwise cannot see a way of getting the correct array element size to use below
 	    if(base->getType() == IDL_TYP_STRUCT){ // yuk - IDL treats arrays of structs differently....
 //            std::cerr << "making array data - structure \n";
 	    	isStruct = true;
             IDLStruct * str = (IDLStruct *)base;
-            *((char **)data) =IDL_MakeTempStructVector(str->sdef, (IDL_MEMINT)n, &var, IDL_TRUE);
+            arrdata =IDL_MakeTempStructVector(str->sdef, (IDL_MEMINT)n, &arrvar, IDL_TRUE);
             savedSdef = str->sdef;
 
 	    } else {
-		    *((char **)data) = IDL_MakeTempArray( base->getType(), 1, dim, IDL_ARR_INI_ZERO, &var);
+		    arrdata = IDL_MakeTempArray( base->getType(), 1, dim, IDL_ARR_INI_ZERO, &arrvar);
 //  	           std::cerr << "making array data - type=" << base->getType() <<"\n";
 	    }
         for (int i = 0; i < n; i++){
@@ -214,9 +231,10 @@ void IDLArray::fillData(void * data)
         	if(savedSdef != NULL){
         		((IDLStruct *)elem)->sdef = savedSdef;// set the structure definition of each of the structures in the array to be equal to the first on - this does not get initialized in array otherwise
         	}
-//          	std::cerr << "fill i=" << i << " at " << arrayvar->value.arr->elt_len*i <<"\n";
-        	elem->fillData((char *)data + var->value.arr->elt_len*i);
+          	std::cerr << "fill i=" << i << " at " << arrvar->value.arr->elt_len*i << " address="<< (void *)(arrdata+ arrvar->value.arr->elt_len*i) <<"\n";
+        	elem->fillData((void *)((char *)data + arrvar->value.arr->elt_len*i));
         }
+        IDL_Deltmp(arrvar);
 	}
 }
 
@@ -296,7 +314,7 @@ IDLAtomic::IDLAtomic(const XmlRpcValue &v): xmlrv(v){
 		idlType = IDL_TYP_INT;
 		break;
 	case XmlRpcValue::TypeInt:
-		idlType = IDL_TYP_INT;
+		idlType = IDL_TYP_INT; // IDL header file is broken for osx as it thinks that INT is only short...
 		break;
 	case XmlRpcValue::TypeDouble:
 		idlType = IDL_TYP_DOUBLE;
@@ -331,10 +349,12 @@ void IDLBoolean::fillData(void * data){
 
 }
 void IDLDouble::fillData(void * data){
+	std::cerr << "filling double="<< (double)xmlrv << "\n";
 	*((double*)data) = (double)xmlrv;
 }
 void IDLInt::fillData(void * data){
-	*((IDL_INT*)data) = (int)xmlrv;
+	int tmp = (int)xmlrv;
+	*((IDL_INT*)data) = tmp;
 }
 void IDLString::fillData(void * data){
 	char * s = xmlrv;
