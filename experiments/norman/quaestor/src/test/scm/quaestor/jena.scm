@@ -13,15 +13,15 @@
 (define-java-classes (<uri> |java.net.URI|))
 
 
-(let ((maps '(("application/n3"                      . "N3")      
-              ("text/rdf+n3"                         . "N3")      
-              ("text/rdf+n3; charset=utf-8"          . "N3")      
-              ("application/x-turtle"                . "N3")
-              ("text/turtle"                         . "N3")
+(let ((maps '(("application/n3"                      . "TURTLE")      
+              ("text/rdf+n3"                         . "TURTLE")      
+              ("text/rdf+n3; charset=utf-8"          . "TURTLE")      
+              ("application/x-turtle"                . "TURTLE")
+              ("text/turtle"                         . "TURTLE")
               ("application/rdf+xml"                 . "RDF/XML") 
               ("application/rdf+xml; charset=wibble" . "RDF/XML") 
-              ("*/*"                                 . "N3")      
-              (#f                                    . "N3")
+              ("*/*"                                 . "TURTLE")      
+              (#f                                    . "TURTLE")
               ("text/plain"                          . "N-TRIPLE")
               ("wibble"                              . #f))))
   (expect mime-type-1
@@ -34,13 +34,13 @@
 ;;         '(#t #t #t #f #f)
 ;;         (map (lambda (l) (not (not (rdf:language-ok? l))))
 ;;              '("RDF/XML"
-;;                "N3"
+;;                "TURTLE"
 ;;                "N-TRIPLE"
 ;;                "OWL"                    ;for example -- shouldn't be recognised
 ;;                #f)))
 
 (let ((maps '(("RDF/XML"  . "application/rdf+xml")
-              ("N3"       . "text/rdf+n3")
+              ("TURTLE"       . "text/rdf+n3")
               ("N-TRIPLE" . "text/plain")
               ("wibble"   . #f))))
   (expect mime-type-3
@@ -48,8 +48,8 @@
           (map rdf:language->mime-type
                (map car maps))))
 
-;; Given a string containing N3, return the Jena model corresponding to it
-(define n3->model rdf:ingest-from-string/n3)
+;; Given a string containing Turtle, return the Jena model corresponding to it
+(define turtle->model rdf:ingest-from-string/turtle)
 
 (define (print-model-statements model)
   (let ((pu (java-null (java-class '|com.hp.hpl.jena.util.PrintUtil|))))
@@ -67,13 +67,13 @@
           "(urn:example#MyClass rdfs:subClassOf urn:example#MySuperClass)"
           "(urn:example#norman http://purl.org/dc/elements/1.1/name 'Norman')")
         (print-model-statements
-         (n3->model
+         (turtle->model
           "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MyClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperClass>. <urn:example#norman> <http://purl.org/dc/elements/1.1/name> \"Norman\".")))
 
 (expect-failure ingest-error
-                (n3->model "prefix : <urn:example>.")) ;missing '@' -- invalid
+                (turtle->model "prefix : <urn:example>.")) ;missing '@' -- invalid
 
-(let ((models (map n3->model
+(let ((models (map turtle->model
                    '("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MyClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperClass>."
                      "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MySuperClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperDuperClass>."
                      "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MySuperDuperClass> a rdfs:Class."
@@ -102,7 +102,7 @@
 ;;           "(urn:example#MySuperClass rdf:type rdfs:Class)"
 ;;           "(urn:example#MySuperClass rdfs:subClassOf urn:example#MySuperDuperClass)"
 ;;           "(urn:example#MySuperDuperClass rdf:type rdfs:Class)")
-;;         (let ((models (map n3->model
+;;         (let ((models (map turtle->model
 ;;                            '("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MyClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperClass>."
 ;;                              "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MySuperClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperDuperClass>."
 ;;                              "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MySuperDuperClass> a rdfs:Class."
@@ -110,7 +110,7 @@
 ;;           (print-model-statements (rdf:merge-models models))))
 
 (let ((test-model
-       (n3->model "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <http://example.org#MyClass> a rdfs:Class; rdfs:subClassOf <http://example.org#MySuperClass>. <http://example.org#norman> <http://purl.org/dc/elements/1.1/name> \"Norman\"."))
+       (turtle->model "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <http://example.org#MyClass> a rdfs:Class; rdfs:subClassOf <http://example.org#MySuperClass>. <http://example.org#norman> <http://purl.org/dc/elements/1.1/name> \"Norman\"."))
        (norman-string "http://example.org#norman")
        (norman-jstring (->jstring "http://example.org#norman")))
   (define-generic-java-methods

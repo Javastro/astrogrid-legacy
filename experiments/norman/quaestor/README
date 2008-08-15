@@ -9,8 +9,8 @@ optional, but I'm not positive that it is so in fact).
 
 It works with both Java 1.4 and 1.5, and with Tomcat 5.0.x and 5.5.x.
 
-I've tried it with Jena 2.3 and 2.5.5 -- other versions may or may not
-work.  See <http://jena.sourceforge.net>.  SDB is available at
+It works with Jena 2.5.6 (it might work with 2.5.x).  See
+<http://jena.sourceforge.net>.  SDB is available at
 <http://jena.sourceforge.net/SDB/>; the system works with SDB-1.0
 
 SISC is available from <http://sisc.sourceforge.net>.  Quaestor works

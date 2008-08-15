@@ -13,9 +13,8 @@
 
 (module jena
 ( rdf:new-empty-model
-  ;rdf:ingest-from-stream
   rdf:ingest-from-stream/language
-  rdf:ingest-from-string/n3
+  rdf:ingest-from-string/turtle
   rdf:merge-models
   rdf:mime-type->language
   rdf:language->mime-type
@@ -130,32 +129,38 @@
 
 ;; Given a language LANG, which may be a Jstring, scheme string or #f,
 ;; return true if it is one of the allowed RDF languages, "RDF/XML[-ABBREV]",
-;; "N-TRIPLE" and "N3".  Returns #f if it is not a legal language.
+;; "N-TRIPLE" and "TURTLE".  Returns #f if it is not a legal language.
 ;;  (define (rdf:language-ok? lang)
 ;;    (or (not lang)
 ;;        (member (as-scheme-string lang)
-;;                '("RDF/XML" "RDF/XML-ABBREV" "N-TRIPLE" "N3"))))
+;;                '("RDF/XML" "RDF/XML-ABBREV" "N-TRIPLE" "TURTLE"))))
+;;
+;; Note: as of at least Jena 2.5.6, possibly earlier, the N3 parser
+;; has been deprecated in favour of the TURTLE one, and will
+;; eventually be removed.  When we are asked for Notation3, below, we
+;; will actually return Turtle (which is equivalent, as far as RDF
+;; serialisation is concerned).
 
 ;; The set of mappings from MIME types to RDF languages.
 ;; Used in both directions.
 (define mime-lang-mappings
   '( ;; default type -- leave this first, so rdf:mime-type-list can strip it
-    ("*/*"                 . "N3")    ;Notation3 is the default type
+    ("*/*"                 . "TURTLE")    ;Turtle is the default type
 
     ;; ...http://www.w3.org/DesignIssues/Notation3
     ;; (and there's apparently an IANA registration pending)
-    ("text/rdf+n3"         . "N3")
+    ("text/rdf+n3"         . "TURTLE")
 
     ;; ...http://infomesh.net/2002/notation3/#mimetype
     ;; (but deprecated in the Notation3 page above)
-    ("application/n3"      . "N3")
+    ("application/n3"      . "TURTLE")
 
     ;;MIME type for Turtle http://www.dajobe.org/2004/01/turtle/
-    ("application/x-turtle" . "N3")
+    ("application/x-turtle" . "TURTLE")
 
     ;;Now preferred to application/x-turtle
     ;; see http://www.w3.org/TeamSubmission/turtle/#sec-mediaReg
-    ("text/turtle"         . "N3")
+    ("text/turtle"         . "TURTLE")
 
     ;; ...http://www.w3.org/TR/rdf-syntax-grammar/#section-MIME-Type
     ;; Generic RDF MIME type: http://www.ietf.org/rfc/rfc3870.txt
@@ -349,25 +354,25 @@
                 (chatter (apply string-append (cons "Logger warnings: " l))))))
     model))
 
-;; RDF:INGEST-FROM-STRING/N3 : string uri? -> model
+;; RDF:INGEST-FROM-STRING/TURTLE : string uri? -> model
 ;;
 ;; Convenience method, which takes a string containing Notation3,
-;; and ingests it.  The language is fixed as N3, and the base URI
+;; and ingests it.  The language is fixed as TURTLE, and the base URI
 ;; is either the given URI, or "".
 ;;
 ;; Either succeeds, or throws an exception.
-(define (rdf:ingest-from-string/n3 string . opt-base-uri)
-  (rdf:ingest-from-string/n3* string
+(define (rdf:ingest-from-string/turtle string . opt-base-uri)
+  (rdf:ingest-from-string/turtle* string
                               (if (null? opt-base-uri)
                                   (->jstring "")
                                   (as-java-string (car opt-base-uri)))))
-(define/contract (rdf:ingest-from-string/n3* (string string?) (base jstring?)
+(define/contract (rdf:ingest-from-string/turtle* (string string?) (base jstring?)
                   -> jena-model?)
   (define-java-class <java.io.string-reader>)
   (rdf:ingest-from-stream/language (java-new <java.io.string-reader>
                                              (->jstring string))
                                    base
-                                   (->jstring "N3")))
+                                   (->jstring "TURTLE")))
 
 ;; Return the object S, which should be either a Java or Scheme string,
 ;; as a Scheme string.

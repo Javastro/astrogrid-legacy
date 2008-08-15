@@ -39,7 +39,7 @@
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (sdb.version . ,(->string (:version (java-null <SDB>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.55 $ $Date: 2008/07/18 21:35:42 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.56 $ $Date: 2008/08/15 17:42:04 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -166,7 +166,7 @@
     (define (model-to-string model)
       (define-java-class <java.io.string-writer>)
       (let ((sw (java-new <java.io.string-writer>)))
-        (write model sw (->jstring "N3"))
+        (write model sw (->jstring "TURTLE"))
         (->string (to-string sw))))
 
     (let* ((kb (kb:get kb-name))

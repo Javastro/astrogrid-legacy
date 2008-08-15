@@ -7,7 +7,7 @@
 (require-library 'quaestor/jena)
 (import* jena
          rdf:new-empty-model
-         rdf:ingest-from-string/n3)
+         rdf:ingest-from-string/turtle)
 
 (require-library 'quaestor/utils)
 (import* utils
@@ -103,7 +103,7 @@
 ;; assertions added to one don't end up appearing in the other.
 
 (define model-1
-  (rdf:ingest-from-string/n3 "
+  (rdf:ingest-from-string/turtle "
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix : <urn:example1#>.
 :c1 a rdfs:Class.
@@ -112,7 +112,7 @@
 "))
 
 (define model-2
-  (rdf:ingest-from-string/n3 "
+  (rdf:ingest-from-string/turtle "
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix : <urn:example2#>.
 :c1 a rdfs:Class.
@@ -236,7 +236,7 @@
       (uri2 (java-new <uri> (->jstring "urn:example/simple2")))
       (uri3 (java-new <uri> (->jstring "urn:example/simple3"))))
   (let (;; metadata with a simpleRDFS reasoner
-        (simple-md1 (rdf:ingest-from-string/n3 "
+        (simple-md1 (rdf:ingest-from-string/turtle "
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
 
@@ -246,7 +246,7 @@
   ].
 " uri1))
         ;; metadata with no reasoner
-        (simple-md2 (rdf:ingest-from-string/n3 "
+        (simple-md2 (rdf:ingest-from-string/turtle "
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
 
@@ -256,7 +256,7 @@
   ].
 " uri2))
         ;; metadata with invalid reasoner
-        (simple-md3 (rdf:ingest-from-string/n3 "
+        (simple-md3 (rdf:ingest-from-string/turtle "
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
 
