@@ -8,7 +8,7 @@
   <artifactId>astrogrid-community-server</artifactId>
   <id>astrogrid-community-server</id>
   <name>Community service library</name>
-  <currentVersion>2008.2.a01</currentVersion>
+  <currentVersion>2008.2.a02</currentVersion>
   <shortDescription>Classes for the community web-application</shortDescription>
   <description>This project builds the jar of classes needed for the community web-application.</description>
     
