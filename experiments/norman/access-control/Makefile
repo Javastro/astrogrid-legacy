@@ -6,12 +6,12 @@ VERSION=2008-08-20
 PNG=asserted-hierarchy.png inferred-hierarchy.png
 # include base.css, because the access-control-demo.html refers to a relative
 # copy, so that the demo files can be standalone
-EXTRA_FILES=access-control-demo.html $(PNG) demo.tar.gz quaestor-0.3.war \
-	base.css
+EXTRA_FILES=access-control-demo.html $(PNG) demo.tar.gz quaestor-0.3.war
 
 BIBTEX=bibtex
 XSLTPROC=xsltproc
 LX=java -cp $(CVS_TOP)/code/lx/lx.jar uk.me.nxg.lx.helpers.Transformer
+TAR=tar
 
 edit=sed -e 's/@VERSION\@/$(VERSION)/'
 
@@ -53,7 +53,7 @@ note.xml: ivoa-note/note.xml
 
 # star is a tar which doesn't include OS X file metadata
 demo.tar: access-control-demo
-	star cf $@ access-control-demo
+	$(TAR) cf $@ access-control-demo
 
 access-control-demo: demo/demo.html
 	rm -Rf access-control-demo
@@ -65,15 +65,23 @@ access-control-demo: demo/demo.html
 access-control-demo.html: demo/demo.html
 	cp $< $@
 
-install: $(WEB)/note/2006/access-control/index.html
+webpage-tarball.tar: access-control.html $(EXTRA_FILES)
+	rm -Rf distdir && mkdir distdir
+	cp access-control.html distdir/index.html
+	cp $(EXTRA_FILES) distdir
+	echo "Built in $$PWD" >distdir/000README
+	cd distdir; $(TAR) cf ../$@ *
+	rm -Rf distdir
 
-$(WEB)/note/2006/access-control/index.html: access-control.html $(EXTRA_FILES)
-	$(GENERAL_INSTALL_WEBPAGE)
-	D=`dirname $@`; \
-	  for f in $(EXTRA_FILES); do \
-	    rm -f $$D/$$f; \
-	    cp $$f $$D; \
-	  done
+#install: $(WEB)/note/2006/access-control/index.html
+#
+#$(WEB)/note/2006/access-control/index.html: access-control.html $(EXTRA_FILES)
+#	$(GENERAL_INSTALL_WEBPAGE)
+#	D=`dirname $@`; \
+#	  for f in $(EXTRA_FILES); do \
+#	    rm -f $$D/$$f; \
+#	    cp $$f $$D; \
+#	  done
 
 structure.lx identity-html.xslt detex.sed base.css:
 	cp $(CVS_TOP)/text/webpages/misc/$@ .
