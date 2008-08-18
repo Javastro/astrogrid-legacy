@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    
-<!DOCTYPE databases PUBLIC
-    "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
-    "http://castor.exolab.org/jdo-conf.dtd">
 
 <jdo-conf>
   <database name="test-database-004" engine="hsql">
