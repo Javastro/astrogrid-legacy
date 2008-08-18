@@ -1,17 +1,14 @@
 <?xml version='1.0'?>
 
-<!-- $Id: access-control.xml,v 1.2 2006/04/13 17:26:11 norman Exp $ -->
+<!-- $Id: access-control.xml,v 1.3 2008/08/18 22:33:30 norman Exp $ -->
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ng="http://ns.nxg.me.uk/myxml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 <title>Reasoning about access using ontologies</title>
-<!--link rel='stylesheet'
-      type='text/css'
-      href='/Volumes/Faraday/w/me/TRUNK/text/webpages/nxg.me.uk/style/base.css'/-->
-<ng:rcsdate>$Date: 2006/04/13 17:26:11 $</ng:rcsdate>
-<ng:rdf/>
+<meta name='rcsdate' content='$Date: 2008/08/18 22:33:30 $'/>
+<meta name='DC.date' content='2006-04-07'/>
+<!--<link rel='stylesheet' href='base.css' type='text/css'/>-->
 </head>
 
 <body>
@@ -19,7 +16,7 @@
 <h1>Reasoning about access using ontologies</h1>
 
 <div class='abstract'>
-There exists a small number of approaches to the authorisation problem
+<p>There exists a small number of approaches to the authorisation problem
 of deciding, once a user has been authenticated, what that user is
 permitted to do.  This problem is very naturally viewed as an
 (ontological) subsumption problem: `is this user provably a member of
@@ -27,10 +24,10 @@ the class of entities allowed access to this resource?'.  This
 approach provides a flexible solution, in which delegation and
 federation are natural, and which fits into a broad range or
 architectures.  I also describe a reasoning service, Quaestor, which
-implements the reasoning service.
+implements the reasoning service.</p>
 </div>
 
-<ng:toc/>
+<?toc?>
 
 <p>Once a user has been authenticated -- that is, once a resource has
 decided that a user really is who they claim to be -- there exists a
@@ -52,7 +49,7 @@ existing outstanding problems to do with authorisation.</li>
 </ol>
 
 <div class='section'>
-<p>The use-case</p>
+<p class='title'>The use-case</p>
 
 <p>The simple, but non-trivial, use-case which this demo addresses is
 the following.  A database is to be accessible to researchers at
@@ -66,16 +63,16 @@ href="http://wiki.eurovotech.org/bin/view/VOTech/AccessControlUseCases"
 </div>
 
 <div class='section'>
-<p>The solution</p>
+<p class='title'>The solution</p>
 
 <div class='section'>
-<p>An ontology of access control</p>
+<p class='title'>An ontology of access control</p>
 
 <p>On the right is the asserted hierarchy for an
 access-control ontology, as displayed by the ontology editor Protégé.
 Although it is not obvious from this screenshot, Protégé writes its
-ontologies out as OWL ontologies <ng:cite>std:owl</ng:cite>, which is
-layeed on top of RDF <ng:cite>std:rdf</ng:cite>.
+ontologies out as OWL ontologies <span class='cite'>std:owl</span>, which is
+layeed on top of RDF <span class='cite'>std:rdf</span>.
 The various locations are represented as classes, gathered
 together under other classes representing continents.  The
 <code>GroupOfPeople</code> class represents either collaborations or
@@ -84,8 +81,9 @@ based on location and on access rights.  The goal is to end up
 assigning individuals into the <code>CanSeeAllData</code> class, the
 <code>CanSeeTaggedData</code> class, or neither.</p>
 
-<p><img class='smallimage' src='asserted-hierarchy.png' alt='asserted
-hierarchy'/>To this class hierarchy, we add further conditions.  We
+<!--<p class='smallfigure'><img src='asserted-hierarchy.png' alt='asserted hierarchy'/></p>-->
+<p><img class='smallimage' src='asserted-hierarchy.png' alt='asserted hierarchy'/>
+To this class hierarchy, we add further conditions.  We
 declare a <code>locatedIn</code> property, which has
 <code>Person</code> as its domain, and
 <code>GeographicalLocation</code> as its range, or co-domain.  We then
@@ -161,14 +159,14 @@ actually articulates her access policy.  They can be defined only by
 </div>
 
 <div class='section'>
-<p>Instances</p>
+<p class='title'>Instances</p>
 
 <p>How, then, do we exploit this as a component of an authorisation
 architecture?</p>
 
 <p>Once the ontology is created, we can add assertions about
 individuals.  For example, here are some assertions written in
-<em>Notation 3</em> <ng:cite>std:n3</ng:cite>:</p>
+<em>Notation 3</em> <span class='cite'>std:n3</span>:</p>
 <pre>
 @prefix : &lt;urn:example#&gt; .
 @prefix ac: &lt;http://eurovotech.org/access-control.owl#&gt; .
@@ -203,13 +201,13 @@ an email address.</p>
 </div>
 
 <div class='section'>
-<p>Querying</p>
+<p class='title'>Querying</p>
 
 <p>So we have an ontology plus some individuals.  How do we get this
 information out?  How do we go about actually plumbing this in to the
 architecture of our resource-owner's system?</p>
 
-<p>Enter SPARQL <ng:cite>std:sparql</ng:cite>.</p>
+<p>Enter SPARQL <span class='cite'>std:sparql</span>.</p>
 
 <p>SPARQL is a vaguely SQL-like language for querying RDF
 triple-stores.  A query against the access-control ontology might
@@ -238,13 +236,13 @@ multiple working implementations.</p>
 </div>
 
 <div class='section'>
-<p>A reasoning service: Quaestor</p>
+<p class='title'>A reasoning service: Quaestor</p>
 
 <p>I have created a generic SPARQL endpoint, called Quaestor, which
 can be given multiple ontologies and instance assertions, and run
 SPARQL queries against the merged result.  It has both RESTful
-<ng:cite>fielding00</ng:cite> and XML-RPC
-<ng:cite>std:xmlrpc</ng:cite> interfaces, and runs within Tomcat.
+<span class='cite'>fielding00</span> and XML-RPC
+<span class='cite'>std:xmlrpc</span> interfaces, and runs within Tomcat.
 Once the ontologies have been uploaded to it, via HTTP PUT requests,
 a client can make SPARQL queries of the merged result using either
 HTTP POST or GET queries.</p>
@@ -263,7 +261,7 @@ href='demo.tar.gz' >demo files</a> and the <a href='quaestor-0.1.war'
 </div>
 
 <div class='section' id='strengths'>
-<p>Strengths</p>
+<p class='title'>Strengths</p>
 
 <p>This approach is heavily standards-based, and builds on
 pre-existing standards rather than new ones.</p>
@@ -340,7 +338,7 @@ strengths
 -->
 
 <div class='section'>
-<p>Open issues</p>
+<p class='title'>Open issues</p>
 
 <p>The problem is not of course completely solved.  The following
 problems need to be addressed.</p>
@@ -356,7 +354,7 @@ would have to work with.</li>
 </ul>
 
 <div class='section' id='security'>
-<p>Security and trust</p>
+<p class='title'>Security and trust</p>
 
 <p>In the simplest scenario, the reasoning service described here
 would sit well away from the open internet, and the graphs
@@ -390,15 +388,15 @@ library?', since these do not expose the underlying assertions.
 However a malevolent user of such an interface could still build up a
 substantial amount of information through such a channel, through
 multiple crafted queries.  Combining queries of this type
-with the Shibboleth handle system <ng:cite>proj:shibboleth</ng:cite>
+with the Shibboleth handle system <span class='cite'>proj:shibboleth</span>
 would provide most of the required security.</p>
 
 </div>
 
 <div class='section'>
-<p>Other authorisation frameworks</p>
+<p class='title'>Other authorisation frameworks</p>
 
-<p>The Shibboleth system <ng:cite>proj:shibboleth</ng:cite> has
+<p>The Shibboleth system <span class='cite'>proj:shibboleth</span> has
 defined an intricate infrastructure for access control.  When a user
 requests access to a resource, the resource owner may securely query
 an appropriate IdP, as guided by the user, to discover the set of
@@ -409,7 +407,7 @@ itself with the mechanism for negotiating and transporting the
 attribute sets, and does not cover any support for the resource
 owner's reasoning.</p>
 
-<p>The PERMIS system <ng:cite>proj:permis</ng:cite> focuses on the
+<p>The PERMIS system <span class='cite'>proj:permis</span> focuses on the
 resource owner's specification of their access policy, and provides
 algorithmic support for the reasoning involved.  The PERMIS system
 does not provide easy support for the dynamic or delegated
@@ -431,13 +429,18 @@ experiments.  Add pointers to demos/downloads]</p>
 
 </div>
 
-<div class='section'>
-<p>Bibliography</p>
-<ng:bibliography data='compsci' style="plainhtml"/>
-</div>
+<!--<div class='section'>
+<p class='title'>Bibliography</p>-->
+<?bibliography compsci ?>
+<!-- </div> -->
 
 <pre class='doc.history'>
 $Log: access-control.xml,v $
+Revision 1.3  2008/08/18 22:33:30  norman
+Substantial reworking, to fit with newer stylesheets.
+I'm coming back to this work with the AGAST project, so this
+  has become live again.
+
 Revision 1.2  2006/04/13 17:26:11  norman
 The ontology prefix has changed from access-control2.owl to access-control.owl.
 Point to Quaestor demo/walkthrough.
@@ -448,8 +451,8 @@ Initial version
 </pre>
 
 <div class="signature">
-<a href='http://nxg.me.uk' >Norman Gray</a><br/>
-<ng:rcsdate format="standard">$Date: 2006/04/13 17:26:11 $</ng:rcsdate>
+<a href='http://nxg.me.uk/norman/' >Norman Gray</a><br/>
+<span class='rcsinfo'>$Date: 2008/08/18 22:33:30 $</span>
 </div>
 
 </body>

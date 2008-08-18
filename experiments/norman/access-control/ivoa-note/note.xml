@@ -30,8 +30,8 @@ div.toc ul {list-style: none; padding-left: 1em }
            border="0"/></a></td></tr>
 </table>
 
-<h1>Access control using RDF<br/>$Revision: 1.1 $</h1>
-<h2>IVOA Draft Note, $Date: 2006/11/02 17:22:38 $</h2>
+<h1>Access control using RDF<br/>$Revision: 1.2 $</h1>
+<h2>IVOA Draft Note, $Date: 2008/08/18 22:33:30 $</h2>
 <dl>
 <dt>This version</dt>
 <dd>XXX to appear</dd>
@@ -49,7 +49,7 @@ and
 </div>
 
 <div class='section-nonum' id='abstract'>
-<p>Abstract</p>
+<p class='title'>Abstract</p>
 
 <p>There exists a small number of approaches to the authorisation
 problem of deciding, once a user has been authenticated, what that
@@ -61,7 +61,7 @@ natural, and which fits into a broad range or architectures.</p>
 </div>
 
 <div class='section-nonum' id='status'>
-<p>Status of this document</p>
+<p class='title'>Status of this document</p>
 
 <p>This is an IVOA Note.</p>
 
@@ -93,7 +93,7 @@ documents can be found at
 <hr/>
 
 <div class='section' id='introduction'>
-<p>Introduction</p>
+<p class='title'>Introduction</p>
 
 <p>The problems of authentication and authorisation are both
 conceptually and technically distinct.  The former,
@@ -153,7 +153,7 @@ those tools.</p>
 
 <div class='appendices'>
 <div class='section' id='usecases'>
-<p>Access-control Use cases</p>
+<p class='title'>Access-control Use cases</p>
 
 <p>The following list is based on a list on the VOTech wiki, at <a
 href='http://wiki.eurovotech.org/bin/view/VOTech/AccessControlUseCases'
@@ -194,13 +194,13 @@ on VOSpace storage]</a>) have been flagged as particularly relevant to
 data providers (thanks to Markus Dolensky for this point).</p>
 
 <div class='section'>
-<p>Binary cases</p>
+<p class='title'>Binary cases</p>
 
 These are cases which require a simple allow/disallow decision. They
 are roughly grouped.
 
 <div class='section' id='database-restricted-queries'>
-<p>[database restricted queries]</p>
+<p class='title'>[database restricted queries]</p>
 
 <p>Different users can make different queries of a database: some
 users can make no query, others are unrestricted, and others can make
@@ -214,7 +214,7 @@ user falls into.</p>
 </div>
 
 <div class='section' id='database-restricted-results'>
-<p>[database restricted results]</p>
+<p class='title'>[database restricted results]</p>
 
 <p>A user makes a query of a database, but is only allowed to see
 certain results, either a restricted set of columns, or mangled or
@@ -227,7 +227,7 @@ results that come back depend on the user.</p>
 </div>
 
 <div class='section' id='chain-of-groups'>
-<p>[chain of groups]</p>
+<p class='title'>[chain of groups]</p>
 
 <p>Person A belongs to group J; group J belongs to group K; group K
 belongs to group L; owner of resource X allows group L to read info
@@ -253,7 +253,7 @@ inheritance' become much less pressing.</em></p>
 </div>
 
 <div class='section' id='delegate-locally'>
-<p>[delegate locally]</p>
+<p class='title'>[delegate locally]</p>
 
 <p>A resource owner delegates some access-control authority to a local
 user (local, here, is in the sense that the local user is to some
@@ -264,7 +264,7 @@ is visiting the group temporarily.</p>
 </div>
 
 <div class='section' id='delegate-remotely'>
-<p>[delegate remotely]</p>
+<p class='title'>[delegate remotely]</p>
 
 <p>A resource owner delegates some access-control power to a remote
 entity. For example, Institution A's library might give user X access
@@ -281,7 +281,7 @@ information what they like.</li>
 </div>
 
 <div class='section' id='agent-access'>
-<p>[agent access]</p>
+<p class='title'>[agent access]</p>
 
 <p>Users, or their agents, won't necessarily always have the same
 privileges.</p>
@@ -300,7 +300,7 @@ delete resources, or an identity which has a lower quota.</p>
 </div>
 
 <div class='section' id='variable-privilege'>
-<p>[variable privilege]</p>
+<p class='title'>[variable privilege]</p>
 
 <p>A user might have different privileges at different times, because
 of actions taken by the user, or actions taken by the resource owner
@@ -318,7 +318,7 @@ modifications to the certificate made by the resource owner.</em></p>
 </div>
 
 <div class='section' id='expiring-access'>
-<p>[expiring access]</p>
+<p class='title'>[expiring access]</p>
 
 <p>A group expires or otherwises loses privilege, with the result that
 users in that group no longer have access as a result of that group
@@ -332,7 +332,7 @@ expected to have validity periods of a few days.</em></p>
 </div>
 
 <div class='section' id='virtual-file-permissions'>
-<p>[virtual-file permissions]</p>
+<p class='title'>[virtual-file permissions]</p>
 
 <p>Owner of a file in VOSpace can vary the CRUD permissions on a node
 in VOSpace, assigning different permissions to particular users and
@@ -344,7 +344,7 @@ files, distinct from the physical files they map to.</p>
 </div>
 
 <div class='section' id='shared-writeable-file'>
-<p>[shared, writeable (virtual) file)]</p>
+<p class='title'>[shared, writeable (virtual) file)]</p>
 
 <p>A data node in VOSpace is owned by one party and shared for writing
 with another party. Party of the second part can overwrite the file
@@ -359,7 +359,7 @@ ownership.</li>
 </div>
 
 <div class='section' id='monotonic-access'>
-<p>[monotonic access]</p>
+<p class='title'>[monotonic access]</p>
 
 <p>If a user is a member of two groups which have different levels of
 access to a resource, they should receive the more permissive level of
@@ -374,7 +374,7 @@ information.</em></p>
 </div>
 
 <div class='section' id='telescope-access'>
-<p>[telescope access]</p>
+<p class='title'>[telescope access]</p>
 
 <p>Remember that not all resources are software, and `access' might
 involve controlling hardware such as robotic telescopes.  This maps to
@@ -390,7 +390,7 @@ systems).</em></p>
 </div>
 
 <div class='section' id='non-binary-cases'>
-<p>Non-binary cases</p>
+<p class='title'>Non-binary cases</p>
 
 <p>The following are cases which require more than a simple binary
 result. They can probably be recast as binary decisions if necessary
@@ -401,15 +401,15 @@ be able to address decisions of the following form, one way or
 another.</p>
 
 <div class='section' id='quota-on-vospace-storage'>
-<p>[Quota on VOSpace storage]</p>
+<p class='title'>[Quota on VOSpace storage]</p>
 
 <p>A party's use of VOSpace is limited in both size and time. In the
 general case, these two limits may be linked, e.g. 100GB for a week,
-1Tb for a day, 100MB forever.</p>v
+1Tb for a day, 100MB forever.</p>
 </div>
 
 <div class='section' id='quota-on-cached-results'>
-<p>[Quota on cached results]</p>
+<p class='title'>[Quota on cached results]</p>
 
 <p>A DAL service caches results on behalf of a user. The size of the
 cached results is limited and the limit varies from party to party. If
@@ -418,7 +418,7 @@ same as quota on VOSpace storage.</p>
 </div>
 
 <div class='section' id='quota-on-run-time'>
-<p>[Quota on run-time]</p>
+<p class='title'>[Quota on run-time]</p>
 
 <p>An ADQL service gets a spectrum of queries ranging from sub-second
 run-times through multi-hour operations to queries that never
@@ -430,10 +430,10 @@ system like this; they found early on that they needed it.</p>
 </div>
 
 <div class='section' id='technologies'>
-<p>Technologies</p>
+<p class='title'>Technologies</p>
 
 <div class='section' id='rdfintro'>
-<p>RDF, OWL, and Ontologies</p>
+<p class='title'>RDF, OWL, and Ontologies</p>
 
 <p>RDF is an abstract data model, standardised by the World Wide Web
 Consortium <span class='cite'>std:rdf</span>, but drawing on a long
@@ -506,7 +506,7 @@ resource <code>urn:example#X</code> is simultaneously a
 </div>
 
 <div class='section' id='pmi'>
-<p>Privilege management infrastructures (PMI)</p>
+<p class='title'>Privilege management infrastructures (PMI)</p>
 
 <p>PERMIS is an X.509 PMI. It's heavily based on LDAP servers, and
 turns out to be rather hard to use.  The Shibboleth infrastructure
@@ -522,7 +522,7 @@ let you borrow from their library').</p>
 </div>
 
 <div class='section' id='x812'>
-<p>X.812 / ISO-10181-3</p>
+<p class='title'>X.812 / ISO-10181-3</p>
 
 <p>ITU-T Recommendation X.812 (identical to ISO/IEC-10181-3) defines a
 vocabulary for Access Control.  This includes the usefully
@@ -582,8 +582,8 @@ neutral.</p>
 </div>
 
 <div class='section-nonum' id='bibliography'>
-<p>Bibliography</p>
-<?bibliography?>
+<p class='title'>Bibliography</p>
+<?bibliography compsci?>
 </div>
 
 
