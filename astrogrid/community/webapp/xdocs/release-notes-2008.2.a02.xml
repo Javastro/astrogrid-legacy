@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Release notes: 2008.2.a02</title>
+    </properties>
+    <body>
+    <section name="Release notes for community service 2008.2.a02">
+      
+      <p>
+        This is the second alpha version in the series leading to v2008.2.
+      </p>
+      
+      <subsection name="Backing up the community">
+        <p>
+          This release introduces a back-up function for the user credentials
+          and community database.
+        </p>
+      </subsection>
+      
+    </section>
+    </body>
+</document>

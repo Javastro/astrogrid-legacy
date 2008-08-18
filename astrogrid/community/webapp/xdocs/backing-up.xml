@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+  <properties>
+    <title>AstroGrid community configure</title>
+  </properties>
+  <body>
+    <section name="Backing up">
+      <p>
+        To back up the community state completely, you need to takes copies of:
+      </p>
+      <ul>
+        <li>the community database;</li>
+        <li>the user credentials;</li>
+        <li>the certificate-authority files;</li>
+        <li>the database-configuration files;</li>
+        <li>the context file.</li>
+      </ul>
+      <p>
+        If you installed the community with the standard layout of
+        directories then all these files are stored in one tree and may be
+        backed up with one <i>tar</i> or <i>zip</i> command.
+      </p>
+      <p>
+        If you want to back up the community database and user credentials
+        independently you may use the back-up command on the community menu.
+        This will deliver to your browser a zip file containing those data.
+        The database contents can only be included if your are using the
+        default HSQL database; if you use a differnt, external database then
+        the zip file only contains the user user credentials.
+      </p>
+    </section>
+  </body>
+</document>

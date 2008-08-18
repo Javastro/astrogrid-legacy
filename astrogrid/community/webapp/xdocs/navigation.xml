@@ -8,10 +8,11 @@
       <item name="Overview" href="overview.html"/>
       <item name="Release notes" href="release-notes.html"/>
       <item name="Installation" href="installation.html"/>      
-         <item name="Self-Testing" href="self_testing.html"/>         
-         <item name="Upgrading" href="upgrading.html"/>
-         <item name="Uninstallation" href="uninstall.html"/>
-         <item name="CA operation" href="CA-operation.html"/>
+      <item name="Self-Testing" href="self_testing.html"/>         
+      <item name="Upgrading" href="upgrading.html"/>
+      <item name="Uninstallation" href="uninstall.html"/>
+      <item name="CA operation" href="CA-operation.html"/>
+      <item name="Back-ups" href="backing-up.html"/>
    </menu>
   </body>
 </project>

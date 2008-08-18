@@ -64,6 +64,10 @@
         <servlet-name>EmailListServlet</servlet-name>
         <servlet-class>org.astrogrid.community.webapp.EmailListServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BackUpServlet</servlet-name>
+        <servlet-class>org.astrogrid.community.server.backup.BackUpServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
     <servlet-name>AccountServlet</servlet-name>
     <url-pattern>/accounts/*</url-pattern>
@@ -125,6 +129,10 @@
     <servlet-mapping>
         <servlet-name>EmailListServlet</servlet-name>
         <url-pattern>/admin/user-email-list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BackUpServlet</servlet-name>
+        <url-pattern>/admin/backup/community.zip</url-pattern>
     </servlet-mapping>
     <mime-mapping>
     <extension>wsdl</extension>
