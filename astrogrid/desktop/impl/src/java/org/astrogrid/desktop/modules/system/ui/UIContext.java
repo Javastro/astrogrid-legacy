@@ -48,6 +48,8 @@ public interface UIContext  extends UI, ActionListener{
     public static final String LOGIN = "login";
     /** action command to logout */
     public static final String LOGOUT = "logout";
+    /** action command to change password */
+    public static final String CHANGE_PASSWORD = "change-password";
     /** action command to reset the configuration */
     public static final String RESET = "reset";
     /** action command to clear the cache */

@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.15 2008/07/18 11:56:54 gtr Exp $
+/*$Id: CommunityImpl.java,v 1.16 2008/08/19 18:48:24 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,26 +10,27 @@
 **/
 package org.astrogrid.desktop.modules.auth;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import javax.security.auth.x500.X500Principal;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl;
-import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.AccountIvorn;
 import org.astrogrid.security.SecurityGuard;
@@ -49,7 +50,7 @@ public class CommunityImpl implements CommunityInternal {
     /** Construct a new Community
      * 
      */
-    public CommunityImpl(UIContext ui,LoginDialogue loginDialogue, SnitchInternal snitch, String trustedCertificates) {       
+    public CommunityImpl(final UIContext ui,final LoginDialogue loginDialogue, final SnitchInternal snitch, final String trustedCertificates) {       
         this.ui = ui;
         this.loginDialogue = loginDialogue;
         this.snitch = snitch;
@@ -69,18 +70,18 @@ public class CommunityImpl implements CommunityInternal {
      */
     protected volatile SecurityGuard guard;
 
-    public void login(String userName,
-                      String password, 
-                      String community) throws SecurityException, 
+    public void login(final String userName,
+                      final String password, 
+                      final String community) throws SecurityException, 
                                                ServiceException {
     	if (isLoggedIn()) {
     	    return;
     	}
-        String accountIvorn = "ivo://" + userName + "@" + community + "/community";
+        final String accountIvorn = "ivo://" + userName + "@" + community + "/community";
         URI communityIvorn;
         try {
           communityIvorn = new URI("ivo://" + community + "/community");
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
           throw new SecurityException("Community name " + community  + " invalid", ex);
         }
         logger.info("Logging in " + accountIvorn);
@@ -97,16 +98,38 @@ public class CommunityImpl implements CommunityInternal {
             notifyListeners(true);
             
             // snitch now they've successfully logged in.
-            Map m = new HashMap();
+            final Map m = new HashMap();
             m.put("username", accountIvorn);
             snitch.snitch("LOGIN", m);
         } 
-        catch (Exception e) {
+        catch (final Exception e) {
             informUi();
             notifyListeners(false);
             throw new ServiceException(e);
         } 
     }
+    
+    public void changePassword(final String newPassword) throws ServiceException, SecurityException {
+       if (! isLoggedIn()) {
+           return;
+       }
+       try {
+        guard.changePassword(guard.getSsoUsername()
+                   ,guard.getSsoPassword()
+                   ,newPassword
+                   ,guard.getAccountIvorn().getCommunityIvorn());
+    } catch (final URISyntaxException x) {
+        throw new ServiceException(x);
+    } catch (final IOException x) {
+        throw new ServiceException(x);
+    } catch (final GeneralSecurityException x) {
+        throw new org.astrogrid.acr.SecurityException(x);
+    } catch (final RegistryException x) {
+        throw new ServiceException(x);
+    }
+       
+    }
+    
 
     public void logout() {
         this.guard = new SecurityGuard(); // Start again with no credentials or principals.
@@ -132,9 +155,9 @@ public class CommunityImpl implements CommunityInternal {
     /**
      * 
      */
-    private void notifyListeners(boolean loggedIn) {
-        UserLoginEvent e= new UserLoginEvent(loggedIn,this);
-        for (Iterator i = listeners.iterator(); i.hasNext(); ) {
+    private void notifyListeners(final boolean loggedIn) {
+        final UserLoginEvent e= new UserLoginEvent(loggedIn,this);
+        for (final Iterator i = listeners.iterator(); i.hasNext(); ) {
         	UserLoginListener l = null;
             try {
                  l = (UserLoginListener)i.next();
@@ -145,7 +168,7 @@ public class CommunityImpl implements CommunityInternal {
                         l.userLogout(e);
                     }
                 }
-            } catch (Throwable t) { 
+            } catch (final Throwable t) { 
                 // oh well, something has gone wrong with this listener - probably disconnected.
                 // lets remove if from the listener list
             	if (l != null) {
@@ -157,11 +180,11 @@ public class CommunityImpl implements CommunityInternal {
     protected Set listeners = new HashSet();
     
   
-    public void addUserLoginListener(UserLoginListener l) {
+    public void addUserLoginListener(final UserLoginListener l) {
         listeners.add(l);
     }
 
-    public void removeUserLoginListener(UserLoginListener l) {
+    public void removeUserLoginListener(final UserLoginListener l) {
         listeners.remove(l);
     }
 
@@ -187,7 +210,7 @@ public class CommunityImpl implements CommunityInternal {
      *
      * @param directoryName Fully-qualified name of the directory holding the certificates. 
      */
-    public static void declareTrustedCertificates(String directoryName) {
+    public static void declareTrustedCertificates(final String directoryName) {
         CommunityImpl.trustedCertificatesDirectoryName = directoryName;
     }
     
@@ -196,9 +219,9 @@ public class CommunityImpl implements CommunityInternal {
      * The credentials are retrieved from the results of the last authentication.
      */
     public UserInformation getUserInformation() {
-        AccountIvorn account = this.guard.getAccountIvorn();
-        URI accountUri = (account == null)? null : account.toUri();
-        String community = 
+        final AccountIvorn account = this.guard.getAccountIvorn();
+        final URI accountUri = (account == null)? null : account.toUri();
+        final String community = 
             (account == null)? null : account.getCommunityIvorn().toString();
         return new UserInformation(accountUri,
                                    this.guard.getSsoUsername(),
@@ -218,8 +241,8 @@ public class CommunityImpl implements CommunityInternal {
       // however, there's no place to pass this info back to the views - so using a hack by stuffing it in 'actionCommand'
       // of the login model.
       if (isLoggedIn()) {
-        AccountIvorn  i = this.guard.getAccountIvorn();
-        X500Principal x = this.guard.getX500Principal();
+        final AccountIvorn  i = this.guard.getAccountIvorn();
+        final X500Principal x = this.guard.getX500Principal();
         ui.getLoggedInModel().setActionCommand(
             "<html>Logged in as" + 
             "<br>User@community: " + i +
@@ -240,6 +263,10 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.16  2008/08/19 18:48:24  nw
+ASSIGNED - bug 2801: Allow the user to change a password from VODesktop
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2801
+
 Revision 1.15  2008/07/18 11:56:54  gtr
 I rearranged the code that informs the UI of log-in events so as to make the logged-in indicatior work.
 

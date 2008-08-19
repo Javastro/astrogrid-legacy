@@ -214,6 +214,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             menu.add(new LoginMenuItem(context));
             
             menu.add(new LogoutMenuItem(context));
+            menu.add(new ChangePasswordMenuItem(context));
             if (!isOsx) {
                 addSystemActions();
             }
@@ -386,6 +387,26 @@ public abstract class UIComponentMenuBar extends JMenuBar {
                 public void actionPerformed(final ActionEvent e) {
                     help.showHelpForTarget(helpID);              
                 }                   
+            });
+        }
+    }
+    
+    
+    private static final class ChangePasswordMenuItem extends JMenuItem {
+        private final UIContext context;
+
+        public ChangePasswordMenuItem(final UIContext context) {
+            super("Change Password" + ELLIPSIS);
+            this.context = context;
+            final ButtonModel m = context.getLoggedInModel();
+            setEnabled(m.isEnabled());
+            setToolTipText("Change the password of the current account");
+            setActionCommand(UIContext.CHANGE_PASSWORD);
+            addActionListener(context);
+            m.addChangeListener(new ChangeListener() {
+                public void stateChanged(final ChangeEvent e) {
+                    setEnabled(m.isEnabled());
+                }
             });
         }
     }

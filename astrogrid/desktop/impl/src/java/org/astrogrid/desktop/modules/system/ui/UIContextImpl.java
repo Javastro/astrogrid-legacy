@@ -33,13 +33,14 @@ import javax.swing.Timer;
 
 import org.apache.commons.collections.Factory;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.SplashWindow;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
+import org.astrogrid.desktop.modules.auth.ChangePasswordDialog;
+import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
@@ -72,7 +73,7 @@ public class UIContextImpl implements UIContext{
 
 
     private final CacheFactory cache;
-    private final Community community;
+    private final CommunityInternal community;
     private final Shutdown shutdown;
     private final SelfTester tester;
     private final BackgroundWorkersMonitor monitor;
@@ -112,7 +113,7 @@ public class UIContextImpl implements UIContext{
 	        final HelpServerInternal help
 	        , final BrowserControl browser
 	        , final CacheFactory cache
-	        , final Community community
+	        , final CommunityInternal community
 	        , final Shutdown shutdown
 	        , final SelfTester tester
 	        ,final BackgroundWorkersMonitor monitor
@@ -286,11 +287,17 @@ public class UIContextImpl implements UIContext{
 	public void showAboutDialog() {
 		aboutDialog.run();
 	}
+	
+	
 	public Map getWindowFactories() {
 		return windowFactories;
 	}
 	public void showPreferencesDialog() {
 	    configDialog.run();
+	}
+	
+	public void showChangePasswordDialog() {
+	    new ChangePasswordDialog(community,this).ask();
 	}
 
 
@@ -428,6 +435,8 @@ public class UIContextImpl implements UIContext{
                 community.guiLogin();
             } else if (cmd.equals(UIContext.LOGOUT)) {
                 community.logout();
+            } else if (cmd.equals(UIContext.CHANGE_PASSWORD)) {
+                showChangePasswordDialog();
             } else if (cmd.equals(UIContext.SELFTEST)){
                 tester.show();
             } else if (cmd.equals(UIContext.PROCESSES)) {

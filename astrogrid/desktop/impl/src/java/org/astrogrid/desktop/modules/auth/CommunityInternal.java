@@ -8,6 +8,8 @@
 
 package org.astrogrid.desktop.modules.auth;
 
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.security.SecurityGuard;
 
@@ -30,4 +32,6 @@ public interface CommunityInternal extends Community {
    */
   public SecurityGuard getSecurityGuard();
   
+  /** change the password for the currenlty logged in account */
+  public void changePassword(final String newPassword) throws ServiceException, SecurityException;
 }
