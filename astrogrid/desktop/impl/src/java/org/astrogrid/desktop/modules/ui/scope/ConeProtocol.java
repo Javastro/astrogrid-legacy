@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.22 2008/05/28 12:27:49 nw Exp $
+/*$Id: ConeProtocol.java,v 1.23 2008/08/19 18:49:22 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 public class ConeProtocol extends SpatialDalProtocol {
 
 
-    public ConeProtocol(RegistryInternal reg, Cone cone) {
+    public ConeProtocol(final RegistryInternal reg, final Cone cone) {
         super("Cat. Objects",IconHelper.loadIcon("cone16.png").getImage(),reg);
         this.cone = cone;
     } 
@@ -45,16 +45,17 @@ public class ConeProtocol extends SpatialDalProtocol {
     }
 
 
-    public AbstractRetriever[] createRetrievers(Service service,double ra, double dec, double raSize, double decSize) {
-        Capability[] capabilities = service.getCapabilities();
-        List cList = new ArrayList();
+    @Override
+    public AbstractRetriever[] createRetrievers(final Service service,final double ra, final double dec, final double raSize, final double decSize) {
+        final Capability[] capabilities = service.getCapabilities();
+        final List cList = new ArrayList();
         for (int i = 0; i < capabilities.length; i++) {
             if (capabilities[i] instanceof ConeCapability && findParamUrl(capabilities[i]) != null) {
                 cList.add(capabilities[i]);
             }
         }
-        ConeCapability[] cones = (ConeCapability[]) cList.toArray(new ConeCapability[0]);
-        int ncone = cones.length;
+        final ConeCapability[] cones = (ConeCapability[]) cList.toArray(new ConeCapability[0]);
+        final int ncone = cones.length;
         final AbstractRetriever[] retrievers;
         if (ncone == 0) {
             retrievers = new AbstractRetriever[0];
@@ -65,7 +66,7 @@ public class ConeProtocol extends SpatialDalProtocol {
             };
         }
         else {
-            NodeSocket socket = createIndirectNodeSocket(service);
+            final NodeSocket socket = createIndirectNodeSocket(service);
             retrievers = new AbstractRetriever[ncone];
             for (int i = 0; i < ncone; i++) {
                 retrievers[i] = new CatalogTerminalConeRetrieval(service, cones[i], findParamUrl(cones[i]), socket, getVizModel(), cone, ra, dec, raSize);
@@ -77,7 +78,8 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 
 	
-	protected boolean isSuitable(Resource r)  {
+	@Override
+    protected boolean isSuitable(final Resource r)  {
 	    return r instanceof ConeService;
 	}
 
@@ -86,11 +88,10 @@ public class ConeProtocol extends SpatialDalProtocol {
      * 
      * @param r
      */
-    public static boolean isCdsCatalog(Resource r) {
+    public static boolean isCdsCatalog(final Resource r) {
         return r instanceof CatalogService
         && r.getCuration().getPublisher() != null
         && CDS.equals(r.getCuration().getPublisher().getId());
-           // && r.getId().toString().startsWith("ivo://CDS/VizieR/");
 
     }
     
@@ -104,6 +105,10 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.23  2008/08/19 18:49:22  nw
+ASSIGNED - bug 2812: assorted things on vodesktop 2008-2-rc1
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2812
+
 Revision 1.22  2008/05/28 12:27:49  nw
 Complete - task 408: Adjust count reporting in astroscope and voexplorer.
 
