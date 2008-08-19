@@ -3,14 +3,13 @@
  */
 package org.astrogrid.desktop.modules.system;
 
-import java.awt.Component;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -52,7 +51,7 @@ public class UpdateChecker implements Runnable {
 	 */ 
 	private static final Log logger = LogFactory.getLog(UpdateChecker.class);
 
-	public UpdateChecker(UIContext ui, BrowserControl browser, String currentVersion,String releaseURL,Preference check) throws MalformedURLException {
+	public UpdateChecker(final UIContext ui, final BrowserControl browser, final String currentVersion,final String releaseURL,final Preference check) throws MalformedURLException {
 		releaseInfo = new URL(releaseURL);
 		this.ui = ui;
 		this.browser = browser;
@@ -64,7 +63,7 @@ public class UpdateChecker implements Runnable {
 	protected final URL releaseInfo;
 	protected final UIContext ui;
 	protected final BrowserControl browser;
-			
+	protected final Comparator<String> comparator = new VersionComparator();
 	public void run() {
 		if (!check.asBoolean()) {
 			return; //
@@ -75,7 +74,8 @@ public class UpdateChecker implements Runnable {
 			    private String latestVersion;
 			    private URL download;
 			    private String description;
-				protected Object construct() throws Exception {
+				@Override
+                protected Object construct() throws Exception {
 					final XMLInputFactory fac = XMLInputFactory.newInstance();
 					XMLStreamReader in = null;
 					try {
@@ -99,24 +99,26 @@ public class UpdateChecker implements Runnable {
 						if (in != null) {
 						    try {
 						        in.close();
-						    } catch (XMLStreamException e) {
+						    } catch (final XMLStreamException e) {
 						        // ignored
 						    }
 						}
 					}
 					return null; // result is stored in member variables.
 				}
-				protected void doError(Throwable ex) {
+				@Override
+                protected void doError(final Throwable ex) {
 				    logger.warn("Failed to check for update",ex);
 				}
-				protected void doFinished(final Object result) {
+				@Override
+                protected void doFinished(final Object result) {
 					// check we've got something new.
 				    if (StringUtils.isEmpty(latestVersion)
-				            || currentVersion.equals(latestVersion)) {
+				            || comparator.compare(currentVersion,latestVersion) <= 0) {
 				        return; // nothing more.
 				    }
 				    logger.info("A new version of VODesktop is available: " + latestVersion + ", " + date + ", " + description);
-					    BaseDialog bd = new BaseDialog() {
+					    final BaseDialog bd = new BaseDialog() {
 					        {
 					            setModal(false);
 					            setTitle("A new version of VODesktop is available! ");
@@ -125,12 +127,13 @@ public class UpdateChecker implements Runnable {
 					            pack();
 					            centerOnScreen();
 					        }
-					        public void ok() {
+					        @Override
+                            public void ok() {
 					            super.ok();
 					            // ok has been clicked - lets process it.
 		                        try {
 		                            browser.openURL(download);
-		                        } catch (ACRException x) {
+		                        } catch (final ACRException x) {
 		                            parent.showTransientError("Failed to open browser",ExceptionFormatter.formatException(x));
 		                        }					            
 					        }
@@ -142,6 +145,35 @@ public class UpdateChecker implements Runnable {
 				
 			}).start();
 		}
+	}
+	/** comparator for version strings */
+	public static class VersionComparator implements Comparator<String> {
+
+        public int compare(final String left, final String right) {
+            final List<String> as = new ArrayList<String>(Arrays.asList(StringUtils.split(left,".")));
+            final List<String> bs = new ArrayList<String>(Arrays.asList(StringUtils.split(right,".")));
+            while(! as.isEmpty() && ! bs.isEmpty()) {
+                final String a = as.remove(0);
+                final String b = bs.remove(0);
+                if (StringUtils.isNumeric(a) != StringUtils.isNumeric(b)) {
+                    // numeric at the same level is always greater
+                    return StringUtils.isNumeric(a) ? 1 : -1;
+                }
+                final int v = a.compareTo(b);
+                if (v != 0) {
+                    return v;
+                }
+            }
+            // ok. whoever is longer wins - if they're both still numbers.
+            if (as.isEmpty() && bs.isEmpty()) {
+                return 0; // equal.
+            }
+            if (as.isEmpty()) {
+                return StringUtils.isNumeric(bs.remove(0)) ? -1 : 1 ;
+            } else { // bs empty
+                return StringUtils.isNumeric(as.remove(0)) ? 1 : -1 ;
+            }
+        }
 	}
 
 }

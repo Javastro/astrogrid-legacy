@@ -13,11 +13,12 @@ import junit.framework.TestSuite;
 public class AllSystemUnitTests {
 
     public static Test suite() {
-        TestSuite suite = new TestSuite(
+        final TestSuite suite = new TestSuite(
                 "Test for org.astrogrid.desktop.modules.system");
         //$JUnit-BEGIN$
         suite.addTestSuite(HelpServerImplUnitTest.class);
         suite.addTestSuite(ClockDaemonSchedulerUnitTest.class);
+        suite.addTestSuite(VersionComparatorUnitTest.class);
         //$JUnit-END$
         return suite;
     }
