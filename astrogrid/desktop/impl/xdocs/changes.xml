@@ -15,6 +15,20 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2008.2" date="unreleased">
+    <action dev="nw" type="add" >
+    Added a 'change password' dialogue.
+    </action>
+    <!-- 
+    <action dev="nw" type="fix" issue="2813">
+    Debugged sending spectrum fits files to splat
+    </action>
+     -->
+    <action dev="nw" type="fix" issue="2814">
+    Tidied plastic shutdown.
+    </action>
+        
+</release>
 <release version="2008.2.rc1" date="2008-8-7">
     <action dev="nw" type="fix" issue="2767">
     astroscope: improved parsing of non-standard ssap services

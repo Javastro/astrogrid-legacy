@@ -14,11 +14,11 @@ import javax.swing.SwingUtilities;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
+import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -48,7 +48,7 @@ public class UIContextImplUnitTest extends TestCase {
         plasticList = new BasicEventList();
         cxt = new UIContextImpl(conf,exec,help,browser
 		        , createNiceMock(CacheFactory.class)
-		        ,createNiceMock(Community.class)
+		        ,createNiceMock(CommunityInternal.class)
 		        ,createNiceMock(org.astrogrid.acr.builtin.Shutdown.class)
 		        ,createNiceMock(SelfTester.class)
 		        ,monitor
