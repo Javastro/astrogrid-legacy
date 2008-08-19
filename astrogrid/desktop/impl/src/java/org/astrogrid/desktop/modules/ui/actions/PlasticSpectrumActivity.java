@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -111,19 +112,14 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 		    public void run() {
 		        for (final Iterator i = l.iterator(); i.hasNext();) {
 		            final FileObject f = (FileObject) i.next();
-		            final AstroscopeFileObject astroscopeFileObject = AstroscopeFileObject.findAstroscopeFileObject(f);
-		            if (astroscopeFileObject != null) {
-		                sendLoadSpectrumMessage(astroscopeFileObject);
-		            }	else {
-		                sendLoadSpectrumMessage(f);
-		            }
+		            sendLoadSpectrumMessage(f);		            
 		        }	
 		    }
 		};
         confirmWhenOverThreshold(sz,"Send all " + sz + " files?",r);
 	}
 	/** extended verion, when additional metadata is available */
-	private void sendLoadSpectrumMessage(final AstroscopeFileObject f) {
+	private void sendLoadSpectrumMessage(final FileObject f) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 //		    {
 //		        setTransient(true);
@@ -131,12 +127,21 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 			@Override
             protected Object construct() throws Exception {
 				final List l = new ArrayList();
-				final URL url = f.getURL();
+				// see if an astroscopeFileObject is present - if so, use this as a source of richer metadata.
+                final AstroscopeFileObject astroscopeFileObject = AstroscopeFileObject.findAstroscopeFileObject(f);
+                final FileObject innermost = AstroscopeFileObject.findInnermostFileObject(f);
+				final URL url = innermost.getURL();
 				l.add(url.toString());// url
 				l.add(f.getName().getBaseName());
-				final Hashtable t = new Hashtable(f.getNode().getAttributes());
-				l.add(t);// some kind of map here.
-				//System.err.println(t);
+				final Hashtable t;
+				if (astroscopeFileObject != null) {
+				    t = new Hashtable(astroscopeFileObject.getNode().getAttributes());
+				    t.remove("tooltip"); // load of noise.
+				} else {
+				    t = new Hashtable(f.getContent().getAttributes());
+				}
+				MapUtils.verbosePrint(System.err,"params",t);
+				l.add(t);
 				scav.getTupp().singleTargetFireAndForgetMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}
@@ -147,28 +152,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 		}).start();		
 	}
 	
-    private void sendLoadSpectrumMessage(final FileObject f) {
-        (new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
-//          {
-//              setTransient(true);
-//          }
-            @Override
-            protected Object construct() throws Exception {
-                final List l = new ArrayList();
-                final URL url = f.getURL();
-                l.add(url.toString());// url
-                l.add(f.getName().getBaseName());
-                final Hashtable t = new Hashtable(f.getContent().getAttributes());
-                l.add(t);// some kind of map here.
-                scav.getTupp().singleTargetFireAndForgetMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
-                return null;
-            }
-            @Override
-            protected void doFinished(final Object result) {
-                parent.showTransientMessage("Message sent to " + plas.getName(),"");    
-            }           
-        }).start();     
-    }	
+
 	
 	/**
 	 * 

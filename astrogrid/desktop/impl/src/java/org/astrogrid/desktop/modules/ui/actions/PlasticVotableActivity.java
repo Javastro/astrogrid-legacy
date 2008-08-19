@@ -8,6 +8,7 @@ import static org.apache.commons.io.IOUtils.closeQuietly;
 import java.awt.event.ActionEvent;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,9 +17,11 @@ import java.util.List;
 import javax.swing.JMenuItem;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
@@ -146,10 +149,23 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	                (new LoadVotableWorker(f)).start();
 	                
 	            } else if (o instanceof CatalogService) {
+	                // very CDS specific
 	                final CatalogService vizCatalog = (CatalogService) o;
 	                final URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
-	                (new LoadVotableWorker(s,vizCatalog.getTitle())).start();
- 
+	                final TableBean[] tables = vizCatalog.getTables();
+	                if (tables == null || tables.length == 1) {
+	                    (new LoadVotableWorker(s,vizCatalog.getTitle())).start();
+	                } else { // more
+	                    for (int t = 0; t < tables.length; t++) {
+	                        final String tableName = StringUtils.substringAfterLast(tables[t].getName(),"/"); // get trailing part of tablename.
+                            try {
+                            final URI tURI = new URI(s.toString() + "/" + tableName); // download url is the main url plus the tablename.
+                            (new LoadVotableWorker(tURI,vizCatalog.getTitle() + " - " + tableName)).start();                      
+                            } catch (final URISyntaxException e) {
+                                logger.warn("Failed to construct download link",e);
+                            }	                        
+	                    }
+	                }
 	            } else if (o instanceof URI) {
 	                final URI u= (URI)o;
 	                (new LoadVotableWorker(u,u.toString())).start();                  
@@ -164,7 +180,20 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
                 } else if (o instanceof CatalogService) {
                     final CatalogService vizCatalog = (CatalogService)o;
                     final URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
-                    (new LoadVotableInlineWorker(s,vizCatalog.getTitle())).start();
+                    final TableBean[] tables = vizCatalog.getTables();
+                    if (tables == null || tables.length == 1) {
+                        (new LoadVotableInlineWorker(s,vizCatalog.getTitle())).start();
+                    } else { // more
+                        for (int t = 0; t < tables.length; t++) {
+                            final String tableName = StringUtils.substringAfterLast(tables[t].getName(),"/"); // get trailing part of tablename.
+                            try {
+                            final URI tURI = new URI(s.toString() + "/" + tableName); // download url is the main url plus the tablename.
+                            (new LoadVotableInlineWorker(tURI,vizCatalog.getTitle() + " - " + tableName)).start();                      
+                            } catch (final URISyntaxException e) {
+                                logger.warn("Failed to construct download link",e);
+                            }                           
+                        }
+                    }
                     
 	            } else if (o instanceof URI) {
 	                final URI u = (URI)o;

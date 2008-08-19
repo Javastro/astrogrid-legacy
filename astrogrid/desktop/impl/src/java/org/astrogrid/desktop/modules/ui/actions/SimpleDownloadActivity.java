@@ -5,22 +5,20 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.KeyStroke;
 
-import org.apache.commons.codec.Encoder;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.provider.local.LocalFileSystem;
+import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Interface;
@@ -28,11 +26,8 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
-
-import com.l2fprod.common.swing.JDirectoryChooser;
 
 /** simplistic activity which just allows users to download files to a local directory.
  * may even keep around once I've debugged the save activity..
@@ -48,16 +43,18 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 	
 	
     // applies to all non-local files and folders.
-	protected boolean invokable(FileObject f) { 
-	    FileSystem fileSystem = f.getFileSystem();
+	@Override
+    protected boolean invokable(final FileObject f) { 
+	    final FileSystem fileSystem = f.getFileSystem();
 	    return ! (fileSystem instanceof LocalFileSystem);
 	}
 	
-    protected boolean invokable(Resource r) {
+    @Override
+    protected boolean invokable(final Resource r) {
         return ConeProtocol.isCdsCatalog(r);
     }
 
-	public SimpleDownloadActivity(final FileSystemManager vfs, ResourceChooserInternal chooser) {
+	public SimpleDownloadActivity(final FileSystemManager vfs, final ResourceChooserInternal chooser) {
 		super();
 		setHelpID("activity.download");
         this.vfs = vfs;
@@ -68,10 +65,11 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 		setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	@Override
+    public void actionPerformed(final ActionEvent e) {
         final List resources = computeInvokableResources();
         final List files = computeInvokableFiles();
-        int sz = resources.size() + files.size();
+        final int sz = resources.size() + files.size();
         confirmWhenOverThreshold(sz,"Download all " + sz + " files?",new Runnable() {
             public void run() {
                 doit(resources,files);
@@ -80,26 +78,34 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 	}
 	
 	
-	private void doit(List resources, List files) {
-	    List commandList = new ArrayList();
-        if (resources.size() > 0) {
-            // very CDS swpecific at the moment
-            for (Iterator i = resources.iterator(); i.hasNext();) {
-                CatalogService vizCatalog = (CatalogService) i.next();
-                URI s = findDownloadLinkForCDSResource(vizCatalog);
-                if (s != null) {
-                    /* shortName no good - not unique in vizier , and not very useful
-                    String fname = StringUtils.isEmpty(vizCatalog.getShortName()) 
-                            ? StringUtils.replace(vizCatalog.getTitle(),"/","_") + ".vot"
-                            : StringUtils.replace(vizCatalog.getShortName(),"/","_") + ".vot"
-                            ;
-                            */
-                 //   String fname = StringUtils.replace(vizCatalog.getTitle(),"/","_") + ".vot";     
-                        String fname = VizModel.removeLineNoise(vizCatalog.getTitle()) + ".vot";
-                        commandList.add(new CopyAsCommand(s,fname));                                       
-                }
-            }            
-        }	 
+	private void doit(final List resources, final List files) {
+	    final List commandList = new ArrayList();
+	    if (resources.size() > 0) {
+	        // utterly CDS specific
+	        for (final Iterator i = resources.iterator(); i.hasNext();) {
+	            final CatalogService vizCatalog = (CatalogService) i.next();
+	            final URI s = findDownloadLinkForCDSResource(vizCatalog); // finds the right service capability.
+	            if (s != null) {
+	                final TableBean[] tables = vizCatalog.getTables(); // check how many tables we've got.
+	                if (tables == null || tables.length == 1) { //just a single table - no need to do anything special.
+	                    final String fname = VizModel.removeLineNoise(vizCatalog.getTitle()) + ".vot";
+	                    commandList.add(new CopyAsCommand(s,fname));                                       
+	                } else { // multiple tables  - emit a separate command for each.
+	                    for (int t =0; t < tables.length; t++) {
+	                        final String tableName = StringUtils.substringAfterLast(tables[t].getName(),"/"); // get trailing part of tablename.
+	                        try {
+	                        final URI tURI = new URI(s.toString() + "/" + tableName); // download url is the main url plus the tablename.
+	                        final String fname = VizModel.removeLineNoise(vizCatalog.getTitle()) + " - " +  tableName + ".vot";
+	                        commandList.add(new CopyAsCommand(tURI,fname));
+	                        } catch (final URISyntaxException e) {
+	                            logger.warn("Failed to construct download link",e);
+	                        }
+	                    }
+	                }
+ 
+	            }
+	        }            
+	    }	 
         
 		for (int i = 0 ; i < files.size(); i++) {
 		    commandList.add(new CopyCommand((FileObject)files.get(i)));
@@ -125,17 +131,17 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         }
         URI saveDir = chooser.getSelectedFile().toURI();
      */
-        CopyCommand[] cmdArr = (CopyCommand[])commandList.toArray(new CopyCommand[commandList.size()]);
+        final CopyCommand[] cmdArr = (CopyCommand[])commandList.toArray(new CopyCommand[commandList.size()]);
 		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, cmdArr)).start();
 		
 	}
 	
-	public static URI findDownloadLinkForCDSResource(CatalogService r) {
-	    Capability[] caps = r.getCapabilities();
+	public static URI findDownloadLinkForCDSResource(final CatalogService r) {
+	    final Capability[] caps = r.getCapabilities();
 	    for (int i = 0; i < caps.length; i++) {
-	        Interface[] interfaces = caps[i].getInterfaces();
+	        final Interface[] interfaces = caps[i].getInterfaces();
 	        for (int j = 0; j < interfaces.length; j++) {
-                Interface iface = interfaces[j];
+                final Interface iface = interfaces[j];
                 
             if (StringUtils.contains(iface.getType(),"ParamHTTP")) {
                 // assume a single accessURL
