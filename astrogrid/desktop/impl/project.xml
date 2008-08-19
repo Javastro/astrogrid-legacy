@@ -126,7 +126,7 @@
             <artifactId>plaskit</artifactId>
             <groupId>starlink</groupId>
             <type>jar</type>
-            <version>3.0</version>
+            <version>3.0.2</version>
             <properties>
                 <dist.bundle>true</dist.bundle>
                 <strip>true</strip>

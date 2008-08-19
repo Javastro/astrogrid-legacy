@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -50,6 +51,7 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
 import org.votech.plastic.incoming.messages.hub.HubListener;
 
 import uk.ac.starlink.plastic.PlasticUtils;
+import uk.ac.starlink.plastic.XmlRpcAgent;
 import uk.ac.starlink.plastic.XmlRpcHub;
 import ca.odell.glazedlists.EventList;
 
@@ -141,7 +143,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener, XmlR
 	private final ConnectAction connect = new ConnectAction();
 	private final DisconnectAction disconnect = new DisconnectAction();
 	/** reference to the hub we've connected to */
-	private  PlasticHubListener hub;
+	private ArXmlRpcHub hub;
 	private final EventList<PlasticApplicationDescription>  model;
 	private URI myPlasticId;
 	private final UIContext parent;
@@ -399,7 +401,7 @@ private class ConnectAction extends AbstractAction {
                  client.setTransportFactory(factory);         
                 
                  // create a connection to the hub.
-                hub= new XmlRpcHub(client,null);
+                hub= new ArXmlRpcHub(client, null);
                 
                 // myPlasticId = hub.registerRMI(applicationName,new ArrayList(supportedMessages),TupperwareImpl.this);
                 myPlasticId = hub.registerXMLRPC(applicationName,new ArrayList(supportedMessages),xmlrpcClientEndpoint);
@@ -438,6 +440,9 @@ private class DisconnectAction extends AbstractAction {
             }
             @Override
             protected Object construct() throws Exception {               
+                //bz 2814 - if the hub has already been shut down, this is noisy
+                // so disable error reporting at this point.
+                hub.setSilent(true);
                 hub.unregister(myPlasticId);
                 myPlasticId = null;
                 hub = null;
@@ -484,6 +489,59 @@ private class StartInternalHubAction extends AbstractAction {
 }
 
 // shutdown listener.
+
+/** Custom subclass to not log errors when shutting down. 
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Aug 19, 20081:34:07 PM
+ */
+final class ArXmlRpcHub extends XmlRpcHub {
+    
+    private boolean silent = false;
+    /**
+     * @return the silent
+     */
+    public boolean isSilent() {
+        return this.silent;
+    }
+    /** 
+     * @param silent the silent to set
+     */
+    public void setSilent(final boolean silent) {
+        this.silent = silent;
+    }
+    /**
+     * @param client
+     * @param properHub
+     */
+    public ArXmlRpcHub(final XmlRpcClient client, final PlasticHubListener properHub) {
+        super(client, properHub);
+    }
+    // overridden to cure bz2814 (and related problems)
+    // by logging using clogging and check whether we're in 'silent' mode
+    // before reporting an error message.
+    @Override
+    protected Object xmlrpcCall(final String method, final Object[] args) {
+        final Vector argv = new Vector();
+        if ( args != null ) {
+            for ( int i = 0; i < args.length; i++ ) {
+                argv.add( XmlRpcAgent.doctorObject( args[ i ] ) );
+            }
+        }
+        try {
+            final Object result = client_.execute( "plastic.hub." + method, argv );
+            if ( result instanceof XmlRpcException ) {
+                throw (XmlRpcException) result;
+            }
+            return result;
+        }
+        catch ( final Exception e ) {
+            if (! silent) {
+                logger.warn(  "XML-RPC Execution error: " + e, e );                
+            }
+                return null;                
+        }
+    }
+}
 
 public void halting() { // disconnect from the hub.
     if (disconnect.isEnabled()) { //i.e. we're connected to the hub
