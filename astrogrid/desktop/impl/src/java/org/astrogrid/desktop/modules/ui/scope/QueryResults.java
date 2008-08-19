@@ -108,5 +108,5 @@ public Object getSummarizedResultCount() {
 
 
    /** constant for result count of a service that has not yet been queried */
-   public static final Integer PENDING = new Integer(-1);
+   public static final Integer PENDING = -1; // autoboxed
 }

@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.13 2008/08/04 16:37:23 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.14 2008/08/19 12:47:10 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class TypeStructureTransformer implements Transformer {
         
         if (arg0 instanceof Long) {
             // demote to int. yechh.
-            return new Integer(((Long)arg0).intValue());
+            return Integer.valueOf(((Long)arg0).intValue());
         }
         
         if (arg0 instanceof URL
@@ -99,16 +99,17 @@ public class TypeStructureTransformer implements Transformer {
        
        if (arg0 instanceof Hashtable) {
     	   final Hashtable t = (Hashtable)arg0;
-    	   for (final Iterator  i = t.keySet().iterator(); i.hasNext(); ) {
-    		   final Object key = i.next();
-    		   final Object value = t.get(key);
-    		   final Object tranKey = trans.transform(key);
-    		   if (tranKey != key) { // intentional - not using equals(). want to see whether key has been passed through unchanged
-    			   // transformed key is different - so better remove old binding.
-    			   i.remove(); // will remove that key.
-    		   }
-    		   t.put(tranKey,trans.transform(value)); // depending on whether tranKey!=key, this will either overwrite the old binding, or create a new one.
-    	   }
+    	   for (final Iterator i = t.entrySet().iterator(); i.hasNext(); ) {
+    	       final Map.Entry e = (Map.Entry)i.next();
+    	       final Object key = e.getKey();
+    	       final Object tranKey = trans.transform(key);
+    	       if (tranKey != key) { // intentional - not using equals(). want to see whether key has been passed through unchanged
+    	           // transformed key is different - so better remove old binding.
+    	           i.remove(); // will remove that key.
+    	       }
+    	       t.put(tranKey,trans.transform(e.getValue())); // depending on whether tranKey!=key, this will either overwrite the old binding, or create a new one.
+    	       
+    	   }    
     	   return t;
        }
         // case for all other map types..
@@ -214,6 +215,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.14  2008/08/19 12:47:10  nw
+findbugs fixes and improvements.
+
 Revision 1.13  2008/08/04 16:37:23  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

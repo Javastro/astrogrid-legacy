@@ -35,7 +35,7 @@ public class CheckBoxMenu extends JMenu implements ListSelectionListener {
      *
      * @param  name  the menu name
      */
-    public CheckBoxMenu( String name ) {
+    public CheckBoxMenu( final String name ) {
         this(); 
         setText( name );
     }
@@ -49,11 +49,11 @@ public class CheckBoxMenu extends JMenu implements ListSelectionListener {
         return getItemCount() - iBase;
     }
 
-    public void addListSelectionListener( ListSelectionListener listener ) {
+    public void addListSelectionListener( final ListSelectionListener listener ) {
         selModel.addListSelectionListener( listener );
     }
 
-    public void removeListSelectionListener( ListSelectionListener listener ) {
+    public void removeListSelectionListener( final ListSelectionListener listener ) {
         selModel.removeListSelectionListener( listener );
     }
 
@@ -64,7 +64,7 @@ public class CheckBoxMenu extends JMenu implements ListSelectionListener {
      *
      * @param  action  action to add
      */
-    public void insertAction( Action action ) {
+    public void insertAction( final Action action ) {
         if ( iBase == 0 ) {
             insertSeparator( iBase++ );
         }
@@ -78,12 +78,12 @@ public class CheckBoxMenu extends JMenu implements ListSelectionListener {
      *
      * @param  text  the label for the next item on the menu
      */
-    public void addMenuItem( String text ) {
+    public void addMenuItem( final String text ) {
         final int index = getItemCount() - iBase;
         final JCheckBoxMenuItem item = 
             new JCheckBoxMenuItem( text, selModel.isSelectedIndex( index ) );
         item.addItemListener( new ItemListener() {
-            public void itemStateChanged( ItemEvent evt ) {
+            public void itemStateChanged( final ItemEvent evt ) {
                 if ( item.getState() ) {
                     selModel.addSelectionInterval( index, index );
                 }
@@ -112,7 +112,7 @@ public class CheckBoxMenu extends JMenu implements ListSelectionListener {
      * 
      * @param   selModel the new selection model
      */
-    public void setSelectionModel( ListSelectionModel selModel ) {
+    public void setSelectionModel( final ListSelectionModel selModel ) {
         if ( this.selModel != null ) {
             this.selModel.removeListSelectionListener( this );
         }
@@ -124,9 +124,12 @@ public class CheckBoxMenu extends JMenu implements ListSelectionListener {
         selModel.addListSelectionListener( this );
     }
 
-    public void valueChanged( ListSelectionEvent evt ) {
-        int first = evt.getFirstIndex();
-        int last = evt.getLastIndex();
+    public void valueChanged( final ListSelectionEvent evt ) {
+        final int first = evt.getFirstIndex();
+        final int last = evt.getLastIndex();
+        if (first  > last) {
+            throw new IllegalArgumentException("first index cannod be larger than last");
+        }
         for ( int i = first; i <= last; i++ ) {
             ((JCheckBoxMenuItem) getItem( i + iBase ))
            .setState( selModel.isSelectedIndex( i ) );

@@ -9,10 +9,8 @@ import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.event.ControlAdapter;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** prefuse control that will display the send-to context menu over suitable items.
  * 
@@ -24,7 +22,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  */
 public class SendToMenuControl extends ControlAdapter {
 
-	public SendToMenuControl(JPopupMenu actions,UIComponent parent) {
+	public SendToMenuControl(final JPopupMenu actions,final UIComponent parent) {
 		this.popup = actions;
 		this.parent = parent;
 		//this.trans = new TreeNodePreferredTransferable();
@@ -33,10 +31,11 @@ public class SendToMenuControl extends ControlAdapter {
 	private final UIComponent parent;
 //	private final TreeNodePreferredTransferable trans;
 	
-	public void itemClicked(VisualItem item, MouseEvent e) {
+	@Override
+    public void itemClicked(final VisualItem item, final MouseEvent e) {
 		if ( ( e.isPopupTrigger() || e.isControlDown() || e.getButton() == MouseEvent.BUTTON3) 
 			&& item.getEntity() instanceof FileProducingTreeNode) {
-			FileProducingTreeNode node = (FileProducingTreeNode)item.getEntity();
+			//FileProducingTreeNode node = (FileProducingTreeNode)item.getEntity();
 		//	trans.setTreeNode(node);
 			//@fixme update current selection at this point..
 			//popup.show(trans,parent,e.getComponent(),e.getX(),e.getY());

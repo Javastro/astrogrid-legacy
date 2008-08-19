@@ -25,7 +25,7 @@ public class StorageTableFormat implements AdvancedTableFormat {
 	/**
 	 * 
 	 */
-	public StorageTableFormat(IconFinder icons) {
+	public StorageTableFormat(final IconFinder icons) {
 		this.icons = icons;
 	}
 	private final IconFinder icons;
@@ -35,7 +35,7 @@ public class StorageTableFormat implements AdvancedTableFormat {
 		return COLUMN_COUNT;
 	}
 
-	public String getColumnName(int arg0) {
+	public String getColumnName(final int arg0) {
 		switch(arg0) {
 		case 0: return "Icon";
 		case 1: return "Name";
@@ -47,8 +47,8 @@ public class StorageTableFormat implements AdvancedTableFormat {
 		}
 	}
 
-	public Object getColumnValue(Object arg0, int arg1) {
-		FileObject o = (FileObject)arg0;
+	public Object getColumnValue(final Object arg0, final int arg1) {
+		final FileObject o = (FileObject)arg0;
 		try {
 		switch(arg1) {
 			case 0:
@@ -62,15 +62,15 @@ public class StorageTableFormat implements AdvancedTableFormat {
 				if (! o.getType().hasContent()) {
 					return null;
 				}
-				long sz = o.getContent().getSize() ;
-				return new Long(sz);
+				final long sz = o.getContent().getSize() ;
+				return Long.valueOf(sz);
 			case 4:
 				return findBestContentType(o);
 			
 			default:
 				throw new IndexOutOfBoundsException("Oversized column index " + arg1);
 		}
-		} catch (FileSystemException e) {
+		} catch (final FileSystemException e) {
 			return null;
 		}
 	}
@@ -95,7 +95,7 @@ public class StorageTableFormat implements AdvancedTableFormat {
 	    return o.getType().getName();
 	}
 
-	public Class getColumnClass(int arg0) {
+	public Class getColumnClass(final int arg0) {
 		switch(arg0) {
 		case 0: return Icon.class;
 		case 1: return Object.class;
@@ -107,7 +107,7 @@ public class StorageTableFormat implements AdvancedTableFormat {
 		}
 	}
 
-	public Comparator getColumnComparator(int arg0) {
+	public Comparator getColumnComparator(final int arg0) {
 		switch (arg0) {
 		case 0:
 			return null;

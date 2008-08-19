@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 25, 20071:41:00 AM
  */
-public class UcdClauseTemplate extends DescribedEnumerationTemplate {
+public final class UcdClauseTemplate extends DescribedEnumerationTemplate {
 
 	public UcdClauseTemplate() {
 		super("Any column UCD","ucd");
@@ -25,7 +25,8 @@ public class UcdClauseTemplate extends DescribedEnumerationTemplate {
 	protected static final String LIST_RESOURCE = "ucd.list";
 
 	
-	protected void populate(List l) {
+	@Override
+    protected void populate(final List l) {
 		InputStream is = null;
 		BufferedReader r = null;
 		try {
@@ -37,18 +38,18 @@ public class UcdClauseTemplate extends DescribedEnumerationTemplate {
 			r = new BufferedReader(new InputStreamReader(is));
 			String line;
 			while ( (line = r.readLine()) != null) {
-				String[] strings = StringUtils.split(line.trim()," ",2); // splits on first space.
+				final String[] strings = StringUtils.split(line.trim()," ",2); // splits on first space.
 				l.add(new DescribedValue(strings[0],strings[1]));
 			}
-		} catch (IOException x) {
+		} catch (final IOException x) {
 			logger.error("Failed to read all list",x);
 			return;
 		} finally {
 			if (is != null) {
-				try {is.close();} catch (IOException e) {}
+				try {is.close();} catch (final IOException e) {}
 			}
 			if (r != null) {
-				try {r.close();} catch (IOException e) {}
+				try {r.close();} catch (final IOException e) {}
 			}
 		}
 		

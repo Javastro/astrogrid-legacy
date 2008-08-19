@@ -64,8 +64,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -132,7 +132,7 @@ public class ResourceTree extends JTree {
         ,VoDataFlavour.TREENODE
     };
     private final static Predicate dragPredicate = new Predicate() {
-        public boolean evaluate(Object arg0) {
+        public boolean evaluate(final Object arg0) {
             return ArrayUtils.contains(inputFlavors,arg0);
         }
     };
@@ -168,9 +168,9 @@ public class ResourceTree extends JTree {
      *
      * @param   tree model - must be a ResourceTreeModel with correct content
      */
-    public ResourceTree(final TreeModel model, VOExplorerImpl parent,
-                        ResourceChooserInternal chooser, XmlPersist persister
-                        , Action refreshAction) {
+    public ResourceTree(final TreeModel model, final VOExplorerImpl parent,
+                        final ResourceChooserInternal chooser, final XmlPersist persister
+                        , final Action refreshAction) {
         super(model);
         this.refresh = refreshAction;
         setModel(model);
@@ -187,10 +187,10 @@ public class ResourceTree extends JTree {
         // setDragEnabled(true) here, but that only permits dragging
         // the currently selected node.  We would like to be able to 
         // drag whatever is under the cursor.
-        DragGestureListener dgl = new DragGestureListener() {
-            public void dragGestureRecognized(DragGestureEvent evt) {
-                JComponent comp = ResourceTree.this;
-                TransferHandler th = comp.getTransferHandler();
+        final DragGestureListener dgl = new DragGestureListener() {
+            public void dragGestureRecognized(final DragGestureEvent evt) {
+                final JComponent comp = ResourceTree.this;
+                final TransferHandler th = comp.getTransferHandler();
                 th.exportAsDrag(comp, evt.getTriggerEvent(),
                                 evt.getDragAction());
             }
@@ -200,26 +200,30 @@ public class ResourceTree extends JTree {
         // We need to keep track of the mouse position for use when working
         // out what to drag.
         addMouseMotionListener(new MouseMotionListener() {
-            public void mouseMoved(MouseEvent evt) {
+            public void mouseMoved(final MouseEvent evt) {
                 mousePos = evt.getPoint();
             }
-            public void mouseDragged(MouseEvent evt) {
+            public void mouseDragged(final MouseEvent evt) {
             }
         });
 
         // Keep track of when a drag is in progress.
         DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceAdapter() {
-            public void dragEnter(DragSourceDragEvent evt) {
+            @Override
+            public void dragEnter(final DragSourceDragEvent evt) {
                 dndIsDragging = true;
             }
-            public void dragExit(DragSourceEvent evt) {
+            @Override
+            public void dragExit(final DragSourceEvent evt) {
                 dndIsDragging = false;
                 endDrag();
             }
-            public void dragOver(DragSourceDragEvent evt) {
+            @Override
+            public void dragOver(final DragSourceDragEvent evt) {
                 dndIsDragging = true;
             }
-            public void dragDropEnd(DragSourceDropEvent evt) {
+            @Override
+            public void dragDropEnd(final DragSourceDropEvent evt) {
                 dndIsDragging = false;
                 endDrag();
             }
@@ -292,7 +296,7 @@ public class ResourceTree extends JTree {
                                 "Import a folder description from an XML file");
         
         popup = new JPopupMenu("Lists");
-        JMenu nu = new JMenu("New");
+        final JMenu nu = new JMenu("New");
         nu.add(new JMenuItem(addSmart));
         nu.add(new JMenuItem(addStatic));
         nu.add(new JMenuItem(addXQuery));
@@ -311,10 +315,12 @@ public class ResourceTree extends JTree {
 
         // Listen for popup menu trigger.
         addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent evt) {
+            @Override
+            public void mousePressed(final MouseEvent evt) {
                 checkForTriggerEvent(evt);
             }
-            public void mouseReleased(MouseEvent evt) {
+            @Override
+            public void mouseReleased(final MouseEvent evt) {
                 checkForTriggerEvent(evt);
             }
         });
@@ -322,9 +328,9 @@ public class ResourceTree extends JTree {
         // listen for changes to selection, and adjust menu entries accordingly.
         getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 
-            public void valueChanged(TreeSelectionEvent e) {
-                TreePath path = getSelectionPath();
-                DefaultMutableTreeNode node = path == null
+            public void valueChanged(final TreeSelectionEvent e) {
+                final TreePath path = getSelectionPath();
+                final DefaultMutableTreeNode node = path == null
                             ? null
                             : (DefaultMutableTreeNode) path.getLastPathComponent();
                 tailorActionsToResource(node);
@@ -332,12 +338,13 @@ public class ResourceTree extends JTree {
         });
         
         // finally, set up the action map - so some of these ops can be found from the menu.
-        ActionMap map = getActionMap();
+        final ActionMap map = getActionMap();
      //   map.put(UIComponentMenuBar.EditMenuBuilder.COPY,TransferHandler.getCopyAction());
         map.put(UIComponentMenuBar.EditMenuBuilder.PASTE,TransferHandler.getPasteAction());
     }
 
-    final public void setModel(TreeModel model) {
+    @Override
+    final public void setModel(final TreeModel model) {
         if (expander != null) {
             this.model.removeTreeModelListener(expander);
             model.addTreeModelListener(expander);
@@ -352,10 +359,10 @@ public class ResourceTree extends JTree {
      */
     public void initialiseViewAndSelection() {
         expandPath(new TreePath(getModel().getRoot()));
-        int nrow = getRowCount();
+        final int nrow = getRowCount();
         for (int ir = 0; ir < nrow; ir++) {
-            ResourceFolder folder = getFolder(getPathForRow(ir));
-            boolean isSuitable = true;
+            final ResourceFolder folder = getFolder(getPathForRow(ir));
+            final boolean isSuitable = true;
             if (isSuitable) {
                 setSelectionRows(new int[] {ir});
                 return;
@@ -377,8 +384,8 @@ public class ResourceTree extends JTree {
      *
      * @param  folder to select, or null
      */
-    public void setSelectedFolder(ResourceFolder folder) {
-        TreePath path = getPath(folder);
+    public void setSelectedFolder(final ResourceFolder folder) {
+        final TreePath path = getPath(folder);
         setSelectionPath(path);
         if (path != null) {
             scrollPathToVisible(path);
@@ -391,7 +398,7 @@ public class ResourceTree extends JTree {
      * @param   path  path
      * @return   folder at path
      */
-    public ResourceFolder getFolder(TreePath path) {
+    public ResourceFolder getFolder(final TreePath path) {
         return path == null
              ? null
              : getFolder((TreeNode) path.getLastPathComponent());
@@ -403,7 +410,7 @@ public class ResourceTree extends JTree {
      * @param  node  tree node
      * @return  folder
      */
-    public ResourceFolder getFolder(TreeNode node) {
+    public ResourceFolder getFolder(final TreeNode node) {
         return (ResourceFolder) ((DefaultMutableTreeNode) node).getUserObject();
     }
 
@@ -414,11 +421,11 @@ public class ResourceTree extends JTree {
      * @param  folder  folder
      * @return   node, or null
      */
-    public DefaultMutableTreeNode getNode(ResourceFolder folder) {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-        for (Enumeration en = root.depthFirstEnumeration();
+    public DefaultMutableTreeNode getNode(final ResourceFolder folder) {
+        final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        for (final Enumeration en = root.depthFirstEnumeration();
              en.hasMoreElements();) {
-            DefaultMutableTreeNode node =
+            final DefaultMutableTreeNode node =
                 (DefaultMutableTreeNode) en.nextElement();
             if (node.getUserObject() == folder) {
                 return node;
@@ -434,8 +441,8 @@ public class ResourceTree extends JTree {
      * @param  folder  folder
      * @return   path, or null
      */
-    public TreePath getPath(ResourceFolder folder) {
-        DefaultMutableTreeNode node = getNode(folder);
+    public TreePath getPath(final ResourceFolder folder) {
+        final DefaultMutableTreeNode node = getNode(folder);
         return node == null ? null
                             : new TreePath(node.getPath());
     }
@@ -447,8 +454,8 @@ public class ResourceTree extends JTree {
      *
      * @param  folder  folder to be stored/updated
      */
-    public void store(ResourceFolder folder) {
-        DefaultMutableTreeNode node = getNode(folder);
+    public void store(final ResourceFolder folder) {
+        final DefaultMutableTreeNode node = getNode(folder);
         if (node == null) {
             appendFolder(folder);
         }
@@ -462,9 +469,9 @@ public class ResourceTree extends JTree {
      *
      * @param   folder   folder to add
      */
-    public void appendFolder(ResourceFolder folder) {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-        DefaultMutableTreeNode child =
+    public void appendFolder(final ResourceFolder folder) {
+        final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        final DefaultMutableTreeNode child =
             new DefaultMutableTreeNode(folder, isBranch(folder));
         model.insertNodeInto(child, root, root.getChildCount());
     }
@@ -500,8 +507,8 @@ public class ResourceTree extends JTree {
         if (! isDragging()) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    TreeSelectionModel selModel = getSelectionModel();
-                    TreePath[] paths = selModel.getSelectionPaths();
+                    final TreeSelectionModel selModel = getSelectionModel();
+                    final TreePath[] paths = selModel.getSelectionPaths();
                     selModel.clearSelection();
                     selModel.setSelectionPaths(paths);
                 }
@@ -512,12 +519,12 @@ public class ResourceTree extends JTree {
     /**
      * Invoked for mouse events which might be popup menu triggers.
      */
-    private void checkForTriggerEvent(MouseEvent evt) {
+    private void checkForTriggerEvent(final MouseEvent evt) {
         if (evt.isPopupTrigger()) {
-            int x = evt.getX();
-            int y = evt.getY();
-            TreePath path = getClosestPathForLocation(x, y);
-            DefaultMutableTreeNode node = path == null
+            final int x = evt.getX();
+            final int y = evt.getY();
+            final TreePath path = getClosestPathForLocation(x, y);
+            final DefaultMutableTreeNode node = path == null
                 ? null
                 : (DefaultMutableTreeNode) path.getLastPathComponent();
             tailorActionsToResource(node);
@@ -530,12 +537,12 @@ public class ResourceTree extends JTree {
      *
      * @param  node  selected node
      */
-    private void tailorActionsToResource(DefaultMutableTreeNode node) {
+    private void tailorActionsToResource(final DefaultMutableTreeNode node) {
         final boolean notFixed;
         final boolean parentNotFixed;
         if (node != null) {
             notFixed = ! isFixed(node);
-            DefaultMutableTreeNode parent =
+            final DefaultMutableTreeNode parent =
                 (DefaultMutableTreeNode) node.getParent();
             if (parent != null) {
                 parentNotFixed = ! isFixed(parent);
@@ -564,7 +571,7 @@ public class ResourceTree extends JTree {
      * @param   node  node to test
      * @return   true iff node should not be altered
      */
-    private boolean isFixed(DefaultMutableTreeNode node) {
+    private boolean isFixed(final DefaultMutableTreeNode node) {
 
         // Test whether any of the node's ancestors have non-empty 
         // subscriptions.  If so, the whole content will be overwritten next
@@ -579,11 +586,11 @@ public class ResourceTree extends JTree {
      * @param  node   node to test
      * @return  ancestor folder object with a subscription
      */
-    private ResourceFolder getSubscribedAncestor(DefaultMutableTreeNode node) {
-        Object[] path = node.getUserObjectPath();
+    private ResourceFolder getSubscribedAncestor(final DefaultMutableTreeNode node) {
+        final Object[] path = node.getUserObjectPath();
         for (int i = path.length - 1; i >= 0; i--) {
-            ResourceFolder folder = (ResourceFolder) path[i];
-            String subs = folder.getSubscription();
+            final ResourceFolder folder = (ResourceFolder) path[i];
+            final String subs = folder.getSubscription();
             if (subs != null && subs.trim().length() > 0) {
                 return folder;
             }
@@ -596,7 +603,7 @@ public class ResourceTree extends JTree {
      *
      * @param  node  node to export
      */
-    private void exportNode(DefaultMutableTreeNode node) {
+    private void exportNode(final DefaultMutableTreeNode node) {
         final Object bean = BranchBean.fromTreeNode(node);
         final URI loc = chooser
             .chooseResourceWithParent("Save Folder", true, true, true, this);
@@ -607,6 +614,7 @@ public class ResourceTree extends JTree {
             {
                 setTransient(true); // display errors as transient popup.
             }
+            @Override
             protected Object construct() throws IOException, ServiceException {
                 OutputStream os = null;
                 try {
@@ -625,7 +633,8 @@ public class ResourceTree extends JTree {
                 }
                 return null;
             }
-            protected void doFinished(Object result) {
+            @Override
+            protected void doFinished(final Object result) {
                 parent.showTransientMessage("Folder saved","to " + loc);
             }
             
@@ -643,6 +652,7 @@ public class ResourceTree extends JTree {
             return;
         }
         new BackgroundWorker(parent, "Loading folder description",BackgroundWorker.LONG_TIMEOUT) {
+            @Override
             public Object construct() throws IOException, ServiceException {
                 InputStream is = null;
                 try {
@@ -652,7 +662,7 @@ public class ResourceTree extends JTree {
                     is = fo.getContent()
                             .getInputStream();
                     reportProgress("Reading contents");
-                    Object bean = persister.fromXml(is);
+                    final Object bean = persister.fromXml(is);
                     reportProgress("Completed");
                     return bean;
                 }
@@ -661,18 +671,19 @@ public class ResourceTree extends JTree {
                         try {
                             is.close();
                         }
-                        catch (IOException e) {
+                        catch (final IOException e) {
                             // ignore
                         }
                     }
                 }
             }
-            protected void doFinished(Object bean) {
+            @Override
+            protected void doFinished(final Object bean) {
                 if (bean != null) {
-                    String fname = loc.toString().replaceFirst("^.*/", "");
-                    DefaultMutableTreeNode newNode =
+                    final String fname = loc.toString().replaceFirst("^.*/", "");
+                    final DefaultMutableTreeNode newNode =
                     BranchBean.toTreeRoot(bean, fname);
-                        DefaultMutableTreeNode root =
+                        final DefaultMutableTreeNode root =
                             (DefaultMutableTreeNode) model.getRoot();
                         model.insertNodeInto(newNode, root, root.getChildCount());
                 }
@@ -685,7 +696,7 @@ public class ResourceTree extends JTree {
      *
      * @return   true for branch node, false for leaf node
      */
-    private static boolean isBranch(ResourceFolder folder) {
+    private static boolean isBranch(final ResourceFolder folder) {
         return folder instanceof ResourceBranch;
     }
 
@@ -702,23 +713,23 @@ public class ResourceTree extends JTree {
          * @param  icon  action icon
          * @param  shortDesc  action description (used for tool tip)
          */
-        TreeAction(String name, Icon icon, String shortDesc) {
+        TreeAction(final String name, final Icon icon, final String shortDesc) {
             super(name, icon);
             putValue(SHORT_DESCRIPTION, shortDesc);
         }
 
-        TreeAction(String name, Icon icon, String shortDesc,KeyStroke accel) {
+        TreeAction(final String name, final Icon icon, final String shortDesc,final KeyStroke accel) {
             super(name, icon);
             putValue(SHORT_DESCRIPTION, shortDesc);
             putValue(ACCELERATOR_KEY,accel);
         }
         
-        public void actionPerformed(ActionEvent evt) {
-            TreePath path = getSelectionPath(); 
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+        public void actionPerformed(final ActionEvent evt) {
+            final TreePath path = getSelectionPath(); 
+            final DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                 (path == null ? null
                               : path.getLastPathComponent());
-            ResourceFolder folder = (ResourceFolder)
+            final ResourceFolder folder = (ResourceFolder)
                 (node == null ? null
                               : node.getUserObject());
             if (this == addStatic) {
@@ -734,12 +745,12 @@ public class ResourceTree extends JTree {
                 new ResourceBranch().editAsNew(parent);
             }
             else if (this == addSubscription) {
-                ResourceBranch subs = new ResourceBranch("New Subscription");
+                final ResourceBranch subs = new ResourceBranch("New Subscription");
                 subs.setIconName("myspace16.png"); // make it look like a subscription.
                 subs.editSubscriptionAsNew(parent);
             }
             else if (this == remove && node != null) {
-                boolean deleteSelected = true;
+                final boolean deleteSelected = true;
                 model.removeNodeFromParent(node);
                 if (deleteSelected) {
                     setSelectionRow(0);
@@ -771,8 +782,8 @@ public class ResourceTree extends JTree {
                 }
             }
             else if (this == rename && folder != null) {
-                Component pc = parent.getComponent();
-                Window w = pc instanceof Window
+                final Component pc = parent.getComponent();
+                final Window w = pc instanceof Window
                          ? (Window) pc
                          : SwingUtilities.getWindowAncestor(pc);
                 
@@ -801,19 +812,19 @@ public class ResourceTree extends JTree {
             private final ResourceFolder folder;
             private final DefaultMutableTreeNode node;
 
-            public RenameDialog(ResourceFolder folder, DefaultMutableTreeNode node) throws HeadlessException {
+            public RenameDialog(final ResourceFolder folder, final DefaultMutableTreeNode node) throws HeadlessException {
                 super();
                 this.folder = folder;
                 this.node = node;
                 init();
             }
-            public RenameDialog(Frame f,ResourceFolder folder, DefaultMutableTreeNode node) throws HeadlessException {
+            public RenameDialog(final Frame f,final ResourceFolder folder, final DefaultMutableTreeNode node) throws HeadlessException {
                 super(f);
                 this.folder = folder;
                 this.node = node;
                 init();
             }
-            public RenameDialog(Dialog f,ResourceFolder folder, DefaultMutableTreeNode node) throws HeadlessException {
+            public RenameDialog(final Dialog f,final ResourceFolder folder, final DefaultMutableTreeNode node) throws HeadlessException {
                 super(f);
                 this.folder = folder;
                 this.node = node;
@@ -838,9 +849,10 @@ public class ResourceTree extends JTree {
                 setLocationRelativeTo(parent.getComponent());
             }
             
+            @Override
             public void ok() {
                 super.ok();
-                String nuName =tf.getText();
+                final String nuName =tf.getText();
                 if (StringUtils.isNotEmpty(nuName)) {
                     folder.setName(nuName);
                     model.nodeStructureChanged(node);
@@ -855,33 +867,37 @@ public class ResourceTree extends JTree {
      */
     private class TreeTransferHandler extends TransferHandler {
 
-        public boolean canImport(JComponent comp, DataFlavor[] flavors) {
+        @Override
+        public boolean canImport(final JComponent comp, final DataFlavor[] flavors) {
             return CollectionUtils.exists(Arrays.asList(flavors),
                                           dragPredicate);
         }
 
-        protected Transferable createTransferable(JComponent comp) {
-            Point pos = ResourceTree.this.mousePos;
-            TreePath path = getClosestPathForLocation(pos.x, pos.y);
+        @Override
+        protected Transferable createTransferable(final JComponent comp) {
+            final Point pos = ResourceTree.this.mousePos;
+            final TreePath path = getClosestPathForLocation(pos.x, pos.y);
             if (path == null) {
                 return null;
             }
             else {
-                DefaultMutableTreeNode node =
+                final DefaultMutableTreeNode node =
                     (DefaultMutableTreeNode) path.getLastPathComponent();
                 return new TreeNodeTransferable(node);
             }
         }
 
-        public int getSourceActions(JComponent comp) {
+        @Override
+        public int getSourceActions(final JComponent comp) {
             return TransferHandler.COPY_OR_MOVE;
         }
 
-        public Icon getVisualRepresentation(Transferable trans) {
+        @Override
+        public Icon getVisualRepresentation(final Transferable trans) {
             if (trans instanceof TreeNodeTransferable) {
-                DefaultMutableTreeNode node =
+                final DefaultMutableTreeNode node =
                     ((TreeNodeTransferable) trans).node;
-                ResourceFolder folder = getFolder(node);
+                final ResourceFolder folder = getFolder(node);
                 return folder.getIcon();
             }
             else {
@@ -889,22 +905,25 @@ public class ResourceTree extends JTree {
             }
         }
 
-        public boolean importData(JComponent comp, Transferable trans) {
+        @Override
+        public boolean importData(final JComponent comp, final Transferable trans) {
             try {
                 return doImportData(comp, trans);
             }
-            catch (Exception e) {
+            catch (final Exception e) {
                 logger.info("Tree drop failed", e);
                 return false;
             }
         }
 
-        public void exportAsDrag(JComponent comp, InputEvent evt, int action ) {
+        @Override
+        public void exportAsDrag(final JComponent comp, final InputEvent evt, final int action ) {
             transferIsDragging = true;
             super.exportAsDrag(comp, evt, action);
         }
 
-        protected void exportDone(JComponent comp, Transferable trans, int action) {
+        @Override
+        protected void exportDone(final JComponent comp, final Transferable trans, final int action) {
             if (action == TransferHandler.MOVE) {
                 if (trans.isDataFlavorSupported(VoDataFlavour.TREENODE)) {
                     DefaultMutableTreeNode movedNode = null;
@@ -912,14 +931,14 @@ public class ResourceTree extends JTree {
                         movedNode = (DefaultMutableTreeNode)
                                     trans.getTransferData(VoDataFlavour.TREENODE);
                     }
-                    catch (UnsupportedFlavorException e) {
+                    catch (final UnsupportedFlavorException e) {
                         logger.warn("Strange", e);
                     }
-                    catch (IOException e) {
+                    catch (final IOException e) {
                         logger.warn("Strange", e);
                     }
                     if (movedNode != null) {
-                        DefaultMutableTreeNode parent =
+                        final DefaultMutableTreeNode parent =
                             (DefaultMutableTreeNode) movedNode.getParent();
                         if (parent != null && !isFixed(parent)) {
                             model.removeNodeFromParent(movedNode);
@@ -936,9 +955,9 @@ public class ResourceTree extends JTree {
          * Performs actual data imports.  This is called by the 
          * importData method but has some declared exceptions.
          */
-        private boolean doImportData(JComponent comp, Transferable trans) throws InvalidArgumentException, IOException, UnsupportedFlavorException {
-            TreePath path = getSelectionPath();
-            DefaultMutableTreeNode targetNode = path == null
+        private boolean doImportData(final JComponent comp, final Transferable trans) throws InvalidArgumentException, IOException, UnsupportedFlavorException {
+            final TreePath path = getSelectionPath();
+            final DefaultMutableTreeNode targetNode = path == null
                 ? null
                 : (DefaultMutableTreeNode) path.getLastPathComponent();
             if (trans.isDataFlavorSupported(VoDataFlavour.LOCAL_RESOURCE_ARRAY)) {
@@ -993,8 +1012,8 @@ public class ResourceTree extends JTree {
          * @param  resources   array of resource objects to drop
          * @return   true iff the drop was successful
          */
-        private boolean dropResources(DefaultMutableTreeNode targetNode, Resource[] resources) {
-            URI[] uris = new URI[resources.length];
+        private boolean dropResources(final DefaultMutableTreeNode targetNode, final Resource[] resources) {
+            final URI[] uris = new URI[resources.length];
             for (int i = 0; i < resources.length; i++) {
                 uris[i] = resources[i].getId();
             }
@@ -1008,12 +1027,12 @@ public class ResourceTree extends JTree {
          * @param  ids   URIs representing resource IDs
          * @return   true iff the drop was successful
          */
-        private boolean dropUris(DefaultMutableTreeNode targetNode, URI[] ids) {
+        private boolean dropUris(final DefaultMutableTreeNode targetNode, final URI[] ids) {
             if (ids == null || ids.length == 0) {
                 logger.debug("Empty ids list passed in - bailing out here");
                 return false;
             }
-            ResourceFolder folder = targetNode == null
+            final ResourceFolder folder = targetNode == null
                                   ? null
                                   : (ResourceFolder) targetNode.getUserObject();
 
@@ -1024,7 +1043,7 @@ public class ResourceTree extends JTree {
                     return false;
                 }
                 else {
-                    StaticList list = (StaticList) folder;
+                    final StaticList list = (StaticList) folder;
                     for (int i = 0; i < ids.length; i++) {
                         list.getResourceSet().add(ids[i]);
                     }
@@ -1037,7 +1056,7 @@ public class ResourceTree extends JTree {
 
             // If dropped in space or onto an unsuitable kind of node, create new static list
             else {
-                StaticList list = new StaticList();
+                final StaticList list = new StaticList();
                 for (int i = 0; i < ids.length; i++) {
                     list.getResourceSet().add(ids[i]);
                 }
@@ -1053,7 +1072,7 @@ public class ResourceTree extends JTree {
          * @param   childNode   node to drop
          * @return   true iff the drop was successful
          */
-        private boolean dropTreeNode(DefaultMutableTreeNode targetNode, DefaultMutableTreeNode childNode) {
+        private boolean dropTreeNode(final DefaultMutableTreeNode targetNode, final DefaultMutableTreeNode childNode) {
 
             // We insert a clone of the node rather than the node itself.
             // This is because we don't yet know whether this is a MOVE or
@@ -1068,9 +1087,9 @@ public class ResourceTree extends JTree {
          *
          * @param   node  node for which changes were attempted
          */
-        private void failToModifySubscription(DefaultMutableTreeNode node) {
-            ResourceFolder folder = getSubscribedAncestor(node);
-            StringBuffer msgbuf = new StringBuffer()
+        private void failToModifySubscription(final DefaultMutableTreeNode node) {
+            final ResourceFolder folder = getSubscribedAncestor(node);
+            final StringBuffer msgbuf = new StringBuffer()
                 .append("Drop action failed - ")
                 .append("cannot modify structure of subscribed node");
             if (folder != null) {
@@ -1096,7 +1115,7 @@ public class ResourceTree extends JTree {
          *         user where the new one is going to go
          * @return  success status
          */
-        private boolean insertNodeAfter(DefaultMutableTreeNode newNode, DefaultMutableTreeNode targetNode) {
+        private boolean insertNodeAfter(final DefaultMutableTreeNode newNode, final DefaultMutableTreeNode targetNode) {
             DefaultMutableTreeNode parentNode;
             int childIndex;
             if (targetNode == null) {
@@ -1133,7 +1152,7 @@ public class ResourceTree extends JTree {
          * point to actual resources.
          * @throws IOException
          */
-        private URI[] convertUnknownToUriList(Object o) throws InvalidArgumentException, IOException {
+        private URI[] convertUnknownToUriList(final Object o) throws InvalidArgumentException, IOException {
             if (o == null) {
                 throw new InvalidArgumentException("null dropped - how odd");
             }
@@ -1148,16 +1167,16 @@ public class ResourceTree extends JTree {
                 throw new InvalidArgumentException("Unknow type dropped " + o.getClass().getName());
             }
             try {
-                List result = new ArrayList();
+                final List result = new ArrayList();
                 String line;
                 while ((line = r.readLine()) != null) {
                     try {
-                        URI u = new URI(line);
+                        final URI u = new URI(line);
                         if (! u.getScheme().equals("ivo")) { // we only want ivo uris.
                             continue;
                         }
                         result.add(u);
-                    } catch (URISyntaxException e) {
+                    } catch (final URISyntaxException e) {
                         logger.debug("Dropping " + line);
                     }
                 }
@@ -1168,7 +1187,7 @@ public class ResourceTree extends JTree {
             } finally {               
                     try {
                         r.close();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         //netch
                     }
                 
@@ -1182,7 +1201,7 @@ public class ResourceTree extends JTree {
     private class TreeNodeTransferable implements Transferable {
         private final DefaultMutableTreeNode node;
 
-        TreeNodeTransferable(DefaultMutableTreeNode node) {
+        TreeNodeTransferable(final DefaultMutableTreeNode node) {
             this.node = node;
         }
 
@@ -1190,22 +1209,22 @@ public class ResourceTree extends JTree {
             return new DataFlavor[] {VoDataFlavour.TREENODE,VoDataFlavour.XML};
         }
 
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
+        public boolean isDataFlavorSupported(final DataFlavor flavor) {
             return VoDataFlavour.TREENODE.equals(flavor)
                 || VoDataFlavour.XML.equals(flavor);
         }
 
-        public Object getTransferData(DataFlavor flavor)
+        public Object getTransferData(final DataFlavor flavor)
                 throws UnsupportedFlavorException, IOException {
             if (VoDataFlavour.TREENODE.equals(flavor)) {
                 return node;
             }
             else if (VoDataFlavour.XML.equals(flavor)) {
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                final ByteArrayOutputStream os = new ByteArrayOutputStream();
                 try {
                     persister.toXml(BranchBean.fromTreeNode(node), os);
                 }
-                catch (ServiceException e) {
+                catch (final ServiceException e) {
                     throw (IOException) new IOException("Serialization error")
                                        .initCause(e);
                 }
@@ -1228,31 +1247,32 @@ public class ResourceTree extends JTree {
 
         /**
          * Returns a suitable font.
-         *
+         *@todo unused - remove?
          * @param  emph  true for emphasised, false for plain
          * @return font
          */
-        private Font getFont(boolean emph) {
+        private Font getFont(final boolean emph) {
             if (plainFont == null) {
-                Font font = getFont();
+                final Font font = getFont();
                 plainFont = font.deriveFont(Font.PLAIN);
                 emFont = font.deriveFont(Font.ITALIC);
             }
             return emph ? emFont : plainFont;
         }
 
-        public Component getTreeCellRendererComponent(JTree tree, Object value,
-                                                      boolean selected,
-                                                      boolean expanded,
-                                                      boolean leaf, int row,
-                                                      boolean hasFocus) {
-            Component comp =
+        @Override
+        public Component getTreeCellRendererComponent(final JTree tree, final Object value,
+                                                      final boolean selected,
+                                                      final boolean expanded,
+                                                      final boolean leaf, final int row,
+                                                      final boolean hasFocus) {
+            final Component comp =
                 super.getTreeCellRendererComponent(tree, value, selected,
                                                    expanded, leaf, row,
                                                    hasFocus);
             if (comp instanceof JLabel) {
-                JLabel label = (JLabel) comp;
-                ResourceFolder folder = 
+                final JLabel label = (JLabel) comp;
+                final ResourceFolder folder = 
                     (ResourceFolder)
                     ((DefaultMutableTreeNode) value).getUserObject();
         //removed use of italics for notation of subscribed resources.        label.setFont(getFont(folder.getSubscription() != null));
@@ -1355,27 +1375,27 @@ public class ResourceTree extends JTree {
      *    hierarchical nature of it.
      */
     private class Expander implements TreeWillExpandListener, TreeModelListener {
-        public void treeWillCollapse(TreeExpansionEvent evt) throws ExpandVetoException {
+        public void treeWillCollapse(final TreeExpansionEvent evt) throws ExpandVetoException {
             // Never permit root collapse.
             if (isRoot(evt.getPath())) {
                 throw new ExpandVetoException(evt, "Refuse to collapse root");
             }
         }
-        public void treeWillExpand(TreeExpansionEvent evt) {
+        public void treeWillExpand(final TreeExpansionEvent evt) {
         }
 
-        public void treeNodesChanged(TreeModelEvent evt) { 
+        public void treeNodesChanged(final TreeModelEvent evt) { 
         }
-        public void treeNodesInserted(TreeModelEvent evt) {
+        public void treeNodesInserted(final TreeModelEvent evt) {
             // Not obvious, but this is required.  Otherwise the root can be
             // expanded when empty, which behaves like being collapsed.
             if (isRoot(evt.getTreePath())) {
                 ensureRootExpanded();
             }
         }
-        public void treeNodesRemoved(TreeModelEvent evt) {
+        public void treeNodesRemoved(final TreeModelEvent evt) {
         }
-        public void treeStructureChanged(TreeModelEvent evt) {
+        public void treeStructureChanged(final TreeModelEvent evt) {
         }
 
         /**
@@ -1409,7 +1429,7 @@ public class ResourceTree extends JTree {
         }
 
         /** Determines whether a path represents the root of the tree model. */
-        private boolean isRoot(TreePath path) {
+        private boolean isRoot(final TreePath path) {
             return path.getPathCount() == 1;
         }
     }

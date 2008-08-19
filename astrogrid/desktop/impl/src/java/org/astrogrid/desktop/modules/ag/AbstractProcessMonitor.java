@@ -35,7 +35,6 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.io.Piper;
 
@@ -62,7 +61,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	private final FileSystemManager vfs;
 	protected FileSystem sys;
     private FileObject localResultsRoot;
-	public AbstractProcessMonitor(FileSystemManager vfs) {
+	public AbstractProcessMonitor(final FileSystemManager vfs) {
 		this.vfs = vfs;
         this.id = UNINITIALIZED;
 	}
@@ -73,7 +72,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	}
 	
 	/** get the execution id for the remote process */
-	public final URI getId() throws IllegalStateException {
+	public final synchronized URI getId() throws IllegalStateException {
 	    if (id == UNINITIALIZED) {
 	        throw new IllegalStateException("Process ID not set - as start() has not yet been called");
 	    } else {
@@ -85,7 +84,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	 * also initiates the results storage.
 	 *  
 	 *  */
-	protected synchronized final void setId(URI id) throws RuntimeException{
+	protected synchronized final void setId(final URI id) throws RuntimeException{
 	    if (this.id != UNINITIALIZED) {
 	        throw new IllegalStateException("Process ID has already been set");
 	    }
@@ -95,12 +94,12 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	    this.id = id;	    
         try {
             sys = vfs.createVirtualFileSystem("monitor://").getFileSystem();
-            String munged = StringUtils.replaceChars(id.getSchemeSpecificPart() + "/" + id.getFragment()
+            final String munged = StringUtils.replaceChars(id.getSchemeSpecificPart() + "/" + id.getFragment()
                     ,"\\$+!*'(),;:?=@&{}|[]^~`<>#"
                     , "/" // replace \ with /, discard all other noise characters.
             );
             localResultsRoot = vfs.resolveFile("tmp://" + URLEncoder.encode(munged));
-        } catch (FileSystemException x) {
+        } catch (final FileSystemException x) {
             throw new RuntimeException("Not expected to fail",x);
         }	    
 	}
@@ -122,14 +121,14 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	 * @fires {@link #fireMessageReceived(ExecutionMessage)}
 	 * @param m
 	 */
-	protected void addMessage(ExecutionMessage m) {
+	protected void addMessage(final ExecutionMessage m) {
 		messages.add(m);
 		fireMessageReceived(m);
 	}
 	
-	protected void info(String message) {
+	protected void info(final String message) {
 	    logger.info(message);
-        ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
+        final ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
                 ,LogLevel.INFO.toString()
                 ,getStatus()
                 ,new Date()
@@ -137,9 +136,9 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
         addMessage(em);
 	}
 	
-    protected void warn(String message) {
+    protected void warn(final String message) {
         logger.info("Warn:" + message);
-        ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
+        final ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
                 ,LogLevel.WARN.toString()
                 ,getStatus()
                 ,new Date()
@@ -159,9 +158,9 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	}
 	
 	// helper method to signal an error, record a message, change status to error, and fire a notification
-	protected final void error(String msg) {
+	protected final void error(final String msg) {
 	    logger.info("Error: " + msg);
-		ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
+		final ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
 				,LogLevel.ERROR.toString()
 				,getStatus()
 				,new Date()
@@ -172,7 +171,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	
 	// helper method to signal an error, extracting useful information from an exception
 	// use the messages from the  last exception in the cause chain.
-	protected final void error(String msg,Throwable t) {
+	protected final void error(final String msg,final Throwable t) {
 	    logger.debug(msg,t);
 	    error(msg + "<br>" +exFormatter.format(t,ExceptionFormatter.ALL));
 	}
@@ -193,7 +192,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	 * @fires {@link #fireStatusChanged(String)}
 	 * @param newStatus
 	 */
-	public final void setStatus(String newStatus) {	    
+	public final void setStatus(final String newStatus) {	    
 		if (! status.equals(newStatus)) {
 		    logger.info("Setting status to " + newStatus);
 			status = newStatus;
@@ -224,31 +223,31 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
      * adds result into map, and presents result as a file in the file view.
      * 
      */
-    protected void addResult(String resultname,String filename,String result) {
+    protected void addResult(final String resultname,final String filename,final String result) {
         OutputStream os = null;
         InputStream is = null;
         try {
-            FileObject tmp = vfs.resolveFile(localResultsRoot,filename);
+            final FileObject tmp = vfs.resolveFile(localResultsRoot,filename);
             tmp.createFile();
             is = new ByteArrayInputStream(result.getBytes());
             os = tmp.getContent().getOutputStream();
             Piper.pipe(is,os);
             sys.addJunction(filename,tmp);
             resultMap.put(resultname,result); // doh! don't really want to cache value in memory too, but can't be helped - map is passed back throught eh RemoteProcessManager AR api, so can't contain any weirdness.
-        } catch (Exception x) {
+        } catch (final Exception x) {
             throw new RuntimeException("Unexpected storage error",x);
         } finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     //meh
                 }
             }
             if (os != null) {
                 try {
                     os.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     // meh
                 }
             }  
@@ -261,7 +260,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
      * @param resultLocation
      * @throws FileSystemException 
      */
-    protected void addResult(String resultname,FileObject resultLocation) throws FileSystemException {
+    protected void addResult(final String resultname,final FileObject resultLocation) throws FileSystemException {
         if (! resultLocation.isAttached()) {
             resultLocation.getType(); // forces attachment, meaning that contacting filesystem happens on this bg thread, not on EDT thread
             //@todo need to verify that this is enough.
@@ -283,7 +282,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	    ((AbstractFileSystem)sys).close();
 	    try {
             localResultsRoot.delete(Selectors.SELECT_ALL);
-        } catch (FileSystemException x) {
+        } catch (final FileSystemException x) {
             logger.warn("Failed to delete temporary results",x);
         }
 	    
@@ -291,72 +290,72 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
     
     private EventListenerList listeners = new EventListenerList();
 	
-    protected void fireMessageReceived(ExecutionMessage m) {
+    protected void fireMessageReceived(final ExecutionMessage m) {
         if (listeners == null) {// deleted the listener list - we've already cleaned up.
             return;
         }
-    	ProcessListener[] pls = (ProcessListener[]) listeners.getListeners(ProcessListener.class);
+    	final ProcessListener[] pls = listeners.getListeners(ProcessListener.class);
     	if (pls.length > 0) {
-    		ProcessEvent pe = new ProcessEvent(this);
+    		final ProcessEvent pe = new ProcessEvent(this);
     		for (int i = 0; i < pls.length; i++) {
 				pls[i].messageReceived(pe);
 			}
     	}
-    	RemoteProcessListener[] rpls = (RemoteProcessListener[])listeners.getListeners(RemoteProcessListener.class);
+    	final RemoteProcessListener[] rpls = listeners.getListeners(RemoteProcessListener.class);
     	for (int i = 0; i < rpls.length; i++) { 
 			rpls[i].messageReceived(id,m);
 		}
     }
     
-    protected void fireResultsReceived(Map m) {
+    protected void fireResultsReceived(final Map m) {
         if (listeners == null) {// deleted the listener list - we've already cleaned up.
             return;
         }        
-    	ProcessListener[] pls = (ProcessListener[]) listeners.getListeners(ProcessListener.class);
+    	final ProcessListener[] pls = listeners.getListeners(ProcessListener.class);
     	if (pls.length > 0) {
-    		ProcessEvent pe = new ProcessEvent(this);
+    		final ProcessEvent pe = new ProcessEvent(this);
     		for (int i = 0; i < pls.length; i++) {
 				pls[i].resultsReceived(pe);
 			}
     	}    	
-    	RemoteProcessListener[] rpls = (RemoteProcessListener[])listeners.getListeners(RemoteProcessListener.class);
+    	final RemoteProcessListener[] rpls = listeners.getListeners(RemoteProcessListener.class);
     	for (int i = 0; i < rpls.length; i++) { 
 			rpls[i].resultsReceived(id,m);
 		}
     }
     
-    protected void fireStatusChanged(String s) {
+    protected void fireStatusChanged(final String s) {
         if (listeners == null) {// deleted the listener list - we've already cleaned up.
             return;
         }        
-    	ProcessListener[] pls = (ProcessListener[]) listeners.getListeners(ProcessListener.class);
+    	final ProcessListener[] pls = listeners.getListeners(ProcessListener.class);
     	if (pls.length > 0) {
-    		ProcessEvent pe = new ProcessEvent(this);
+    		final ProcessEvent pe = new ProcessEvent(this);
     		for (int i = 0; i < pls.length; i++) {
 				pls[i].statusChanged(pe);
 			}
     	}    	
-    	RemoteProcessListener[] rpls = (RemoteProcessListener[])listeners.getListeners(RemoteProcessListener.class);
+    	final RemoteProcessListener[] rpls = listeners.getListeners(RemoteProcessListener.class);
     	for (int i = 0; i < rpls.length; i++) { 
 			rpls[i].statusChanged(id,s);
 		}
     }
     
-    public void addProcessListener(ProcessListener pl) {
+    public void addProcessListener(final ProcessListener pl) {
     	listeners.add(ProcessListener.class,pl);
     }
     
-    public void removeProcessListener(ProcessListener pl) {
+    public void removeProcessListener(final ProcessListener pl) {
     	listeners.remove(ProcessListener.class,pl);
     }
     
     
 	// public listener interace
-	public void addRemoteProcessListener(RemoteProcessListener listener) {
+	public void addRemoteProcessListener(final RemoteProcessListener listener) {
 		listeners.add(RemoteProcessListener.class,listener);
 	}
 	
-	public void removeRemoteProcessListener(RemoteProcessListener listener) {
+	public void removeRemoteProcessListener(final RemoteProcessListener listener) {
 		listeners.remove(RemoteProcessListener.class,listener);
 	}
 }

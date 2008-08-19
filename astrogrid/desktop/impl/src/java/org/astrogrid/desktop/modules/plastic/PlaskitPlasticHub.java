@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -121,7 +122,7 @@ public class PlaskitPlasticHub extends MinimalHub implements PlasticHubListenerI
             final URI[] supportedMessages, final URL callbackURL) {
         if (logger.isDebugEnabled()) {
             logger.debug("createXmlRpcAgent(id=" + id + ", name=" + name
-                    + ", supportedMessages=" + supportedMessages
+                    + ", supportedMessages=" + Arrays.toString(supportedMessages)
                     + ", callbackURL=" + callbackURL + ") - start");
         }
 
@@ -187,8 +188,7 @@ public class PlaskitPlasticHub extends MinimalHub implements PlasticHubListenerI
                 try {
                     final Client client =  new Client( "localhost", Integer.parseInt( otherRmiPort ) );
                     client.exportInterface( PlasticListener.class );
-                    final PlasticHubListener hub = (PlasticHubListener)
-                            client.lookup( PlasticHubListener.class );
+                    client.lookup( PlasticHubListener.class );
                 } catch ( final NumberFormatException e ) {
                     logger.error("start()", e);
 

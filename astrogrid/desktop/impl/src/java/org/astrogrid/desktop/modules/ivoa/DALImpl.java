@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.20 2008/08/07 11:52:36 nw Exp $
+/*$Id: DALImpl.java,v 1.21 2008/08/19 12:47:10 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -459,7 +459,7 @@ public abstract class DALImpl implements Dal{
 		}
 
 		public void rowData(final Object[] cells) throws SAXException {
-			if (!subset || rows.contains(new Integer(currentRow))) {
+			if (!subset || rows.contains(Integer.valueOf(currentRow))) {
 					String format = null;
 					if (formatIx > -1) {
 						format = "." + StringUtils.substringAfterLast(cells[formatIx].toString(),"/");
@@ -481,6 +481,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.21  2008/08/19 12:47:10  nw
+findbugs fixes and improvements.
+
 Revision 1.20  2008/08/07 11:52:36  nw
 RESOLVED - bug 2767: VOExplore searching eso-ssap
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2767

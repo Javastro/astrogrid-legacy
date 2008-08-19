@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.16 2008/08/04 16:37:23 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.17 2008/08/19 12:47:09 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -247,10 +247,10 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
             protected void runTest()  {
                 final File f = new File(SystemUtils.getUserHome(),".acr-rmi-port");
                 assertTrue("~/.acr-rmi-port not present",f.exists());
-                FileReader fr = null;
+                BufferedReader fr = null;
                 try {
-                    fr = new FileReader(f);
-                    final String str = new BufferedReader(fr).readLine();
+                    fr = new BufferedReader(new FileReader(f));
+                    final String str = fr.readLine();
                     assertNotNull("~/.acr-rmi-port is empty",str);
                     final int port = Integer.parseInt(str);
                     assertEquals("incorrect port in ~/.acr-rmi-port",getPort(),port);
@@ -311,6 +311,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.17  2008/08/19 12:47:09  nw
+findbugs fixes and improvements.
+
 Revision 1.16  2008/08/04 16:37:23  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

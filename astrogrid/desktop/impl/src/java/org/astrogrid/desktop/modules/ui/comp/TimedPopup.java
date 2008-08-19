@@ -178,7 +178,7 @@ public class TimedPopup {
             return; // owning window isn't visible, so don't show the popup.
         }
         final Object o = popupsForComponent.get(owner);
-        int xoffset = 0;
+      //  int xoffset = 0;
         int yoffset = 0;
         final Dimension d = new Dimension();
         if (o == null) {
@@ -186,7 +186,7 @@ public class TimedPopup {
         } else { // already got some popups.
             if (o instanceof Component) {
                 ((Component)o).getSize(d);
-                xoffset = d.width + 1;
+             //   xoffset = d.width + 1;
                 yoffset = d.height + 1;
                 //store new popup too.
                 final List l = new ArrayList();
@@ -205,7 +205,7 @@ public class TimedPopup {
                         break;
                     }
                     ((Component)e).getSize(d);
-                    xoffset += d.width + 1;
+                //    xoffset += d.width + 1;
                     yoffset += d.height + 1;                    
                 }
                 if (!foundSlot) { // need to extend the list then

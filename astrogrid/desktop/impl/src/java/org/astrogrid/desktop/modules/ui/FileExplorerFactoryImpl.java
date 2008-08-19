@@ -30,11 +30,11 @@ public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements 
 
 	private static final Log logger = LogFactory.getLog(FileExplorerFactoryImpl.class);
 	
-	public FileExplorerFactoryImpl(TypesafeObjectBuilder builder) {
+	public FileExplorerFactoryImpl(final TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}	
 	private FileManagerInternal newWindow() {
-		FileExplorerImpl vo = builder.createFileExplorer();
+		final FileExplorerImpl vo = builder.createFileExplorer();
 		vo.setVisible(true);
 		return vo;
 	}
@@ -63,49 +63,50 @@ public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements 
 	//public static final URI VORESOURCE_LOAD = (URI)FILE_MESSAGES.get(0);
 	//public static final URI VORESOURCE_LOADLIST= (URI)FILE_MESSAGES.get(1);
 	
-	protected List getLocalMessages() {
+	@Override
+    protected List getLocalMessages() {
 		return FILE_MESSAGES;
 	}
 	// handles both kinds of message - quite tolerant of different object types.
 	// however, at the moment will choke and fail on the first malformed uri.
-	public Object perform(URI sender, URI message, List args) {
+	public Object perform(final URI sender, final URI message, final List args) {
 		if (FILE_MESSAGES.contains(message) && args.size() > 0) {
 			try { //handle a string, collection, or array...
 				final List resList = new ArrayList();
-				Object o = args.get(0);
+				final Object o = args.get(0);
 				if (o == null) {
 					logger.warn("Null argument");
 					return Boolean.FALSE;
 				}
 				if (o instanceof Collection) {
-					Collection c= (Collection)o;
-					for (Iterator i = c.iterator(); i.hasNext();) {
-						Object e =  i.next();
+					final Collection c= (Collection)o;
+					for (final Iterator i = c.iterator(); i.hasNext();) {
+						final Object e =  i.next();
 						if (e != null) {
 							resList.add(new URI(e.toString()));
 						}
 					}
 				} else if (o.getClass().isArray()) {
-					Object[] arr = (Object[])o;
+					final Object[] arr = (Object[])o;
 					for (int i = 0; i < arr.length; i++) {
 						if (arr[i] != null) {
 							resList.add(new URI(arr[i].toString()));
 						}
 					}
 				} else { // treat it as a single string
-					URI resourceId = new URI(o.toString());
+					final URI resourceId = new URI(o.toString());
 					resList.add(resourceId);
 				}
 				// got all the info we need. display the ui on the EDT.
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						 FileManagerInternal newWindow = newWindow();
+						  newWindow();
 						//@todo implement
 						//newWindow.show()displayResources(resList);
 					}
 				});				
 				return Boolean.TRUE;
-			} catch (URISyntaxException x) {
+			} catch (final URISyntaxException x) {
 				logger.error("URISyntaxException",x);
 				return Boolean.FALSE;
 			}
@@ -118,7 +119,7 @@ public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements 
 			}
 		}
 	}
-    public void show(FileObject fo) {
+    public void show(final FileObject fo) {
         newWindow().show(fo);
     }
 	

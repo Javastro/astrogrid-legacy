@@ -1,6 +1,7 @@
 package org.astrogrid.desktop.modules.system.pref;
 
 import java.lang.reflect.Method;
+
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -34,70 +35,83 @@ public class WorkaroundTransformerFactory extends TransformerFactory {
         base = (TransformerFactory) baseClass.newInstance();
     }
 
-    public Transformer newTransformer(Source source) throws TransformerConfigurationException {
+    @Override
+    public Transformer newTransformer(final Source source) throws TransformerConfigurationException {
         return base.newTransformer(source);
     }
 
+    @Override
     public Transformer newTransformer() throws TransformerConfigurationException {
         return base.newTransformer();
     }
 
-    public Templates newTemplates(Source source) throws TransformerConfigurationException {
+    @Override
+    public Templates newTemplates(final Source source) throws TransformerConfigurationException {
         return base.newTemplates(source);
     }
 
-    public Source getAssociatedStylesheet(Source source, String media, String title, String charset) throws TransformerConfigurationException {
+    @Override
+    public Source getAssociatedStylesheet(final Source source, final String media, final String title, final String charset) throws TransformerConfigurationException {
         return base.getAssociatedStylesheet(source, media, title, charset);
     }
 
-    public void setURIResolver(URIResolver resolver) {
+    @Override
+    public void setURIResolver(final URIResolver resolver) {
         base.setURIResolver(resolver);
     }
 
+    @Override
     public URIResolver getURIResolver() {
         return base.getURIResolver();
     }
 
-    public void setFeature(String name, boolean value) throws TransformerConfigurationException {
+    @Override
+    public void setFeature(final String name, final boolean value) throws TransformerConfigurationException {
 
         // New method at J2SE1.6 - need to invoke using reflection to get this
         // class to compile at earlier versions.
         try {
-            Method method = TransformerFactory.class.getMethod("setFeature", new Class[] {String.class, boolean.class});
+            final Method method = TransformerFactory.class.getMethod("setFeature", new Class[] {String.class, boolean.class});
             method.invoke(base, new Object[] {name, Boolean.valueOf(value)});
         }
-        catch (Throwable e) {
+        catch (final Throwable e) {
             throw new TransformerConfigurationException(e);
         }
     }
 
-    public boolean getFeature(String name) {
+    @Override
+    public boolean getFeature(final String name) {
         return base.getFeature(name);
     }
 
-    public void setAttribute(String name, Object value) {
+    @Override
+    public void setAttribute(final String name, final Object value) {
         try {
             base.setAttribute(name, value);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             if ("indent-number".equals(name)) {
                 // never mind
             }
         }
     }
 
-    public Object getAttribute(String name) {
+    @Override
+    public Object getAttribute(final String name) {
         return base.getAttribute(name);
     }
 
-    public void setErrorListener(ErrorListener listener) {
+    @Override
+    public void setErrorListener(final ErrorListener listener) {
         base.setErrorListener(listener);
     }
 
+    @Override
     public ErrorListener getErrorListener() {
         return base.getErrorListener();
     }
 
+    @Override
     public String toString() {
         return getClass().getName() + "[" + baseClass.getName() + "]";
     }
@@ -116,11 +130,11 @@ public class WorkaroundTransformerFactory extends TransformerFactory {
             // already fixed - don't attempt a second time
             return;
         }
-        TransformerFactory tfac = TransformerFactory.newInstance();
+        final TransformerFactory tfac = TransformerFactory.newInstance();
         try {
-            tfac.setAttribute("indent-number", new Integer(2));
+            tfac.setAttribute("indent-number",Integer.valueOf(2));
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             baseClass = tfac.getClass();
             System.setProperty(TransformerFactory.class.getName(), WorkaroundTransformerFactory.class.getName());
         }

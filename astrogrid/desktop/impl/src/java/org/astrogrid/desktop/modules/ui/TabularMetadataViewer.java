@@ -75,11 +75,11 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		columns = new BasicEventList();
 
 		// build the panel. 
-		FormLayout layout = new FormLayout("right:d, 3dlu,100dlu:grow,1dlu,d" // cols
+		final FormLayout layout = new FormLayout("right:d, 3dlu,100dlu:grow,1dlu,d" // cols
 				,"d,max(10dlu;d),d,max(10dlu;d),fill:m:grow" // rows
 		);
-		PanelBuilder builder = new PanelBuilder(layout,this);
-		CellConstraints cc = new CellConstraints();
+		final PanelBuilder builder = new PanelBuilder(layout,this);
+		final CellConstraints cc = new CellConstraints();
 
 		int row =1;
 
@@ -88,7 +88,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		cataCombo = new JComboBox(new EventComboBoxModel(catalogues));
 		cataCombo.addItemListener(this);
 		cataCombo.setRenderer(new BasicComboBoxRenderer() {
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			@Override
+            public Component getListCellRendererComponent(final JList list, Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
 				if (value != null) {
 					value = ((Catalog)value).getName();
 				}
@@ -104,12 +105,12 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		builder.addLabel("Table",cc.xy(1,row));
 		// make this one auto-complete.
 		//@todo should I sort these tables?
-		EventList sortedTables = new SortedList(tables,new TableBeanComparator());
+		final EventList sortedTables = new SortedList(tables,new TableBeanComparator());
 		tableCombo = new JComboBox();
 		tableCombo.addItemListener(this);
-		AutoCompleteSupport acs = AutoCompleteSupport.install(tableCombo,sortedTables,new TextFilterator(){
-			public void getFilterStrings(List baseList, Object element) {
-				TableBean tb = (TableBean)element;
+		final AutoCompleteSupport acs = AutoCompleteSupport.install(tableCombo,sortedTables,new TextFilterator(){
+			public void getFilterStrings(final List baseList, final Object element) {
+				final TableBean tb = (TableBean)element;
 				baseList.add(tb.getName());
 				baseList.add(tb.getDescription());
 				if (tb.getRole() != null) {
@@ -119,9 +120,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			}
 		}
 		, new Format() {
-			public StringBuffer format(Object obj, StringBuffer toAppendTo,
-					FieldPosition pos) {
-				TableBean tb = (TableBean)obj;
+			@Override
+            public StringBuffer format(final Object obj, final StringBuffer toAppendTo,
+					final FieldPosition pos) {
+				final TableBean tb = (TableBean)obj;
 				if (tb != null) {
 					toAppendTo.append(tb.getName() == null ? "" : tb.getName() );
 					if (tb.getRole() != null) {
@@ -133,9 +135,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 				} 
 				return toAppendTo;
 			}
-			public Object parseObject(String source, ParsePosition pos) {
-				for (Iterator i = tables.iterator(); i.hasNext();) {
-					TableBean tb = (TableBean) i.next();
+			@Override
+            public Object parseObject(final String source, final ParsePosition pos) {
+				for (final Iterator i = tables.iterator(); i.hasNext();) {
+					final TableBean tb = (TableBean) i.next();
 					if (source.equals(tb.getName())) {
 						return tb;
 					}
@@ -146,7 +149,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		tableCombo.setRenderer(new BasicComboBoxRenderer() {
 			// I've tried to optimize this a bit,as it's a tight inner loop.
 			StrBuilder sb = new StrBuilder(100);
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			@Override
+            public Component getListCellRendererComponent(final JList list, Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
 				if (value != null) {
 				    final TableBean tb = (TableBean)value;
 				    // re-use a string builder, rather than contatenating strings each time.
@@ -171,8 +175,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		builder.add(tableCombo,cc.xy(3,row));
 
 		// add a text-filter to the columns list
-		SearchField filterField = new SearchField("Filter columns");
-		FilterList filteredColumns = new FilterList(columns,
+		final SearchField filterField = new SearchField("Filter columns");
+		final FilterList filteredColumns = new FilterList(columns,
 					new TextComponentMatcherEditor(filterField.getWrappedDocument(), new ColumnTextFilterator()));
 
         // add the text-filter box to the same row as the table combo.
@@ -193,11 +197,11 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	
 	private static class ColumnTextFilterator implements TextFilterator {
 
-		public void getFilterStrings(List baseList, Object element) {
-			NumberedColumnBean n = (NumberedColumnBean) element;
-			ColumnBean cb = n.cb;			
+		public void getFilterStrings(final List baseList, final Object element) {
+			final NumberedColumnBean n = (NumberedColumnBean) element;
+			final ColumnBean cb = n.cb;			
 			if (cb.getColumnDataType() != null) {
-			    String t = cb.getColumnDataType().getType();
+			    final String t = cb.getColumnDataType().getType();
 			    if (t != null) {
 			        baseList.add(t);
 			    }
@@ -256,18 +260,18 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		tableCombo.setEnabled(false);
 	}
 
-	public void display(Resource res) {
+	public void display(final Resource res) {
 	    clear(); // reset everything first.
 		if (res instanceof DataCollection && ((DataCollection)res).getCatalogues().length > 0) {
-			DataCollection coll = (DataCollection)res;
-			List colList = Arrays.asList(coll.getCatalogues());
+			final DataCollection coll = (DataCollection)res;
+			final List colList = Arrays.asList(coll.getCatalogues());
 			    catalogues.addAll(colList);
 			    cataCombo.setEnabled(true);
 			    cataCombo.setSelectedIndex(0);
 		
 		} else if (res instanceof CatalogService && ((CatalogService)res).getTables().length > 0) {
-			CatalogService serv = (CatalogService)res;
-			Catalog cat =new Catalog();
+			final CatalogService serv = (CatalogService)res;
+			final Catalog cat =new Catalog();
 			cat.setName("");
 			cat.setTables(serv.getTables());
 			catalogues.add(cat);
@@ -279,13 +283,13 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		
 	}
 
-	public void itemStateChanged(ItemEvent e) {
+	public void itemStateChanged(final ItemEvent e) {
 
 		if(e.getStateChange() != ItemEvent.SELECTED) {
 			return;
 		}
 		if (e.getSource() == cataCombo) {
-			Catalog c = (Catalog)e.getItem();
+			final Catalog c = (Catalog)e.getItem();
 			cataLabel.setText(c == null || c.getDescription() == null 
 					? "" : "<html>" + c.getDescription());
 			tables.clear();
@@ -295,7 +299,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			}
 			tableCombo.setEnabled(c != null && c.getTables().length > 1);
 		} else if (e.getSource() == tableCombo) {
-			TableBean tb = (TableBean)e.getItem();
+			final TableBean tb = (TableBean)e.getItem();
 			tableLabel.setText(tb == null || tb.getDescription() == null 
 					? "" : "<html>" + tb.getDescription());
 			columns.clear();
@@ -312,10 +316,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	   private static class NumberedColumnBean {
 	        public final ColumnBean cb;
 	        public final Integer ix;
-	        public NumberedColumnBean(ColumnBean cb, int n) {
+	        public NumberedColumnBean(final ColumnBean cb, final int n) {
 	            super();
 	            this.cb = cb;
-	            this.ix = new Integer(n + 1);
+	            this.ix = Integer.valueOf(n+1);
 	        }
 	    }
 	
@@ -326,7 +330,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			return 6;
 		}
 
-		public String getColumnName(int arg0) {
+		public String getColumnName(final int arg0) {
 		    switch (arg0) {
 		        case 0:
 		            return "#";
@@ -345,8 +349,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		    }
 		}
 		
-		public Object getColumnValue(Object arg0, int arg1) {
-		    NumberedColumnBean n = (NumberedColumnBean)arg0;
+		public Object getColumnValue(final Object arg0, final int arg1) {
+		    final NumberedColumnBean n = (NumberedColumnBean)arg0;
             //
             //JL: Changed to always return something.
             //    Otherwise the comparator throws a NullPointerException.
@@ -358,7 +362,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		        case 2:
 		            return provideEmptyDefault( n.cb.getDescription() );
 		        case 3:
-		            TableDataType type = n.cb.getColumnDataType();
+		            final TableDataType type = n.cb.getColumnDataType();
 		            if (type == null) {
 		                return "";
 		            } 
@@ -376,14 +380,14 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		    }
 		}
         
-        private String provideEmptyDefault( String value ) {
+        private String provideEmptyDefault( final String value ) {
             if( value != null ) {
                 return value ;
             }
             return "" ;
         }
 
-        public Class getColumnClass(int column) {
+        public Class getColumnClass(final int column) {
             switch (column) {
                 case 0:
                     return Integer.class;
@@ -392,7 +396,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
             }
         }
 
-        public Comparator getColumnComparator(int column) {
+        public Comparator getColumnComparator(final int column) {
             switch (column) {
                 case 0:
                     return GlazedLists.comparableComparator();
@@ -409,14 +413,14 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		/** model containing the current _selection_ in jtable */
 		private final EventSelectionModel tableSelection;	
 		
-		public MetadataTable(EventList columns) { // sorted list required by TableComparatorChooser
+		public MetadataTable(final EventList columns) { // sorted list required by TableComparatorChooser
             
-		    SortedList sortedColumns = new SortedList(columns,
+		    final SortedList sortedColumns = new SortedList(columns,
 		            new Comparator() {
 
-                        public int compare(Object arg0, Object arg1) {
-                            NumberedColumnBean a = (NumberedColumnBean)arg0;
-                            NumberedColumnBean b = (NumberedColumnBean)arg1;
+                        public int compare(final Object arg0, final Object arg1) {
+                            final NumberedColumnBean a = (NumberedColumnBean)arg0;
+                            final NumberedColumnBean b = (NumberedColumnBean)arg1;
                             return a.ix.compareTo(b.ix);
                         }
 		    });
@@ -439,9 +443,9 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		}
 		
 		public ColumnBean[] getSelected() {
-			List l = tableSelection.getSelected();
-			ColumnBean[] result = new ColumnBean[l.size()];
-			Iterator i = l.iterator();
+			final List l = tableSelection.getSelected();
+			final ColumnBean[] result = new ColumnBean[l.size()];
+			final Iterator i = l.iterator();
 			for (int ix = 0; i.hasNext(); ix++) {
                 result[ix] = ((NumberedColumnBean) i.next()).cb;                
             }

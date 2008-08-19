@@ -32,8 +32,8 @@ public class TextAreaRenderer extends JTextArea
   }
 
   public Component getTableCellRendererComponent(//
-      JTable table, Object obj, boolean isSelected,
-      boolean hasFocus, int row, int column) {
+      final JTable table, final Object obj, final boolean isSelected,
+      final boolean hasFocus, final int row, final int column) {
     // set the colours, etc. using the standard for that platform
     adaptee.getTableCellRendererComponent(table, obj,
         isSelected, hasFocus, row, column);
@@ -44,7 +44,7 @@ public class TextAreaRenderer extends JTextArea
     setText(adaptee.getText());
 
     // This line was very important to get it working with JDK1.4
-    TableColumnModel columnModel = table.getColumnModel();
+    final TableColumnModel columnModel = table.getColumnModel();
     setSize(columnModel.getColumn(column).getWidth(), 100000);
     int height_wanted = (int) getPreferredSize().getHeight();
     addSize(table, row, column, height_wanted);
@@ -55,13 +55,13 @@ public class TextAreaRenderer extends JTextArea
     return this;
   }
 
-  private void addSize(JTable table, int row, int column,
-                       int height) {
+  private void addSize(final JTable table, final int row, final int column,
+                       final int height) {
     Map rows = (Map) cellSizes.get(table);
     if (rows == null) {
       cellSizes.put(table, rows = new HashMap());
     }
-    Map rowheights = (Map) rows.get(new Integer(row));
+    Map rowheights = (Map) rows.get(Integer.valueOf(row));
     if (rowheights == null) {
       rows.put(new Integer(row), rowheights = new HashMap());
     }
@@ -73,14 +73,14 @@ public class TextAreaRenderer extends JTextArea
    * also a TextAreaRenderer, we look at the maximum height in
    * its hash table for this row.
    */
-  private int findTotalMaximumRowSize(JTable table, int row) {
+  private int findTotalMaximumRowSize(final JTable table, final int row) {
     int maximum_height = 0;
-    Enumeration columns = table.getColumnModel().getColumns();
+    final Enumeration columns = table.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {
-      TableColumn tc = (TableColumn) columns.nextElement();
-      TableCellRenderer cellRenderer = tc.getCellRenderer();
+      final TableColumn tc = (TableColumn) columns.nextElement();
+      final TableCellRenderer cellRenderer = tc.getCellRenderer();
       if (cellRenderer instanceof TextAreaRenderer) {
-        TextAreaRenderer tar = (TextAreaRenderer) cellRenderer;
+        final TextAreaRenderer tar = (TextAreaRenderer) cellRenderer;
         maximum_height = Math.max(maximum_height,
             tar.findMaximumRowSize(table, row));
       }
@@ -88,16 +88,20 @@ public class TextAreaRenderer extends JTextArea
     return maximum_height;
   }
 
-  private int findMaximumRowSize(JTable table, int row) {
-    Map rows = (Map) cellSizes.get(table);
-    if (rows == null) return 0;
-    Map rowheights = (Map) rows.get(new Integer(row));
-    if (rowheights == null) return 0;
+  private int findMaximumRowSize(final JTable table, final int row) {
+    final Map rows = (Map) cellSizes.get(table);
+    if (rows == null) {
+        return 0;
+    }
+    final Map rowheights = (Map) rows.get(Integer.valueOf(row));
+    if (rowheights == null) {
+        return 0;
+    }
     int maximum_height = 0;
-    for (Iterator it = rowheights.entrySet().iterator();
+    for (final Iterator it = rowheights.entrySet().iterator();
          it.hasNext();) {
-      Map.Entry entry = (Map.Entry) it.next();
-      int cellHeight = ((Integer) entry.getValue()).intValue();
+      final Map.Entry entry = (Map.Entry) it.next();
+      final int cellHeight = ((Integer) entry.getValue()).intValue();
       maximum_height = Math.max(maximum_height, cellHeight);
     }
     return maximum_height;

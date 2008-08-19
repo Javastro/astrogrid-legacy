@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.20 2008/08/04 16:37:23 nw Exp $
+/*$Id: JettyWebServer.java,v 1.21 2008/08/19 12:47:09 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,7 @@ ing to a random port, with a hashed key path.
   * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  *
  */
-public class JettyWebServer implements WebServerInternal, ShutdownListener{
+public final class JettyWebServer implements WebServerInternal, ShutdownListener{
     /** end of range of ports to scan */
     public final static int SCAN_END_PORT_DEFAULT = 8880;
 
@@ -395,11 +395,11 @@ public URL getContextBase(final String sessionId) {
             protected void runTest() {
                 final File f = new File(SystemUtils.getUserHome(),".astrogrid-desktop");
                 assertTrue("~/.astrogrid-desktop not present",f.exists());
-                FileReader fr = null;
+                BufferedReader fr = null;
                 URL endpoint = null;
                 try {
-                    fr = new FileReader(f);
-                    final String str = new BufferedReader(fr).readLine();
+                    fr = new BufferedReader(new FileReader(f));
+                    final String str = fr.readLine();
                     assertNotNull("~/.astrogrid-desktop is empty",str);
                     endpoint = new URL(str);
                 } catch (final MalformedURLException ex) {
@@ -435,11 +435,12 @@ public URL getContextBase(final String sessionId) {
         ts.addTest(new TestCase("HTML access to AR"){
             @Override
             protected void runTest() {
-                InputStream is = null;
+                BufferedReader br = null;
                 try {
                     final URL endpoint = new URL(getRoot(),"system/webserver/getRoot/plain");
-                    is = endpoint.openStream();
-                    final String val = new BufferedReader(new InputStreamReader(is)).readLine();
+                    final InputStream is = endpoint.openStream();
+                    br = new BufferedReader(new InputStreamReader(is));
+                    final String val = br.readLine();
                     assertNotNull("no response from webserver",val);                    
                     assertEquals("webserver didn't repond with expected result",getRoot().toString(),val.trim());
                 } catch (final MalformedURLException x) {
@@ -449,9 +450,9 @@ public URL getContextBase(final String sessionId) {
                     logger.error("unable to call html interface",x);
                     fail("Unable to call html interface");
                 } finally {
-                    if (is != null) {
+                    if (br != null) {
                         try {
-                            is.close();
+                            br.close();
                         } catch (final IOException e) {
                             // don't care
                         }
@@ -493,6 +494,9 @@ public URL getContextBase(final String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.21  2008/08/19 12:47:09  nw
+findbugs fixes and improvements.
+
 Revision 1.20  2008/08/04 16:37:23  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

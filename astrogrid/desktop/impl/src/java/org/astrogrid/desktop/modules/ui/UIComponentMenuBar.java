@@ -543,7 +543,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             final String helpKey) {
         final JMenuItem appHelp = new HelpMenuItem(context.getHelpServer(),applicationName + " Help",helpKey);
 
-        appHelp.setAccelerator(KeyStroke.getKeyStroke(new Character('?'),UIComponentMenuBar.MENU_KEYMASK));
+        appHelp.setAccelerator(KeyStroke.getKeyStroke(Character.valueOf('?'),UIComponentMenuBar.MENU_KEYMASK));
         return appHelp;
     }
 

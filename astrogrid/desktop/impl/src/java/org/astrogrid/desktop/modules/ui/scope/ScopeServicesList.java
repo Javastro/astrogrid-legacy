@@ -162,7 +162,7 @@ public class ScopeServicesList extends RegistryGooglePanel
     public void addQueryResult(final Retriever ri, final AstroscopeTableHandler handler) {
         final QueryResult qr = queryResults.getResult(ri);// there may be no result if it's a hanger-on from a previous search.
         if (qr != null) {
-            qr.count = new Integer(handler.getResultCount());
+            qr.count = Integer.valueOf(handler.getResultCount());
             queryResults.associateNode(qr,handler.getServiceNode());
             notifyServiceUpdated(ri);
         }

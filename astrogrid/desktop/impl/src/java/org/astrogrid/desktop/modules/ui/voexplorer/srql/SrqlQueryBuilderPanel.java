@@ -24,7 +24,6 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -67,7 +66,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		this.clauses = new ObservableElementList(new BasicEventList(),this);
 		clauses.addListEventListener(new ListEventListener() {
 
-			public void listChanged(ListEvent arg0) {
+			public void listChanged(final ListEvent arg0) {
 				while(arg0.hasNext()) {
 					arg0.next();
 					if (arg0.getType() != ListEvent.UPDATE) { //i.e. is a delete or add
@@ -87,10 +86,10 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		clauses.add(new Clause());
 			
 		// this panel displays contents of a list.
-		JEventListPanel clausePanel = new JEventListPanel(clauses, new ClauseFormat());
+		final JEventListPanel clausePanel = new JEventListPanel(clauses, new ClauseFormat());
 		this.setLayout(new BorderLayout());
 		
-		JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		final JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		top.add(new JLabel("Contains resources which match"));
 		anyAll = new JComboBox(new String[]{"all","any"});
 		anyAll.setEditable(false);
@@ -122,7 +121,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	
 	/** access the query that is represented by the current clauses */
 	public SRQL getQuery() {
-		Iterator i = clauses.iterator();
+		final Iterator i = clauses.iterator();
 		SRQL q = ((Clause)i.next()).getClause();
 		while (i.hasNext()) {
 			BinaryOperatorSRQL bin;
@@ -142,8 +141,8 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	 * any query constructed previously by this panel can be displayed in it.
 	 * @param query
 	 */
-	public boolean canDisplayQuery(SRQL query) {
-		PanelVerifyingVisitor v = new PanelVerifyingVisitor();
+	public boolean canDisplayQuery(final SRQL query) {
+		final PanelVerifyingVisitor v = new PanelVerifyingVisitor();
 		query.accept(v);
 		return v.canDisplay();
 	}
@@ -169,43 +168,43 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		private boolean complexTarget;
 		private boolean unknownTarget;
 		private boolean phraseSeen;
-		public Object visit(AndSRQL q) {
+		public Object visit(final AndSRQL q) {
 			andSeen = true;
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(OrSRQL q) {
+		public Object visit(final OrSRQL q) {
 			orSeen = true;
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(NotSRQL q) { // can only have a single term inside a neg.
+		public Object visit(final NotSRQL q) { // can only have a single term inside a neg.
 			if (! (q.getChild() instanceof TermSRQL)) {
 				complexNegation = true;
 			}
 			return null;
 		}
 
-		public Object visit(TermSRQL q) {// always ok
+		public Object visit(final TermSRQL q) {// always ok
 			return null;
 		}
 
-		public Object visit(PhraseSRQL q) {// not expected at the moment.
+		public Object visit(final PhraseSRQL q) {// not expected at the moment.
 			phraseSeen = true;
 			return null;
 		}
 
-		public Object visit(TargettedSRQL q) { // can only have a neg, or a term inside a target
-			SRQL c = q.getChild();
+		public Object visit(final TargettedSRQL q) { // can only have a neg, or a term inside a target
+			final SRQL c = q.getChild();
 			if (! ( c instanceof TermSRQL || c instanceof NotSRQL) ) {
 				complexTarget = true;
 			}
 			// check it's a target we know how to handle.
-			String target = q.getTarget();
+			final String target = q.getTarget();
 			for (int i = 0; i < clauseTemplates.length; i++) {
 				if (target.equals(clauseTemplates[i].target)) {
 					return null;
@@ -215,7 +214,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			return null;
 		}
 
-		public Object visit(XPathSRQL q) {
+		public Object visit(final XPathSRQL q) {
 			unknownXPathSeen = true; // can't handle any xpath at the moment.
 			return null;
 		}
@@ -228,68 +227,68 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	 * @throws IllegalArgumentException if <tt>canDisplayQuery(query) == false</tt>
 	 * precondition: {@link #canDisplayQuery(SRQL)}
 	 */
-	public void setQuery(SRQL query) throws IllegalArgumentException {
+	public void setQuery(final SRQL query) throws IllegalArgumentException {
 		if (! canDisplayQuery(query)) {
 			throw new IllegalArgumentException("This query has a structure or clauses that cannot be displayed in this panel - use the text form instead");
 		}	
 		clauses.clear();
-		PanelPopulatingVisitor vis = new PanelPopulatingVisitor();
+		final PanelPopulatingVisitor vis = new PanelPopulatingVisitor();
 		query.accept(vis);
 	}
 	/** traverse a query and populate the panel accordingly 
 	 * doesn't work for general queries - assumes specfic structure.
 	 * */
 	private class PanelPopulatingVisitor implements SRQLVisitor {
-		public Object visit(AndSRQL q) {
+		public Object visit(final AndSRQL q) {
 			anyAll.setSelectedIndex(ALL);
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(OrSRQL q) {
+		public Object visit(final OrSRQL q) {
 			anyAll.setSelectedIndex(ANY);
 			q.getLeft().accept(this);
 			q.getRight().accept(this);
 			return null;
 		}
 
-		public Object visit(NotSRQL q) { // if we've visited a 'not' node it means no target was defined.
+		public Object visit(final NotSRQL q) { // if we've visited a 'not' node it means no target was defined.
 			// in this case, we want the 'default' target - which is what clause is created with.
-			Clause c= new Clause();
+			final Clause c= new Clause();
 			c.setClause(q);
 			clauses.add(c);
 			return null;
 		}
 
-		public Object visit(TermSRQL q) {  // if we've visited a 'not' node it means no target was defined.
-			Clause c= new Clause();
+		public Object visit(final TermSRQL q) {  // if we've visited a 'not' node it means no target was defined.
+			final Clause c= new Clause();
 			c.setClause(q);
 			clauses.add(c);			
 			return null;
 		}
 
-		public Object visit(PhraseSRQL q) {
+		public Object visit(final PhraseSRQL q) {
 			throw new RuntimeException("Programming error - have already validated srql query, and don't expect a phrase");
 		}
 
-		public Object visit(TargettedSRQL q) {
+		public Object visit(final TargettedSRQL q) {
 			// find correct clause template, instantiate a new clause based on this template, then populate using children.
-			String target = q.getTarget();
+			final String target = q.getTarget();
 			ClauseTemplate ct = null;
 			for (int i = 0; i < clauseTemplates.length; i++) {
 				if (target.equals(clauseTemplates[i].target)) {
 					ct= clauseTemplates[i];
 				}
 			}
-			Clause c = new Clause();
+			final Clause c = new Clause();
 			c.setSelectedItem(ct);
 			c.setClause(q.getChild());
 			clauses.add(c);
 			return null;
 		}
 
-		public Object visit(XPathSRQL q) {
+		public Object visit(final XPathSRQL q) {
 			throw new RuntimeException("Programming error - have already validated srql query, and don't expect an xpath");
 		}
 	}
@@ -297,23 +296,23 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 //END of puplic API.
 	
 	// connector interface - listens to changes, and triggers change events.
-		public EventListener installListener(Object arg0) {
-			Clause c = (Clause)arg0;
+		public EventListener installListener(final Object arg0) {
+			final Clause c = (Clause)arg0;
 			c.addActionListener(this);
 			return this; // we listen to stuff ourselves.
 		}
 		private ObservableElementList l;
-		public void setObservableElementList(ObservableElementList arg0) {
+		public void setObservableElementList(final ObservableElementList arg0) {
 			this.l = arg0;
 		}
 
-		public void uninstallListener(Object arg0, EventListener arg1) {
+		public void uninstallListener(final Object arg0, final EventListener arg1) {
 			if (arg1 == this) {
-				Clause c = (Clause)arg0;
+				final Clause c = (Clause)arg0;
 				c.removeActionListener(this);
 			}
 		}
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			if (e.getSource() == anyAll) {
 				// work around - need someting to notify with, but 0th element not always there to start with.
 				if (l.size() > 0) {
@@ -339,7 +338,8 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		, new DescribedEnumerationTemplate("Type","type"){{
 			setTooltip("Search in 'Resource Type', 'Content - Type' and 'Capability - Type'");			
 		}
-		protected void populate(List vals) {
+		@Override
+        protected void populate(final List vals) {
 			vals.add(new DescribedValue("Archive",""));
 			vals.add(new DescribedValue("Catalog","")); // includes catalog service.
 			vals.add(new DescribedValue("Survey",""));
@@ -400,26 +400,6 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			 remove.addActionListener(this);
 
 		}
-		// adds tooltips
-		private class ToolTipComboBoxRenderer extends BasicComboBoxRenderer {
-		    public Component getListCellRendererComponent( JList list, 
-		           Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		      if (isSelected) {
-		        setBackground(list.getSelectionBackground());
-		        setForeground(list.getSelectionForeground());      
-		        if (-1 < index) {
-		        	String s = ((ClauseTemplate)value).getTooltip();
-		        	list.setToolTipText(s);
-		        }
-		      } else {
-		        setBackground(list.getBackground());
-		        setForeground(list.getForeground());
-		      } 
-		      setFont(list.getFont());
-		      setText((value == null) ? "" : value.toString());     
-		      return this;
-		    }  
-		  }		
 		// access a component that allows a predicate on the currently selected clause
 		public JComponent getPredicateField() {
 			return predicateField;
@@ -441,14 +421,15 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			return currentTemplate.constructClause(valueField,predicateField);
 		}
 		
-		public void setClause(SRQL clause) {
+		public void setClause(final SRQL clause) {
 			currentTemplate.displayClause(clause,valueField,predicateField);
 		}
 		
 		private final JButton add;
 		private final JButton remove;
 		// listen to various sub-components.
-		public void actionPerformed(ActionEvent e) {
+		@Override
+        public void actionPerformed(final ActionEvent e) {
 			if (e.getSource() == add) {
 				clauses.add(new Clause());
 			} else if (e.getSource() == remove) {
@@ -465,7 +446,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		private JComponent predicateField;
 		private ClauseTemplate currentTemplate;
 		// detects when the combo box selection has been altered.
-		public void itemStateChanged(ItemEvent e) {
+		public void itemStateChanged(final ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED 
 					&& currentTemplate != e.getItem()) {
 			    String oldText = null;
@@ -481,7 +462,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
                 }				
 			}
 		}
-		private void setCurrentTemplate(ClauseTemplate ct) {
+		private void setCurrentTemplate(final ClauseTemplate ct) {
 			currentTemplate = ct;
 			valueField = currentTemplate.createValueField();
 			predicateField = currentTemplate.createPredicateField();
@@ -491,24 +472,24 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		}
 		// uses bean introspection to find out whether the ActionListener event is supported,
 		// and listen to this if present.
-		private void registerListenersIfPossible(JComponent comp) {
+		private void registerListenersIfPossible(final JComponent comp) {
 			try {
-				BeanInfo beanInfo = Introspector.getBeanInfo(comp.getClass());
-				EventSetDescriptor[] esds = beanInfo.getEventSetDescriptors();
+				final BeanInfo beanInfo = Introspector.getBeanInfo(comp.getClass());
+				final EventSetDescriptor[] esds = beanInfo.getEventSetDescriptors();
 				for (int i = 0; i < esds.length; i++) {
 					if (esds[i].getListenerType().equals(ActionListener.class)) {
-						Method m = esds[i].getAddListenerMethod();
+						final Method m = esds[i].getAddListenerMethod();
 						m.invoke(comp,new Object[]{this});
 						break; // found it - will only occur once.
 					}
 				}
-			} catch (IntrospectionException x) {
+			} catch (final IntrospectionException x) {
 				logger.warn("Failed To register listener",x);
-			} catch (IllegalArgumentException x) {
+			} catch (final IllegalArgumentException x) {
 				logger.warn("Failed To register listener",x);
-			} catch (IllegalAccessException x) {
+			} catch (final IllegalAccessException x) {
 				logger.warn("Failed To register listener",x);
-			} catch (InvocationTargetException x) {
+			} catch (final InvocationTargetException x) {
 				logger.warn("Failed To register listener",x);
 			}
 		}
@@ -537,7 +518,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			return this.tooltip;
 		}
 
-		public final void setTooltip(String tooltip) {
+		public final void setTooltip(final String tooltip) {
 			this.tooltip = tooltip;
 		}
 		/** create the SRQL expression represented by this clause.
@@ -549,7 +530,8 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		abstract JComponent createValueField();
 		// access a componet that allows the user to select how the match should happen
 		abstract JComponent createPredicateField();
-		public String toString() {
+		@Override
+        public String toString() {
 			return StringUtils.capitalize(name);
 		}
 		
@@ -561,7 +543,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		 * @param name name of this clause - also used as the srql target.
 		 * @param list of possible values to match against.
 		 */
-		public EnumerationTemplate(String name, String[] vals) {
+		public EnumerationTemplate(final String name, final String[] vals) {
 			super(name);
 			this.vals = vals;
 		}
@@ -570,25 +552,26 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		 * @param target the srql target to query against.
 		 * @param list of possible values to match against.
 		 */
-		public EnumerationTemplate(String name, String target,String[] vals) {
+		public EnumerationTemplate(final String name, final String target,final String[] vals) {
 			super(name,target);
 			this.vals = vals;
 		}		
 		private final String[] vals;
 
-		SRQL constructClause(JComponent valueField, JComponent predicateField) {
-			TargettedSRQL t = new TargettedSRQL();
+		@Override
+        SRQL constructClause(final JComponent valueField, final JComponent predicateField) {
+			final TargettedSRQL t = new TargettedSRQL();
 			t.setTarget(target);
-			TermSRQL ts = new TermSRQL();
-			String val = ((JComboBox)valueField).getSelectedItem().toString();
+			final TermSRQL ts = new TermSRQL();
+			final String val = ((JComboBox)valueField).getSelectedItem().toString();
 			ts.setTerm(val);
-			JComboBox predicate = (JComboBox)predicateField;
+			final JComboBox predicate = (JComboBox)predicateField;
 			switch (predicate.getSelectedIndex()) {
 				case IS: // contains
 					t.setChild(ts);
 					return t;
 				case ISNOT: // does not contain
-					NotSRQL s = new NotSRQL();
+					final NotSRQL s = new NotSRQL();
 					s.setChild(ts);
 					t.setChild(s);
 					return t;
@@ -596,9 +579,10 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 					throw new RuntimeException("Programming Error: index=" + predicate.getSelectedIndex());
 			}		
 		}
-		void displayClause(SRQL clause, JComponent valueField, JComponent predicateField) {
-			JComboBox pred = (JComboBox)predicateField;
-			JComboBox val = (JComboBox)valueField;
+		@Override
+        void displayClause(SRQL clause, final JComponent valueField, final JComponent predicateField) {
+			final JComboBox pred = (JComboBox)predicateField;
+			final JComboBox val = (JComboBox)valueField;
 			if (clause instanceof NotSRQL) {
 				pred.setSelectedIndex(ISNOT);
 				clause = ((NotSRQL)clause).getChild(); // traverse down.
@@ -611,20 +595,22 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		protected static final String[] predicates= new String[]{"is","is not"};
 		protected final static int IS = 0;
 		protected final static int ISNOT = 1;
-		JComponent createPredicateField() {
-			JComboBox c = new JComboBox(predicates);
+		@Override
+        JComponent createPredicateField() {
+			final JComboBox c = new JComboBox(predicates);
 			c.setEditable(false);
 			c.setSelectedIndex(0);
 			return c;
 		}
 
-		JComponent createValueField() {
-			EventList l =GlazedLists.eventList(Arrays.asList(vals));
+		@Override
+        JComponent createValueField() {
+			final EventList l =GlazedLists.eventList(Arrays.asList(vals));
 			
-			JComboBox c = new JComboBox();
+			final JComboBox c = new JComboBox();
 			//c.setEditable(false);
 			//c.setSelectedIndex(0);
-			AutoCompleteSupport support = AutoCompleteSupport.install(c,l);
+			final AutoCompleteSupport support = AutoCompleteSupport.install(c,l);
 			c.setSelectedIndex(0);
 			support.setSelectsTextOnFocusGain(true);
 			support.setStrict(true);
@@ -636,28 +622,29 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	
 	/** a clause that matches on a string value */
 	static class TextMatchTemplate extends ClauseTemplate {
-		public TextMatchTemplate(String name) {
+		public TextMatchTemplate(final String name) {
 			super(name);
 		}
-		public TextMatchTemplate(String name,String target) {
+		public TextMatchTemplate(final String name,final String target) {
 			super(name,target);
 		}
 		private static final String[] predicates = new String[] {"contains","does not contain"};
 		private static final int CONTAINS = 0;
 		private static final int NOTCONTAINS = 1;
-		SRQL constructClause(JComponent valueField, JComponent predicateField) {
-			TargettedSRQL t = new TargettedSRQL();
+		@Override
+        SRQL constructClause(final JComponent valueField, final JComponent predicateField) {
+			final TargettedSRQL t = new TargettedSRQL();
 			t.setTarget(target);
-			TermSRQL ts = new TermSRQL();
-			String val = ((JTextField)valueField).getText();
+			final TermSRQL ts = new TermSRQL();
+			final String val = ((JTextField)valueField).getText();
 			ts.setTerm(val);			
-			JComboBox predicate = (JComboBox)predicateField;
+			final JComboBox predicate = (JComboBox)predicateField;
 			switch (predicate.getSelectedIndex()) {
 				case CONTAINS:
 					t.setChild(ts);
 					return t;
 				case NOTCONTAINS:
-					NotSRQL s = new NotSRQL();
+					final NotSRQL s = new NotSRQL();
 					s.setChild(ts);
 					t.setChild(s);
 					return t;
@@ -665,9 +652,10 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 					throw new RuntimeException("Programming Error: index=" + predicate.getSelectedIndex());
 			}	
 		}
-		void displayClause(SRQL clause, JComponent valueField, JComponent predicateField) {
-			JComboBox pred = (JComboBox)predicateField;
-			JTextField val = (JTextField)valueField;
+		@Override
+        void displayClause(SRQL clause, final JComponent valueField, final JComponent predicateField) {
+			final JComboBox pred = (JComboBox)predicateField;
+			final JTextField val = (JTextField)valueField;
 			if (clause instanceof NotSRQL) {
 				pred.setSelectedIndex(NOTCONTAINS);
 				clause = ((NotSRQL)clause).getChild(); // traverse down.
@@ -676,26 +664,28 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			}
 			val.setText(((TermSRQL)clause).getTerm());
 		}	
-		JComponent createPredicateField() {
-			JComboBox c = new JComboBox(predicates);
+		@Override
+        JComponent createPredicateField() {
+			final JComboBox c = new JComboBox(predicates);
 			c.setEditable(false);
 			c.setSelectedIndex(0);
 			return c;
 		}
 
-		JComponent createValueField() {
-			JTextField f = new  JTextField() {{
+		@Override
+        JComponent createValueField() {
+			final JTextField f = new  JTextField() {{
 				getDocument().addDocumentListener(new DocumentListener() {
 					
-					public void changedUpdate(DocumentEvent e) {
+					public void changedUpdate(final DocumentEvent e) {
 						fireActionPerformed();
 					}
 					
-					public void insertUpdate(DocumentEvent e) {
+					public void insertUpdate(final DocumentEvent e) {
 						fireActionPerformed();
 					}
 					
-					public void removeUpdate(DocumentEvent e) {
+					public void removeUpdate(final DocumentEvent e) {
 						fireActionPerformed();
 					}
 				});
@@ -710,8 +700,8 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			super("d","60dlu:grow,2dlu,60dlu:grow,2dlu,60dlu:grow,6dlu,d,d","0dlu","2dlu"
 					,new String[]{"1,1","3,1","5,1","7,1","8,1"});//col,row for each item.
 		}
-		public JComponent getComponent(Object arg0, int arg1) {
-			Clause c= (Clause)arg0;
+		public JComponent getComponent(final Object arg0, final int arg1) {
+			final Clause c= (Clause)arg0;
 			switch (arg1) {
 			case 0: 
 				return c;
@@ -727,9 +717,32 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 				return new JLabel("unexpected"); // should never happen
 			}
 		}
-		public int getComponentsPerElement() {
+		@Override
+        public int getComponentsPerElement() {
 			return 5;
 		}
 	}
+
+    // adds tooltips
+    private static class ToolTipComboBoxRenderer extends BasicComboBoxRenderer {
+        @Override
+        public Component getListCellRendererComponent( final JList list, 
+               final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+          if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());      
+            if (-1 < index) {
+            	final String s = ((ClauseTemplate)value).getTooltip();
+            	list.setToolTipText(s);
+            }
+          } else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+          } 
+          setFont(list.getFont());
+          setText((value == null) ? "" : value.toString());     
+          return this;
+        }  
+      }
 
 }

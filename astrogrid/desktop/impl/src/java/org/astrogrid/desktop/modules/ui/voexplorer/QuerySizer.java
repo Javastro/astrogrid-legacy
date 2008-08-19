@@ -32,5 +32,5 @@ public interface QuerySizer {
 	public int getGoodThreshold();
 	
 	//Represents an error occurring.
-	public final static Integer ERROR = new Integer(-1);
+	public final static Integer ERROR = -1; // autobox.
 }
