@@ -1,3 +1,4 @@
+(require-library 'sisc/libs/srfi/srfi-26) ;for cut and cute
 (module quaestor-support
     (apply-with-top-fc
      make-fc
@@ -8,7 +9,6 @@
 (import s2j)
 (import debugging)                      ;for enhanced print-stack-trace
 (import string-io)                      ;for with-output-to-string
-(require-library 'sisc/libs/srfi/srfi-26) ;for cut and cute
 (import srfi-26)
 
 ;; APPLY-WITH-TOP-FC procedure args... -> object
@@ -104,7 +104,7 @@
                          (pre (@ (class error))
                               ,(format #f "~%Error~a: ~a~%"
                                        (cond ((error-location error-record)
-                                              => (cut string-append "at " <>))
+                                              => (cut format #f "at ~a" <>))
                                              (else ""))
                                        msg))
                          (p "For further information, see the server logs")
