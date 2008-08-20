@@ -16,11 +16,14 @@
 	</head>
 <body>
 <release version="2008.2" date="unreleased">
+    <action dev="nw" type="fix">
+    Voexplorer: Vizier resources with multiple tables can all be downloaded / sent via plastic
+    </action>
     <action dev="nw" type="add" >
-    Added a 'change password' dialogue.
+    UI: Added a 'change password' dialogue.
     </action>
     <action dev="nw" type="fix" issue="2813">
-    Debugged sending spectrum fits files to splat
+    Astroscope: Debugged sending spectrum fits files to splat
     </action>
     <action dev="nw" type="fix" issue="2814">
     Tidied plastic shutdown.
