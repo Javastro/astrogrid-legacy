@@ -8,6 +8,8 @@
 (import s2j)
 (import debugging)                      ;for enhanced print-stack-trace
 (import string-io)                      ;for with-output-to-string
+(require-library 'sisc/libs/srfi/srfi-26) ;for cut and cute
+(import srfi-26)
 
 ;; APPLY-WITH-TOP-FC procedure args... -> object
 ;; This is intended to be a main entry point for the functions here.
@@ -77,29 +79,34 @@
                       (show-debugging? (not (pair? msg-or-pair)))
                       (msg (if (pair? msg-or-pair) (cdr msg-or-pair) msg-or-pair))
                       ;; I'm not convinced this extra debugging info is helpful
-                      (full-msg (and show-stack-trace-on-error?
-                                     (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-                                             (format-error-record error-record)
-                                             (let ((c (chatter)))
-                                               (cond ((list? c) ;normal case
-                                                      (apply string-append
-                                                             (map (lambda (x)
-                                                                    (format #f "[chatter: ~a]~%" x))
-                                                                  c)))
-                                                     ((not c) ;no chatter
-                                                      "")
-                                                     (else ;can't happen!
-                                                      (format #f
-                                                              "[Can't happen: (chatter) produced ~s]" c))))
-                                             (with-output-to-string
-                                               (lambda () (print-stack-trace cont)))))))
+                      (full-msg
+                       (and show-stack-trace-on-error?
+                            (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
+                                    (format-error-record error-record)
+                                    (let ((c (chatter)))
+                                      (cond ((list? c) ;normal case
+                                             (apply string-append
+                                                    (map (cut format #f "[chatter: ~a]~%" <>)
+                                                         c)))
+                                            ((not c) ;no chatter
+                                             "")
+                                            (else ;can't happen!
+                                             (format #f
+                                                     "[Can't happen: (chatter) produced ~s]" c))))
+                                    (with-output-to-string
+                                      (lambda () (print-stack-trace cont)))))))
                  (logger "MAKE-FC: ~a~%~a~%" msg (or full-msg ""))
                  (list (if (pair? msg-or-pair)
                            (car msg-or-pair)
                            fc-arg)
                        `("That didn't work"
                          (p "Something's unfortunately gone wrong.")
-                         (pre ,(format #f "~%Error: ~a~%" msg))
+                         (pre (@ (class error))
+                              ,(format #f "~%Error~a: ~a~%"
+                                       (cond ((error-location error-record)
+                                              => (cut string-append "at " <>))
+                                             (else ""))
+                                       msg))
                          (p "For further information, see the server logs")
 ;;                          ,(if full-msg
 ;;                               `(pre ,full-msg)
@@ -120,7 +127,8 @@
              (error 'make-fc "Bad argument to make-fc: ~s" fc-arg))))))
 
 ;; Format the given error record, as passed as the first argument of a
-;; failure-continuation.  This ought to be able to handle most of the
+;; failure-continuation.  It's to be formatted for display.
+;; This ought to be able to handle most of the
 ;; odd things thrown by scheme and the s2j interface.  This should
 ;; generally return a string, but if all else fails it returns the
 ;; error record object.
@@ -137,15 +145,25 @@
   (define (format-error-ancestors rec)
     (and rec
          (let ((msg (error-message rec))
-               (parent-msg (format-error-ancestors (error-parent-error rec))))
-           (if msg                      ;found a message: return a string
-               (format #f "error at ~a: ~a~a"
-                       (error-location rec)
-                       msg
-                       (if parent-msg
-                           (string-append " :-- " parent-msg)
-                           ""))
-               parent-msg))))
+               (parent-msg (format-error-ancestors (error-parent-error rec)))
+               (loc (error-location rec)))
+           (cond ((and (not msg) (not parent-msg))
+                  "Eh?  What just happened?")
+                 ((not msg)
+                  parent-msg)
+                 ((not loc)
+                  (format #f "Error: ~a~a"
+                          msg (if parent-msg (format #f "~%Caused by: ~a" parent-msg) "")))
+                 ((and (eq? loc 'java/invoke-method) parent-msg)
+                  ;; this error record is uninteresting -- it seems to wrap
+                  ;; all scheme exceptions; so skip it
+                  parent-msg)
+                 ((eq? loc 'java/invoke-method)
+                  ;; but here we seem to have no choice but to pass it on
+                  msg)
+                 (else
+                  (format #f "Error at ~s: ~a~a"
+                          loc msg (if parent-msg (format #f "~%Caused by: ~a" parent-msg) "")))))))
   (let ((msg (error-message rec)))
     (define (is-java-type? jobject class)
       (define-generic-java-method instance?)
@@ -264,8 +282,8 @@
                ;; do nothing -- no log-it defined
                #t)
               ((java-object? fmt)       ;fmt is an object which should have a log(String) method
-               ;; a sophistication would be to use the Java reflection interface to check that the object
-               ;; does indeed have a log(String) method
+               ;; A sophistication would be to use the Java reflection interface
+               ;; to check that the object does indeed have a log(String) method.
                ;; See SISC function java-class-declared-methods
                (set! log-it
                      (lambda (log-format . args)

@@ -234,11 +234,13 @@
   (<RDFErrorHandler>)
   (define (error p ex)
     (define-generic-java-method get-message)
-    (error (format #f "Error: can't read ~a: ~s"
+    (error 'rdf-error-handler
+           (format #f "Error: can't read ~a: ~a"
                    uri (->string (get-message ex)))))
   (define (fatal-error p ex)
     (define-generic-java-method get-message)
-    (error (format #f "RDF fatal parse error reading ~a: ~a"
+    (error 'rdf-error-handler
+           (format #f "RDF fatal parse error reading ~a: ~a"
                    uri (->string (get-message ex)))))
   (define (warning p ex)
     (define-generic-java-method get-message)
@@ -256,7 +258,7 @@
 ;; or (if it is not a valid content-type) a Jena language.  The LANGUAGE
 ;; may not be null (ie, we don't fall back on the default Jena behaviour).
 ;;
-;; Either succeeds, or throws an exception using REPORT-EXCEPTION (of the 
+;; This procedure either succeeds, or throws an exception using REPORT-EXCEPTION (of the 
 ;; type expected by MAKE-FC).  The optional EXCEPTION argument must contain
 ;; a symbol which is one of the symbols acceptable to SET-RESPONSE-STATUS!,
 ;; namely one of the SC_* fields in javax.servlet.http.HttpServletResponse.
@@ -323,7 +325,7 @@
                                          (format #f "Other warnings:~%~a~%"
                                                  (apply string-append l))))
                                    (else ""))))
-            (chatter "rdf:ingest-from-stream/language: error reading ~a (~a):~a"
+            (chatter "rdf:ingest-from-stream/language: error reading ~a~%~a~%~a"
                      (as-scheme-string base-uri)
                      (format-error-record m)
                      logger-msgs)
@@ -331,7 +333,7 @@
             (report-exception 'ingest-from-stream
                               (or exception
                                   '|SC_BAD_REQUEST|)
-                              "Error reading ~a (~a)~%~a"
+                              "Error reading ~a~%~a~%~a"
                               (as-scheme-string base-uri)
                               (format-error-record m)
                               logger-msgs)))
@@ -341,7 +343,7 @@
                  language ser-lang)
         (let ((reader (and model (get-reader model ser-lang))))
           (or reader
-              (error "Failed to get reader!"))
+              (error 'rdf:ingest-from-stream/language "Failed to get reader!"))
           (set-error-handler reader
                              (rdf-error-handler (as-scheme-string base-uri)
                                                 logger))
