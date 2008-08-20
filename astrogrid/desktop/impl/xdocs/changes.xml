@@ -19,11 +19,9 @@
     <action dev="nw" type="add" >
     Added a 'change password' dialogue.
     </action>
-    <!-- 
     <action dev="nw" type="fix" issue="2813">
     Debugged sending spectrum fits files to splat
     </action>
-     -->
     <action dev="nw" type="fix" issue="2814">
     Tidied plastic shutdown.
     </action>

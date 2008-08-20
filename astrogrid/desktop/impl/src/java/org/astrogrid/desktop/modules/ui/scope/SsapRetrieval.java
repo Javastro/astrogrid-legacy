@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.23 2008/08/07 11:52:36 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.24 2008/08/20 09:34:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -113,7 +114,12 @@ public class SsapRetrieval extends AbstractRetriever {
     public static final String SPECTRA_END_TIME_ATTRIBUTE = "VOX:OBS_END_TIME";
     public static final String SPECTRA_END_TIME_UTYPE = "Char.TimeAxis.Coverage.Bounds.Stop";
     public static final String SPECTRA_OBS_ID_ATTRIBUTE = "OBS_ID";
+        
     //utype ssa:Query.LName - why the prefix??
+    
+    /** pattern that detects broken forms of mime type */
+    public static final Pattern BUST_MIME = Pattern.compile("\\w+/\\w+;[^=]+");
+    
     public class SsapTableHandler extends BasicTableHandler {
 
 
@@ -228,6 +234,8 @@ public class SsapRetrieval extends AbstractRetriever {
             }
         }
         
+
+        
         @Override
         protected void rowDataExtensionPoint(final Object[] row, final TreeNode valNode) {
             try {
@@ -246,7 +254,13 @@ public class SsapRetrieval extends AbstractRetriever {
                 if (formatCol > -1) {
                     type = safeTrim(row[formatCol]);
                     if (type.equals("FITS")) { // make it a bit more standard.
-                        type = VoDataFlavour.MIME_FITS_SPECTRUM;
+                        type = VoDataFlavour.MIME_FITS_SPECTRUM;       
+                    } else if (BUST_MIME.matcher(type).matches()) { // broken form of mime type, tidy up.
+                        final String[] arr = StringUtils.split(type,";");
+                        if (arr.length == 2 && ! arr[1].contains("votable")) { // special case - leave broken forms mentioning votable as-is.
+                            type = arr[0];
+                        }
+
                     }
                 } else {
                     type="unknown";
@@ -435,6 +449,10 @@ public class SsapRetrieval extends AbstractRetriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.24  2008/08/20 09:34:36  nw
+RESOLVED - bug 2813: SSAP services FITS files not really FITS files
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2813
+
 Revision 1.23  2008/08/07 11:52:36  nw
 RESOLVED - bug 2767: VOExplore searching eso-ssap
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2767

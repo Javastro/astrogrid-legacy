@@ -13,7 +13,7 @@ import junit.framework.TestSuite;
 public class AllScopeUnitTests {
 
     public static Test suite() {
-        TestSuite suite = new TestSuite(
+        final TestSuite suite = new TestSuite(
                 "Test for org.astrogrid.desktop.modules.ui.scope");
         //$JUnit-BEGIN$
         suite.addTestSuite(ScopeHistoryProviderUnitTest.class);
@@ -21,6 +21,7 @@ public class AllScopeUnitTests {
         suite.addTestSuite(AstroscopeFileObjectUnitTest.class);
         suite.addTestSuite(VizModelUnitTest.class);
         suite.addTestSuite(QueryResultsUnitTest.class);
+        suite.addTestSuite(SsapRetrievalUnitTest.class);
         //$JUnit-END$
         return suite;
     }

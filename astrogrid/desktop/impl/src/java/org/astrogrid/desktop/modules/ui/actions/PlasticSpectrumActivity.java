@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -140,7 +139,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 				} else {
 				    t = new Hashtable(f.getContent().getAttributes());
 				}
-				MapUtils.verbosePrint(System.err,"params",t);
+				//MapUtils.verbosePrint(System.err,"params",t);
 				l.add(t);
 				scav.getTupp().singleTargetFireAndForgetMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
 				return null;
