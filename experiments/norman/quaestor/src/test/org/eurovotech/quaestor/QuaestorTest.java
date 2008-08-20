@@ -448,6 +448,23 @@ public class QuaestorTest
         deleteKbIfPresent(kb_d3);
     }
 
+    /* ******************** /code tests ******************** */
+    /* These tests don't examine documented functionality, but
+     * it's functionality I've broken before, and it's reassuring to
+     * confirm that it's still working. These are dependent on the /code
+     * functionality being enabled, and so should probably have slightly different setup.
+     * Worry about when I need to.
+     */
+    public void testCode()
+            throws Exception {
+
+        URL codeURL = new URL(contextURL, "code");
+        HttpResult r = QuaestorConnection.httpPost(codeURL, "(ident)", "text/plain");
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/plain");
+        assertNotNull(r.getContentAsString());
+    }
+
     /* ******************** XML-RPC tests ******************** */
 
     public void testRpcGetSimple()

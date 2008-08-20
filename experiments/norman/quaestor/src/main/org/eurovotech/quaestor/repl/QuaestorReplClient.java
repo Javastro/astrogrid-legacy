@@ -246,6 +246,7 @@ public class QuaestorReplClient {
 
             if (ident == null) {
                 System.err.println("Can't contact Quaestor at <" + client.getServerURI() + ">");
+                System.err.println("(either not present or not initialised?)");
                 System.exit(1);
             }
 
