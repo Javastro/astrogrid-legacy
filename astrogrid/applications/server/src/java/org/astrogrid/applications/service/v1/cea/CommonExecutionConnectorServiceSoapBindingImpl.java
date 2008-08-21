@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.14 2007/08/21 12:52:57 gtr Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.15 2008/08/21 14:34:03 gtr Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,7 @@
 package org.astrogrid.applications.service.v1.cea;
 
 import java.security.GeneralSecurityException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -252,10 +253,22 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
      }
   }
  
- private void cacheSecurityGuard() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-   AxisServiceSecurityGuard g = AxisServiceSecurityGuard.getInstanceFromContext();
-   CeaSecurityGuard.setInstanceInContext(g);
- }
+  /**
+   * Stores a security guard where worker threads can find it.
+   * The guard is obtained from the Axis message-context, where it has been
+   * loaded with the results of authentication. The delegated credentials for
+   * the authenticated identity, if any, are loaded. If the request has not
+   * been authenticated, this method stores a security guard with no
+   * principals or credentials.
+   */
+   private void cacheSecurityGuard() throws ClassNotFoundException, 
+                                            InstantiationException, 
+                                            IllegalAccessException, 
+                                            CertificateException {
+     AxisServiceSecurityGuard g = AxisServiceSecurityGuard.getInstanceFromContext();
+     g.loadDelegation();
+     CeaSecurityGuard.setInstanceInContext(g);
+   }
 
   /**
    * Checks the requested action against the access policy.
