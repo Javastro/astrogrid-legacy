@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.16 2007/11/12 13:36:27 pah Exp $
+/*$Id: Finder.java,v 1.17 2008/08/21 11:34:03 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,16 +9,6 @@
  *
 **/
 package org.astrogrid.acr;
-
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.builtin.SessionManager;
-import org.astrogrid.acr.builtin.Shutdown;
-import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.ApiHelp;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
@@ -35,14 +25,23 @@ import java.rmi.RemoteException;
 
 import javax.swing.JOptionPane;
 
-/** Find or create an AR daemon, and return an interface to it.
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.builtin.SessionManager;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.acr.system.ApiHelp;
+
+/** Find or create an Astro Runtime instance, and return an interface to it.
  * 
- * <p/>
-      * First attempts to connect to a running instance using RMI, on a port defined in the file <tt>~/.acr-rmi-port</tt> (which is written by a running AR instance)<p />
-     * failing that, tries to create an external instance (will only work if running under java web start), and then connect to that using RMI<p />
-     * failing that, trie to create an instance internally (will only work if implementation classes are on classpath),<p />     
-     * the interface returned will either be a  RMI stub or direct instance, depending on how the AR was found.
-     * <p />
+ * The Astro Runtime instance is found by 
+ * <ol>
+      <li> First attempting to connect to a running instance using RMI, on a port defined in the file <tt>~/.acr-rmi-port</tt> (this file is written by a running AR instance)</li>
+     <li> failing that, tries to create an external instance (will only work if running under java web start), and then connect to that using RMI</li>
+     <li> failing that, tries to create an instance internally (will only work if implementation classes are on classpath),</li>
+ * </ol>
+     The interface returned will either be a  RMI stub or direct instance, depending on how the AR was found.
      * No matter how the AR is found, the ACR interface returned is a singleton - it is stored in this class for simple access the next time
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
  * @example
@@ -55,7 +54,9 @@ import javax.swing.JOptionPane;
  *@see org.astrogrid.acr.builtin.ACR How to retrieve services from the ACR interface
  */
 public class Finder {
-    /** rmi stub that connects to a remote acr inteance.
+    /** Part of the internal implementation
+     * <p/>
+     *  rmi stub that connects to a remote acr instance.
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Mar 21, 20071:41:34 PM
 	 */
@@ -72,58 +73,58 @@ public class Finder {
 			return api;
 		}
 
-		private RmiAcr(SessionAwareClient client) {
+		private RmiAcr(final SessionAwareClient client) {
 			this.client = client;
 		}
 		
-		public Object getService(Class interfaceClass) throws ACRException, NotFoundException {
+		public Object getService(final Class interfaceClass) throws ACRException, NotFoundException {
 			if (interfaceClass.equals(ACR.class)) {
 				return this;
 			}
 			try {
 				registerListeners(interfaceClass);
 				return this.client.lookup(interfaceClass);
-			} catch (RemoteException e) {
+			} catch (final RemoteException e) {
 				throw new ACRException(e);
-			} catch (NotBoundException e) {
+			} catch (final NotBoundException e) {
 				throw new NotFoundException(e);
 			}
 		}
 
-		private void registerListeners(Class c) {
-			Method[] arr = c.getMethods();
+		private void registerListeners(final Class c) {
+			final Method[] arr = c.getMethods();
 			for (int i = 0; i < arr.length; i++) {
-				Method m = arr[i];
-				Class[] ps = m.getParameterTypes();
+				final Method m = arr[i];
+				final Class[] ps = m.getParameterTypes();
 				for (int j = 0; j < ps.length; j++) {
 					maybeRegister(ps[j]);
 				}
-				Class ret = m.getReturnType();
+				final Class ret = m.getReturnType();
 				maybeRegister(ret);
 			}
 		}
 
-		private void maybeRegister(Class c) {
+		private void maybeRegister(final Class c) {
 			if (c.isInterface() &&   c.getName().endsWith("Listener")) {
 				logger.debug("Exporting interface " + c.getName());
 				this.client.exportInterface(c);
 			}
 		}
 
-		public Object getService(String componentName) throws ACRException, NotFoundException {
+		public Object getService(final String componentName) throws ACRException, NotFoundException {
 			Class clazz = null;
 			try {
 				clazz = Class.forName(componentName); // makes the interface more user friendly - can take either a short name of fully-qualified name.
-			} catch (ClassNotFoundException e) {
+			} catch (final ClassNotFoundException e) {
 				// try to resolve o
 				try {
-					String className = getApiHelp().interfaceClassName(componentName);
+					final String className = getApiHelp().interfaceClassName(componentName);
 					clazz = Class.forName(className);
-				} catch (ClassNotFoundException e1) {
+				} catch (final ClassNotFoundException e1) {
 					throw new NotFoundException(e1);
-				} catch (RemoteException x) {
+				} catch (final RemoteException x) {
 					throw new ACRException(x);
-				} catch (NotBoundException x) {
+				} catch (final NotBoundException x) {
 					throw new ACRException(x);
 				}
 			}
@@ -131,15 +132,15 @@ public class Finder {
 		}
 	}
 
-	/**Internal Class. 
-     * 
+	/**Part of the internal implementation 
+     * <p />
      * Refactored as an static public class - previously was an anonymous class, and RmiLite seemed to be unable to call it
      *  - producing a nice stack trace on shutdown. Same code, but as a named public static class works fine.
 	 * @author Noel Winstanley
 	 * @since Jun 12, 200611:03:25 AM
 	 */
 	public static final class FinderCleanupShutdownListener implements ShutdownListener {
-		public FinderCleanupShutdownListener(Finder f) {
+		public FinderCleanupShutdownListener(final Finder f) {
 			this.f = f;
 		}
 		private final Finder f;
@@ -167,46 +168,45 @@ public class Finder {
         super();
     }
     
-    /** Find or create an AR daemon.
-     * @return an interface to the running CR - depending on how connected will either 
+    /** Find or create an Astro Runtime (AR) instance
+     * @return an interface to the Astro Runtime - depending on how connected will either 
      * be a direct instance or a remote stub - although this makes no difference to the 
      * consumer.
-     * The instance returned is a singleton - i.e. all subsequent calls to {@link #find} 
+     * The instance returned is a singleton - i.e. all subsequent calls to  this method
      * will return the same object.
      * @throws ACRException if all options fail
      * 
      * */
     public synchronized ACR find()  throws ACRException{
-    	boolean tryToStartIfNotRunning = true;
-    	boolean warnUserBeforeStarting = false;
+    	final boolean tryToStartIfNotRunning = true;
+    	final boolean warnUserBeforeStarting = false;
          
         return find(tryToStartIfNotRunning, warnUserBeforeStarting);
 
     }
     
-    /** find an acr instance for a specific session 
+    /** Find an Astro Runtime instance for a specific session 
      * 
-     * unlike {@link find()} this method will not start an ACR instance if one is 
-     * not already running - as an ACR must be running to be able to connect 
-     * create a new session using the SessionManager.
+     * unlike {@link find()} this method will not start the Astro Runtime service if it is 
+     * not already running - the Astro Runtime must be running first.
      * 
      * @param sessionId the identifier of a current session
-     * @return an acr instance that is connected to the specified session
+     * @return an AR instance that is connected to the specified session
 	 * @throws InvalidArgumentException if the sessionId is invalid.
-	 * @throws NotApplicableException if a connection has not already been made to an ACR instance, or ACR is an older version without session support
+	 * @throws NotApplicableException if a connection has not already been made to an AR instance, or AR is an older version without session support
 	 * @throws ServiceException if there is an error connecting to this session.
 	 * @see org.astrogrid.acr.builtin.SessionManager
      */
-    public ACR findSession(String sessionId) throws InvalidArgumentException, NotApplicableException, ServiceException{
+    public ACR findSession(final String sessionId) throws InvalidArgumentException, NotApplicableException, ServiceException{
     	if (this.acr == null) {
     		throw new NotApplicableException("You must previously connect to an ACR before retrieving a session");
     	}
     	SessionManager sess;
 		try {
 			sess = (SessionManager)acr.getService(SessionManager.class);
-		} catch (NotFoundException x) {
+		} catch (final NotFoundException x) {
 			throw new NotApplicableException("This ACR does not support sessions");
-		} catch (ACRException x) {
+		} catch (final ACRException x) {
 			throw new ServiceException(x);
 		}
     	if (! sess.exists(sessionId)) {
@@ -216,7 +216,7 @@ public class Finder {
     		
     		try {
 				return connectExternalSession(sessionId);
-			} catch (Exception x) {
+			} catch (final Exception x) {
 				throw new ServiceException(x);
 			}
     	} else { // we've got a direct connection - dunno what to do here.
@@ -226,21 +226,21 @@ public class Finder {
     }
 
     /**
-     * Find or create an AR daemon.
+     * Find or create an Astro Runtime (AR) instance
      * @see #find()
-     * @param tryToStartIfNotRunning if false, will not attempt to start an ACR, but merely return NULL if there isn't one running
-     * @param warnUserBeforeStarting if true, will warn the user before attempting start an ACR, giving him the chance to start one manually
+     * @param tryToStartIfNotRunning if false, will not attempt to start an AR, but instead will return NULL if there isn't an instance already running
+     * @param warnUserBeforeStarting if true, will warn the user before attempting start an AR, giving him the chance to start one manually
      * @return
      * @throws ACRException
      */
-	public ACR find(boolean tryToStartIfNotRunning, boolean warnUserBeforeStarting) throws ACRException {
+	public ACR find(final boolean tryToStartIfNotRunning, final boolean warnUserBeforeStarting) throws ACRException {
 		if (acr == null) {
             acr= createACR(tryToStartIfNotRunning, warnUserBeforeStarting);
             try { // attempt to register a listener, it it'll let me: use it to remove singleton when host vanishes.
-                Shutdown sd = (Shutdown)acr.getService(Shutdown.class);               
+                final Shutdown sd = (Shutdown)acr.getService(Shutdown.class);               
                 sd.addShutdownListener(new FinderCleanupShutdownListener(this));
               
-            } catch (ACRException e) {
+            } catch (final ACRException e) {
                 logger.warn("Failed to register shutdown listener - no matter",e);
             }
                 
@@ -253,7 +253,7 @@ public class Finder {
      * @param tryToStartIfNotRunning if false, don't start an external ACR if there isn't one. 
      * @throws NoAvailableACRException
      */
-    private ACR createACR(boolean tryToStartIfNotRunning, boolean warnUser) throws ACRException {
+    private ACR createACR(final boolean tryToStartIfNotRunning, final boolean warnUser) throws ACRException {
     	logger.info("Searching for acr");
     	ACR result = null;
     	try {
@@ -261,7 +261,7 @@ public class Finder {
     		if (result != null) {
     			return result;
     		}
-    	} catch (Exception e) {
+    	} catch (final Exception e) {
     		logger.warn("Failed to connect to existing external acr",e);
     	}                    
     	
@@ -270,7 +270,7 @@ public class Finder {
     		if (result != null) {
     			return result;
     		}    
-    	} catch (Exception e) {
+    	} catch (final Exception e) {
     		logger.warn("Failed to create internal acr",e);
     	}
     	// hmm, try starting external service
@@ -286,9 +286,9 @@ public class Finder {
     					if (result != null) {
     						return result;
     					}
-    				} catch (HeadlessException he) {
+    				} catch (final HeadlessException he) {
     					logger.warn("Not running in a ui environment - can't ask permission, so starting ACR anyway");
-    				} catch (Exception e) {
+    				} catch (final Exception e) {
     					logger.warn("Failed to connect to external acr.",e);
     				}  
     			}
@@ -296,7 +296,7 @@ public class Finder {
     			createExternal();
     			// need to wait some time to allow external to bootup (and maybe download).
     			
-    			long now = System.currentTimeMillis();
+    			final long now = System.currentTimeMillis();
     			final int WAIT_TIME = (2 * 60  * 1000); // 2 minutes
 				long tooLong = now + WAIT_TIME ; 
     			while (connectExternal()==null) {
@@ -305,7 +305,7 @@ public class Finder {
     		    		int continueToWait;
     		    		try {
     		    			continueToWait = JOptionPane.showConfirmDialog(null,"<html>The ACR hasn't started yet.  Press OK to continue waiting, Cancel to abort.</html>","ACR not started",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
-    		    		} catch (HeadlessException e) {
+    		    		} catch (final HeadlessException e) {
     		    			logger.warn("Not running in a ui environment - can't prompt");
     		    			continueToWait = JOptionPane.CANCEL_OPTION;
     		    		}
@@ -321,14 +321,14 @@ public class Finder {
     			if (result != null) {
     				return result;
     			}
-    		} catch (Exception e) {
+    		} catch (final Exception e) {
     			logger.warn("Failed to create external acr",e);
     		}            
     		// finally - try prompting the user.
     		int dialogueResult;
     		try {
     			dialogueResult = JOptionPane.showConfirmDialog(null,"<html><b>Please start the ACR by hand</b><br>When started press 'Ok'. To halt press 'Cancel'","Unable to automatically start ACR",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
-    		} catch (HeadlessException e) {
+    		} catch (final HeadlessException e) {
     			logger.warn("Not running in a ui environment - can't prompt");
     			dialogueResult = JOptionPane.NO_OPTION;
     		}
@@ -339,7 +339,7 @@ public class Finder {
     				if (result != null) {
     					return result;
     				}
-    			} catch (Exception e) {
+    			} catch (final Exception e) {
     				logger.warn("Failed to connect to external acr, after user claimed to start one.",e);
     				// could loop here?
     			}                  
@@ -349,7 +349,7 @@ public class Finder {
     	throw new ACRException("Failed to find or create an ACR to connect to");
     }
 
-    /** connect to an external acr.
+    /** connect to an external AR.
      * @return
      * @throws FileNotFoundException
      * @throws NumberFormatException
@@ -358,19 +358,19 @@ public class Finder {
      * @throws NotBoundException
      */
     protected ACR connectExternal() throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
-    	int port = parseConfigFile();
+    	final int port = parseConfigFile();
     	final SessionAwareClient client = new SessionAwareClient("localhost",port);
 
-    	ACR newAcr = new RmiAcr(client);
+    	final ACR newAcr = new RmiAcr(client);
     	//TODO check that the ACR is booted?  Sometimes the config file is present before the ACR is ready.
     	return newAcr;           
     }
     
-    protected ACR connectExternalSession(String sessionId) throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
-    	int port = parseConfigFile();
+    protected ACR connectExternalSession(final String sessionId) throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
+    	final int port = parseConfigFile();
     	final SessionAwareClient client = new SessionAwareClient("localhost",port,sessionId);
 
-    	ACR newAcr = new RmiAcr(client);
+    	final ACR newAcr = new RmiAcr(client);
     	//TODO check that the ACR is booted?  Sometimes the config file is present before the ACR is ready.
     	return newAcr;           
     }
@@ -381,7 +381,7 @@ public class Finder {
 	 * @throws IOException
 	 */
 	protected int parseConfigFile() throws IOException {
-		File conf = configurationFile();  
+		final File conf = configurationFile();  
     	if (!conf.exists()) {
     		logger.info("No configuration file - suggests an acr instance is not running at the moment");
     		throw new FileNotFoundException(conf.getAbsolutePath());
@@ -391,14 +391,14 @@ public class Finder {
     	BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(conf));
-			int port = Integer.parseInt(br.readLine());
+			final int port = Integer.parseInt(br.readLine());
 			logger.info("Port determined to be " + port);
 			return port;
 		} finally {
 			if (br != null) {
 				try {
 					br.close(); //Otherwise the file can be locked and left undeleted when the ACR shuts down.
-				} catch (IOException e) {
+				} catch (final IOException e) {
 				}
 			}
 		}
@@ -407,8 +407,9 @@ public class Finder {
     
     private ACR acr;
     
+    /** returns the File object that represents the AR RMI connection file. */
     public static final File configurationFile() {
-        File homeDir = new File(System.getProperty("user.home"));
+        final File homeDir = new File(System.getProperty("user.home"));
         return new File(homeDir,".acr-rmi-port");
     }
     
@@ -435,18 +436,18 @@ public class Finder {
         Method showMethod = null;
         Object methodTarget = null;        
         try {
-             Class managerClass = Class.forName("javax.jnlp.ServiceManager");
-             Method lookupMethod= managerClass.getMethod("lookup",new Class[]{String.class});
+             final Class managerClass = Class.forName("javax.jnlp.ServiceManager");
+             final Method lookupMethod= managerClass.getMethod("lookup",new Class[]{String.class});
              methodTarget = lookupMethod.invoke(null,new Object[]{"javax.jnlp.BasicService"});
              showMethod = methodTarget.getClass().getMethod("showDocument",new Class[]{URL.class});
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             logger.info("Not running under java web start");
         }
         if (showMethod == null) { // try something else.
             try {
-            Class jdicClass = Class.forName("org.jdesktop.jdic.desktop.Desktop");
+            final Class jdicClass = Class.forName("org.jdesktop.jdic.desktop.Desktop");
             showMethod= jdicClass.getMethod("browse",new Class[]{URL.class});    
-            } catch (ClassNotFoundException e1) {
+            } catch (final ClassNotFoundException e1) {
                 logger.info("Not running with jdic libs");
             }
         }
@@ -455,22 +456,22 @@ public class Finder {
         if (showMethod == null) {
             throw new ClassNotFoundException("Can't find any class that can control the system browser");
         }
-        URL url = new URL(ACR_JNLP_URL);
+        final URL url = new URL(ACR_JNLP_URL);
         showMethod.invoke(methodTarget,new Object[]{url});        
     }
     
     private ACR createInternal() throws InstantiationException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         // all done without referencing the class by name - as may not be available on the classpath.
         try {
-            Class buildClass = Class.forName("org.astrogrid.desktop.BuildInprocessACR");
-            Object o = buildClass.newInstance();
+            final Class buildClass = Class.forName("org.astrogrid.desktop.BuildInprocessACR");
+            final Object o = buildClass.newInstance();
             // start the acr.
             Method m = buildClass.getMethod("start",null);
             m.invoke(o,null);
             // return the acr instance
             m = buildClass.getMethod("getACR",null);
             return (ACR)m.invoke(o,null);
-        } catch (ClassNotFoundException e) {            
+        } catch (final ClassNotFoundException e) {            
             logger.info("ACR implementation classes not available - must connect to a remote acr",e);
         } 
         return null;
@@ -480,6 +481,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.17  2008/08/21 11:34:03  nw
+doc tweaks.
+
 Revision 1.16  2007/11/12 13:36:27  pah
 change parameter name to structure
 

@@ -1,4 +1,4 @@
-/*$Id: ACRException.java,v 1.7 2007/01/24 14:04:45 nw Exp $
+/*$Id: ACRException.java,v 1.8 2008/08/21 11:33:50 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,46 +33,46 @@ public class ACRException extends Exception {
     /** Construct a new ACRException
      * @param message
      */
-    public ACRException(String message) {
+    public ACRException(final String message) {
         super(message);
     }
 
     /** Construct a new ACRException
      * @param cause - if cause is a standard exception (i.e. package is java.*), the embed it.
-     * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard exception, whille still preserving the text
+     * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard {@link Exception}, whille still preserving the text
      */
-    public ACRException(Throwable cause) {
+    public ACRException(final Throwable cause) {
         
         super(convertNonStandard(cause));
     }
 
     /** Construct a new ACRException
      * @param message
- * @param cause - if cause is a standard exception (i.e. package is java.*), the embed it.
-     * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard exception, whille still preserving the text
-        
+   * @param cause - if cause is a standard exception (i.e. package is java.*), the embed it.
+     * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard {@link Exception}, whille still preserving the text
+       
      */
-    public ACRException(String message, Throwable cause) {
+    public ACRException(final String message, final Throwable cause) {
         super(message, convertNonStandard(cause));
         
     }
     
     /** convert client-unknown exceptions to standard exceptions */
-    private static Throwable convertNonStandard(Throwable t) {
-        Throwable newCause = t.getCause() == null ? null : convertNonStandard(t.getCause());
+    private static Throwable convertNonStandard(final Throwable t) {
+        final Throwable newCause = t.getCause() == null ? null : convertNonStandard(t.getCause());
         Throwable newT = null;
         if (t.getClass().getName().startsWith("java.")) {
             if (newCause == t.getCause()) { // if newCause is unmodified, or null, we can return this e as-is.
                 return t;
             } else { // need to return a new exception, of same class as t, because  cause has changed.                
                 try {
-                    Constructor c = t.getClass().getConstructor(new Class[]{String.class,Exception.class}); // constructor that takes a message and a thowable
+                    final Constructor c = t.getClass().getConstructor(new Class[]{String.class,Exception.class}); // constructor that takes a message and a thowable
                     newT = (Throwable)c.newInstance(new Object[]{t.getMessage(),newCause});
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     try { // fallback - just try to get an instance with the no-arg constructor.
-                        newT = (Throwable)t.getClass().newInstance();
+                        newT = t.getClass().newInstance();
                         newT.initCause(newCause);
-                    } catch (Exception e1) {
+                    } catch (final Exception e1) {
                         //rats - just return t as is, and hope it works out.
                         return t;
                     }
@@ -93,6 +93,9 @@ public class ACRException extends Exception {
 
 /* 
 $Log: ACRException.java,v $
+Revision 1.8  2008/08/21 11:33:50  nw
+doc tweaks.
+
 Revision 1.7  2007/01/24 14:04:45  nw
 updated my email address
 
