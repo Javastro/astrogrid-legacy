@@ -8,7 +8,7 @@
 
 <!-- compute a list of package names - will reuse this to iterate through later.. -->
 <xsl:variable name="packages" select="/jel/jelclass[
-	not(@package=following::jelclass/@package)
+	not(@package=preceding-sibling::jelclass/@package)
 	]/@package[not (.='org.astrogrid.acr' or .='org.astrogrid.acr.opt' or .='org.astrogrid.acr.builtin')]" />
 
 <!-- list of service interfaces -->
