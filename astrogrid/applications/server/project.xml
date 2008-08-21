@@ -235,7 +235,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2007.2.04</version>
+      <version>2008.2.a06</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -500,18 +500,9 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>globus</groupId>
-      <artifactId>cog-puretls</artifactId>
-      <version>1.2</version>
-      <type>jar</type>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
       <groupId>bouncycastle</groupId>
-      <artifactId>bcprov-jdk14</artifactId>
-      <version>137</version>
+      <artifactId>bcprov-jdk15</artifactId>
+      <version>139</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
