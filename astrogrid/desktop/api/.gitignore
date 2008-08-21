@@ -4,3 +4,4 @@ target
 javadoc*
 build.properties
 .pydevproject
+*.byecycle
