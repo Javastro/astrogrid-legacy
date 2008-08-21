@@ -69,6 +69,10 @@ public class ChangePasswordDialog extends UIDialogueComponentImpl {
             showTransientError("Empty password","The password cannot be empty");
             return;
         }
+        if (newPassword.length() < 7) { // implementation limit for oopen SSL
+            showTransientError("Empty password","The password cannot be empty");
+            return;
+        }        
         if (! newPassword.equals(p2.getText())) {
             showTransientError("Passwords do not match","The password and password confirmation must be identical");
           return;  

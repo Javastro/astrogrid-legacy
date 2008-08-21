@@ -213,7 +213,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             separator();
             menu.add(new LoginMenuItem(context));
             
-            menu.add(new LogoutMenuItem(context));
+            menu.add(new LogoutMenuItem(context));           
             menu.add(new ChangePasswordMenuItem(context));
             if (!isOsx) {
                 addSystemActions();

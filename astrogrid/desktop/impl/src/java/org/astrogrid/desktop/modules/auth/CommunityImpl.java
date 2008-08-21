@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.16 2008/08/19 18:48:24 nw Exp $
+/*$Id: CommunityImpl.java,v 1.17 2008/08/21 11:37:11 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -114,6 +114,9 @@ public class CommunityImpl implements CommunityInternal {
            return;
        }
        try {
+       System.err.println(guard.getSsoUsername());
+       System.err.println(guard.getSsoPassword());
+       System.err.println(guard.getAccountIvorn().getCommunityIvorn());
         guard.changePassword(guard.getSsoUsername()
                    ,guard.getSsoPassword()
                    ,newPassword
@@ -263,6 +266,10 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.17  2008/08/21 11:37:11  nw
+RESOLVED - bug 2815: File manager client depends on obsolete community service
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2815
+
 Revision 1.16  2008/08/19 18:48:24  nw
 ASSIGNED - bug 2801: Allow the user to change a password from VODesktop
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2801
