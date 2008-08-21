@@ -34,7 +34,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -55,7 +54,6 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -63,6 +61,7 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
+import org.astrogrid.desktop.modules.dialogs.RegistryGoogleInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.ui.RetriableBackgroundWorker;
@@ -121,10 +120,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	 * @param context
 	 * @throws HeadlessException
 	 */
-	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps
-	        ,RemoteProcessManagerInternal rpmi,ResourceChooserInternal rci
-	        ,RegistryGoogle regChooser,TypesafeObjectBuilder builder
-	        ,VoMonInternal vomon) throws HeadlessException {
+	public TaskRunnerImpl(final UIContext context, final ApplicationsInternal apps
+	        ,final RemoteProcessManagerInternal rpmi,final ResourceChooserInternal rci
+	        ,final RegistryGoogleInternal regChooser,final TypesafeObjectBuilder builder
+	        ,final VoMonInternal vomon) throws HeadlessException {
 		super(context,"Task Runner","window.taskrunner");
 		logger.info("Constructing new TaskRunner");
         this.rpmi = rpmi;
@@ -147,10 +146,11 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 		
         // menubar
-		UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
+		final UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
 
-		    protected void constructAdditionalMenus() {
-                JMenu taskMenu = new JMenu("Task");
+		    @Override
+            protected void constructAdditionalMenus() {
+                final JMenu taskMenu = new JMenu("Task");
                 taskMenu.setMnemonic(KeyEvent.VK_T);
                 /* can't get at these reliably.
                     .windowOperation(toolbar.getExecuteAction())
@@ -164,7 +164,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 toolbar = new ExecutingTaskRunnerToolbar(taskMenu);
                 add(taskMenu);
                 
-                MenuBuilder rmb = new MenuBuilder("Result",KeyEvent.VK_R);
+                final MenuBuilder rmb = new MenuBuilder("Result",KeyEvent.VK_R);
                 rmb
                     .windowOperation(tracker.getActs().getActivity(ViewInBrowserActivity.class))
                     .windowOperation(tracker.getActs().getActivity(SimpleDownloadActivity.class))
@@ -173,7 +173,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 tracker.getActs().getActivity(PlasticScavenger.class).addTo(rmb.getMenu());
                 add(rmb.create());
             }
-            protected void populateEditMenu(EditMenuBuilder emb) {
+            @Override
+            protected void populateEditMenu(final EditMenuBuilder emb) {
                 emb  
                     .cut()
                     .copy()
@@ -191,7 +192,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     //.componentOperation("Populate from Task",POPULATE,null) // can't attach.
                     ;
             }
-            protected void populateFileMenu(FileMenuBuilder fmb) {
+            @Override
+            protected void populateFileMenu(final FileMenuBuilder fmb) {
 		        fmb
 		            .windowOperation(newTask)
 		            .windowOperation(open)
@@ -219,13 +221,15 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		rightPane.setResizeWeight(0.7);
 		rightPane.setPreferredSize(new Dimension(200,600));
 		pForm.getBottomPane().addComponentListener(new ComponentAdapter() {
-            public void componentHidden(ComponentEvent e) {
+            @Override
+            public void componentHidden(final ComponentEvent e) {
                     tasksScroll.setVisible(true);
                     rightPane.setDividerLocation(0.5);     
                     rightPane.setDividerSize(7);                    
             }
             
-            public void componentShown(ComponentEvent e) {
+            @Override
+            public void componentShown(final ComponentEvent e) {
                 tasksScroll.setVisible(false);
                 rightPane.setDividerLocation(1.0);
                 rightPane.setDividerSize(0);
@@ -243,13 +247,14 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
         {
             setEnabled(false);
         }
-        public void setEnabled(boolean b) {
+        @Override
+        public void setEnabled(final boolean b) {
             super.setEnabled(b);
             setVisible(b);
         } 
     };	
 	 private final ResourceChooserInternal fileChooser;
-	 private final RegistryGoogle regChooser;
+	 private final RegistryGoogleInternal regChooser;
 	 private final RemoteProcessManagerInternal rpmi;
 	 private URI storageLocation;
 	   private ExecutingTaskRunnerToolbar toolbar;   
@@ -271,7 +276,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	final Action save = new SaveAction();
 	final Action saveAs = new SaveAsAction();
 	protected final ShowHideFullEditorAction showHideFullEditor = new ShowHideFullEditorAction();
-	public void buildForm(Resource r) {
+	public void buildForm(final Resource r) {
 		CeaApplication cea = null;
 		if (r instanceof CeaApplication) {
 			cea = (CeaApplication)r;
@@ -281,7 +286,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 				//@@todo causes a long pause - do this on bg threa somehow.
 			    // however, only happens for non cea-apps. (cone, etc)
 				cea = apps.getCeaApplication(r.getId());
-			} catch (ACRException x) {
+			} catch (final ACRException x) {
 				logger.error("ServiceException",x);
 				//should report an error somewhere.
 				return;
@@ -301,7 +306,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
         loadToolDocument(o);
     }
 	
-    public void buildForm(Tool t,String interfaceName,Resource r) {
+    public void buildForm(final Tool t,final String interfaceName,final Resource r) {
 		CeaApplication cea = null;
 		if (r instanceof CeaApplication) {
 			cea = (CeaApplication)r;
@@ -310,7 +315,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 			try {
 				//@todo - should probably do this in a bg thread.
 				cea = apps.getCeaApplication(r.getId());
-			} catch (ACRException x) {
+			} catch (final ACRException x) {
 				logger.error("ServiceException",x);
 				//@todo report a fault somewherte..
 				return;
@@ -330,15 +335,15 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
         return contextMenu;
     }
 
-	public void invokeTask(Resource r) {
+	public void invokeTask(final Resource r) {
 		buildForm(r);
 	}
 	
 	
 	/** simple toolbar for taskrunner */;
 	// show details event listener - a callback from the task monitor.	
-    public void showDetails(ShowDetailsEvent e) {
-        ProcessMonitor monitor = e.getMoitor();
+    public void showDetails(final ShowDetailsEvent e) {
+        final ProcessMonitor monitor = e.getMoitor();
         if (monitor instanceof ProcessMonitor.Advanced) {
             Tool tool = ((ProcessMonitor.Advanced)monitor).getInvocationTool();
             // now need to take a copy of this tool, and load this copy into the editor.
@@ -351,22 +356,22 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 tool.marshal(sw);
                 r = new StringReader(sw.toString());
                 tool = Tool.unmarshalTool(r);
-                CeaApplication newApp =pForm.getModel().currentResource();
+                final CeaApplication newApp =pForm.getModel().currentResource();
                 buildForm(tool,tool.getInterface(),newApp);
-            } catch (CastorException x) {
+            } catch (final CastorException x) {
                 logger.error("MarshalException",x);
            } finally {
                 if (sw != null) {
                     try {
                         sw.close();
-                    } catch (IOException x) {
+                    } catch (final IOException x) {
                         // ignored
                     }
                 }
                 if (r != null) {
                     try {
                         r.close();
-                    } catch (IOException x) {
+                    } catch (final IOException x) {
                         //ignored
                     }
                 }
@@ -381,7 +386,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	private URI getStorageLocation() {
 	     return storageLocation;
 	 }
-    private void setStorageLocation(URI u) {
+    private void setStorageLocation(final URI u) {
 	     storageLocation = u;
 	     updateWindowTitle();
 	 }
@@ -400,9 +405,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
     /**
      * @param cea
      */
-    protected void selectStartingInterface(CeaApplication cea) {
+    protected void selectStartingInterface(final CeaApplication cea) {
         // now that's working in the background, work out what we should be building a form for.
-		String name = BuildQueryActivity.findNameOfFirstNonADQLInterface(cea);
+		final String name = BuildQueryActivity.findNameOfFirstNonADQLInterface(cea);
 		if (name != null) {
 		    pForm.buildForm(name,cea);
 		} else { // show what we've got then
@@ -417,6 +422,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             private CeaApplication newApp;
             private InterfaceBean newInterface;
             private FileObject fo;
+            @Override
             protected Object construct() throws Exception {
             	Reader fr = null;
             	try {
@@ -426,14 +432,14 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             	        fo = (FileObject)o;
             	    }
             	    reportProgress("Resolved file");
-            	    MonitoringInputStream mis = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB);
+            	    final MonitoringInputStream mis = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB);
             	    fr = new InputStreamReader(mis);
-               Tool t = Tool.unmarshalTool(fr);
+               final Tool t = Tool.unmarshalTool(fr);
                reportProgress("Loaded file contents");
                
                newApp = apps.getCeaApplication(new URI("ivo://" + t.getName()));      
                reportProgress("Found associated registry resource");
-               InterfaceBean[] candidates = newApp.getInterfaces();
+               final InterfaceBean[] candidates = newApp.getInterfaces();
                for (int i = 0; i < candidates.length; i++) {
                    if (candidates[i].getName().equalsIgnoreCase(t.getInterface().trim())) {
                        newInterface  = candidates[i];
@@ -448,17 +454,18 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             		if (fr != null) {
             			try {
             				fr.close();
-            			} catch (IOException ignored) {
+            			} catch (final IOException ignored) {
             			    //meh
             			}
             		}
             	}
             }
-            protected void doFinished(Object o) {
+            @Override
+            protected void doFinished(final Object o) {
             	buildForm((Tool)o,newInterface.getName(),newApp);
             	try {
                     setStorageLocation(new URI(StringUtils.replace(fo.getName().getURI().trim()," ","%20")));
-                } catch (URISyntaxException x) {
+                } catch (final URISyntaxException x) {
                     logger.error("URISyntaxException",x);
                     // unlikely.
                 }
@@ -469,13 +476,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	    /**
          * 
          */
-        public TaskRunnerToolbar(TaskParametersForm pForm, Action chooseAppAction) {
+        public TaskRunnerToolbar(final TaskParametersForm pForm, final Action chooseAppAction) {
             builder = new PanelBuilder(new FormLayout(
                     "2dlu,d,200dlu,10dlu,right:d,d,10dlu:grow,d,2dlu" // cols
                     ,"d" // rows
                     ),this);
             cc = new CellConstraints();
-            JButton appButton = new JButton(chooseAppAction);
+            final JButton appButton = new JButton(chooseAppAction);
             // show icon only.
             appButton.setText(null);
             //@future - temporarily set to invisible, as not implemented.
@@ -494,13 +501,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	/** extended toolbar which adds an 'execute' button - not static, as more tightly integrated into the taskrunner */
 	private class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener {
-	    public ExecutingTaskRunnerToolbar(JMenu menu) {
+	    public ExecutingTaskRunnerToolbar(final JMenu menu) {
 	        super(pForm,newTask);
 	        menu.add(executeAction);
 	        menu.addSeparator();
 	        // function that maps a service to an 'Execute' menu operation */
-	        Function fn = new FunctionList.Function() {
-	            public Object evaluate(Object sourceValue) {
+	        final Function fn = new FunctionList.Function() {
+	            public Object evaluate(final Object sourceValue) {
 	                return new ExecuteTaskMenuItem((Service)sourceValue);
 	            }
 	        };
@@ -519,7 +526,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	            setEnabled(false);
 	            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_E,UIComponentMenuBar.MENU_KEYMASK));
 	        }
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 execButton.getMainButton().doClick();
             }
 	    };
@@ -528,7 +535,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	    private final EventList executionServers =  new BasicEventList();
 
 	    // enable / disable various bits of the exec button, depending on what is available.
-	    public void listChanged(ListEvent listChanges) {
+	    public void listChanged(final ListEvent listChanges) {
 	        while (listChanges.hasNext()) {
 	            listChanges.next();
 	            if (executionServers.isEmpty()) {
@@ -548,7 +555,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	     *  */
 	     protected final class ExecuteTaskMenuItem extends JMenuItem implements ActionListener {
 
-	         public ExecuteTaskMenuItem(Service service) {            
+	         public ExecuteTaskMenuItem(final Service service) {            
 	             this.service = service;
 	            setIcon(vomon.suggestIconFor(service)); 
 	             setText("Execute @  " + service.getTitle());
@@ -558,16 +565,17 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	        private final Service service;
 
-	         public void actionPerformed(ActionEvent e) {
+	         public void actionPerformed(final ActionEvent e) {
 	             final Tool tOrig = pForm.getTool();
 	             (new BackgroundOperation("Executing @ " + service.getTitle(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
-	                 protected Object construct() throws ParserConfigurationException, MarshalException, ValidationException, InvalidArgumentException, ServiceException, NotFoundException  {
+	                 @Override
+                    protected Object construct() throws ParserConfigurationException, MarshalException, ValidationException, InvalidArgumentException, ServiceException, NotFoundException  {
 	                     logger.debug("Executing");
-	                     Document doc = XMLUtils.newDocument();
+	                     final Document doc = XMLUtils.newDocument();
 	                     Marshaller.marshal(tOrig,doc);
 	                     reportProgress("Serialized document");
 	                     // ok. looks like a goer - lets create a monitor.
-	                     ProcessMonitor monitor = rpmi.create(doc);
+	                     final ProcessMonitor monitor = rpmi.create(doc);
 	                     reportProgress("Created monitor");
 	                     // start tracking it - i.e. display it in the ui.
 	                     // we do this early, even before we start it to show some visual progress.
@@ -608,20 +616,22 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
      */
     private final class ListServicesWorker extends RetriableBackgroundWorker {
 
-        private ListServicesWorker(URI appId) {
+        private ListServicesWorker(final URI appId) {
             super(TaskRunnerImpl.this,"Listing task providers",Thread.MAX_PRIORITY);
             this.appId = appId;
         }
 
 
+        @Override
         public BackgroundWorker createRetryWorker() {
             return new ListServicesWorker(appId);
         }
         
         private final URI appId;
 
+        @Override
         protected Object construct() throws Exception {
-            Service[] services = apps.listServersProviding(this.appId);
+            final Service[] services = apps.listServersProviding(this.appId);
             final int sz = services.length;
             logger.debug("resolved app to " + sz + " servers");
 
@@ -635,9 +645,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 // of load balancing (taking into account vomon status too).
                 
                 // first split into 'up' and 'down'
-                    List up = new ArrayList();
-                    List down = new ArrayList();
-                    List unknown = new ArrayList();
+                    final List up = new ArrayList();
+                    final List down = new ArrayList();
+                    final List unknown = new ArrayList();
                     for (int i = 0; i < services.length; i++) {
                         final Service service = services[i];
                         final VoMonBean avail = vomon.checkAvailability(service.getId());
@@ -664,7 +674,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             }
         }
 
-        protected void doFinished(Object result) {
+        @Override
+        protected void doFinished(final Object result) {
             if (result != null) {
                 toolbar.executionServers.addAll((List)result);
             }
@@ -677,15 +688,21 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             this.putValue(SHORT_DESCRIPTION,"Select a different task to run");
             //this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.MENU_KEYMASK));
-            this.setEnabled(false); // as not implemented at present.
+            this.setEnabled(true); 
         }
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             clearStorageLocation();
-            JOptionPane.showMessageDialog(TaskRunnerImpl.this,"not implemented");
-            
-        	//@fixme requires the registryGoogle interface to be reimplemented
-        	// with some finer control.
-        	//regChooser.selectResources("Choose someting for now",true);
+            final Resource[] rs = regChooser.selectResourceXQueryFilterWithParent(
+                    "Choose a task to run"
+                    ,false // single selection
+                    ,apps.getRegistryXQuery() // list all applications
+                    , TaskRunnerImpl.this
+                    );
+
+            if (rs.length > 0) {
+                final Resource newResource = rs[0]; // only a single selection
+                invokeTask(newResource);
+            }
         }
     }
 	
@@ -699,7 +716,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_O,UIComponentMenuBar.MENU_KEYMASK));
         }        
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
 
             final URI u = fileChooser.chooseResourceWithParent("Select tool document to load",true,true,true,TaskRunnerImpl.this);
             if (u == null) {
@@ -717,12 +734,12 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	            
 	            this.setEnabled(true);
 	        }
-	        public void actionPerformed(ActionEvent e) {
+	        public void actionPerformed(final ActionEvent e) {
 	            ConfirmDialog.newConfirmDialog(TaskRunnerImpl.this.getComponent(),"Reset Form","Any edits will be lost. Continue?",new Runnable() {
                     public void run() {
-                        CeaApplication res = pForm.getModel().currentResource();
+                        final CeaApplication res = pForm.getModel().currentResource();
                         if (pForm != null && pForm.getModel() != null) {
-                            String iface = pForm.getModel().getIName();
+                            final String iface = pForm.getModel().getIName();
                             if (iface != null && res != null) {
                                 pForm.buildForm(iface,res);
                             }
@@ -742,8 +759,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_S,UIComponentMenuBar.MENU_KEYMASK));
 	        }
 
-	        public void actionPerformed(ActionEvent e) {
-	           URI u = getStorageLocation();
+	        @Override
+            public void actionPerformed(final ActionEvent e) {
+	           final URI u = getStorageLocation();
 	           if (u != null) {
 	               writeToolTo(u);
 	           } else {
@@ -764,27 +782,27 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
         }
 
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             pForm.setExpanded(! pForm.getBottomPane().isVisible());
         }
 
-        public void componentHidden(ComponentEvent e) {
+        public void componentHidden(final ComponentEvent e) {
             super.putValue(Action.NAME,"Show Full Query Editor");
         }
 
-        public void componentMoved(ComponentEvent e) {
+        public void componentMoved(final ComponentEvent e) {
             // ignored
         }
 
-        public void componentResized(ComponentEvent e) {
+        public void componentResized(final ComponentEvent e) {
             // ignored
         }
 
-        public void componentShown(ComponentEvent e) {
+        public void componentShown(final ComponentEvent e) {
             super.putValue(Action.NAME,"Hide Full Query Editor");                        
         }
         // detects when interface has changed.
-        public void itemStateChanged(ItemEvent e) {
+        public void itemStateChanged(final ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 setEnabled(pForm.getModel().isAdqlInterface());
             }
@@ -797,11 +815,11 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                this.putValue(SHORT_DESCRIPTION,"Save XML document defining task and current parameter values");
                putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_S,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
            }
-           protected SaveAsAction(String s) {
+           protected SaveAsAction(final String s) {
 	           super(s);
 	       }
 
-           public void actionPerformed(ActionEvent e) {
+           public void actionPerformed(final ActionEvent e) {
                final URI u = fileChooser.chooseResourceWithParent("Choose save location",true,true, true,TaskRunnerImpl.this);
                if (u == null) {
                    return;
@@ -816,7 +834,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             final Tool t = pForm.getTool();
                    (new BackgroundOperation("Saving as" + u) {
 
-                       protected Object construct() throws Exception {
+                       @Override
+                    protected Object construct() throws Exception {
                            Writer w = null;
                            FileObject fo = null;
                            try {
@@ -833,13 +852,14 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                                    try {
                                        w.close();
                                        fo.refresh();
-                                   } catch (IOException ignored) {
+                                   } catch (final IOException ignored) {
                                        //meh
                                    }
                                }
                            }
                        }
-                       protected void doFinished(Object result) {
+                       @Override
+                    protected void doFinished(final Object result) {
                            parent.showTransientMessage("Saved task document","");
                        }
                    }).start();

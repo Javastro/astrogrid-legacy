@@ -231,6 +231,7 @@ APPLICATIONS
             <exclude method="getCeaApplication" />
             <exclude method="getInfoFor" />
             <!--  a few more could be added here, if it bites -->
+            <exclude method="getRegistryXQuery" /> 
         </interceptor>        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
@@ -375,9 +376,7 @@ TRANSFORMERS (object -> stirng) for types introduced by this module
 		</invoke-factory>
 	</service-point>		
 	
-	<contribution configuration-id="framework.htmlResultTransformers">
-		<strategy class="org.astrogrid.workflow.beans.v1.Workflow"
-			object="service:styledCastorTransformer" />			
+	<contribution configuration-id="framework.htmlResultTransformers">		
 		<strategy class="org.astrogrid.workflow.beans.v1.Tool"
 			object="service:styledCastorTransformer" />		
 	</contribution>
@@ -388,9 +387,7 @@ TRANSFORMERS (object -> stirng) for types introduced by this module
 		<strategy class="org.astrogrid.filemanager.common.Ivorn"
 			object="service:toStringTransformer" />
 		<strategy class="org.astrogrid.filemanager.common.NodeIvorn"
-			object="service:toStringTransformer" />
-		<strategy class="org.astrogrid.workflow.beans.v1.Workflow"
-			object="service:castorTransformer" />			
+			object="service:toStringTransformer" />		
 		<strategy class="org.astrogrid.workflow.beans.v1.Tool"
 			object="service:castorTransformer" />					
 	</contribution>		
@@ -400,7 +397,6 @@ TRANSFORMERS (object -> stirng) for types introduced by this module
 CONVERTORS (String-> object) for types introduced by this module
  -->
 	<contribution configuration-id="framework.converters">
-		<register output="org.astrogrid.workflow.beans.v1.Workflow" converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor" />
 		<register output="org.astrogrid.workflow.beans.v1.Tool" converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor" />
 		</contribution>
 	

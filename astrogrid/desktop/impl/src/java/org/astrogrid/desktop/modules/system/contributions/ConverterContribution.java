@@ -24,7 +24,7 @@ public Converter getConverter() {
 /**
  * @param converter the converter to set
  */
-public void setConverter(Converter converter) {
+public void setConverter(final Converter converter) {
 	this.converter = converter;
 }
 /** set the class of output this converter can produce.
@@ -36,16 +36,8 @@ public Class getOutput() {
 /**
  * @param output the output to set
  */
-public void setOutput(Class output) {
+public void setOutput(final Class output) {
 	this.output = output;
 }
 
-/** ad-hoc hack - if true, this is hte convertor to Object[]. */
-public boolean isArray() {
-	return this.array;
-}
-public void setArray(boolean array) {
-	this.array = array;
-}
-  
 }

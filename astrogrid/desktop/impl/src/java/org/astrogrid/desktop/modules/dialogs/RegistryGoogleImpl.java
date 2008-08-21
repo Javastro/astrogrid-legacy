@@ -3,44 +3,79 @@
  */
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.dialogs.RegistryGoogle;
+import java.awt.Component;
+import java.net.URI;
+
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
-import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 
 /**
  * @author Noel Winstanley
  * @since Aug 4, 20061:28:18 AM
- */
-public class RegistryGoogleImpl implements RegistryGoogle {
+ */ 
+public class RegistryGoogleImpl implements RegistryGoogleInternal {
 	
-	public RegistryGoogleImpl( UIContext context, TypesafeObjectBuilder builder) {
+	public RegistryGoogleImpl( final UIContext context, final TypesafeObjectBuilder builder) {
         super();
         dialog = new RegistryGoogleDialog(context,builder);
     }
     private final RegistryGoogleDialog dialog;
 
-	
-	public Resource[] selectResources(String arg0, boolean arg1) {
-		return selectResourcesXQueryFilter(arg0,arg1,null);
+	/** not implemented */
+	public Resource[] selectResources(final String arg0, final boolean arg1) {
+	       return new Resource[]{};
+//        dialog.setPrompt(arg0);
+//        dialog.setMultipleResources(arg1);
+//        dialog.setShowPlaylists(true);        
+//        dialog.setVisible(true);
+//        dialog.toFront();
+//        dialog.requestFocus();        
+//        return dialog.getSelectedResources();
 	}
 
-	//@todo remove this - replace with srql.
-	public Resource[] selectResourcesAdqlFilter(String arg0, boolean arg1,
-			String arg2) {
-		return selectResourcesXQueryFilter(arg0,arg1,arg2);
+	/** not implemented */
+	public Resource[] selectResourcesAdqlFilter(final String arg0, final boolean arg1,
+			final String arg2) {
+		return new Resource[]{};
 	}
 
-	public Resource[] selectResourcesXQueryFilter(String arg0, boolean arg1,
-			String arg2) {
+	public Resource[] selectResourcesXQueryFilter(final String arg0, final boolean arg1,
+			final String arg2) {
         dialog.setPrompt(arg0);
         dialog.setMultipleResources(arg1);
-        dialog.setFilter(arg2);
+        dialog.setShowPlaylists(false);
+        dialog.populateFromXQuery(arg2);
         dialog.setVisible(true);
         dialog.toFront();
         dialog.requestFocus();        
         return dialog.getSelectedResources();
 	}
+
+    public Resource[] selectResourcesFromList(final String arg0, final boolean arg1,
+            final URI[] arg2) {
+        dialog.setPrompt(arg0);
+        dialog.setMultipleResources(arg1);
+        dialog.setShowPlaylists(false);
+        dialog.populateWithIds(arg2);
+        dialog.setVisible(true);
+        dialog.toFront();
+        dialog.requestFocus();        
+        return dialog.getSelectedResources();
+    }
+
+    // internal interface.
+    public Resource[] selectResourcesFromListWithParent(final String prompt,
+            final boolean multiple, final URI[] identifiers, final Component comp) {
+        dialog.setLocationRelativeTo(comp);
+        return selectResourcesFromList(prompt,multiple,identifiers);
+    }
+
+    public Resource[] selectResourceXQueryFilterWithParent(final String prompt,
+            final boolean multiple, final String query, final Component comp) {
+        dialog.setLocationRelativeTo(comp);
+        return selectResourcesXQueryFilter(prompt,multiple,query);
+    }
+
 
 }

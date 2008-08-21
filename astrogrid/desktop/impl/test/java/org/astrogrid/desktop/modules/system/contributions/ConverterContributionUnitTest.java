@@ -17,13 +17,15 @@ public class ConverterContributionUnitTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		c = new ConverterContribution();
 	}
 	
 	protected ConverterContribution c;
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		c = null;
 	}
@@ -32,17 +34,13 @@ public class ConverterContributionUnitTest extends TestCase {
 	 */
 	public void testSetConverter() {
 		assertNull(c.getConverter());
-		Converter conv = new ByteConverter();
+		final Converter conv = new ByteConverter();
 		c.setConverter(conv);
 		assertEquals(conv,c.getConverter());
 		
 	}
 	
-	public void testSetArray() {
-		assertFalse(c.isArray());
-		c.setArray(true);
-		assertTrue(c.isArray());
-	}
+
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.ConverterContribution.setOutput(Class)'

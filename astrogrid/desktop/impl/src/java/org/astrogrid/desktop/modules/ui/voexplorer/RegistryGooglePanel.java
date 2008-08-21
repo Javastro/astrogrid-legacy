@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.36 2008/08/06 15:14:00 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.37 2008/08/21 11:39:43 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -807,12 +807,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
         return menu;
     }
 
-// configure the behaviour of this component.
-	public boolean isMultipleResources() {
-		//@fixme implement
-		return false;
-	}
-	
+
 	/** set scope to just display this list of resources */
 	public void displayIdSet(final Collection<URI> idList) {
 	    summary.setTitle("ID Set");
@@ -852,7 +847,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * @param multiple if true, multiple selection is permitted.*/
 	public void setMultipleResources(final boolean multiple) {
 	    resourceTable.setSelectionMode(
-	            multiple ? ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE
+	            multiple ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION//ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE
 	                    : ListSelectionModel.SINGLE_SELECTION
 	            );
 	}
@@ -933,6 +928,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.37  2008/08/21 11:39:43  nw
+Complete - task 4: RegistryGoogle dialogue
+
 Revision 1.36  2008/08/06 15:14:00  nw
 added results filterwheel to astroscope services table.
 

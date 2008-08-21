@@ -264,9 +264,6 @@ DATA CONVERTORS - string -> object
 	  	  <attribute name="output" required="true" translator="class">
 	  	    Type of object this converter produces.
 	  	  </attribute>
-	  	  <attribute name="array" required="false" translator="boolean">
-	  	  	true if this convertor outputs arrays of type output.
-	  	  </attribute>
 	  	  <attribute name="converter" required="true" translator="object">
 	  	    The converter instance.
 	  	  </attribute>
@@ -280,7 +277,8 @@ DATA CONVERTORS - string -> object
 		<register output="java.net.URI" converter="instance:org.astrogrid.desktop.modules.system.converters.URIConverter" />
 		<register output="org.w3c.dom.Document" converter="instance:org.astrogrid.desktop.modules.system.converters.DocumentConverter" />
 		<register output="java.util.List" converter="instance:org.astrogrid.desktop.modules.system.converters.CollectionConvertor" />
-		<register output="java.lang.Object" array="true" converter="instance:org.astrogrid.desktop.modules.system.converters.ArrayConvertor"/>
+		<register output="[Ljava.lang.Object;"  converter="instance:org.astrogrid.desktop.modules.system.converters.ArrayConvertor"/>
+        <register output="[Ljava.net.URI;"  converter="instance:org.astrogrid.desktop.modules.system.converters.URIArrayConvertor"/>
     </contribution>	
 	
 

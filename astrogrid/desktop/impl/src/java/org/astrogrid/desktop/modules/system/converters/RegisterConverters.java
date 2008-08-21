@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.5 2007/01/29 16:45:09 nw Exp $
+/*$Id: RegisterConverters.java,v 1.6 2008/08/21 11:39:43 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ public class RegisterConverters implements Runnable {
      * Construct a new RegisterConverters
      *  @param converters a list of {@link ConverterContribution} objects 
      */
-    public RegisterConverters(List converters) {
+    public RegisterConverters(final List converters) {
         super();
         this.converters = converters;
     }
@@ -38,15 +38,11 @@ public class RegisterConverters implements Runnable {
 
 
 	public void run() {
-		for (Iterator i = converters.iterator(); i.hasNext() ;) {
-			ConverterContribution c = (ConverterContribution)i.next();
-			if (c.isArray()) {
-				//necessary to do this as special case - dunno how else to get a class object for array type
-				Class arrayType = Object[].class;
-				ConvertUtils.register(c.getConverter(),arrayType);
-			} else {
+		for (final Iterator i = converters.iterator(); i.hasNext() ;) {
+			final ConverterContribution c = (ConverterContribution)i.next();
+			//System.err.println(c.getOutput().getName());
 				ConvertUtils.register(c.getConverter(),c.getOutput());
-			}
+			
 		}
 	}
 
@@ -56,6 +52,9 @@ public class RegisterConverters implements Runnable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.6  2008/08/21 11:39:43  nw
+ * Complete - task 4: RegistryGoogle dialogue
+ *
  * Revision 1.5  2007/01/29 16:45:09  nw
  * cleaned up imports.
  *

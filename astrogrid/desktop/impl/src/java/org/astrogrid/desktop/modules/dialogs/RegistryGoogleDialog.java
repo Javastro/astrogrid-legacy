@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.18 2008/03/28 13:09:01 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.19 2008/08/21 11:37:21 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,8 @@ import java.awt.HeadlessException;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,6 +26,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
@@ -41,13 +44,13 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
     /** Construct a new RegistryChooserDialog
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog( UIContext context, TypesafeObjectBuilder builder) throws HeadlessException {
+    public RegistryGoogleDialog( final UIContext context, final TypesafeObjectBuilder builder) throws HeadlessException {
         super(context,"Registry Resource Chooser","dialog.registry");
         this.chooserPanel = builder.createGooglePanel(this);
         this.okButton = getOkButton();
         this.okButton.setEnabled(false);
         chooserPanel.getCurrentResourceModel().addListSelectionListener(this);
-        JPanel main =getMainPanel();
+        final JPanel main =getMainPanel();
         main.add(getTopLabel(),BorderLayout.NORTH);
         main.add(chooserPanel,BorderLayout.CENTER);
 /* might need to do something like this in a bit
@@ -63,56 +66,78 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
         this.setSize(600,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent,UIContext context,TypesafeObjectBuilder builder) throws HeadlessException {
+    public RegistryGoogleDialog(final Component parentComponent,final UIContext context,final TypesafeObjectBuilder builder) throws HeadlessException {
     	this(context,builder);
         setLocationRelativeTo(parentComponent);
     }
-    
-    public void setFilter(String filter) {
-     //@todo implement or reexamine..
-    	//@fixme - either re-introduce filtering (although doesn't work with stored playlists)
-    	// or need some way to express a filter on resource objects. 
-    	// which means another string-based expressiion language...
-    	// - script interpreter? bean constraint and update language?
-    	// maybe this is a general requirement  anyhow - re brian's wishlist
-    	// 
-        // think I need to allow the client to provide the query to run to provide a list of
-        // resources.
-        // actually, I need this in all cases.
-        // 
+
+
+    /** display the playlist (folder tree) on the lhs of the dialogue - this allows the user to 
+     * access any of their previously saved queries, and to build new queries within the dialogue
+     * @param showPlaylists
+     */
+    public void setShowPlaylists(final boolean showPlaylists) {
+        //@implement
     }
-
-    public void setMultipleResources(boolean multiple) {
+    
+    /** enable the user to select more than one resource */
+    public void setMultipleResources(final boolean multiple) {
         chooserPanel.setMultipleResources(multiple);
-    }    
+    }   
+    
+    /** populate the dialogue by running an xquery */
+    public void populateFromXQuery(final String xquery) {
+        chooserPanel.displayQuery("Options",xquery); // use the title variant too?
+    }
+    
+    /** populate the dialogue by retireving a list of resources */
+    public void populateWithIds(final URI[] ids) {
+        chooserPanel.displayIdSet("Options",Arrays.asList(ids)); // thre's a variant which sets a title too - use this?
+    } 
 
     
+    /** access the user's selection */
     public Resource[] getSelectedResources() {
         return selectedResources;
     }
     
-    private Resource[] selectedResources = null;
+    /** representation of no resources selected */
+    private static final Resource[] NOTHING_SELECTED = new Resource[0];
+    private Resource[] selectedResources = NOTHING_SELECTED;
     
+    /** store the user's selection before resetting the form. */
+    @Override
     public void ok() {
-        Transferable tran = chooserPanel.getSelectionTransferable(); // see what's been chosen then
+        final Transferable tran = chooserPanel.getSelectionTransferable(); // see what's been chosen then
         try {
-            selectedResources =(Resource[]) tran.getTransferData(VoDataFlavour.RESOURCE_ARRAY);
-        } catch (UnsupportedFlavorException x) { // unlikely.
-            logger.error("UnsupportedFlavorException",x);
-        } catch (IOException x) { // unlikely
-            logger.error("IOException",x);
+            if (tran.isDataFlavorSupported(VoDataFlavour.RESOURCE)) {
+                selectedResources = new Resource[] {
+                        (Resource)tran.getTransferData(VoDataFlavour.RESOURCE)
+                };
+            } else if (tran.isDataFlavorSupported(VoDataFlavour.RESOURCE_ARRAY)) {
+                selectedResources =(Resource[]) tran.getTransferData(VoDataFlavour.LOCAL_RESOURCE_ARRAY);
+            } else {
+                throw new ProgrammerError("No suitable dataflavour is provided");
+            }
+        } catch (final UnsupportedFlavorException x) { // unlikely.
+            throw new ProgrammerError(x);
+        } catch (final IOException x) { // unlikely
+            throw new ProgrammerError(x);
         } 
         super.ok();
         chooserPanel.clear();
     }
     
+    /** just resets the form for next time */
+    @Override
     public void cancel() {
         super.cancel();
-        selectedResources = null;
+        selectedResources = NOTHING_SELECTED;
         chooserPanel.clear();
     }
     
-    public void setPrompt(String s) {
+    /** set the prompt to display at the top of the dialogue */
+    public void setPrompt(final String s) {
         getTopLabel().setText(s);
     }
     
@@ -124,8 +149,8 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
         return topLabel;
     }
 
-    // listens to changes in the user's selection.
-    public void valueChanged(ListSelectionEvent e) {
+    /** listens to changes in the user's selection. - impleentation detail */
+    public void valueChanged(final ListSelectionEvent e) {
         okButton.setEnabled(chooserPanel.getSelectionTransferable() != null); 
     }
 
@@ -134,6 +159,9 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.19  2008/08/21 11:37:21  nw
+Complete - task 4: RegistryGoogle dialogue
+
 Revision 1.18  2008/03/28 13:09:01  nw
 help-tagging
 

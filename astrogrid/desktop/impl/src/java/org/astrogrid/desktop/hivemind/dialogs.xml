@@ -63,7 +63,7 @@ TOOL EDITOR
 ============================
 REGISTRY GOOGLE
  -->
-	<service-point id="registryGoogle" interface="RegistryGoogle">
+	<service-point id="registryGoogle" interface="org.astrogrid.desktop.modules.dialogs.RegistryGoogleInternal">
 		Select a registry resource
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
 	</service-point>
