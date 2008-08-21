@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.21 2008/03/28 13:09:01 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.22 2008/08/21 12:56:30 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,15 +20,17 @@ import java.net.URI;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
@@ -37,50 +39,84 @@ import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl.TaskRunnerToolbar;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-import com.l2fprod.common.swing.BaseDialog;
-
 /** dialog that allows the user to edit a tool document - i.e. a set of parameters.
  * 
  * this class is just concerned with the dialogue side of thinigs
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Mar-2005
  * 
- * @todo add cut/copy/paste operations to edit menu.
+ * @todo add a right-click menu - cut / copy / delete.
  *
  */
 public class ToolEditorDialog extends UIDialogueComponentImpl implements UIComponentWithMenu{
     
     private final JMenu editMenu;
-    private TaskParametersForm parametersPanel;
-    private final Applications apps;
+    private final TaskParametersForm parametersPanel;
+    private final ApplicationsInternal apps;
+    private final ChooseAppAction chooseAppAction;
    
-    private static class ChooseAppAction extends AbstractAction {
-        {
-            setEnabled(false);
-        }
-           
-        public void actionPerformed(ActionEvent e) {
-            //@todo implement
-        }
+    private class ChooseAppAction extends AbstractAction {
+        private final RegistryGoogleInternal chooser;
 
+        public ChooseAppAction(final RegistryGoogleInternal chooser) {
+            super("New Task"+ UIComponentMenuBar.ELLIPSIS,IconHelper.loadIcon("clearright16.png"));
+            this.chooser = chooser;
+            this.putValue(SHORT_DESCRIPTION,"Select a different task to run");
+            this.setEnabled(false);
+        }
+                 
+        public void actionPerformed(final ActionEvent e) {
+            final Resource[] rs = chooser.selectResourceXQueryFilterWithParent(
+                    "Choose a task"
+                    ,false // single selection
+                    ,apps.getRegistryXQuery() // list all applications
+                    , ToolEditorDialog.this
+                    );
+
+            if (rs.length > 0 && (rs[0] instanceof CeaApplication)) {
+                final CeaApplication cea = (CeaApplication)rs[0]; // only a single selection
+               
+                new BackgroundWorker(ToolEditorDialog.this,"Retrieving tool metadata",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
+
+                    @Override
+                    protected Object construct() throws Exception {
+                        return apps.createTemplateTool(null,cea); 
+                    }
+                    @Override
+                    protected void doFinished(final Object result) {
+                        final Tool t = (Tool)result;
+                        parametersPanel.buildForm(t,t.getInterface(),cea);    
+                        super.doFinished(result);
+                    }
+                    @Override
+                    protected void doError(final Throwable ex) {
+                        ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + workerTitle.toLowerCase(),ex);
+                    }            
+                }.start();                
+            }
+        }
     }
    	
-   	public ToolEditorDialog(UIContext context,TypesafeObjectBuilder builder,Applications apps) throws HeadlessException {
+   	public ToolEditorDialog(final UIContext context,
+   	        final TypesafeObjectBuilder builder,
+   	        final ApplicationsInternal apps
+   	        ,final RegistryGoogleInternal chooser
+   	        ) throws HeadlessException {
    	    super(context,"Task Editor","dialog.tool");
    	    this.apps = apps;
-   	    setSize(600,600);
+   	    setSize(900,600);
 
    	    this.editMenu = new JMenu("Edit");
    	    
    	    this.parametersPanel = builder.createTaskParametersForm(this);
-   	    ChooseAppAction chooseAppAction = new ChooseAppAction();
-   	    TaskRunnerToolbar toolbar = new TaskRunnerImpl.TaskRunnerToolbar(parametersPanel,chooseAppAction);
+   	    chooseAppAction = new ChooseAppAction(chooser);
+   	    final TaskRunnerToolbar toolbar = new TaskRunnerImpl.TaskRunnerToolbar(parametersPanel,chooseAppAction);
    	    parametersPanel.setToolbar(toolbar);
    	    parametersPanel.setRightPane("ignored",null);
-   	    JPanel main = getMainPanel();
+   	    final JPanel main = getMainPanel();
    	    main.add(parametersPanel,BorderLayout.CENTER);
    	    getContentPane().add(main);
-   	    JMenuBar mb = new JMenuBar();
-   	    mb.add(editMenu);
+   	  //  final JMenuBar mb = new JMenuBar();
+   	  //  mb.add(editMenu);
    	// unsure whether a menubar is generally useful or not.    
    	//    setJMenuBar(mb);
     }
@@ -92,26 +128,43 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
      */
     public Tool getTool() {
         Tool result = null;
+        if (!populated) { // i.e it's not been populated.
+            SwingUtilities.invokeLater(new Runnable() {
+                // show the chooser dialogue as soon as this dialogue is shown.
+                public void run() {
+                    chooseAppAction.setEnabled(true);
+                    chooseAppAction.actionPerformed(null);
+                }                
+            });
+        }
         if (ask()) {
          result  = parametersPanel.getTool();
         } 
-        parametersPanel.clear();        
+        parametersPanel.clear();    
+        chooseAppAction.setEnabled(false);
+        populated = false;
         return result;
     }
+    
+    private boolean populated = false;
      
     public void populate(final Tool t) {
+        populated = true;
+        chooseAppAction.setEnabled(false);           
         new BackgroundWorker(this,"Retrieving tool metadata",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
+            @Override
             protected Object construct() throws Exception {
-                URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
+                final URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
                 return apps.getCeaApplication(uri);   
             }
-            protected void doFinished(Object result) {
-                CeaApplication desc = (CeaApplication)result;
-                parametersPanel.buildForm(t,t.getInterface(),desc);    
-                super.doFinished(result);
+            @Override
+            protected void doFinished(final Object result) {
+                final CeaApplication desc = (CeaApplication)result;
+                parametersPanel.buildForm(t,t.getInterface(),desc); 
             }
-            protected void doError(Throwable ex) {
+            @Override
+            protected void doError(final Throwable ex) {
                 ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + workerTitle.toLowerCase(),ex);
             }            
         }.start();
@@ -119,8 +172,11 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
     
     /** load tool from a storage location */
     public void load(final URI location) {
+        populated = true;        
+        chooseAppAction.setEnabled(false);        
         new BackgroundWorker(this,"Loading tool from " + location,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
+            @Override
             protected Object construct() throws Exception {
                 Reader is = null;                
                 try {
@@ -129,16 +185,18 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
                 } finally {
                     try {
                         is.close();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         // don 't care
                     }
                 }
             }
-            protected void doFinished(Object result) {
+            @Override
+            protected void doFinished(final Object result) {
                 populate((Tool)result);
             }
             // overridden to display error in front of dialogue.
-            protected void doError(Throwable ex) {
+            @Override
+            protected void doError(final Throwable ex) {
                 ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + workerTitle.toLowerCase(),ex);
             }
         }.start();
@@ -147,14 +205,15 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
         public JMenu getContextMenu() {
             return editMenu;
-        }
-    
-    
+        } 
 }
 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.22  2008/08/21 12:56:30  nw
+Complete - task 103: tool editor dialogue
+
 Revision 1.21  2008/03/28 13:09:01  nw
 help-tagging
 

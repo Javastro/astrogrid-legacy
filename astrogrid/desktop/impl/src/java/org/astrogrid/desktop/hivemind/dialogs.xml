@@ -54,7 +54,8 @@ TOOL EDITOR
             <construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
                 <service>system.ui</service>
                 <service>ui.UiBuilder</service>
-                <service>astrogrid.applications</service>                       
+                <service>astrogrid.applications</service>
+                <service>registryGoogle</service>                       
             </construct>
         </invoke-factory>   	
     </implementation>

@@ -19,6 +19,9 @@
 </release>
 <release version="2008.1.1" date="2008-8-20">
     <action dev="nw" type="add">
+    AR: implemented registry resource choosing dialog, and cea tool editing dialogue
+    </action>
+    <action dev="nw" type="add">
     TaskRunner: Implemented 'New Task' button - displays a list of available tasks.
     </action>
     <action dev="nw" type="add" >

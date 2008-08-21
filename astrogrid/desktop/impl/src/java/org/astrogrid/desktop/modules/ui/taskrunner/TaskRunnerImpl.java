@@ -485,8 +485,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             final JButton appButton = new JButton(chooseAppAction);
             // show icon only.
             appButton.setText(null);
-            //@future - temporarily set to invisible, as not implemented.
-            appButton.setVisible(chooseAppAction.isEnabled());
             int col = 2;
             builder.add(appButton,cc.xy(col++,1));
             builder.add(pForm.getResourceLabel(),cc.xy(col++,1));

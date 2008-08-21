@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.18 2007/10/12 10:58:24 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.19 2008/08/21 12:56:29 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.net.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -32,23 +32,23 @@ public class ToolEditorImpl implements ToolEditorInternal {
    private final ToolEditorDialog dialog;   
 
 
-    public ToolEditorImpl(UIContext context
-            ,TypesafeObjectBuilder builder, Applications apps) {
-        this.dialog = new ToolEditorDialog(context,builder,apps);   
+    public ToolEditorImpl(final UIContext context
+            ,final TypesafeObjectBuilder builder, final ApplicationsInternal apps, final RegistryGoogleInternal chooser) {
+        this.dialog = new ToolEditorDialog(context,builder,apps,chooser);   
     }
     
 
-    public Document edit(Document doc) throws InvalidArgumentException {
+    public Document edit(final Document doc) throws InvalidArgumentException {
         try {
-        Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);        
-        Tool t1 = editTool(t,null);
+        final Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);        
+        final Tool t1 = editTool(t,null);
         if (t1 == null) {
             return null;
         }
-        Document doc1 = XMLUtils.newDocument();
+        final Document doc1 = XMLUtils.newDocument();
         Marshaller.marshal(t1,doc1);
         return doc1;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new InvalidArgumentException(e);
         }
     }
@@ -56,29 +56,29 @@ public class ToolEditorImpl implements ToolEditorInternal {
     /**
      * @see org.astrogrid.acr.dialogs.ToolEditor#editStored(java.net.URI)
      */
-    public Document editStored(URI arg0) throws InvalidArgumentException, ServiceException {
-        Tool t = editStoredTool(arg0,null);
+    public Document editStored(final URI arg0) throws InvalidArgumentException, ServiceException {
+        final Tool t = editStoredTool(arg0,null);
         if (t == null) {
             return null;
         }
         try {
-        Document doc1 = XMLUtils.newDocument();
+        final Document doc1 = XMLUtils.newDocument();
         Marshaller.marshal(t,doc1);
         return doc1;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new ServiceException(e);
         }
     }
 
 
-    public Tool editStoredTool(URI toolLocation, Component comp) throws InvalidArgumentException, ServiceException {
+    public Tool editStoredTool(final URI toolLocation, final Component comp) throws InvalidArgumentException, ServiceException {
         dialog.load(toolLocation);
         dialog.setLocationRelativeTo(comp);
         return dialog.getTool();
     }
     
  
-    public Tool editTool(Tool t,Component comp) throws InvalidArgumentException {
+    public Tool editTool(final Tool t,final Component comp) throws InvalidArgumentException {
         dialog.populate(t);
         dialog.setLocationRelativeTo(comp);
         return dialog.getTool();
@@ -89,15 +89,15 @@ public class ToolEditorImpl implements ToolEditorInternal {
      * @see org.astrogrid.acr.dialogs.ToolEditor#selectAndBuild()
      */
     public Document selectAndBuild() throws ServiceException {
-        Tool t1 = selectAndBuildTool(null);
+        final Tool t1 = selectAndBuildTool(null);
         if (t1 == null) {
             return null;
         }
         try {
-            Document doc1 = XMLUtils.newDocument();
+            final Document doc1 = XMLUtils.newDocument();
             Marshaller.marshal(t1,doc1);
             return doc1;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new ServiceException(e);
             }
     }
@@ -105,7 +105,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
     /**
      * @see org.astrogrid.desktop.modules.dialogs.ToolEditorInternal#selectAndBuildTool(java.awt.Component)
      */
-    public Tool selectAndBuildTool(Component comp) throws ServiceException {
+    public Tool selectAndBuildTool(final Component comp) throws ServiceException {
         dialog.setLocationRelativeTo(comp);
         return dialog.getTool();   
     }
@@ -116,6 +116,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.19  2008/08/21 12:56:29  nw
+Complete - task 103: tool editor dialogue
+
 Revision 1.18  2007/10/12 10:58:24  nw
 re-worked dialogues to use new ui baseclass and new ui components.
 
