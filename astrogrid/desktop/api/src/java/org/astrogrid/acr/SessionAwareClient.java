@@ -17,10 +17,11 @@ import net.ladypleaser.rmilite.impl.RemoteInvocationHandler;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
 
 
-/**
+/** Part of the internal implementation
+ *<p/>
  * rewriting of rmilite.Client that adds support for session information.
  * protocol compliant with existing client - and would have liked to 
- * just extend that class - but not really suitable for extension.
+ * just extend that class - but it was not really suitable for extension.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 21, 20072:03:53 PM
  */
@@ -31,12 +32,12 @@ class SessionAwareClient {
 	 * @param arg0
 	 * @param arg1
 	 */
-	public SessionAwareClient(String arg0, int arg1) {
+	public SessionAwareClient(final String arg0, final int arg1) {
 		this.serverHost = arg0;
 		this.serverPort = arg1;
 	}    	
 	
-	public SessionAwareClient(String arg0, int arg1, String session) {
+	public SessionAwareClient(final String arg0, final int arg1, final String session) {
 		this(arg0,arg1);
 		this.session = session;
 	}
@@ -46,13 +47,13 @@ class SessionAwareClient {
 	private final Set exportedInterfaces = new HashSet();		
 
 
-	public void exportInterface(Class iface) {
+	public void exportInterface(final Class iface) {
 		exportedInterfaces.add(iface);
 	}
 
-	public Object lookup(Class iface) throws RemoteException, NotBoundException {
-		Registry registry = LocateRegistry.getRegistry(serverHost, serverPort);
-		RemoteInvocationHandler remote = (RemoteInvocationHandler) registry.lookup(iface.getName());
+	public Object lookup(final Class iface) throws RemoteException, NotBoundException {
+		final Registry registry = LocateRegistry.getRegistry(serverHost, serverPort);
+		final RemoteInvocationHandler remote = (RemoteInvocationHandler) registry.lookup(iface.getName());
 		if (session == null) {
 			return LocalInvocationHandlerImpl.create(iface,remote,exportedInterfaces);
 		} else { 
@@ -64,26 +65,26 @@ static class SessionAwareLocalInvocationHandlerImpl implements InvocationHandler
     private final RemoteInvocationHandler handler;
     private final Set exportedInterfaces;
     private final String session;
-    public SessionAwareLocalInvocationHandlerImpl(RemoteInvocationHandler handler, Set exportedInterfaces, String session) {
+    public SessionAwareLocalInvocationHandlerImpl(final RemoteInvocationHandler handler, final Set exportedInterfaces, final String session) {
         this.handler = handler;
         this.exportedInterfaces = exportedInterfaces;
         this.session = session;
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, Object[] args) throws Throwable {
         //keep a reference to remote invocation handlers that are created as a result of this method invocation
         //so that they will not be garbage collected
-        ArrayList keeparound = new ArrayList();
+        final ArrayList keeparound = new ArrayList();
 
         try {
-            Class[] parameterTypes = method.getParameterTypes();
+            final Class[] parameterTypes = method.getParameterTypes();
             if (args == null) {
                 args = new Object[0];
             }
             for (int i = 0; i < parameterTypes.length; i++) {
-                Class type = parameterTypes[i];
+                final Class type = parameterTypes[i];
                 if (exportedInterfaces.contains(type)) {
-                    RemoteInvocationHandlerImpl obj = new RemoteInvocationHandlerImpl(args[i], exportedInterfaces);
+                    final RemoteInvocationHandlerImpl obj = new RemoteInvocationHandlerImpl(args[i], exportedInterfaces);
                     keeparound.add(obj);
                     args[i] = RemoteObject.toStub(obj);
                 }
@@ -107,25 +108,25 @@ static class SessionAwareLocalInvocationHandlerImpl implements InvocationHandler
      * to be transported to the client too - and an unknown interface causes the client
      * to fail with a 'notsuchclass' exception.
      */
-    private Object invokeRemote(Method method, Class[] parameterTypes, Object[] args) throws Throwable {
+    private Object invokeRemote(final Method method, final Class[] parameterTypes, final Object[] args) throws Throwable {
         try {
-        	Class[] sessionedParameterTypes = new Class[parameterTypes.length +1];
+        	final Class[] sessionedParameterTypes = new Class[parameterTypes.length +1];
         	sessionedParameterTypes[0] = Void.class;
-        	Object[] sessionedArgs = new Object[args.length + 1];
+        	final Object[] sessionedArgs = new Object[args.length + 1];
         	System.arraycopy(parameterTypes,0,sessionedParameterTypes,1,parameterTypes.length);
         	sessionedArgs[0] = session;
         	System.arraycopy(args,0,sessionedArgs,1,args.length);
             return handler.invoke(method.getName(), sessionedParameterTypes, sessionedArgs);
-        } catch (RemoteInvocationException e) {
+        } catch (final RemoteInvocationException e) {
             RemoteInvocationException.rethrow(method, e);
             throw new Error("should have thrown an exception in the previous statement");
-        } catch (RemoteException e) {
+        } catch (final RemoteException e) {
             RemoteInvocationException.rethrow(method, e);
             throw new Error("should have thrown an exception in the previous statement");
         }
     }
 
-    public static Object create(Class iface, RemoteInvocationHandler remote, Set exportedInterfaces, String session) {
+    public static Object create(final Class iface, final RemoteInvocationHandler remote, final Set exportedInterfaces, final String session) {
         return java.lang.reflect.Proxy.newProxyInstance(SessionAwareClient.class.getClassLoader(), new Class[]{iface}
         , new SessionAwareLocalInvocationHandlerImpl(remote, exportedInterfaces, session));
     }

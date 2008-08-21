@@ -1,4 +1,4 @@
-/*$Id: AbstractInformation.java,v 1.6 2007/01/24 14:04:45 nw Exp $
+/*$Id: AbstractInformation.java,v 1.7 2008/08/21 11:34:35 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.net.URI;
 
-/** Base class - all 'information' structures returned by ACR extend this class.
+/** Base class - all 'information' structures returned by AR extend this class.
  * @xmlrpc returned as a struct, with keys corresponding to bean names
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
  *
@@ -23,7 +23,7 @@ public abstract class AbstractInformation implements Serializable {
     /** Construct a new AbstractInformation
      * 
      */
-    protected AbstractInformation(String name,URI id) {
+    protected AbstractInformation(final String name,final URI id) {
         super();
         this.id = id;
         this.name =name;
@@ -33,7 +33,7 @@ public abstract class AbstractInformation implements Serializable {
     protected final URI id;
     protected final String name;
     /** The unique identifier for the resource this bean provides information about. 
-     * @return some form of URI - possibly an ivo:// form
+     * @return some form of URI - for example an <tt>ivo://</tt> scheme URI
      * @xmlrpc structure key will be <tt>id</tt>
      */
     public final URI getId() {
@@ -52,7 +52,8 @@ public abstract class AbstractInformation implements Serializable {
     /**
      * tests two information beans for equality - determined by equality of {@link #getId()}
         */
-    public boolean equals(Object o) {
+    @Override
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -62,7 +63,7 @@ public abstract class AbstractInformation implements Serializable {
         if (o.getClass() != getClass()) {
             return false;
         }
-        AbstractInformation castedObj = (AbstractInformation) o;
+        final AbstractInformation castedObj = (AbstractInformation) o;
         return ((this.id == null ? castedObj.id == null : this.id.equals(castedObj.id)));
     }
     /**
@@ -70,6 +71,7 @@ public abstract class AbstractInformation implements Serializable {
      *
      * @return the Objects hashcode.
      */
+    @Override
     public int hashCode() {
         int hashCode = 1;
         hashCode = 31 * hashCode + (id == null ? 0 : id.hashCode());
@@ -81,6 +83,9 @@ public abstract class AbstractInformation implements Serializable {
 
 /* 
 $Log: AbstractInformation.java,v $
+Revision 1.7  2008/08/21 11:34:35  nw
+doc tweaks
+
 Revision 1.6  2007/01/24 14:04:45  nw
 updated my email address
 

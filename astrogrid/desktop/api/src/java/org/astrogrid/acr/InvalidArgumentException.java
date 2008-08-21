@@ -1,4 +1,4 @@
-/*$Id: InvalidArgumentException.java,v 1.7 2007/01/24 14:04:45 nw Exp $
+/*$Id: InvalidArgumentException.java,v 1.8 2008/08/21 11:34:18 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.acr;
 
 /**An incorrect / malformed value was passed as an input parameter.
- * 
- * e.g. an unrecognized form of URI was passed in.
+ * <p/>
+ * For example, an unrecognized URI scheme was used
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Aug-2005
  *
  */
@@ -30,14 +30,14 @@ public class InvalidArgumentException extends ACRException {
     /** Construct a new InvalidArgumentException.
      * @param message
      */
-    public InvalidArgumentException(String message) {
+    public InvalidArgumentException(final String message) {
         super(message);
     }
 
     /** Construct a new InvalidArgumentException.
      * @param cause
      */
-    public InvalidArgumentException(Throwable cause) {
+    public InvalidArgumentException(final Throwable cause) {
         super(cause);
     }
 
@@ -45,7 +45,7 @@ public class InvalidArgumentException extends ACRException {
      * @param message
      * @param cause
      */
-    public InvalidArgumentException(String message, Throwable cause) {
+    public InvalidArgumentException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -54,6 +54,9 @@ public class InvalidArgumentException extends ACRException {
 
 /* 
 $Log: InvalidArgumentException.java,v $
+Revision 1.8  2008/08/21 11:34:18  nw
+doc tweaks
+
 Revision 1.7  2007/01/24 14:04:45  nw
 updated my email address
 

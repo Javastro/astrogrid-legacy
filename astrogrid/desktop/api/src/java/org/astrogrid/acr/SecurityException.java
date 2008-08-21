@@ -1,4 +1,4 @@
-/*$Id: SecurityException.java,v 1.6 2007/01/24 14:04:45 nw Exp $
+/*$Id: SecurityException.java,v 1.7 2008/08/21 11:34:18 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr;
 
 /** The user is not authorized to perform this operation.
  * 
- * e.g. user is attempting a valid operation, but lackes the permissions to do it (e.g. read a myspace file not owned by them)
+ * For example, user is attempting a valid operation, but lacks the permissions to do it (e.g. read a vospace file not owned by them)
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 29-Jul-2005
  *
  */
@@ -30,14 +30,14 @@ public class SecurityException extends ACRException {
     /** Construct a new SecurityException
      * @param message
      */
-    public SecurityException(String message) {
+    public SecurityException(final String message) {
         super(message);
     }
 
     /** Construct a new SecurityException
      * @param cause
      */
-    public SecurityException(Throwable cause) {
+    public SecurityException(final Throwable cause) {
         super(cause);
     }
 
@@ -45,7 +45,7 @@ public class SecurityException extends ACRException {
      * @param message
      * @param cause
      */
-    public SecurityException(String message, Throwable cause) {
+    public SecurityException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -54,6 +54,9 @@ public class SecurityException extends ACRException {
 
 /* 
 $Log: SecurityException.java,v $
+Revision 1.7  2008/08/21 11:34:18  nw
+doc tweaks
+
 Revision 1.6  2007/01/24 14:04:45  nw
 updated my email address
 

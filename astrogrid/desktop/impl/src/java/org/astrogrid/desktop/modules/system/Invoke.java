@@ -1,10 +1,10 @@
 package org.astrogrid.desktop.modules.system;
 
+import java.lang.reflect.Method;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hivemind.ApplicationRuntimeException;
-
-import java.lang.reflect.Method;
 
 /** classes that encapsulates a single method invocation as a runnable
 * used from within one of the interceptors.
@@ -19,7 +19,7 @@ public class Invoke implements Runnable {
     private final Object[] args;
     private final Object service;
     private Object result;
-    public Invoke(Method meth, Object[] args, Object service) {
+    public Invoke(final Method meth, final Object[] args, final Object service) {
         super();
         if (meth == null) {
             throw new ApplicationRuntimeException("Null method object");
@@ -32,8 +32,8 @@ public class Invoke implements Runnable {
         this.result = null;
         try {
             this.result = meth.invoke(service,args);
-        } catch (Exception e) {
-                logger.error("Failed to invoke method " + meth.getName());            
+        } catch (final Exception e) {
+                logger.error("Failed to invoke method " + meth.getName());  
                 logger.info("Exception",e);
         }
     }
