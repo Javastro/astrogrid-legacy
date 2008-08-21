@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogle.java,v 1.4 2007/03/08 17:47:12 nw Exp $
+/*$Id: RegistryGoogle.java,v 1.5 2008/08/21 11:35:00 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,24 @@
 **/
 package org.astrogrid.acr.dialogs;
 
+import java.net.URI;
+
 import org.astrogrid.acr.ivoa.resource.Resource;
 
-/**prompt the user to select a registry resource by displaying  a more advanced registry chooser dialogue.
+/**prompt the user to select a registry resource 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
  * @service dialogs.registryGoogle
  */
 public interface RegistryGoogle {
   
-    /** display the resource chooser dialogue.
-     * 
+    /** display the resource chooser dialogue - full dialogue, including folders, and ability for user to run new searches
+     * The user may select any kind of resource - consider using one of the more constrained selection functions instead.
      * @param prompt message to prompt user for input.
      * @param multiple if true, allow multiple selections.
      * @return 0 or more selected resources. never null.
+     * @deprecated unimplemented
      */
+    @Deprecated
     Resource[] selectResources(String prompt, boolean multiple);
 
     
@@ -33,22 +37,36 @@ public interface RegistryGoogle {
      * @param multiple if true, allow multiple selections.
      * @param adqlFilter adql-like 'where' clause.
      * @return 0 or more selected resources. never null.
+     * @deprecated unimplemented
      */
+    @Deprecated
     Resource[] selectResourcesAdqlFilter(String prompt, boolean multiple, String adqlFilter);
     
     /** display the resource chooser dialogue, enabling only resources which match a filter
      * 
      * @param prompt message to prompt user for input.
      * @param multiple if true, allow multiple selections.
-     * @param xqueryFilter xpath-like condition
+     * @param xqueryFilter an xquery to populate the resource chooser with.
      * @return 0 or more selected resources. never null.
      */    
     Resource[] selectResourcesXQueryFilter(String prompt, boolean multiple, String xqueryFilter);
+    
+    /** display the resource chooser dialogue, displaying only a list of resources 
+     * 
+     * @param prompt message to prompt user for input
+     * @param multiple if true, allow multiple selections.
+     * @param identifier an array of resource identifiers.
+     * @return 0 or more selected resources. never null.
+     */
+    Resource[] selectResourcesFromList(String prompt, boolean multiple, URI[] identifiers);
 }
 
 
 /* 
 $Log: RegistryGoogle.java,v $
+Revision 1.5  2008/08/21 11:35:00  nw
+Complete - task 4: RegistryGoogle dialogue
+
 Revision 1.4  2007/03/08 17:47:12  nw
 updated interfaces.
 
