@@ -1,72 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientImpl.java,v $</cvs:source>
- * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2008/02/26 17:50:40 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
- * <cvs:log>
- *   $Log: FileManagerClientImpl.java,v $
- *   Revision 1.8  2008/02/26 17:50:40  pah
- *   RESOLVED - bug 2578: Problem accessing vospace via AR/python
- *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2578
- *
- *   Revision 1.7  2008/02/25 12:18:34  pah
- *   RESOLVED - bug 2573: Race condition on creating parent folders
- *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2573
- *
- *   Revision 1.6  2008/02/05 11:37:59  pah
- *   RESOLVED - bug 2545: Problem with IVORN resolution
- *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2545
- *
- *   Revision 1.5  2007/04/05 00:03:55  nw
- *   if resolving fails, cache this exception as a result too - saves expensive re-accessing of services each time.
- *
- *   Revision 1.4  2005/03/11 13:37:06  clq2
- *   new filemanager merged with filemanager-nww-jdt-903-943
- *
- *   Revision 1.3.2.7  2005/03/01 16:37:06  nw
- *   implemented newFile() and newFolder()
- *
- *   Revision 1.3.2.6  2005/03/01 15:07:31  nw
- *   close to finished now.
- *
- *   Revision 1.3.2.5  2005/02/27 23:03:12  nw
- *   first cut of talking to filestore
- *
- *   Revision 1.3.2.4  2005/02/18 15:50:14  nw
- *   lots of changes.
- *   introduced new schema-driven soap binding, got soap-based unit tests
- *   working again (still some failures)
- *
- *   Revision 1.3.2.3  2005/02/11 17:16:03  nw
- *   knock on effect of renaming and making IvornFactory static
- *
- *   Revision 1.3.2.2  2005/02/11 14:27:52  nw
- *   refactored, split out candidate classes.
- *
- *   Revision 1.3.2.1  2005/02/10 16:23:14  nw
- *   formatted code
- *
- *   Revision 1.3  2005/02/10 12:44:10  jdt
- *   Merge from dave-dev-200502010902
- *
- *   Revision 1.2.2.1  2005/02/01 16:10:52  dave
- *   Updated FileManagerClient and factory to support full mock services ..
- *
- *   Revision 1.2  2005/01/28 10:43:58  clq2
- *   dave_dev_200501141257 (filemanager)
- *
- *   Revision 1.1.2.3  2005/01/26 09:51:38  dave
- *   Fixed bug in client node resolver ...
- *
- *   Revision 1.1.2.2  2005/01/25 08:01:16  dave
- *   Added tests for FileManagerClientFactory ....
- *
- *   Revision 1.1.2.1  2005/01/23 05:39:44  dave
- *   Added initial implementation of FileManagerClient ...
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.filemanager.client;
 
 import org.astrogrid.community.common.exception.CommunityException;
@@ -98,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -113,7 +43,7 @@ import java.util.regex.Pattern;
  * @modified nww - made package private.
 
  */
-class FileManagerClientImpl implements FileManagerClient {
+final class FileManagerClientImpl implements FileManagerClient {
     /**
      * Our debug logger.
      *  
@@ -141,22 +71,16 @@ class FileManagerClientImpl implements FileManagerClient {
             }
             log.info("Creating FileManagerClient with token " + token);
         this.resolvers = factory;
-        this.tokenSource = new TokenSource(token);
-
     }
 
     /** construct a filemanager client that isn't logged in */
     protected FileManagerClientImpl(FileManagerClientFactory factory) {
         this.resolvers = factory;
-        this.tokenSource = null;
         this.homeIvorn = null;
     }
 
     /** back-reference to the factory that created us - as we use it's resolvers, etc */
     private final FileManagerClientFactory resolvers;
-
-    /** something to look after the security token for us */
-    private final TokenSource tokenSource;
 
     /**
      * Our map of FileManager delegates, indexed by service ivorn.
@@ -268,9 +192,12 @@ class FileManagerClientImpl implements FileManagerClient {
 
     /**
      * The Ivorn for our account home.
-     *  
      */
     private final Ivorn homeIvorn;
+    
+    public Ivorn getHomeIvorn() {
+      return this.homeIvorn;
+    }
 
     /**
      * The node for our account home - lazily initialized.
@@ -459,8 +386,6 @@ class FileManagerClientImpl implements FileManagerClient {
         buffer.append("[FileManagerClientImpl:");
         buffer.append("\n resolvers: ");
         buffer.append(resolvers);
-        buffer.append("\n tokenSource: ");
-        buffer.append(tokenSource);
         buffer.append("\n delegates: ");
         buffer.append(delegates);
         buffer.append("\n homeIvorn: ");

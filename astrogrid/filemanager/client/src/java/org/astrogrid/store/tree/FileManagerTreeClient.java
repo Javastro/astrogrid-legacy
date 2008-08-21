@@ -48,8 +48,6 @@ public class FileManagerTreeClient implements TreeClient {
            
         } catch (IllegalArgumentException e) { // replicate behaviour of original.
             throw e;            
-        } catch (CommunityException e) {
-            throw new TreeClientLoginException(e.getMessage(),e);
         } catch (Exception e) {
             throw new TreeClientServiceException(e.getMessage(),e);
         }
@@ -218,6 +216,12 @@ public class FileManagerTreeClient implements TreeClient {
 
 /* 
 $Log: FileManagerTreeClient.java,v $
+Revision 1.3  2008/08/21 09:01:27  gtr
+Branch fm-gtr-2815 is merged. This fixes BZ2815.
+
+Revision 1.2.100.1  2008/08/20 12:58:12  gtr
+I removed redundant fields and checked exceptions.
+
 Revision 1.2  2005/03/11 13:37:06  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 

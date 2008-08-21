@@ -1,58 +1,3 @@
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientFactory.java,v $</cvs:source>
- * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2008/02/05 11:38:00 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
- * <cvs:log>
- *   $Log: FileManagerClientFactory.java,v $
- *   Revision 1.6  2008/02/05 11:38:00  pah
- *   RESOLVED - bug 2545: Problem with IVORN resolution
- *   http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2545
- *
- *   Revision 1.5  2007/04/05 00:03:08  nw
- *   added a constructor to make it possible to specify which implementation of the community resolver to use.
- *
- *   Revision 1.4  2005/03/11 13:37:06  clq2
- *   new filemanager merged with filemanager-nww-jdt-903-943
- *
- *   Revision 1.3.2.5  2005/03/01 15:07:29  nw
- *   close to finished now.
- *
- *   Revision 1.3.2.4  2005/02/27 23:03:12  nw
- *   first cut of talking to filestore
- *
- *   Revision 1.3.2.3  2005/02/18 15:50:15  nw
- *   lots of changes.
- *   introduced new schema-driven soap binding, got soap-based unit tests
- *   working again (still some failures)
- *
- *   Revision 1.3.2.2  2005/02/11 14:27:52  nw
- *   refactored, split out candidate classes.
- *
- *   Revision 1.3.2.1  2005/02/10 16:23:14  nw
- *   formatted code
- *
- *   Revision 1.3  2005/02/10 12:44:10  jdt
- *   Merge from dave-dev-200502010902
- *
- *   Revision 1.2.2.1  2005/02/01 16:10:51  dave
- *   Updated FileManagerClient and factory to support full mock services ..
- *
- *   Revision 1.2  2005/01/28 10:43:57  clq2
- *   dave_dev_200501141257 (filemanager)
- *
- *   Revision 1.1.2.3  2005/01/25 08:01:15  dave
- *   Added tests for FileManagerClientFactory ....
- *
- *   Revision 1.1.2.2  2005/01/23 06:16:10  dave
- *   Changed tabs to spaces ...
- *
- *   Revision 1.1.2.1  2005/01/23 05:39:44  dave
- *   Added initial implementation of FileManagerClient ...
- *
- * </cvs:log>
- *
- */
 package org.astrogrid.filemanager.client;
 
 import org.astrogrid.community.common.exception.CommunityException;
@@ -102,9 +47,6 @@ public class FileManagerClientFactory {
      *  
      */
     public FileManagerClientFactory(URL registryEndpoint, NodeDelegateResolver resolver) {
-        //
-        // Create our resolvers.
-        loginResolver = new CommunityPasswordResolver(registryEndpoint);
         accountResolver = new CommunityAccountSpaceResolver(registryEndpoint);
         this.managerResolver = resolver;
     }
@@ -119,17 +61,8 @@ public class FileManagerClientFactory {
     public FileManagerClientFactory(NodeDelegateResolver resolver
     		,CommunityAccountSpaceResolver accountResolver) {
         this.managerResolver = resolver;
-        //
-        // Create our resolvers.
-        loginResolver = new CommunityPasswordResolver();
         this.accountResolver = accountResolver;
     }
-
-    /**
-     * Our Community password resolver.
-     *  
-     */
-    private final CommunityPasswordResolver loginResolver;
 
     /**
      * Our FileManager delegate resolver.
@@ -145,12 +78,12 @@ public class FileManagerClientFactory {
     private final CommunityAccountSpaceResolver accountResolver;
 
     /**
-     * Login to a Community account using acciunt the identifier and password.
+     * Obtains a file-manager client for an account with the given IVORN.
+     * The password argument is a historical relic and is not used; this method
+     * does not authenticate the user at the community.
      * 
-     * @param account
-     *                    The Community account identifier.
-     * @param password
-     *                    The Community account password.
+     * @param account The Community account identifier.
+     * @param password The Community account password (not used; may be null).
      * @return A FileManagerClient authenticated using the account identifier
      *               and password.
      * @throws RegistryException
@@ -159,35 +92,32 @@ public class FileManagerClientFactory {
 
      *  
      */
-    public FileManagerClient login(Ivorn account, String password) throws CommunityException,  RegistryException, URISyntaxException{
-        if (account == null) {
-            throw new IllegalArgumentException("Cannot pass in null account ivorn");
-        }
-        if (password == null) {
-            throw new IllegalArgumentException("Cannot pass in null password");
-        }
-            SecurityToken token = loginResolver.checkPassword(account.toString(), password);
-        return new FileManagerClientImpl(this, token);
-
+    public FileManagerClient login(Ivorn account, String password) throws URISyntaxException {
+      if (account == null) {
+        throw new IllegalArgumentException("Cannot pass in null account ivorn");
+      }
+      if (password == null) {
+        throw new IllegalArgumentException("Cannot pass in null password");
+      }
+      // This is a fake token for compatibility with the old API.
+      SecurityToken token = new SecurityToken(account.toString(), null);
+      return new FileManagerClientImpl(this, token);
     }
 
     /**
      * Login with a security token.
+     * The token is only used to carry the account identifier; it doesn't have
+     * any value for authentication.
      * 
-     * @param token
-     *                    A valid security token containing the account details and
-     *                    authentication.
+     * @param token A security token containing the account details.
      * @return A FileManagerClient authenticated using the security token.
      * @throws CommunityException
      * @throws RegistryException
      * @throws URISyntaxException
      *  
      */
-    public FileManagerClient login(SecurityToken token) throws CommunityException,RegistryException, URISyntaxException{
-
- 
-        return new FileManagerClientImpl(this, token);
-
+    public FileManagerClient login(SecurityToken token) throws URISyntaxException {
+      return new FileManagerClientImpl(this, token);
     }
 
     /**
@@ -202,10 +132,6 @@ public class FileManagerClientFactory {
         return new FileManagerClientImpl(this);
     }
 
-    protected CommunityPasswordResolver getLoginResolver() {
-        return this.loginResolver;
-    }
-
     protected NodeDelegateResolver getManagerResolver() {
         return this.managerResolver;
     }
@@ -217,8 +143,6 @@ public class FileManagerClientFactory {
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[FileManagerClientFactory:");
-        buffer.append(" tokenResolver: ");
-        buffer.append(loginResolver);
         buffer.append(" managerResolver: ");
         buffer.append(managerResolver);
         buffer.append(" accountResolver: ");

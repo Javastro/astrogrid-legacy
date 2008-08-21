@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/delegate/NodeTest.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: gtr $</cvs:author>
+ * <cvs:date>$Date: 2008/08/21 09:01:27 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: NodeTest.java,v $
+ *   Revision 1.3  2008/08/21 09:01:27  gtr
+ *   Branch fm-gtr-2815 is merged. This fixes BZ2815.
+ *
+ *   Revision 1.2.100.1  2008/08/20 11:46:13  gtr
+ *   I replaced enum as a varuable name with en so as to be compatible with Java 5.
+ *
  *   Revision 1.2  2005/03/11 13:37:05  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -987,8 +993,8 @@ public abstract class NodeTest extends BaseTest {
         assertFalse(iter.hasNext());
         
         // do the same with the tree-node enumeration.
-        Enumeration enum = frog.children();
-        assertFalse(enum.hasMoreElements());
+        Enumeration en = frog.children();
+        assertFalse(en.hasMoreElements());
         
         assertEquals(0,frog.getChildCount());
     }
@@ -1035,14 +1041,14 @@ public abstract class NodeTest extends BaseTest {
         assertTrue(newtFound);
         
         // so the same with the treenode enumeration.
-        Enumeration enum = home.children();
+        Enumeration en = home.children();
         // reset counters.
         totalFound = 0;
         frogFound = false;
         toadFound = false;
         newtFound = false;
-        while (enum.hasMoreElements()) {
-            FileManagerNode node = (FileManagerNode)enum.nextElement();
+        while (en.hasMoreElements()) {
+            FileManagerNode node = (FileManagerNode)en.nextElement();
             if (node.getMetadata().getNodeIvorn().equals(frog.getMetadata().getNodeIvorn())) {
                 totalFound++;
                 frogFound = true;

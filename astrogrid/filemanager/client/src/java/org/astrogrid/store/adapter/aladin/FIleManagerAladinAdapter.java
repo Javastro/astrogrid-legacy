@@ -1,4 +1,4 @@
-/*$Id: FIleManagerAladinAdapter.java,v 1.2 2005/03/11 13:37:05 clq2 Exp $
+/*$Id: FIleManagerAladinAdapter.java,v 1.3 2008/08/21 09:01:27 gtr Exp $
  * Created on 25-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,8 +51,6 @@ public class FIleManagerAladinAdapter implements AladinAdapter {
     public void login(Ivorn ivorn, String password) throws AladinAdapterLoginException, AladinAdapterServiceException {
         try {
             this.client = fac.login(ivorn,password);
-        } catch (CommunityException e) {
-            throw new AladinAdapterLoginException(e.getMessage(),e);
         } catch (Exception e) {
             throw new AladinAdapterServiceException(e.getMessage(),e);
         }
@@ -236,6 +234,12 @@ public class FIleManagerAladinAdapter implements AladinAdapter {
 
 /* 
 $Log: FIleManagerAladinAdapter.java,v $
+Revision 1.3  2008/08/21 09:01:27  gtr
+Branch fm-gtr-2815 is merged. This fixes BZ2815.
+
+Revision 1.2.100.1  2008/08/20 12:58:12  gtr
+I removed redundant fields and checked exceptions.
+
 Revision 1.2  2005/03/11 13:37:05  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 
