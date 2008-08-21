@@ -65,7 +65,7 @@ public class WorkaroundTransformerFactory extends TransformerFactory {
         return base.getURIResolver();
     }
 
-    @Override
+
     public void setFeature(final String name, final boolean value) throws TransformerConfigurationException {
 
         // New method at J2SE1.6 - need to invoke using reflection to get this
