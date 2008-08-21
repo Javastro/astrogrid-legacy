@@ -34,7 +34,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class XQueryListEditingPanel extends EditingPanel implements ActionListener, QuerySizeListener, DocumentListener {
 	
     public final void showExample() {
-        text.setText("(:example query - list all cone searches:)\n"
+        text.setText("(:example query - list all Data Collections :)\n"
                 + "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] \n"
                 + "where $r/@xsi:type  &=  '*DataCollection' \n"
                 + "return $r");
