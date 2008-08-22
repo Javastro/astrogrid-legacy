@@ -1,5 +1,7 @@
 package org.astrogrid.community.server.policy.manager ;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector ;
 import java.util.Collection ;
 import org.apache.commons.logging.Log ;
@@ -455,6 +457,18 @@ public class AccountManagerImpl
         // Return the array.
         return array ;
         }
+
+  /**
+   * Returns a list of account.
+   */
+  public List<Account> getAccountsList() {
+    Object[] o = getLocalAccounts();
+    List<Account> accounts = new ArrayList<Account>(o.length);
+    for (int i = 0; i < o.length; i++) {
+      accounts.add(new Account((AccountData)o[i]));
+    }
+    return accounts;
+  }
 
   /**
    * Tells the manager to use a mock object for its VOSpace.
