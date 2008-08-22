@@ -1,9 +1,6 @@
-<%@ page import="org.astrogrid.community.common.policy.data.AccountData,
-                 org.astrogrid.community.common.ivorn.CommunityIvornParser,
+<%@ page import="org.astrogrid.community.server.policy.manager.Account,
                  org.astrogrid.community.server.policy.manager.AccountManagerImpl,
-                 org.astrogrid.community.server.sso.CredentialStore,
-                 java.util.List,
-                 java.security.cert.X509Certificate"
+                 java.util.List"
     session="true" %>
     
     
@@ -70,8 +67,7 @@
       <table border="1">
       <tr>
         <th>User name</td>
-        <th>Common Name</th>
-        <th>Distinguished name</th>         
+        <th>Common Name</th>    
         <th>Description</th>          
         <th>e-mail</th>
         <th>Home Space</th>
@@ -79,19 +75,16 @@
       </tr>
     
       <%
-      String[] accounts = new AccountManagerImpl().getUserNames();
-      for(int i = 0;i < accounts.length;i++) {
+      List<Account> accounts = new AccountManagerImpl().getAccountsList();
+      for (Account a : accounts) {
       %>
-      <jsp:useBean id="account" scope="page" class="org.astrogrid.community.webapp.AccountBean"/>
-      <jsp:setProperty name="account" property="userName" value="<%=accounts[i]%>"/>
       <tr>
-        <td><%=accounts[i]%></td>
-        <td><jsp:getProperty name="account" property="commonName"/></td>
-        <td><jsp:getProperty name="account" property="distinguishedName"/></td>             
-        <td><jsp:getProperty name="account" property="description"/></td>             
-        <td><jsp:getProperty name="account" property="email"/></td>
-        <td><jsp:getProperty name="account" property="homeSpace"/></td>
-        <td><a href="account-update.jsp?userName=<%=accounts[i]%>">edit</a></td>
+        <td><%=a.getUserName()%></td>
+        <td><%=a.getDisplayName()%></td>
+        <td><%=a.getDescription()%></td>
+        <td><%=a.getEmailAddress()%></td>
+        <td><%=a.getHomeSpace()%></td>
+        <td><a href="account-update.jsp?userName=<%=a.getUserName()%>">edit</a></td>
       </tr>
       <%
       }
