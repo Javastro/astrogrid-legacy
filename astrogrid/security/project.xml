@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <name>Security Facade</name>
-  <currentVersion>2008.2.a06</currentVersion>
+  <currentVersion>2008.2.a07</currentVersion>
   <shortDescription>APIs for single-sign-on security.</shortDescription>
   
   <description>
@@ -99,6 +99,14 @@
   
   <build>
     <sourceDirectory>src/java</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/java</directory>
+        <includes>
+          <include>**/CertPathReviewerMessages.properties</include>
+        </includes>
+      </resource>
+    </resources>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
     <unitTest>
       <includes>
