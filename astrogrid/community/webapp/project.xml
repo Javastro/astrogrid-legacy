@@ -445,6 +445,7 @@
       </dependency>
       
       <!-- Castor 0.9.5 needs this. -->
+      <!--
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xerces</artifactId>
@@ -454,6 +455,7 @@
           <war.bundle>true</war.bundle>
         </properties>
       </dependency>
+      -->
      
       
       <!-- Self testing in the deployed web-app. -->
