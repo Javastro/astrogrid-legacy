@@ -219,7 +219,7 @@
        <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-security</artifactId>
-         <version>2008.2.a04</version>
+         <version>2008.2.a06</version>
          <type>jar</type>
          <properties>
            <war.bundle>true</war.bundle>
