@@ -7,7 +7,7 @@
   <artifactId>astrogrid-community</artifactId>
   <id>astrogrid-community</id>
   <name>Community Web Application</name>
-  <currentVersion>2008.2.b01</currentVersion>
+  <currentVersion>2008.2.b02</currentVersion>
   <shortDescription>A web-application providing the community services.</shortDescription>
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
   
