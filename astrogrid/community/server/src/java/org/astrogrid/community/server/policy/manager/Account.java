@@ -22,6 +22,7 @@ public class Account extends AccountData {
   public Account(AccountData o) {
     this.setIdent(o.getIdent());
     this.setDisplayName(o.getDisplayName());
+    this.setDescription(o.getDescription());
     this.setEmailAddress(o.getEmailAddress());
     this.setHomeSpace(o.getHomeSpace());
   }
