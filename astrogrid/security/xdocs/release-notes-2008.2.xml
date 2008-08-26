@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2">
+      <p>
+        V2008.2 is the same code as the alpha-version 2008.2.a06. The following
+        notes summarize the changes since v2008.1.
+      </p>
+      
+      <subsection name="Java 5 required">
+        <p>
+          Java 5 is now required; the code will not compile with Java 1.4.2.
+        </p>
+      </subsection>
+      
+      <subsection name="New sign-on API">
+        <p>
+          Previous versions of the security facade introduced the <i>signOn()</i>
+          method with three arguments: account IVORN, password and lifetime of
+          credentials. This method signs the user on using the community services,
+          the name of the community being part of the account IVORN.
+        </p>
+        <p>
+          In the current version, there is a new form of <i>signOn()</i> with
+          four arguments: user name, password, lifetime of credentials and
+          URI for the source of credentials. This new API can sign on either at
+          community services or, in the absence of a community, by loading
+          credentials directly.
+        </p>
+        <p>
+          If the new API is given a source URI in which the scheme is <i>ivo</i>
+          then it reads it as the IVORN of the community. The object then uses
+          that community's service to sign on.
+        </p>
+        <p>
+          If the credential-source URI has a scheme other than <i>ivo</i> then
+          then it is treated as a URL leading to a key store. The object then
+          loads the key store and transcribes the credentials for the named user.
+          The store must be of type JKS; PKCS#12 stores are not supported in
+          this version of the facade.
+        </p>
+        <p>
+          Whatever the source of credentials, the user name given to the 
+          new API must be unqualified:
+          e.g. "fred" rather than "ivo://fred@ioa/community". When loading a
+          key store, the user name is used as the alias to distinguish entries
+          inside the store. User names are case-sensitive.
+        </p>
+        <p>
+          When using a key store, there may be two passwords: one protecting the
+          store  as a whole and one protecting the user's private key. The
+          security facade assumes and requires that they have the same value.
+        </p>
+      </subsection>
+      
+      <subsection name="Password changing">
+        <p>
+          This release of the facade supports the changing of a user's 
+          account-password. The API is <i>SecurityGuard.changePassword()</i>,
+          and it takes the URI for the source of credentials as an argument.
+        </p>
+        <p>
+          Two kinds of credential sources allow the password to be changed.
+        </p>
+        <ul>
+          <li>Community accounts protocol of version 3 or later;
+          the URI is the IVORN for the community, e.g.
+          <i>ivo://some.university/community</i>.</li>
+          <li>A Java key-store, of type JKS, held in a local file; the URI
+          refers to the file, e.g. <i>file:/some/path/credentials.jks</i>.</li>
+        </ul>
+        <p>
+          For other sources of credentials, e.g. a key-store fetched by HTTP,
+          the password cannot be changed by the security guard.
+        </p>
+      </subsection>
+      
+      <subsection name="Client for accounts protocol v3">
+        <p>
+          The new <i>org.astrogrid.security.community</i> package contains
+          client classes for talking to the AstroGrid community service.
+          These classes are ported from the community-common and 
+          community-resolver packages.
+        </p>
+        <p>
+          The client for the AstroGrid accounts-protocol, 
+          <i>SsoClient</i> handles v3 of that protocol. This means 
+          that the home-space of the user may be looked up by calling the 
+          <i>home</i> method on the client and the password may be changed.
+        </p>
+      </subsection>
+      
+      <subsection name="RFC3820 support">
+        <p>
+          The <i>org.astrogrid.security.rfc3820</i> package gains a new class
+          <i>ProxyCertificateFactory</i> that generates proxy certificates.
+          This code is refactored from the community-webapp project and is
+          expected to be used in later versions of that project.
+        </p>
+        <p>
+          The <i>CertificateChainValidator</i> has a new method that validates
+          a chain presented as <i>List&lt;X509Certificate&gt;</i>. The validator
+          has been revised internally to disentangle it from the Java CoG kit.
+        </p>
+      </subsection>
+      
+            <subsection name="Authentication in HTTPS services">
+        <p>
+          In web services where the client has been authenticated by HTTPS
+          and client certificates, the <i>HttpsServiceSecurityGuard</i>
+          class may be used to recover the client's credentials and principals.
+          This class is a sub-class of the normal <i>SecurityGuard</i>.
+        </p>
+        <p>
+          Note that this security guard does not <em>perform</em> the
+          authentication but merely allows the results to be inspected for
+          authorization checks. The act of authentication is performed by
+          the servlet container (e.g. Apache Tomcat) as part of the SSL
+          handshake. You may need to turn on HTTPS in your container, and you
+          will probably need to configure it to accept proxy certifcates; see
+          the enhanced SSL implementation for Tomcat elsewhere in the security
+          facade.
+        </p>
+      </subsection>
+      
+      <subsection name="Key manager for HTTPS client">
+        <p>
+          When writing an HTTPS client that uses client certificates for
+          authentication, one has to inject into the Java library a
+          <i>KeyManager</i> implementation that holds the right keys for the
+          client. The <i>SecurityGuard</i> implements the specialized form
+          of this interface <i>X509Keymanager</i>. Given an
+          <i>HttpsURLConnection</i> to a web resource, the security-guard
+          object sets up the key manager when the <i>configureHttps</i>
+          method is called.
+        </p>
+      </subsection>
+      
+      <subsection name="IVOA delegation protocol">
+        <p>
+          IVOA has a draft web-service procol for delegating powers to a
+          service. This version of the facade includes an implementation.
+          A delegation servlet is provided that can be included in 
+          web applications, and there is a client that can be used in
+          applications or in the AR.
+        </p>
+      </subsection>
+      
+      <subsection name="maven.xml eliminated">
+        <p>
+          This version of the facade has no <i>maven.xml</i> file. The unit tests
+          have been reworked to cope without it.
+        </p>
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>

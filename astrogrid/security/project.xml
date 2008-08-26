@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <name>Security Facade</name>
-  <currentVersion>2008.2.a07</currentVersion>
+  <currentVersion>2008.2</currentVersion>
   <shortDescription>APIs for single-sign-on security.</shortDescription>
   
   <description>
@@ -274,7 +274,7 @@
       <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-contracts</artifactId>
-        <version>2008.0a2</version>
+        <version>2008.1</version>
         <type>jar</type>
       </dependency>
       
