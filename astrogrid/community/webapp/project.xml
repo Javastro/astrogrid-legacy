@@ -128,7 +128,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>2008.2.b01</version>
+            <version>2008.2.b02</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
