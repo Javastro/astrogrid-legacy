@@ -7,7 +7,7 @@
   <artifactId>astrogrid-community</artifactId>
   <id>astrogrid-community</id>
   <name>Community Web Application</name>
-  <currentVersion>2008.2.b02</currentVersion>
+  <currentVersion>2008.2</currentVersion>
   <shortDescription>A web-application providing the community services.</shortDescription>
   <description>Community is a AstroGrid web-application to manage user accounts.</description>
   
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-server</artifactId>
-            <version>2008.2.b02</version>
+            <version>2008.2</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -219,7 +219,7 @@
        <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-security</artifactId>
-         <version>2008.2.a06</version>
+         <version>2008.2</version>
          <type>jar</type>
          <properties>
            <war.bundle>true</war.bundle>
