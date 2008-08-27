@@ -238,8 +238,7 @@
 ;; not errors).
 ;;
 ;; If the value is not a syntactically valid MIME type, we ignore it rather than 
-;; producing an error.  If, however, the resulting list of MIME types is null
-;; then return #f.
+;; producing an error.
 (define parse-http-accept-header
   (let ()
     (define-generic-java-methods compile split matcher matches group)
@@ -265,29 +264,26 @@
                              #f     ; what's this? -- ignore it anyway
                              )))
                      (->list (split commas jheader))))))
-          (let ((res (map cdr
-                          (sort-list key-and-mimes
-                                     (lambda (a b)
-                                       (let ((ta  (vector-ref (car a) 0))
-                                             (sta (vector-ref (car a) 1))
-                                             (qa  (vector-ref (car a) 2))
-                                             (tb  (vector-ref (car b) 0))
-                                             (stb (vector-ref (car b) 1))
-                                             (qb  (vector-ref (car b) 2)))
-                                         (cond ((not (= qa qb))
-                                                (>= qa qb))
-                                               ((string=? ta "*")
-                                                #f)
-                                               ((string=? tb "*")
-                                                #t)
-                                               ((string=? sta "*")
-                                                #f)
-                                               ((string=? stb "*")
-                                                #t)
-                                               (else #t))))))))
-            (if (null? res)
-                #f
-                res)))))))
+          (map cdr
+               (sort-list key-and-mimes
+                          (lambda (a b)
+                            (let ((ta  (vector-ref (car a) 0))
+                                  (sta (vector-ref (car a) 1))
+                                  (qa  (vector-ref (car a) 2))
+                                  (tb  (vector-ref (car b) 0))
+                                  (stb (vector-ref (car b) 1))
+                                  (qb  (vector-ref (car b) 2)))
+                              (cond ((not (= qa qb))
+                                     (>= qa qb))
+                                    ((string=? ta "*")
+                                     #f)
+                                    ((string=? tb "*")
+                                     #t)
+                                    ((string=? sta "*")
+                                     #f)
+                                    ((string=? stb "*")
+                                     #t)
+                                    (else #t)))))))))))
 
 ;; ACCEPTABLE-MIME : string list-of-string -> string-or-#f
 ;; ACCEPTABLE-MIME : list-of-string list-of-string -> string-or-#f
@@ -863,8 +859,7 @@
        (jobject->list (get-header-names request))))
 
 ;; Return the contents of the Accept header as a list of scheme strings.
-;; Each one is a MIME type.  If there are no Accept headers, or if there are no
-;; valid MIME types in the list, return #f.
+;; Each one is a MIME type.  If there are no Accept headers, return #f.
 (define (request->accept-mime-types request)
   (define-generic-java-methods
     get-headers

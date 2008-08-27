@@ -80,10 +80,10 @@
          ;; partially bogus header
          ("wibble, text/html"
           "text/html")
-         ;; completely bogus headers
-         ("" . #f)
-         ("BOGUS" . #f)
-         ("," . #f)
+         ;; completely bogus headers (cdr of each of the following is '())
+         ("")
+         ("BOGUS")
+         (",")
          )))
   (for-each (lambda (p)
               (expect parse-http-accept-header
