@@ -107,7 +107,6 @@ public class PropertiesSelfTest extends TestCase {
     assertTrue("CA key does not exist.",       f.exists());
     assertTrue("CA key is a not a plain file", f.isFile());
     assertTrue("CA key cannot be read.",       f.canRead());
-    assertFalse("CA key is not write-locked.",      f.canWrite());
   }
   
   public void testCaCertificate() throws Exception {
@@ -120,7 +119,6 @@ public class PropertiesSelfTest extends TestCase {
     assertTrue("CA certificate does not exist.",       f.exists());
     assertTrue("CA certificate is a not a plain file", f.isFile());
     assertTrue("CA certificate cannot be read.",       f.canRead());
-    assertFalse("CA certificate is not write-locked.",      f.canWrite());
   }
   
   public void testCaSerial() throws Exception {
