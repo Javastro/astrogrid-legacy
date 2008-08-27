@@ -236,67 +236,58 @@
 ;; Types or subtypes equal to "*" sort lower than all other strings.
 ;; We ignore other parameters such as ";level=1" (but make sure they're
 ;; not errors).
+;;
+;; If the value is not a syntactically valid MIME type, we ignore it rather than 
+;; producing an error.  If, however, the resulting list of MIME types is null
+;; then return #f.
 (define parse-http-accept-header
-  (let ((commas #f)
-        (content-type #f))
-    (define (non-null x)
-      (and (not (java-null? x)) x))
-    (define-generic-java-methods
-      split
-      compile
-      matcher
-      matches
-      group)
-    (define-java-classes
-      <java.util.regex.pattern>)
-    (lambda (jheader)
-      (unless commas
-              (begin (set! commas
-                           (compile (java-null <java.util.regex.pattern>)
-                                    (->jstring " *, *")))
-                     (set! content-type
-                           (compile (java-null <java.util.regex.pattern>)
-                                    (->jstring "([^/]+)/([^;]+)(?:; *(?:q=([0-9.]+))?.*)?")))))
-      (let ((key-and-mimes
-             (remove
-              (lambda (x) (not x))
-              (map (lambda (js)
-                     (let ((js-matcher (matcher content-type js)))
-                       (if (->boolean (matches js-matcher))
-                           (let ((type
-                                  (->string (group js-matcher (->jint 1))))
-                                 (subtype
-                                  (->string (group js-matcher (->jint 2))))
-                                 (qparam
-                                  (non-null (group js-matcher (->jint 3)))))
-                             `(#(,type ,subtype ,(if qparam
-                                                     (string->number
-                                                      (->string qparam))
-                                                     1))
-                               . ,(string-append type "/" subtype)))
-                           #f       ; what's this? -- ignore it anyway
-                           )))
-                   (->list (split commas jheader))))))
-        (map cdr
-             (sort-list key-and-mimes
-                        (lambda (a b)
-                          (let ((ta  (vector-ref (car a) 0))
-                                (sta (vector-ref (car a) 1))
-                                (qa  (vector-ref (car a) 2))
-                                (tb  (vector-ref (car b) 0))
-                                (stb (vector-ref (car b) 1))
-                                (qb  (vector-ref (car b) 2)))
-                            (cond ((not (= qa qb))
-                                   (>= qa qb))
-                                  ((string=? ta "*")
-                                   #f)
-                                  ((string=? tb "*")
-                                   #t)
-                                  ((string=? sta "*")
-                                   #f)
-                                  ((string=? stb "*")
-                                   #t)
-                                  (else #t))))))))))
+  (let ()
+    (define-generic-java-methods compile split matcher matches group)
+    (define-java-classes <java.util.regex.pattern>)
+    (let ((commas (compile (java-null <java.util.regex.pattern>)
+                           (->jstring ",")))
+          (content-type (compile (java-null <java.util.regex.pattern>)
+                                 (->jstring " *([^/]+)/([^; ]+)(?:; *(?:q=([0-9.]+))?.*)? *"))))
+      (lambda/contract ((jheader jstring?) -> (lambda (res) (or (not res) (list? res))))
+        (let ((key-and-mimes
+               (remove
+                (lambda (x) (not x))
+                (map (lambda (js)
+                       (let ((js-matcher (matcher content-type js)))
+                         (if (->boolean (matches js-matcher))
+                             (let ((type    (->string (group js-matcher (->jint 1))))
+                                   (subtype (->string (group js-matcher (->jint 2))))
+                                   (qparam  (group js-matcher (->jint 3))))
+                               `(#(,type ,subtype ,(if (java-null? qparam)
+                                                       1
+                                                       (string->number (->string qparam))))
+                                 . ,(string-append type "/" subtype)))
+                             #f     ; what's this? -- ignore it anyway
+                             )))
+                     (->list (split commas jheader))))))
+          (let ((res (map cdr
+                          (sort-list key-and-mimes
+                                     (lambda (a b)
+                                       (let ((ta  (vector-ref (car a) 0))
+                                             (sta (vector-ref (car a) 1))
+                                             (qa  (vector-ref (car a) 2))
+                                             (tb  (vector-ref (car b) 0))
+                                             (stb (vector-ref (car b) 1))
+                                             (qb  (vector-ref (car b) 2)))
+                                         (cond ((not (= qa qb))
+                                                (>= qa qb))
+                                               ((string=? ta "*")
+                                                #f)
+                                               ((string=? tb "*")
+                                                #t)
+                                               ((string=? sta "*")
+                                                #f)
+                                               ((string=? stb "*")
+                                                #t)
+                                               (else #t))))))))
+            (if (null? res)
+                #f
+                res)))))))
 
 ;; ACCEPTABLE-MIME : string list-of-string -> string-or-#f
 ;; ACCEPTABLE-MIME : list-of-string list-of-string -> string-or-#f
@@ -872,25 +863,24 @@
        (jobject->list (get-header-names request))))
 
 ;; Return the contents of the Accept header as a list of scheme strings.
-;; Each one is a MIME type.  If there are no Accept headers, return #f.
+;; Each one is a MIME type.  If there are no Accept headers, or if there are no
+;; valid MIME types in the list, return #f.
 (define (request->accept-mime-types request)
   (define-generic-java-methods
     get-headers
     append)
-  ;; merge all the "accept" headers into a single comma-separated Java string
+  ;; merge all the "accept" headers into a single comma-separated Java string,
+  ;; or #f if there is no Accept header
   (cond
-   ((let loop ((headers
-                (jobject->list (get-headers request (->jstring "accept"))))
-               (res #f))
-      (if (null? headers)
-          res
-          (loop (cdr headers)
-                (if res
-                    (append (append res (->jstring ", "))
-                            (car headers))
-                    (car headers)))))
+   ((let loop ((headers (jobject->list (get-headers request (->jstring "accept")))))
+      (case (length headers)
+        ((0) #f)                        ;no header
+        ((1) (car headers))
+        (else
+         (append (append (car headers) (->jstring ", "))
+                 (loop (cdr headers))))))
     => parse-http-accept-header)
-   (else
+   (else                                ;no Accept header
     #f)))
 
 ;; response->lazy-output-stream http-response -> java-output-stream

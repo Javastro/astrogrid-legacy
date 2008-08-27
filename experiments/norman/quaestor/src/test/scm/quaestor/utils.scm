@@ -57,28 +57,39 @@
                "one%24two"
                "%2520")))
 
-(expect parse-http-accept-header
-        '(("text/plain")
-          ("*/*")
-          ;("text/plain" "application/xml")
-          ("text/plain" "text/xml")
-          ("text/plain" "text/xml" "*/*")
-          ("application/xml" "text/plain")
-          ("a/a" "b/b" "c/c")
-          ("text/x-c" "text/html" "text/x-dvi" "text/plain")
-          ("text/html" "text/html" "text/*" "*/*"))
-        (map (lambda (ss)
-               (PARSE-HTTP-ACCEPT-HEADER (->jstring ss)))
-             '("text/plain"
-               "*/*"
-               "text/plain, text/xml; q=0.2"            ;simple
-               "text/plain, text/xml;q=.5, */*;q=.2"    ;no leading 0 on numbers
-               "text/plain; q=0.5 , , application/xml," ; empty elements
-               "c/c;q=0.2,b/b;q=0.5,a/a,,,"             ;list is reversed
-               "text/plain;q=0.5,text/html;q=0.9,text/x-dvi;q=0.8,,text/x-c"
-               ;; check ordering, and that non-q parameters are stripped
-               "text/*, text/html, text/html;level=1, */*"
-               )))
+(let ((tests                            ;tests: parse car -> cdr
+       '(("text/plain"
+          "text/plain")
+         (" text/plain , text/html "    ;including spaces
+          "text/plain" "text/html")
+         (" */* "
+          "*/*")
+         ("  text/plain,    text/xml;  q=0.2    " ;include quality
+          "text/plain" "text/xml")
+         ("text/plain, text/xml;q=.5, */*;q=.2" ;no leading 0 on numbers
+          "text/plain" "text/xml" "*/*")
+         (" text/plain; q=0.5 , , application/xml ," ; empty elements
+          "application/xml" "text/plain")
+         ("c/c;q=0.2,b/b;q=0.5,a/a,,,"  ;list is reversed
+          "a/a" "b/b" "c/c")
+         ("text/plain;q=0.5,text/html;q=0.9,text/x-dvi;q=0.8,,text/x-c"
+          "text/x-c" "text/html" "text/x-dvi" "text/plain")
+         ;; check ordering, and that non-q parameters are stripped
+         ("text/*, text/html, text/html;level=1, */*"
+          "text/html" "text/html" "text/*" "*/*")
+         ;; partially bogus header
+         ("wibble, text/html"
+          "text/html")
+         ;; completely bogus headers
+         ("" . #f)
+         ("BOGUS" . #f)
+         ("," . #f)
+         )))
+  (for-each (lambda (p)
+              (expect parse-http-accept-header
+                      (cdr p)
+                      (PARSE-HTTP-ACCEPT-HEADER (->jstring (car p)))))
+            tests))
 
 (expect acceptable-mime-1
         "text/html"
