@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Release notes: 2008.2.a01</title>
+    </properties>
+    <body>
+    <section name="Release notes for community web-appplication 2008.2">
+      
+      <p>
+        These notes describe changes between v2008.1.02 and v2008.2.
+      </p>
+      
+      <subsection name="Feature: version 3 of accounts protocol">
+        <p>
+          This release supports version 3 of the accounts protocol. With this
+          upgrade, it is possible for a client to change a user's password.
+        </p>
+      </subsection>
+      
+      <subsection name="Feature: backing up the community">
+        <p>
+          This release introduces a back-up function for the user credentials
+          and community database.
+        </p>
+      </subsection>
+      
+      <subsection name="Compatibility warning: retirement of SOAPy 'security service'">
+        <p>
+          The community service called "security service" has been removed from
+          the web application. This (SOAP) web service was the only sign-on mechanism
+          in the 2007 releases and was deprecated after the introduction of the
+          accounts protocol with the 2008.0 release. Since then all usable
+          copies of VODesktop and the Astro Runtime have adopted the accounts
+          protocol and the older service is obsolete.
+        </p>
+        <p>
+          However, it was recently discovered that the file-manager-delegate
+          library still has one call to the obsolete service, and this call was
+          actually being used in VODesktop, causing 
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2815">bug 2815</a>.
+          This is now fixed, but versions of VODesktop before 2008.1.1 will not
+          work with community 2008.2.
+        </p>
+        <p>
+          Tests show that Topcat is not affected by this issue. Code inspection
+          shows that the MySpace clients embedded in DSA and CEA services
+          can't be affected since they don't have user-name and password to
+          send to a community service.
+        </p>
+      </subsection>
+      
+      <subsection name="Compatibility warning: revision to configuration of community database">
+        <p>
+          This version of the community web-application uses Castor v1.2, 
+          an upgrade from v0.9.5 using in Community 2008.1. The upgrade entrains
+          a small change to the XML configuration of the community database.
+        </p>
+        <p>
+          Two changes are needed to existing configurations:
+        </p>
+        <ul>
+          <li>Wrap the <i>database</i> element in a <i>jdo-conf</i> element;</li>
+          <li>add a <i>transaction-demarcation</i> element with 
+          attribute <i>mode="local"</i> as a child of the <i>jdo-conf</i>.</li>
+        </ul>
+        <p>
+          The sample configuration in the web application has already been altered
+          to suit.
+        </p>
+      </subsection>
+      
+      <subsection name="Bug fix: encoding of passwords">
+        <p>
+          V2008.1.01 and earlier had a serious problem in the handling of
+          passwords: see 
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2809">bugzilla</a>
+          for details. That problem now fixed.
+        </p>
+      </subsection>
+      
+      <subsection name="Bug fix: suprious failures of permissions self-test">
+        <p>
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2628">Bug 2628</a>,
+          concerning failed tests of the CA credentials, is fixed.
+        </p>
+      </subsection>
+      
+      
+    </section>
+    </body>
+</document>
