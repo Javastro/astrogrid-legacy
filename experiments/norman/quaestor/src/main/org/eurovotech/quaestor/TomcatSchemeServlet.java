@@ -129,7 +129,11 @@ public class TomcatSchemeServlet extends GenericServlet implements QuaestorServl
                     .append(request.getPathInfo());
             log(msg.toString());
 
-            // following statuses will very probably be overridden within the
+            String referrer = request.getHeader("referer");
+            if (referrer != null)
+                log("Referrer: " + referrer);
+
+            // The following settings will very probably be overridden within the
             // quaestorMethod procedure, but they're here in order to provide
             // sane defaults.
             response.setContentType("text/plain");

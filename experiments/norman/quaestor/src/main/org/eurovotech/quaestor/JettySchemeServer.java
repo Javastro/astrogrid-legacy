@@ -356,6 +356,10 @@ public class JettySchemeServer {
                         .append(rq.getPathInfo());
                 Log.info(msg.toString());
 
+                String referrer = request.getHeader("referer");
+                if (referrer != null)
+                    Log.info("Referrer: " + referrer);
+
                 // The following status will very probably be overridden within the
                 // quaestorMethod procedure, but it's here in order to provide
                 // a sane default.
