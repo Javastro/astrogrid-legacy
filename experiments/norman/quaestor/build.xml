@@ -750,7 +750,7 @@
       <!--<fileset refid='jetty.support'/>-->
     </copy>
 
-    <copy todir="${build.war}/WEB-INF">
+    <copy todir="${build.war}/WEB-INF/classes">
       <fileset file="${scm.src.home}/quaestor.scm"/>
       <filterset>
         <filter token="APPNAME" value="${app.name}"/>

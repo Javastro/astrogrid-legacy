@@ -30,7 +30,7 @@
     <servlet-class>org.eurovotech.quaestor.TomcatSchemeServlet</servlet-class>
     <init-param>
       <param-name>main-script</param-name>
-      <param-value>WEB-INF/quaestor.scm</param-value>
+      <param-value>WEB-INF/classes/quaestor.scm</param-value>
     </init-param>
     <init-param>
       <param-name>main-script-initialiser</param-name>
