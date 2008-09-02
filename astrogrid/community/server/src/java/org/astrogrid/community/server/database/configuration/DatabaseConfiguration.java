@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.net.URL;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.DatabaseNotFoundException;
@@ -44,6 +46,8 @@ import org.exolab.castor.mapping.MappingException;
  * @author Guy Rixon
  */
 public class DatabaseConfiguration {
+  
+  private static Log log = LogFactory.getLog(DatabaseConfiguration.class);
     
   /**
    * The configuration key leading to the database-configuration.
@@ -157,13 +161,9 @@ public class DatabaseConfiguration {
      *
      * TODO - Look for a normal file as well as a resource.
      */
-    public void executeSQL(String resource)
-        throws IOException, DatabaseNotFoundException, PersistenceException
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("DatabaseConfiguration:executeSQL()") ;
-        System.out.println("  SQL : '" + resource + "'") ;
+    public void executeSQL(String resource) throws IOException, 
+                                                   DatabaseNotFoundException, 
+                                                   PersistenceException {
         //
         // Check for null params.
         if (null != resource)
@@ -179,7 +179,6 @@ public class DatabaseConfiguration {
                 //
                 // Throw a FileNotFoundException.
                 String message = "Failed to find SQL resource : '" + resource + "'" ;
-                System.out.println(message) ;
                 throw new FileNotFoundException(message) ;
                 }
             //
@@ -334,10 +333,6 @@ public class DatabaseConfiguration {
                     }
                 catch(PersistenceException ouch)
                     {
-                    System.out.println("Exception while executing SQL statement") ;
-                    System.out.println("----") ;
-                    System.out.println(ouch) ;
-                    System.out.println("----") ;
                     //
                     // Rollback our database transaction.
                     database.rollback() ;
@@ -367,14 +362,10 @@ public class DatabaseConfiguration {
      * TODO This should just get the first object, not all of them !!
      *
      */
-    public boolean checkDatabaseTables()
-        throws DatabaseNotFoundException, PersistenceException, QueryException
-        {
-        System.out.println("") ;
-        System.out.println("----\"----") ;
-        System.out.println("DatabaseConfiguration:checkDatabaseTables()") ;
+    public boolean checkDatabaseTables() throws DatabaseNotFoundException, 
+                                                PersistenceException, 
+                                                QueryException {
         
-        //
         // Start with healthy set to 'false', and set it to 'true' if we actually get some data.
         boolean healthy = false ;
         //
@@ -403,22 +394,21 @@ public class DatabaseConfiguration {
                             Object result = results.next() ;
                             if (result instanceof DatabaseConfigurationTestData)
                                 {
-                                System.out.println("  PASS : got test data '" + result + "'") ;
                                 healthy = true ;
                                 }
                             else {
-                                System.out.println("  FAIL : unknown result type '" + result.getClass() + "'") ;
+                                log.debug("  FAIL : unknown result type '" + result.getClass() + "'") ;
                                 healthy = false ;
                                 }
                             }
                         }
                     else {
-                        System.out.println("  FAIL : empty results") ;
+                        log.debug("  FAIL : empty results") ;
                         healthy = false ;
                         }
                     }
                 else {
-                    System.out.println("  FAIL : null results") ;
+                    log.debug("  FAIL : null results") ;
                     healthy = false ;
                     }
                 database.commit() ;
@@ -432,12 +422,10 @@ public class DatabaseConfiguration {
             }
         //
         // Catch anything that goes bang.
-        catch (PersistenceException ouch)
-            {
-            System.out.println("Exception caught in checkDatabaseTables()") ;
-            System.out.println("  Exception : " + ouch) ;
-            healthy = false ;
-            }
+        catch (PersistenceException ouch) {
+          log.info("Exception caught in checkDatabaseTables(): " + ouch);
+          healthy = false ;
+        }
         return healthy ;
         }
     }
