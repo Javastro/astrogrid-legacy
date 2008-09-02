@@ -106,6 +106,7 @@ public class AccountServlet extends HttpServlet {
         if (path.endsWith("/proxy")) {
           userName = path.substring(1, path.lastIndexOf("/proxy"));
           signOn(request, userName, response);
+          log.info("User " + userName + " has signed on successfully.");
         }
         else {
           userName = path.substring(1);
@@ -213,7 +214,7 @@ public class AccountServlet extends HttpServlet {
     try {
       response.getOutputStream().write(chain.getEncoded("PkiPath"));
       response.flushBuffer();
-      log.info(nCerts + 
+      log.debug(nCerts + 
                " certificates have been sent to the client for " +
                userName);
     } catch (CertificateEncodingException ex) {

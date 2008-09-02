@@ -171,7 +171,7 @@ public class CredentialStore extends CommunityServiceImpl {
       fis = new FileInputStream(file);
     }
     catch (FileNotFoundException e) {
-      log.info(e);
+      log.info(userName + " has no certificate chain stored in this community");
       throw new AccessControlException(userName + " has no stored credentials.");
     }
     
@@ -213,7 +213,7 @@ public class CredentialStore extends CommunityServiceImpl {
     
     // Generate a proxy certificate signed by the certificate on the
     // front of the stored chain. Add this to the front of the chain.
-    System.out.println("Got " + certificates.size() + " certificates.");
+    log.debug("Got " + certificates.size() + " certificates.");
     this.proxyFactory.extendCertificateChain(certificates,
                                              getPrivateKey(userName, password),
                                              proxyKey,
@@ -304,7 +304,7 @@ public class CredentialStore extends CommunityServiceImpl {
     assert(userName != null);
     assert(password != null);
     String primaryKey = primaryKey(userName);
-    log.warn("Setting the password for user " + userName + ", primary key " + primaryKey);
+    log.debug("Setting the password for user " + userName + ", primary key " + primaryKey);
 
     // Update the password in the database.
     // This makes a new connection and runs a transaction. The error handling
@@ -422,7 +422,7 @@ public class CredentialStore extends CommunityServiceImpl {
       database = this.getDatabase();
       database.begin();
       String primaryKey = primaryKey(userName);
-      System.out.println("Loading PasswordData with JDO identity " + primaryKey);
+      log.debug("Loading PasswordData with JDO identity " + primaryKey);
       data = (PasswordData) (database.load(PasswordData.class, primaryKey));
       database.commit();
     }
