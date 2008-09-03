@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.32 2008/09/03 11:40:57 gtr Exp $ -->
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <extend>../maven-base/project.xml</extend>
   <artifactId>astrogrid-common</artifactId>
@@ -7,6 +7,13 @@
   <name>Common classes</name>
   <description>Classes used across the components.</description>
   <shortDescription>AstroGrid Common Library</shortDescription>
+  
+  <siteAddress>terror.star.le.ac.uk</siteAddress>
+  <siteDirectory>/software_docs/common-${pom.currentVersion}</siteDirectory>
+  <distributionSite>katajuta.star.le.ac.uk</distributionSite>
+  <distributionDirectory>/var/www/html/maven/org.astrogrid/jars</distributionDirectory>
+  
+  
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
