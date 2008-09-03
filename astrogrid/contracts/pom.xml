@@ -54,6 +54,12 @@
          <organization>Jodrell</organization>
       </developer>
    </developers>
+      <scm>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid.name}</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}</url>
+   </scm>
+   
    <build>
       <sourceDirectory>src/java</sourceDirectory>
       <!-- This section controls the set of files other than Java classes that 
@@ -95,6 +101,7 @@
          <artifactId>servlet-api</artifactId>
          <groupId>javax.servlet</groupId>
          <version>2.4</version>
+         <scope>supplied</scope>
       </dependency>
       <dependency>
          <groupId>javax.xml.bind</groupId>

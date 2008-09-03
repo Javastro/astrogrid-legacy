@@ -2,7 +2,7 @@
 <project>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-contracts</artifactId>
-  <currentVersion>2008.2</currentVersion>
+  <currentVersion>${astrogrid.contracts.version}</currentVersion>
   <name>Astrogrid sub-system contracts</name>
   <shortDescription>Interface contracts for AstroGrid components.</shortDescription>
   <description><![CDATA[
@@ -14,8 +14,8 @@
   </description>
   <url>http://www.astrogrid.org/maven/docs/HEAD/astrogrid-contracts/index.html</url>
   <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-  <siteAddress>www.astrogrid.org</siteAddress>
-  <siteDirectory>${astrogrid.docs.root}/astrogrid-contracts</siteDirectory>
+  <siteAddress>terror.star.le.ac.uk</siteAddress>
+  <siteDirectory>/software_docs/${astrogrid.contracts.version}/contracts</siteDirectory>
   <inceptionYear>2002</inceptionYear>
   
   <developers>
