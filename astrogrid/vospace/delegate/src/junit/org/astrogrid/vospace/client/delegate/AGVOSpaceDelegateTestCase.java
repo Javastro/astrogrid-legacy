@@ -31,9 +31,6 @@ import org.apache.commons.logging.LogFactory ;
 import org.astrogrid.vospace.v11.client.node.Node ;
 import org.astrogrid.vospace.v11.client.node.NodeTypeEnum ;
 
-//import org.astrogrid.vospace.v11.client.vosrn.Vosrn ;
-//import org.astrogrid.vospace.v11.client.vosrn.VosrnImpl ;
-
 import org.astrogrid.vospace.v11.client.exception.* ;
 
 import org.astrogrid.vospace.v11.client.transfer.inport.InportConnection ;
