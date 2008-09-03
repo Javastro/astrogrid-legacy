@@ -88,6 +88,20 @@ implements AGVOSpaceDelegateResolver
 
     /**
      * Public constructor.
+     * @param registry A RegistryService delegate.
+     *
+     */
+    public AGVOSpaceDelegateResolverImpl(RegistryService registry)
+        {
+        this(
+            registry,
+            inporters,
+            exporters
+            );
+        }
+
+    /**
+     * Public constructor.
      * @param registry  The registry endpoint URL.
      * @param inporters An iterable list of InportHandlers.
      * @param exporters An iterable list of ExportHandlers.

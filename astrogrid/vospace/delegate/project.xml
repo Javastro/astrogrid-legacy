@@ -278,6 +278,48 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
 
+        <!--+
+            | Added for the CEA test case ...
+            +-->
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-cea-client</artifactId>
+      <version>2007.2a</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>2007.2.01</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-workflow-objects</artifactId>
+      <version>2007.2wo</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jxpath</groupId>
+      <artifactId>commons-jxpath</artifactId>
+      <version>1.2</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>castor</groupId>
+      <artifactId>castor</artifactId>
+      <version>0.9.5</version>
+      <type>jar</type>
+    </dependency>
+
     </dependencies>
 
     <!--+
@@ -311,8 +353,8 @@
                 | Which tests to include.
                 +-->
             <includes>
-
-                <include>**/*TestCase.java</include>
+                <include>**/DSAQueryTestCase.java</include>
+                <!--include>**/*TestCase.java</include-->
 
             </includes>
             <!--+
