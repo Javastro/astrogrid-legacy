@@ -1,5 +1,5 @@
 /*
- * $Id: Piper.java,v 1.5 2004/09/24 14:17:40 pah Exp $
+ * $Id: Piper.java,v 1.6 2008/09/03 11:43:23 gtr Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -28,9 +28,9 @@ public class Piper
      */
     private static final Log logger = LogFactory.getLog(Piper.class);
 
-   private static final int BLOCK_SIZE = 2048;
+   private static final int BLOCK_SIZE = 128 * 1024;
    /** level above which warnings will be issued about transfer sizes*/
-   private static final int EXCESSIVE_SIZE_WARNING_LEVEL=1024*1024*30; 
+   private static final int EXCESSIVE_SIZE_WARNING_LEVEL=1024*1024*1024; 
    
    /** Utility class - should not be instantiated */
    private Piper() {}
@@ -109,9 +109,12 @@ public class Piper
 }
 
 /* $Log: Piper.java,v $
- * Revision 1.5  2004/09/24 14:17:40  pah
- * added excessive transfer size warning at 30M
+ * Revision 1.6  2008/09/03 11:43:23  gtr
+ * I raised the block size to 128KB and the trigger level for "excessive" data transfer to 1GB.
  *
+/* Revision 1.5  2004/09/24 14:17:40  pah
+/* added excessive transfer size warning at 30M
+/*
 /* Revision 1.4  2004/03/02 11:58:00  mch
 /* Fixed buffer not flushing
 /*
