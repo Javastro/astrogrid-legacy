@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.8 2006/06/13 20:33:13 clq2 Exp $
+/*$Id: JavaClassApplication.java,v 1.9 2008/09/03 14:18:44 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,13 +13,14 @@ package org.astrogrid.applications.javaclass;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.FutureTask;
 
 /** An application that executes by calling a static java method
  * @see org.astrogrid.applications.javaclass.JavaClassApplicationDescription
@@ -47,8 +49,8 @@ public class JavaClassApplication extends AbstractApplication {
      * @param tool
      * @param description
      */
-    public JavaClassApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary lib) {
-        super(ids, tool, interf,lib);
+    public JavaClassApplication( Tool tool, ApplicationInterface interf, ApplicationEnvironment env, ProtocolLibrary lib) {
+        super(tool, interf,env, lib);
        // CeaUser.setUser(ids.getUser()); // Makes the User object available as ThreadLocal - but doesn't work.
     }
     
@@ -57,13 +59,12 @@ public class JavaClassApplication extends AbstractApplication {
      * @todo bug here - we assume our parameters are in the correct order to pass to the java method. should sort them into correct order first.
      * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
      */
-    public Runnable createExecutionTask() throws CeaException {
+    public FutureTask<String> createExecutionTask() throws CeaException {
         createAdapters();
 
        JavaClassApplicationDescription jappDesc = (JavaClassApplicationDescription)getApplicationDescription();            
        Runnable task = new Worker(jappDesc.method);
-       setStatus(Status.INITIALIZED);
-       return task;
+       return new FutureTask<String>(task, getId());
    
     }
      /** A Worker thread, that performs the computation after {@link JavaClassApplication#execute() } returns */
@@ -116,11 +117,43 @@ public class JavaClassApplication extends AbstractApplication {
         return new JavaClassParameterAdapter(pval, descr, indirectVal);
     }
 
+    @Override
+    public Runnable createRunnable() {
+	// TODO should not be needed here as the create ExecutionTask is overridden - perhaps need to rethink.
+	throw new  UnsupportedOperationException("JavaClassApplication.createRunnable() not implemented");
+    }
+
 }
 
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.9  2008/09/03 14:18:44  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.8.36.5  2008/06/11 14:31:42  pah
+merged the ids into the application execution environment
+
+Revision 1.8.36.4  2008/06/10 20:01:39  pah
+moved ParameterValue and friends to CEATypes.xsd
+
+Revision 1.8.36.3  2008/05/01 15:22:48  pah
+updates to tool
+
+Revision 1.8.36.2  2008/04/23 14:14:30  pah
+ASIGNED - bug 2749: make sure all CECs use the  ThreadPoolExecutionController
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2749
+
+Revision 1.8.36.1  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.8  2006/06/13 20:33:13  clq2
 pal_gtr_1671
 

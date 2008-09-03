@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.5 2004/11/27 13:20:02 pah Exp $
+/*$Id: ApplicationDescription.java,v 1.6 2008/09/03 14:18:43 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,51 +9,47 @@
  *
 **/
 package org.astrogrid.applications.description;
-import org.astrogrid.applications.Application;
+import org.astrogrid.applications.ApplicationFactory;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
-import org.astrogrid.community.User;
-import org.astrogrid.workflow.beans.v1.Tool;
-/** Description of a CEA Application
+/** Description of a CEA Application.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 12 Mar 2008
  *
  */
-public interface ApplicationDescription {
-    /** Access the name of the application. Each application should be uniquely identified by its name.
-    * @return a string in format <tt><i>authority-id</i>/<i>application-name</i></tt>
-    * @todo wonder if the name of an application should be an ivo:// style thingie? - as its something that is indexable into the registry, etc.
-    * @todo this would be better called ID to be compatible with the idea of what it is in the registry
-    */
-    public String getName();
+public interface ApplicationDescription extends Identify,ApplicationFactory { //IMPL perhaps would be cleaner if the factory was totally separate 
     
     /** Access the name of the application that is to be used for display purposes.
     * @return a human friendly name for the application.
     */
-   public String getUIName();
+   public String getName();
     
     /**
      * Access a short description of the purpose of the application.
     * @return the description.
     */
-   public String getAppDescription();
-    /**
-    * Acess the list of all parameters defined for this application (no matter what interface they occur in).
-    * @return the array of parameter definitions
-    */
-   
+   public String getDescription();
+    
    /**
     * Access a URL that acts as a reference to a (non-CEA) humanreadable description.
     * @return
     */
-   public String getReferenceURL();
-    public  ParameterDescription[] getParameterDescriptions();
+    public String getReferenceURL();
+    
     /**
-    * Access the description for a named parameter
+     * Access the list of all parameters defined for this application (no matter what interface they occur in).
+     * @return the array of parameter definitions.
+     */
+   public ParameterDescription[] getParameterDescriptions();
+   
+    /**
+    * Access the description for a named parameter.
     * @param name the parameter to look up
     * @return the associated description
     * @throws ParameterDescriptionNotFoundException if the application does not recognize the parameter name
     */
-    public  ParameterDescription getParameterDescription(String name) throws ParameterDescriptionNotFoundException;
+    public ParameterDescription getParameterDescription(String name) throws ParameterDescriptionNotFoundException;
+    
     /**
     * Gets the named interface.
     * @param name the name of the interface to look up.
@@ -62,22 +58,50 @@ public interface ApplicationDescription {
     */
     public ApplicationInterface getInterface(String name) throws InterfaceDescriptionNotFoundException;
     
-    /** list all the interfaces supported by this application */
+    /** 
+     * list all the interfaces supported by this application.
+     */
     public ApplicationInterface[] getInterfaces();
     
+  
     /**
-     * Apply this application description to a set of parameters, to create an instance of the application, ready to execute.
-     * @param callerAssignedID external identifer for the new application. This identifier is assigned by the caller, but is not used within CEA for distinguishing the application
-     * @param user the user whose permissions to execute this tool under
-     * @param tool data object that defines which interface to call, and with what parameter values.
-     * @return an <tt>Application</tt>
-     * @throws Exception
-     * @todo should this not be throwing a CEAException?
+     * get the underlying description of the application.
+     * @TODO should this really be exposed?
+     * @return
      */
-    public  Application initializeApplication(String callerAssignedID, User user, Tool tool) throws Exception;
-}
+    public MetadataAdapter getMetadataAdapter();
+
+ }
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.6  2008/09/03 14:18:43  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.5.182.5  2008/08/02 13:33:56  pah
+safety checkin - on vacation
+
+Revision 1.5.182.4  2008/06/10 20:01:39  pah
+moved ParameterValue and friends to CEATypes.xsd
+
+Revision 1.5.182.3  2008/04/17 16:08:32  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
+Revision 1.5.182.2  2008/03/26 17:15:38  pah
+Unit tests pass
+
+Revision 1.5.182.1  2008/03/19 23:10:53  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.5  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

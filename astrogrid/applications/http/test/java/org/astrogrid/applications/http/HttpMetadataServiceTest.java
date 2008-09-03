@@ -1,5 +1,5 @@
 /*
- * $Id: HttpMetadataServiceTest.java,v 1.7 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: HttpMetadataServiceTest.java,v 1.8 2008/09/03 14:18:33 pah Exp $
  * 
  * Created on 14-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -12,77 +12,60 @@
 
 package org.astrogrid.applications.http;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.exolab.castor.xml.CastorException;
-
-import org.astrogrid.applications.component.EmptyCEAComponentManager;
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
+import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
+import org.astrogrid.applications.description.registry.RegistryEntryBuilderTestBase;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
-import org.astrogrid.applications.manager.BaseConfiguration;
-import org.astrogrid.applications.manager.DefaultMetadataService;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.registry.beans.v10.cea.CeaServiceType;
-import org.astrogrid.registry.beans.v10.resource.Resource;
-import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
-
-import junit.framework.TestCase;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.Protocol;
 
 /**
  * @author Paul Harrison (pharriso@eso.org) 14-Jun-2005
  * @version $Name:  $
  * @since initial Coding
  */
-public class HttpMetadataServiceTest extends TestCase {
+public class HttpMetadataServiceTest extends RegistryEntryBuilderTestBase {
 
-   private HttpMetadataService metadataService;
-
-   private HttpApplicationDescriptionLibrary httpApplicationDescriptionLibrary;
-
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(HttpMetadataServiceTest.class);
-   }
 
    /*
     * @see TestCase#setUp()
     */
-   protected void setUp() throws Exception {
-      super.setUp();
-      Configuration configuration = new BaseConfiguration();
-      IdGen id = new InMemoryIdGen();
-      DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
-      TestAuthority resol = new TestAuthority();
-      ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(
-            id, lib, resol);
-      httpApplicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(
-            new TestRegistryQuerier(null), env);
+   @Override
+protected ApplicationDescriptionLibrary createDesciptionLibrary()
+	throws Exception {
+    IdGen id = new InMemoryIdGen();
+    DefaultProtocolLibrary lib = new DefaultProtocolLibrary(new Protocol[]{new FileProtocol()});
+    AppAuthorityIDResolver resol = new TestAuthorityResolver();
+    ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(
+          id, lib, resol);
+    Configuration conf = new MockNonSpringConfiguredConfig();
 
-      metadataService = new HttpMetadataService(
-          httpApplicationDescriptionLibrary, 
-          configuration
-      );
-   }
+   //TODO ideally should remove the reliance on ApplicationDescriptionEnvironment from this test
+   return new HttpApplicationDescriptionLibrary(
+            new TestRegistryQuerier(null), env, conf);
+}
    
-   public void testGetMetadata() throws Exception {
-      VOResources desc = metadataService.getVODescription();
-      assertNotNull("metadata is null", desc);
-      assertEquals("should only be one resource",1, desc.getResourceCount());
-      Resource resource = desc.getResource(0);
-      assertTrue("resource should be CeaService" ,resource instanceof CeaServiceType);
-      CeaServiceType ceaservice = (CeaServiceType) resource;
-      assertTrue("should manage at least one application", ceaservice.getManagedApplications().getApplicationReferenceCount() > 0);
-   }
-
+ 
 }
 
 /*
  * $Log: HttpMetadataServiceTest.java,v $
+ * Revision 1.8  2008/09/03 14:18:33  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.7.42.2  2008/08/02 13:32:32  pah
+ * safety checkin - on vacation
+ *
+ * Revision 1.7.42.1  2008/04/01 13:50:07  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.7  2006/03/17 17:50:58  clq2
  * gtr_1489_cea correted version
  *

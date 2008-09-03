@@ -33,7 +33,12 @@
       <dd><xsl:value-of select="@role"/></dd>
       <xsl:for-each select="accessURL">
         <dt>Access URL</dt>
-        <dd><xsl:value-of select="."/></dd>
+        <dd><a>
+        <xsl:attribute name="href">
+        <xsl:value-of select="."/>
+        </xsl:attribute>
+          <xsl:value-of select="."/></a>
+        </dd>
       </xsl:for-each>
       <xsl:for-each select="securityMethod">
         <dt>Access URL</dt>

@@ -1,4 +1,4 @@
-/* $Id: HttpApplicationWebServiceURLException.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: HttpApplicationWebServiceURLException.java,v 1.5 2008/09/03 14:18:45 pah Exp $
  * Created on Jul 27, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -22,14 +22,6 @@ public class HttpApplicationWebServiceURLException extends HttpApplicationWebSer
     /**
      * Constructor
      *
-     * 
-     */
-    public HttpApplicationWebServiceURLException() {
-        super();
-    }
-    /**
-     * Constructor
-     *
      * @param arg0
      */
     public HttpApplicationWebServiceURLException(String arg0) {
@@ -43,12 +35,17 @@ public class HttpApplicationWebServiceURLException extends HttpApplicationWebSer
      */
     public HttpApplicationWebServiceURLException(String string, IOException e) {
         super(string, e);
-        // @TODO Auto-generated constructor stub
     }
 }
 
 /* 
  * $Log: HttpApplicationWebServiceURLException.java,v $
+ * Revision 1.5  2008/09/03 14:18:45  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.4.212.1  2008/04/01 13:50:06  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.4  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

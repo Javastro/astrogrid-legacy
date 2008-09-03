@@ -1,4 +1,4 @@
-/*$Id: QueryService.java,v 1.5 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: QueryService.java,v 1.6 2008/09/03 14:18:56 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,15 +11,16 @@
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.applications.description.execution.MessageType;
+import org.astrogrid.applications.description.execution.ResultListType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 
-/** Defines a component used to query status of applications, access results, etc.
+/** Defines a component used to query status of applications, access results, etc. 
+ * This is primarily the interface that external queries about progress are made.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
@@ -77,6 +78,23 @@ public interface QueryService {
 
 /* 
 $Log: QueryService.java,v $
+Revision 1.6  2008/09/03 14:18:56  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.5.102.2  2008/04/23 14:14:30  pah
+ASIGNED - bug 2749: make sure all CECs use the  ThreadPoolExecutionController
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2749
+
+Revision 1.5.102.1  2008/04/17 16:08:32  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.5  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 

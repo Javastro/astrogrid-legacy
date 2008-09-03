@@ -8,35 +8,43 @@
 
 package org.astrogrid.applications;
 
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
+import org.astrogrid.applications.description.Identify;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
+import org.astrogrid.applications.description.execution.LogLevel;
+import org.astrogrid.applications.description.execution.MessageType;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.ResultListType;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
-import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.collections.iterators.IteratorChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.FutureTask;
+
+
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 /**
  * Basic implementation of {@link org.astrogrid.applications.Application}
@@ -51,7 +59,7 @@ import java.util.Observable;
  * The {@link #instantiateAdapter(ParameterValue, ParameterDescription, ExternalValue)}
  * method may be overridden to return instances of a custom 
  * {@link org.astrogrid.applications.parameter.ParameterAdapter} if needed.<br/>
- * The default implementaiton of {@link #attemptAbort()} does nothing. Providers may extend this if suitable.<br />
+ * The default implementaiton of {@link #attemptAbort(boolean)} does nothing. Providers may extend this if suitable.<br />
  * The {@link #createTemplateMessage()} method can also be overridden to return more application-specific information, similarly {@link #toString()} if desired.<br/>
  * 
  * <h2>Helper Methods</h2>
@@ -80,8 +88,9 @@ import java.util.Observable;
  * @see org.astrogrid.applications.description.ApplicationDescription
  * @see org.astrogrid.applications.parameter.ParameterAdapter
  */
-public abstract class AbstractApplication extends Observable implements Application {
-   /** interface to the set of identifiers for an application */
+public abstract class AbstractApplication extends Observable implements Application, Identify {
+   /** interface to the set of identifiers for an application
+    * @deprecated put eveything in the {@link ApplicationEnvironment} */
    public static interface IDs {
         /** the cea-assigned id for this application execution */
        public String getId();
@@ -101,8 +110,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
    /** the interface being used by this application */
    private final ApplicationInterface applicationInterface;
    
-   protected final IDs ids;
-   /** list of parameter adapters for the inputs to the application. Empty at start. */
+    /** list of parameter adapters for the inputs to the application. Empty at start. */
    private final List inputAdapters = new ArrayList();
    /** library of indirection protocol handlers */
    protected final ProtocolLibrary lib;
@@ -110,6 +118,26 @@ public abstract class AbstractApplication extends Observable implements Applicat
    private final List outputAdapters = new ArrayList();
    /** list type containing results of the application execution. obviously empty to start with */
    private final ResultListType results = new ResultListType();
+   /** The time when the application job should be destroyed - the application itself does not actively do this */
+   private Date destruction;
+   
+   
+   public static class ApplicationTask extends FutureTask<String> {
+ //IMPL perhaps this is not necessary - can just cast directly.
+    private Application app;
+
+    public ApplicationTask(Runnable runnable, String result, Application application) {
+	super(runnable, result);
+	this.app =application;
+	
+    }
+
+    public Application getApp() {
+        return app;
+    }
+       
+   }
+   protected ApplicationTask task = null;
 
    /**
     * the application status
@@ -120,29 +148,39 @@ public abstract class AbstractApplication extends Observable implements Applicat
    
    /** construct a new application execution
     * @param ids identifiers for this application execution
-    * @param tool defines the parameters of this exeuction, and which application / interface is to be called.
-    * @param applicationInterface the descrptioni interface this application conforms to.
+    * @param tool defines the parameters of this execution, and which application / interface is to be called.
+    * @param applicationInterface the description interface this application conforms to. //IMPL perhaps neater to send the applicationDescription + inteface name here - would not need so many links to applications within the CEAApplication Structure... 
     * @param lib library of indirection handlers - used to read remote parameters using various protocols
+ * @param env 
      */
-   public AbstractApplication(IDs ids,Tool tool, ApplicationInterface applicationInterface,ProtocolLibrary lib) 
+   public AbstractApplication(Tool tool, ApplicationInterface applicationInterface, ApplicationEnvironment env,ProtocolLibrary lib) 
    {      
       this.applicationInterface = applicationInterface;
-      this.ids = ids;
       this.tool = tool;
       this.lib = lib;
       this.startTime = null;
       this.endTime = null;
       this.deadline = null;
+      this.status = Status.NEW;
+      this.applicationEnvironment = env;
       
       // This class has no mandate to set run-time limits: those are imposed
       // where needed by sub-classes. However, the machinery requires a value to
       // be present, so set a very long limit.
       this.runTimeLimitMs = 1000 * 365 * 24 * 60 * 60 * 1000;
    }
-    /** default implementation of attemptAbort - always fails, and returns false.
+    /** default implementation of attemptAbort 
      */
-    public boolean attemptAbort() {
-        return false;
+    public boolean attemptAbort(boolean external) {
+	//TODO remember the distinction between the external and internal abort somewhere
+	logger.info("attempting to abort job="+getId());
+        boolean aborted = this.task.cancel(true);
+
+        if(aborted) {
+            setStatus(Status.ABORTED);
+            recordEndOfExecution();
+        }
+        return aborted;
     }
     
   /**
@@ -168,10 +206,13 @@ public abstract class AbstractApplication extends Observable implements Applicat
    protected Date endTime;
    
   /**
-   * The execution time, in millisconds, allowed for the application.
+   * The execution time, in milliseconds, allowed for the application.
    * If this time is exceeded then the application will be aborted.
    */
   protected long runTimeLimitMs;
+
+
+protected final ApplicationEnvironment applicationEnvironment;
 
   /**
    * Reveals the time in milliseconds for which the application has been
@@ -219,7 +260,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
   }
   
   /**
-   * Specifies the allowed duration of excution, in milliseconds.
+   * Specifies the allowed duration of execution, in milliseconds.
    */
   public void setRunTimeLimit(long ms) {
     this.runTimeLimitMs = ms;
@@ -292,19 +333,19 @@ public abstract class AbstractApplication extends Observable implements Applicat
     protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
         inputAdapters.clear();
         outputAdapters.clear();
-        results.clearResult();
+        results.getResult().clear();
         for  (Iterator params = inputParameterValues(); params.hasNext();){
              ParameterValue param = (ParameterValue)params.next();       
-            ExternalValue iVal = (param.getIndirect() ? lib.getExternalValue(param) : null);
-             ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getName()),iVal);
+            ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param) : null);
+             ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),iVal);
              inputAdapters.add(adapter);
           }
         for  (Iterator params = outputParameterValues(); params.hasNext();){
             ParameterValue param = (ParameterValue)params.next();       
-           ExternalValue iVal = (param.getIndirect() ? lib.getExternalValue(param) : null);
-            ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getName()),iVal);
+           ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param) : null);
+            ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),iVal);
             outputAdapters.add(adapter);
-            results.addResult(adapter.getWrappedParameter());
+            results.getResult().add(adapter.getWrappedParameter());
          }          
     }
    
@@ -338,6 +379,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
             String outputName = outputNames[i];
             checkCardinality(outputName, false);
         }
+        status = Status.INITIALIZED;
         return true;
    }
 
@@ -350,7 +392,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
     {
         for (int i = 0; i < pv.length; i++) {
             ParameterValue value = pv[i];
-            getApplicationDescription().getParameterDescription(value.getName()); //checks if the parameter exists in description
+            getApplicationDescription().getParameterDescription(value.getId()); //checks if the parameter exists in description
              
         }
     }
@@ -369,7 +411,7 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
         ParameterValue pval = isInput?findInputParameter(inputName):findOutputParameter(inputName);
         if (pval == null) {
             throw new MandatoryParameterNotPassedException(
-                    tool.getName()+ " -- The interface " + applicationInterface.getName()
+                    tool.getId()+ " -- The interface " + applicationInterface.getId()
                             + " expects "+ (isInput?"input":"output") +" parameter " + inputName);
         }
     }
@@ -377,15 +419,16 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
     /** can be extended by subclasses to provide more info */
    public MessageType createTemplateMessage() {
        MessageType mt = new MessageType();
-       mt.setSource(this.toString() + "\nid:" + this.getID() + "\nassignedId: " + this.getJobStepID());
-       mt.setTimestamp(new Date());
+       mt.setSource(this.toString() + "\nid:" + this.getId() + "\nassignedId: " + this.getJobStepID());
+       
+    mt.setTimestamp(new DateTime());
        mt.setPhase(status.toExecutionPhase());
        return mt;
    }
    
    /** subclassing helper - find a parameter by name in the tool inputs */
    protected final ParameterValue findInputParameter(String name) {
-       return (ParameterValue)tool.findXPathValue("input/parameter[name='" + name + "']");
+       return (ParameterValue)tool.getInput().findParameter(name);
 
    }
    
@@ -394,7 +437,7 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
   protected final ParameterAdapter findInputParameterAdapter(String name) {
       for (Iterator i = inputAdapters.iterator(); i.hasNext(); ) {
           ParameterAdapter a = (ParameterAdapter)i.next();
-          if (a.getWrappedParameter().getName().equals(name)) {
+          if (a.getWrappedParameter().getId().equals(name)) {
               return a;
           }
       }
@@ -402,24 +445,20 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
   }
    /** subclassing helper - find a parameter by name in the tool outputs */
    protected final ParameterValue findOutputParameter(String name) {
-       return (ParameterValue)tool.findXPathValue("output/parameter[name='" + name + "']");
+       return (ParameterValue)tool.getOutput().findParameter(name);
        
    }
   /** find the parameter adapter for the named output parameter */
    protected final ParameterAdapter findOutputParameterAdapter(String name) {   
       for (Iterator i = outputAdapters.iterator(); i.hasNext(); ) {
           ParameterAdapter a = (ParameterAdapter)i.next();
-          if (a.getWrappedParameter().getName().equals(name)) {
+          if (a.getWrappedParameter().getId().equals(name)) {
               return a;
           }
       }      
       return null;      
   }
   
-    /** subclassing helper - find a parameter by name in the tool inputs or tool outputs */
-   protected final ParameterValue findParameter(String name)   {
-      return (ParameterValue)tool.findXPathValue("input/parameter[name='" + name + "'] | output/parameter[name='" + name + "']");
-   }
   /** find the parameter adapter for the named parameter (which may be either input or output) */
   protected final ParameterAdapter findParameterAdapter(String name) {
       ParameterAdapter a = findInputParameterAdapter(name);
@@ -438,8 +477,8 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    public final ApplicationInterface getApplicationInterface()  {
        return applicationInterface;
    }
-    public final String getID() {
-        return ids.getId();
+    public final String getId() {
+        return applicationEnvironment.getExecutionId();
     }
     
     public final Tool getTool() {
@@ -451,7 +490,7 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    }
 
    public final String getJobStepID() {
-      return ids.getJobStepId();
+      return applicationEnvironment.getJobStepId();
    }
 
    
@@ -470,21 +509,17 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    }
 
    public final User getUser() {
-      return ids.getUser();
+      return applicationEnvironment.getUser();
    }
    /** iterator over all parameter values in the tool inputs */
    protected final  Iterator inputParameterValues() {
-       return tool.findXPathIterator("input/parameter");
+       return tool.getInput().getParameterOrParameterGroup().iterator(); //FIXME this could be parameter groups etc
    }
    /** iterate over all parameter values in the tool outputs */
    protected final Iterator outputParameterValues() {
-       return tool.findXPathIterator("output/parameter");
+       return tool.getOutput().getParameterOrParameterGroup().iterator(); //FIXME this could include groups...
    }
-   /** iterator over all parameterValues in the tool inputs and outputs */
-   protected final Iterator parameterValues() {
-       return tool.findXPathIterator("input/parameter | output/parameter");
-   }
-   
+  
    /** iterator over all input parameter adapters */
    protected final Iterator inputParameterAdapters() {
        return inputAdapters.iterator();
@@ -583,13 +618,20 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
     */
    public final void setStatus(Status status) {
       this.status = status;
+      if(status.equals(Status.RUNNING)){
+	  recordStartOfExecution();
+      }
+      else if (status.equals(Status.ABORTED)||status.equals(Status.COMPLETED)||status.equals(Status.ERROR))
+      {
+	  recordEndOfExecution();
+      }
       setChanged();
       notifyObservers(status);
    }
 
 
    public String toString() {
-      return getApplicationDescription().getName() + "#" + getApplicationInterface().getName();
+      return getApplicationDescription().getId() + "#" + getApplicationInterface().getId() + " runid=" + getId(); 
    }
 
   /** 
@@ -622,7 +664,15 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    * @see org.astrogrid.applications.Application#createExecutionTask()
    * @return null 
    */
-  public abstract Runnable createExecutionTask() throws CeaException;
+  public abstract Runnable createRunnable();
+   
+  public FutureTask<String> createExecutionTask() throws CeaException{
+      if(task == null ){
+      createAdapters();
+      task = new ApplicationTask(createRunnable(), getId(), this);
+      }
+      return task;
+  }
     
   /**
    * Notes that the application is committed for execution but is held
@@ -633,5 +683,11 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
   public void enqueue() {
     this.setStatus(Status.QUEUED);
   }
+public Date getDestruction() {
+    return destruction;
+}
+public void setDestruction(Date destruction) {
+    this.destruction = destruction;
+}
 }
 

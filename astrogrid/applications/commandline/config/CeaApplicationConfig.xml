@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!--$Id: CeaApplicationConfig.xml,v 1.19 2007/12/05 15:42:02 pah Exp $-->
+<!--$Id: CeaApplicationConfig.xml,v 1.20 2008/09/03 14:18:52 pah Exp $-->
 <!-- Config file for the real applications that have been wrapped so far -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CEAImplementation/v1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1 ../../../workflow-objects/schema/CEAImplementation.xsd">
 	<!-- put the real applications here - note that they are not autodeployed, so the paths are fixed strings - this is more of a registry test....-->
@@ -984,7 +984,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 					<pref ref="output"/>
 					<pref ref="quanta"/>
 					<pref ref="snr"/>
-					<pref ref="hrd"/> 
+					<pref ref="hrd" minoccurs="0"/> 
 					<pref ref="power"/>
 					<pref ref="sptyp1"/>
 					<pref ref="sptyp2"/>
@@ -995,7 +995,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 					<pref ref="ewidth"/>
 					<pref ref="irfeature"/>
 					<pref ref="ovi"/>
-					<pref ref="hires"/>
+					<pref ref="hires" minoccurs="0"/>
 					<pref ref="wrlines"/>
 					</output>
 				

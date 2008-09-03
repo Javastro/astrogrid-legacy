@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool name="Echoer" interface="iface2"
-	xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+<tool id="ivo://org.astrogrid.test/Echoer" interface="iface2"
+	xmlns="http://www.ivoa.net/xml/CEA/types/v1.1">
 	<input>
-		<parameter name="y">
-			<ns1:value 
-				xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
-				bush4theHague</ns1:value>
+		<parameter id="y">
+			<value 
+				>
+				bush4theHague</value>
 		</parameter>
 	</input>
 	<output>
-		<parameter name="Reply">
-			<ns3:value 
-				xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns3:value>
+		<parameter id="Reply">
+			<value 
+				></value>
 		</parameter>
 	</output>
 </tool>

@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessor.java,v 1.4 2007/08/29 08:47:46 gtr Exp $
+/* $Id: IdentityPreprocessor.java,v 1.5 2008/09/03 14:19:05 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -12,15 +12,16 @@ package org.astrogrid.applications.http.script;
 
 import java.util.Enumeration;
 
-import org.astrogrid.applications.beans.v1.SimpleParameter;
-import org.astrogrid.applications.beans.v1.WebHttpCall;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Tool;
+
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.impl.WebHttpCall;
+import org.astrogrid.applications.description.impl.WebHttpCall.SimpleParameter;
+import org.astrogrid.applications.description.execution.ListOfParameterValues;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
 
 /**
- * A default preprocessor that simply programatically changes the format from Tool and CeaHttpApplicationType to WebHttpCall
+ * A default preprocessor that simply programatically changes the format from Tool and CeaHttpApplicationDefinition to WebHttpCall
  * without any actual processing.  Should be deprecated by the default version of XSLTPreprocessor, if I can
  * get it working.
  * @author jdt
@@ -28,18 +29,17 @@ import org.astrogrid.workflow.beans.v1.Tool;
 public final class IdentityPreprocessor implements Preprocessor {
 
     /* (non-Javadoc)
-     * @see org.astrogrid.applications.http.script.Preprocessor#process(org.astrogrid.workflow.beans.v1.Tool, org.astrogrid.registry.beans.cea.CeaHttpApplicationType)
+     * @see org.astrogrid.applications.http.script.Preprocessor#process(org.astrogrid.workflow.beans.v1.Tool, org.astrogrid.registry.beans.cea.CeaHttpApplicationDefinition)
      */
-    public WebHttpCall process(final Tool tool, final CeaHttpApplicationType app) {
+    public org.astrogrid.applications.description.impl.WebHttpCall process(final Tool tool, final org.astrogrid.applications.http.HttpApplicationDescription app) {
         final WebHttpCall webCall = new WebHttpCall();
-        webCall.setURL(app.getCeaHttpAdapterSetup().getURL());
-        final Input inputs = tool.getInput();
-        final Enumeration en = inputs.enumerateParameter();
-
-        while (en.hasMoreElements()) {
-            final ParameterValue parameter = (ParameterValue) en.nextElement();
-            final SimpleParameter simpleParameter = new ConstructableSimpleParameter(parameter);
-            webCall.addSimpleParameter(simpleParameter);
+        webCall.setURL(app.getUrl());
+        ListOfParameterValues inputs = tool.getInput();
+      
+        for (ParameterValue parameter : inputs.getParameter()) {
+	    
+           final SimpleParameter simpleParameter = new ConstructableSimpleParameter(parameter);
+            webCall.getSimpleParameter().add(simpleParameter);
         }
         
         return webCall;
@@ -51,7 +51,7 @@ public final class IdentityPreprocessor implements Preprocessor {
      */
     private static class ConstructableSimpleParameter extends SimpleParameter {
         public ConstructableSimpleParameter(ParameterValue parameter) {
-            this.setName(parameter.getName().trim());
+            this.setName(parameter.getId().trim());
             this.setValue(parameter.getValue().trim());
         }
     }

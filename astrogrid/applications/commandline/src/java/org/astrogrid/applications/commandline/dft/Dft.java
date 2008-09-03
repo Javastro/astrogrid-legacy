@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.8 2004/12/18 15:43:57 jdt Exp $
+ * $Id: Dft.java,v 1.9 2008/09/03 14:19:08 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,19 +16,19 @@ package org.astrogrid.applications.commandline.dft;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplication;
-import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
 import org.astrogrid.applications.commandline.MergingParameterAdapter;
 import org.astrogrid.applications.commandline.MergingParameterAdapter.Concentrator;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -65,8 +65,8 @@ public class Dft extends CommandLineApplication {
     * @param user
     * @param description
     */
-   public Dft(String id, String jobStepId, Tool tool,
-         ApplicationInterface interf, CommandLineApplicationEnvironment env,
+   public Dft(String jobStepId, Tool tool,
+         ApplicationInterface interf, ApplicationEnvironment env,
          ProtocolLibrary lib) {
       super(jobStepId, tool, interf, env, lib);
    }
@@ -85,23 +85,23 @@ public class Dft extends CommandLineApplication {
    protected ParameterAdapter instantiateAdapter(ParameterValue pval,
          ParameterDescription desr, ExternalValue indirectVal) {
 
-      if (desr.getName().equals("matches")) {
+      if (desr.getId().equals("matches")) {
          if (logger.isDebugEnabled()) {
             logger.debug("creating merging adapter for parameter matches");
          }
 
          return new MergingParameterAdapter(getApplicationInterface(), pval,
-               (CommandLineParameterDescription)desr, indirectVal,
+               (CommandLineParameterDefinition)desr, indirectVal,
                applicationEnvironment, matchConcentrator);
       }
-      else if (desr.getName().equals("targets")) //FIXME - I dont think that this is supposed to be a multiple
+      else if (desr.getId().equals("targets")) //FIXME - I dont think that this is supposed to be a multiple
       {
          if (logger.isDebugEnabled()) {
             logger.debug("creating merging adapter for parameter targets");
          }
 
          return new MergingParameterAdapter(getApplicationInterface(), pval,
-               (CommandLineParameterDescription)desr, indirectVal,
+               (CommandLineParameterDefinition)desr, indirectVal,
                applicationEnvironment, targetConcentrator);
         
       }

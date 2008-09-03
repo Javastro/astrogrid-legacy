@@ -1,27 +1,23 @@
 <%@page contentType="text/html" import="java.io.*, java.net.URL"%>
-
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
+<%@page import="org.springframework.context.ApplicationContext"%>
+<%@page import="org.astrogrid.component.descriptor.ComponentDescriptor"%>
 <head>
 <title>Current configuration of CEC</title>
-<style type="text/css" media="all">
-  @import url("../style/maven-base.css"); 
-  @import url("../style/maven-theme.css");
-</style>
-</head>
-<body class="composite">
+<%@ include file="../inc/header.jsp" %>
 
-<%@include file="header.xml"%>
-
-<jsp:useBean class="org.astrogrid.applications.commandline.BasicCommandLineConfiguration"
-    id="configuration" scope="application"/>
-    
+<%
+//naughty direct use of the application context - lazy should go into mvc
+ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+%>    
 <div id='bodyColumn'>
-<h1><jsp:getProperty name="configuration" property="name"/></h1>
-<pre style="font-size: 150%;">
-<jsp:getProperty name="configuration" property="description"/>
+<h1><%=((ComponentDescriptor)ctx.getBean("config")).getName() %></h1>
+<pre style="font-size: 120%;">
+<%=((ComponentDescriptor)ctx.getBean("config")).getDescription() %>
+</pre>
+<h1>Execution Policy</h1>
+<pre style="font-size: 120%;">
+<%=((ComponentDescriptor)ctx.getBean("ExecutionPolicy")).getDescription() %>
 </pre>
 </div>
-
-<%@include file="footer.xml"%>
-
-</body>
-</html>
+<%@ include file="../inc/footer.jsp" %>

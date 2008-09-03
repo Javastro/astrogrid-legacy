@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $id:$ -->
+<!-- this is an unofficial maven 2 pom to make my maven2 builds easier pah -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-cea-server</artifactId><!--  would be better to rename to astrogrid-cea-common -->
+  <name>CEA common library</name>
+  <version>2008.2-SNAPSHOT</version>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2008.2-SNAPSHOT</version>
+  </parent>
+  
+  <packaging>jar</packaging>
+  <description>A class library from which CEA services may be made.</description>
+  <properties>
+   <astrogrid.name>applications</astrogrid.name>
+  </properties>
+  <build>
+    <plugins>
+     
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <!--  <phase>install</phase>-->
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+ 
+    </plugins>
+    <testResources>
+      <testResource>
+   <directory>test/java</directory><includes>
+   <include>**/*.sh</include>
+   <include>**/*.xml</include>
+   <include>**/*.properties</include>
+   </includes></testResource>
+    </testResources>
+ </build>
+ <dependencyManagement>
+   <dependencies>
+     <dependency>
+        <artifactId>commons-logging</artifactId>
+        <groupId>commons-logging</groupId>
+        <version>1.1</version>
+        <scope>provided</scope> <!-- try to indicate that commons-logging should not be included in the wars as it is provided by tomcat, and strange errors occur if it is included -->
+     </dependency>
+   </dependencies>
+ </dependencyManagement>
+ <dependencies>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-common</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-registry-client-lite</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-registry-common</artifactId>
+    </dependency>
+    <!-- used to implement a weak-reference cache in the registry -->
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-pal-oldquery</artifactId>
+       <type>jar</type>
+    </dependency>
+    <dependency>
+       <artifactId>astrogrid-xml</artifactId>
+       <groupId>org.astrogrid</groupId>
+       <version>2007.2xml</version>
+    </dependency>
+    <dependency>
+       <artifactId>astrogrid-utils</artifactId>
+       <groupId>org.astrogrid</groupId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-community-common</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-community-resolver</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-community-client</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-filemanager-client</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-filemanager-contract</artifactId>
+    </dependency>
+    <!--  <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-filestore-client</artifactId>
+       <version>2007.2fs</version>
+       <type>jar</type>
+       <url>http://www.astrogrid.org/</url>
+       </dependency>
+           -->
+       <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-filestore-common</artifactId>
+     </dependency>
+
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-jes-delegate</artifactId>
+       <version>2006.4j</version>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-workflow-objects</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-security</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-contracts</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.astrogrid</groupId><!-- do I need this -->
+       <artifactId>astrogrid-base-ws</artifactId>
+       <version>1.4</version>
+       <type>pom</type>
+    </dependency>
+    <dependency>
+       <groupId>net.ivoa</groupId>
+       <artifactId>ivoa-objects</artifactId>
+    </dependency>
+    
+   <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-webmvc</artifactId><!-- perhaps should be moved to the webapp project...  - though in fact I think that the transitive deps from here are probably sufficient and would not need the big spring.jar from above...-->
+       <version>2.5.2</version>
+    </dependency>
+    <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-test</artifactId>
+       <version>2.5.2</version>
+       <scope>test</scope>
+    </dependency>
+    <dependency>
+       <groupId>xerces</groupId>
+       <artifactId>xercesImpl</artifactId>
+       <version>2.8.1</version>
+       <type>jar</type>
+    </dependency>
+    <dependency>
+       <groupId>regexp</groupId>
+       <artifactId>regexp</artifactId>
+       <version>1.3</version>
+    </dependency>
+    <dependency>
+       <groupId>oro</groupId>
+       <artifactId>oro</artifactId>
+       <version>2.0.7</version>
+    </dependency>
+    <dependency>
+       <artifactId>commons-jxpath</artifactId>
+       <groupId>commons-jxpath</groupId>
+       <version>1.2</version>
+       <exclusions>
+          <!-- this includes a really old version of xerces...before the split into the xercesImpl jar -v.bad... -->
+          <exclusion>
+             <artifactId>xerces</artifactId>
+             <groupId>xerces</groupId>
+          </exclusion>
+       </exclusions>
+    </dependency>
+    <dependency>
+       <groupId>commons-collections</groupId>
+       <artifactId>commons-collections</artifactId>
+       <version>3.0</version>
+    </dependency>
+    <dependency>
+       <groupId>commons-beanutils</groupId>
+       <artifactId>commons-beanutils</artifactId>
+       <version>1.6.1</version>
+    </dependency>
+    <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <version>4.4</version>
+    </dependency>
+    <dependency>
+       <groupId>log4j</groupId>
+       <artifactId>log4j</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>xmlunit</groupId>
+       <artifactId>xmlunit</artifactId>
+       <version>1.0</version>
+    </dependency>
+    <dependency>
+       <groupId>starlink</groupId>
+       <artifactId>stil</artifactId>
+       <version>2.0-1</version>
+    </dependency>
+    <dependency>
+       <groupId>net.sourceforge.junitee</groupId>
+       <artifactId>junite2</artifactId>
+       <version>2.0.0</version>
+    </dependency>
+    <dependency>
+       <groupId>javax.servlet</groupId>
+       <artifactId>jstl</artifactId>
+       <type>jar</type>
+       <version>1.1.2</version>
+       <scope>provided</scope>
+    </dependency>
+    <dependency>
+       <groupId>javax.servlet</groupId>
+       <artifactId>servlet-api</artifactId>
+       <type>jar</type>
+       <version>2.4</version>
+       <scope>provided</scope>
+    </dependency>
+    <!-- xsl processing -->
+    <dependency>
+       <groupId>net.sf.saxon</groupId>
+       <artifactId>saxon</artifactId>
+       <version>8.7</version>
+    </dependency>
+    <dependency>
+       <groupId>net.sf.saxon</groupId>
+       <artifactId>saxon-dom</artifactId>
+       <version>8.7</version>
+    </dependency>
+     <dependency>
+         <groupId>joda-time</groupId>
+         <artifactId>joda-time</artifactId>
+                   <version>1.5.2</version>
+      </dependency>
+  
+  <!-- jdbc drivers -->  
+           <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.3-603.jdbc3</version>
+        </dependency>
+          <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
+    
+   
+ </dependencies>
+ <profiles>
+     <profile > <!--  profile needed only because junitee for junit4 is not in the main repos -->
+        <id>junitee</id>
+        
+        <repositories>
+           <repository >
+           <id>juniteerepo</id>
+           <name>repository for junitee</name>
+           <url>http://junitee.sourceforge.net/repository/</url>
+           
+           </repository>
+        </repositories>
+     </profile>
+  </profiles>
+</project>

@@ -1,9 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee                          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
       
   <display-name>CEA server for command-line applications</display-name>
  
+    <context-param>
+      <param-name>contextConfigLocation</param-name> <!-- note that later definitions override earlier ones. -->
+      <param-value>classpath:/org/astrogrid/applications/component/ceaspring.xml
+                   /WEB-INF/cec-spring.xml
+      </param-value>
+   </context-param>
+ 
+   <context-param>
+      <param-name>log4jConfigLocation</param-name>
+      <param-value>/WEB-INF/classes/log4j.properties</param-value>
+   </context-param>
+   
+    <context-param>
+      <param-name>chiba.configfile</param-name>
+      <param-value>WEB-INF/chiba-config.xml</param-value>
+   </context-param>
+   
+
+   <!--  
+   Leave the listener commented-out if using JBoss 
+   
+   <listener>
+      <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+   </listener>
+  
+ -->
+   <listener>
+      <listener-class> org.springframework.web.context.ContextLoaderListener</listener-class>
+   </listener>
+   
+   <!--
+   This is an example mapping for ChibaServlet that can be used in applications that like to
+   use a Servlet to process XForms. This was the standard approach up to version 2.1 which introduced
+   the XFormsFilter.
     <servlet>
+        <servlet-name>XFormsServlet</servlet-name>
+        <servlet-class>org.chiba.web.servlet.ChibaServlet</servlet-class>
+
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+-->
+
+   <!--  XForms Filter -->
+   <filter>
+      <filter-name>XFormsFilter</filter-name>                                                                                                                              
+      <filter-class>org.chiba.web.filter.XFormsFilter</filter-class>
+        <init-param>
+            <param-name>scripted</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+   <!--  XForms filter mapping
+      maps the XFormsFilter to a specified Servlet or url-pattern. This example uses a
+      url-pattern that matches all document under the forms directory. Other examples would be:
+      - <url-pattern>*.xhtml</url-pattern> to match all xhtml files
+      - <servlet-name>XFormsRequest</servlet-name> to match all requests to Servlet XFormsRequest
+   -->
+   <filter-mapping>
+      <filter-name>XFormsFilter</filter-name>
+      <url-pattern>/xforms/*</url-pattern>
+   </filter-mapping>
+   
+   <!-- - - - - - - - SPRING MVC CONFIGURATION - - - - - - - -->
+   <servlet>
+      <servlet-name>uws</servlet-name> <!-- note config file automatically picked up -->
+      <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+      <load-on-startup>2</load-on-startup>
+   </servlet>
+ 
+  <servlet>
     <display-name>Apache-Axis</display-name>
     <servlet-name>AxisServlet</servlet-name>
     <servlet-class>
@@ -28,21 +98,113 @@
   <servlet>
     <servlet-name>VosiServlet</servlet-name>
     <servlet-class>org.astrogrid.applications.vosi.VosiServlet</servlet-class>
+   <load-on-startup>500</load-on-startup>    
   </servlet>
   
     <servlet>
         <servlet-name>AbortionServlet</servlet-name>
         <servlet-class>org.astrogrid.applications.commandline.AbortionServlet</servlet-class>
     </servlet>
+    
+    <servlet>
+        <servlet-name>Flux</servlet-name>
+        <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+<!--
+      This entry may be uncommented to use relative paths in the served html-forms. Remember change the
+      chiba.forms.uri.relative parameter of XFormsServlet as well.
+        <init-param>
+            <param-name>overridePath</param-name>
+            <param-value>Flux</param-value>
+        </init-param>
+-->
+    </servlet>
+
+<!--
+    This is an example servlet that can be used in conjunction with XFormsFilter by
+    attaching the filter to this Servlet. This only parses the requested form document
+    and passes the DOM along as a request attribute that will be picked up by the XFormsFilter.
+   <servlet>
+      <servlet-name>XFormsRequest</servlet-name>
+      <servlet-class>org.chiba.web.servlet.XFormsRequestServlet</servlet-class>
+   </servlet>
+-->
+
+   <servlet>
+        <servlet-name>FluxHelper</servlet-name>
+        <servlet-class>org.chiba.web.flux.FluxHelperServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>PlainHtml</servlet-name>
+        <servlet-class>org.chiba.web.servlet.PlainHtmlServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ViewServlet</servlet-name>
+        <servlet-class>org.chiba.web.servlet.ViewServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>SubmissionResponse</servlet-name>
+        <servlet-class>org.astrogrid.applications.chiba.SubmissionResponseServlet</servlet-class>
+    </servlet>
+
+   <servlet-mapping>
+        <servlet-name>Flux</servlet-name>
+        <url-pattern>/Flux/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>FluxHelper</servlet-name>
+        <url-pattern>/FluxHelper/*</url-pattern>
+    </servlet-mapping>
+
+<!--
+   Umcomment the respective entries when using ChibaServlet or XFormsRequestServlet.
+   
+    <servlet-mapping>
+        <servlet-name>XFormsServlet</servlet-name>
+        <url-pattern>/XFormsServlet</url-pattern>
+    </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>XFormsRequest</servlet-name>
+      <url-pattern>/xfrequest</url-pattern>
+   </servlet-mapping>
+-->
+   <servlet-mapping>
+        <servlet-name>PlainHtml</servlet-name>
+        <url-pattern>/PlainHtml/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ViewServlet</servlet-name>
+        <url-pattern>/view</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SubmissionResponse</servlet-name>
+        <url-pattern>/SubmissionResponse</url-pattern>
+    </servlet-mapping>
+ <!-- end of chiba stuff -->   
+    
     <servlet-mapping>
     <servlet-name>CommonExecutionControllerInitializer</servlet-name>
     <url-pattern>/cec-http</url-pattern>
   </servlet-mapping>
+  
+   <servlet-mapping>
+      <servlet-name>uws</servlet-name>
+      <url-pattern>/uws/*</url-pattern>
+   </servlet-mapping>
 	
   <servlet-mapping>
-    <servlet-name>JUnitEETestServlet</servlet-name>
-    <url-pattern>/TestServlet/*</url-pattern>
-  </servlet-mapping><servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <url-pattern>/TestServlet/*</url-pattern>
   </servlet-mapping>
@@ -65,17 +227,35 @@
   <servlet-mapping>
     <servlet-name>VosiServlet</servlet-name>
     <url-pattern>/VOSI/capabilities</url-pattern>
-    <load-on-startup>500</load-on-startup>
   </servlet-mapping>
   
     <servlet-mapping>
         <servlet-name>VosiServlet</servlet-name>
         <url-pattern>/VOSI/availability</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
+<!--     <servlet-mapping>
         <servlet-name>AbortionServlet</servlet-name>
         <url-pattern>/abort</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping> -->
+    <jsp-config>
+    <!-- these taglib declarations are not really needed by the most modern versions of the taglibs, but are here to make eclipse recognise them for editor content assist -->
+       <taglib>
+          <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+          <taglib-location>/META-INF/fmt.tld</taglib-location>
+       </taglib>
+       <taglib>
+          <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+          <taglib-location>/META-INF/c.tld</taglib-location>
+       </taglib>
+       <taglib>
+          <taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
+          <taglib-location>/META-INF/x.tld</taglib-location>
+       </taglib>
+       <taglib>
+          <taglib-uri>http://www.springframework.org/tags</taglib-uri>
+          <taglib-location>/WEB-INF/tld/spring.tld</taglib-location>
+       </taglib>
+    </jsp-config>
     <mime-mapping>
     <extension>wsdl</extension>
      <mime-type>text/xml</mime-type>
@@ -96,20 +276,27 @@
 		<description>The full path to a directory where the CEC may build its configuration structure.</description>
 		<env-entry-name>cea.base.dir</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>/Users/pharriso/Work/ag/src/applications/commandline/ceabase/</env-entry-value>
+        <env-entry-value>/Users/pharriso/Work/ag/src/applications/commandline/ceabase</env-entry-value>
 	</env-entry>
 	
 	<env-entry>
 		<description>The URL for this web-application; e.g. http://x.y.z:8080/astrogrid-cea-server.</description>
 		<env-entry-name>cea.webapp.url</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>http://localhost:8888/astrogrid-cea-commandline/</env-entry-value>
 	</env-entry>
+   <env-entry>
+      <description>The authority ID of any internally defined applications - REMOVE ME in future</description>
+      <env-entry-name>cea.application.authorityid</env-entry-name>
+      <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>org.changeme</env-entry-value>
+   </env-entry>
 	
 	<env-entry>
 		<description>The web-service URL for querying the reference resource-registry.</description>
 		<env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
-		<env-entry-value>http://galahad.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
+		<env-entry-value>http://registry.astrogrid.org/astrogrid-registry/services/RegistryQuery</env-entry-value>
 	</env-entry>
 	
 	<env-entry>
@@ -119,28 +306,8 @@
 		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
 	</env-entry>
  
-	<env-entry>
-		<description>Class name of the component manager implementation to use.</description>
-		<env-entry-name>cea.component.manager.class</env-entry-name>
-		<env-entry-type>java.lang.String</env-entry-type>
-		<env-entry-value>org.astrogrid.applications.commandline.CommandLineCEAComponentManager</env-entry-value>
-	</env-entry>
-        
-        <env-entry>
-          <description>Maximum number of jobs that may run at the same time.</description>
-          <env-entry-name>cea.parallel.execution.limit</env-entry-name>
-          <env-entry-type>java.lang.String</env-entry-type>
-          <env-entry-value>5</env-entry-value>
-        </env-entry>
-        
-        <env-entry>
-          <description>Greatest duration before a job is aborted, in milliseconds.</description>
-          <env-entry-name>cea.run.time.limit</env-entry-name>
-          <env-entry-type>java.lang.String</env-entry-type>
-          <env-entry-value>86400000</env-entry-value>
-        </env-entry>
-        
-        <env-entry>
+<!-- should go into spring config... -->
+      <env-entry>
           <description>Class-name of the access-policy plug-in for controlling requests to this service. Use the default value if you don't want to restrict access.</description>
           <env-entry-name>cea.access.policy</env-entry-name>
           <env-entry-type>java.lang.String</env-entry-type>

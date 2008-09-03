@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAServerTest.java,v 1.13 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: HttpApplicationCEAServerTest.java,v 1.14 2008/09/03 14:18:33 pah Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,59 +9,44 @@
  *
 **/
 package org.astrogrid.applications.http;
-
-import junit.framework.TestCase;
-
-import org.astrogrid.applications.component.CEAComponentManager;
-import org.astrogrid.applications.component.EmptyCEAComponentManager;
-import org.astrogrid.applications.http.registry.RegistryQuerier;
-import org.astrogrid.applications.http.test.TestRegistryQuerier;
+import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /** test of a cea server configured with the javaclass backend.
  * @author jdt/Noel Winstanley nw@jb.man.ac.uk 21-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 9 Jun 2008
  * @todo exercise other components of server here..
  *
  */
-public class HttpApplicationCEAServerTest extends TestCase {
-    /**
-     * Constructor 
-     * @param arg0
-     */
-    public HttpApplicationCEAServerTest(String arg0) {
-        super(arg0);
-    }
-    
-    protected void setUp() throws Exception {
+@RunWith(SpringJUnit4ClassRunner.class) 
+@ContextConfiguration(locations={"/cecspringTest.xml"}) 
+public class HttpApplicationCEAServerTest extends AbstractComponentManagerTestCase {
+   
+    public void setUp() throws Exception {
     	super.setUp();
-    	manager = new HttpApplicationCEAComponentManager();
-        //@TODO temp hack to replace the registry querier with our test one
-    	manager.getContainer().unregisterComponent(RegistryQuerier.class);
-    	manager.getContainer().registerComponentInstance(RegistryQuerier.class, new TestRegistryQuerier(null));
-    }
+        System.setProperty(RegistryDelegateFactory.QUERY_URL_PROPERTY, "http://dummy");//FIXME should this really be necessary - but in the registry delegate to NPE?
+   }
     
-    protected CEAComponentManager manager;
     
-     public void testIsValid() {
-        manager.getContainer().verify();
-    }
-    
-    public void testGetController() {
-        assertNotNull(manager.getExecutionController());
-    }
-    public void testGetMetaData() {
-        assertNotNull(manager.getMetadataService());
-    }
-
-    public void testInformation() {
-        System.out.println(manager.information());
-    }    
-    
+ //TODO need more tests to ensure that this is set up properly 
     
 }
 
 
 /* 
 $Log: HttpApplicationCEAServerTest.java,v $
+Revision 1.14  2008/09/03 14:18:33  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.13.42.2  2008/08/02 13:32:32  pah
+safety checkin - on vacation
+
+Revision 1.13.42.1  2008/04/01 13:50:07  pah
+http service also passes unit tests with new jaxb metadata config
+
 Revision 1.13  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibrary.java,v 1.3 2004/11/29 20:00:56 clq2 Exp $
+/*$Id: DefaultProtocolLibrary.java,v 1.4 2008/09/03 14:18:57 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,6 @@
 **/
 package org.astrogrid.applications.parameter.protocol;
 
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -20,12 +17,18 @@ import java.util.Map;
 
 import junit.framework.Test;
 
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.springframework.stereotype.Service;
+
 /** Default implementation of {@link org.astrogrid.applications.parameter.protocol.ProtocolLibrary}
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 2 Apr 2008
  *
  */
+@Service
 public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescriptor {
-    /** add a protocl to the set supported by this library */
+    /** add a protocol to the set supported by this library */
     public void addProtocol(Protocol p) {
         map.put(p.getProtocolName().toLowerCase(),p);
         
@@ -33,13 +36,18 @@ public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescrip
     
     
     /** Construct a new DefaultIndirectionProtocolLibrary
-     * 
+     * n.b. this will not work with picocontainer now
      */
-    public DefaultProtocolLibrary() {
+    public DefaultProtocolLibrary(Protocol[]protocols) {
         super();
-        this.map = new HashMap();
+        this.map = new HashMap<String, Protocol>();
+        for (int i = 0; i < protocols.length; i++) {
+	    Protocol protocol = protocols[i];
+	    addProtocol(protocol);
+	}
     }
-    protected final Map map;
+    protected final Map<String,Protocol>
+    map;
     /**
      * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(org.astrogrid.applications.beans.v1.parameters.ParameterValue)
      */
@@ -116,6 +124,27 @@ public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescrip
 
 /* 
 $Log: DefaultProtocolLibrary.java,v $
+Revision 1.4  2008/09/03 14:18:57  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.182.3  2008/06/10 20:01:39  pah
+moved ParameterValue and friends to CEATypes.xsd
+
+Revision 1.3.182.2  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
+Revision 1.3.182.1  2008/04/04 15:46:08  pah
+Have got bulk of code working with spring - still need to remove all picocontainer refs
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.3  2004/11/29 20:00:56  clq2
 nww-itn07-684
 

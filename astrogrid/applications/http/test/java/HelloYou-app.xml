@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource  status="active" xsi:type="impl:CeaHttpApplication" created="2005-10-10T00:00:00" updated="2008-04-01T00:00:00"
+ xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+ xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+ xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
+ xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 http://www.ivoa.net/xml/RegistryInterface/RegistryInterface-v1.0.xsd
+ http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd">
+    <title>An http-get HelloYou App</title>
+    <shortName>Echoer</shortName>
+    <identifier>ivo://org.astrogrid.test/HelloYou</identifier>
+    <curation>
+      <publisher>
+               Astrogrid
+            </publisher>
+      <contact>
+        <name>John Taylor</name>
+        <email>jdt@roe.ac.uk</email>
+      </contact>
+    </curation>
+    <content>
+    <subject>???</subject>
+      <description>This is part of the astrogrid CEA.  It describes an applicaton that simple adds two params and returns the result.</description>
+      <referenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</referenceURL>
+    </content>
+    <applicationDefinition>
+      <applicationType>http</applicationType>
+      <parameters>
+        <parameterDefinition id="Message" type="text"/>
+        <parameterDefinition id="Result" type="text"/>
+      </parameters>
+      <interfaces>
+        <interfaceDefinition id="iface1">
+          <input>
+            <pref ref="Message"/>
+          </input>
+          <output>
+            <pref ref="Result"/>
+          </output>
+        </interfaceDefinition>
+      </interfaces>
+    </applicationDefinition>
+    <CeaHttpAdapterSetup>
+      <!--Ensure the following matches that in the test webserver-->
+      <URL>http://127.0.0.1:8078/helloYou</URL>
+    </CeaHttpAdapterSetup>
+</ri:Resource>

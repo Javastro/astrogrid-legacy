@@ -4,7 +4,6 @@
  */
 package org.astrogrid.applications.http.xslt;
 
-import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,33 +12,30 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Comment;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
+import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * Sandbox to play around with xslt ideas
@@ -47,16 +43,21 @@ import org.w3c.dom.Node;
  * @author jdt
  */
 public class XSLTTest extends TestCase {
-    public void testMarshall() throws MarshalException, ValidationException, ParserConfigurationException, IOException,
-            TransformerException {
+    public void testMarshall() throws  ParserConfigurationException, IOException,
+            TransformerException, JAXBException {
+	JAXBContext jc = CEAJAXBContextFactory.newInstance();
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
         //load up test docs
         InputStream toolFileStream = this.getClass().getResourceAsStream("tool-eg.xml");
         Reader reader = new InputStreamReader(toolFileStream);
-        Tool tool = Tool.unmarshalTool(reader);
+        Tool tool = (Tool) unmarshaller.unmarshal(reader);
 
         InputStream appFileStream = this.getClass().getResourceAsStream("webapp-eg.xml");
         Reader reader2 = new InputStreamReader(appFileStream);
-        CeaHttpApplicationType app = CeaHttpApplicationType.unmarshalCeaHttpApplicationType(reader2);
+        Unmarshaller um = jc.createUnmarshaller();
+        Source source = new StreamSource(reader2);
+	JAXBElement<?> o = um.unmarshal(source ,CeaHttpApplicationDefinition.class);
+        org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition app =  (CeaHttpApplicationDefinition) o.getValue();
 
 
         //Construct a document combining the Tool and WebHttpApplication
@@ -77,17 +78,14 @@ public class XSLTTest extends TestCase {
 
         
     //    callingDocument.insertBefore(namespace, root);
+ 
+
         
-        
-        Marshaller marshaller = new Marshaller(root);
-        //marshaller.setNSPrefixAtRoot(true);
-        marshaller.setNamespaceMapping("ceas","http://www.ivoa.net/xml/CEAService/v0.2");
-        marshaller.setNamespaceMapping("vr","http://www.ivoa.net/xml/VOResource/v0.10");
-        marshaller.setNamespaceMapping("ceab","http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1");
-        marshaller.setNamespaceMapping("agw","http://www.astrogrid.org/schema/AGWorkflow/v1");
-        marshaller.setNamespaceMapping("agpd","http://www.astrogrid.org/schema/AGParameterDefinition/v1");
-        marshaller.marshal(app);
-        marshaller.marshal(tool);
+        Marshaller marshaller = jc.createMarshaller();
+	    marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+		    	new NamespacePrefixMapperImpl());
+        marshaller.marshal(app, callingDocument);
+        marshaller.marshal(tool,callingDocument);
 
         OutputFormat format = new OutputFormat(callingDocument);
         XMLSerializer output = new XMLSerializer(pretransWriter, format);

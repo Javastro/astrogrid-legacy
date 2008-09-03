@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rs:VOResources 
+from="1"
+more="false"
+numberReturned="10"
+xmlns:rs="http://www.ivoa.net/xml/RegistryInterface/v1.0" 
+xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.0" 
+xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1" 
+xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+ xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
+ xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1" 
+ xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 http://www.ivoa.net/xml/RegistryInterface/v1.0 http://www.ivoa.net/xml/CEA/v1.0rc1 http://www.eso.org/~pharriso/ivoa/schema/VOCEA-v1.0.xsd">
+  <rs:Resource status="active" updated="2008-02-22T16:48:25Z"  xsi:type="cea:CeaApplication" created="2005-12-15T13:48:25Z">
+    <title>MERLIN Imager</title>
+    <shortName>MERLIN Imager</shortName>
+    <identifier>ivo://org.astrogrid/MERLINImager</identifier>
+    <curation>
+      <publisher>Astrogrid</publisher>
+      <creator>
+        <name>Astrogrid</name>
+        <logo>??</logo>
+      </creator>
+      <date role="representative">2006-02-16</date>
+      <version>1.0</version>
+      <contact>
+        <name>Anita Richards</name>
+        <email>amsr@jb.man.ac.uk</email>
+      </contact>
+    </curation>
+    <content>
+      <subject>merlin radio image</subject>
+      <description>The MERLIN Imager extracts images from calibrated radio interferometry data,
+            where available.</description>
+      <referenceURL>http://www2.astrogrid.org/science/data-access/data-access-worksheet/merlinimager</referenceURL>
+      <type>Other</type>
+    </content>
+    <applicationDefinition>
+      <parameters>
+        <parameterDefinition id="Ftol" type="real">
+          <name>Ftol</name>
+          <description>Frequency tolerance (MHz) e.g. 100 Default = all available
+                    frequencies.</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>5000</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="Equinox" type="text">
+          <name>Equinox</name>
+          <description>Equinox - J for J2000 or B for B1950, Default J All images are
+                    returned in J2000</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>J</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="Start" type="text">
+          <name>Start</name>
+          <description>Earliest time to consider YYYYMMDD . Default = 19910101</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>19910101</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="ImageSize" type="real">
+          <name>Image Size</name>
+          <description>Image size (arcsec). Will be rounded if necessary to ranges
+                    approx. 20-368 arcsec at 1370-1730 MHz or 5-98 arcsec at 4500-7000 MHz Default =
+                    smallest available size.</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>1</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="output" type="text">
+          <name>output type</name>
+          <description>This can be one of HTML VOTable or Ascii, with the default
+                    being VOTable</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>VOTable</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="Dec" type="text">
+          <name>Dec</name>
+          <description>RA and Dec. in sexagesimal (colon-separated) or in decimal
+                    degrees e.g. +28:38:01.05 or +28.633625 If blank, MERLIN Name will be used.</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>0.0</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="MERLINImages" type="VOTable">
+          <name>MERLIN Images List</name>
+          <description>Name for VOTable which will contain image URLs</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>MERLINImages.vot</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="End" type="text">
+          <name>End</name>
+          <description>Latest time to consider YYYYMMDD . Default = 20201212</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>20201212</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="Name" type="text">
+          <name>MERLIN name</name>
+          <description>Exact MERLIN source name (if unsure use position instead).</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>NULL</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="Resolution" type="real">
+          <name>Resolution</name>
+          <description>Resolution (arcsec). Will be rounded if necessary to within
+                    ranges approx. 0.11-2.4 arcsec at 1370-1730 MHz or 0.03-0.72 arcsec at 4500-7000
+                    MHz Default = natural resolution.</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>0.1</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="RA" type="text">
+          <name>RA</name>
+          <description>RA in sexagesimal (colon-separated) or in decimal degrees e.g.
+                    23:55:03.382 or 358.764092 If blank, MERLIN Name will be used.</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>0.0</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="Freq" type="real">
+          <name>Frequency</name>
+          <description>Frequency (MHz) e.g. 4994 Must be in ranges 1370-1430,
+                    1550-1730, 4500-5200 or 6000-7000 MHz. Default = all available frequencies.</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>5000</defaultValue>
+        </parameterDefinition>
+      </parameters>
+      <interfaces>
+        <interfaceDefinition id="full">
+          <input>
+            <pref maxOccurs="1" minOccurs="0" ref="RA"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Dec"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Equinox"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Name"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Freq"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Ftol"/>
+            <pref maxOccurs="1" minOccurs="0" ref="ImageSize"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Resolution"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Start"/>
+            <pref maxOccurs="1" minOccurs="0" ref="End"/>
+          </input>
+          <output>
+            <pref maxOccurs="1" minOccurs="1" ref="MERLINImages"/>
+          </output>
+        </interfaceDefinition>
+      </interfaces>
+    </applicationDefinition>
+  </rs:Resource>
+</rs:VOResources>

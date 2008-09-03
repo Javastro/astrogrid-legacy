@@ -1,4 +1,4 @@
-/* $Id: Preprocessor.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
+/* $Id: Preprocessor.java,v 1.4 2008/09/03 14:19:05 pah Exp $
  * Created on Aug 10, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,9 +9,10 @@
  */
 package org.astrogrid.applications.http.script;
 
-import org.astrogrid.applications.beans.v1.WebHttpCall;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.impl.WebHttpCall;
+import org.astrogrid.applications.http.HttpApplicationDescription;
+import org.astrogrid.applications.http.exceptions.HttpParameterProcessingException;
 
 /**
  * Processes the tool and application documents into a calling document.
@@ -22,5 +23,5 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @author jdt
  */
 public interface Preprocessor {
-    public WebHttpCall process(Tool tool, CeaHttpApplicationType app);
+    public WebHttpCall process(Tool tool, HttpApplicationDescription app) throws HttpParameterProcessingException;
 }

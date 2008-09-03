@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistory.java,v 1.7 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: FileStoreExecutionHistory.java,v 1.8 2008/09/03 14:18:48 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,27 +10,41 @@
 **/
 package org.astrogrid.applications.manager.persist;
 
-import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
+import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
+import org.astrogrid.contracts.Namespaces;
+import org.xml.sax.SAXException;
+
 /** Execution history that persists archives as xml documents to disk.
  * Current Set of executing applications still only kept in memory.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Apr 2008 changed to be jaxb
  *
  */
 public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
@@ -63,14 +77,23 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
             logger.info("BaseDir set to " + baseDir.getAbsolutePath());
         }
         /**
+         * @throws ValidationException 
+         * @throws MarshalException 
          * @see org.astrogrid.applications.manager.persist.InMemoryExecutionHistory.SimpleMap#put(java.lang.Object, java.lang.Object)
          */
-        public void put(String key,ExecutionSummaryType value) throws MarshalException, ValidationException, IOException{ 
+        public void put(String key,ExecutionSummaryType value) throws  IOException{ 
             File f = mkFile(key);
             FileWriter fw = new FileWriter(f);
             try {
-                value.marshal(fw);
-            } finally {
+        	JAXBContext jc = CEAJAXBContextFactory.newInstance();
+                 Marshaller m = jc.createMarshaller();
+                 m.marshal(new JAXBElement(new QName(Namespaces.CEAT
+          		.getNamespace(), "executionSummary"), ExecutionSummaryType.class, value), fw);
+                 
+            } catch (JAXBException e) {
+		logger.error("problem writing execution history for "+key, e);
+		//TODO action for this error?
+	    } finally {
                 try {
                     fw.close();
                 } catch (IOException e)  {
@@ -84,17 +107,25 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
             return new File(baseDir,URLEncoder.encode(key.toString()));
         }
         /**
+         * @throws ValidationException 
+         * @throws MarshalException 
          * @see org.astrogrid.applications.manager.persist.InMemoryExecutionHistory.SimpleMap#get(java.lang.Object)
          */
-        public ExecutionSummaryType get(String key) throws MarshalException, ValidationException, FileNotFoundException {
+        public ExecutionSummaryType get(String key) throws  FileNotFoundException {
             File f = mkFile(key);
             if (!f.exists()) {
                 return null;
             }
             FileReader fr = new FileReader(f);
             try {
-                return ExecutionSummaryType.unmarshalExecutionSummaryType(fr);
-            } finally {
+        	
+                return CEAJAXBUtils.unmarshall(fr, ExecutionSummaryType.class);
+            } catch (Exception e) {
+		logger.error("problem unmarshalling for "+key, e);
+		ExecutionSummaryType es = new ExecutionSummaryType();
+		es.setApplicationName("failed to retrieve execution summary");
+		return es;
+	    } finally {
                 try {
                     fr.close();
                 } catch (IOException e){
@@ -102,6 +133,25 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
                 }
             }
         }
+	public Set<String> keys() {
+	    Set<String> set = new HashSet<String>();
+	    
+	    File[] files = baseDir.listFiles();
+	    for (int i = 0; i < files.length; i++) {
+		File file = files[i];
+		String s =  file.getName();
+		set.add(s);
+	    }
+	    return set;
+	}
+	public boolean delete(String key) {
+	          File f = mkFile(key);
+	            if (f.exists()) {
+	                return f.delete();
+	            }
+	            return true; // file already not there...
+	 
+	}
 
     }// end inner class
     
@@ -151,11 +201,38 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
         return "FileStoreExecutionHistory";
     }
 
+
+
 }
 
 
 /* 
 $Log: FileStoreExecutionHistory.java,v $
+Revision 1.8  2008/09/03 14:18:48  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.7.54.4  2008/08/29 07:28:30  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.7.54.3  2008/05/08 22:40:53  pah
+basic UWS working
+
+Revision 1.7.54.2  2008/04/17 16:08:32  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
+Revision 1.7.54.1  2008/03/19 23:10:54  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.7  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

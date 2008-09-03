@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- central configuration file for CEA spring -->
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-lang-2.5.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+      
+      default-autowire="constructor">
+  
+<!-- 
+ <context:component-scan base-package="org.astrogrid.applications" ></context:component-scan>  
+ -->
+ 
+ <!-- this bean looks up values in the JNDI to configure the container -->
+ <bean id="configurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="properties">
+         <bean class="java.util.Properties">
+            <constructor-arg type="java.util.Properties">
+               <map>
+                  <entry key="cea.base.dir">
+                     <jee:jndi-lookup resource-ref="true" jndi-name="cea.base.dir" expected-type="java.lang.String" />
+                  </entry>
+                  <entry key="cea.webapp.url">
+                     <jee:jndi-lookup resource-ref="true" jndi-name="cea.webapp.url" expected-type="java.lang.String" />
+                  </entry>
+                   <entry key="cea.application.authorityid">
+                     <jee:jndi-lookup resource-ref="true" jndi-name="cea.application.authorityid" expected-type="java.lang.String" />
+                  </entry>
+                </map>
+            </constructor-arg>
+         </bean>
+      </property>
+ </bean>
+ <!-- this represents the true configuration of the CEC - the definition as below follows the pattern of the previous Commandline CEC installations  -->
+ <bean id="config" class="org.astrogrid.applications.contracts.CEAConfiguration">
+ 	<property name="applicationDescriptionUrl" value="file:${cea.base.dir}/config/app-description.xml"/> 
+    <property name="configurationDirectory" value="${cea.base.dir}/config/" />
+    <property name="recordsDirectory" value="${cea.base.dir}/records/" />
+    <property name="registryTemplate" value="file:${cea.base.dir}/config/registration-template.xml" />
+    <property name="serviceEndpoint" value="${cea.webapp.url}/services/CommonExecutionConnectorService" />
+    <property name="temporaryFilesDirectory" value="${cea.base.dir}/temp/" />
+</bean>
+
+<!-- this execution policy needs to be set to have longer times in a production environment -->
+<bean id="ExecutionPolicy" class="org.astrogrid.applications.manager.ConfigurableExecutionPolicy">
+<property name="killPeriod" value="10" />
+<property name="maxRunTime" value="20" />   
+<property name="defaultLifetime" value="400" />
+<property name="destroyPeriod" value="60" />
+</bean>
+
+<bean id="ApplicationDescriptionLibrary" class="org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary" autowire="no" >
+<!-- this bean gathers together all of the different types -->
+  <constructor-arg>
+  <list>
+  <!-- the commandline applications are read by this library -->
+  <bean class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary"></bean>
+  <!-- this library simply gathers those applications specified by the applications property  -->
+  <bean class="org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary">
+    <property name="applications">
+       <list>
+         <bean class="org.astrogrid.applications.db.stap.STAPApplicationDescription">
+           <constructor-arg type="javax.sql.DataSource" index="1"><jee:jndi-lookup jndi-name="jdbc/STAP" resource-ref="true" expected-type="javax.sql.DataSource"></jee:jndi-lookup></constructor-arg>
+         </bean>
+       </list>
+    </property>
+  </bean>
+   
+  </list>
+  </constructor-arg>   
+</bean>
+
+
+<!-- beans below here should not need configuration unless you have specialist needs -->
+
+ 
+<bean id="ExecutionHistory" class="org.astrogrid.applications.manager.persist.FileStoreExecutionHistory">   
+</bean>
+
+<bean id="AppAuthorityIDResolver" class="org.astrogrid.applications.description.base.TestAuthorityResolver">
+<!-- I think that this should go..  not used any more...-->
+</bean>
+
+<bean id="ApplicationEnvironmentRetriever" class="org.astrogrid.applications.environment.DefaultExecutionEnvRetriever">
+</bean>
+</beans>

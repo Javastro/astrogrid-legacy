@@ -1,4 +1,4 @@
-/* $Id: HttpApplicationWebServiceException.java,v 1.5 2007/08/29 09:51:27 gtr Exp $
+/* $Id: HttpApplicationWebServiceException.java,v 1.6 2008/09/03 14:18:45 pah Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -8,23 +8,14 @@
 ///CLOVER:OFF 
 package org.astrogrid.applications.http.exceptions;
 
-import java.io.IOException;
 
 /**
  * Exceptions caused by problems connecting to the webservice
  * @author jdt
  */
-public class HttpApplicationWebServiceException extends IOException implements HttpApplicationException {
+public class HttpApplicationWebServiceException extends HttpApplicationException {
 
-    /**
-     * Constructor
-     *
-     * 
-     */
-    public HttpApplicationWebServiceException() {
-        super();
-    }
-    /**
+     /**
      * Constructor
      *
      * @param arg0
@@ -35,18 +26,22 @@ public class HttpApplicationWebServiceException extends IOException implements H
     
     /**
      * Constructor
-     * For somereason IOException doesn't provide this
-     * So we roll our own.
      * @param string fault description
      * @param e original exception
      */
-    public HttpApplicationWebServiceException(String string, Exception e) {
-        this(string + "\n" + e.getMessage());
+    public HttpApplicationWebServiceException(String string, Throwable e) {
+       super(string, e);
     }
 }
 
 /* 
  * $Log: HttpApplicationWebServiceException.java,v $
+ * Revision 1.6  2008/09/03 14:18:45  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.5.6.1  2008/04/01 13:50:06  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.5  2007/08/29 09:51:27  gtr
  * It can now be constructed from a generic Exception.
  *

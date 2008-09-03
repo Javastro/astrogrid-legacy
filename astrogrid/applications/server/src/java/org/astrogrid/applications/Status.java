@@ -1,15 +1,18 @@
 package org.astrogrid.applications;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.astrogrid.applications.manager.ExecutionController;
+
+import net.ivoa.uws.ExecutionPhase;
 
 /**
  * The status values that the application can have. 
  * Follows a typesafe enum pattern: the only instances available to 
  * clients are the static, final objects declared in this class and the
- * constructor is private. This closes the set of stati and allows a reliable
+ * constructor is private. This closes the set of states and allows a reliable
  * mapping between this class and ExecutionPhase.
  *
  * @author Paul Harrison
@@ -49,42 +52,30 @@ public class Status {
        
    }
    
-   public boolean equals(Object o) {
-       Status other = (Status)o;
-       return this.value.equals(other.value);
-   }
+   @Override
+public boolean equals(Object obj) {
+    if (this == obj)
+	return true;
+    if (obj == null)
+	return false;
+    if (getClass() != obj.getClass())
+	return false;
+    final Status other = (Status) obj;
+    if (value == null) {
+	if (other.value != null)
+	    return false;
+    } else if (!value.equals(other.value))
+	return false;
+    return true;
+}
    
-   /**
-    * Returns a hash code for the object.
-    *
-    * @since 2007.2.02
-    */
-   public int hashCode() {
-     if (this.equals(NEW)) {
-       return 1;
-     }
-     else if (this.equals(INITIALIZED)) {
-       return 2;
-     }
-     else if (this.equals(RUNNING)) {
-       return 3;
-     }
-     else if (this.equals(COMPLETED)) {
-       return 4;
-     }
-     else if (this.equals(WRITINGBACK)) {
-       return 5;
-     }
-     else if (this.equals(ERROR)) {
-       return 6;
-     }
-     else if (this.equals(QUEUED)) {
-       return 7;
-     }
-     else {
-       return 8; // Covers UNKNOWN and arbitrary codes.
-     }
-   }
+   @Override
+public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((value == null) ? 0 : value.hashCode());
+    return result;
+}
    
    /** parse a string as a status 
     * @param val the strng status
@@ -100,27 +91,35 @@ public class Status {
    public static final Status NEW = new Status("New");
    /** applications are in this state when held on a queue ready for execution. @since 2007.2.02 */
    public static final Status QUEUED = new Status("Queued");
-   /** applications are in this state after the {@link org.astrogrid.applications.Application#createExecutionTask()} method has returned */
-   public static final Status INITIALIZED = new Status("Initialized");
+   /** applications are in this state after the {@link ExecutionController#init(org.astrogrid.applications.description.base.Tool, String)} method has returned - implies that all of the parameters necessary are present */
+   public static final Status INITIALIZED = new Status("Initialized");//IMPL does this have any useful meaning any more? parameter testing more difficult....
+   /** applications are in this state while reading the parameters */
+   public static final Status READINGPARAMETERS = new Status("Reading parameters");
    /** applications are in this state while executing */
    public static final Status RUNNING = new Status("Running");
    /** the application has completed execution */
    public static final Status COMPLETED = new Status("Completed");
    /** the framework is writing back the results of the application execution */
    public static final Status WRITINGBACK = new Status("writing parameters back");
-   /** somethings gone wrong */
+   /** the application has been aborted */
+   public static final Status ABORTED = new Status("Aborted");
+   /** something's gone wrong */
    public static final Status ERROR = new Status("Error");
    /** something has gone really wrong */
    public static final Status UNKNOWN = new Status("Unknown");
    
+   
+   
    static {
-       phaseMap.put(Status.NEW,         ExecutionPhase.INITIALIZING);
+       phaseMap.put(Status.NEW,         ExecutionPhase.PENDING);
        phaseMap.put(Status.QUEUED,      ExecutionPhase.PENDING);
        phaseMap.put(Status.INITIALIZED, ExecutionPhase.PENDING);
-       phaseMap.put(Status.RUNNING,     ExecutionPhase.RUNNING);
+       phaseMap.put(Status.READINGPARAMETERS, ExecutionPhase.EXECUTING);
+       phaseMap.put(Status.RUNNING,     ExecutionPhase.EXECUTING);
        phaseMap.put(Status.COMPLETED,   ExecutionPhase.COMPLETED);
-       phaseMap.put(Status.WRITINGBACK, ExecutionPhase.RUNNING);
+       phaseMap.put(Status.WRITINGBACK, ExecutionPhase.EXECUTING);
        phaseMap.put(Status.ERROR,       ExecutionPhase.ERROR);
        phaseMap.put(Status.UNKNOWN,     ExecutionPhase.UNKNOWN);
+       phaseMap.put(Status.ABORTED, ExecutionPhase.ABORTED);
    }
 }

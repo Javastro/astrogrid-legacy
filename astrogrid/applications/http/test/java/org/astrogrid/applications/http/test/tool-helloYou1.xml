@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool name="Adder" interface="iface1"
-	xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+<tool id="ivo://org.astrogrid.test/Adder" interface="iface1"
+	xmlns="http://www.ivoa.net/xml/CEA/types/v1.1">
 	<input>
-		<parameter name="message">
-			<ns1:value 
-				xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Old King Cole was a Merry Old Soul</ns1:value>
+		<parameter id="Message">
+			<value 
+				>Old King Cole was a Merry Old Soul</value>
 		</parameter>
 	</input>
 	<output>
-		<parameter name="result">
-			<ns3:value 
-				xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+		<parameter id="Result">
+			<value 
+				/>
 		</parameter>
 	</output>
 </tool>

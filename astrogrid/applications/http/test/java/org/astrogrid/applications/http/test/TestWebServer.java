@@ -1,4 +1,4 @@
-/* $Id: TestWebServer.java,v 1.2 2004/09/01 15:42:26 jdt Exp $
+/* $Id: TestWebServer.java,v 1.3 2008/09/03 14:18:51 pah Exp $
  * Created on Jul 26, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -224,7 +224,7 @@ public class TestWebServer extends fi.iki.elonen.NanoHTTPD {
          * @see org.astrogrid.applications.http.test.TestWebServer.Responder#getResponse(java.util.Properties, java.util.Properties)
          */
         public Response getResponse(Properties header, Properties parms) {
-            String message =  (String) parms.get("message");
+            String message =  (String) parms.get("Message");
             Response response = new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_PLAINTEXT, "Hello "+message);
             return  response;
         }     
@@ -272,6 +272,12 @@ public class TestWebServer extends fi.iki.elonen.NanoHTTPD {
 
 /*
  * $Log: TestWebServer.java,v $
+ * Revision 1.3  2008/09/03 14:18:51  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.2.212.1  2008/04/01 13:50:06  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.2  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

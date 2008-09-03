@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineCECControlTest.java,v 1.7 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: CommandLineCECControlTest.java,v 1.8 2008/09/03 14:18:58 pah Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -21,7 +21,10 @@ import java.io.PrintWriter;
 
 import org.astrogrid.applications.commandline.AbstractCommandLineEnvironmentTestCase;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
+import org.astrogrid.applications.control.CECControl;
+import org.astrogrid.applications.manager.ConfigurableExecutionPolicy;
 import org.astrogrid.applications.manager.ControlService;
+import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
 
 import junit.framework.TestCase;
 
@@ -50,7 +53,7 @@ public class CommandLineCECControlTest extends AbstractCommandLineEnvironmentTes
    protected void setUp() throws Exception {
       super.setUp();
       
-      cs = new CommandLineCECControl(this.configuration);
+      cs = new CECControl(this.configuration, new InMemoryExecutionHistory(), new ConfigurableExecutionPolicy());
       
       // Create a file in the CEC's temporary-files directory.
       // This simulates what the CEC would do for itself when
@@ -78,6 +81,17 @@ public class CommandLineCECControlTest extends AbstractCommandLineEnvironmentTes
 
 /*
  * $Log: CommandLineCECControlTest.java,v $
+ * Revision 1.8  2008/09/03 14:18:58  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.7.56.2  2008/05/08 22:44:03  pah
+ * basic UWS working
+ *
+ * Revision 1.7.56.1  2008/04/04 15:34:51  pah
+ * Have got bulk of code working with spring - still need to remove all picocontainer refs
+ * ASSIGNED - bug 1611: enhancements for stdization holding bug
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ *
  * Revision 1.7  2006/03/17 17:50:58  clq2
  * gtr_1489_cea correted version
  *

@@ -4,3 +4,6 @@ tests.log
 velocity.log
 .project
 target
+.settings
+.pydevproject
+.springBeans

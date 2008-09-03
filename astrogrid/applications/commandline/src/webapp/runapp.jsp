@@ -1,23 +1,17 @@
 <%@ page import="java.io.*,
                                  java.net.*,
                  java.util.*,   
-                 org.picocontainer.*,
-                 org.astrogrid.workflow.beans.v1.*,
-                 org.astrogrid.applications.beans.v1.parameters.*,
-                 org.astrogrid.applications.service.v1.cea.*,
-                 org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType,
                  org.astrogrid.applications.manager.ExecutionController,
                  org.astrogrid.applications.manager.QueryService,
-                 org.astrogrid.applications.beans.v1.cea.castor.MessageType,
-                 org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase,
-                                 org.astrogrid.config.*,
-                                 org.astrogrid.applications.*,
-                                 org.astrogrid.applications.description.*,
-                                 org.astrogrid.applications.component.CEAComponentManagerFactory,
-                                 org.astrogrid.community.User "
+                                  org.astrogrid.applications.description.*,
+                                 org.astrogrid.applications.component.CEAComponentContainer,
+                                 org.astrogrid.applications.component.CEAComponents
+                                 "
      %>
+<%@page import="org.astrogrid.applications.description.execution.MessageType"%>
+<%@page import="net.ivoa.uws.ExecutionPhase"%>
 <%
-    PicoContainer pcontainer = CEAComponentManagerFactory.getInstance().getContainer();
+    CEAComponents pcontainer = CEAComponentContainer.getInstance();
 //  ApplicationDescriptionLibrary library = (ApplicationDescriptionLibrary) pcontainer.getComponentInstanceOfType(ApplicationDescriptionLibrary.class);
 //  String[] appNames = library.getApplicationNames();
     ApplicationInterface ifc = (ApplicationInterface) session.getValue("interfaceObj");
@@ -28,10 +22,10 @@
     if (!("true".equals(executing))) {
    		//Create Tool
         Tool tool = new Tool();
-   		tool.setName(description.getName());
-   		tool.setInterface(ifc.getName());
-   		Input input = new Input();
-   		Output output = new Output();
+   		tool.setId(description.getId());
+   		tool.setInterface(ifc.getId());
+   		ListOfParameterValues input = tool.getInput();
+   		ListOfParameterValues output = tool.getOutput();
    		tool.setInput(input);
    		tool.setOutput(output);
    		
@@ -40,7 +34,7 @@
    			String value = request.getParameter(inputs[i]);
    			if (value != null && !(value.equals(""))) { // Ignore unset parameters
  	   			ParameterValue pv = new ParameterValue();
-	   			pv.setName(inputs[i]);
+	   			pv.setId(inputs[i]);
 	   			pv.setValue(value);
 				String indirectionParameter = inputs[i] + "Indirect";
 				pv.setIndirect(request.getParameter(indirectionParameter) != null);
@@ -51,12 +45,12 @@
    		String[] outputs = ifc.getArrayofOutputs();
    		for (int i=0;i<outputs.length;++i) {
 	   		ParameterValue pv= new ParameterValue();
-	   		pv.setName(outputs[i]);
+	   		pv.setId(outputs[i]);
 	   		output.addParameter(pv);
    		}
    		session.putValue("tool",tool);
 
-		ExecutionController cec = (ExecutionController) pcontainer.getComponentInstanceOfType(ExecutionController.class);
+		ExecutionController cec = pcontainer.getExecutionController();
 		//JobIdentifierType jobstepid = new JobIdentifierType();
 		String	jobstepid = "foo";
 		executionId = cec.init(tool, jobstepid);
@@ -67,7 +61,9 @@
 		//out.print((started ? "Started OK" : "Failed to start") + "<br/>");
 		}
 		%>
-<html>
+<%@page import="org.astrogrid.applications.description.execution.Tool"%>
+<%@page import="org.astrogrid.applications.description.execution.ListOfParameterValues"%>
+<%@page import="org.astrogrid.applications.description.execution.ParameterValue"%><html>
 <head>
 <title>Test Application</title>
 <script language="JavaScript">
@@ -99,7 +95,7 @@ function refresh()
 
    <%
 
-		QueryService qs = (QueryService) pcontainer.getComponentInstanceOfType(QueryService.class);
+		QueryService qs =  pcontainer.getQueryService();
 		MessageType message = qs.queryExecutionStatus(executionId);
 		ExecutionPhase phase = message.getPhase();
 		out.print(phase +"...");
@@ -107,17 +103,17 @@ function refresh()
 	
 		Tool tool = (Tool) session.getValue("tool");
 		out.print("<h2>Inputs</h2>");
-		Input input = tool.getInput();
+		ListOfParameterValues input = tool.getInput();
 		ParameterValue[] pvis = input.getParameter();
    		for (int i=0;i<pvis.length;++i) {
-			String indirection = (pvis[i].getIndirect())? "indirect" : "direct";
-			out.print(pvis[i].getName()+":- " + pvis[i].getValue()+ " (" + indirection +")<br/>");
+			String indirection = (pvis[i].isIndirect())? "indirect" : "direct";
+			out.print(pvis[i].getId()+":- " + pvis[i].getValue()+ " (" + indirection +")<br/>");
    		}
 		out.print("<h2>Outputs</h2>");
-		Output output = tool.getOutput();
+		ListOfParameterValues output = tool.getOutput();
 		ParameterValue[] pvos = output.getParameter();
    		for (int i=0;i<pvos.length;++i) {
-			out.print(pvos[i].getName()+":- "+pvos[i].getValue()+"<BR/>");
+			out.print(pvos[i].getId()+":- "+pvos[i].getValue()+"<BR/>");
    		}
 	%>
 

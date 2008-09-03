@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.12 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.13 2008/09/03 14:18:44 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,18 @@
 **/
 package org.astrogrid.applications.javaclass;
 
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.ServiceDefinitionFactory;
+import org.astrogrid.applications.description.ServiceDescriptionException;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 
 /** A library of java class application descriptions.
  * <p>
@@ -48,29 +49,34 @@ public class JavaClassApplicationDescriptionLibrary
      * @param implClass - class of static methods, each of which will provide an application for the library.
      * @param authidResolver configuration object specifiying under which community (authority?) the applications are to be placed 
      * @param env standard container object for helper code.
+     * @param servDefFac 
+     * @throws ServiceDescriptionException 
      * 
      */
     public JavaClassApplicationDescriptionLibrary(JavaClassConfiguration config, 
-                                                  ApplicationDescriptionEnvironment env) {
-        super(env);
+                                                 ServiceDefinitionFactory servDefFac) throws ServiceDescriptionException {
+        super( config);
         this.implClass = config.getApplicationClass();
-        populate(implClass, env.getIdGen(), env.getAuthIDResolver());
+        this.sf = servDefFac;
+        populate(implClass, InternalCeaComponentFactory.getInstance().getAuthIDResolver());
     }
     
     protected final Class implClass;
+    private final ServiceDefinitionFactory sf;
     /** populates the library using reflection on the methods of the parameter class
      * @param imp
-    * @param authidresolver
+     * @param authidresolver
+     * @throws ServiceDescriptionException 
      */
-    protected final void populate(Class imp,IdGen idgen,
-                                  AppAuthorityIDResolver authidresolver) {
+    protected final void populate(Class imp,AppAuthorityIDResolver authidresolver) throws ServiceDescriptionException {
         String communityName = authidresolver.getAuthorityID();
+        JavaClassApplicationMetadataFactory appFac = new JavaClassApplicationMetadataFactory(communityName,  sf);
         Method[] methods = imp.getDeclaredMethods();
         for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
             int code = m.getModifiers();
             if (Modifier.isStatic(code) && Modifier.isPublic(code)) {
-                super.addApplicationDescription(new JavaClassApplicationDescription(m,communityName,env));            
+                super.addApplicationDescription(new JavaClassApplicationDescription(appFac.createMetadata(m),m, conf));            
                 } 
         } 
     }
@@ -93,6 +99,24 @@ public class JavaClassApplicationDescriptionLibrary
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.13  2008/09/03 14:18:44  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.12.54.4  2008/08/29 07:28:26  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.12.54.3  2008/06/16 21:58:58  pah
+altered how the description libraries fit together  - introduced the SimpleApplicationDescriptionLibrary to just plonk app descriptions into.
+
+Revision 1.12.54.2  2008/06/11 14:31:42  pah
+merged the ids into the application execution environment
+
+Revision 1.12.54.1  2008/03/19 23:10:55  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.12  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

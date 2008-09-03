@@ -1,11 +1,11 @@
 package org.astrogrid.applications.javaclass;
 
 import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.manager.BaseConfiguration;
+import org.astrogrid.applications.contracts.CEAConfiguration;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * A configuration object specialized for the JC-CEC.
@@ -17,12 +17,13 @@ import org.astrogrid.config.SimpleConfig;
  * @author Guy Rixon
  */
 public class BaseJavaClassConfiguration 
-    extends BaseConfiguration 
+    extends CEAConfiguration 
     implements JavaClassConfiguration, ComponentDescriptor {
   
   private static final Log logger 
       = LogFactory.getLog(BaseJavaClassConfiguration.class);
   
+  @SuppressWarnings("unchecked")
   private Class applicationClass;
   
   /**
@@ -30,9 +31,9 @@ public class BaseJavaClassConfiguration
    *
    * @throws IOException If the superclass constructor fails. 
    */
-  public BaseJavaClassConfiguration() throws IOException {
+  public BaseJavaClassConfiguration(String classname) throws IOException {
     super();
-    this.initializeApplicationClass();
+    this.initializeApplicationClass(classname);
   }
   
   /**
@@ -40,10 +41,8 @@ public class BaseJavaClassConfiguration
    * The class name is read from the external environment. If not
    * set in the environment, a default class is used.
    */
-  protected void initializeApplicationClass() {
+  protected void initializeApplicationClass(String className) {
     try {
-      String className 
-          = SimpleConfig.getSingleton().getString("cea.javaclass.server.class");
       this.applicationClass = Class.forName(className);
       logger.info("The application is implemented by Java class " + className);
     }

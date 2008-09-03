@@ -1,4 +1,4 @@
-/* $Id: XSLTPreprocessor.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
+/* $Id: XSLTPreprocessor.java,v 1.4 2008/09/03 14:19:05 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -11,11 +11,7 @@
 //@TODO - remove CLOVER:OFF once this class is complete
 package org.astrogrid.applications.http.script;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,29 +19,30 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.astrogrid.applications.beans.v1.WebHttpCall;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.DOMException;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.impl.WebHttpCall;
+import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
+import org.astrogrid.applications.http.HttpApplicationDescription;
+import org.astrogrid.applications.http.exceptions.HttpParameterProcessingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -120,20 +117,21 @@ public final class XSLTPreprocessor implements Preprocessor {
      * (non-Javadoc)
      * 
      * @see org.astrogrid.applications.http.script.Preprocessor#process(org.astrogrid.workflow.beans.v1.Tool,
-     *      org.astrogrid.registry.beans.cea.CeaHttpApplicationType)
+     *      org.astrogrid.registry.beans.cea.CeaHttpApplicationDefinition)
      */
-    public WebHttpCall process(Tool tool, CeaHttpApplicationType app) {
+    public WebHttpCall process(Tool tool, HttpApplicationDescription app) throws HttpParameterProcessingException {
         if (log.isTraceEnabled()) {
-            log.trace("process(Tool tool = " + tool + ", CeaHttpApplicationType app = " + app + ") - start");
+            log.trace("process(Tool tool = " + tool + ", CeaHttpApplicationDefinition app = " + app + ") - start");
         }
 
-        // @TODO Auto-generated method stub
-        try {
-
+       try {
+         //FIXME must be able to do xsl transformation in a more flexible way.
             Writer writer3 = new PrintWriter(new FileOutputStream("tool-eg.xml"));
             Writer writer4 = new PrintWriter(new FileOutputStream("webapp-eg.xml"));
-            tool.marshal(writer3);
-            app.marshal(writer4);
+            JAXBContext confac = CEAJAXBContextFactory.newInstance();
+	    javax.xml.bind.Marshaller jbmar = confac.createMarshaller();
+            jbmar.marshal(tool, writer3);
+            jbmar.marshal(app, writer4);
 
             //Construct a document combining the Tool and WebHttpApplication
             // documents
@@ -144,9 +142,10 @@ public final class XSLTPreprocessor implements Preprocessor {
 
             Document callingDocument = builder.getDOMImplementation().createDocument(null, "http-app", null);
             Node root = callingDocument.getFirstChild();
-            Marshaller marshaller = new Marshaller(root);
-            marshaller.marshal(app);
-            marshaller.marshal(tool);
+            Marshaller marshaller = confac.createMarshaller(); // FIXME need to marshall properly??
+            marshaller.marshal(app, root);
+            root=callingDocument.getLastChild();
+            marshaller.marshal(tool, root);
 
             OutputFormat format = new OutputFormat(callingDocument);
             XMLSerializer output = new XMLSerializer(writer, format);
@@ -172,50 +171,19 @@ public final class XSLTPreprocessor implements Preprocessor {
             XMLSerializer output2 = new XMLSerializer(writer2, format2);
             output2.serialize(callingDocument2);
 
-        } catch (MarshalException e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
+        } catch (Exception e) {
+            log.error("process(Tool, CeaHttpApplicationDefinition)", e);
 
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
-
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (DOMException e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
-
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ValidationException e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
-
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new HttpParameterProcessingException("problem with xsl transform of parameters",e);
         } catch (FactoryConfigurationError e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
+            log.error("process(Tool, CeaHttpApplicationDefinition)", e);
 
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
-
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
-
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            log.error("process(Tool, CeaHttpApplicationType)", e);
-
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+         }
 
         if (log.isTraceEnabled()) {
-            log.trace("process(Tool, CeaHttpApplicationType) - end - return value = " + null);
+            log.trace("process(Tool, CeaHttpApplicationDefinition) - end - return value = " + null);
         }
         return null;
     }

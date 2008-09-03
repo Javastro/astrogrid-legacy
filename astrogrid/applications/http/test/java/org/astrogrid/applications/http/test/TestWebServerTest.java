@@ -1,4 +1,4 @@
-/* $Id: TestWebServerTest.java,v 1.2 2004/09/01 15:42:26 jdt Exp $
+/* $Id: TestWebServerTest.java,v 1.3 2008/09/03 14:18:51 pah Exp $
  * Created on Jul 26, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -8,10 +8,12 @@
  */
 package org.astrogrid.applications.http.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import fi.iki.elonen.NanoHTTPD;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -19,15 +21,16 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import fi.iki.elonen.NanoHTTPD;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * JUnit Test
  * @TODO we should also make tests via the post method, when the server supports it
  * @author jdt
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 13 Jun 2008
  */
-public class TestWebServerTest extends TestCase {
+public class TestWebServerTest  {
     /**
      * Logger for this class
      */
@@ -42,7 +45,8 @@ public class TestWebServerTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    @BeforeClass
+    static public void setUpAll() throws Exception {
         //This server should persist for as long as the
         //thread does....so we might need to worry
         //about rebinding to the same port
@@ -53,8 +57,8 @@ public class TestWebServerTest extends TestCase {
             log.trace("setUp() - end");
         }
     }
-
-    protected void tearDown() throws Exception {
+    @org.junit.After
+    public void tearDown() throws Exception {
         if (log.isTraceEnabled()) {
             log.trace("tearDown() - start");
         }
@@ -72,6 +76,7 @@ public class TestWebServerTest extends TestCase {
      * @throws HttpException on probs
      * @throws IOException on probs
      */
+    @Test
     public void testEchoGet() throws HttpException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("testEchoGet() - start");
@@ -96,12 +101,13 @@ public class TestWebServerTest extends TestCase {
      * @throws HttpException on probs
      * @throws IOException on probs
      */
+    @Test
     public void testHelloYou() throws HttpException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("testHelloYou() - start");
         }
 
-        method = new GetMethod("http://127.0.0.1:" + PORT + TestWebServer.HELLO_YOU_URI+"?message=inabottle");
+        method = new GetMethod("http://127.0.0.1:" + PORT + TestWebServer.HELLO_YOU_URI+"?Message=inabottle");
         int status = client.executeMethod(method);
         assertEquals(200, status);
         String response = method.getResponseBodyAsString();
@@ -118,6 +124,7 @@ public class TestWebServerTest extends TestCase {
      * @throws HttpException on probs
      * @throws IOException on probs
      */
+    @Test
     public void testAdderGet() throws HttpException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("testAdderGet() - start");
@@ -139,6 +146,7 @@ public class TestWebServerTest extends TestCase {
      * @throws HttpException on probs
      * @throws IOException on probs
      */
+    @Test
     public void testAdderXmlGet() throws HttpException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("testAdderGet() - start");
@@ -159,6 +167,7 @@ public class TestWebServerTest extends TestCase {
      * @throws HttpException on probs
      * @throws IOException on probs
      */
+    @Test
     public void testHelloWorldGet() throws HttpException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("testHelloWorldGet() - start");
@@ -179,6 +188,7 @@ public class TestWebServerTest extends TestCase {
      * @throws HttpException on probs
      * @throws IOException on probs
      */
+    @Test
     public void testWrong() throws HttpException, IOException {
         if (log.isTraceEnabled()) {
             log.trace("testWrong() - start");
@@ -198,6 +208,12 @@ public class TestWebServerTest extends TestCase {
 
 /*
  * $Log: TestWebServerTest.java,v $
+ * Revision 1.3  2008/09/03 14:18:51  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.2.212.1  2008/08/02 13:32:31  pah
+ * safety checkin - on vacation
+ *
  * Revision 1.2  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

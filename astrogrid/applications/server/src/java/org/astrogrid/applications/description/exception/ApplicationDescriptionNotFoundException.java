@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptionNotFoundException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: ApplicationDescriptionNotFoundException.java,v 1.3 2008/09/03 14:18:59 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,17 +13,28 @@
 
 package org.astrogrid.applications.description.exception;
 
-import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.description.MetadataException;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class ApplicationDescriptionNotFoundException extends CeaException {
+@SuppressWarnings("serial")
+public class ApplicationDescriptionNotFoundException extends MetadataException {
  
    
-   public ApplicationDescriptionNotFoundException(String name)
+   /**
+     * @param message
+     * @param cause
+     */
+    public ApplicationDescriptionNotFoundException(String message,
+	    Throwable cause) {
+	super(message, cause);
+	
+    }
+
+public ApplicationDescriptionNotFoundException(String name)
    {
       super(name);
      

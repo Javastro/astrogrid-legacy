@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
+    <name>Astrogrid</name>
+    <src>http://www.astrogrid.org/images/AGlogo.png</src>
+    <href>http://www.astrogrid.org/</href>
+  </bannerRight>
+  <version position="left"/>
+  <body>
+    <links>
+      <item name="Astrogrid" href="http://www.astrogrid.org/" />
+      <item name="IVOA" href="http://www.ivoa.net/"/>
+      <item name="Releases" href="http://deployer.astrogrid.org"/>
+    </links>
+     <menu ref="reports"/>
+  </body>
+</project>

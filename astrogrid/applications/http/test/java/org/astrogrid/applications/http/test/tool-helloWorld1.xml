@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool name="HelloWorld" interface="TheOnlyInterface"
-	xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+<tool id="ivo://org.astrogrid.test/HelloWorld" interface="TheOnlyInterface"
+	xmlns="http://www.ivoa.net/xml/CEA/types/v1.1">
 	<input/>
 	<output>
-		<parameter name="Result">
-			<ns3:value 
-				xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+		<parameter id="Result">
+			<value 
+				/>
 		</parameter>
 	</output>
 </tool>

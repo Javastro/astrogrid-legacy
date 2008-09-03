@@ -5,3 +5,5 @@ target
 tests.log
 VOTABLE
 .project
+.settings
+.springBeans

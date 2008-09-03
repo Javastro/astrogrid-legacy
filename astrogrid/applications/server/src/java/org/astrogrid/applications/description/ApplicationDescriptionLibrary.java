@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionLibrary.java,v 1.4 2005/01/23 12:52:26 jdt Exp $
+/*$Id: ApplicationDescriptionLibrary.java,v 1.5 2008/09/03 14:18:43 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,9 +25,17 @@ public interface ApplicationDescriptionLibrary {
     /** list names of all application descriptons in the library 
      * @return array of names (may be 0-length)*/
     public abstract String[] getApplicationNames();
+    
+    public abstract ApplicationDescription getDescriptionByShortName(String name) throws ApplicationDescriptionNotFoundException;
 }
 /* 
 $Log: ApplicationDescriptionLibrary.java,v $
+Revision 1.5  2008/09/03 14:18:43  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.4.166.1  2008/05/13 15:57:32  pah
+uws with full app running UI is working
+
 Revision 1.4  2005/01/23 12:52:26  jdt
 merge from cea_jdt_902
 

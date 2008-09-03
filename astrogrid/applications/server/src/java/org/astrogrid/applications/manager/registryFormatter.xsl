@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <!--
 	This stylesheet takes the default registry entry created by the castor marshalling and makes sure that it is in a fomat suitable for the registry.
 	-->

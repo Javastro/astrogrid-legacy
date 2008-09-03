@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+  xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1"
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 ../../../../contracts/src/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd
+      http://www.ivoa.net/xml/CEA/v1.0 ../../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd
+     "
+     xsi:type="cea:CeaApplication"
+      created="2005-09-09T12:28:16" updated="2005-09-09T12:28:16" status="active">
+      <title>Fictitious</title>
+      <shortName>Fictitious</shortName>
+      <identifier>ivo://org.test/fictitious</identifier>
+      <curation>
+         <publisher>IVOA</publisher>
+         <creator>
+            <name>IVOA</name>
+            <logo>??</logo>
+         </creator>
+         <date role="representative">2006-09-03</date>
+         <version>1.0</version>
+         <contact>
+            <name>Paul Harrison</name>
+            <email>pharriso@eso.org</email>
+         </contact>
+      </curation>
+      <content>
+         <subject>??? silly</subject>
+         <subject>??? silly</subject>
+         <description>
+            This is an example entry to exercise some of the new
+            features
+         </description>
+         <referenceURL>http://test.org/fictitious</referenceURL>
+         <type>Other</type>
+      </content>
+      <applicationDefinition>
+         <applicationType>dataproducing</applicationType>
+         <parameters>
+            <parameterDefinition id="targets" type="VOTable">
+               <name>Target votable</name>
+               <description>
+                  The VOTable file containing the target sources
+               </description>
+            </parameterDefinition>
+            <parameterDefinition id="matches" type="VOTable">
+               <name>Match VOTable</name>
+               <description>
+                  The VOTable file containing the sources to match
+               </description>
+            </parameterDefinition>
+            <parameterDefinition id="merged_output"
+               type="VOTable">
+               <name>Resulting VOTable</name>
+               <description>
+                  The VOTable file containing result of the match
+               </description>
+            </parameterDefinition>
+            <parameterDefinition id="unmerged_output"
+               type="VOTable">
+               <name>Resulting VOTable</name>
+               <description>
+                  The VOTable file containing sources without a match
+               </description>
+            </parameterDefinition>
+            <parameterDefinition id="matchRadius" type="real">
+               <name>Match Radius</name>
+               <description>??</description>
+               <unit>arcsec</unit>
+            </parameterDefinition>
+            <parameterDefinition id="radMax" type="real">
+               <name>Maximum search radius</name>
+               <description>??</description>
+               <unit>arcsec</unit>
+               <defaultValue>20.0</defaultValue>
+               <range><max>300.0</max></range>
+            </parameterDefinition>
+            <parameterDefinition id="output" type="text">
+               <name>output type</name>
+               <description>
+                  This can be one of HTML VOTable of Ascii, with the
+                  default being VOTable
+               </description>
+               <defaultValue>VOTable</defaultValue>
+               <optionList>
+                  <optionVal displayValue="silly" >HTML</optionVal>
+                  <optionVal>VOTable</optionVal>
+                  <optionVal>Ascii</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="maxMatches" type="integer">
+               <name>maximum number of matches per target</name>
+               <description>
+                  maximum number of matches per target
+               </description>
+            </parameterDefinition>
+            <parameterDefinition id="array" type="integer" array="3">
+               <name>sample array parameter</name>
+               <description>
+                  sample array parameter
+               </description>
+            </parameterDefinition>
+            <parameterDefinition id="htmlversion" type="text">
+            <name>html version</name>
+            <description>The style of html to produce</description>
+            <optionList>
+            <optionVal>html 4.01</optionVal>
+            <optionVal>xhtml 1.0</optionVal>
+            </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="votableserialization" type="text">
+                        <name>VOTable serialization</name>
+            <description>The style of serialization of the table data to produce</description>
+            <optionList>
+            <optionVal>TABLEDATA</optionVal>
+            <optionVal>FITS</optionVal>
+            <optionVal>BINARY</optionVal>
+            </optionList>
+            </parameterDefinition>
+            
+         </parameters>
+         <interfaces>
+            <interfaceDefinition id="simple">
+               <input>
+                  <pref ref="targets" maxOccurs="1" />
+                  <pref ref="matches" maxOccurs="0" />
+               </input>
+               <output>
+                  <pref ref="merged_output" />
+               </output>
+            </interfaceDefinition>
+            <interfaceDefinition id="full">
+               <constants>
+                  <!-- this is a constant parameter it should not be displayed to the user (or at leaset the user should not be allowed to change it), but should be passed on to the application -->
+                  <pval id="output">
+                     <value>HTML</value>
+                  </pval>
+               </constants>
+               <input>
+                  <pref ref="targets" maxOccurs="1" />
+                  <pref ref="matches" maxOccurs="0" />
+                  <pref ref="matchRadius" minOccurs="0" />
+                  <pref ref="radMax" minOccurs="0" />
+               </input>
+               <output>
+                  <pref ref="merged_output" />
+               </output>
+            </interfaceDefinition>
+            <!-- this is a trial of some of the new features -->
+            <interfaceDefinition id="trialnewfeatures">
+               <input>
+               <!-- render repeating pgroup as table -->
+                  <pgroup maxOccurs="6" name="sources">
+                     <pref ref="targets" />
+                     <pref ref="matches" />
+                  </pgroup>
+                  <!-- render single pgroup "in a box" with heading -->
+                  <pgroup name="search parameters">
+                     <pref ref="matchRadius" />
+                     <pref ref="radMax" />
+                  </pgroup>
+                  <!-- this means that the output parameter should be prompted for and then either the htmlversion parameter or the votableserialization parameter dependent on what the user chooses -->
+                  <cgroupHead ref="output" >
+                     <cgroup name="html options">
+                        <value>html</value>
+                        <pref ref="htmlversion" />
+                     </cgroup>
+                     <cgroup name="votable options">
+                        <value>VOTABLE</value>
+                        <pref ref="votableserialization" />
+                     </cgroup>
+                  </cgroupHead>
+               </input>
+               <!-- no output should be legal - though possibly stupid! -->
+               <output />
+            </interfaceDefinition>
+            <interfaceDefinition id="trialnesting">
+               <input>
+                  <pgroup>
+                     <pref ref="matchRadius" />
+                     <pref ref="radMax" />
+                  </pgroup>
+                  <cgroupHead ref="output">
+                     <cgroup>
+                        <value>html</value>
+                        <pref ref="targets" />
+                     </cgroup>
+                     <cgroup>
+                        <value>VOTABLE</value>
+                        <pgroup  maxOccurs="2" name="sources">
+                           <pref ref="targets" />
+                           <pref ref="matches" />
+                        </pgroup>
+                     </cgroup>
+                  </cgroupHead>
+               </input>
+               <!-- there can be more than one output -->
+               <output>
+                  <pref ref="merged_output" />
+                  <pref ref="unmerged_output" />
+               </output>
+            </interfaceDefinition>
+         </interfaces>
+      </applicationDefinition>
+   </ri:Resource>

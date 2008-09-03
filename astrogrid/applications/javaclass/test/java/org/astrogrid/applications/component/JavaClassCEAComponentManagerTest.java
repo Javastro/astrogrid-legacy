@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManagerTest.java,v 1.3 2008/02/12 12:10:56 pah Exp $
+/*$Id: JavaClassCEAComponentManagerTest.java,v 1.4 2008/09/03 14:19:08 pah Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,44 +10,32 @@
 **/
 package org.astrogrid.applications.component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.component.*;
-import org.w3c.dom.Document;
 
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.apps.AppsCEAComponentManager;
-import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
-import org.astrogrid.applications.manager.MetadataService;
-import org.astrogrid.applications.manager.QueryService;
-import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
-import org.astrogrid.config.SimpleConfig;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
-import java.net.URL;
 
-import junit.framework.TestCase;
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
+import org.astrogrid.applications.manager.QueryService;
+import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Jun-2004
- *
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 11 Jun 2008
  */
+@RunWith(SpringJUnit4ClassRunner.class) 
+@ContextConfiguration(locations={"/cecspringTest.xml"}) 
 public class JavaClassCEAComponentManagerTest extends AbstractComponentManagerTestCase {
    /**
      * Constructor for JavaClassCEAComponentManagerTest.
      * @param arg0
      */
-    public JavaClassCEAComponentManagerTest(String arg0) {
-        super(arg0);
-    }
-    protected CEAComponentManager createManager() {
-        return new JavaClassCEAComponentManager();
-    }
-        
-    protected void configureManager() {
-      // Nothing to do here.
-    }
-        
+       
+       
     public void testUseQuerier() {
        QueryService queryService = manager.getQueryService();
       assertNotNull(queryService);
@@ -71,6 +59,16 @@ public class JavaClassCEAComponentManagerTest extends AbstractComponentManagerTe
 
 /* 
 $Log: JavaClassCEAComponentManagerTest.java,v $
+Revision 1.4  2008/09/03 14:19:08  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.2.2  2008/08/02 13:33:41  pah
+safety checkin - on vacation
+
+Revision 1.3.2.1  2008/05/13 15:14:08  pah
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
 Revision 1.3  2008/02/12 12:10:56  pah
 build with 1.0 registry and filemanager clients
 

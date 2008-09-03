@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataServiceTest.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: DefaultMetadataServiceTest.java,v 1.4 2008/09/03 14:19:04 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,19 @@
 **/
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.description.base.DummyVODescriptionProvider;
-import org.astrogrid.registry.beans.resource.VODescription;
-//FIXME this is using v9 semantics
-
-import java.io.StringReader;
-
-import org.w3c.dom.Document;
+import javax.xml.transform.TransformerConfigurationException;
 
 import junit.framework.TestCase;
 
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.applications.description.base.DummyVODescriptionProvider;
+import org.astrogrid.contracts.SchemaMap;
+import org.astrogrid.test.AstrogridAssert;
+import org.w3c.dom.Document;
+
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-May-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 27 Mar 2008
  *
  */
 public class DefaultMetadataServiceTest extends TestCase {
@@ -31,9 +32,11 @@ public class DefaultMetadataServiceTest extends TestCase {
     /**
      * Constructor for BaseCEAServerDescriptionTest.
      * @param arg0
+     * @throws TransformerConfigurationException 
      */
-    public DefaultMetadataServiceTest(String arg0) {
+    public DefaultMetadataServiceTest(String arg0) throws TransformerConfigurationException {
         super(arg0);
+        provider = new DummyVODescriptionProvider(AUTH_ID, RES_KEY);
     }
     /*
      * @see TestCase#setUp()
@@ -41,7 +44,7 @@ public class DefaultMetadataServiceTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
     }
-    protected MetadataService provider = new DummyVODescriptionProvider(AUTH_ID, RES_KEY);
+    protected final MetadataService provider ;
     /*
      * @see TestCase#tearDown()
      */
@@ -52,12 +55,9 @@ public class DefaultMetadataServiceTest extends TestCase {
     public void testReturnRegistryEntry() throws Exception{
         Document regString= provider.returnRegistryEntry();
         assertNotNull(regString);
-        
-        //FIXME - castor cannot unmarshall the V10 descriptions without some massaging test removed for the moment - this all done in the org.astrogrid.applications.description.registry.RegistryEntryBuilder class
-//        // check we can parse it back into vodescription.
-//        StringReader reader = new StringReader(regString);
-//        VODescription desc = VODescription.unmarshalVODescription(reader);
-//        assertNotNull(desc);
+        XMLUtils.PrettyDocumentToStream(regString, System.out);
+        AstrogridAssert.assertSchemaValid(regString, "VOResources", SchemaMap.ALL);
+ 
     }
     
 
@@ -67,6 +67,18 @@ public class DefaultMetadataServiceTest extends TestCase {
 
 /* 
 $Log: DefaultMetadataServiceTest.java,v $
+Revision 1.4  2008/09/03 14:19:04  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.102.3  2008/06/10 20:01:39  pah
+moved ParameterValue and friends to CEATypes.xsd
+
+Revision 1.3.102.2  2008/04/01 13:50:07  pah
+http service also passes unit tests with new jaxb metadata config
+
+Revision 1.3.102.1  2008/03/27 13:34:36  pah
+now producing correct registry documents
+
 Revision 1.3  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 

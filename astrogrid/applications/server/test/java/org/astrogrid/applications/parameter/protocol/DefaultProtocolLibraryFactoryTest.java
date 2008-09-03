@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibraryFactoryTest.java,v 1.2 2005/08/10 17:45:10 clq2 Exp $
+/*$Id: DefaultProtocolLibraryFactoryTest.java,v 1.3 2008/09/03 14:19:00 pah Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,9 @@ import junit.framework.TestCase;
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Jul-2005
  *
  */
-public class DefaultProtocolLibraryFactoryTest extends TestCase {
+public class DefaultProtocolLibraryFactoryTest extends AbstractProtocolTestCase {
+    
+    
 
     public void testCreateLibrary() {
         DefaultProtocolLibraryFactory fac = new DefaultProtocolLibraryFactory();
@@ -32,6 +34,12 @@ public class DefaultProtocolLibraryFactoryTest extends TestCase {
 
 /* 
 $Log: DefaultProtocolLibraryFactoryTest.java,v $
+Revision 1.3  2008/09/03 14:19:00  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.84.1  2008/03/26 17:15:39  pah
+Unit tests pass
+
 Revision 1.2  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests
 

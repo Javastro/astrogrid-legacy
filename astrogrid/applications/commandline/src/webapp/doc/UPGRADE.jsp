@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Command-line-application server - Upgrading</title>
+<%@ include file="../inc/header.jsp" %>
+<div id="bodyColumn">
+  <div class="contentBox">
+    <div class="section"><a name="Upgrading"></a>
+      <h2>Upgrading</h2>
+      <p> This page describes how to install a new version of the CEC.
+        component while retaining the configuration from your previous version. </p>
+      <p> An upgrade is supplied as a new version of the WAR file containing the CEC.
+        This new WAR replaces the old version. </p>
+      <p> First, install the WAR for the CEC in Tomcat's <i>webapp</i> directory, as you
+        did in the initial nstallation of the CEC. Tomcat detects the change in the WAR file
+        and reacts thus: </p>
+      <ol>
+        <li>It "undeploys" the old copy of the web application. This destroys the
+          old WAR file and all files associated with it, <em>except</em> the files
+          in the directory structure at <i>cea.base.dir</i>; Tomcat does not know about these.</li>
+        <li>It deploys the new WAR, putting the web application and the CEC on-line
+          with a default configuration.</li>
+      </ol>
+      <p> At this stage, the CEC won't work satisfactorily as it doesn't have the correct
+        environment settings. You need to reapply the settings held over from before
+        the upgrade. </p>
+      <p> The environment settings are saved in a file in the <i>config</i> directory
+        underneath <i>cea.base.dir</i>. If you have used the default value for <i>cea.base.dir</i> then the web application can guess where it is. In this case,
+        you can use the <i>reload saved environment</i> link from the sidebar to reapply
+        the environment. After you've done this, the CEC should be using exactly the same
+        configuration as before the upgrade. </p>
+      <p> If you redefined <i>cea.base.dir</i>, then the web application cannot find the 
+        saved environment and so cannot reload the configuration without help. In particular,
+        the <i>reload saved environment</i> link in the sidebar will not work. In this case,
+        you can recover the configuration in one of two ways. </p>
+      <ol>
+        <li>Re-enter the environment entries using the environment editor. This includes 
+          re-establishing <i>cea.base.dir</i> so that the CEC can then find the other, saved
+          parts of the configuration.</li>
+        <li>Find the old <i>cea.base.dir</i> and copy the file holding the environment into
+          Tomcat's configuration directory. The configuration directory for Tomcat is <em>not</em> <i>(cea.base.dir)/config</i>; it is the directory <i>conf/Catalina/localhost</i> under
+          the top directory of the Tomcat installation.</li>
+      </ol>
+      <p> If the new version of the CEC component has different configuration details, then you
+        may need to change the environment or the configuration files or both. Read the release
+        notes (use the link in the sidebar in the new web application) to check. </p>
+    </div>
+  </div>
+</div>
+<%@ include file="../inc/footer.jsp" %>

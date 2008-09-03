@@ -1,4 +1,4 @@
-/*$Id: ParameterAdapter.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+/*$Id: ParameterAdapter.java,v 1.4 2008/09/03 14:18:57 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.applications.parameter;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 
 /** Abstraction around reading and writing  parameter values.
  * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter()}
@@ -35,12 +34,28 @@ public interface ParameterAdapter {
     
     /** returns the parameter object this adapter is wrapping. 
      * @return the paramter value this adpater wraps.*/
-    ParameterValue getWrappedParameter();
+    org.astrogrid.applications.description.execution.ParameterValue getWrappedParameter();
 }
 
 
 /* 
 $Log: ParameterAdapter.java,v $
+Revision 1.4  2008/09/03 14:18:57  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.266.2  2008/06/10 20:01:38  pah
+moved ParameterValue and friends to CEATypes.xsd
+
+Revision 1.3.266.1  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.3  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

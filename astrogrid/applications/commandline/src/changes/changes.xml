@@ -1,0 +1,43 @@
+<document>
+  <properties>
+    <title>Changes since previous release</title>
+  </properties>
+  <body>
+    <release version="2007.2.01" description="VOSI, queuing, error reporting">
+      <action dev="gtr" type="add" issue="2320">
+        <p>
+          If an application ends in the ERROR phase, a result (like an output
+          parameter but not registered as part of the application) called
+          cea-error reports the reasons. This result is shown in the UI.
+        </p>
+      </action>
+      <action dev="gtr" type="update" issue="2305">
+        <p>
+          Many dependencies have been updated.
+        </p>
+      </action>
+      <action dev="gtr" type="add" issue="2211">
+        <p>
+          Queuing of jobs is implemented, with a time-out imposed on
+          individual jobs. By default, up to five jobs execute in parallel,
+          with the rest queued, and jobs time out one day after start of
+          execution. Both parameters are configurable.
+        </p>
+      </action>
+      
+      <action dev="gtr" type="add" issue="2207">
+        <p>
+          VOSI is implemented: the service metadata and availability may be
+          read.
+        </p>
+      </action>
+      <action dev="gtr" type="fix" issue="2077">
+        <p>
+          If an application returns a bad status, times out, or is aborted,
+          then no attempt is made to write back the output parameters. This
+          should make the server logs easier to understand.
+        </p>
+      </action>
+    </release>
+  </body>
+</document>

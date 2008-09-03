@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!-- $Id: log4j.xml,v 1.2 2008/09/03 14:18:54 pah Exp $ -->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <param name="Threshold" value="DEBUG"/>        
+        
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd-MM-yy HH:mm:ss} CL-CEC: %p %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="DEBUGLOG" class="org.apache.log4j.FileAppender">
+        <param name="File" value="${catalina.home}/logs/cl-cec-debug.log"/>
+        <param name="MaxFileSize" value="4000KB"/>
+        <param name="MaxBackupIndex" value="1"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="DEBUG"/>        
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%%d{HH:mm:ss} %-4r [%t] %-5p %c %x - %m%n"/>
+        </layout>
+    </appender>
+    
+     <appender name="LONGLOG" class="org.apache.log4j.FileAppender">
+        <param name="File" value="${catalina.home}/logs/cl-cec.log"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="INFO"/>        
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%%d{HH:mm:ss} %-4r [%t] %-5p %c %x - %m%n"/>
+        </layout>
+    </appender>
+   
+    
+
+    <!--
+        if you don't want to use the file appender leave it commented,
+        otherwise an empty log file will be created anyway.
+    -->
+    <!--
+    <appender name="FILE" class="org.apache.log4j.FileAppender">
+        <param name="File" value="chiba.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p %c %x: %m%n"/>
+        </layout>
+    </appender>
+    -->
+
+    <!--
+        change to WARN in production environments
+    -->
+  
+    <category name="org.chiba">
+        <priority value="INFO"/>
+    </category>
+   <category name="org.apache.axis">
+        <priority value="WARN"/>
+    </category>
+   <category name="org.chiba">
+        <priority value="INFO"/>
+    </category>
+
+   <root>
+        <priority value="DEBUG"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="DEBUGLOG"/>
+        <appender-ref ref="LONGLOG"/>
+    </root>
+   
+</log4j:configuration>
+
+
+
+
+

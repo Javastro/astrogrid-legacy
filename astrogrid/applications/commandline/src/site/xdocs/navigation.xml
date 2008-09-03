@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="CEA components" href="../index.html"/>
+       <item name="HTTP-CEC"     href="index.html"/>
+    </links>
+      
+     <menu name="Administrator Quickstart">
+       <item name="About this component" href="about.txt"/>
+       <item name="Overview" href="index.html"/>
+       <item name="Download" href="DOWNLOAD.html"/>
+       <item name="Installation" href="INSTALL.html"/>
+       <item name="Configuration" href="CONFIGURE.html"/>
+       <item name="Self-testing" href="SELF-TEST.html"/>
+       <item name="Registration" href="REGISTER.html"/>
+       <item name="External testing" href="EXTTEST.html"/>
+       <item name="Upgrading" href="UPGRADE.html"/>
+       <item name="Uninstallation" href="UNINSTALL.html"/>
+    </menu>
+   
+    <menu name="Administrator Reference">
+	     <item name="Reference guide" href="REFERENCE.html"/>
+    </menu>
+
+  </body>
+</project>

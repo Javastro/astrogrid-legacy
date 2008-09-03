@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- configuration file for CEA spring UWS servlet $id$ -->
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-lang-2.5.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+      
+      default-autowire="constructor">
+  
+<context:component-scan base-package="org.astrogrid.applications.uws"/> 
+
+<!-- be explicit with the handler mappings - to allow some customization -->
+<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+<property name="urlDecode" value="false" />
+<!-- could specify a default handler here to catch things which are not explicitly matched... -->
+</bean> 
+<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+
+</bean> 
+ 
+ <!-- TODO need some error handling for disallowed URLs... -->
+ 
+ <!-- simple view resolver that allows the (jsp)  views to contain jstl --> 
+<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> 
+<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> 
+<property name="prefix" value="/uwsviews/"/> 
+<property name="suffix" value=".jsp"/> 
+<property name="requestContextAttribute" value="requestContext" />
+</bean> 
+  
+  
+</beans>

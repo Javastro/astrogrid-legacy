@@ -1,0 +1,2079 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<impl:CECConfig xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                                           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+                                           xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                                           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                                           xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd">
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z">
+        <title>Test Application</title>
+        <shortName>Test Application</shortName>
+        <identifier>ivo://org.testit/testapp</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>testapp is just for testing</description>
+            <referenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="P1" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     commandPosition="1"
+                                     fileRef="no">
+                    <name>Pause Time</name>
+                    <description>Text
+<!--                                <b>bold bit</b> Castor cannot cope with the any schema element -->
+                                        this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...
+                                </description>
+                    <unit>seconds</unit>
+                    <ucd>UCD</ucd>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="P2" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandPosition="2"
+                                     fileRef="file">
+                    <name>Param Values</name>
+                    <description>This is the file to which the parameters will be written
+                                </description>
+                    <unit/>
+                    <ucd>String</ucd>
+                    <defaultValue/>
+                </parameterDefinition>
+                <parameterDefinition id="P3" xsi:type="impl:CommandLineParameterDefinition" type="text" fileRef="file">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P4" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     commandSwitch="Parameter4"
+                                     switchType="keyword"
+                                     fileRef="no">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                    <optionList>
+                        <optionVal displayValue="optionDisplay">HTML</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="P5" xsi:type="impl:CommandLineParameterDefinition" type="VOTable">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P6" xsi:type="impl:CommandLineParameterDefinition" type="angle"
+                                     fileRef="no">
+                    <name/>
+                    <description/>
+                    <ucd>pos.eq.ra</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="P7" xsi:type="impl:CommandLineParameterDefinition" type="angle"
+                                     fileRef="no">
+                    <name/>
+                    <description/>
+                    <ucd>pos.eq.dec</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="P8" xsi:type="impl:CommandLineParameterDefinition" type="ADQL">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P9" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file">
+                    <name>Dup file</name>
+                    <description>The contents of this file will be copied to the output when run</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P10" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                                     
+                    <ucd/>
+                    
+                   <defaultValue>y</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="P11" xsi:type="impl:CommandLineParameterDefinition" type="anyURI">
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P12" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     switchType="normal">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P13" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P14" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     localFileName="testlocalfile">
+                    <description>the test application will write a message to this file</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="I1">
+                    <input>
+                        <pref ref="P1"/>
+                        <pref ref="P4"/>
+                        <pref ref="P9" maxOccurs="0"/>
+                        <pref ref="P10"/>
+                        <!-- the testapp will only pick up the last one passed --><!-- put this in to test that the interface does not check about it missing from the parameter list - not passed in any of the standard tests --><pref ref="P6" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="P3"/>
+                        <pref ref="P2"/>
+                        <pref ref="P14"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="Ilocal">
+                    <input>
+                        <pref ref="P1"/>
+                        <pref ref="P2"/>
+                        <pref ref="P4"/>
+                    </input>
+                    <output>
+                        <pref ref="P3"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="I2">
+                    <input>
+                        <pref ref="P9"/>
+                    </input>
+                    <output>
+                        <pref ref="P3"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>@TOOLBASEDIR@/testapp.sh</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z">
+        <title>testapp2</title>
+        <shortName>testapp2</shortName>
+        <identifier>ivo://org.astrogrid.localhost/testap2</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description/>
+            <referenceURL/>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="P1" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     commandPosition="1">
+                    <name>Pause Time</name>
+                    <description>Text
+<!--                                <b>bold bit</b> Castor cannot cope with the any schema element -->
+                                        this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...
+                                </description>
+                    <unit>String</unit>
+                    <ucd>AAD</ucd>
+                    <defaultValue>1.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="P2" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     commandPosition="2">
+                    <name>String</name>
+                    <description>Text This can be anything
+                                </description>
+                    <unit>String</unit>
+                    <ucd>String</ucd>
+                    <defaultValue>Text</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="P3" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     switchType="normal">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>NONE</optionVal>
+                        <optionVal>BLANK</optionVal>
+                        <optionVal>CORRECT</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="P3d" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     switchType="normal"
+                                     commandSwitch="P3">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P4" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     commandSwitch="Parameter4"
+                                     switchType="keyword">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P5" xsi:type="impl:CommandLineParameterDefinition" type="VOTable">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P6" xsi:type="impl:CommandLineParameterDefinition" type="angle">
+                    <name/>
+                    <description/>
+                    <ucd>pos.eq.ra</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="P7" xsi:type="impl:CommandLineParameterDefinition" type="angle">
+                    <name/>
+                    <description/>
+                    <ucd>pos.eq.dec</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="P8" xsi:type="impl:CommandLineParameterDefinition" type="ADQL">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P9" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     switchType="normal">
+                    <name/>
+                    <description>The contents of this file will be copied to the output</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P9d" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     commandSwitch="P9">
+                    <name/>
+                    <description>The contents of this file will be copied to the output</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P10" xsi:type="impl:CommandLineParameterDefinition" type="boolean">
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P11" xsi:type="impl:CommandLineParameterDefinition" type="anyURI">
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="P12" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     switchType="normal">
+                    <name/>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="I1">
+                    <input>
+                        <pref ref="P1"/>
+                        <pref ref="P2"/>
+                        <pref ref="P4"/>
+                        <pref ref="P9"/>
+                    </input>
+                    <output>
+                        <pref ref="P3"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="Ilocal">
+                    <input>
+                        <pref ref="P1"/>
+                        <pref ref="P2"/>
+                        <pref ref="P4"/>
+                        <pref ref="P9d"/>
+                    </input>
+                    <output>
+                        <pref ref="P3d"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="I2">
+                    <input>
+                        <pref ref="P9"/>
+                    </input>
+                    <output>
+                        <pref ref="P3"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>@TOOLBASEDIR@/testapp.sh</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z">
+        <title>testapp3</title>
+        <shortName>testapp3</shortName>
+        <identifier>ivo://org.astrogrid.localhost/testap3</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description/>
+            <referenceURL/>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="p1" xsi:type="impl:CommandLineParameterDefinition" type="integer">
+                    <name>String</name>
+                    <description>Text
+                                </description>
+                    <unit>String</unit>
+                    <ucd>String</ucd>
+                    <defaultValue>Text</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="p2" xsi:type="impl:CommandLineParameterDefinition" type="integer">
+                    <name>String</name>
+                    <description>Text
+                                </description>
+                    <unit>String</unit>
+                    <ucd>String</ucd>
+                    <defaultValue>Text</defaultValue>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="ID000001">
+                    <input>
+                        <pref ref="p2"/>
+                    </input>
+                    <output>
+                        <pref ref="p1"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <!-- todo need to test that this is picked up -->
+        <executionPath>path<commandpval>fixeval1</commandpval><commandpval>fixedval2</commandpval></executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z">
+        <title>windows test app</title>
+        <shortName>windows test app</shortName>
+        <identifier>ivo://org.test/wintestapp</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>This application will only work on windows</description>
+            <referenceURL/>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="name" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="1">
+                    <name>Name</name>
+                    <description>This is the name to greet</description>
+                    <unit/>
+                    <ucd/>
+                    <defaultValue>John</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="output" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     localFileName="result.txt">
+                    <name>Output</name>
+                    <description>The greeting</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="I">
+                    <input>
+                        <pref ref="name"/>
+                    </input>
+                    <output>
+                        <pref ref="output"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>@TOOLBASEDIR@/wintestapp.bat</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    
+   <!-- put some "real" application defintions in to see if the parsing is working for them also -->
+   
+       <impl:CeaApplication 
+                             created="1999-01-01T00:00:00"
+                             status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>SExtractor</title>
+        <shortName>SExtractor</shortName>
+        <identifier>ivo://org.astrogrid/SExtractor</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>SExtractor is a program that builds a catalogue of objects from an astronomical image. Although it is particularly oriented towards reduction of large scale galaxy-survey data, it performs rather well on moderately crowded star fields. 
+        </description>
+            <referenceURL>http://terapix.iap.fr/cplt/oldSite/soft/sextractor/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
+            <applicationType>processing</applicationType>
+            <parameters><!-- temporarily turn the images into direct file references - for performance during the AVO demo --><parameterDefinition id="DetectionImage" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="binary"
+                                     commandPosition="1"
+                                     fileRef="file">
+                    <name>Detection Image</name>
+                    <description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</description>
+                    <ucd/>
+                </parameterDefinition>
+                <!--This is set to position 2 although it is actually merged with the position 1 image --><parameterDefinition id="PhotoImage" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandPosition="2"
+                                     fileRef="file">
+                    <name>Measurement Image</name>
+                    <description>The Image that is used to measure photometric parameters</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="config_file" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandSwitch="c"
+                                     fileRef="file">
+                    <name>Configuration File</name>
+                    <description>File containing the main configuration parameters for SExtractor</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="PARAMETERS_NAME" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="binary"
+                                     fileRef="file">
+                    <name>Parameter File</name>
+                    <description>A File containing the list of catalogue paramters that should be computed</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="CATALOG_NAME" xsi:type="impl:CommandLineParameterDefinition" type="VOTable"
+                                     fileRef="file">
+                    <name>Derived output catalogue</name>
+                    <description>The catalogue of images derived from the input images</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="IMAGE_BAND" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandSwitch="---">
+                    <name>Input image band</name>
+                    <description>The input image measuerment band. This is used to form  the column name in the output VOTable for the measured photometry. </description>
+                    <ucd/>
+                    <!-- bit of a hack this commandSwitch means dont write me....--></parameterDefinition>
+                <parameterDefinition id="FILTER_NAME" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file">
+                    <name>detection filter</name>
+                    <description>the convolution filter (you can use the standard sextractor filters simply by naming them here)</description>
+                    <ucd/>
+                    <defaultValue>file:///home/applications/tools/sextractor-2.3.2/config/default.conv</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="DETECT_TYPE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>detection type</name>
+                    <description/>
+                    <ucd/>
+                    <defaultValue>CCD</defaultValue>
+                    <optionList>
+                        <optionVal>CCD</optionVal>
+                        <optionVal>PHOTO</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="FLAG_IMAGE" xsi:type="impl:CommandLineParameterDefinition" type="FITS"
+                                     fileRef="file">
+                    <name>flag image</name>
+                    <description/>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="DETECT_MINAREA" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="integer"
+                                     fileRef="no">
+                    <name>minimum detection area</name>
+                    <description>minimum number of pixels above threshold</description>
+                    <ucd/>
+                    <defaultValue>5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="DETECT_THRESH" xsi:type="impl:CommandLineParameterDefinition" type="real">
+                    <name>Detection Threshold</name>
+                    <description>sigmas or threshold,ZP in mag.arcsec-2</description>
+                    <ucd/>
+                    <defaultValue>1.5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ANALYSIS_THRESH" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Analysis Threshold</name>
+                    <description>sigmas or threshold,ZP in mag.arcsec-2</description>
+                    <ucd/>
+                    <defaultValue>1.5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="FILTER" xsi:type="impl:CommandLineParameterDefinition" type="boolean">
+                    <name>use filter</name>
+                    <description>apply filter for detection</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="DEBLEND_NTHRESH " xsi:type="impl:CommandLineParameterDefinition"
+                                     type="integer"
+                                     fileRef="no">
+                    <name>Deblend thresholds</name>
+                    <description> Number of deblending sub-thresholds</description>
+                    <ucd/>
+                    <defaultValue>32</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="DEBLEND_MINCONT" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>de-blend contrast</name>
+                    <description> Minimum contrast parameter for deblending</description>
+                    <ucd/>
+                    <defaultValue>0.005</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="CLEAN" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Clean?</name>
+                    <description>Clean spurious detections? (Y or N)?
+</description>
+                    <ucd/>
+                    <defaultValue>Y</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="CLEAN_PARAM" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Cleaning efficiency</name>
+                    <description>Cleaning Efficiency</description>
+                    <ucd/>
+                    <defaultValue>1.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="MASK_TYPE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>Mask type</name>
+                    <description> type of detection MASKing: can be one of                                "NONE", "BLANK" or "CORRECT"</description>
+                    <ucd/>
+                    <defaultValue>CORRECT</defaultValue>
+                    <optionList>
+                        <optionVal>NONE</optionVal>
+                        <optionVal>BLANK</optionVal>
+                        <optionVal>CORRECT</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="PHOT_APERTURES" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="integer"
+                                     fileRef="no">
+                    <name>Photometry apertures</name>
+                    <description> MAG_APER aperture diameter(s) in pixels
+</description>
+                    <ucd/>
+                    <defaultValue>5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PHOT_AUTOPARAMS" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>Photometry params</name>
+                    <description> MAG_AUTO parameters: &lt;Kron_fact&gt;,&gt;min_radius&gt;</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="MAG_ZEROPOINT" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name> magnitude zero-point
+</name>
+                    <description> magnitude zero-point
+</description>
+                    <ucd/>
+                    <defaultValue>0.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="MAG_GAMMA" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>MAG_GAMMA</name>
+                    <description> gamma of emulsion (for photographic scans)</description>
+                    <ucd/>
+                    <defaultValue>4.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GAIN" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Gain</name>
+                    <description>detector gain in e-/ADU
+</description>
+                    <ucd/>
+                    <defaultValue>0.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PIXEL_SCALE" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Pixel scale</name>
+                    <description>size of pixel in arcsec (0=use FITS WCS info)</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="SEEING_FWHM" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     commandPosition="-1"
+                                     fileRef="no">
+                    <name>Seeing</name>
+                    <description>stellar FWHM in arcsec
+</description>
+                    <ucd/>
+                    <defaultValue>1.2</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="STARNNW_NAME" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>neural net file</name>
+                    <description> Neural-Network_Weight table filename
+</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="BACK_SIZE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>backgroud mesh size</name>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="BACK_FILTERSIZE " xsi:type="impl:CommandLineParameterDefinition"
+                                     type="text"
+                                     commandPosition="-1"
+                                     fileRef="no">
+                    <name>background filter size</name>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="BACKPHOTO_TYPE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <ucd/>
+                    <optionList>
+                        <optionVal>GLOBAL</optionVal>
+                        <optionVal>LOCAL</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="CHECKIMAGE_TYPE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>Check image</name>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>NONE</optionVal>
+                        <optionVal>BACKGROUND</optionVal>
+                        <optionVal>MINIBACKGROUND</optionVal>
+                        <optionVal>-BACKGROUND</optionVal>
+                        <optionVal>OBJECTS</optionVal>
+                        <optionVal>-OBJECTS</optionVal>
+                        <optionVal>SEGMENTATION</optionVal>
+                        <optionVal>APERTURES</optionVal>
+                        <optionVal>FILTERED</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="CHECKIMAGE_NAME" xsi:type="impl:CommandLineParameterDefinition" type="FITS"
+                                     commandPosition="-1"
+                                     fileRef="file">
+                    <name>Checkimage name</name>
+                    <description>file containing the checkimage</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="DetectionImage"/>
+                        <pref ref="PhotoImage"/>
+                        <pref ref="config_file"/>
+                        <pref ref="PARAMETERS_NAME"/>
+                        <pref ref="FILTER_NAME" minOccurs="0"/>
+                        <pref ref="ANALYSIS_THRESH" minOccurs="0"/>
+                        <pref ref="IMAGE_BAND"/>
+                    </input>
+                    <output>
+                        <pref ref="CATALOG_NAME"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="Galactic">
+                    <input>
+                        <pref ref="DetectionImage"/>
+                        <pref ref="PhotoImage"/>
+                        <pref ref="config_file"/>
+                        <pref ref="PARAMETERS_NAME"/>
+                        <pref ref="FILTER_NAME" minOccurs="0"/>
+                        <pref ref="ANALYSIS_THRESH" minOccurs="0"/>
+                        <pref ref="MAG_ZEROPOINT" minOccurs="0"/>
+                        <pref ref="SEEING_FWHM" minOccurs="0"/>
+                        <pref ref="IMAGE_BAND"/>
+                    </input>
+                    <output>
+                        <pref ref="CATALOG_NAME"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/sextractor-2.3.2/sex_wrapper.sh</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication 
+                             created="1999-01-01T00:00:00"
+                             status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>HyperZ</title>
+        <shortName>HyperZ</shortName>
+        <identifier>ivo://org.astrogrid/HyperZ</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>We refer to the paper
+"Photometric Redshifts based on standard SED fitting procedures" 
+M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
+</description>
+            <referenceURL>http://webast.ast.obs-mip.fr/hyperz/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="config_file" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandPosition="1">
+                    <name>Configuration File</name>
+                    <description>A HyperZ configuration file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="input_catalog" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="VOTable"
+                                     commandSwitch="CATALOG_FILE">
+                    <name>Magnitude Catalogue</name>
+                    <description>The input catalogue of measured magnitude</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="output_catalog" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="VOTable"
+                                     commandSwitch="OUTPUT_CATALOG">
+                    <name>Redshift Catalogue</name>
+                    <description>The catalogue of estimated redshifts</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="FILTERS_RES" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>filter res</name>
+                    <description>?</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="FILTERS_FILE" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>Filters file</name>
+                    <description>?</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="TEMPLATES_FILE" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="binary"
+                                     fileRef="file">
+                    <name>Templates file</name>
+                    <description>?</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="BAND_ORDER" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandSwitch="---">
+                    <name>Band ordering</name>
+                    <description>A string specifying the band ordering of the filter definitions</description>
+                    <ucd/>
+                    <defaultValue>UGRIZ</defaultValue>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="config_file"/>
+                        <pref ref="input_catalog"/>
+                        <pref ref="FILTERS_FILE"/>
+                        <pref ref="TEMPLATES_FILE"/>
+                        <pref ref="BAND_ORDER"/>
+                        <pref ref="FILTERS_RES" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="output_catalog"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication 
+                             created="1999-01-01T00:00:00"
+                             status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>AG Cross Matcher</title>
+        <shortName>AG Cross Matcher</shortName>
+        <identifier>ivo://org.astrogrid/CrossMatcher</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description/>
+            <referenceURL/>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="targets" xsi:type="impl:CommandLineParameterDefinition" type="VOTable"
+                                     switchType="keyword">
+                    <name>Target votable</name>
+                    <description>The VOTable file containing the target sources</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="matches" xsi:type="impl:CommandLineParameterDefinition" type="VOTable"
+                                     switchType="keyword">
+                    <name>Match VOTable</name>
+                    <description>The VOTable file containing the sources to match</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="merged_output" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="VOTable"
+                                     commandPosition="1">
+                    <name>Resulting VOTable</name>
+                    <description>The VOTable file containing result of the match</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="matchRadius" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no"
+                                     switchType="keyword">
+                    <name>Match Radius</name>
+                    <description>??</description>
+                    <unit>arcsec</unit>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="radMax" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no"
+                                     switchType="keyword">
+                    <name>Maximum search radius</name>
+                    <description>??</description>
+                    <unit>arcsec</unit>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="output" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword">
+                    <name>output type</name>
+                    <description>This can be one of HTML VOTable of Ascii, with the default being VOTable</description>
+                    <ucd/>
+                    <defaultValue>VOTable</defaultValue>
+                    <optionList>
+                        <optionVal>HTML
+               </optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>Ascii</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="maxMatches" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no"
+                                     switchType="keyword">
+                    <name>maximum number of matches per target</name>
+                    <description>maximum number of matches per target</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="targets" maxOccurs="1"/>
+                        <pref ref="matches" maxOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="merged_output"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="full">
+                    <input>
+                        <pref ref="targets" maxOccurs="1"/>
+                        <pref ref="matches" maxOccurs="0"/>
+                        <pref ref="matchRadius" minOccurs="0"/>
+                        <pref ref="radMax" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="merged_output"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/dft/bin/dft</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>BPZ</title>
+        <shortName>BPZ</shortName>
+        <identifier>ivo://org.astrogrid/BPZ</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>The software below implements the Bayesian photometric redshift method described in Benitez 2000 . </description>
+            <referenceURL>http://acs.pha.jhu.edu/~txitxo/bayesian.html</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="DATA" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     commandPosition="1">
+                    <name>Input data</name>
+                    <description>File containing the input photometry</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="PARFILE" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     commandSwitch="P">
+                    <name>Parameter File</name>
+                    <description>File with all the parameter files defined</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="OUTPUT" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>Output File</name>
+                    <description>File with derived photo-Z</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="COLUMNS" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>Column Descriptions</name>
+                    <description>The file containing the descriptions of the columns in the input photometry file.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="SPECTRA" xsi:type="impl:CommandLineParameterDefinition" type="text">
+                    <name>Spectra</name>
+                    <description>template list</description>
+                    <ucd/>
+                    <defaultValue>CWWSB.list</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PRIOR" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>PRIOR</name>
+                    <description>prior name</description>
+                    <ucd/>
+                    <defaultValue>hdfn</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="DZ" xsi:type="impl:CommandLineParameterDefinition" type="real" fileRef="no">
+                    <name>DZ</name>
+                    <description>redshift resolution</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ZMIN" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>ZMIN</name>
+                    <description>minimum redshift</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ZMAX" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>ZMAX</name>
+                    <description>maximum redshift</description>
+                    <ucd/>
+                    <defaultValue>6.5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="MAG" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>MAG</name>
+                    <description>Data in magnitudes?</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ODDS" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>ODDS</name>
+                    <description>Odds threshold: affects confidence limits definition</description>
+                    <ucd/>
+                    <defaultValue>0.95</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INTERP" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>INTERP</name>
+                    <description>Number of interpolated templates between each of the original ones</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="EXCLUDE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>EXCLUDE</name>
+                    <description>Filters to be excluded from the estimation</description>
+                    <ucd/>
+                    <defaultValue>none</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="NEW_AB" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>NEW_AB</name>
+                    <description>If yes, generate new AB files even if they already exist</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="CHECK" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>CHECK</name>
+                    <description>Perform some checks, compare observed colors with templates, etc.</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="VERBOSE" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>VERBOSE</name>
+                    <description>Print estimated redshifts to the standard output</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PROBS" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>PROBS</name>
+                    <description>Save all the galaxy probability distributions (very large file created)</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="PROBS_LITE" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>PROBS_LITE</name>
+                    <description>Save only the final probability distribution</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GET_Z" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>GET_Z</name>
+                    <description>Actually obtain photo-z</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ONLY_TYPE" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>ONLY_TYPE</name>
+                    <description>Use spectroscopic redshifts instead of photo-z</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="MADAU" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>MADAU</name>
+                    <description>Apply Madau correction to spectra</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="Z_THR" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Z_THR</name>
+                    <description>Integrate likelihood for z&gt;z_thr</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="COLOR" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>COLOR</name>
+                    <description>Use colors instead of fluxes</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PLOTS" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>PLOTS</name>
+                    <description>produce plots</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+            </parameters>
+            <interfaces><!--could have an interface that used a config file also--><interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="DATA"/>
+                        <pref ref="COLUMNS"/>
+                        <pref ref="PARFILE"/>
+                    </input>
+                    <output>
+                        <pref ref="OUTPUT"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/bpz/bpz.py</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>SWarp</title>
+        <shortName>SWarp</shortName>
+        <identifier>ivo://org.astrogrid/swarp</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>SWarp is a program that resamples and co-adds together FITS images using any arbitrary astrometric projection defined in the WCS standard.</description>
+            <referenceURL>http://terapix.iap.fr/rubrique.php?id_rubrique=49</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="Image" xsi:type="impl:CommandLineParameterDefinition" type="FITS"
+                                     commandPosition="1"
+                                     fileRef="file">
+                    <name>Detection Image</name>
+                    <description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="config_file" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandSwitch="c"
+                                     fileRef="file">
+                    <name>Configuration File</name>
+                    <description>File containing the main configuration parameters for Swarp</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="IMAGEOUT_NAME" xsi:type="impl:CommandLineParameterDefinition" type="FITS"
+                                     fileRef="file">
+                    <name>Output Image</name>
+                    <description>The resampled and possibly coadded output image</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="Image"/>
+                        <pref ref="config_file"/>
+                    </input>
+                    <output>
+                        <pref ref="IMAGEOUT_NAME"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/swarp-2.10/bin/swarp</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>ANNZ</title>
+        <shortName>ANNZ</shortName>
+        <identifier>ivo://org.astrogrid/annz</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description/>
+            <referenceURL>http://www.ast.cam.ac.uk/~aac/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="INPUT_PHOTOM" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandPosition="1">
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="OUTPUT" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandPosition="2">
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="NET_WEIGHT" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     commandPosition="3">
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="INPUT_PHOTOM"/>
+                        <pref maxOccurs="0" ref="NET_WEIGHT"/>
+                    </input>
+                    <output>
+                        <pref ref="OUTPUT"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/annz/bin/annz_test</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>Pegase</title>
+        <shortName>Pegase</shortName>
+        <identifier>ivo://org.astrogrid/Pegase</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>PEGASE is a code which computes the spectral evolution of galaxies. The evolution of the stars, gas and metals is computed according to user selected star formation laws and initial stellar mass function.  The stellar evolutionary tracks extend from the main sequence to the white dwarf stage. The emission of the gas in HII regions is also taken into account. The effect of extinction by dust is also modelled using a radiative transfer code.</description>
+            <referenceURL>http://www2.iap.fr/users/fioc/PEGASE.html</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="IMF" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Initial Mass Function</name>
+                    <description>
+   1: IMF_Kennicutt.dat                                                       
+   2: IMF_Kroupa.dat                                                          
+   3: IMF_MillerScalo.dat                                                     
+   4: IMF_Salpeter.dat                                                        
+   5: IMF_Scalo86.dat                                                         
+   6: IMF_Scalo98.dat                                                         
+   7: lognormal IMF
+   8: Rana &amp; Basu (1992)
+   9: Ferrini (1991)
+
+               
+            </description>
+                    <ucd/>
+                    <defaultValue>4</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="LMASS" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Lower mass</name>
+                    <description>Lower mass</description>
+                    <unit>Solar Masses</unit>
+                    <ucd/>
+                    <defaultValue>0.1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="UMASS" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Upper mass</name>
+                    <description>Upper mass</description>
+                    <unit>Solar Masses</unit>
+                    <ucd/>
+                    <defaultValue>120.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SNMODEL" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>SN Model (A/B/C)</name>
+                    <description> model A, B or C of Woosley &amp; Weaver </description>
+                    <ucd/>
+                    <defaultValue>B</defaultValue>
+                    <optionList>
+                        <optionVal>A</optionVal>
+                        <optionVal>B</optionVal>
+                        <optionVal>C</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="WINDS" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Stellar Winds</name>
+                    <description/>
+                    <ucd/>
+                    <defaultValue>Y</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="BINFRAC" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>binary fraction</name>
+                    <description>Fraction of close binary systems</description>
+                    <ucd/>
+                    <defaultValue>0.05</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="METALICITY" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Metalicity</name>
+                    <description>Metallicity (mass fraction) of the ISM at t=0 (real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INFALL" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Infall</name>
+                    <ucd/>
+                    <defaultValue>n</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INFALLTIME" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Infall Timescale</name>
+                    <description>Infall timescale (Myr, real)</description>
+                    <ucd/>
+                    <defaultValue>0.10000E+04</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INFALLMETAL" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Infall Metalicity</name>
+                    <description>Metallicity of the infalling gas (mass fraction, real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SFSCENARIO" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Star formation scenario</name>
+                    <description> 
+   Type of star formation scenario?
+ -2: file giving the SFR and the metallicity
+ -1: file giving the SFR
+  0: instantaneous burst
+  1: SFR=p1 from t=0 to p2
+  2: SFR=p2*exp(-t/p1)/p1
+  3: SFR=(Mgas^p1)/p2
+ 10 or more: code of the SFR law you have implemented in "spectra.f"
+               
+            </description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="CONEVOL" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Consistent Evolution</name>
+                    <description> Consistent evolution of the stellar metallicity (y/n)?</description>
+                    <ucd/>
+                    <defaultValue>y</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SMETAL" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Stellar metallicity</name>
+                    <description>(real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0.02</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="FRACSUB" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>SubStellar fraction</name>
+                    <description>Mass fraction of substellar objects formed (real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GALWIND" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Galactic winds</name>
+                    <description/>
+                    <ucd/>
+                    <defaultValue>n</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GALWINDAGE" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Galactic wind age</name>
+                    <description>Age of the galactic winds (Myr, real)</description>
+                    <ucd/>
+                    <defaultValue>0.20001E+05</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="NEBEMISS" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Nebular Emission</name>
+                    <description/>
+                    <ucd/>
+                    <defaultValue>n</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GLOBALEXTINCTION" xsi:type="impl:CommandLineParameterDefinition"
+                                     type="integer"
+                                     fileRef="no">
+                    <name>Global Extinction?</name>
+                    <description>
+ 0: No extinction
+ 1: Extinction for a spheroidal geometry
+ 2: Extinction for a disk geometry: inclination-averaged
+ 3: Extinction for a disk geometry: specific inclination
+               
+            </description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <!-- raw output files --><parameterDefinition id="SPECTRA" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="spectra1.dat">
+                    <name>Synthesized spectra</name>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="COLOURS" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="colours1.dat">
+                    <name>Synthesized colours</name>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="IMF"/>
+                        <pref ref="LMASS"/>
+                        <pref ref="UMASS"/>
+                        <pref ref="SNMODEL"/>
+                        <pref ref="WINDS"/>
+                        <pref ref="BINFRAC"/>
+                        <pref ref="METALICITY"/>
+                        <pref ref="INFALL"/>
+                        <pref ref="INFALLTIME" minOccurs="0"/>
+                        <pref ref="INFALLMETAL" minOccurs="0"/>
+                        <pref ref="SFSCENARIO"/>
+                        <pref ref="CONEVOL"/>
+                        <pref ref="SMETAL" minOccurs="0"/>
+                        <pref ref="FRACSUB"/>
+                        <pref ref="GALWIND"/>
+                        <pref ref="GALWINDAGE" minOccurs="0"/>
+                        <pref ref="NEBEMISS"/>
+                        <pref ref="GLOBALEXTINCTION"/>
+                    </input>
+                    <output>
+                        <pref ref="SPECTRA"/>
+                        <pref ref="COLOURS"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/PEGASE.2/runpegase.sh</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>Starburst 99</title>
+        <shortName>Starburst 99</shortName>
+        <identifier>ivo://org.astrogrid/Starburst99</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>Starburst99 is a web based software and data package designed to model spectrophotometric and related properties of star-forming galaxies.</description>
+            <referenceURL>http://www.stsci.edu/science/starburst99/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="NAME" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>NAME</name>
+                    <description>any identifier you want to assign to the model. You will find
+                 it in the header of each output file.</description>
+                    <ucd/>
+                    <defaultValue>standard</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ISF" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>CONTINUOUS STAR FORMATION (&gt;0) OR FIXED MASS (&lt;=0)</name>
+                    <description> if this is a negative integer, star formation is instantaneous, 
+       otherwise it is continuous.</description>
+                    <ucd/>
+                    <defaultValue>-1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TOMA" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>TOTAL STELLAR MASS [10^6 SOLAR MASSES] IF 'FIXED MASS' IS CHOSEN</name>
+                    <description>this is the total stellar mass (spread out between the upper and lower
+      cut-off masses). It is only used if an instantaneous burst is specified.</description>
+                    <ucd/>
+                    <defaultValue>1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SFR" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>SFR [SOLAR MASSES PER YEAR] IF 'CONT. SF' IS CHOSEN:</name>
+                    <description>the star formation rate (only used for a continuous rate). The total
+        accumulated mass is spread out between the upper and lower
+        cut-off masses. </description>
+                    <ucd/>
+                    <defaultValue>1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ALPHA" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>IMF EXPONENT </name>
+                    <description>IMF exponent. A power law is assumed.(2.35 = SALPETER):</description>
+                    <ucd/>
+                    <defaultValue>2.35</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="UPMA" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Upper Mass Limit</name>
+                    <description>upper mass limit for the IMF.</description>
+                    <ucd/>
+                    <defaultValue>100.</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="DOMA" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Lower mass limit</name>
+                    <description>lower mass limit for the IMF.</description>
+                    <ucd/>
+                    <defaultValue>1.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SNCUT" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Supernova cutoff mass</name>
+                    <description>stars with ZAMS masses of 8 M and higher form supernovae. This is the
+       suggested standard value but can be modified if desired.</description>
+                    <ucd/>
+                    <defaultValue>8.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="BHCUT" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Black Hole cut off mass</name>
+                    <description> stars with ZAMS masses of 120 M and lower form supernovae. An 
+        alternative scenario would be to let stars above a certain threshold
+        form a black hole. For instance, BHCUT=40. results in SNe only from the
+        mass range 40 to 8 M.</description>
+                    <ucd/>
+                    <defaultValue>120.</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IZ" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Mettalicity + tracks</name>
+                    <description>92-94 STD. MASS-LOSS: 11=0.001; 12=0.004; 13=0.008; 14=0.020; 15=0.040
+92-94 HIGH MASS-LOSS: 21=0.001; 22=0.004; 23=0.008; 24=0.020; 25=0.040
+24 -- this integer indicates the evolutionary tracks to be used. The 
+      choices are 11-15 or 21-25, where the former select one of five
+      metallicities with the standard tracks, and the latter do the same
+      for the high mass-loss tracks. Example: "23" selects 40% solar
+      metallicity with the high mass loss tracks.</description>
+                    <ucd/>
+                    <defaultValue>24</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IWIND" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Wind model</name>
+                    <description>(0=MAEDER; 1=EMP.; 2=THEOR.; 3=ELSON; 4=UCL):     [IWIND]
+2 -- this selects the wind model to be used for the calculation of the
+     wind power. The four models are discussed in ApJ, 401, 498 (1992) 
+     and in Smith et al. (2002). "2" is the suggested default parameter.</description>
+                    <ucd/>
+                    <defaultValue>2</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TIME1" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Initial time</name>
+                    <description>[1.E6 YEARS] the epoch of the onset of the star formation. In almost all cases you
+        want this to be close to 0. It should not be exactly 0 for numerical
+        reasons. 0.01 (i.e. 10e4 yr) is a good number.</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="STEP" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Time Step</name>
+                    <description>[1.e6 years] this is the timestep used for the calculations. It is a very important
+        parameter. On the one hand, the computing time scales with STEP, so
+        you want to avoid too high resolution, but on the other, short
+        evolutionary phases can be missed. 0.1 (i.e. 10e5 yr) is a good 
+        value if you use full isochrone synthesis. If full isochrone synthesis
+        is not used, 0.1 or larger is suggested only for tests --- be aware 
+        that WR or RSG numbers are no longer properly calculated for a STEP of 
+        0.1 unless full isochrone synthesis is selected!</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TMAX" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Last grid point</name>
+                    <description>[1.e6 YEARS]:   the oldest age of the model. </description>
+                    <ucd/>
+                    <defaultValue>20.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="JMG" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>SMALL (=0) OR LARGE (=1) MASS GRID;
+ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</name>
+                    <description>these are four options for the interpolation in mass. They are explained
+     in the code. Shortly: 0 -- evolutionary synthesis with a mass 
+     resolution of 5 M (only recommended for tests); 1 -- same as 0, but with
+     a resolution of 1 M. This method was used in Leitherer &amp; Heckman (1995); 
+     2 -- isochrone synthesis with a fixed mass resolution of 1 M; 
+     3 -- isochrone synthesis with a variable mass grid. This is the fanciest
+     method and is the recommended mode.</description>
+                    <ucd/>
+                    <defaultValue>3</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="LMIN" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>LMIN</name>
+                    <description> LMIN and LMAX are the indices of the evolutionary tracks, sorted by mass.
+     Normally you do not want to mess with the variable and leave it at 0. 
+     However, if you want to track down some peculiarity of the output, you
+     may want to compute the parameters for only one track. For instance, 
+     specifying 21,21 indicates that only a 100 M star should by used, and
+     everything else is suppressed. The cross-ID's between index and mass
+     are at the bottom of the input file. The example here refers to JMG=1 or
+     2. For JMG=0, you would have chosen 5,5. This does not apply to JMG=3
+     since the mass grid is variable and LMIN, LMAX are not used.</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="LMAX" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>LMAX</name>
+                    <description> LMIN and LMAX are the indices of the evolutionary tracks, sorted by mass.
+     Normally you do not want to mess with the variable and leave it at 0. 
+     However, if you want to track down some peculiarity of the output, you
+     may want to compute the parameters for only one track. For instance, 
+     specifying 21,21 indicates that only a 100 M star should by used, and
+     everything else is suppressed. The cross-ID's between index and mass
+     are at the bottom of the input file. The example here refers to JMG=1 or
+     2. For JMG=0, you would have chosen 5,5. This does not apply to JMG=3
+     since the mass grid is variable and LMIN, LMAX are not used.</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TDEL" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Time step to print spectra</name>
+                    <description>[1.e6YR] the file containing the output spectrum can be pretty big. This
+       parameter controls the time step to print out the spectrum. This is 
+       independent of the time resolution -- only the print out is affected!
+       1 Myr is usually a good value but if you compute the starburst up to
+       100 Myr, you may prefer TDEL=5 Myr unless you have many Gb of disk
+       space.</description>
+                    <ucd/>
+                    <defaultValue>1.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IATMOS" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>ATMOSPHERE FOR SYNTHETIC SPECTRUM:</name>
+                    <description>  1=PLA,2=LEJ,3=LEJ+SCH,4=LEJ+HIL,5=PAU+HIL   [IATMOS]
+5 -- this is the choice of the model atmosphere. 1 is a bare-bone version with
+     black bodies, good only for tests. 2 uses the Kurucz models as compiled
+     by Lejeune for all stars. 3 uses Lejeune for stars with plane-parallel
+     atmospheres and Schmutz for stars with strong winds. 4 uses Lejeune, but
+     replaces the Schmutz by the Hillier atmospheres. 5 is like 4, except 
+     for the O atmospheres, for which we use the Pauldrach models. 5 is the 
+     recommended value. 
+               
+            </description>
+                    <ucd/>
+                    <defaultValue>5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ILINE" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>METALLICITY OF THE UV LINE SPECTRUM: </name>
+                    <description>1=SOLAR, 2=LMC/SMC)    [ILINE]
+1 -- a switch for the choice of the UV spectral library. This switch applies
+     to both the FUSE and the HST/IUE libraries. It is independent
+     of the metallicity of the tracks/atmospheres. Normally one would use
+     ILINE=1 with IZ=24 and ILINE=2 with IZ=22.</description>
+                    <ucd/>
+                    <defaultValue>1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IVT" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>RSG FEATURE: MICROTURB. VEL (1-6)</name>
+                    <description>atmospheric parameters used for the spectral features in the near-IR.
+       Detailed explanations are in the sp-feature subroutine. Defaults are
+       3,0, i.e. microturbulent velocities of 3 km/sec and solar abundance
+       ratios for alpha-element/Fe
+ </description>
+                    <ucd/>
+                    <defaultValue>3</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IRSG" xsi:type="impl:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>SOL/NON-SOL ABUND (0,1)</name>
+                    <description>atmospheric parameters used for the spectral features in the near-IR.
+       Detailed explanations are in the sp-feature subroutine. Defaults are
+       3,0, i.e. microturbulent velocities of 3 km/sec and solar abundance
+       ratios for alpha-element/Fe
+ </description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <!-- now the output files --><parameterDefinition id="output" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.99">
+                    <name>output</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="quanta" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.98">
+                    <name>quanta</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="snr" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.97">
+                    <name>snr</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="hrd" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.96">
+                    <name>hrd</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="power" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.95">
+                    <name>power</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="sptyp1" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.94">
+                    <name>sptyp1</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="sptyp2" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.90">
+                    <name>sptyp12</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="yield" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.93">
+                    <name>yield</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="spectrum" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.92">
+                    <name>spectrum</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="uvline" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.91">
+                    <name>uvline</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="color" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.89">
+                    <name>color</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="ewidth" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.88">
+                    <name>ewidth</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="irfeature" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.87">
+                    <name>irfeature</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="ovi" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.86">
+                    <name>ovi</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="hires" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.85">
+                    <name>hires</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="wrlines" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.84">
+                    <name>wrlines</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="full">
+                    <input>
+                        <pref ref="NAME"/>
+                        <pref ref="ISF"/>
+                        <pref ref="TOMA"/>
+                        <pref ref="SFR"/>
+                        <pref ref="ALPHA"/>
+                        <pref ref="UPMA"/>
+                        <pref ref="DOMA"/>
+                        <pref ref="SNCUT"/>
+                        <pref ref="BHCUT"/>
+                        <pref ref="IZ"/>
+                        <pref ref="IWIND"/>
+                        <pref ref="TIME1"/>
+                        <pref ref="STEP"/>
+                        <pref ref="TMAX"/>
+                        <pref ref="JMG"/>
+                        <pref ref="LMIN"/>
+                        <pref ref="LMAX"/>
+                        <pref ref="TDEL"/>
+                        <pref ref="IATMOS"/>
+                        <pref ref="ILINE"/>
+                        <pref ref="IVT"/>
+                        <pref ref="IRSG"/>
+                    </input>
+                    <output>
+                        <pref ref="output"/>
+                        <pref ref="quanta"/>
+                        <pref ref="snr"/>
+                        <pref ref="hrd"/>
+                        <pref ref="power"/>
+                        <pref ref="sptyp1"/>
+                        <pref ref="sptyp2"/>
+                        <pref ref="yield"/>
+                        <pref ref="spectrum"/>
+                        <pref ref="uvline"/>
+                        <pref ref="color"/>
+                        <pref ref="ewidth"/>
+                        <pref ref="irfeature"/>
+                        <pref ref="ovi"/>
+                        <pref ref="hires"/>
+                        <pref ref="wrlines"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/starburst99/starburst99_wrapper.sh</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+    <impl:CeaApplication created="1999-01-01T00:00:00" status="active"
+                             updated="2008-03-12T19:31:29.378Z">
+        <title>Galexev</title>
+        <shortName>Galexev</shortName>
+        <identifier>ivo://org.astrogrid/Galaxev</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>GALAXEV is a library of evolutionary stellar population synthesis models computed using the new isochrone synthesis code of Bruzual &amp;Charlot (2003). This code allows one to computes the spectral evolution of stellar populations in wide ranges of ages and metallicities at a resolution of 3 ? across the whole wavelength range from 3200 ? to 9500 ?, and at lower resolution outside this range. </description>
+            <referenceURL>http://www.cida.ve/~bruzual/bc2003</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="CONFIGFILE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     commandPosition="1">
+                    <name>Config File</name>
+                    <description>Padovani style config file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="ABMAG" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     localFileName="testout.1ABmag">
+                    <name>AB Magnitudes</name>
+                    <description>AB magnitudes in
+SDSS filters as function of galaxy Age</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="VEGAMAGS" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     localFileName="testout.1color">
+                    <name>Vega Colours</name>
+                    <description>mags and colors
+(Vega) as function of galaxy Age in standard filters</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="OTHERMAGS" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     localFileName="testout.2color">
+                    <name>Other Magnitudes</name>
+                    <description>mags and colours with more filter sets</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="SPECTRA" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     localFileName="testout_ages">
+                    <name>Spectra at Ages</name>
+                    <description> Spectra (lambda
+&amp; fluxes at chosen ages).</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="MAGZF1" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     localFileName="testout.magnitude_FILTER1">
+                    <name>Magnitudes Filter 1</name>
+                    <description> Magnitude
+redshift evolution in FILTER1</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="CONFIGFILE"/>
+                    </input>
+                    <output>
+                        <pref ref="ABMAG"/>
+                        <pref ref="VEGAMAGS"/>
+                        <pref ref="OTHERMAGS"/>
+                        <pref ref="SPECTRA"/>
+                        <pref ref="MAGZF1"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        <executionPath>/home/applications/tools/bc03/rungalaxev.sh</executionPath>
+        </applicationDefinition>
+    </impl:CeaApplication>
+   
+   <impl:CeaDALService created="2006-11-01T12:00:00" status="active" updated="2006-11-01T12:00:00" publishApplication="true">
+         <title>Pretend DALService</title>
+      <shortName>DALService</shortName>
+      <identifier>ivo://org.test/dalservice</identifier>
+             <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+      <description>
+         DalService descriptor
+      </description>
+      <referenceURL>http://webast.ast.obs-mip.fr/hyperz/</referenceURL>
+      <type>Other</type>
+      </content>
+      <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition" >
+        <applicationType>processing</applicationType>
+      <parameters>
+         <parameterDefinition xsi:type="impl:CommandLineParameterDefinition"  id="Image" type="FITS"
+            commandPosition="1" fileRef="file">
+            <name>Detection Image</name>
+            <description>
+               The image that is used to detect sources. Basic position,
+               shape and size informtaion is derived from this image
+            </description>
+         </parameterDefinition>
+         <parameterDefinition xsi:type="impl:CommandLineParameterDefinition"  id="config_file" type="binary"
+            commandSwitch="c" fileRef="file">
+            <name>Configuration File</name>
+            <description>
+               File containing the main configuration parameters for
+               Swarp
+            </description>
+         </parameterDefinition>
+         <parameterDefinition xsi:type="impl:CommandLineParameterDefinition"  id="IMAGEOUT_NAME" type="FITS"
+            fileRef="file">
+            <name>Output Image</name>
+            <description>
+               The resampled and possibly coadded output image
+            </description>
+         </parameterDefinition>
+      </parameters>
+      <interfaces>
+         <interfaceDefinition id="simple">
+            <input>
+               <pref ref="Image" />
+               <pref ref="config_file" />
+            </input>
+            <output>
+               <pref ref="IMAGEOUT_NAME" />
+            </output>
+         </interfaceDefinition>
+      </interfaces>
+      <executionPath>
+         /home/applications/tools/swarp-2.10/bin/swarp
+      </executionPath>
+       </applicationDefinition>
+   </impl:CeaDALService>
+    
+</impl:CECConfig>

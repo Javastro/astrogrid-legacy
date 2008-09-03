@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractParameterAdapter.java,v 1.2 2004/11/27 13:20:02 pah Exp $
+ * $Id: AbstractParameterAdapter.java,v 1.3 2008/09/03 14:18:57 pah Exp $
  * 
  * Created on 27-Oct-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@
 package org.astrogrid.applications.parameter;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 /**

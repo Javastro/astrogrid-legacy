@@ -1,75 +1,63 @@
-<vor:VOResources
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
-	xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
-	xsi:schemaLocation="
-	  http://www.ivoa.net/xml/VOResource/v0.10
-	  http://www.ivoa.net/xml/VOResource/v0.10
-	  http://www.ivoa.net/xml/RegistryInterface/v0.1 
-	  http://www.ivoa.net/xml/RegistryInterface/v0.1
-	"
->
-	<vor:Resource xsi:type="cea:CeaApplicationType"
-		status="active" 
-		updated="2005-05-11T14:04:00Z"
-		xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
-		xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
-		xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
-		xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
-		xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-		xsi:schemaLocation="
-		  http://www.ivoa.net/xml/CEAService/v0.2
-		  http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd
-		  http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
-  		http://software.astrogrid.org/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd
-		  http://www.astrogrid.org/schema/AGParameterDefinition/v1
-		  http://software.astrogrid.org/schema/jes/AGParameterDefinition/v1.0/AGParameterDefinition.xsd
-		  http://www.ivoa.net/xml/VOResource/v0.10
-		  http://www.ivoa.net/xml/VOResource/v0.10
-		">
-		<title>eSDO MSSL database querier</title>
-		<shortName>eSDO MSSL dbase</shortName>
-		<identifier>ivo://esdo.mssl.ucl.ac.uk/esdo-pal/ceaApplication</identifier>
-		<curation>
-			<publisher>eSDO MSSL</publisher>
-			<date>2005-05-06</date>
-			<contact>
-				<name>Mike Smith</name>
-				<email>ms2@mssl.ucl.ac.uk</email>
-			</contact>
-		</curation>
-		<content>
-			<subject>eSDO-MSSL Application</subject>
-			<description>This application allows the eSDO-MSSL database to be queried.</description>
-			<referenceURL>http://www.astrogrid.org/maven/build/applications/</referenceURL>
-			<type>Other</type>
-		</content>
-		<cea:ApplicationDefinition>
-			<cea:Parameters>
-				<cea:ParameterDefinition name="Query" type="ADQL">
-					<ceapd:DefaultValue>Query</ceapd:DefaultValue>
-					<ceapd:UI_Description>Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="Result" type="text">
-					<ceapd:DefaultValue>Result</ceapd:DefaultValue>
-					<ceapd:UI_Description>Query results</ceapd:UI_Description>
-				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="Format" type="text">
-					<ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>
-					<ceapd:UI_Description>Format of the returned table: VOTABLE or CSV.</ceapd:UI_Description>
-				</cea:ParameterDefinition>
-			</cea:Parameters>
-			<cea:Interfaces>
-				<ceab:Interface name="adql">
-					<ceab:input>
-						<ceab:pref maxoccurs="1" minoccurs="1" ref="Query"/>
-						<ceab:pref maxoccurs="1" minoccurs="1" ref="Format"/>
-					</ceab:input>
-					<ceab:output>
-						<ceab:pref maxoccurs="1" minoccurs="1" ref="Result"/>
-					</ceab:output>
-				</ceab:Interface>
-			</cea:Interfaces>
-		</cea:ApplicationDefinition>
-	</vor:Resource>
-</vor:VOResources>
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+  xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1"
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 ../../../contracts/src/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd
+      http://www.ivoa.net/xml/CEA/v1.0 ../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd
+     "
+     xsi:type="cea:CeaApplication"
+      created="2005-09-09T12:28:16" updated="2005-09-09T12:28:16" status="active">
+    <title>eSDO MSSL database querier</title>
+    <shortName>eSDO MSSL dbase</shortName>
+    <identifier>ivo://esdo.mssl.ucl.ac.uk/esdo-pal/ceaApplication</identifier>
+    <curation>
+      <publisher>eSDO MSSL</publisher>
+      <date>2005-05-06</date>
+      <contact>
+        <name>Mike Smith</name>
+        <email>ms2@mssl.ucl.ac.uk</email>
+      </contact>
+    </curation>
+    <content>
+      <subject>eSDO-MSSL Application</subject>
+      <description>This application allows the eSDO-MSSL database to be queried.</description>
+      <referenceURL>http://www.astrogrid.org/maven/build/applications/</referenceURL>
+      <type>Other</type>
+    </content>
+    <applicationDefinition>
+    <applicationType>http</applicationType>
+      <parameters>
+        <parameterDefinition id="Query" type="ADQL">
+          <defaultValue>Query</defaultValue>
+          <description>Astronomy Data Query Language that defines the search criteria</description>
+          <unit/>
+        </parameterDefinition>
+        <parameterDefinition id="Result" type="text">
+          <defaultValue>Result</defaultValue>
+          <description>Query results</description>
+          <unit/>
+        </parameterDefinition>
+        <parameterDefinition id="Format" type="text">
+          <defaultValue>VOTABLE</defaultValue>
+          <description>Format of the returned table: VOTABLE or CSV.</description>
+          <unit/>
+        </parameterDefinition>
+      </parameters>
+      <interfaces>
+        <interfaceDefinition id="adql">
+          <input>
+            <pref maxOccurs="1" minOccurs="1" ref="Query"/>
+            <pref maxOccurs="1" minOccurs="1" ref="Format"/>
+          </input>
+          <output>
+            <pref maxOccurs="1" minOccurs="1" ref="Result"/>
+          </output>
+        </interfaceDefinition>
+      </interfaces>
+    </applicationDefinition>
+  </ri:Resource>
+

@@ -8,3 +8,5 @@ bin
 tests.log
 pretrans.xml
 .project
+.settings
+.springBeans

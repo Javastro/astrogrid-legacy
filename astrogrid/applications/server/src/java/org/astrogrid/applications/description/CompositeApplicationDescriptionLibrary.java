@@ -1,4 +1,4 @@
-/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.5 2005/01/23 12:52:26 jdt Exp $
+/*$Id: CompositeApplicationDescriptionLibrary.java,v 1.6 2008/09/03 14:18:43 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,8 @@ import junit.framework.TestSuite;
 
 /** An {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary} that composes together other <tt>ApplicationDescriptionLibrary</tt>s 
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 11 Jun 2008
+ * @TODO see about using this class again
  *
  */
 public class CompositeApplicationDescriptionLibrary implements ApplicationDescriptionLibrary, ComponentDescriptor {
@@ -40,19 +42,22 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
     /** Construct a new CompositeApplicationDescriptionLibrary
      * 
      */
-    public CompositeApplicationDescriptionLibrary() {
+    public CompositeApplicationDescriptionLibrary(ApplicationDescriptionLibrary[] libs) {
         super();
+        for (ApplicationDescriptionLibrary applicationDescriptionLibrary : libs) {
+	    addLibrary(applicationDescriptionLibrary);
+	}
     }
-    protected final Set libs = new HashSet();
+    protected final Set<ApplicationDescriptionLibrary> libs = new HashSet<ApplicationDescriptionLibrary>();
     /**
      * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary#getDescription(java.lang.String)
      */
     public ApplicationDescription getDescription(String name) throws ApplicationDescriptionNotFoundException {
         logger.debug("Getting description for "+name+" from composite library");
         logger.debug("Composite library contains "+libs.size()+" libraries");
-        for (Iterator i = libs.iterator(); i.hasNext(); ) {
-            ApplicationDescriptionLibrary lib = (ApplicationDescriptionLibrary)i.next();
-            logger.debug("Checking library "+lib+".  This library has "+lib.getApplicationNames().length+" entries");
+        for (ApplicationDescriptionLibrary lib : libs) {
+	    
+           logger.debug("Checking library "+lib+".  This library has "+lib.getApplicationNames().length+" entries");
             try {
                 ApplicationDescription desc = lib.getDescription(name);
                 logger.debug("Found description");
@@ -125,11 +130,58 @@ public class CompositeApplicationDescriptionLibrary implements ApplicationDescri
         }
         return suite;
     }
+    public ApplicationDescription getDescriptionByShortName(String name) throws ApplicationDescriptionNotFoundException{
+    logger.debug("Getting description for "+name+" from composite library");
+    logger.debug("Composite library contains "+libs.size()+" libraries");
+    for (ApplicationDescriptionLibrary lib : libs) {
+	    
+       logger.debug("Checking library "+lib+".  This library has "+lib.getApplicationNames().length+" entries");
+        try {
+            ApplicationDescription desc = lib.getDescriptionByShortName(name);
+            logger.debug("Found description");
+            // shouldn't return null, but sanity check.
+            if (desc != null) {
+                return desc;
+            }
+        } catch (ApplicationDescriptionNotFoundException e) {
+            // oh well, not there then.
+        }
+    }
+    // not found
+    throw new ApplicationDescriptionNotFoundException(name);
+    }
 }
 
 
 /* 
 $Log: CompositeApplicationDescriptionLibrary.java,v $
+Revision 1.6  2008/09/03 14:18:43  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.5.166.6  2008/06/16 21:58:58  pah
+altered how the description libraries fit together  - introduced the SimpleApplicationDescriptionLibrary to just plonk app descriptions into.
+
+Revision 1.5.166.5  2008/05/13 15:57:32  pah
+uws with full app running UI is working
+
+Revision 1.5.166.4  2008/04/08 14:45:10  pah
+Completed move to using spring as container for webapp - replaced picocontainer
+
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
+Revision 1.5.166.3  2008/04/01 13:50:07  pah
+http service also passes unit tests with new jaxb metadata config
+
+Revision 1.5.166.2  2008/03/26 17:15:38  pah
+Unit tests pass
+
+Revision 1.5.166.1  2008/03/19 23:10:53  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.5  2005/01/23 12:52:26  jdt
 merge from cea_jdt_902
 

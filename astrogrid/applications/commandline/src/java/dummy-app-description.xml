@@ -1,36 +1,61 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- This is an application-description file of the kind read by the
      command-line-application server. It has one application: a sleep for
      a user-defined time. There must be at least one application in this file
      to stop the parser crashing when the application-server starts up. This
      application serves that purpose and will actually run on must servers: it
      just needs /bin/sleep to be present on the host. -->
-<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CEAImplementation/v1"
-    xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
-    xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1
-	                http://software.astrogrid.org/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd">
-  <!-- The application name is its IVO-ID.
-       The org.astrogrid.localhost part is the authority ID;
-       and sleep is the resource key. -->
-  <Application name="ivo://org.astrogrid.localhost/sleep">
-    <ceab:Parameters>
-      <CmdLineParameterDefn name="P1" type="text" commandPosition="1" fileRef="false">
-        <agpd:UI_Name>Duration</agpd:UI_Name>
-        <agpd:UI_Description>Time to sleep</agpd:UI_Description>
-        <agpd:Units>s</agpd:Units>
-      </CmdLineParameterDefn>
-    </ceab:Parameters>
-    <ceab:Interfaces>
-      <ceab:Interface name="sleep">
-        <ceab:input>
-	  <ceab:pref ref="P1"/>
-        </ceab:input>
-      </ceab:Interface>
-    </ceab:Interfaces>
-    <ExecutionPath>/bin/sleep</ExecutionPath>
-    <LongName>sleep</LongName>
-    <Description>Sleeps for a given length of time.</Description>
-  </Application>
-</CommandLineExecutionControllerConfig>
+<impl:commandLineExecutionControllerConfig xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                                           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+                                           xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                                           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                                           xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd">
+    <impl:CmdLineApplication created="1999-01-01T00:00:00" status="active"
+                             updated="2008-03-26T16:37:10.792Z">
+        <title>sleep</title>
+        <shortName>sleep</shortName>
+        <identifier>ivo://org.astrogrid.localhost/sleep</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>Sleeps for a given length of time.</description>
+            <referenceURL/>
+            <type>Other</type>
+        </content>
+        <applicationDefinition>
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="P1" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                                     commandPosition="1"
+                                     fileRef="no">
+                    <name>Duration</name>
+                    <description>Time to sleep</description>
+                    <unit>s</unit>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="sleep">
+                    <input>
+                        <pref ref="P1"/>
+                    </input>
+                </interfaceDefinition>
+            </interfaces>
+        </applicationDefinition>
+        <executionPath>/bin/sleep</executionPath>
+    </impl:CmdLineApplication>
+</impl:commandLineExecutionControllerConfig>

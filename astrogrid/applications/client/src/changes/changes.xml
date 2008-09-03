@@ -1,0 +1,20 @@
+<document>
+  <properties>
+    <title>Changes since previous release</title>
+  </properties>
+  <body>
+    <release version="2008.2">
+      <action dev="pah" type="enhancement">
+       <p>maven 2 used for build</p>
+</action>
+    </release>
+    <release version="apps-gtr-2061">
+      <action dev="gtr" type="fix" issue="2071">
+        <ul>
+          <li>The project is refactored to avoid relying on the maven-base project.</li>
+          <li>There are no changes to the API.</li>
+        </ul>
+      </action>	
+    </release>
+  </body>
+</document>

@@ -1,5 +1,5 @@
 /*
- * $Id: ExecutionController.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+ * $Id: ExecutionController.java,v 1.4 2008/09/03 14:18:56 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,8 +13,11 @@
 
 package org.astrogrid.applications.manager;
 
+import java.util.List;
+
+import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.applications.description.execution.Tool;
 
 /**
   Interface to a service that allows applications to be executed and controlled
@@ -50,6 +53,10 @@ public interface ExecutionController {
    public boolean abort(String executionId) throws  CeaException;
 
 
-
+   /**
+    * return the list of applications currently in the queue (or executing) for this execution controller
+ * @return
+ */
+public List<Application> getQueue();
 
 }

@@ -1,4 +1,4 @@
-/*$Id: JavaClassParameterDescription.java,v 1.3 2004/07/26 10:21:47 nw Exp $
+/*$Id: JavaClassParameterDescription.java,v 1.4 2008/09/03 14:18:44 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.applications.javaclass;
 
-import org.astrogrid.applications.description.base.BaseParameterDescription;
+import org.astrogrid.applications.description.base.BaseParameterDefinition;
 
 /** A {@link org.astrogrid.applications.description.ParameterDescription} for a {@link org.astrogrid.applications.javaclass.JavaClassApplication}
  * <p>
@@ -19,7 +19,7 @@ import org.astrogrid.applications.description.base.BaseParameterDescription;
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
  *
  */
-public class JavaClassParameterDescription extends BaseParameterDescription {
+public class JavaClassParameterDescription extends BaseParameterDefinition {
     protected Class targetClass;
     
     /** Access the target class for this parameter
@@ -39,6 +39,15 @@ public class JavaClassParameterDescription extends BaseParameterDescription {
 
 /* 
 $Log: JavaClassParameterDescription.java,v $
+Revision 1.4  2008/09/03 14:18:44  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.268.1  2008/03/19 23:10:55  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.3  2004/07/26 10:21:47  nw
 javadoc
 

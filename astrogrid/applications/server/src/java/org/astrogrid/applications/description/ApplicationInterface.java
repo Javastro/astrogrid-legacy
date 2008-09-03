@@ -1,4 +1,4 @@
-/*$Id: ApplicationInterface.java,v 1.4 2004/08/16 11:03:07 nw Exp $
+/*$Id: ApplicationInterface.java,v 1.5 2008/09/03 14:18:43 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,15 +14,18 @@ import org.astrogrid.applications.description.exception.ParameterNotInInterfaceE
  * <p>
  * An interface comprises a name, a set of input parameters, and a set of output parameters.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 12 Mar 2008
  * @see org.astrogrid.applications.description.ApplicationDescription
  *
  */
-public interface ApplicationInterface {
-    /** access the name of this interface */
-    public abstract String getName();
-    /** access an array of input parameter names */
+public interface ApplicationInterface extends Identify {
+    /** access an array of input parameter names 
+     * @deprecated parameter groups make this not so simple
+     * */
     public abstract String[] getArrayofInputs();
-    /** access an array of output parameter names */
+    /** access an array of output parameter names
+     * @deprecated parameter groups make this not so simple
+     *  */
     public abstract String[] getArrayofOutputs();
     /** for an input parameter name (such as returned by {@link #getArrayofInputs()} etc), find the corresponding 
      * parameter descrption
@@ -45,6 +48,18 @@ public interface ApplicationInterface {
 }
 /* 
 $Log: ApplicationInterface.java,v $
+Revision 1.5  2008/09/03 14:18:43  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.4.250.2  2008/03/26 17:15:38  pah
+Unit tests pass
+
+Revision 1.4.250.1  2008/03/19 23:10:53  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.4  2004/08/16 11:03:07  nw
 added classes to model cardinality of prefs.
 

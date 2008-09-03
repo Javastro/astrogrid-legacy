@@ -1,4 +1,4 @@
-/*$Id: GloballyUniqueIdGen.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: GloballyUniqueIdGen.java,v 1.3 2008/09/03 14:19:05 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import junit.framework.Test;
 
 /** Implementation of idgen that should produce globally-unique urn-style identifiers.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
+ * @TODO -perhaps this should be more opaque....
  *
  */
 public class GloballyUniqueIdGen implements IdGen, ComponentDescriptor {
@@ -35,7 +36,7 @@ public class GloballyUniqueIdGen implements IdGen, ComponentDescriptor {
     static {
         hostname = null;
         try {
-            hostname = InetAddress.getLocalHost().toString();
+            hostname = InetAddress.getLocalHost().toString().replace('/', '-');
         } catch (Exception e) {
             hostname="unavailable";
         }
@@ -51,7 +52,7 @@ public class GloballyUniqueIdGen implements IdGen, ComponentDescriptor {
             buffer = new StringBuffer(128);
         //Account acc = job.getCredentials().getAccount();
         buffer
-            .append("cea:")
+            .append("cea-")
             .append(hostname) // should ensure its globally unique
             /* if I passed in user / account info , could add all this..
             .append('/')         
@@ -59,9 +60,9 @@ public class GloballyUniqueIdGen implements IdGen, ComponentDescriptor {
            .append( '@' )
            .append( acc.getCommunity() )
            */
-           .append( '/' )          // should ensure its system-unique - we'd need to have 2 simultaneous (in same milli) concurrent requests, that both generate the same random number. 
+           .append( '-' )          // should ensure its system-unique - we'd need to have 2 simultaneous (in same milli) concurrent requests, that both generate the same random number. 
            .append( System.currentTimeMillis()) 
-           .append( ':' )
+           .append( '-' )
            .append(Math.abs(rand.nextInt()));
         return buffer.toString();
         
@@ -95,6 +96,19 @@ public class GloballyUniqueIdGen implements IdGen, ComponentDescriptor {
 
 /* 
 $Log: GloballyUniqueIdGen.java,v $
+Revision 1.3  2008/09/03 14:19:05  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.286.1  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

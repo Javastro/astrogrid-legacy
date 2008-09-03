@@ -1,4 +1,4 @@
-/*$Id: MetadataService.java,v 1.9 2007/09/28 18:03:35 clq2 Exp $
+/*$Id: MetadataService.java,v 1.10 2008/09/03 14:18:55 pah Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.applications.manager;
 
-import java.net.URL;
-import org.w3c.dom.Document;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
+import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.w3c.dom.Document;
 
 /** Interface into the meta-data / decscription / registry entries part of a cea server.
  *  - base of all description for this server. This is now the sole place where interactions that either set or get registry metadata about the services implemented by CEA.
@@ -23,34 +23,58 @@ import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
  */
 public interface MetadataService {
  
-    /** return the entry to lodge in the registry
-     * 
-     * @return  xmldocument of a VODescription 
-     * @throws CeaException
-     */
-    public Document returnRegistryEntry() throws CeaException;
+ 
     
     /**
-     *  access the vodescription for this server.
+     * Return the application description registry entry.
+     * @param id
+     * @return
+     * @throws ApplicationDescriptionNotFoundException
+     */
+    public Document getApplicationDescription(String id) throws ApplicationDescriptionNotFoundException;
+    
+    /**
+     *  access the vodescription for this server. Server description as well as the application description...
      * @return the object model of the VO description for this service
      */
-    public VOResources getVODescription()  throws Exception;
+    public Document getServerDescription()  throws MetadataException;
     
-    /**
-     * Get a URL leading to the template document for the 
-     * service and application registration.
-     */
-    public URL getRegistrationTemplate();
-    
+   
     /**
      * Reveals the IVORNs for the supported applications.
      */
     public String[] getApplicationIvorns();
+
+    /**
+     * Creates a single registry entry with all of the metadata - both server and applications.
+     * @return
+     * @throws CeaException 
+     * @throws CeaException 
+     */
+    public Document returnRegistryEntry() throws MetadataException;
 }
 
 
 /* 
 $Log: MetadataService.java,v $
+Revision 1.10  2008/09/03 14:18:55  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.9.2.4  2008/08/29 07:28:30  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.9.2.3  2008/03/27 13:34:36  pah
+now producing correct registry documents
+
+Revision 1.9.2.2  2008/03/26 17:15:39  pah
+Unit tests pass
+
+Revision 1.9.2.1  2008/03/19 23:10:55  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.9  2007/09/28 18:03:35  clq2
 apps_gtr_2303
 

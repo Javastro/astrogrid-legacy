@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistory.java,v 1.3 2004/07/26 12:07:38 nw Exp $
+/*$Id: InMemoryExecutionHistory.java,v 1.4 2008/09/03 14:18:48 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,26 @@
 **/
 package org.astrogrid.applications.manager.persist;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import junit.framework.Test;
 
@@ -28,6 +42,12 @@ import junit.framework.Test;
  *
  */
 public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDescriptor{
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+	    .getLog(InMemoryExecutionHistory.class);
+
     /** Construct a new InMemoryExecutionHistory
      * 
      */
@@ -35,9 +55,17 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
         super();
         currentSet = new HashMap();
         archive= new SimpleHashMap();
+        DatatypeFactory dataF = null;
+	try {
+	    dataF = DatatypeFactory.newInstance();
+	} catch (DatatypeConfigurationException e) {
+	   logger.error("configuration problem", e);
+	}
+	dataFactory = dataF;
     }
     protected  Map currentSet;
     protected  SimpleMap archive;
+    private final DatatypeFactory dataFactory;
     /**
      * @see org.astrogrid.applications.manager.persist.ExecutionHistory#isApplicationInCurrentSet(java.lang.String)
      */
@@ -58,7 +86,7 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
      * @see org.astrogrid.applications.manager.persist.ExecutionHistory#addApplicationToCurrentSet(org.astrogrid.applications.Application)
      */
     public void addApplicationToCurrentSet(Application app) {
-        currentSet.put(app.getID(),app);
+        currentSet.put(app.getId(),app);
     }
     /**
      * @see org.astrogrid.applications.manager.persist.ExecutionHistory#moveApplicationFromCurrentSetToArchive(java.lang.String)
@@ -113,11 +141,14 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
     /** defined a limited map interface here, to make it simpler to provide different implementations - as full
      * features of the {@link java.util.Map} interface not needed
      * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
+     * @TODO does this really make sense any more....
      *
      */
     public static interface SimpleMap /* restricts Map !! */ {
         public void put(String key,ExecutionSummaryType value) throws Exception;
         public ExecutionSummaryType get(String key) throws Exception;
+        public Set<String> keys();
+        public boolean delete(String key);
     }
     
     /** implementation of the SimpleMap interface backed by a {@link java.util.HashMap}
@@ -126,6 +157,11 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
      *
      */
     static class SimpleHashMap extends HashMap implements SimpleMap {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory
+		.getLog(SimpleHashMap.class);
 
         /**
          * @see org.astrogrid.applications.manager.persist.InMemoryExecutionHistory.SimpleMap#put(java.lang.String, org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType)
@@ -139,14 +175,99 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
          */
         public ExecutionSummaryType get(String key) throws Exception {
             return (ExecutionSummaryType)super.get(key);
+            
         }
 
+	public Set<String> keys() {
+	   return super.keySet();
+	}
+
+	public boolean delete(String key) {
+	   return (super.remove(key) != null);
+	}
+        
+        
+
     }
+
+    public String[] getExecutionIDs() {
+	Set<String> all = new HashSet<String>(currentSet.keySet());
+	all.addAll(archive.keys());
+	return all.toArray(new String[]{});
+    }
+    public boolean delete(String execId) {
+	if(archive.keys().contains(execId))
+	{
+	   return archive.delete(execId);
+	}else if (isApplicationInCurrentSet(execId))
+	{
+	    logger.warn("attempting to delete from current set");
+	    return false;
+	}
+	else {
+	    logger.warn("attempting to delete non-existant job");
+	    return false;
+	}
+    }
+    public void setDestructionTime(String execID, Date destruction) throws PersistenceException {
+	if (isApplicationInCurrentSet(execID)) {
+	    getApplicationFromCurrentSet(execID).setDestruction(destruction);
+	} else {
+            try {
+		ExecutionSummaryType eh = archive.get(execID);
+		eh.setDestruction(new DateTime(destruction));
+		archive.put(execID, eh);
+	    } catch (Exception e) {
+		throw new PersistenceException("Problem setting persistence", e);
+	    }
+	}
+   }
+    public List<String> getExecutionIdDestructionBefore(Date time) {
+	List<String> retval = new ArrayList<String>();
+	for (Iterator<String> iterator = archive.keys().iterator(); iterator.hasNext();) {
+	    String jobId = iterator.next();
+	    try {
+		ExecutionSummaryType summ = archive.get(jobId);
+		if(summ.getDestruction().isBefore(time.getTime()))
+		{
+		    retval.add(jobId);
+		}
+	    } catch (Exception e) {
+		logger.error("internal error - should not be possible", e);
+	    }
+	    
+	}
+	
+	return retval;
+   }
 }
 
 
 /* 
 $Log: InMemoryExecutionHistory.java,v $
+Revision 1.4  2008/09/03 14:18:48  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.266.4  2008/06/16 21:58:58  pah
+altered how the description libraries fit together  - introduced the SimpleApplicationDescriptionLibrary to just plonk app descriptions into.
+
+Revision 1.3.266.3  2008/05/08 22:40:53  pah
+basic UWS working
+
+Revision 1.3.266.2  2008/04/23 14:14:29  pah
+ASIGNED - bug 2749: make sure all CECs use the  ThreadPoolExecutionController
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2749
+
+Revision 1.3.266.1  2008/04/17 16:08:32  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.3  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

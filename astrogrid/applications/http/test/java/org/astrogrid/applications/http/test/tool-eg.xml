@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool name="Adder" interface="TheOneAndOnlyInterface" 
-	xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+<tool id="ivo://org.astrogrid.test/Adder" interface="TheOneAndOnlyInterface" 
+	xmlns="http://www.ivoa.net/xml/CEA/types/v1.1">
 	<input>
-		<parameter name="x">
-			<ns1:value 
-				xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
-				3</ns1:value>
+		<parameter id="x">
+			<value 
+				>
+				3</value>
 		</parameter>
-		<parameter name="y">
-			<ns2:value 
-				xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
-				5</ns2:value>
+		<parameter id="y">
+			<value 
+				>
+				5</value>
 		</parameter>
 	</input>
 	<output>
-		<parameter name="sum">
-			<ns3:value 
-				xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns3:value>
+		<parameter id="sum">
+			<value 
+				></value>
 		</parameter>
 	</output>
 </tool>

@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableReader.java,v 1.7 2005/08/10 14:45:37 clq2 Exp $
+ * $Id: HyperZVOTableReader.java,v 1.8 2008/09/03 14:18:54 pah Exp $
  * 
  * Created on 18-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,11 +14,11 @@
 package org.astrogrid.applications.commandline.hyperz;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
-import org.astrogrid.applications.commandline.CommandLineParameterDescription;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 import cds.savot.model.FieldSet;
@@ -47,7 +47,7 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
      * @param val
      * @param descr
      */
-    public HyperZVOTableReader(ApplicationInterface interf, ParameterValue val, CommandLineParameterDescription descr,CommandLineApplicationEnvironment env, ExternalValue ival, final String bands) {
+    public HyperZVOTableReader(ApplicationInterface interf, ParameterValue val, CommandLineParameterDefinition descr,ApplicationEnvironment env, ExternalValue ival, final String bands) {
         super(interf,val, descr,ival,env);
       bandOrder = bands;
     }
@@ -62,7 +62,7 @@ public class HyperZVOTableReader extends DefaultCommandLineParameterAdapter impl
       super.process();
        // apply vot
        File source = this.referenceFile;
-       File plainFile = env.getTempFile(description.getName());
+       File plainFile = env.getTempFile(description.getId());
        // must set the command line values
        this.referenceFile = plainFile;
        this.commandLineVal = plainFile.getName();

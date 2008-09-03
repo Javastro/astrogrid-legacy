@@ -1,19 +1,14 @@
 <%@ page import="java.io.*,
                                  java.net.*,
                  java.util.*,   
-                 org.picocontainer.*,
                  org.astrogrid.workflow.beans.v1.*,
-                 org.astrogrid.applications.beans.v1.parameters.*,
                  org.astrogrid.applications.service.v1.cea.*,
                  org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType,
                  org.astrogrid.applications.manager.ExecutionController,
                  org.astrogrid.applications.manager.QueryService,
-                 org.astrogrid.applications.beans.v1.cea.castor.MessageType,
-                 org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase,
                                  org.astrogrid.config.*,
                                  org.astrogrid.applications.*,
                                  org.astrogrid.applications.description.*,
-                                 org.astrogrid.applications.component.CEAComponentManagerFactory,
                                  org.astrogrid.community.User "
      %>
 <html>
@@ -43,8 +38,8 @@
   for (int i=0;i<inputs.length;++i) {
     String input = inputs[i];  // Name of text-entry control for value/URL
     String inputIndirect = input + "Indirect"; // Name of checkbox control for indirection
-    String displayName = description.getParameterDescription(input).getDisplayName();
-    String paramDescription = description.getParameterDescription(input).getDisplayDescription();
+    String displayName = description.getParameterDescription(input).getName();
+    String paramDescription = description.getParameterDescription(input).getDescription();
 %>
 	<p>
 		<%=input%> (<%=displayName%>): <%=paramDescription%><br/>

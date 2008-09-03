@@ -1,4 +1,4 @@
-/*$Id: FileProtocol.java,v 1.1 2004/07/26 12:07:38 nw Exp $
+/*$Id: FileProtocol.java,v 1.2 2008/09/03 14:18:57 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.applications.parameter.protocol;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +27,7 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
+@Component
 public class FileProtocol implements Protocol, ComponentDescriptor {
 
     /**
@@ -86,6 +88,14 @@ public class FileProtocol implements Protocol, ComponentDescriptor {
 
 /* 
 $Log: FileProtocol.java,v $
+Revision 1.2  2008/09/03 14:18:57  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.1.266.1  2008/04/04 15:46:08  pah
+Have got bulk of code working with spring - still need to remove all picocontainer refs
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.1  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

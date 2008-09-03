@@ -1,4 +1,4 @@
-/*$Id: RemoteProgressListener.java,v 1.5 2004/07/26 12:07:38 nw Exp $
+/*$Id: RemoteProgressListener.java,v 1.6 2008/09/03 14:18:58 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,9 @@ package org.astrogrid.applications.manager.observer;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.common.bean.Castor2Axis;
+import org.astrogrid.applications.description.execution.LogLevel;
+import org.astrogrid.applications.description.execution.MessageType;
+import org.astrogrid.common.beanjaxb.JAXB2Axis;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -53,7 +53,7 @@ public class RemoteProgressListener extends AbstractProgressListener {
      */
     protected void reportMessage(Application app, MessageType message) {
         try {
-            delegate.monitorJob(new JobIdentifierType( app.getJobStepID()),Castor2Axis.convert(message));
+            delegate.monitorJob(new JobIdentifierType( app.getJobStepID()),JAXB2Axis.convert(message));
         }
         catch (JesDelegateException e) {
             logger.warn("Could not communicate with remote client" + endpoint,e);
@@ -71,7 +71,7 @@ public class RemoteProgressListener extends AbstractProgressListener {
             message.setPhase(status.toExecutionPhase());
             message.setLevel(LogLevel.INFO);
             message.setContent("Application enters new phase");
-            delegate.monitorJob(new JobIdentifierType( app.getJobStepID()),Castor2Axis.convert(message));
+            delegate.monitorJob(new JobIdentifierType( app.getJobStepID()),JAXB2Axis.convert(message));
         }
         catch (JesDelegateException e) {
             logger.warn("Could not communicate with remote client" + endpoint,e);
@@ -84,6 +84,19 @@ public class RemoteProgressListener extends AbstractProgressListener {
 
 /* 
 $Log: RemoteProgressListener.java,v $
+Revision 1.6  2008/09/03 14:18:58  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.5.266.1  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.5  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

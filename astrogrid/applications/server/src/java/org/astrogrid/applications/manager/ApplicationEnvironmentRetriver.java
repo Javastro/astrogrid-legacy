@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationEnvironmentRetriver.java,v 1.2 2005/07/05 08:27:00 clq2 Exp $
+ * $Id: ApplicationEnvironmentRetriver.java,v 1.3 2008/09/03 14:18:56 pah Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -15,8 +15,8 @@ package org.astrogrid.applications.manager;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.astrogrid.applications.ApplicationEnvironmentUnavailableException;
 import org.astrogrid.applications.ApplicationStillRunningException;
+import org.astrogrid.applications.environment.ApplicationEnvironmentUnavailableException;
 import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
 import org.astrogrid.applications.manager.persist.PersistenceException;
 
@@ -45,6 +45,12 @@ public interface ApplicationEnvironmentRetriver {
 
 /*
  * $Log: ApplicationEnvironmentRetriver.java,v $
+ * Revision 1.3  2008/09/03 14:18:56  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.2.102.1  2008/06/11 14:31:42  pah
+ * merged the ids into the application execution environment
+ *
  * Revision 1.2  2005/07/05 08:27:00  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

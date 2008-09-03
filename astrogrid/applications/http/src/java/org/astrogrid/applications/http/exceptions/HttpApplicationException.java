@@ -1,4 +1,4 @@
-/* $Id: HttpApplicationException.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: HttpApplicationException.java,v 1.5 2008/09/03 14:18:45 pah Exp $
  * Created on Jul 27, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -12,61 +12,44 @@ package org.astrogrid.applications.http.exceptions;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import org.astrogrid.applications.CeaException;
+
 /**
- * A superinterface, just in case you want to just catch HttpApplicationExceptions
- * It mirrors all the methods in Throwable.
+ * A superclass for exceptions of the httpApplication server, just in case you want to just catch HttpApplicationExceptions
  * @author jdt
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 31 Mar 2008 - turned into class...
  */
-public interface HttpApplicationException  {
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#fillInStackTrace()
+public class HttpApplicationException extends CeaException {
+
+    /**
+     * @param message
+     * @param cause
      */
-    public   Throwable fillInStackTrace();
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#getCause()
+    public HttpApplicationException(String message, Throwable cause) {
+	super(message, cause);
+    }
+
+    /**
+     * @param message
      */
-    public Throwable getCause() ;
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#getLocalizedMessage()
-     */
-    public String getLocalizedMessage() ;
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#getMessage()
-     */
-    public String getMessage() ;
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#getStackTrace()
-     */
-    public StackTraceElement[] getStackTrace();
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#initCause(java.lang.Throwable)
-     */
-    public  Throwable initCause(Throwable arg0) ;
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#printStackTrace()
-     */
-    public void printStackTrace() ;
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#printStackTrace(java.io.PrintStream)
-     */
-    public void printStackTrace(PrintStream arg0) ;
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#printStackTrace(java.io.PrintWriter)
-     */
-    public void printStackTrace(PrintWriter arg0) ;
-    /* (non-Javadoc)
-     * @see java.lang.Throwable#setStackTrace(java.lang.StackTraceElement[])
-     */
-    public void setStackTrace(StackTraceElement[] arg0) ;
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString() ;
+    public HttpApplicationException(String message) {
+	super(message);
+   }
+ 
 
 }
 
 /* 
  * $Log: HttpApplicationException.java,v $
+ * Revision 1.5  2008/09/03 14:18:45  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.4.212.2  2008/08/02 13:32:32  pah
+ * safety checkin - on vacation
+ *
+ * Revision 1.4.212.1  2008/04/01 13:50:06  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.4  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.6 2004/12/18 15:43:57 jdt Exp $
+ * $Id: HyperZ.java,v 1.7 2008/09/03 14:18:54 pah Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,16 +13,16 @@
 
 package org.astrogrid.applications.commandline.hyperz;
 
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplication;
-import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.CommandLineParameterDescription;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.workflow.beans.v1.Tool;
 
 import cds.savot.model.SavotVOTable;
 
@@ -41,7 +41,7 @@ public class HyperZ extends CommandLineApplication {
      * @param user
      * @param description
      */
-    public HyperZ(String id, String jobStepId, Tool tool, ApplicationInterface description, CommandLineApplicationEnvironment env,ProtocolLibrary lib) {
+    public HyperZ(String id, String jobStepId, Tool tool, ApplicationInterface description, ApplicationEnvironment env,ProtocolLibrary lib) {
         super(jobStepId, tool,description,env,lib);
     }
 
@@ -81,13 +81,13 @@ public class HyperZ extends CommandLineApplication {
      */
   
         protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {
-            if (pval.getName().equals("input_catalog")) {
+            if (pval.getId().equals("input_catalog")) {
                 String bands = findInputParameter("BAND_ORDER").getValue(); //TODO this is a bit hacky - will not allow indirect parameter setting - but need a quick fix...
-                HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDescription) desr,applicationEnvironment,indirectVal, bands);
+                HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDefinition) desr,applicationEnvironment,indirectVal, bands);
                 votableSource.setSource(reader);
                 return reader;
-            } else if (pval.getName().equals("output_catalog")) {
-                return new HyperZVOTableWriter(getApplicationInterface(), pval,(CommandLineParameterDescription)desr,applicationEnvironment,indirectVal,votableSource);
+            } else if (pval.getId().equals("output_catalog")) {
+                return new HyperZVOTableWriter(getApplicationInterface(), pval,(CommandLineParameterDefinition)desr,applicationEnvironment,indirectVal,votableSource);
             } else { // default behaviour                
                 return super.instantiateAdapter(pval,desr,indirectVal);
             }            

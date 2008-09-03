@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Maven">
+  <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
+    <src>http://www.astrogrid.org/images/AGlogo.png</src>
+  </bannerRight>
+  <body>
+    <links>
+      <item name="Astrogrid" href="http://www.astrogrid.org/" />
+      <item name="IVOA" href="http://www.ivoa.net/"/>
+      <item name="Astrogrid Maven" href="http://www.astrogrid.org/maven/docs/"/>
+      <item name="Releases" href="http://software.astrogrid.org"/>
+    </links>
+
+    <menu name="Administrator Quickstart">
+       <item name="About this component" href="about.txt"/>
+       <item name="Overview" href="index.html"/>
+       <item name="Download" href="doc/DOWNLOAD.html"/>
+       <item name="Installation" href="doc/INSTALL.html"/>
+       <item name="Configuration" href="doc/CONFIGURE.html"/>
+       <item name="Self-testing" href="doc/SELF-TEST.html"/>
+       <item name="Registration" href="doc/REGISTER.html"/>
+       <item name="External testing" href="doc/EXTTEST.html"/>
+       <item name="Upgrading" href="doc/UPGRADE.html"/>
+       <item name="Uninstallation" href="doc/UNINSTALL.html"/>
+    </menu>
+   
+    <menu name="Administrator Reference">
+	     <item name="Reference guide" href="doc/REFERENCE.html"/>
+    </menu>
+
+    <menu ref="reports"></menu>
+  </body>
+</project>

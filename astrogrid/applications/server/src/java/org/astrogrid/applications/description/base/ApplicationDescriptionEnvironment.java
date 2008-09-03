@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.11 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.12 2008/09/03 14:18:42 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.description.base;
 
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
@@ -24,6 +25,7 @@ import junit.framework.Test;
  * At present, this class containts a unique-id-generator, and library of indirection handlers.
  * @todo could add hash map, so providers can stuff their own things in here? -becomes a kind of context object. unsure whether this is a good idea - extension may be better.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
+ * @deprecated better to have direct dependencies of the components in here...
  *
  */
 public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
@@ -59,8 +61,9 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
         return this.lib;
     }
     
-    /**Access the resolver that will return the appropriate authorityID that applications can be registered under.
+    /**Access the resolver that will return the appropriate authorityID that applications can be registered under. This is only intended to be used with java class definitions which do not have authority id in the name.
     * @return the resolver
+    * 
     */
    public AppAuthorityIDResolver getAuthIDResolver()
     {
@@ -95,6 +98,24 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.12  2008/09/03 14:18:42  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.11.54.4  2008/08/29 07:28:27  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.11.54.3  2008/06/16 21:58:59  pah
+altered how the description libraries fit together  - introduced the SimpleApplicationDescriptionLibrary to just plonk app descriptions into.
+
+Revision 1.11.54.2  2008/06/11 14:31:42  pah
+merged the ids into the application execution environment
+
+Revision 1.11.54.1  2008/03/19 23:10:52  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.11  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

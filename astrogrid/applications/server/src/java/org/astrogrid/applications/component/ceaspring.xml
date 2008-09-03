@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- central configuration file for CEA spring -->
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-lang-2.5.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+      
+      default-autowire="constructor">
+  
+ <!--  note that dependencies with only one possible implementation are defined using annotations and then picked up with 
+ the following scan declaration -->
+ <context:component-scan base-package="org.astrogrid.applications" ></context:component-scan>  
+<!-- note that the beanIds are generally the names of the interfaces that the bean implements if applicable  -->
+
+<bean id="ComponentManager" class="org.astrogrid.applications.component.CEAComponentContainer">
+  <!--  I think that this is now not a variable component could be moved to central config --> 
+</bean>
+
+<bean id="internalComponentManager" class="org.astrogrid.applications.component.InternalCeaComponentFactory">
+<!-- this is the internal component managager that is used to stop some dependency propagation --></bean>
+
+
+<bean id="RegistryUploader" class="org.astrogrid.applications.description.registry.RegistryUploader">
+   
+</bean>
+
+
+<bean id="MetadataService" class="org.astrogrid.applications.manager.DefaultMetadataService">
+</bean>
+
+
+<bean id="QueryService" class="org.astrogrid.applications.manager.DefaultQueryService">
+</bean>
+
+<bean id="ApplicationEnvironmentRetriever" class="org.astrogrid.applications.environment.DefaultExecutionEnvRetriever">
+</bean>
+
+<bean id="ApplicationDescriptionEnvironment" class="org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment">
+</bean>
+ 
+<bean id="Idgen" class="org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen"> 
+</bean>
+
+<bean id="RegistryAdminLocator" class="org.astrogrid.applications.description.registry.MockRegistryAdminService">
+  <!-- we are not sending entries to the registry at the moment, so only a mock is used. --> 
+</bean> 
+
+
+<bean id="ServiceDefinitionFactory" class="org.astrogrid.applications.description.TemplatedServiceDefinition">	
+</bean> 
+
+<bean id="ExecutionController" class="org.astrogrid.applications.manager.ThreadPoolExecutionController" destroy-method="shutdown">
+
+</bean>
+
+<bean id="ControlService" class="org.astrogrid.applications.control.CECControl" destroy-method="shutdown"></bean>
+
+<bean id="ExecutionPolicy" class="org.astrogrid.applications.manager.DefaultExecutionPolicy">
+	
+</bean>
+</beans>

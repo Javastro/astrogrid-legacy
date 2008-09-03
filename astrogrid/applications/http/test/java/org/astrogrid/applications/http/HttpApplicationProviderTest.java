@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.18 2008/02/12 12:10:56 pah Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.19 2008/09/03 14:18:33 pah Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,23 +9,26 @@
  *
 **/
 package org.astrogrid.applications.http;
+import static org.junit.Assert.*;
 
 import java.net.URL;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.ResultListType;
+import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.test.FileUnmarshaller;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
@@ -35,53 +38,49 @@ import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.community.User;
-import org.astrogrid.workflow.beans.v1.Tool;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /** 
  * Test of the HttpApplication backend to CEA
  * @author JDT/Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 10 Jun 2008
  *
  */
-public class HttpApplicationProviderTest extends TestCase {
+public class HttpApplicationProviderTest {
     /**
      * Logger for this class
      */
     private static final Log log = LogFactory.getLog(HttpApplicationProviderTest.class);
 
-    private static final String COMMUNITY = "org.astrogrid.test";
+    private static final String AUTHORITY = "ivo://org.astrogrid.test";
     private static final int PORT = 8078;
-    /**
-     * Constructor 
-     * @param arg0
+  /*
+     * @see TestCase#setUp()	
      */
-    public HttpApplicationProviderTest(String arg0) {
-        super(arg0);
-    }
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @BeforeClass   
+    static public void setUpBeforeClass() throws Exception {
         //Fire up an in process server
         TestWebServer.getServer(PORT);
         IdGen idgen = new InMemoryIdGen();
-        DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
-        protocolLib.addProtocol(new FileProtocol()); //this is done by the component manager normally
+        DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary(new Protocol[]{new FileProtocol()});
         monitor = new MockMonitor();
-        AppAuthorityIDResolver aresolver = new TestAuthority();
+        AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib, aresolver);
         RegistryQuerier querier = new TestRegistryQuerier(null);
         numberOfApps = querier.getHttpApplications().size();
-        applicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(querier, env);
+        Configuration conf = new MockNonSpringConfiguredConfig();
+	applicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(querier, env, conf );
         assertNotNull(applicationDescriptionLibrary);
     }
-    protected ApplicationDescriptionLibrary applicationDescriptionLibrary;
-    protected MockMonitor monitor;
+    protected static ApplicationDescriptionLibrary applicationDescriptionLibrary;
+    protected static MockMonitor monitor;
     
     protected final User user = new User();
-    private int numberOfApps;
+    private static int numberOfApps;
     private FileUnmarshaller toolUnmarshaller = new FileUnmarshaller(Tool.class);
     public void testLibrary() throws Exception {
         String[] names = applicationDescriptionLibrary.getApplicationNames();
@@ -89,23 +88,25 @@ public class HttpApplicationProviderTest extends TestCase {
         assertEquals(numberOfApps + 1,names.length); // 1 extra built-in app        
     }
     
+    @org.junit.Test
     public void testNoDescriptionFound() {
         try {
-            ApplicationDescription hw = applicationDescriptionLibrary.getDescription(COMMUNITY+"/dadsfadgadfgadgd");
+            ApplicationDescription hw = applicationDescriptionLibrary.getDescription(AUTHORITY+"/dadsfadgadfgadgd");
         } catch (ApplicationDescriptionNotFoundException e) {
             return; //expected
         }
         fail("Expected an ApplicationDescriptionNotFoundException");
     }
  
+    @Test
     public void testHelloWorld() throws Exception {
         if (log.isTraceEnabled()) {
             log.trace("testHelloWorld() - start");
         }
 
-        ApplicationDescription hw = getApplicationDescription("/HelloWorld");
+        ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/HelloWorld");
         
-        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-helloWorld1.xml");
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-helloWorld1.xml");
         
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
@@ -115,11 +116,11 @@ public class HttpApplicationProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String resultName=results.getResult(0).getName();
+        assertEquals(1,results.getResult().size());
+        String resultName=results.getResult().get(0).getId();
         assertEquals("Result", resultName);
         
-        String resultVal = results.getResult(0).getValue();
+        String resultVal = results.getResult().get(0).getValue();
         assertNotNull(resultVal);
         log.debug("testHelloWorld()" + resultVal);
         assertEquals("HelloWorld",resultVal);
@@ -136,17 +137,18 @@ public class HttpApplicationProviderTest extends TestCase {
      * @throws ApplicationDescriptionNotFoundException
      */
     private ApplicationDescription getApplicationDescription(final String appName) throws ApplicationDescriptionNotFoundException {
-        ApplicationDescription hw = applicationDescriptionLibrary.getDescription(COMMUNITY+appName);
+        ApplicationDescription hw = applicationDescriptionLibrary.getDescription(appName);
         assertNotNull(hw);
-        assertEquals(COMMUNITY+appName,hw.getName());
+        assertEquals(appName,hw.getId());
         ApplicationInterface iface = hw.getInterfaces()[0];
         assertNotNull(iface);
         return hw;
     }
+    @Test
     public void testHelloYou() throws Exception {
-        ApplicationDescription hw = getApplicationDescription("/HelloYou");
+        ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/HelloYou");
         
-        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-helloYou1.xml");
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-helloYou1.xml");
         
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
@@ -156,20 +158,21 @@ public class HttpApplicationProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String resultName=results.getResult(0).getName();
-        assertEquals("result", resultName);
+        assertEquals(1,results.getResult().size());
+        String resultName=results.getResult().get(0).getId();
+        assertEquals("Result", resultName);
         
-        String resultVal = results.getResult(0).getValue();
+        String resultVal = results.getResult().get(0).getValue();
         assertNotNull(resultVal);
         log.debug("testHelloYou()" + resultVal);
         assertEquals("Hello Old King Cole was a Merry Old Soul",resultVal);
     }
     
+    @Test
     public void testEcho1() throws Exception {
-        ApplicationDescription hw = getApplicationDescription("/Echoer");
+        ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/Echoer");
        
-        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-echo1.xml");
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-echo1.xml");
         
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
@@ -179,20 +182,21 @@ public class HttpApplicationProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String resultName=results.getResult(0).getName();
+        assertEquals(1,results.getResult().size());
+        String resultName=results.getResult().get(0).getId();
         assertEquals("Reply", resultName);
         
-        String resultVal = results.getResult(0).getValue();
+        String resultVal = results.getResult().get(0).getValue();
         assertNotNull(resultVal);
         log.debug("testEcho1()" + resultVal);
         assertEquals("{x=kerry4potus}",resultVal);
     }
     
+    @Test
     public void testEcho2() throws Exception {
-        ApplicationDescription hw = getApplicationDescription("/Echoer");
+        ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/Echoer");
         
-        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-echo2.xml");
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-echo2.xml");
         
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
@@ -202,20 +206,20 @@ public class HttpApplicationProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String resultName=results.getResult(0).getName();
+        assertEquals(1,results.getResult().size());
+        String resultName=results.getResult().get(0).getId();
         assertEquals("Reply", resultName);
         
-        String resultVal = results.getResult(0).getValue();
+        String resultVal = results.getResult().get(0).getValue();
         assertNotNull(resultVal);
         log.debug("testEcho2()" + resultVal);
         assertEquals("{y=bush4theHague}",resultVal); 
     }
     
     public void testAdd() throws Exception {
-        ApplicationDescription hw = getApplicationDescription("/Adder");
+        ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/Adder");
         
-        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-Adder1.xml");
         
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
@@ -225,11 +229,11 @@ public class HttpApplicationProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String resultName=results.getResult(0).getName();
+        assertEquals(1,results.getResult().size());
+        String resultName=results.getResult().get(0).getId();
         assertEquals("sum", resultName);
         
-        String resultVal = results.getResult(0).getValue();
+        String resultVal = results.getResult().get(0).getValue();
         assertNotNull(resultVal);
         log.debug("testAdd()" + resultVal);
         assertEquals("8",resultVal);
@@ -239,17 +243,18 @@ public class HttpApplicationProviderTest extends TestCase {
      * As testAdd, but using a file:// param
      * @throws Exception
      */
+    @Test
     public void testAddIndirectParameter() throws Exception {
-        ApplicationDescription hw = getApplicationDescription("/Adder");
+        ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/Adder");
         
         
         
-        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-Adder1.xml");
         // Replace a parameter by an indirect value.  Can't do this in the xml file
         // since we don't know where your local tmp directory is going to be.
         URL url_x = this.getClass().getResource("test/xinput.txt");
         log.debug("Located x input file at "+url_x);
-        ParameterValue pval_x = (ParameterValue)tool.findXPathValue("input/parameter[name='x']");
+        ParameterValue pval_x = tool.getInput().findParameter("x");
         log.debug("Changing x value in tools document from "+pval_x.getValue());
         pval_x.setValue(url_x.toString());
         log.debug("to " + pval_x.getValue());
@@ -262,11 +267,11 @@ public class HttpApplicationProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String resultName=results.getResult(0).getName();
+        assertEquals(1,results.getResult().size());
+        String resultName=results.getResult().get(0).getId();
         assertEquals("sum", resultName);
         
-        String resultVal = results.getResult(0).getValue();
+        String resultVal = results.getResult().get(0).getValue();
         assertNotNull(resultVal);
         log.debug("testAdd()" + resultVal);
         assertEquals("8",resultVal);
@@ -276,10 +281,11 @@ public class HttpApplicationProviderTest extends TestCase {
      * What happens if the URL returns a 404?
      * @throws Exception
      */
+    @Test
     public void test404() throws Exception {
-            ApplicationDescription hw = getApplicationDescription("/Bad");
+            ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/Bad");
             
-            Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+            Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-Adder1.xml");
             
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
@@ -295,10 +301,11 @@ public class HttpApplicationProviderTest extends TestCase {
      * What happens if the URL timesout?
      * @throws Exception
      */
+    @Test
     public void testTimeOut() throws Exception {
-            ApplicationDescription hw = getApplicationDescription("/Badder");
+            ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/Badder");
             
-            Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+            Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-Adder1.xml");
             
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
@@ -314,10 +321,11 @@ public class HttpApplicationProviderTest extends TestCase {
      * What happens if the URL is malformed?
      * @throws Exception
      */
+    @Test
     public void testMalformedURL() throws Exception {
-            ApplicationDescription hw = getApplicationDescription("/Baddest");
+            ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/Baddest");
             
-            Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+            Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-Adder1.xml");
             
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
@@ -334,11 +342,12 @@ public class HttpApplicationProviderTest extends TestCase {
      * @throws Exception
      * @todo NWW: this isn't observable anymore. 
      */
+    @Test
     public void testPreProcess() throws Exception {
 
-            ApplicationDescription hw = getApplicationDescription("/AdderPreProcess");
+            ApplicationDescription hw = getApplicationDescription(AUTHORITY+"/AdderPreProcess");
             
-            Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+            Tool tool  = (Tool) toolUnmarshaller.unmarshallCastorFromFile("tool-Adder1.xml");
             
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
@@ -361,14 +370,25 @@ public class HttpApplicationProviderTest extends TestCase {
   private void execute(Application app) throws CeaException {
     Runnable r = app.createExecutionTask();
     assertNotNull(r);
-    Thread t = new Thread(r);
-    t.start();
+    r.run();
+//    Thread t = new Thread(r);
+//    t.start();
+
   }
 }
 
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.19  2008/09/03 14:18:33  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.18.2.2  2008/08/02 13:32:32  pah
+safety checkin - on vacation
+
+Revision 1.18.2.1  2008/04/01 13:50:07  pah
+http service also passes unit tests with new jaxb metadata config
+
 Revision 1.18  2008/02/12 12:10:56  pah
 build with 1.0 registry and filemanager clients
 

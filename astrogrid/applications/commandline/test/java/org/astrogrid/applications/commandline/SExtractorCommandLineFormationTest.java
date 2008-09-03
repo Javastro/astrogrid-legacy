@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractorCommandLineFormationTest.java,v 1.2 2005/07/05 08:26:56 clq2 Exp $
+ * $Id: SExtractorCommandLineFormationTest.java,v 1.3 2008/09/03 14:18:49 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -12,12 +12,17 @@
 
 package org.astrogrid.applications.commandline;
 
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.commandline.DescriptionBaseTestCase.TestAppInfo;
+import static org.junit.Assert.*;
+
+
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.commandline.sextractor.SExtractor;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Output;
-import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.applications.description.execution.ListOfParameterValues;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.community.User;
+import org.junit.Test;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk) 23-Sep-2004
@@ -27,29 +32,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTestCase {
 
     
-    public SExtractorCommandLineFormationTest(String arg0)
-    {
-        super(new TestAppInfo(){
-
-            public String getAppName() {
-               return "org.astrogrid/SExtractor";
-            }
-
-            public String getConfigFileName() {
-                return TestAppConst.REALAPP_CONFFILE;
-            }
-            
-        },
-                arg0);
-    }
-    /**
-     * @param info
-     * @param arg0
-     */
-    public SExtractorCommandLineFormationTest(TestAppInfo info, String arg0) {
-        super(info, arg0);
-    }
-
+  
     /* (non-Javadoc)
      * @see org.astrogrid.applications.commandline.AbstractCmdLineAppTestCase#buildTool()
      * 
@@ -60,18 +43,18 @@ public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTe
         assertNotNull(interf);
         // from this 'meta data' populat a tool..
         Tool t = new Tool();
-        t.setName(TESTAPPNAME);
-        t.setInterface(interf.getName());
-        Input input = new Input();
-        t.setInput(input);
-        Output output = new Output();
-        t.setOutput(output);
+        t.setId(TESTAPPNAME);
+        t.setInterface(interf.getId());
+        ListOfParameterValues input = t.getInput();
+       
+         ListOfParameterValues output = t.getOutput();
+      
 
         String myspaceBaseRef="file:///nout/";
         
         ParameterValue param = new ParameterValue();
         input.addParameter(param);
-        param.setName("DetectionImage");
+        param.setId("DetectionImage");
 
         param.setIndirect(false);
         String hemi="s";
@@ -81,7 +64,7 @@ public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTe
 
         param = new ParameterValue();
         input.addParameter(param);
-        param.setName("PhotoImage");
+        param.setId("PhotoImage");
 
         param.setIndirect(false);
         String band="Z";	
@@ -90,7 +73,7 @@ public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTe
 
         param = new ParameterValue();
         input.addParameter(param);
-        param.setName("config_file");
+        param.setId("config_file");
 
         param.setIndirect(false);
         param.setValue(
@@ -98,21 +81,21 @@ public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTe
 
         param = new ParameterValue();
         input.addParameter(param);
-        param.setName("PARAMETERS_NAME");
+        param.setId("PARAMETERS_NAME");
 
         param.setIndirect(false);
         param.setValue("file:///param");
 
         param = new ParameterValue();
         output.addParameter(param);
-        param.setName("CATALOG_NAME");
+        param.setId("CATALOG_NAME");
 
         param.setIndirect(false);
         param.setValue(myspaceBaseRef + "catalog");
         
         param = new ParameterValue();
         input.addParameter(param);
-        param.setName("FILTER_NAME");
+        param.setId("FILTER_NAME");
         param.setValue("file:///filter");
         param.setIndirect(false);
 
@@ -122,6 +105,31 @@ public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTe
         return t;
 
     
+    }
+    
+    @Test
+    public void testCreateCustomApplication() throws Exception{
+        User user = new User();
+	Application app = testAppDescr.initializeApplication("foo",user ,buildTool("1"));
+        assertNotNull(app);
+        assertTrue("was expecting app to be SExtractor, but actually is "+ app.getClass().getCanonicalName(),app instanceof SExtractor);
+        
+    }
+
+
+    @Override
+    protected TestAppInfo setupApplication() {
+	return new TestAppInfo(){
+
+            public String getAppName() {
+               return "ivo://org.astrogrid/SExtractor";
+            }
+
+	    public String getInterfaceName() {
+		return "simple";
+	    }
+            
+        };
     }
 
 }

@@ -1,76 +1,84 @@
 package org.astrogrid.applications.description;
 
+import net.ivoa.resource.cea.CeaApplication;
+
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.BuiltInApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.base.BaseParameterDescription;
-import org.astrogrid.applications.description.base.BaseApplicationInterface;
+import org.astrogrid.applications.description.base.ApplicationKind;
+import org.astrogrid.applications.description.base.InterfaceDefinition;
+import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
+import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.environment.CannotCreateWorkingDirectoryException;
+import org.astrogrid.applications.environment.WorkingDirectoryAlreadyExists;
+import org.astrogrid.applications.javainternal.BuiltInApplication;
+import org.astrogrid.applications.manager.idgen.IdGen;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
-import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
- * An {@link ApplicationDescription} whose details are known at compile time.
+ * An {@link ApplicationDescription} whose details are known at compile time. The application is known as
+ * ivo://org.astrogrid.unregistered/default
  *
  * @author Guy Rixon
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 14 Mar 2008
  */
-public class BuiltInApplicationDescription extends AbstractApplicationDescription {
+public class BuiltInApplicationDescription extends InternallyConfiguredApplicationDescription {
   
   
-  /**
-   * Constructs a BuiltInApplicationDescription.
+  private static final CeaApplication app = new CeaApplication();
+  
+  static {
+      // This is the default application that is always present in a CEA service.
+      app.setIdentifier("ivo://org.astrogrid.unregistered/default");
+      app.setShortName("built-in");
+      app.getApplicationDefinition().getApplicationType().add(ApplicationKind.PROCESSING);
+      app.getContent().setDescription("A small mock application that is always present in all CEA Servers for testing purposes");
+      addParameter(app,"out",ParameterTypes.TEXT,"out","There is one output parameter and it is a string");
+      addParameter(app,"in1",ParameterTypes.REAL,"in1","The first input parameter is a double-precisions number");
+      addParameter(app,"in2",ParameterTypes.TEXT,"int2","The second input parameter is a string.");
+      addParameter(app,"in3",ParameterTypes.INTEGER,"sleeptime","The time for the applicaton to sleep in seconds");
+      InterfaceDefinition intf = addInterface(app, "default");
+      intf.addInput("in1");
+      intf.addInput("in2");
+      intf.addInput("in3");
+      intf.addOutput("out");
+  }
+
+/**
+   * Constructs a BuiltInApplicationDescription. 
+ * @param conf 
    */
-  public BuiltInApplicationDescription(ApplicationDescriptionEnvironment env) 
+  public BuiltInApplicationDescription(Configuration conf) 
       throws CeaException {
-    super(env);
+      
+    super(app, conf);
     
-    // This is the default application that is always present in a CEA service.
-    this.setName("org.astrogrid.unregistered/default");
-    
-    // There is one output parameter and it is a string.
-    BaseParameterDescription out = new BaseParameterDescription();
-    out.setName("out");
-    out.setType(ParameterTypes.TEXT);
-    this.addParameterDescription(out);
-    
-    // The first input parameter is a double-precisions number.
-    BaseParameterDescription in1 = new BaseParameterDescription();
-    in1.setName("in1");
-    in1.setType(ParameterTypes.DOUBLE);
-    this.addParameterDescription(in1);
-    
-    // The second input parameter is a string.
-    BaseParameterDescription in2 = new BaseParameterDescription();
-    in2.setName("in2");
-    in2.setType(ParameterTypes.TEXT);
-    this.addParameterDescription(in2);
-    
-    // Group the parameters into an interface.
-    BaseApplicationInterface ai = new BaseApplicationInterface("default", this);
-    ai.addInputParameter("in1");
-    ai.addInputParameter("in2");
-    ai.addOutputParameter("out");
-    this.addInterface(ai);
   }
   
   /**
    * Sets up a job using the described application.
+ * @throws CannotCreateWorkingDirectoryException 
+ * @throws WorkingDirectoryAlreadyExists 
    */
   public Application initializeApplication(String userAssignedId,
                                            User   user,
                                            Tool   tool)
-      throws InterfaceDescriptionNotFoundException {
-    DefaultIDs ids = new DefaultIDs(userAssignedId, 
-                                    this.env.getIdGen().getNewID(), 
-                                    user);
-    return new BuiltInApplication(ids,
+      throws InterfaceDescriptionNotFoundException, CannotCreateWorkingDirectoryException, WorkingDirectoryAlreadyExists {
+      
+    
+    ApplicationEnvironment env = new ApplicationEnvironment(userAssignedId, user, getInternalComponentFactory().getIdGenerator(), config);
+  
+    return new BuiltInApplication(
                                   tool,
                                   this.getInterfaceForTool(tool),
-                                  this.env.getProtocolLib());
+                                  env ,getInternalComponentFactory().getProtocolLibrary());
   }
   
   /**
@@ -88,7 +96,7 @@ public class BuiltInApplicationDescription extends AbstractApplicationDescriptio
     else {
       throw new InterfaceDescriptionNotFoundException(
                     "Application " +
-                    this.getName() +
+                    this.getId() +
                     " does not have an interface called " +
                     tool.getInterface()
                 );

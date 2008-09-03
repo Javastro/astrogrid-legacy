@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.14 2008/02/12 12:10:56 pah Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.15 2008/09/03 14:18:57 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
 import java.io.ByteArrayOutputStream;
@@ -76,7 +76,7 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
                 return sw.toString();                
             }
             catch (IOException e) {
-                throw new CeaException("Could not process parameter " + val.getName());
+                throw new CeaException("Could not process parameter " + val.getId());
             } finally {
                 if (r != null) {
                     try {
@@ -200,6 +200,22 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.15  2008/09/03 14:18:57  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.14.2.2  2008/06/10 20:01:38  pah
+moved ParameterValue and friends to CEATypes.xsd
+
+Revision 1.14.2.1  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.14  2008/02/12 12:10:56  pah
 build with 1.0 registry and filemanager clients
 

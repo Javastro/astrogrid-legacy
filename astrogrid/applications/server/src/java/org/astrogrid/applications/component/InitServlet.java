@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.19 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: InitServlet.java,v 1.20 2008/09/03 14:18:57 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
@@ -27,13 +26,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Document;
-
-import org.astrogrid.applications.ApplicationExecutionException;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.MetadataService;
@@ -41,6 +40,7 @@ import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.component.ComponentManagerException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.w3c.dom.Document;
 ///CLOVER:OFF
 /**
  * 
@@ -100,10 +100,10 @@ public class InitServlet extends HttpServlet {
             writer
                   .println("<html><head></head><body><p>registered with registry at "
                         + endpoint + "</p>");
-            MetadataService voProvider = CEAComponentManagerFactory
+            MetadataService voProvider = CEAComponentContainer
                   .getInstance().getMetadataService();
 
-            RegistryUploader regUploader = CEAComponentManagerFactory
+            RegistryUploader regUploader = CEAComponentContainer
                   .getInstance().getRegistryUploaderService();
             regUploader.write(endpoint);
             writer.println("</p><p>success</p></body></html>");
@@ -115,14 +115,10 @@ public class InitServlet extends HttpServlet {
 
       }
       
-      else if (method.trim().toLowerCase().equals("getregistrationtemplate")) {
-        resp.setContentType("application/xml");
-        this.getRegistrationTemplate(resp.getWriter());
-      }
 
       else if (method.trim().toLowerCase().equals("startup")) {
          logger.info("Starting CEA server");
-         CEAComponentManagerFactory.getInstance();
+         CEAComponentContainer.getInstance();
          resp.setContentType("text/html");
          writer
                .println("<html><head></head><body><p>Common Execution Controller Started..</p></body></html>");
@@ -146,7 +142,7 @@ public class InitServlet extends HttpServlet {
          itype = ApplicationEnvironmentRetriver.StdIOType.err;
       }
       try {
-         QueryService queryService = CEAComponentManagerFactory.getInstance()
+         QueryService queryService = CEAComponentContainer.getInstance()
                .getQueryService();
          assert queryService != null : "interal error - no query service";
          File logFile = queryService.getLogFile(execId, itype);
@@ -195,46 +191,32 @@ public class InitServlet extends HttpServlet {
    }
 
    protected void returnRegistryEntry(PrintWriter pw) throws ServletException {
-      try {
-         Document regEntry = CEAComponentManagerFactory.getInstance()
-               .getMetadataService().returnRegistryEntry();
-         XMLUtils.DocumentToWriter(regEntry, pw);
-      }
-        catch (CeaException e) {
-         throw new ServletException(e);
-      }
+      Document regEntry;
+    try {
+	regEntry = CEAComponentContainer.getInstance()
+	       .getMetadataService().returnRegistryEntry();
+	    XMLUtils.DocumentToWriter(regEntry, pw);
+	       } catch (Exception e) {
+	throw new ServletException("problem getting registry entry", e);
+    }
    }
 
    protected void getExecutionSummary(PrintWriter pw, String execId)
          throws ServletException {
       try {
-         ExecutionSummaryType summary = CEAComponentManagerFactory
+         ExecutionSummaryType summary = CEAComponentContainer
                .getInstance().getQueryService().getSummary(execId);
-         summary.marshal(pw);
+        	JAXBContext jc = CEAJAXBContextFactory.newInstance();
+                Marshaller m = jc.createMarshaller();
+                m.marshal(summary, pw);
+
+        
+
       } catch (Exception e) {
          throw new ServletException(e);
       }
    }
    
-   protected void getRegistrationTemplate(PrintWriter writer) 
-       throws ServletException {
-     try {
-       CEAComponentManager m = CEAComponentManagerFactory.getInstance();
-       URL url = m.getMetadataService().getRegistrationTemplate();
-       BufferedReader reader 
-           = new BufferedReader(new InputStreamReader(url.openStream()));
-       while(true) {
-         String line = reader.readLine();
-         if (line == null) {
-           break;
-         }
-         writer.print(line + "\n");
-       }
-     } catch (Exception e) {
-       throw new ServletException(e);
-     }
-   }
-
    protected void usage(PrintWriter pw) {
       pw.println("<html><body>");
       pw.println("<h1>Usage</h1>");

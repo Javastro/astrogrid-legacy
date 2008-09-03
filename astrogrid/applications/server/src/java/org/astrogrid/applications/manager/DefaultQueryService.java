@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.8 2007/03/01 11:53:11 clq2 Exp $
+/*$Id: DefaultQueryService.java,v 1.9 2008/09/03 14:18:56 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,36 +10,32 @@
 **/
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.ApplicationEnvironmentUnavailableException;
-import org.astrogrid.applications.ApplicationStillRunningException;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.applications.manager.observer.RemoteProgressListener;
-import org.astrogrid.applications.manager.observer.RemoteResultsListener;
-import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
-import org.astrogrid.applications.manager.persist.PersistenceException;
-import org.astrogrid.applications.manager.persist.SummaryHelper;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.Date;
 import java.util.Observer;
 
 import javax.xml.rpc.ServiceException;
 
 import junit.framework.Test;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.ApplicationStillRunningException;
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.applications.description.execution.LogLevel;
+import org.astrogrid.applications.description.execution.MessageType;
+import org.astrogrid.applications.environment.ApplicationEnvironmentUnavailableException;
+import org.astrogrid.applications.manager.observer.RemoteProgressListener;
+import org.astrogrid.applications.manager.observer.RemoteResultsListener;
+import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.applications.manager.persist.PersistenceException;
+import org.astrogrid.applications.manager.persist.SummaryHelper;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.joda.time.DateTime;
 
 /** Default implementation of the {@link org.astrogrid.applications.manager.QueryService}
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
@@ -77,17 +73,17 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
         {
            ExecutionSummaryType summary = executionHistory.getApplicationFromArchive(executionId);
            retval = new MessageType();           
-           retval.setContent("The application is no longer running" + summary.getStatus().toString());
+           retval.setContent("The application is no longer running" + summary.getPhase().toString());
            retval.setLevel(LogLevel.INFO);
-           retval.setPhase(summary.getStatus());
-           retval.setSource(summary.getApplicationName() + "\nid" + summary.getExecutionId());
-           retval.setTimestamp(new Date());            
+           retval.setPhase(summary.getPhase());
+           retval.setSource(summary.getApplicationName() + "\nid" + summary.getJobId());
+           retval.setTimestamp(new DateTime());            
         }        
         return retval;
 
      }
 
-     public ResultListType getResults(String executionId) throws CeaException {
+     public org.astrogrid.applications.description.execution.ResultListType getResults(String executionId) throws CeaException {
          logger.debug("Getting results for " + executionId);
          if (executionHistory.isApplicationInCurrentSet(executionId)) {
              return executionHistory.getApplicationFromCurrentSet(executionId).getResult();
@@ -184,6 +180,30 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.9  2008/09/03 14:18:56  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.8.14.4  2008/08/29 07:28:30  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.8.14.3  2008/06/11 14:31:42  pah
+merged the ids into the application execution environment
+
+Revision 1.8.14.2  2008/04/17 16:08:32  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
+Revision 1.8.14.1  2008/04/04 15:46:07  pah
+Have got bulk of code working with spring - still need to remove all picocontainer refs
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.8  2007/03/01 11:53:11  clq2
 apps-gtr-2132-2
 

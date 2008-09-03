@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.15 2008/08/21 14:34:03 gtr Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.16 2008/09/03 14:18:58 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,40 +13,37 @@
 
 package org.astrogrid.applications.service.v1.cea;
 
+import java.rmi.RemoteException;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.axis.description.ServiceDesc;
+import org.apache.axis.types.URI;
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.component.CEAComponentManager;
-
-import org.astrogrid.applications.component.CEAComponentManagerFactory;
+import org.astrogrid.applications.component.CEAComponentContainer;
+import org.astrogrid.applications.component.CEAComponents;
+import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
 import org.astrogrid.applications.manager.persist.PersistenceException;
-import org.astrogrid.common.bean.Axis2Castor;
-import org.astrogrid.common.bean.Castor2Axis;
+import org.astrogrid.common.beanjaxb.Axis2JAXB;
+import org.astrogrid.common.beanjaxb.JAXB2Axis;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.security.AxisServiceSecurityGuard;
-import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.axis._tool;
-
-import org.apache.axis.description.ServiceDesc;
-import org.apache.axis.types.URI;
-import org.apache.axis.utils.XMLUtils;
-
-import java.rmi.RemoteException;
 
 /**
  * This is the main implementation of the CommonExecutionConnectorService. This is the class that should be referenced in the Axis wsdd file.
- * Its main task is to convert between axis and castor object representations, and then delegate to the appropriate component in the componentManager 
+ * Its main task is to convert between axis and jaxb object representations, and then delegate to the appropriate component in the componentManager 
  * <p>
  * Catches all exceptions, propagates them as {@link org.astrogrid.applications.service.v1.cea.CeaFault} messages back to the caller.
  * @author Paul Harrison (pah@jb.man.ac.uk) 25-Mar-2004
@@ -54,7 +51,7 @@ import java.rmi.RemoteException;
  * @version $Name:  $
  * @since iteration5
  */
-public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExecutionConnector {
+public class CommonExecutionConnectorServiceSoapBindingImpl extends org.springframework.remoting.jaxrpc.ServletEndpointSupport implements CommonExecutionConnector {
     /**
      * Logger for this class
      */
@@ -62,18 +59,22 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
 
 
       
-      protected  final ExecutionController cec;
+      protected   ExecutionController cec; //impl would like to reinstate final.
       protected final QueryService query;
+
+
+
+    private CEAComponents components;
 
    /**
     * 
     */
    public CommonExecutionConnectorServiceSoapBindingImpl() {
       try {
-          //TODO need to get this service description into pico
+         
          ServiceDesc servicedesc = org.apache.axis.MessageContext.getCurrentContext().getService().getServiceDescription();
  
-         cec = CEAComponentManagerFactory.getInstance().getExecutionController();
+         cec = CEAComponentContainer.getInstance().getExecutionController();
         
          //nController(servicedesc);
       }
@@ -83,12 +84,18 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
          throw new RuntimeException("Could not instantiate application controller",e);
       }
       try {
-          query = CEAComponentManagerFactory.getInstance().getQueryService();
+          query = CEAComponentContainer.getInstance().getQueryService();
       } catch (Throwable e) {
           logger.fatal("problem instantiating querier",e);
           throw new RuntimeException("Could not instantiate query service",e);
       }
       
+   }
+
+   
+   protected void onInit() {//IMPL can this be done in the constructor?
+		this.components = (CEAComponents) CEAComponentContainer.getInstance();
+		this.cec = components.getExecutionController();
    }
 
    /** 
@@ -98,7 +105,12 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
       throws RemoteException, CeaFault {           
          try {
            this.cacheSecurityGuard();
-           Tool ctool = Axis2Castor.convert(tool);
+           Tool ctool = Axis2JAXB.convert(tool);
+           if(!ctool.getId().startsWith("ivo://")){//old clients leave this off
+               StringBuffer sb = new StringBuffer("ivo://");
+               sb.append(ctool.getId());
+               ctool.setId(sb.toString());
+           }
            this.decide("init", ctool);
            return cec.init(ctool, jobstepID.toString());
          }
@@ -158,8 +170,8 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
          try {
            this.cacheSecurityGuard();
            this.decide("queryExecutionStatus", executionId);
-           org.astrogrid.applications.beans.v1.cea.castor.MessageType mess = query.queryExecutionStatus(executionId);
-           return  Castor2Axis.convert(mess);
+           org.astrogrid.applications.description.execution.MessageType mess = query.queryExecutionStatus(executionId);
+           return  JAXB2Axis.convert(mess);
          }
          catch (Exception e) {
             logger.error("queryExecutionStatus(" + executionId+")", e);
@@ -210,7 +222,7 @@ public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteExcept
     try {
         this.cacheSecurityGuard();
         this.decide("getExecutionSummary", arg0);
-        return Castor2Axis.convert(query.getSummary(arg0));
+        return JAXB2Axis.convert(query.getSummary(arg0));
     } catch (Exception e) {
         logger.error("getExecutionSummary("+arg0+")", e);
         throw CeaFault.makeFault(e);
@@ -226,7 +238,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
     try {
         this.cacheSecurityGuard();
         this.decide("getResults", arg0);
-        return Castor2Axis.convert(query.getResults(arg0));
+        return JAXB2Axis.convert(query.getResults(arg0));
     } catch (Exception e) {
         logger.error("getResults("+arg0+")", e);
         throw CeaFault.makeFault(e);
@@ -243,7 +255,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
  public String returnRegistryEntry() throws RemoteException, CeaFault
  {
      try {
-         return XMLUtils.DocumentToString(CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry());
+         return XMLUtils.DocumentToString(CEAComponentContainer.getInstance().getMetadataService().returnRegistryEntry());
      } catch (Exception e) {
 		 logger.error("returnRegistryEntry()", e);
          throw CeaFault.makeFault(e);       
@@ -303,8 +315,8 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
    * @throws ExecutionIDNotFoundException If the named execution is not current.
    */
   private Application getApplication(String job) throws ExecutionIDNotFoundException, PersistenceException {
-    CEAComponentManager m = CEAComponentManagerFactory.getInstance();
-    ExecutionHistory h = (ExecutionHistory) m.getContainer().getComponentInstance(ExecutionHistory.class);
+    CEAComponents m = CEAComponentContainer.getInstance();
+    ExecutionHistory h = m.getExecutionHistoryService();
     if (h.isApplicationInCurrentSet(job)) {
       return h.getApplicationFromCurrentSet(job);
     } 

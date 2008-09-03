@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessorTest.java,v 1.6 2006/03/17 17:50:58 clq2 Exp $
+/* $Id: IdentityPreprocessorTest.java,v 1.7 2008/09/03 14:19:08 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,19 +10,21 @@
  */
 package org.astrogrid.applications.http.script;
 
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
 import junit.framework.TestCase;
 
-import org.apache.commons.httpclient.HttpURL;
-import org.astrogrid.applications.beans.v1.HttpURLType;
-import org.astrogrid.applications.beans.v1.SimpleParameter;
-import org.astrogrid.applications.beans.v1.WebHttpCall;
-import org.astrogrid.applications.beans.v1.types.HttpMethodType;
+import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.impl.HttpMethodType;
+import org.astrogrid.applications.description.impl.HttpURLType;
+import org.astrogrid.applications.description.impl.WebHttpCall;
+import org.astrogrid.applications.description.impl.WebHttpCall.SimpleParameter;
+import org.astrogrid.applications.http.exceptions.HttpParameterProcessingException;
 import org.astrogrid.applications.http.test.FileUnmarshaller;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 
 /**
  * JUnit test for IdentityPreprocessor
@@ -45,10 +47,10 @@ public class IdentityPreprocessorTest extends TestCase {
     }
 
 
-    public final void testProcess() throws MarshalException, ValidationException {
+    public final void testProcess() throws HttpParameterProcessingException, javax.xml.bind.MarshalException, javax.xml.bind.ValidationException, MetadataException, XMLStreamException, FactoryConfigurationError {
         TestRegistryQuerier querier = new TestRegistryQuerier(null);
-        CeaHttpApplicationType app 
-            = querier.getHttpApplication("org.astrogrid.test/Adder");
+        CeaHttpApplicationDefinition app 
+            = querier.getHttpApplication("ivo://org.astrogrid.test/Adder");
         Tool tool = (Tool) new FileUnmarshaller(Tool.class).unmarshallFromFile("tool-eg.xml");
         assertNotNull(app);
         assertNotNull(tool);
@@ -57,8 +59,8 @@ public class IdentityPreprocessorTest extends TestCase {
         HttpURLType url = call.getURL();
         
         assertEquals(url.getMethod(), HttpMethodType.GET);
-        assertEquals("http://127.0.0.1:8078/add",url.getContent());
-        SimpleParameter[] simpleParameters = call.getSimpleParameter();
+        assertEquals("http://127.0.0.1:8078/add",url.getValue());
+        SimpleParameter[] simpleParameters = call.getSimpleParameter().toArray(new SimpleParameter[0]);
         assertEquals("Number of parameters incorrect",2,simpleParameters.length);
         SimpleParameter xParam;
         SimpleParameter yParam;

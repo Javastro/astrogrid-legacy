@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.4 2004/07/30 14:54:47 jdt Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.5 2008/09/03 14:18:44 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,19 @@
 **/
 package org.astrogrid.applications.javaclass;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.DefaultIDs;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
-import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.base.BaseApplicationInterface;
-import org.astrogrid.applications.description.base.BaseParameterDescription;
-import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
-import org.astrogrid.community.User;
-import org.astrogrid.workflow.beans.v1.Tool;
-
 import java.lang.reflect.Method;
+
+import net.ivoa.resource.cea.CeaApplication;
+
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.AppMetadataAdapter;
+import org.astrogrid.applications.description.base.AbstractApplicationDescription;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.community.User;
 
 /** A description for an application that is implemented as a static java method.
  * <p>
@@ -30,9 +30,10 @@ import java.lang.reflect.Method;
  * where the authority name is specified in the constructor.
  * <p>
  * Constructs all the metadata for the application via reflection on the static method.
- * @todo add support for attributes, or something, so that other metadata can be specified (e.g. documentation, UCD).
+ * @todo add support for attributes, or something, so that other metadata can be specified (e.g. documentation, UCD). - java 5 annotations..
  * @todo improve definition of types
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 18 Mar 2008
  *
  */
 public class JavaClassApplicationDescription extends AbstractApplicationDescription {
@@ -40,88 +41,66 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
      * @param method the method that is to be the implementation of this application
      * @param authorityName the name of the authority under which to add this application
      * @param env standard container for helper objects.
+     * @param app 
+     * @param config 
      * 
      */
-    public JavaClassApplicationDescription(Method method,String authorityName,ApplicationDescriptionEnvironment env) {
-        super(env);
+    public JavaClassApplicationDescription(CeaApplication app, Method method, Configuration config) {
+        super(new AppMetadataAdapter(app));
         this.method = method;
-        createMetadata(authorityName);
-    }
+        this.conf = config;
+     }
     protected final Method method;
+    private final Configuration conf;
     
-    /** populates this object with parameterDescriptions by reflecting on application method
-     * @todo improve handling to parameter types
-     *  */
-    protected final void createMetadata(String communityName){
-        setName(communityName + "/" + method.getName());
-        Class[] inputs = method.getParameterTypes();
-        BaseApplicationInterface singleInterface =new BaseApplicationInterface(method.getName(),this);        
-        for (int i = 0; i < inputs.length; i++) {
-            Class input = inputs[i];
-            JavaClassParameterDescription param = new JavaClassParameterDescription();
-            param.setName("parameter-" + i);
-            ParameterTypes targetType = ParameterTypes.TEXT; // suitable default.
-            // special cases.
-            Class coreType = (input.isArray() ? input.getComponentType() : input); // get the base type, if this is an array.
-            if (coreType.equals(Boolean.class) || coreType.equals(Boolean.TYPE)) {
-                targetType = ParameterTypes.BOOLEAN;
-            } else if (coreType.equals(Byte.TYPE) || coreType.equals(Byte.class)) {
-                targetType = ParameterTypes.BINARY;
-            } else if (coreType.equals(Integer.TYPE) || coreType.equals(Integer.class)) {
-                targetType = ParameterTypes.INTEGER;
-            } else if (coreType.equals(Float.TYPE) || coreType.equals(Float.class)) {
-                targetType = ParameterTypes.REAL;
-            } else if (coreType.equals(Double.TYPE) || coreType.equals(Double.class)) {
-                targetType = ParameterTypes.DOUBLE;
-            }
-            // URI, Document, Node?
-            
-            param.setType(targetType); 
-            param.setSubType(input.getName());
-            param.setTargetClass(input);
-            this.addParameterDescription(param);
-            try {
-                singleInterface.addInputParameter(param.getName());
-            }
-            catch (ParameterDescriptionNotFoundException e) {
-                // impossible.
-                e.printStackTrace();
-                assert false; //are you sure?
-            }
-        }
-        Class output = method.getReturnType();
-        if (!output.equals(Void.TYPE)) { // only add a parameter description if the method doesn't return void.            
-            BaseParameterDescription result = new BaseParameterDescription();
-            result.setName("result");
-            result.setType(ParameterTypes.TEXT);
-            result.setSubType(output.getName());            
-            this.addParameterDescription(result);
-            try {
-                singleInterface.addOutputParameter(result.getName());
-            } catch (ParameterDescriptionNotFoundException e) {
-                // can't happen.
-                e.printStackTrace();
-                assert false; //never say never
-            }        
-            // add parameters to interface.
-            this.addInterface(singleInterface);
-        }
-    }
     /**
      * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, org.astrogrid.community.User, org.astrogrid.workflow.beans.v1.Tool)
      */
     public Application initializeApplication(String jobStepID, User user, Tool tool) throws Exception {
-        String newID = env.getIdGen().getNewID();
-        final DefaultIDs ids = new DefaultIDs(jobStepID,newID,user);
         // we know there's only one interface supported for each application
         ApplicationInterface interf = this.getInterfaces()[0];
-        return new JavaClassApplication(ids,tool,interf,env.getProtocolLib());
+        ApplicationEnvironment env = new ApplicationEnvironment(jobStepID, user, getInternalComponentFactory().getIdGenerator(), conf);
+	return new JavaClassApplication(tool,interf,env , getInternalComponentFactory().getProtocolLibrary());
     }
 }
 
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.5  2008/09/03 14:18:44  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.4.262.7  2008/09/03 12:22:55  pah
+improve unit tests so that they can run in single eclipse gulp
+
+Revision 1.4.262.6  2008/08/29 07:28:26  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.4.262.5  2008/08/02 13:33:56  pah
+safety checkin - on vacation
+
+Revision 1.4.262.4  2008/06/11 14:31:42  pah
+merged the ids into the application execution environment
+
+Revision 1.4.262.3  2008/05/01 15:22:48  pah
+updates to tool
+
+Revision 1.4.262.2  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
+Revision 1.4.262.1  2008/03/19 23:10:55  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.4  2004/07/30 14:54:47  jdt
 merges in from case3 branch
 

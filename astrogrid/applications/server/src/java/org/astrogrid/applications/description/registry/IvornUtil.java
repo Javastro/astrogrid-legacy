@@ -1,5 +1,5 @@
 /*
- * $Id: IvornUtil.java,v 1.2 2005/07/05 08:26:57 clq2 Exp $
+ * $Id: IvornUtil.java,v 1.3 2008/09/03 14:19:02 pah Exp $
  * 
  * Created on 30-May-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 Astrogrid. All rights reserved.
@@ -61,7 +61,12 @@ public class IvornUtil {
       }
     }
    
-   public static String removeProtocol(String s)
+   /**
+ * @param s
+ * @return
+ * @deprecated all uses of the ivorn should include the ivo:// protocol part
+ */
+public static String removeProtocol(String s)
    {
       Matcher matcher = pattern.matcher(s);
       if(matcher.find())
@@ -82,6 +87,12 @@ public class IvornUtil {
 
 /*
  * $Log: IvornUtil.java,v $
+ * Revision 1.3  2008/09/03 14:19:02  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.2.102.1  2008/04/01 13:50:07  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.2  2005/07/05 08:26:57  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

@@ -1,4 +1,4 @@
-/*$Id: ProtocolLibrary.java,v 1.3 2004/11/29 20:00:56 clq2 Exp $
+/*$Id: ProtocolLibrary.java,v 1.4 2008/09/03 14:18:57 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.applications.parameter.protocol;
 
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.description.execution.ParameterValue;
 
 import java.net.URI;
 import java.net.URISyntaxException;

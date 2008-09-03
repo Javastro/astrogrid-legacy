@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.2 2007/02/19 16:20:23 gtr Exp $
+/*$Id: CatApplicationDescription.java,v 1.3 2008/09/03 14:18:34 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,6 @@
 **/
 package org.astrogrid.applications.apps;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,22 +18,32 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.FutureTask;
 
+import junit.framework.Test;
+import net.ivoa.resource.cea.CeaApplication;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
+import org.astrogrid.applications.contracts.CEAConfiguration;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.base.BaseApplicationInterface;
-import org.astrogrid.applications.description.base.BaseParameterDescription;
+import org.astrogrid.applications.description.base.InterfaceDefinition;
+import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
+import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.javainternal.JavaInternalApplication;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
@@ -44,60 +51,36 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.io.Piper;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import junit.framework.Test;
 
 /** Simple application that behaves a bit like unix 'cat' - concatenates a bunch of files together.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 13 Mar 2008
  *
  */
-public class CatApplicationDescription extends AbstractApplicationDescription
+public class CatApplicationDescription extends InternallyConfiguredApplicationDescription
         implements ComponentDescriptor {
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory
             .getLog(CatApplicationDescription.class);
+    private final static CeaApplication app = new CeaApplication();
+    static {
+	app.setIdentifier("ivo://org.astrogrid.unregistered/cat");
+	addParameter(app,  "result", ParameterTypes.BINARY, "result", "result of concatenating data together");
+	addParameter(app,  "src", ParameterTypes.BINARY, "src", "an input to concatenate");
+	InterfaceDefinition intf = addInterface(app, "default");
+	intf.addInputParameter("src", Cardinality.MANDATORY_REPEATED);
+	intf.addOutputParameter("result");
+   }
 
     /** Construct a new CatApplicationDescription
      * @param env
+     * @param configuration 
      */
-    public CatApplicationDescription(ApplicationDescriptionEnvironment env) {
-        super(env);
-        this.setMetaData();        
-    }
-    
-    /** set up metadata for this instance */
-    private final void setMetaData() {
-        StringBuffer thename = new StringBuffer(env.getAuthIDResolver().getAuthorityID());
-        thename.append("/concat");
-        setName(thename.toString());
-        BaseParameterDescription result = new BaseParameterDescription();
-        result.setName("result");
-        result.setDisplayName("Result");
-        result.setDisplayDescription("result of concatenating data together");
-        result.setType(ParameterTypes.BINARY);
-        this.addParameterDescription(result);
-        
-        BaseParameterDescription src = new BaseParameterDescription();
-        src.setName("src");
-        src.setDisplayName("Source");
-        src.setDisplayDescription("an input to concatenate");
-        src.setType(ParameterTypes.BINARY);
-        this.addParameterDescription(src);
-        
-        BaseApplicationInterface intf = new BaseApplicationInterface("basic",this);
-        try {
-            intf.addInputParameter(src.getName(),Cardinality.MANDATORY_REPEATED);
-            intf.addOutputParameter(result.getName());
-            
-        } catch (ParameterDescriptionNotFoundException e) {
-            logger.fatal("Programming error",e); // really shouldn't happen
-            throw new RuntimeException("Programming Error",e);
-        }
-        this.addInterface(intf);
-        
+    public CatApplicationDescription( CEAConfiguration configuration) {
+        super(app,  configuration);
+               
     }
 
     /**
@@ -119,14 +102,13 @@ public class CatApplicationDescription extends AbstractApplicationDescription
      */
     public Application initializeApplication(String callerAssignedID,
             User user, Tool tool) throws Exception {
-        String newID = env.getIdGen().getNewID();
-        final DefaultIDs ids = new DefaultIDs(callerAssignedID,newID,user);
         ApplicationInterface iface = this.getInterface(tool.getInterface());
-        return new CatApplication(ids,tool,iface,env.getProtocolLib());
+        ApplicationEnvironment env = new ApplicationEnvironment(callerAssignedID, user, getInternalComponentFactory().getIdGenerator(), config);
+	return new CatApplication(tool,iface,env , getInternalComponentFactory().getProtocolLibrary());
         
     }
     
-    public static class CatApplication extends AbstractApplication {
+    public static class CatApplication extends JavaInternalApplication {
 
         /** Construct a new CatApplication
          * @param ids
@@ -134,34 +116,27 @@ public class CatApplicationDescription extends AbstractApplicationDescription
          * @param applicationInterface
          * @param lib
          */
-        public CatApplication(IDs ids, Tool tool, ApplicationInterface applicationInterface, ProtocolLibrary lib) {
-            super(ids, tool, applicationInterface, lib);
+        public CatApplication( Tool tool, ApplicationInterface applicationInterface, ApplicationEnvironment env, ProtocolLibrary lib) {
+            super( tool, applicationInterface, env, lib);
         }
-        public Runnable createExecutionTask() throws CeaException {
-            createAdapters();
-            setStatus(Status.INITIALIZED);
-            Runnable r = new Runnable() {
-                public void run() {
-                    try {
-                        setStatus(Status.RUNNING);
-                        List streams = new ArrayList();
-                        for (Iterator i = inputParameterAdapters(); i.hasNext();) {
-                                ParameterAdapter input = (ParameterAdapter)i.next();
-                                reportMessage("reading in parameter " + input.getWrappedParameter().getValue());
-                                streams.add(input.process());
-                        }            
-                        setStatus(Status.WRITINGBACK);
-                        ParameterAdapter out= (ParameterAdapter)outputParameterAdapters().next(); // we know there's just the one.
-                        out.writeBack(streams);
-                        setStatus(Status.COMPLETED);
-                    } catch (CeaException e) {
-                        reportError("something failed",e);
-                    }
-                }
-            };
-            return r;            
+        public void run() {
+            try {
+        	setStatus(Status.RUNNING);
+        	List streams = new ArrayList();
+        	for (Iterator i = inputParameterAdapters(); i.hasNext();) {
+        	    ParameterAdapter input = (ParameterAdapter)i.next();
+        	    reportMessage("reading in parameter " + input.getWrappedParameter().getValue());
+        	    streams.add(input.process());
+        	}            
+        	setStatus(Status.WRITINGBACK);
+        	ParameterAdapter out= (ParameterAdapter)outputParameterAdapters().next(); // we know there's just the one.
+        	out.writeBack(streams);
+        	setStatus(Status.COMPLETED);
+            } catch (CeaException e) {
+        	reportError("something failed",e);
+            }
         }
-        protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+         protected ParameterAdapter instantiateAdapter(ParameterValue pval,
                 ParameterDescription descr, ExternalValue indirectVal) {
             return new StreamParameterAdapter(pval, descr, indirectVal);
         }
@@ -234,6 +209,28 @@ public class CatApplicationDescription extends AbstractApplicationDescription
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.3  2008/09/03 14:18:34  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.10.5  2008/09/03 12:01:56  pah
+should perhaps be moved out of javaclass
+
+Revision 1.2.10.4  2008/08/02 13:33:40  pah
+safety checkin - on vacation
+
+Revision 1.2.10.3  2008/05/13 15:14:07  pah
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
+Revision 1.2.10.2  2008/03/27 13:37:24  pah
+now producing correct registry documents
+
+Revision 1.2.10.1  2008/03/19 23:28:58  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.2  2007/02/19 16:20:23  gtr
 Branch apps-gtr-1061 is merged.
 

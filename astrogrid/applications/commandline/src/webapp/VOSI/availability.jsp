@@ -13,14 +13,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://www.ivoa.net/xml/VOResource/v1.0    http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd
-        http://www.ivoa.net/xml/Availability/v0.25 <%=base%>/VOSI/Availability.xsd
+        http://www.ivoa.net/xml/Availability/v0.4 <%=base%>/VOSI/Availability.xsd
     "
 >
   <avail:available>true</avail:available>
-  <uptime><%=upTime%></uptime>
-  <validTo nil="true"/>
-  <avail:contact>
-    <vr:name>Unknown</vr:name>
-    <vr:email>Unknown</vr:email>
-  </avail:contact>
+  <avail:upSince><%=upTime%></avail:upSince>
 </avail:availability>

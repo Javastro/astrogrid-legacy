@@ -1,4 +1,4 @@
-/*$Id: LifecycleListener.java,v 1.6 2005/08/10 17:45:10 clq2 Exp $
+/*$Id: LifecycleListener.java,v 1.7 2008/09/03 14:18:57 pah Exp $
  * Created on 16-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,19 @@
 **/
 package org.astrogrid.applications.component;
 
-import org.astrogrid.config.SimpleConfig;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 ///CLOVER:OFF
 /** receives notifications of the servlet context (i.e. the jes webapp) starting up and shutting down. passes this on to the component manager.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Sep-2004
+ * @TODO - do we still want to use this class?
  *
  */
 public class LifecycleListener implements ServletContextListener {
@@ -98,7 +96,8 @@ public class LifecycleListener implements ServletContextListener {
      */
     public void contextDestroyed(ServletContextEvent arg0) {
         logger.info("Stopping component manager");
-        CEAComponentManagerFactory.getInstance().stop();
+        //IMPL - there is no longer a need to stop anything?
+        CEAComponentContainer.getInstance();
         logger.info("Stopped component manager");
     }
 
@@ -107,6 +106,15 @@ public class LifecycleListener implements ServletContextListener {
 
 /* 
 $Log: LifecycleListener.java,v $
+Revision 1.7  2008/09/03 14:18:57  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.6.84.1  2008/04/08 14:45:10  pah
+Completed move to using spring as container for webapp - replaced picocontainer
+
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
 Revision 1.6  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests
 

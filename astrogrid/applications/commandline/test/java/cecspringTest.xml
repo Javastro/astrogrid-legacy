@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test configuration for specific CEC -->
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-lang-2.5.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd"
+      
+      default-autowire="constructor">
+
+ <bean id="configurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="properties">
+         <bean class="java.util.Properties">
+            <constructor-arg type="java.util.Properties" >
+               <map >
+                  <entry key="cea.base.dir" >
+                    <value type="java.lang.String">/tmp</value>
+                  </entry>
+                  <entry key="cea.webapp.url"  >
+                    <value type="java.lang.String">http://localhost:8888/astrogrid-cea-server/</value>
+                   </entry>
+                </map>
+            </constructor-arg>
+         </bean>
+      </property>
+ </bean>
+
+
+
+ 
+<bean id="config" class="org.astrogrid.applications.commandline.TestCeaCmdLineConfiguration" init-method="init"> 
+    <property name="configurationDirectory" value="${cea.base.dir}/config/" />
+    <property name="recordsDirectory" value="${cea.base.dir}/records/" />
+    <property name="registryTemplate" value="classpath:/CEARegistryTemplate.xml" />
+    <property name="serviceEndpoint" value="${cea.webapp.url}/services/CommonExecutionConnectorService" />
+    <property name="temporaryFilesDirectory" value="${cea.base.dir}/temp/" />
+    <property name="applicationDescriptionUrl" value="classpath:/TestApplicationConfig.xml" />
+</bean>
+
+<bean id="ExecutionHistory" class="org.astrogrid.applications.manager.persist.InMemoryExecutionHistory">
+	
+</bean>
+
+<!-- I think that this can go.. -->
+<bean id="AppAuthorityIDResolver" class="org.astrogrid.applications.description.base.TestAuthorityResolver">
+</bean>
+
+
+<bean id="ApplicationDescriptionLibrary" class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary">
+	
+</bean>
+ 
+
+<bean id="ComponentManager" class="org.astrogrid.applications.component.CEAComponentContainer">
+	
+</bean>
+
+
+<bean id="ApplicationEnvironmentRetriever" class="org.astrogrid.applications.environment.DefaultExecutionEnvRetriever">
+</bean>
+
+
+
+</beans>

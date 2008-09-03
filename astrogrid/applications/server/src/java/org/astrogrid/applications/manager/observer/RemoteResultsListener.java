@@ -1,4 +1,4 @@
-/*$Id: RemoteResultsListener.java,v 1.5 2004/07/26 12:07:38 nw Exp $
+/*$Id: RemoteResultsListener.java,v 1.6 2008/09/03 14:18:58 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.applications.manager.observer;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.common.bean.Castor2Axis;
+import org.astrogrid.common.beanjaxb.JAXB2Axis;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListenerService;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceLocator;
@@ -61,7 +61,7 @@ public class RemoteResultsListener extends AbstractResultsListener {
      */
     protected void notifyResultsAvailable(Application app)  {
            try {
-            delegate.putResults(new JobIdentifierType(app.getJobStepID()),Castor2Axis.convert( app.getResult()));
+            delegate.putResults(new JobIdentifierType(app.getJobStepID()),JAXB2Axis.convert( app.getResult()));
         }
         catch (RemoteException e) {
             logger.warn("Could not notify remote listener at " + endpoint,e);
@@ -73,6 +73,19 @@ public class RemoteResultsListener extends AbstractResultsListener {
 
 /* 
 $Log: RemoteResultsListener.java,v $
+Revision 1.6  2008/09/03 14:18:58  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.5.266.1  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.5  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

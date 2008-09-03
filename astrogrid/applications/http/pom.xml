@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-cea-http</artifactId>
+  <packaging>jar</packaging>
+    <parent>
+      <artifactId>astrogrid-cea-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2008.1-SNAPSHOT</version>
+    </parent>
+  <name>CEA HTTP-application server</name>
+  <version>2008.2-SNAPSHOT</version>
+  <description>A CEA application-server for HTTP applications. The service provides
+    CEA's standard SOAP interface, "CEC".</description>
+  <properties>
+   <astrogrid.name>applications/http</astrogrid.name>
+  </properties>
+    
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>test/java</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.properties</include>
+          <include>**/*.xsl</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/test/java</directory>
+        <includes>
+          <include>app/**</include>
+          <include>**/*.xml</include>
+          <include>**/*.properties</include>
+          <include>**/*.sql</include>
+          <include>**/*.txt</include>
+          <include>**/*.csv</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>${basedir}/config</directory>
+        <includes>
+          <include>CeaApplicationConfig.xml</include>
+        </includes>
+      </testResource>
+    </testResources>
+          <plugins>
+         <!-- eclipse project generation for web projects - assumes that you have wtp 1.5 installed and there is a runtime-->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-eclipse-plugin</artifactId>
+            <configuration>
+               <wtpversion>1.5</wtpversion>
+               <classpathContainers>
+                  <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+                  <classpathContainer>org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v5.5</classpathContainer>
+                  <classpathContainer>org.eclipse.jst.j2ee.internal.web.container</classpathContainer>
+               </classpathContainers>
+               <downloadSources>true</downloadSources>
+               <downloadJavadocs>false</downloadJavadocs>
+               
+            </configuration>
+         </plugin>
+         <plugin><!-- would be nice to have this factored higer to top level - cold be don wth ant if contrib task...-->
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase><!-- in maven 2.1 there will be a prepare-package phase , which would make this simpler - could just echo the file to ${project.build.directory}/${project.build.finalName}/ -->
+            <configuration>
+              <tasks > <!-- want this only to happen if there is -->
+                  <echo message="${pom.name} ${pom.version}" file="${project.build.directory}/about.txt" level="error" />
+                  <available 
+                    file="${project.build.directory}/${project.build.finalName}.war" 
+                    property="file.exists" value="true" /> 
+                   <jar destfile="${project.build.directory}/${project.build.finalName}.war" basedir="${project.build.directory}" includes="about.txt" update="true"  />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      </plugins>
+    
+  </build>
+  <dependencies>
+    <dependency>
+    <groupId>org.astrogrid</groupId>
+    <artifactId>astrogrid-cea-server</artifactId>
+    <version>2008.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>starlink</groupId>
+      <artifactId>stil</artifactId>
+      <version>2.0-1</version>
+    </dependency>
+    <dependency>
+    <groupId>commons-httpclient</groupId>
+    <artifactId>commons-httpclient</artifactId>
+    <version>3.1</version>
+    </dependency>
+  </dependencies>
+</project>

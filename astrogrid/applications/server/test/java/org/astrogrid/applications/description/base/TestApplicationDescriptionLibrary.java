@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.3 2004/11/27 13:20:02 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.4 2008/09/03 14:18:52 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,70 +10,127 @@
 **/
 package org.astrogrid.applications.description.base;
 
+import net.ivoa.resource.cea.CeaApplication;
+
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.AppMetadataAdapter;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.community.User;
-import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
  * Test / Mock implementation of an application description library. will contain a single resource.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-May-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 18 Mar 2008
  *
  */
 public class TestApplicationDescriptionLibrary implements ApplicationDescriptionLibrary {
     private final String RES_NAME;
+    private CeaApplication appMeta;
+    private AbstractApplicationDescription appDesc;
+    private String shortname;
     /**
      *  Construct a new TestApplicationDescriptionLibrary
      * @param RES_NAME name of the single resource to place in the library
+     * @throws ParameterDescriptionNotFoundException 
      */
-    public TestApplicationDescriptionLibrary(String RES_NAME) {        
+    public TestApplicationDescriptionLibrary(String RES_NAME, String shortName) throws ParameterDescriptionNotFoundException {        
         super();
         this.RES_NAME = RES_NAME;
+        this.shortname = shortName;
+        
+        
+        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(null,null,null);
+        appMeta = new CeaApplication();
+	appMeta.setIdentifier(RES_NAME);
+	appMeta.setShortName(shortName);
+        InterfaceDefinition appIface = new InterfaceDefinition();
+        appIface.setId("iface");
+        BaseParameterDefinition foo = new BaseParameterDefinition();
+        foo.setId("foo");
+        foo.setType(ParameterTypes.TEXT);
+        
+        appMeta.addParameterDescription(foo);
+        BaseParameterDefinition bar = new BaseParameterDefinition();
+        bar.setId("bar");
+        bar.setType(ParameterTypes.TEXT);        
+        appMeta.addParameterDescription(bar);
+        appIface.addInputParameter("foo");
+        appIface.addOutputParameter("bar");
+        appMeta.addInterface(appIface);
+	appDesc = new AbstractApplicationDescription(new AppMetadataAdapter(appMeta) ) {
+            public Application initializeApplication(String jobStepID, User user, Tool tool )
+                throws Exception {
+                return null;
+            }
+        };
+
     }
     public ApplicationDescription getDescription(String name) throws ApplicationDescriptionNotFoundException {
         if (! name.equals(RES_NAME)) {
             throw new ApplicationDescriptionNotFoundException("no entry for " + name);
         }
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(null,null,null);
-        AbstractApplicationDescription appDesc =   new AbstractApplicationDescription(env) {
-            public Application initializeApplication(String jobStepID, User user, Tool tool )
-                throws Exception {
-                return null;
-            }
-        };     
-        appDesc.setName(RES_NAME);
-        BaseApplicationInterface appIface = new BaseApplicationInterface("iface",appDesc);
-        BaseParameterDescription foo = new BaseParameterDescription();
-        foo.setName("foo");
-        foo.setType(ParameterTypes.TEXT);
-        
-        appDesc.addParameterDescription(foo);
-        BaseParameterDescription bar = new BaseParameterDescription();
-        bar.setName("bar");
-        bar.setType(ParameterTypes.TEXT);        
-        appDesc.addParameterDescription(bar);
-        try {
-        appIface.addInputParameter("foo");
-        appIface.addOutputParameter("bar");
-        } catch (ParameterDescriptionNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }   
-        appDesc.addInterface(appIface);
-        
+         
         return appDesc;
     }
     public String[] getApplicationNames() {
         return new String[]{RES_NAME};
     }
+    public ApplicationDescription getDescriptionByShortName(String name) throws ApplicationDescriptionNotFoundException{
+    if (! name.equals(shortname)) {
+        throw new ApplicationDescriptionNotFoundException("no entry for " + name);
+    }
+     
+    return appDesc;
+	
+    }
 }
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.4  2008/09/03 14:18:52  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.182.9  2008/08/29 07:28:31  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.3.182.8  2008/08/02 13:33:56  pah
+safety checkin - on vacation
+
+Revision 1.3.182.7  2008/05/17 16:45:01  pah
+tidy tests to make sure more are passing
+
+Revision 1.3.182.6  2008/05/13 15:57:32  pah
+uws with full app running UI is working
+
+Revision 1.3.182.5  2008/05/01 15:22:47  pah
+updates to tool
+
+Revision 1.3.182.4  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
+Revision 1.3.182.3  2008/04/01 13:50:07  pah
+http service also passes unit tests with new jaxb metadata config
+
+Revision 1.3.182.2  2008/03/26 17:15:39  pah
+Unit tests pass
+
+Revision 1.3.182.1  2008/03/19 23:10:55  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.3  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

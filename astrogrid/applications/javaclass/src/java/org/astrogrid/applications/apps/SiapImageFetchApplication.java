@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchApplication.java,v 1.2 2007/02/19 16:20:22 gtr Exp $
+/*$Id: SiapImageFetchApplication.java,v 1.3 2008/09/03 14:18:34 pah Exp $
  * Created on 23-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,6 @@
 **/
 package org.astrogrid.applications.apps;
 
-import org.astrogrid.applications.AbstractApplication;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.Status;
-import org.astrogrid.applications.apps.CatApplicationDescription.StreamParameterAdapter;
-import org.astrogrid.applications.apps.SiapImageFetchDescription.ParameterAdapterDataSource;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.protocol.ExternalValue;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.filemanager.client.FileManagerClient;
-import org.astrogrid.filemanager.client.FileManagerClientFactory;
-import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.io.Piper;
-import org.astrogrid.store.Ivorn;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import uk.ac.starlink.table.ColumnInfo;
-import uk.ac.starlink.table.RowSequence;
-import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.table.StarTableFactory;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
@@ -44,6 +20,31 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.Status;
+import org.astrogrid.applications.apps.CatApplicationDescription.StreamParameterAdapter;
+import org.astrogrid.applications.apps.SiapImageFetchDescription.ParameterAdapterDataSource;
+import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.io.Piper;
+import org.astrogrid.store.Ivorn;
+import org.springframework.stereotype.Service;
+
+import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.RowSequence;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.StarTableFactory;
+
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Nov-2004
@@ -52,13 +53,13 @@ import java.util.List;
 public class SiapImageFetchApplication extends AbstractApplication {
 
     /** Construct a new SiapImageFetchApplication
-     * @param ids
      * @param tool
      * @param applicationInterface
+     * @param env 
      * @param lib
      */
-    public SiapImageFetchApplication(IDs ids, Tool tool, ApplicationInterface applicationInterface, ProtocolLibrary lib) {
-        super(ids, tool, applicationInterface, lib);
+    public SiapImageFetchApplication(Tool tool, ApplicationInterface applicationInterface, ApplicationEnvironment env, ProtocolLibrary lib) {
+        super(tool, applicationInterface, env, lib);
     }
     /** create streaming parameter adapter for table (as may be large). 
      * standard strings for the other ones.
@@ -66,20 +67,13 @@ public class SiapImageFetchApplication extends AbstractApplication {
      */
     protected ParameterAdapter instantiateAdapter(ParameterValue pval,
             ParameterDescription descr, ExternalValue indirectVal) {
-        if (descr.getName().equals(SiapImageFetchDescription.TABLE)) {
+        if (descr.getId().equals(SiapImageFetchDescription.TABLE)) {
             return new CatApplicationDescription.StreamParameterAdapter(pval,descr,indirectVal);
         } else {
             return super.instantiateAdapter(pval, descr, indirectVal);
         }
     }
-    public Runnable createExecutionTask() throws CeaException {
-        createAdapters();
-        setStatus(Status.INITIALIZED);
-        Runnable r = new ImageFetchRunnable();
-        return r;
-    }
-    
-/** runnable object that actually does the work */
+    /** runnable object that actually does the work */
     final class ImageFetchRunnable implements Runnable {
         private static final String REFERENCE_UCD = "VOX:Image_AccessReference";
         protected final StarTableFactory factory = new StarTableFactory();
@@ -95,7 +89,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
                 // extract and process parameters
                 for (Iterator i = inputParameterAdapters(); i.hasNext(); ) {
                     ParameterAdapter input = (ParameterAdapter)i.next();
-                    String name = input.getWrappedParameter().getName();
+                    String name = input.getWrappedParameter().getId();
                     if (SiapImageFetchDescription.TABLE.equalsIgnoreCase(name)) {
                         tableStream = (CatApplicationDescription.StreamParameterAdapter) input;
                     } else if (SiapImageFetchDescription.BASEIVORN.equalsIgnoreCase(name)) {
@@ -161,7 +155,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
                 //return output parameters.
                 for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {
                     ParameterAdapter p = (ParameterAdapter)i.next();
-                    String outputName = p.getWrappedParameter().getName();
+                    String outputName = p.getWrappedParameter().getId();
                     if (SiapImageFetchDescription.URLS.equalsIgnoreCase(outputName)) {
                         p.writeBack(listToString(urls));
                     } else if (SiapImageFetchDescription.IVORNS.equalsIgnoreCase(outputName)) {
@@ -198,11 +192,31 @@ public class SiapImageFetchApplication extends AbstractApplication {
               buff.append("]");
               return buff.toString();
         }
+    }
+    @Override
+    public Runnable createRunnable() {
+	return new ImageFetchRunnable();
     }    
 }
 
 /* 
 $Log: SiapImageFetchApplication.java,v $
+Revision 1.3  2008/09/03 14:18:34  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.10.3  2008/08/02 13:33:40  pah
+safety checkin - on vacation
+
+Revision 1.2.10.2  2008/05/13 15:14:07  pah
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
+Revision 1.2.10.1  2008/03/19 23:28:58  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.2  2007/02/19 16:20:22  gtr
 Branch apps-gtr-1061 is merged.
 

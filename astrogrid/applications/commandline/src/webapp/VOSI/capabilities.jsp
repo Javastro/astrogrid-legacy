@@ -29,9 +29,14 @@
 >
 
   <capability xsi:type="cea:CeaCapability" standardID="ivo://org.astrogrid/std/CEA/v1.0">
-    <interface xsi:type="vr:WebService">
-      <accessURL use="full"><%=base%>/services/CommonExecutionConnectorService</accessURL>
+    <interface xsi:type="vr:WebService" version="1.0">
+      <accessURL use="full"><%=base%>services/CommonExecutionConnectorService</accessURL>
     </interface>
+    <!-- would be better if this were its own interface type to make UWS -->
+    <interface xsi:type="vr:WebService" version="0.9"> 
+      <accessURL use="full"><%=base%>uws/jobs</accessURL>
+    </interface>
+    
     <managedApplications>
       <% for (int i = 0; i < apps.length; i++) { %>
 	<ApplicationReference><%=apps[i]%></ApplicationReference>
@@ -39,20 +44,29 @@
     </managedApplications>
   </capability>
 
-  <capability standardID="ivo://org.astrogrid/std/VOSI/v0.3#capabilities">
+  <capability standardID="ivo://org.astrogrid/std/VOSI/v0.4#capabilities">
 	<interface xsi:type="vs:ParamHTTP">
-	  <accessURL use="full"><%=base%>/VOSI/capabilities</accessURL>
+	  <accessURL use="full"><%=base%>VOSI/capabilities</accessURL>
 	  <queryType>GET</queryType>
 	  <resultType>application/xml</resultType>
 	</interface>
   </capability>
   
-  <capability standardID="ivo://org.astrogrid/std/VOSI/v0.3#availability">
+  <capability standardID="ivo://org.astrogrid/std/VOSI/v0.4#availability">
 	<interface xsi:type="vs:ParamHTTP">
-	  <accessURL use="full"><%=base%>/VOSI/availability</accessURL>
+	  <accessURL use="full"><%=base%>VOSI/availability</accessURL>
 	  <queryType>GET</queryType>
 	  <resultType>application/xml</resultType>
 	</interface>
   </capability>
+  
+   <capability standardID="ivo://org.astrogrid/std/VOSI/v0.4#applications">
+	<interface xsi:type="vs:ParamHTTP">
+	  <accessURL use="full"><%=base%>uws/reg/app</accessURL>
+	  <queryType>GET</queryType>
+	  <resultType>application/xml</resultType>
+	</interface>
+  </capability>
+  
 
 </cap:capabilities>

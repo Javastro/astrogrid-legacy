@@ -23,12 +23,12 @@
   		<item name="Installation test" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory"/>
   		<item name="Fingerprint" href="fingerprint.jsp"/>
   		<item name="Show registration document" href="cec-http?method=returnRegistryEntry"/>
-                <item name="Show service capabilities" href="VOSI/capabilities"/>
-                <item name="Show service availability" href="VOSI/availability"/>
+        <item name="Show service capabilities" href="VOSI/capabilities"/>
+        <item name="Show service availability" href="VOSI/availability"/>
   		<item name="Register" href="admin/RegistrationInstructions.jsp"/>
   		<item name="Show current configuration" href="admin/configuration-describe.jsp"/>
   		<item name="Test run of application" href="chooseapp.jsp"/>
-                <item name="Show queue of jobs" href="queue.jsp"/>
+        <item name="Show queue of jobs" href="queue.jsp"/>
   	</menu>
 
   </body>

@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.12 2008/02/12 12:10:56 pah Exp $
+/*$Id: SystemTest.java,v 1.13 2008/09/03 14:19:04 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,111 +10,66 @@
 **/
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.base.TestAuthorityResolver;
-import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
-import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
-import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
-import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
-import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.applications.parameter.protocol.FileProtocol;
-import org.astrogrid.applications.test.MockMonitor;
-import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Output;
-import org.astrogrid.workflow.beans.v1.Tool;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 
 import junit.framework.TestCase;
 
+import net.ivoa.uws.ExecutionPhase;
+
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.applications.description.execution.ListOfParameterValues;
+import org.astrogrid.applications.description.execution.MessageType;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.DefaultExecutionEnvRetriever;
+import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
+import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
+import org.astrogrid.applications.javainternal.BuiltInApplicationDescriptionTest;
+import org.astrogrid.applications.manager.idgen.IdGen;
+import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
+import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.Protocol;
+import org.astrogrid.applications.test.MockMonitor;
+import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
+
 /** test the DefaultCommonExecutionController - with a javaclass backend
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Jun-2004
  *
  */
-public class SystemTest extends TestCase {
-    /**
-     * Constructor for DefaultCommonExecutionControllerTest.
-     * @param arg0
-     */
-    public SystemTest(String arg0) {
-        super(arg0);
-    }
+public class SystemTest extends BuiltInApplicationDescriptionTest {
     /*
      * @see TestCase#setUp()
      */
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
-        history = new InMemoryExecutionHistory();
-        idgen = new InMemoryIdGen();
-        DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
-        protocolLib.addProtocol(new FileProtocol());
-        assertTrue(protocolLib.isProtocolSupported("file"));
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,new TestAuthorityResolver());
-        lib = new JavaClassApplicationDescriptionLibrary(new BaseJavaClassConfiguration(), env);
-        controller = new DefaultExecutionController(lib,history);
-      ApplicationEnvironmentRetriver executionRetriever = new DefaultApplicationEnvironmentRetriever(history);
-      querier = new DefaultQueryService(history, executionRetriever);
+        controller = new DefaultExecutionController(lib,history, new DefaultExecutionPolicy());
+        ApplicationEnvironmentRetriver executionRetriever = new DefaultExecutionEnvRetriever(history, conf);
+        querier = new DefaultQueryService(history, executionRetriever);
         
         // construct the tool object
-        ApplicationDescription sum = lib.getDescription("org.astrogrid.test/sum");
+        ApplicationDescription sum = lib.getDescription("ivo://org.astrogrid.unregistered/default");
            assertNotNull(sum);
            ApplicationInterface iface = sum.getInterfaces()[0];
-           String[] inputParameterNames = iface.getArrayofInputs();
            assertNotNull(iface);
-           tool = new Tool();
-           tool.setName(sum.getName());           
-           Input input = new Input();
-           tool.setInput(input);
-           Output output = new Output();
-           tool.setOutput(output);
-           ParameterValue a = new ParameterValue();
-           ParameterValue b = new ParameterValue();        
-           a.setName(inputParameterNames[0]);
-           b.setName(inputParameterNames[1]);
-           b.setIndirect(true);
-           a.setIndirect(false);
-           a.setValue("1");
-           File valFile = File.createTempFile("SystemTest-Input",null);
-           //valFile.deleteOnExit();
-           PrintWriter pw = new PrintWriter(new FileWriter(valFile));
-           pw.print(2); 
-           pw.close();
-           b.setValue(valFile.toURI().toString());
-           input.addParameter(a);
-           input.addParameter(b); 
-           ParameterValue result = new ParameterValue();
-           result.setName(iface.getArrayofOutputs()[0]);
-           result.setIndirect(true);
-           File resultFile = File.createTempFile("SystemTest-Results",null);
-           //resultFile.deleteOnExit();
-           result.setValue(resultFile.toURI().toString());
-           output.addParameter(result);
-    }
-    protected ExecutionHistory history;
-    protected ApplicationDescriptionLibrary lib;
-    protected IdGen idgen;
+     }
     protected ExecutionController controller;
     protected QueryService querier;
-    protected Tool tool;
-    
+   
     public void testRun() throws Exception {
         String id = controller.init(tool,"jobStep");
         assertNotNull(id);
@@ -129,12 +84,12 @@ public class SystemTest extends TestCase {
         // do a bit of querying
         MessageType message = querier.queryExecutionStatus(id);
         assertNotNull(message);
-        assertEquals(ExecutionPhase.INITIALIZING,message.getPhase());
+        assertEquals(ExecutionPhase.PENDING,message.getPhase());
         ExecutionSummaryType summary = querier.getSummary(id);
-        assertEquals(ExecutionPhase.INITIALIZING,summary.getStatus());
-        ResultListType results = querier.getResults(id);
+        assertEquals(ExecutionPhase.PENDING,summary.getPhase());
+        org.astrogrid.applications.description.execution.ResultListType results = querier.getResults(id);
         assertNotNull(results);
-        assertEquals(0,results.getResultCount()); // nothing been computed yet.
+        assertEquals(0,results.getResult().size()); // nothing been computed yet.
         // set the thing running.
         assertTrue(controller.execute(id));
         monitor.waitFor(20);
@@ -143,11 +98,11 @@ public class SystemTest extends TestCase {
         assertNotNull(message);        
         assertEquals(ExecutionPhase.COMPLETED, message.getPhase());
         summary =  querier.getSummary(id);
-        assertEquals(ExecutionPhase.COMPLETED,summary.getStatus());
+        assertEquals(ExecutionPhase.COMPLETED,summary.getPhase());
          results = querier.getResults(id);
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        ParameterValue r1 = results.getResult(0);
+        assertEquals(1,results.getResult().size());
+        ParameterValue r1 = results.getResult().get(1);//todo or 0
         assertNotNull(r1);
         File resultFile = new File(new URI(r1.getValue()));
         assertTrue(resultFile.exists());
@@ -168,11 +123,74 @@ public class SystemTest extends TestCase {
         controller.abort(id); // don't care if we can't abort, just as long as it doesn't throw.
         
     }
+
+    @Override
+    protected ParameterValue buildParameter2() {
+        ParameterValue b = new ParameterValue();        
+        b.setId("in2");
+        b.setIndirect(true);
+        File valFile;
+	//valFile.deleteOnExit();
+	PrintWriter pw;
+	try {
+	    valFile = File.createTempFile("SystemTest-Input",null);
+	    pw = new PrintWriter(new FileWriter(valFile));
+	        pw.print(getPar2value()); 
+	        pw.close();
+	        b.setValue(valFile.toURI().toString());
+	} catch (IOException e) {
+	   fail("problem creating the indirect file");
+	}
+        return b;
+    }
 }
 
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.13  2008/09/03 14:19:04  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.12.2.9  2008/08/29 07:28:30  pah
+moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+
+Revision 1.12.2.8  2008/06/10 20:01:39  pah
+moved ParameterValue and friends to CEATypes.xsd
+
+Revision 1.12.2.7  2008/05/17 16:45:01  pah
+tidy tests to make sure more are passing
+
+Revision 1.12.2.6  2008/05/01 15:22:48  pah
+updates to tool
+
+Revision 1.12.2.5  2008/04/23 14:14:30  pah
+ASIGNED - bug 2749: make sure all CECs use the  ThreadPoolExecutionController
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2749
+
+Revision 1.12.2.4  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
+Revision 1.12.2.3  2008/04/04 15:46:08  pah
+Have got bulk of code working with spring - still need to remove all picocontainer refs
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
+Revision 1.12.2.2  2008/03/26 17:15:40  pah
+Unit tests pass
+
+Revision 1.12.2.1  2008/03/19 23:10:55  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.12  2008/02/12 12:10:56  pah
 build with 1.0 registry and filemanager clients
 

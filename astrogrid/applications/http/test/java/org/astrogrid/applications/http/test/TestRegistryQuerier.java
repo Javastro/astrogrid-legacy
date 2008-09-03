@@ -1,4 +1,4 @@
-/* $Id: TestRegistryQuerier.java,v 1.11 2007/09/28 18:03:36 clq2 Exp $
+/* $Id: TestRegistryQuerier.java,v 1.12 2008/09/03 14:18:51 pah Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,31 +14,34 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.MarshalException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 import junit.framework.Test;
+import net.ivoa.resource.registry.iface.VOResources;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
+import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.registry.IvornUtil;
+import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
 import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.applications.http.registry.AbstractRegistryQuerier;
-import org.astrogrid.common.bean.v1.Namespaces;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 /**
  * Returns pretend meta data about the TestWebServer test services. Acts as both
@@ -60,19 +63,23 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
     *
     * @throws ValidationException
     * @throws MarshalException
+ * @throws MetadataException 
+ * @throws javax.xml.stream.FactoryConfigurationError 
+ * @throws XMLStreamException 
+ * @TODO does this really need the RegistyQueryLocator?
     */
    public TestRegistryQuerier(RegistryQueryLocator locator)
-         throws MarshalException, ValidationException {
+         throws MarshalException, ValidationException, MetadataException, XMLStreamException, javax.xml.stream.FactoryConfigurationError {
       super(locator);
-      addApplication("helloWorld-app.xml");
-      addApplication("Echoer-app.xml");
-      addApplication("HelloYou-app.xml");
-      addApplication("Adder-app.xml");
-      addApplication("Adder-post-app.xml");
-      addApplication("Bad404-app.xml");
-      addApplication("BadTimeOut-app.xml");
-      addApplication("BadMalformedURL-app.xml");
-      addApplication("Adder-preprocess-app.xml");
+      addApplication("/helloWorld-app.xml");
+      addApplication("/Echoer-app.xml");
+      addApplication("/HelloYou-app.xml");
+      addApplication("/Adder-app.xml");
+      addApplication("/Adder-post-app.xml");
+      addApplication("/Bad404-app.xml");
+      addApplication("/BadTimeOut-app.xml");
+      addApplication("/BadMalformedURL-app.xml");
+      addApplication("/Adder-preprocess-app.xml");
 
    }
 
@@ -82,32 +89,34 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
     *
     * @param name
     *           Name of application
-    * @return the unmarshalled CeaHttpApplicationType
+    * @return the unmarshalled CeaHttpApplicationDefinition
     */
-   public CeaHttpApplicationType getHttpApplication(final String name) {
-      return (CeaHttpApplicationType) applications.get(name);
+   public CeaHttpApplicationDefinition getHttpApplication(final String name) {
+      return (CeaHttpApplicationDefinition) applications.get(name);
    }
 
    /**
-    * Add a CeaHttpApplicationType to our "registry" given the object serialised
+    * Add a CeaHttpApplicationDefinition to our "registry" given the object serialised
     * to xml
     *
     * @param file
     *           filename of serialised object
     * @throws MarshalException
     * @throws ValidationException
+ * @throws MetadataException 
+ * @throws javax.xml.stream.FactoryConfigurationError 
+ * @throws XMLStreamException 
     */
    private void addApplication(String file) throws MarshalException,
-         ValidationException {
+         ValidationException, MetadataException, XMLStreamException, javax.xml.stream.FactoryConfigurationError {
       FileUnmarshaller unmarshaller = new FileUnmarshaller(
-            CeaHttpApplicationType.class);
+            CeaHttpApplicationDefinition.class);
       logger.debug("loading http application from file=" + file);
-      CeaHttpApplicationType testApplication = (CeaHttpApplicationType) unmarshaller
+      
+      CeaHttpApplicationDefinition testApplication = (CeaHttpApplicationDefinition) unmarshaller
             .unmarshallFromFile(file);
       //take the ivo:// part off the identifier
-      String ivorn = testApplication.getIdentifier();
-      String name = IvornUtil.removeProtocol(ivorn);
-      testApplication.setIdentifier(name);
+      String name = testApplication.getIdentifier();
       logger.debug("Loaded " + name);
       applications.put(name, testApplication);
    }
@@ -182,8 +191,8 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
       logger.debug("doing dummy search for " + arg0);
       VOResources vor = new VOResources();
       for (Iterator iter = applications.values().iterator(); iter.hasNext();) {
-         CeaHttpApplicationType element = (CeaHttpApplicationType) iter.next();
-         vor.addResource(element);
+         CeaHttpApplicationDefinition element = (CeaHttpApplicationDefinition) iter.next();
+         vor.getResource().add(element);
 
       }
       return marshallResources(vor);
@@ -211,26 +220,13 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
          // more bloody castor bugs - the marshaller will not marshal correctly namespaces to a dom tree - do to a string first.
          Document finalDoc = builder.newDocument();
-         Marshaller marshaller = new Marshaller(sw);
-         marshaller.setDebug(true);
-         marshaller.setMarshalExtendedType(true);
-         marshaller.setSuppressXSIType(false);
-         marshaller.setMarshalAsDocument(true);
+	JAXBContext jc = CEAJAXBContextFactory.newInstance();
 
-         //     TODO write a castor wiki page about this.... it is useful to stop
-         // castor putting namespace declarations all over the place, and
-         // essential to get the correct declarations inserted for some derived
-         // types, which castor does not do properly.
-         marshaller.setNamespaceMapping("cea", Namespaces.VOCEA);
-         marshaller.setNamespaceMapping("vr", Namespaces.VORESOURCE);
-         marshaller.setNamespaceMapping("ceapd", Namespaces.CEAPD);
-         marshaller.setNamespaceMapping("ceab", Namespaces.CEAB);
-         marshaller.setNamespaceMapping("vs", Namespaces.VODATASERVICE);
-         marshaller.marshal(vor);
-         logger.debug(sw.toString());
-         StringReader sr = new StringReader(sw.toString());
-         InputSource input = new InputSource(sr);
-         finalDoc = XMLUtils.newDocument(input);
+        
+        Marshaller marshaller = jc.createMarshaller();
+	    marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",
+		    	new NamespacePrefixMapperImpl());
+         marshaller.marshal(vor,finalDoc);
          return finalDoc;
       } catch (Exception e) {
          // TODO Auto-generated catch block
@@ -300,12 +296,12 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
     */
    public Document getResourceByIdentifier(String arg0)
          throws RegistryException {
-      String id = arg0.substring(6); // remove the ivo://prefix as internally the names are stored without it.
-      CeaHttpApplicationType app = (CeaHttpApplicationType) applications.get(id);
-      logger.info("cannot find application="+id);
+      String id = arg0; 
+      CeaHttpApplicationDefinition app = (CeaHttpApplicationDefinition) applications.get(id);
+      logger.info("found application="+id);
 
       VOResources vor = new VOResources();
-      vor.addResource(app);
+      vor.getResource().add(app);
       return marshallResources(vor);
 
    }

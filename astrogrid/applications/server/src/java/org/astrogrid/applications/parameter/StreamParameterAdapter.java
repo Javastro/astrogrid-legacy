@@ -1,5 +1,5 @@
 /*
- * $Id: StreamParameterAdapter.java,v 1.4 2008/02/12 12:10:56 pah Exp $
+ * $Id: StreamParameterAdapter.java,v 1.5 2008/09/03 14:18:57 pah Exp $
  * 
  * Created on 09-Nov-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;

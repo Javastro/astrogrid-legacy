@@ -18,15 +18,7 @@ vosi.append("/../../VOSI/capabilities");
 <html>
     <head>
         <title>New-style registration</title>
-        <style type="text/css" media="all">
-              @import url("../style/maven-base.css"); 
-              @import url("../style/maven-theme.css");
-        </style>
-        </title>
-    </head>
-<body>
-  
-<%@ include file="header.xml" %>
+<%@ include file="../inc/header.jsp" %>
 
 <div id='bodyColumn'>
 
@@ -102,6 +94,5 @@ vosi.append("/../../VOSI/capabilities");
   The new-style registration was first supported in version 2008.0 of the 
   registry. If you have an older registry then you need to upgrade that first.
 </p>
-
-</body>
-</html>
+</div>
+<%@ include file="../inc/footer.jsp" %>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                                           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+                                           xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+					                       xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+                                           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                                           xsi:schemaLocation="http://www.ivoa.net/xml/CEA/v1.0 ../../../../../../../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd"
+     created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z"
+     xsi:type="cea:CeaApplication">
+        <title>Test Application</title>
+        <shortName>STAP</shortName>
+        <identifier>ivo://org.testit/STAP</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>STAP style application</description>
+            <referenceURL>http://wiki.astrogrid.org/bin/view/Astrogrid/SimpleTimeAccessProtocol</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition>
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="START"  type="DateTime" >
+                    <name>Start Time</name>
+                    <description></description>
+                    <ucd>time.start</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="END"  type="DateTime" >
+                    <name>End Time</name>
+                    <description></description>
+                    <ucd>time.end</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="FORMAT"  type="text" >
+                    <name>Start Time</name>
+                    <description></description>
+                    <ucd>time.start</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="INSTRUMENT_ID"  type="text" >
+                    <name>Instrument ID</name>
+                    <description></description>
+                    <ucd>meta.id</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="DATA_ID"  type="text" >
+                    <name>Data ID</name>
+                    <description></description>
+                    <ucd>meta.id</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="TIME_RESOLUTION"  type="text" >
+                    <name>Instrument ID</name>
+                    <description></description>
+                    <ucd>time.resolution</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="POS"  type="text" ><!-- should really make this an array -->
+                    <name>POS</name>
+                    <description></description>
+                    <ucd>pos.eq</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="SIZE"  type="text" ><!-- should really make this an array -->
+                    <name>SIZE</name>
+                    <description></description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="BAND"  type="text" >
+                    <name>Band</name>
+                    <description></description>
+                    <ucd>instr.bandpass</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="OUT"  type="VOTable" >
+                    <name>Output</name>
+                    <description></description>
+                </parameterDefinition>
+                
+           </parameters>
+            <interfaces>
+                <interfaceDefinition id="default">
+                    <input>
+                        <pref ref="START"/>
+                        <pref ref="END"/>
+                        <pref ref="FORMAT"/>
+                        <pref ref="INSTRUMENT_ID" minOccurs="0"/>
+                        <pref ref="DATA_ID" minOccurs="0"/>
+                        <pref ref="TIME_RESOLUTION" minOccurs="0"/>
+                        <pref ref="POS" minOccurs="0"/>
+                        <pref ref="SIZE" minOccurs="0"/>
+                        <pref ref="BAND" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="OUT"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        </applicationDefinition>
+</ri:Resource>

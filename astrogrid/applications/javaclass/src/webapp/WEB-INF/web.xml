@@ -75,7 +75,6 @@
   <servlet-mapping>
     <servlet-name>VosiServlet</servlet-name>
     <url-pattern>/VOSI/capabilities</url-pattern>
-    <load-on-startup>500</load-on-startup>
   </servlet-mapping>
   
   <servlet-mapping>

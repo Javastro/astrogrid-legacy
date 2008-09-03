@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerier.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: RegistryQuerier.java,v 1.5 2008/09/03 14:19:03 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -13,6 +13,9 @@ package org.astrogrid.applications.http.registry;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+
+import net.ivoa.resource.Resource;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
@@ -24,9 +27,9 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 public interface RegistryQuerier extends ComponentDescriptor {
 	
 	/**
-	 * Return a list of CeaHttpApplicationTypes that have been harvested from the registry
+	 * Return a list of CeaHttpApplicationDefinitions that have been harvested from the registry
 	 * @TODO specify here exactly what sort of objects we're talking about.
 	 */
-	public Collection getHttpApplications() throws IOException; 
+	public List<HttpApplicationFactoryProduct> getHttpApplications() throws IOException; 
 
 }

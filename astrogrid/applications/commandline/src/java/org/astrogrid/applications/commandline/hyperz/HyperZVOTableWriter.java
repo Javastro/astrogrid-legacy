@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.8 2008/02/12 12:10:56 pah Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.9 2008/09/03 14:18:54 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,11 +17,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.CommandLineParameterDescription;
+
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.commandline.DefaultCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 import cds.savot.model.FieldSet;
@@ -62,11 +63,11 @@ public class HyperZVOTableWriter extends DefaultCommandLineParameterAdapter {
      * @param val
      * @param descr
      */
-    public HyperZVOTableWriter(ApplicationInterface interf, ParameterValue val, CommandLineParameterDescription descr,CommandLineApplicationEnvironment env, ExternalValue ival, VOTableSource votableSource) {
+    public HyperZVOTableWriter(ApplicationInterface interf, ParameterValue val, CommandLineParameterDefinition descr,ApplicationEnvironment env, ExternalValue ival, VOTableSource votableSource) {
         super(interf,val, descr,ival,env);
         logger.debug("creating hyperz table writer");
         this.votableSource = votableSource;
-        tmpfile = env.getTempFile(descr.getName());
+        tmpfile = env.getTempFile(descr.getId());
     }
     private final File tmpfile;
    private final VOTableSource votableSource;

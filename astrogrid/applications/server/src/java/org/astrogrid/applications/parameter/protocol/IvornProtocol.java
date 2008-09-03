@@ -1,4 +1,4 @@
-/*$Id: IvornProtocol.java,v 1.3 2005/03/31 08:34:17 nw Exp $
+/*$Id: IvornProtocol.java,v 1.4 2008/09/03 14:18:57 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.common.BundlePreferences;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
  *
  */
+@Component
 public class IvornProtocol implements Protocol , ComponentDescriptor{
     /**
      * Commons Logger for this class
@@ -128,6 +130,14 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
 
 /* 
 $Log: IvornProtocol.java,v $
+Revision 1.4  2008/09/03 14:18:57  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.146.1  2008/04/04 15:46:08  pah
+Have got bulk of code working with spring - still need to remove all picocontainer refs
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.3  2005/03/31 08:34:17  nw
 fixed problem of writing to non-existent ivorns
 

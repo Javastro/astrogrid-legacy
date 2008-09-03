@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.15 2007/02/19 16:19:26 gtr Exp $
+/* $Id: HttpApplication.java,v 1.16 2008/09/03 14:19:02 pah Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,29 +13,32 @@ package org.astrogrid.applications.http;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.beans.v1.Script;
-import org.astrogrid.applications.beans.v1.SimpleParameter;
-import org.astrogrid.applications.beans.v1.WebHttpApplicationSetup;
-import org.astrogrid.applications.beans.v1.WebHttpCall;
-import org.astrogrid.applications.beans.v1.types.HttpMethodType;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.http.HttpServiceClient.HttpServiceType;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.impl.HttpMethodType;
+import org.astrogrid.applications.description.impl.Script;
+import org.astrogrid.applications.description.impl.WebHttpApplicationSetup;
+import org.astrogrid.applications.description.impl.WebHttpCall;
+import org.astrogrid.applications.description.impl.WebHttpCall.SimpleParameter;
 import org.astrogrid.applications.http.exceptions.HttpApplicationNetworkException;
 import org.astrogrid.applications.http.exceptions.HttpApplicationWebServiceURLException;
+import org.astrogrid.applications.http.exceptions.HttpParameterProcessingException;
 import org.astrogrid.applications.http.script.IdentityPreprocessor;
 import org.astrogrid.applications.http.script.Preprocessor;
 import org.astrogrid.applications.http.script.XSLTPreprocessor;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
 
 /**
  * An Application that calls an http service, such as a SIAP service. ?
@@ -53,6 +56,7 @@ public class HttpApplication extends AbstractApplication  {
      * Commons Logger for this class
      */
     private static final Log log = LogFactory.getLog(HttpApplication.class);
+    private final WebHttpApplicationSetup appSetup;
 
     /**
      * Ctor
@@ -61,29 +65,31 @@ public class HttpApplication extends AbstractApplication  {
      * @param tool
      * @param applicationInterface
      * @param protocolLibrary
+     * @param httpAppSetup 
      */
-    public HttpApplication(IDs id, Tool tool, ApplicationInterface applicationInterface, ProtocolLibrary protocolLibrary) {
-        super(id, tool, applicationInterface, protocolLibrary);
+    public HttpApplication (Tool tool, ApplicationInterface applicationInterface, WebHttpApplicationSetup httpAppSetup) {
+        super( tool, applicationInterface);
+        this.appSetup = httpAppSetup;
     }
 
     /**
      * Combines a the Tool and Application docs and transforms to a doc suitable
      * for calling the web service.  For this we use the pre-processing element in the CeaHttpApplictionType
      * doc, or a default if none is available.
+     * @throws HttpParameterProcessingException 
      */
-    private WebHttpCall createCallingDocument(final Tool tool, final CeaHttpApplicationType app)  {
+    private WebHttpCall createCallingDocument(final Tool tool, final WebHttpApplicationSetup httpAppInfo) throws HttpParameterProcessingException  {
         if (log.isTraceEnabled()) {
-            log.trace("createCallingDocument(Tool tool = " + tool + ", CeaHttpApplicationType app = " + app
+            log.trace("createCallingDocument(Tool tool = " + tool + ", CeaHttpApplicationDefinition app = " + httpAppInfo
                     + ") - start");
         }
 
-            final WebHttpApplicationSetup httpAppInfo = app.getCeaHttpAdapterSetup();
             final Script preprocessScript = httpAppInfo.getPreProcessScript();
             
             log.debug("preprocessScript="+preprocessScript);
             if (preprocessScript!=null) {
                 log.debug("preprocessScript lang="+preprocessScript.getLang());
-                log.debug("preprocessScript code="+preprocessScript.getCode());
+                log.debug("preprocessScript code="+preprocessScript.getValue());
             }
             
             Preprocessor preprocessor;
@@ -91,7 +97,7 @@ public class HttpApplication extends AbstractApplication  {
                 log.debug("Preprocessing with identity preprocessor");
                 preprocessor = new IdentityPreprocessor();
             } else {
-                String code = preprocessScript.getCode();
+                String code = preprocessScript.getValue();
                 assert code!=null;
                 if (preprocessScript.getLang().equals(XSLTPreprocessor.xmlName)) {
                     log.debug("Preprocessing with XSLT preprocessor");
@@ -105,23 +111,22 @@ public class HttpApplication extends AbstractApplication  {
             
         WebHttpCall returnWebHttpCall = preprocessor.process(tool, app);
         if (log.isTraceEnabled()) {
-            log.trace("createCallingDocument(Tool, CeaHttpApplicationType) - end - return value = "
+            log.trace("createCallingDocument(Tool, CeaHttpApplicationDefinition) - end - return value = "
                             + returnWebHttpCall);
         }
             return returnWebHttpCall;
     }
 
-    public Runnable createExecutionTask() throws CeaException {
-        createAdapters();
+    public Runnable createRunnable()  {
         log.debug("createExecutionTask() - creating worker thread");
         Runnable task = new Exec();
-        setStatus(Status.INITIALIZED);
         return task;
     }
 
     private class Exec implements Runnable {
     
-       /**
+ 
+    /**
      * Where the action happens
      */
     public void run() {
@@ -135,7 +140,7 @@ public class HttpApplication extends AbstractApplication  {
         try{
             for (Iterator i = inputParameterAdapters(); i.hasNext();) {
                 ParameterAdapter a = (ParameterAdapter) i.next();
-                final String name = a.getWrappedParameter().getName();
+                final String name = a.getWrappedParameter().getId();
                 final Object value = a.process();
                 //Replace Parameters in the tool document
                 //with their processed values
@@ -147,11 +152,10 @@ public class HttpApplication extends AbstractApplication  {
             }
             //Prepare calling document, and extract what we need for the http call
             final HttpApplicationDescription description = (HttpApplicationDescription) getApplicationDescription();
-            final CeaHttpApplicationType app = description.getApplication();
-            final WebHttpCall httpCall = createCallingDocument(getTool(),app);
+            final WebHttpCall httpCall = createCallingDocument(getTool(),appSetup);
             
-            final String url = httpCall.getURL().getContent();
-            final HttpMethodType requestedMethod = httpCall.getURL().getMethod();        
+            final String url = httpCall.getURL().getValue();
+            final org.astrogrid.applications.description.impl.HttpMethodType requestedMethod = httpCall.getURL().getMethod();        
             HttpServiceClient.HttpServiceType method;
             if (HttpMethodType.GET.equals(requestedMethod)) {
                 method = HttpServiceClient.HttpServiceType.GET;
@@ -163,11 +167,12 @@ public class HttpApplication extends AbstractApplication  {
                 reportError("Unknown http method requested"); //this really shouldn't happen, given the constraints in the schema
                 return;
             }            
-            final Enumeration en = httpCall.enumerateSimpleParameter();
+            final List<SimpleParameter> en = httpCall.getSimpleParameter();
             Map inputArguments = new HashMap();
-            while (en.hasMoreElements()) {
-                final SimpleParameter parameter = (SimpleParameter) en.nextElement();
-                assert parameter!=null;
+            
+ 		
+             for (SimpleParameter parameter : en) {
+               assert parameter!=null;
                 assert parameter.getName()!=null;
                 assert parameter.getValue()!=null;
                 inputArguments.put(parameter.getName(), parameter.getValue());
@@ -188,15 +193,15 @@ public class HttpApplication extends AbstractApplication  {
             result.writeBack(resultData);
             log.info("completed call successfully");
             setStatus(Status.COMPLETED);
-        } catch (CeaException e) {
-            log.error("run() - failed to write back param values", e);
-            reportError("Failed to write back parameter values", e);
         } catch (HttpApplicationWebServiceURLException e) {
             log.error("run() - problem with service URL", e);
             reportError("Error 404 - Not Found from the application's URL", e);
         } catch (HttpApplicationNetworkException e) {
             log.error("run()", e);
             reportError("Network Error while contacting web server",e);
+        } catch (CeaException e) {
+            log.error("run() - failed to write back param values", e);
+            reportError("Failed to write back parameter values", e);
         } catch (Throwable t) {
             log.error("run()", t);
 
@@ -231,6 +236,18 @@ public class HttpApplication extends AbstractApplication  {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.16  2008/09/03 14:19:02  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.15.10.3  2008/09/03 12:00:48  pah
+ * still not really working
+ *
+ * Revision 1.15.10.2  2008/08/02 13:32:32  pah
+ * safety checkin - on vacation
+ *
+ * Revision 1.15.10.1  2008/04/01 13:50:07  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.15  2007/02/19 16:19:26  gtr
  * Branch apps-gtr-1061 is merged.
  *

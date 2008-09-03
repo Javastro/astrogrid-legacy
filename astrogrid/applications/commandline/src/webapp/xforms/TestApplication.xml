@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9"
+   xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+   xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1"
+   created="1999-01-01T00:00:00" status="active"
+   updated="2008-03-12T18:15:21.03Z" xsi:type="cea:CeaApplication"
+>
+   <title>Test Application</title>
+   <shortName>Test Application</shortName>
+   <identifier>ivo://org.testit/testapp</identifier>
+   <curation>
+      <publisher>Astrogrid</publisher>
+      <creator>
+         <name>Astrogrid</name>
+         <logo>??</logo>
+      </creator>
+      <date role="representative">2004-03-26</date>
+      <version>1.0</version>
+      <contact>
+         <name>Paul Harrison</name>
+         <email>pah@jb.man.ac.uk</email>
+      </contact>
+   </curation>
+   <content>
+      <subject>???</subject>
+      <description>testapp is just for testing</description>
+      <referenceURL>
+         http://www.astrogrid.org/maven/docs/snapshot/applications
+      </referenceURL>
+      <type>Other</type>
+   </content>
+   <applicationDefinition>
+      <applicationType>processing</applicationType>
+      <parameters>
+         <parameterDefinition id="P1" type="integer">
+            <name>Pause Time</name>
+            <description>
+               Text this is the time tha the application will pause in
+               seconds before continuing to give the appearance of doing
+               something...
+            </description>
+            <unit>seconds</unit>
+            <ucd>UCD</ucd>
+            <defaultValue>0</defaultValue>
+         </parameterDefinition>
+         <parameterDefinition id="P2" type="binary">
+            <name>Param Values</name>
+            <description>
+               This is the file to which the parameters will be written
+            </description>
+            <unit />
+            <ucd>String</ucd>
+            <defaultValue />
+         </parameterDefinition>
+         <parameterDefinition id="P3" type="text">
+            <name />
+            <description />
+            <ucd />
+         </parameterDefinition>
+         <parameterDefinition id="P4" type="text">
+            <name />
+            <description />
+            <ucd />
+            <optionList>
+               <optionVal>HTML</optionVal>
+               <optionVal>VOTable</optionVal>
+               <optionVal>ASCII</optionVal>
+            </optionList>
+         </parameterDefinition>
+         <parameterDefinition id="P5" type="VOTable">
+            <name />
+            <description />
+            <ucd />
+         </parameterDefinition>
+         <parameterDefinition id="P6" type="angle">
+            <name />
+            <description />
+            <ucd>pos.eq.ra</ucd>
+         </parameterDefinition>
+         <parameterDefinition id="P7" type="angle">
+            <name />
+            <description />
+            <ucd>pos.eq.dec</ucd>
+         </parameterDefinition>
+         <parameterDefinition id="P8" type="ADQL">
+            <name />
+            <description />
+            <ucd />
+         </parameterDefinition>
+         <parameterDefinition id="P9" type="text">
+            <name>Dup file</name>
+            <description>
+               The contents of this file will be copied to the output
+               when run
+            </description>
+            <ucd />
+         </parameterDefinition>
+         <parameterDefinition id="P10" type="boolean">
+            <ucd />
+            <defaultValue>y</defaultValue>
+         </parameterDefinition>
+         <parameterDefinition id="P11" type="anyURI">
+            <ucd />
+         </parameterDefinition>
+         <parameterDefinition id="P12" type="text">
+            <name />
+            <description />
+            <ucd />
+         </parameterDefinition>
+         <parameterDefinition id="P13" type="real">
+            <ucd />
+         </parameterDefinition>
+         <parameterDefinition id="P14" type="text">
+            <description>
+               the test application will write a message to this file
+            </description>
+            <ucd />
+         </parameterDefinition>
+      </parameters>
+      <interfaces>
+         <interfaceDefinition id="I1">
+            <input>
+               <pref ref="P1" />
+               <pref ref="P4" />
+               <pref maxOccurs="0" ref="P9" />
+               <pref ref="P10" />
+               <pref minOccurs="0" ref="P6" />
+            </input>
+            <output>
+               <pref ref="P3" />
+               <pref ref="P2" />
+               <pref ref="P14" />
+            </output>
+         </interfaceDefinition>
+         <interfaceDefinition id="Ilocal">
+            <input>
+               <pref ref="P1" />
+               <pref ref="P2" />
+               <pref ref="P4" />
+            </input>
+            <output>
+               <pref ref="P3" />
+            </output>
+         </interfaceDefinition>
+         <interfaceDefinition id="I2">
+            <input>
+               <pref ref="P9" />
+            </input>
+            <output>
+               <pref ref="P3" />
+            </output>
+         </interfaceDefinition>
+      </interfaces>
+   </applicationDefinition>
+</ri:Resource>

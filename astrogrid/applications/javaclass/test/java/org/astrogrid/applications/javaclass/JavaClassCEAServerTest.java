@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAServerTest.java,v 1.2 2007/02/19 16:20:21 gtr Exp $
+/*$Id: JavaClassCEAServerTest.java,v 1.3 2008/09/03 14:18:44 pah Exp $
  * Created on 21-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,37 +10,30 @@
 **/
 package org.astrogrid.applications.javaclass;
 
-import org.w3c.dom.Document;
 
-import org.astrogrid.applications.component.CEAComponentManager;
-import org.astrogrid.applications.component.JavaClassCEAComponentManager;
+import static org.junit.Assert.assertNotNull;
+
 import org.astrogrid.applications.manager.MetadataService;
-
-import junit.framework.TestCase;
+import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.w3c.dom.Document;
 
 /** test of a cea server configured with the javaclass backend.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Jun-2004
  * @todo exercise other components of server here..
  *
  */
-public class JavaClassCEAServerTest extends TestCase {
-    /**
-     * Constructor for JavaClassCEAServerTest.
-     * @param arg0
-     */
-    public JavaClassCEAServerTest(String arg0) {
-        super(arg0);
-    }
-    
-    protected void setUp() throws Exception {
-        container = new JavaClassCEAComponentManager();
-        container.start();
-    }
-    
-    protected CEAComponentManager container;
-    
+@RunWith(SpringJUnit4ClassRunner.class) 
+@ContextConfiguration(locations={"/cecspringTest.xml"}) 
+public class JavaClassCEAServerTest extends AbstractComponentManagerTestCase {
+
+    //not sure that this is not doing anything more yet.
+    @Test
     public void testMetadata() throws Exception {
-        MetadataService ms = container.getMetadataService();
+        MetadataService ms = manager.getMetadataService();
         assertNotNull(ms);
         Document reg = ms.returnRegistryEntry();
         assertNotNull(reg);
@@ -53,6 +46,13 @@ public class JavaClassCEAServerTest extends TestCase {
 
 /* 
 $Log: JavaClassCEAServerTest.java,v $
+Revision 1.3  2008/09/03 14:18:44  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.10.1  2008/05/13 15:14:07  pah
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
 Revision 1.2  2007/02/19 16:20:21  gtr
 Branch apps-gtr-1061 is merged.
 

@@ -1,4 +1,4 @@
-/* $Id: HttpApplicationNetworkException.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: HttpApplicationNetworkException.java,v 1.5 2008/09/03 14:18:45 pah Exp $
  * Created on Jul 27, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -9,7 +9,6 @@
 ///CLOVER:OFF 
 package org.astrogrid.applications.http.exceptions;
 
-import java.io.IOException;
 
 /**
  * Caused by problems on the network such as timeouts
@@ -18,14 +17,6 @@ import java.io.IOException;
 public class HttpApplicationNetworkException extends HttpApplicationWebServiceException {
 
 
-    /**
-     * Constructor
-     *
-     * 
-     */
-    public HttpApplicationNetworkException() {
-        super();
-    }
     /**
      * Constructor
      *
@@ -41,14 +32,19 @@ public class HttpApplicationNetworkException extends HttpApplicationWebServiceEx
      * @param string
      * @param e
      */
-    public HttpApplicationNetworkException(String string, IOException e) {
+    public HttpApplicationNetworkException(String string, Throwable e) {
         super(string, e);
-        // @TODO Auto-generated constructor stub
     }
 }
 
 /* 
  * $Log: HttpApplicationNetworkException.java,v $
+ * Revision 1.5  2008/09/03 14:18:45  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.4.212.1  2008/04/01 13:50:06  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.4  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *

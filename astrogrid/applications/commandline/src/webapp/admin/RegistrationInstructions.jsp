@@ -6,15 +6,7 @@
 <html>
     <head>
         <title>Service registration</title>
-        <style type="text/css" media="all">
-              @import url("../style/maven-base.css"); 
-              @import url("../style/maven-theme.css");
-        </style>
-        </title>
-    </head>
-<body>
-  
-<%@ include file="header.xml" %>
+<%@ include file="../inc/header.jsp" %>
 
 <div id='bodyColumn'>
 
@@ -39,6 +31,5 @@ kinds of registration.
   You should make both kinds of registration, since both versions of client
   software are in circulation.
 </p>
-
-</body>
-</html>
+</div>
+<%@ include file="../inc/header.jsp" %>

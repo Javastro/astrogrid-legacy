@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceat:tool xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+   xmlns:ns4="http://www.w3.org/1999/xlink" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+   xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.1" xmlns:ceaimpl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+   xmlns:ns5="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+   xsi:schemaLocation="http://www.ivoa.net/xml/CEA/types/v1.1 /Users/pharriso/Work/ag/src/contracts/src/schema/cea/CEATypes/v1.1/CEATypes.xsd"
+   id="ivo://org.testit/testapp" interface="I1"
+>
+   <ceat:input>
+      <ceat:parameter id="P1" indirect="false">
+         <ceat:value>0</ceat:value>
+      </ceat:parameter>
+      <ceat:parameter id="P4" indirect="false">
+         <ceat:value />
+      </ceat:parameter>
+      <ceat:parameter id="P9" indirect="false">
+         <ceat:value />
+      </ceat:parameter>
+      <ceat:parameter id="P10" indirect="false">
+         <ceat:value>y</ceat:value>
+      </ceat:parameter>
+      <ceat:parameter id="P6" indirect="false">
+         <ceat:value />
+      </ceat:parameter>
+   </ceat:input>
+   <ceat:output>
+      <ceat:parameter id="P3" indirect="false">
+         <ceat:value />
+      </ceat:parameter>
+      <ceat:parameter id="P2" indirect="false">
+         <ceat:value />
+      </ceat:parameter>
+      <ceat:parameter id="P14" indirect="false">
+         <ceat:value />
+      </ceat:parameter>
+   </ceat:output>
+</ceat:tool>

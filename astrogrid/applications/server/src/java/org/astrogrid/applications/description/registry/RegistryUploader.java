@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploader.java,v 1.7 2005/07/05 08:26:57 clq2 Exp $
+ * $Id: RegistryUploader.java,v 1.8 2008/09/03 14:19:02 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,8 +15,6 @@ package org.astrogrid.applications.description.registry;
 
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -27,9 +25,6 @@ import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
-import org.exolab.castor.xml.Marshaller;
-import org.picocontainer.Startable;
-import org.w3c.dom.Document;
 
 /**
  * Component that will lodge this services' vodescription with the registry.
@@ -76,7 +71,7 @@ public class RegistryUploader implements  ComponentDescriptor{
           delegate = RegistryDelegateFactory.createAdmin(new URL(endpoint));
        }
        logger.info("registering this service with registry");//TODO would be nice if the registry delegate would identify the endpoint
-       delegate.update(provider.returnRegistryEntry());
+       delegate.update(provider.getServerDescription());
        
     }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryQuerierImplTest.java,v 1.2 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: RegistryQuerierImplTest.java,v 1.3 2008/09/03 14:18:38 pah Exp $
  * 
  * Created on 07-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -19,10 +19,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.applications.http.test.TestRegistryLocator;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 
@@ -61,7 +61,7 @@ public class RegistryQuerierImplTest extends TestCase {
       assertNotNull(l);
       assertTrue("did not find any applicattions", !l.isEmpty());
       for (Iterator iter = l.iterator(); iter.hasNext();) {
-         CeaHttpApplicationType app = (CeaHttpApplicationType) iter.next();
+         CeaHttpApplicationDefinition app = (CeaHttpApplicationDefinition) iter.next();
          
       }
    }
@@ -71,6 +71,15 @@ public class RegistryQuerierImplTest extends TestCase {
 
 /*
  * $Log: RegistryQuerierImplTest.java,v $
+ * Revision 1.3  2008/09/03 14:18:38  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.2.86.2  2008/08/02 13:32:32  pah
+ * safety checkin - on vacation
+ *
+ * Revision 1.2.86.1  2008/04/01 13:50:08  pah
+ * http service also passes unit tests with new jaxb metadata config
+ *
  * Revision 1.2  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

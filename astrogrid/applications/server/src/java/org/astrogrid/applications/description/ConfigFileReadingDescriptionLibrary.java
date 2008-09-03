@@ -1,0 +1,174 @@
+/*
+ * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * 
+ * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
+ * Copyright 2008 Astrogrid. All rights reserved.
+ *
+ * This software is published under the terms of the Astrogrid 
+ * Software License, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */
+
+package org.astrogrid.applications.description;
+
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.util.ValidationEventCollector;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import net.ivoa.resource.cea.CeaApplication;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.commandline.CommandLineApplicationDescription;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.base.ApplicationBase;
+import org.astrogrid.applications.description.impl.CEADALService;
+import org.astrogrid.applications.description.impl.CECConfig;
+import org.astrogrid.applications.description.impl.CeaCmdLineApplicationDefinition;
+import org.astrogrid.applications.description.impl.CeaDBApplicationDefinition;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
+import org.astrogrid.contracts.Namespaces;
+import org.astrogrid.contracts.SchemaMap;
+
+/**
+ * {@link ApplicationDescription} library that can load and contain {@link CeaCmdLineApplicationDefinition}s.
+ * Acts as a factory for applications read from a file.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 25 Mar 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
+public class ConfigFileReadingDescriptionLibrary extends
+	BaseApplicationDescriptionLibrary {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+	    .getLog(ConfigFileReadingDescriptionLibrary.class);
+    
+    
+    private Configuration conf;
+    public ConfigFileReadingDescriptionLibrary(
+	    
+	    Configuration conf
+	 ) {
+	super(conf);
+	this.conf = conf;
+	loadApplications();
+    }
+   
+
+    public void loadApplications() {
+	ValidationEventCollector handler = new ValidationEventCollector();
+
+	try {
+	    JAXBContext jc = CEAJAXBContextFactory.newInstance();
+	    Unmarshaller um = jc.createUnmarshaller();
+	    javax.xml.validation.SchemaFactory sf = SchemaFactory
+		    .newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+	    URL url = SchemaMap.getSchemaURL(Namespaces.CEAIMPL.getNamespace());
+	    Source schemas = new StreamSource(url.openStream(), url
+		    .toExternalForm());
+	    Schema schema = sf.newSchema(schemas);
+	    um.setSchema(schema);
+	    um.setEventHandler(handler);
+	    // Unmarshall the file into a content object
+	    CECConfig c = (CECConfig) um
+		    .unmarshal(conf.getApplicationDescriptionUrl());
+	    
+	    //commonality here - the metadata definition is actually of a similar kind
+	    // each can have the same types of CEA applications..
+	    List<Object> appDefs = c.getCeaApplicationOrCeaDALServiceOrDBDefinition();
+	    for (Iterator iterator = appDefs.iterator(); iterator.hasNext();) {
+		Object object = (Object) iterator.next();
+		if (object instanceof CeaApplication) {
+		    CeaApplication ceaApp = (CeaApplication) object;
+		    ApplicationBase apptyp = ceaApp.getApplicationDefinition();
+		    if (apptyp instanceof CeaCmdLineApplicationDefinition) {
+			this.addApplicationDescription(new CommandLineApplicationDescription(conf,new AppMetadataAdapter(ceaApp)));
+			
+		    }
+		    else if (apptyp instanceof CeaDBApplicationDefinition) {
+			CeaDBApplicationDefinition cmdDef = (CeaDBApplicationDefinition) apptyp;
+			//FIXME need to be the factory for the DB application.
+		    }
+		    else if (apptyp instanceof CeaHttpApplicationDefinition) {
+			CeaHttpApplicationDefinition cmdDef = (CeaHttpApplicationDefinition) apptyp;
+			//FIXME need to be the factory for the application.
+		    }
+		    
+		    
+		} else if(object instanceof CEADALService){
+		    CEADALService  dalService = (CEADALService)object;
+		    ApplicationBase apptyp = dalService.getApplicationDefinition();
+		    if (apptyp instanceof CeaCmdLineApplicationDefinition) {
+			this.addApplicationDescription(new CommandLineApplicationDescription(conf,new ServiceMetadataAdapter(dalService)));
+			//FIXME need to take account of other application types...
+		    }
+
+		}
+		
+	    }
+	    
+//	    for (CeaCmdLineApplicationDefinition appDef : c.getCmdLineApplication()) {
+//		CommandLineApplicationDescription desc = new CommandLineApplicationDescription(appDef, this.env, this.lib, conf);
+//		this.addApplicationDescription(desc);
+//	    }
+	} catch (Exception e) {
+	    logger.fatal("error reading application definitions", e);
+	    if (handler.hasEvents()) {
+		for (int i = 0; i < handler.getEvents().length; i++) {
+		    ValidationEvent event = handler.getEvents()[i];
+		    logger.fatal(event.toString());
+		}
+
+	    }
+	}
+
+    }
+
+}
+
+/*
+ * $Log: ConfigFileReadingDescriptionLibrary.java,v $
+ * Revision 1.2  2008/09/03 14:18:43  pah
+ * result of merge of pah_cea_1611 branch
+ *
+ * Revision 1.1.2.2  2008/08/29 07:28:26  pah
+ * moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
+ *
+ * Revision 1.1.2.1  2008/08/02 13:33:56  pah
+ * safety checkin - on vacation
+ *
+ * Revision 1.1.2.5  2008/06/11 14:32:48  pah
+ * merged the ids into the application execution environment
+ *
+ * Revision 1.1.2.4  2008/05/13 16:02:47  pah
+ * uws with full app running UI is working
+ *
+ * Revision 1.1.2.3  2008/04/04 15:34:52  pah
+ * Have got bulk of code working with spring - still need to remove all picocontainer refs
+ * ASSIGNED - bug 1611: enhancements for stdization holding bug
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ *
+ * Revision 1.1.2.2  2008/03/26 17:29:51  pah
+ * Unit tests pass
+ *
+ * Revision 1.1.2.1  2008/03/19 23:15:43  pah
+ * First stage of refactoring done - code compiles again - not all unit tests passed
+ *
+ * ASSIGNED - bug 1611: enhancements for stdization holding bug
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ *
+ */

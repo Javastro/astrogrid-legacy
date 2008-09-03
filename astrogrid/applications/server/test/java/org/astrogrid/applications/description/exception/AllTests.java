@@ -1,5 +1,5 @@
 /*
- * $Id: AllTests.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: AllTests.java,v 1.3 2008/09/03 14:19:03 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,9 +19,6 @@ import junit.framework.TestSuite;
  * @since iteration5
  */
 public class AllTests {
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AllTests.class);
-    }
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.applications.description.exception");
         //$JUnit-BEGIN$

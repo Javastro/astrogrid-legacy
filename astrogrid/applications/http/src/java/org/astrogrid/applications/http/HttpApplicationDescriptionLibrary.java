@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibrary.java,v 1.8 2005/07/05 08:27:01 clq2 Exp $
+/*$Id: HttpApplicationDescriptionLibrary.java,v 1.9 2008/09/03 14:19:02 pah Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,15 +14,18 @@ package org.astrogrid.applications.http;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.http.registry.HttpApplicationFactoryProduct;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 
 /** 
  * library of HttpApplication application descriptions.
@@ -39,12 +42,13 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
 
     /** Construct a new HttpApplicationDescriptionLibrary, based on methods of parameter class
      * @param querier does all the hard work of talking to the registry and getting the stuff we need to create HttpAppplicationDescriptions
+     * @param conf 
      * @throws IOException if there was a problem in the querier.  Typically this will be a failure of the 
      * querier to contact the registry
      * 
      */
-    public HttpApplicationDescriptionLibrary(RegistryQuerier querier, ApplicationDescriptionEnvironment env) throws IOException {
-        super(env);
+    public HttpApplicationDescriptionLibrary(RegistryQuerier querier, ApplicationDescriptionEnvironment env, Configuration conf) throws IOException {
+        super(env, conf);
         if (log.isTraceEnabled()) {
             log.trace("HttpApplicationDescriptionLibrary(RegistryQuerier querier = " + querier
                     + ", ApplicationDescriptionEnvironment env = " + env
@@ -71,15 +75,15 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
             log.trace("populate() - start");
         }
 
-        final Collection apps = querier.getHttpApplications();
+        final List<HttpApplicationFactoryProduct> apps = querier.getHttpApplications();
         assert apps!=null;
 
-        final Iterator it = apps.iterator();
-        while (it.hasNext()) {
-            final CeaHttpApplicationType app = (CeaHttpApplicationType) it.next(); 
-            super.addApplicationDescription(new HttpApplicationDescription(app, env)); 
-        }
-
+        
+        for (HttpApplicationFactoryProduct httpApplicationFactoryProduct : apps) {
+	    super.addApplicationDescription(new HttpApplicationDescription(httpApplicationFactoryProduct.getAppDefinition(),
+		    httpApplicationFactoryProduct.getResource(),env, conf));   
+	}
+      
         if (log.isTraceEnabled()) {
             log.trace("populate() - end");
         }
@@ -117,6 +121,15 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
 
 /* 
 $Log: HttpApplicationDescriptionLibrary.java,v $
+Revision 1.9  2008/09/03 14:19:02  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.8.86.2  2008/08/02 13:32:32  pah
+safety checkin - on vacation
+
+Revision 1.8.86.1  2008/04/01 13:50:07  pah
+http service also passes unit tests with new jaxb metadata config
+
 Revision 1.8  2005/07/05 08:27:01  clq2
 paul's 559b and 559c for wo/apps and jes
 

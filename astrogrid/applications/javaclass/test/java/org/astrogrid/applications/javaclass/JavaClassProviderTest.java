@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.3 2008/02/12 12:10:56 pah Exp $
+/*$Id: JavaClassProviderTest.java,v 1.4 2008/09/03 14:18:44 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,24 +11,27 @@
 package org.astrogrid.applications.javaclass;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.ServiceDefinitionFactory;
+import org.astrogrid.applications.description.TestServiceDefinition;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
+import org.astrogrid.applications.description.execution.ListOfParameterValues;
+import org.astrogrid.applications.description.execution.ParameterValue;
+import org.astrogrid.applications.description.execution.ResultListType;
+import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.applications.test.MockMonitor;
 import org.astrogrid.community.User;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Output;
-import org.astrogrid.workflow.beans.v1.Tool;
 
 import junit.framework.TestCase;
 
@@ -50,11 +53,11 @@ public class JavaClassProviderTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         IdGen idgen = new InMemoryIdGen();
-        ProtocolLibrary protocolLib = new DefaultProtocolLibrary();
+        ProtocolLibrary protocolLib = new DefaultProtocolLibrary(new Protocol[]{new FileProtocol()});
         monitor = new MockMonitor();
         AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,aresolver);
-        lib = new JavaClassApplicationDescriptionLibrary(new BaseJavaClassConfiguration(), env);
+	lib = new JavaClassApplicationDescriptionLibrary(new BuiltInJavaClassConfiguration(), env, new TestServiceDefinition());
         assertNotNull(lib);
     }
     protected ApplicationDescriptionLibrary lib;
@@ -68,16 +71,17 @@ public class JavaClassProviderTest extends TestCase {
     }
     
     public void testHelloWorld() throws Exception {
-        ApplicationDescription hw = lib.getDescription("org.astrogrid.test/helloWorld");
+        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/helloWorld");
         assertNotNull(hw);
-        assertEquals("org.astrogrid.test/helloWorld",hw.getName());
+        assertEquals("ivo://org.astrogrid.test/helloWorld",hw.getId());
         ApplicationInterface iface = hw.getInterfaces()[0];
         assertNotNull(iface);
         Tool tool = new Tool();
-        Output output = new Output();
-        tool.setOutput(output);
+        
+        ListOfParameterValues output= new ListOfParameterValues();
+	tool.setOutput(output);
         ParameterValue result = new ParameterValue();
-        result.setName(iface.getArrayofOutputs()[0]);
+        result.setId(iface.getArrayofOutputs()[0]);
         output.addParameter(result);
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
@@ -86,32 +90,32 @@ public class JavaClassProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String o = results.getResult(0).getValue();
+        assertEquals(1,results.getResult().size());
+        String o = results.getResult().get(0).getValue();
         assertNotNull(o);
         System.out.println(o);
     }
     public void testSum() throws Exception {
-        ApplicationDescription hw = lib.getDescription("org.astrogrid.test/sum");
+        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/sum");
         assertNotNull(hw);
         ApplicationInterface iface = hw.getInterfaces()[0];
         String[] inputParameterNames = iface.getArrayofInputs();
         assertNotNull(iface);
         Tool tool = new Tool();
-        Input input = new Input();
-        tool.setInput(input);
-        Output output = new Output();
-        tool.setOutput(output);
+        ListOfParameterValues input= new ListOfParameterValues();
+	tool.setInput(input);
+        ListOfParameterValues output= new ListOfParameterValues();
+	tool.setOutput(output);
         ParameterValue a = new ParameterValue();
         ParameterValue b = new ParameterValue();        
-        a.setName(inputParameterNames[0]);
-        b.setName(inputParameterNames[1]);
+        a.setId(inputParameterNames[0]);
+        b.setId(inputParameterNames[1]);
         a.setValue("1");
         b.setValue("2");
         input.addParameter(a);
         input.addParameter(b);
         ParameterValue result = new ParameterValue();
-        result.setName(iface.getArrayofOutputs()[0]);
+        result.setId(iface.getArrayofOutputs()[0]);
         output.addParameter(result);
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);        
@@ -121,8 +125,8 @@ public class JavaClassProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String o = results.getResult(0).getValue();
+        assertEquals(1,results.getResult().size());
+        String o = results.getResult().get(0).getValue();
         assertNotNull(o);
         System.out.println(o);
         assertEquals("3",o);
@@ -130,26 +134,28 @@ public class JavaClassProviderTest extends TestCase {
     
 
     public void testEchoDifferentArgs() throws Exception {
-        ApplicationDescription hw = lib.getDescription("org.astrogrid.test/echoDifferentArgs");
+        ApplicationDescription hw = lib.getDescription("ivo://org.astrogrid.test/echoDifferentArgs");
         assertNotNull(hw);
         ApplicationInterface iface = hw.getInterfaces()[0];
         String[] inputParameterNames = iface.getArrayofInputs();
         assertNotNull(iface);
         Tool tool = new Tool();
-        Input input = new Input();
-        tool.setInput(input);
-        Output output = new Output();
-        tool.setOutput(output);
+       
+        ListOfParameterValues input= new ListOfParameterValues();
+	tool.setInput(input);
+        
+        ListOfParameterValues output = new ListOfParameterValues();
+	tool.setOutput(output);
         ParameterValue a = new ParameterValue();
         ParameterValue b = new ParameterValue();        
-        a.setName(inputParameterNames[0]);
-        b.setName(inputParameterNames[1]);
+        a.setId(inputParameterNames[0]);
+        b.setId(inputParameterNames[1]);
         a.setValue("Hello");
         b.setValue("2");
         input.addParameter(a);
         input.addParameter(b);
         ParameterValue result = new ParameterValue();
-        result.setName(iface.getArrayofOutputs()[0]);
+        result.setId(iface.getArrayofOutputs()[0]);
         output.addParameter(result);
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);        
@@ -159,8 +165,8 @@ public class JavaClassProviderTest extends TestCase {
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
         assertNotNull(results);
-        assertEquals(1,results.getResultCount());
-        String o = results.getResult(0).getValue();
+        assertEquals(1,results.getResult().size());
+        String o = results.getResult().get(0).getValue();
         assertNotNull(o);
         System.out.println(o);
         assertEquals("Hello2",o);
@@ -171,6 +177,25 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.4  2008/09/03 14:18:44  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.2.4  2008/08/02 13:33:41  pah
+safety checkin - on vacation
+
+Revision 1.3.2.3  2008/05/13 15:14:07  pah
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
+Revision 1.3.2.2  2008/03/27 13:37:24  pah
+now producing correct registry documents
+
+Revision 1.3.2.1  2008/03/19 23:28:58  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.3  2008/02/12 12:10:56  pah
 build with 1.0 registry and filemanager clients
 

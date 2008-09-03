@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceat:tool xmlns="http://www.ivoa.net/xml/CEA/types/v1.1" xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1" id="ivo://fictious.org/IMAGER" interface="simple" >
+  <ceat:input>
+		<parameter id="RA">
+		  <value>80</value>
+		</parameter>
+		<parameter id="DEC">
+			<value>30</value>
+		</parameter>
+		<parameter id="SIZE">
+			<value>30</value>
+		</parameter>
+	</ceat:input>
+	<ceat:output>
+		<parameter id="IMAGE" indirect="true" >
+			<value>vos://org.test!vospace/dir/image</value>
+		</parameter>
+	</ceat:output>
+</ceat:tool>

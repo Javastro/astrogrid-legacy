@@ -1,4 +1,4 @@
-/*$Id: DefaultIDs.java,v 1.3 2004/07/23 10:37:28 nw Exp $
+/*$Id: DefaultIDs.java,v 1.4 2008/09/03 14:18:33 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.community.User;
 
 /** Manages all the identity info for an application execution
  * <p> its a container that pairs together the user-assigned id and system-assigned id for an application 
+ * @deprecated
  * assignes default userid for now - dummy value.*/
 public class DefaultIDs implements AbstractApplication.IDs {
     
@@ -46,6 +47,12 @@ public class DefaultIDs implements AbstractApplication.IDs {
 
 /* 
 $Log: DefaultIDs.java,v $
+Revision 1.4  2008/09/03 14:18:33  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.3.272.1  2008/06/11 14:31:42  pah
+merged the ids into the application execution environment
+
 Revision 1.3  2004/07/23 10:37:28  nw
 Javadocs
 

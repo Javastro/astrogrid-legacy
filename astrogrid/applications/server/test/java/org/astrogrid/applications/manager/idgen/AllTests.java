@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: AllTests.java,v 1.3 2008/09/03 14:19:06 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,6 @@ import junit.framework.TestSuite;
  *
  */
 public class AllTests {
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AllTests.class);
-    }
     public static Test suite() {
         TestSuite suite = new TestSuite("Tests for idgen");
         //$JUnit-BEGIN$
@@ -34,6 +31,14 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2008/09/03 14:19:06  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.286.1  2008/04/04 15:46:08  pah
+Have got bulk of code working with spring - still need to remove all picocontainer refs
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

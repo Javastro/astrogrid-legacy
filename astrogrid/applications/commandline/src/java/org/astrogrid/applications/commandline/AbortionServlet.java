@@ -6,7 +6,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.component.CEAComponentManagerFactory;
+import org.astrogrid.applications.component.CEAComponentContainer;
+import org.astrogrid.applications.uws.UWSController;
 import org.astrogrid.component.ComponentManagerException;
 
 /**
@@ -14,6 +15,7 @@ import org.astrogrid.component.ComponentManagerException;
  *
  * @author Guy Rixon
  * @version
+ * @deprecated now handled by the {@link UWSController}
  */
 public class AbortionServlet extends HttpServlet {
   
@@ -29,7 +31,7 @@ public class AbortionServlet extends HttpServlet {
     }
     else {
       try {
-        CEAComponentManagerFactory.getInstance().getExecutionController().abort(job);
+        CEAComponentContainer.getInstance().getExecutionController().abort(job);
         response.sendRedirect("queue.jsp");
       } catch (Exception ex) {
         response.sendError(response.SC_INTERNAL_SERVER_ERROR, 

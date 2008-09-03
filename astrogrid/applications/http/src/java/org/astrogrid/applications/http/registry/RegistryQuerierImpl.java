@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImpl.java,v 1.10 2007/09/28 18:03:36 clq2 Exp $
+/* $Id: RegistryQuerierImpl.java,v 1.11 2008/09/03 14:19:03 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -31,15 +31,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import org.astrogrid.applications.beans.v1.types.ApplicationKindType;
+import org.astrogrid.applications.description.base.ApplicationKind;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotLoadedException;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.registry.IvornUtil;
 import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 /**
@@ -61,10 +61,10 @@ public class RegistryQuerierImpl extends AbstractRegistryQuerier {
    }
 
    /**
-     * Query string to select only CeaHttpApplications in the registry
+     * Query string to select only CeaHttpApplicationDefinitions in the registry
      */
     private final static String LIST_QUERY_STRING = "Select * from Registry " + 
-    " where @xsi:type='cea:CeaHttpApplicationType'";
+    " where @xsi:type='cea:CeaHttpApplication'";
    
 
     /**
@@ -91,9 +91,8 @@ public class RegistryQuerierImpl extends AbstractRegistryQuerier {
                
                String element = XMLUtils.getChildCharacterData((Element)nl.item(i));
                log.debug("found application="+element);
-               String name = IvornUtil.extractAuthorityFragment(element) + "/" + IvornUtil.extractIDFragment(element);
-               namesList.add(name);
-               log.debug("Adding "+name+" to list of applications");
+               namesList.add(element);
+               log.debug("Adding "+element+" to list of applications");
             
             }
                      
@@ -116,17 +115,17 @@ public class RegistryQuerierImpl extends AbstractRegistryQuerier {
      *         registry
     * @throws ApplicationDescriptionNotLoadedException
     */
-    private CeaHttpApplicationType getDescriptionFor(String applicationName) throws ApplicationDescriptionNotLoadedException  {
+    private CeaHttpApplicationDefinition getDescriptionFor(String applicationName) throws ApplicationDescriptionNotLoadedException  {
         if (log.isTraceEnabled()) {
             log.trace("getDescriptionFor(String applicationName = " + applicationName + ") - start");
         }
 
             try {
                //have to add the ivo:// part as the applications are stored internally with just the name
-               final Document doc = service.getResourceByIdentifier("ivo://"+applicationName);
+               final Document doc = service.getResourceByIdentifier(applicationName);
                assert doc != null;
 
-               final CeaHttpApplicationType webApplication = unmarshallHttpApplication(doc);
+               final CeaHttpApplicationDefinition webApplication = unmarshallHttpApplication(doc);
                if (log.isTraceEnabled()) {
                    log.trace("getDescriptionFor(String) - end - return value = " + webApplication);
                }
@@ -215,13 +214,13 @@ public class RegistryQuerierImpl extends AbstractRegistryQuerier {
             while (it.hasNext()) {
                 String name = (String) it.next();
                     try {
-                     final CeaHttpApplicationType description = getDescriptionFor(name);
-                       ApplicationKindType type=description.getApplicationDefinition().getApplicationKind();
-                       if (ApplicationKindType.HTTP.equals(type)) {
+                     final CeaHttpApplicationDefinition description = getDescriptionFor(name);
+                       ApplicationKind type=description.getApplicationDefinition().getApplicationType().get(0);
+                       if (ApplicationKind.HTTP.equals(type)) {
                            apps.add(description);
                            log.debug("Adding "+description.getShortName()+" to list");
                        } else {
-                           log.warn("Description "+description.getShortName()+" is listed in the registry as a CeaHttpApplication, but is actually a "+type+" app.  Must be an http app.");
+                           log.warn("Description "+description.getShortName()+" is listed in the registry as a CeaHttpApplicationDefinition, but is actually a "+type+" app.  Must be an http app.");
                            log.warn("=>not adding to list");
                        }
                   } catch (ApplicationDescriptionNotLoadedException e1) {

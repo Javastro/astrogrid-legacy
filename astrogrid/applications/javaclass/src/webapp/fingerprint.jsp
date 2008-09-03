@@ -1,8 +1,8 @@
 <%@ page import="java.io.*,
                                  java.net.*,
                  java.util.*,
-                                 org.astrogrid.config.*,
-                                 org.astrogrid.applications.component.CEAComponentManagerFactory"
+                                 org.astrogrid.config.*
+                                 "
     session="false" %>
 <html>
 <head>

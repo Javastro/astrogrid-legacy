@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibraryFactory.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: DefaultProtocolLibraryFactory.java,v 1.5 2008/09/03 14:18:57 pah Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,11 +25,8 @@ public class DefaultProtocolLibraryFactory {
     }
     
     public DefaultProtocolLibrary createLibrary() {
-        DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
-        lib.addProtocol(new FileProtocol());
-        lib.addProtocol(new FtpProtocol());
-        lib.addProtocol(new HttpProtocol());
-        lib.addProtocol(new IvornProtocol());
+        DefaultProtocolLibrary lib = new DefaultProtocolLibrary(new Protocol[]{
+        new FileProtocol(),new FtpProtocol(),new HttpProtocol(),new IvornProtocol()});
         return lib;
     }
 
@@ -38,6 +35,14 @@ public class DefaultProtocolLibraryFactory {
 
 /* 
 $Log: DefaultProtocolLibraryFactory.java,v $
+Revision 1.5  2008/09/03 14:18:57  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.4.156.1  2008/04/04 15:46:08  pah
+Have got bulk of code working with spring - still need to remove all picocontainer refs
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.4  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

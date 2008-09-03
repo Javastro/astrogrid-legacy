@@ -2,7 +2,7 @@
                                  java.net.*,
                  java.util.*,
                                  org.astrogrid.config.*,
-                                 org.astrogrid.applications.component.CEAComponentManagerFactory"
+                                 org.astrogrid.applications.component.CEAComponentContainer"
     session="false" %>
 <html>
 <head>
@@ -179,7 +179,7 @@
 
 <h2>CEA Components</h2>
 
-<%= CEAComponentManagerFactory.getInstance().informationHTML() %>
+<%= CEAComponentContainer.getInstance().informationHTML() %>
 
 <h2>Configuration</h2>
 

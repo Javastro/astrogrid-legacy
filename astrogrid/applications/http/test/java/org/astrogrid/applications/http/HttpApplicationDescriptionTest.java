@@ -12,21 +12,32 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.xml.bind.MarshalException;
+import javax.xml.bind.ValidationException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
+import org.astrogrid.applications.description.base.ParameterDefinitionList;
+import org.astrogrid.applications.description.base.ParameterTypes;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.Protocol;
 
 /**
  * JUnit Tests
@@ -34,7 +45,7 @@ import org.exolab.castor.xml.ValidationException;
  * @author jdt
  */
 public class HttpApplicationDescriptionTest extends TestCase {
-    private static final String COMMUNITY_NAME = "org.astrogrid.test"; //this is the real name that the test environment has
+    private static final String AUTHORITY = "ivo://org.astrogrid.test"; //this is the real name that the test environment has
     /**
      * Logger for this class
      */
@@ -42,20 +53,20 @@ public class HttpApplicationDescriptionTest extends TestCase {
 
     private HttpApplicationDescription adderApplicationDescription;
 
-    private CeaHttpApplicationType theOneThatIWant;
+    private CeaHttpApplicationDefinition theOneThatIWant;
 
     /**
      * Check that an application's metadata is correct
      */
     public final void testCreateMetadata() {
-        String name = adderApplicationDescription.getName();
-        assertEquals(COMMUNITY_NAME+"/Adder",name);
+        String name = adderApplicationDescription.getId();
+        assertEquals(AUTHORITY+"/Adder",name);
         
         ApplicationInterface[] interfaces = adderApplicationDescription.getInterfaces();
         assertEquals("Should be two interfaces", 2, interfaces.length);
         
         ApplicationInterface if1 = interfaces[0];
-        assertEquals("TheRightInterface",if1.getName());
+        assertEquals("TheRightInterface",if1.getId());
         assertSame(if1.getApplicationDescription(), adderApplicationDescription);
         String[] inputNames = if1.getArrayofInputs();
         assertEquals(2,inputNames.length);
@@ -71,7 +82,7 @@ public class HttpApplicationDescriptionTest extends TestCase {
         assertEquals("sum",outputNames[0]);
         
         ApplicationInterface if2 = interfaces[1];
-        assertEquals("TheWrongInterface",if2.getName());
+        assertEquals("TheWrongInterface",if2.getId());
         assertSame(if2.getApplicationDescription(), adderApplicationDescription);
         String[] inputNames2 = if2.getArrayofInputs();
         assertEquals(3,inputNames2.length);
@@ -88,19 +99,20 @@ public class HttpApplicationDescriptionTest extends TestCase {
         assertEquals("sum",outputNames2[0]);       
         
         
-        ParameterDescription[] parameterDescriptions = adderApplicationDescription.getParameterDescriptions();
-        assertEquals(4, parameterDescriptions.length);
+        ParameterDescription[] ParameterDefinitions = adderApplicationDescription.getParameterDescriptions();
+        assertEquals(4, ParameterDefinitions.length);
         
-        ParameterDescription pd1 = parameterDescriptions[3];
+ //test that the ordering is as expected
+        ParameterDescription pd1 = ParameterDefinitions[0];
 
-        assertEquals("x",pd1.getName());
+        assertEquals("x",pd1.getId());
         assertEquals(ParameterTypes.TEXT, pd1.getType());
 
         
     }
 
 
-    public final void testGetUrl() throws MarshalException, ValidationException, IOException {
+    public final void testGetUrl() throws IOException {
         final String url = adderApplicationDescription.getUrl();
         assertEquals("Incorrect URL", "http://127.0.0.1:8078/add", url);
     }
@@ -111,22 +123,28 @@ public class HttpApplicationDescriptionTest extends TestCase {
      * @throws MarshalException oh dear
      * @throws ValidationException oh dear
      * @throws IOException oh dear
+     * @throws ValidationException 
+     * @throws MarshalException 
+     * @throws MetadataException 
+     * @throws FactoryConfigurationError 
+     * @throws XMLStreamException 
      */
-    public void setUp() throws MarshalException, ValidationException, IOException {
+    public void setUp() throws IOException, MarshalException, ValidationException, MetadataException, XMLStreamException, FactoryConfigurationError {
         TestRegistryQuerier querier = new TestRegistryQuerier(null);
         Collection allApps = querier.getHttpApplications();
         Iterator it = allApps.iterator();
         //note that all the 
-        theOneThatIWant = querier.getHttpApplication("org.astrogrid.test/Adder");
+        theOneThatIWant = querier.getHttpApplication("ivo://org.astrogrid.test/Adder");
 
         
         assertNotNull("Didn't find the testapp I was looking for", theOneThatIWant);
         IdGen id = new InMemoryIdGen();
-        DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
-        TestAuthority resol = new TestAuthority();
+        DefaultProtocolLibrary lib = new DefaultProtocolLibrary(new Protocol[]{new FileProtocol()});
+        AppAuthorityIDResolver resol = new TestAuthorityResolver();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(id, lib, resol);
-        adderApplicationDescription = new HttpApplicationDescription(theOneThatIWant,
-                env);
+        Configuration thing = new MockNonSpringConfiguredConfig();
+	adderApplicationDescription = new HttpApplicationDescription(theOneThatIWant,
+                env, thing );
     }
 
     public final void testGetApplication() {

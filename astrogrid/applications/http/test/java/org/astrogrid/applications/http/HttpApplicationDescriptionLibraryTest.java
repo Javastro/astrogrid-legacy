@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibraryTest.java,v 1.4 2005/07/05 08:26:56 clq2 Exp $
+/*$Id: HttpApplicationDescriptionLibraryTest.java,v 1.5 2008/09/03 14:18:33 pah Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -10,16 +10,25 @@ package org.astrogrid.applications.http;
 
 import java.io.IOException;
 
+import javax.xml.bind.MarshalException;
+import javax.xml.bind.ValidationException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
 import junit.framework.TestCase;
 
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
-
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
+import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.Protocol;
 
 /**
  * JUnit Test
@@ -32,13 +41,14 @@ public class HttpApplicationDescriptionLibraryTest extends TestCase {
     public final void testHttpApplicationDescriptionLibrary() {
     }
 
-    public void setUp() throws MarshalException, ValidationException, IOException {
+    public void setUp() throws IOException, MarshalException, ValidationException, MetadataException, XMLStreamException, FactoryConfigurationError {
       
       IdGen id = new InMemoryIdGen();
-       DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
-       TestAuthority resol = new TestAuthority();
+       DefaultProtocolLibrary lib = new DefaultProtocolLibrary(new Protocol[]{new FileProtocol()});
+       AppAuthorityIDResolver resol = new TestAuthorityResolver();
       ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(id, lib, resol);
-      httpApplicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(new TestRegistryQuerier(null),  env);  
+      Configuration conf = new MockNonSpringConfiguredConfig();
+    httpApplicationDescriptionLibrary = new HttpApplicationDescriptionLibrary(new TestRegistryQuerier(null),  env, conf );  
     }
     /*
      * Class under test for String getDescription()

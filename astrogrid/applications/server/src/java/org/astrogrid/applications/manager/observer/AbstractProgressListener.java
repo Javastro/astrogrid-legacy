@@ -1,4 +1,4 @@
-/*$Id: AbstractProgressListener.java,v 1.2 2004/07/26 12:07:38 nw Exp $
+/*$Id: AbstractProgressListener.java,v 1.3 2008/09/03 14:18:58 pah Exp $
  * Created on 19-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.applications.manager.observer;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.description.execution.MessageType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,6 +68,19 @@ public abstract class AbstractProgressListener implements Observer {
 
 /* 
 $Log: AbstractProgressListener.java,v $
+Revision 1.3  2008/09/03 14:18:58  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.266.1  2008/04/17 16:08:33  pah
+removed all castor marshalling - even in the web service layer - unit tests passing
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+ASSIGNED - bug 2739: remove dependence on castor/workflow objects
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2739
+
 Revision 1.2  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

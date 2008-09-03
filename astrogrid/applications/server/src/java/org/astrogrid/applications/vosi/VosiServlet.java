@@ -8,7 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.applications.component.CEAComponentManagerFactory;
+
+import org.astrogrid.applications.component.CEAComponentContainer;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.config.SimpleConfig;
 
@@ -41,7 +42,7 @@ public class VosiServlet extends HttpServlet {
     this.setAttributes(request, response);
     
     // Set the list of application names as a request atribute.
-    MetadataService ms = CEAComponentManagerFactory.getInstance().getMetadataService();
+    MetadataService ms = CEAComponentContainer.getInstance().getMetadataService();
     String[] apps = ms.getApplicationIvorns();
     request.setAttribute("cea.apps", apps);
     
@@ -75,6 +76,7 @@ public class VosiServlet extends HttpServlet {
     // infer the URI from the request.
     String base;
     try {
+	//FIXME should get this is J2EE friendly way
       base = SimpleConfig.getSingleton().getString("cea.webapp.url");
       URI uri = new URI(base);
     }

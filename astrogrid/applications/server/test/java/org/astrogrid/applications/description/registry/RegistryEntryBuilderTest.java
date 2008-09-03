@@ -1,4 +1,4 @@
-/*$Id: RegistryEntryBuilderTest.java,v 1.5 2007/01/16 09:53:49 gtr Exp $
+/*$Id: RegistryEntryBuilderTest.java,v 1.6 2008/09/03 14:19:00 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.applications.description.registry;
 
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.TestApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 
 /**
  * Test to see if the registry entry is valid in various ways.
@@ -30,15 +31,34 @@ public class RegistryEntryBuilderTest extends RegistryEntryBuilderTestBase {
     }
     /**
     * @return
+     * @throws ParameterDescriptionNotFoundException 
     */
-   protected ApplicationDescriptionLibrary createDesciptionLibrary() {
-      return new TestApplicationDescriptionLibrary("astrogrid.org/testapp");
+   protected ApplicationDescriptionLibrary createDesciptionLibrary() throws ParameterDescriptionNotFoundException {
+      return new TestApplicationDescriptionLibrary("ivo://astrogrid.org/testapp", "testapp");
    }    
 }
 
 
 /* 
 $Log: RegistryEntryBuilderTest.java,v $
+Revision 1.6  2008/09/03 14:19:00  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.5.24.4  2008/05/17 16:45:01  pah
+tidy tests to make sure more are passing
+
+Revision 1.5.24.3  2008/04/01 13:50:07  pah
+http service also passes unit tests with new jaxb metadata config
+
+Revision 1.5.24.2  2008/03/26 17:15:39  pah
+Unit tests pass
+
+Revision 1.5.24.1  2008/03/19 23:10:55  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.5  2007/01/16 09:53:49  gtr
 Many spurious import statements were removed.
 

@@ -90,6 +90,7 @@ public class CeaSecurityGuard extends SecurityGuard {
    */
   private void chooseAccessPolicy() {
     String accessPolicyClass = 
+	//FIXME - should use spring style configuration
         SimpleConfig.getSingleton().getString("cea.access.policy");
     try {
       this.accessPolicy = 

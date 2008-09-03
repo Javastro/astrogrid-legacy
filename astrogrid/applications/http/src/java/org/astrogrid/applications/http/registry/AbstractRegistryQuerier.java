@@ -1,4 +1,4 @@
-/* $Id: AbstractRegistryQuerier.java,v 1.5 2005/07/05 08:27:01 clq2 Exp $
+/* $Id: AbstractRegistryQuerier.java,v 1.6 2008/09/03 14:19:03 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -16,21 +16,25 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+import net.ivoa.resource.registry.iface.VOResources;
+
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
+import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.beans.v10.cea.CeaHttpApplicationType;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.util.DomHelper;
 
@@ -60,9 +64,14 @@ public abstract class AbstractRegistryQuerier implements RegistryQuerier {
       {
       try {
          service = locator.getClient();
+         jc = CEAJAXBContextFactory.newInstance();
+
       } catch (RegistryException e) {
-         log.error("could not create registry querier", e);
-      }
+         log.fatal("could not create registry querier", e);
+      } catch (JAXBException e) {
+	// TODO want to propagate this up?
+	log.fatal("could not create the jaxb context factory", e);
+    }
       }
       else
       {
@@ -70,65 +79,23 @@ public abstract class AbstractRegistryQuerier implements RegistryQuerier {
       }
    }
 
-   /**
-     * Unmarshall a node of a Document into a class
-     * 
-     * @param doc the document
-     * @param clazz the class you hope to get back
-     * @param elementName the element name in the document you hope matches the
-     *            class
-     * @return object that will need casting...
-     * @throws MarshalException
-     * @throws ValidationException
-     * @throws RegistryCallException
-     */
-   protected Object unmarshal(final Document doc, final Class clazz, final String elementName) throws MarshalException, ValidationException, RegistryException {
-        if (log.isTraceEnabled()) {
-            log.trace("unmarshal(Document doc = " + doc + ", Class clazz = " + clazz + ", String elementName = "
-                    + elementName + ") - start");
-        }
-   
-        if (log.isDebugEnabled()) {
-        	log.debug("Unmarshalling document:");
-        	log.debug(DomHelper.DocumentToString(doc));
-        	log.debug("=======================");
-        }
-        //      navigate down to the bit we're interested in.
-        final NodeList nls = doc.getElementsByTagNameNS("*", elementName);
-        if (nls.getLength() == 0) {
-            throw new RegistryException("Registry entry has no " + elementName + " Element");
-        }
-        final Element ns = (Element) nls.item(0);
-        ns.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); //bug-fix work around.
-        Object returnObject = Unmarshaller.unmarshal(clazz, ns);
-        if (log.isTraceEnabled()) {
-            log.trace("unmarshal(Document, Class, String) - end - return value = " + returnObject);
-        }
-        return returnObject;
-    }
-
    protected static final Log log = LogFactory.getLog(RegistryQuerierImpl.class);
 
    /**
-     * unmarshall the CeaHttpApplication from DOM registry representation. Include whatever fixes are needed.
+     * unmarshall the CeaHttpApplicationDefinition from DOM registry representation. Include whatever fixes are needed.
      * Firstly only the first resource found is returned
      * @param doc
      * @return
-     * @throws MarshalException
-     * @throws ValidationException
     * @throws RegistryException
+ * @throws JAXBException 
      */
-   protected CeaHttpApplicationType unmarshallHttpApplication(Document doc) throws MarshalException, ValidationException, RegistryException {
-       final NodeList nls = doc.getElementsByTagNameNS("*","Resource"); 
-//       XMLUtils.DocumentToStream(doc, System.err);
-       if (nls.getLength() == 0) {
-          throw new RegistryException("Registry entry has no Resource Element");
-      }
-      final Element ns = (Element) nls.item(0);
-      ns.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); //TODO castor bug-fix work around.
-      ns.removeAttribute("updated");//TODO castor bug fix workaround - cannot handle dates properly
-      final CeaHttpApplicationType webApplication = (CeaHttpApplicationType) Unmarshaller.unmarshal(
-             CeaHttpApplicationType.class, ns);
+   protected CeaHttpApplicationDefinition unmarshallHttpApplication(Document doc) throws RegistryException, JAXBException {
+    
+     Unmarshaller um = jc.createUnmarshaller();
+        VOResources u = (VOResources) um.unmarshal(
+                doc);
+        //TODO need more testing
+      final CeaHttpApplicationDefinition webApplication = (CeaHttpApplicationDefinition) u.getResource();
        
        return webApplication;
      
@@ -136,5 +103,6 @@ public abstract class AbstractRegistryQuerier implements RegistryQuerier {
     }
 
    protected RegistryService service;
+private JAXBContext jc;
 
 }

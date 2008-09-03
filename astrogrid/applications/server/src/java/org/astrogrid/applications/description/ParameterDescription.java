@@ -1,4 +1,4 @@
-/*$Id: ParameterDescription.java,v 1.5 2007/03/08 14:35:25 clq2 Exp $
+/*$Id: ParameterDescription.java,v 1.6 2008/09/03 14:18:43 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,43 +9,59 @@
  *
 **/
 package org.astrogrid.applications.description;
- 
-import org.astrogrid.applications.beans.v1.parameters.OptionList;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+
+import java.util.List;
+
+import org.astrogrid.applications.description.base.ParameterTypes;
 
 /** Description of a parameter to an application
  * @see org.astrogrid.applications.description.ApplicationDescription
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
- * @TODO - would be sensible for the schema to match these names.....
- *
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 11 Mar 2008
  */
 public interface ParameterDescription {
     /** name of the parameter */
-    public abstract String getName();
+    public abstract String getId();
     /** name to use in UI */
-    public abstract String getDisplayName();
+    public abstract String getName();
    /** description to use in UI */
-    public abstract String getDisplayDescription();
+    public abstract String getDescription();
      /** UCD of parameter */
     public abstract String getUcd();
     /** units of parameter */
-    public abstract String getUnits();
+    public abstract String getUnit();
     /** type of parameter */
     public abstract  ParameterTypes getType();
-    /** subtype / contraint on possible value of parameter */
-    public abstract String getSubType();
-    /** data encodings accepted for this parameter */
-    public abstract String getAcceptEncodings();
+    /** mime type of the parameter*/
+    public String getMimeType();
+    
+//    /** subtype / contraint on possible value of parameter */
+//    public abstract String getSubType();
+//    /** data encodings accepted for this parameter */
+//    public abstract String getAcceptEncodings();
     /** default value for this parameter */
-    public abstract String getDefaultValue();
+    public abstract List<String> getDefaultValue();
     /** Allowed values for this parameter */
-    public abstract OptionList getOptionList();
+    public abstract org.astrogrid.applications.description.base.OptionList getOptionList();
     
 
 
 }
 /* 
 $Log: ParameterDescription.java,v $
+Revision 1.6  2008/09/03 14:18:43  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.5.12.2  2008/04/23 14:14:30  pah
+ASIGNED - bug 2749: make sure all CECs use the  ThreadPoolExecutionController
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2749
+
+Revision 1.5.12.1  2008/03/19 23:10:53  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.5  2007/03/08 14:35:25  clq2
 gtr_apps_2056
 

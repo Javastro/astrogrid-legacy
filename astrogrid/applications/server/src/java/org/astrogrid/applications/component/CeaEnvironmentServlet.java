@@ -84,11 +84,6 @@ public class CeaEnvironmentServlet extends EnvironmentServlet {
           // configuration editor. 
           entries[i].setReplacementValue(path);
           
-          // Add the value to the AstroGrid generic configuration,
-          // thus overriding the null value obtained from JNDI
-          // (the AG configuration is read from JNDI). This makes the
-          // value operational in the rest of the web-application.
-          SimpleConfig.getSingleton().setProperty("cea.base.dir", path);
         }
       }
     }

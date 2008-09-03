@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchDescription.java,v 1.2 2007/02/19 16:20:22 gtr Exp $
+/*$Id: SiapImageFetchDescription.java,v 1.3 2008/09/03 14:18:33 pah Exp $
  * Created on 15-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,29 +10,31 @@
 **/
 package org.astrogrid.applications.apps;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.DefaultIDs;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
-import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.base.AbstractApplicationDescription;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.base.BaseApplicationInterface;
-import org.astrogrid.applications.description.base.BaseParameterDescription;
-import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
-import org.astrogrid.community.User;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import uk.ac.starlink.util.DataSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.Test;
+import net.ivoa.resource.cea.CeaApplication;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.description.base.InterfaceDefinition;
+import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
+import org.astrogrid.applications.description.base.ParameterTypes;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.community.User;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.springframework.stereotype.Service;
+
+import uk.ac.starlink.util.DataSource;
 
 /** @todo implementation is a bit tatty - could do with refactoring a bunch of these applications,
  * improving the internal design, and extracting generally useful helper classes.
@@ -40,7 +42,8 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Nov-2004
  *
  */
-public class SiapImageFetchDescription extends AbstractApplicationDescription
+@Service
+public class SiapImageFetchDescription extends InternallyConfiguredApplicationDescription
         implements ComponentDescriptor {
     static final String URLS = "urls";
     static final String IVORNS="ivorns";
@@ -51,62 +54,28 @@ public class SiapImageFetchDescription extends AbstractApplicationDescription
      */
     private static final Log logger = LogFactory
             .getLog(SiapImageFetchDescription.class);
+    private static final CeaApplication app = new CeaApplication();
+    
+    static {
+	app.setIdentifier("ivo://org.astrogrid.util/siap-image-fetch");
+	addParameter(app, TABLE, ParameterTypes.TABLE, "Image List", "VOTable containing URIs of images");
+	addParameter(app, BASEIVORN, ParameterTypes.ANY_URI, "Save To", "Location of a directory in myspace in which to save fetched images");
+	addParameter(app, URLS, ParameterTypes.TEXT, "URLs of files to fetch", "List of  the urls  of the fetched files");
+	addParameter(app, IVORNS, ParameterTypes.TEXT, "Ivorns of fetched Files", "List of  the ivorns of the fetched files");
+	InterfaceDefinition intf = addInterface(app, "default");
+	intf.addInput(TABLE);
+	intf.addInput(BASEIVORN);
+	intf.addInput(URLS);
+	intf.addOutput(IVORNS);
+    }
 
     /** Construct a new SiapImageFetchDescription
-     * @param env
+     * @param conf 
      */
-    public SiapImageFetchDescription(ApplicationDescriptionEnvironment env) {
-        super(env);
-        this.setMetaData();
+    public SiapImageFetchDescription( Configuration conf) {
+        super(app , conf);
     }
     
-    /** set up metadata for this instance */
-    private final void setMetaData() {
-        StringBuffer thename = new StringBuffer(env.getAuthIDResolver().getAuthorityID());
-        thename.append("/siap-image-fetch");
-        setName(thename.toString());
-        BaseParameterDescription src = new BaseParameterDescription();
-        src.setName(TABLE);
-        src.setDisplayName("Image List");
-        src.setDisplayDescription("VOTable containing URIs of images");
-        src.setType(ParameterTypes.VOTABLE);
-        this.addParameterDescription(src);
-        
-        BaseParameterDescription baseDir = new BaseParameterDescription();
-        baseDir.setName(BASEIVORN);
-        baseDir.setDisplayName("Save To");
-        baseDir.setDisplayDescription("Location of a directory in myspace in which to save fetched images");
-        baseDir.setType(ParameterTypes.ANYURI);
-        baseDir.setSubType("ivo://..");
-        this.addParameterDescription(baseDir);
-        
-        BaseParameterDescription urls = new BaseParameterDescription();
-        urls.setName(URLS);
-        urls.setDisplayName("URLs of files to fetch");
-        urls.setDisplayDescription("List of  the urls  of the fetched files");
-        urls.setType(ParameterTypes.TEXT);
-        this.addParameterDescription(urls);
-        
-        BaseParameterDescription ivorns = new BaseParameterDescription();
-        ivorns.setName(IVORNS);
-        ivorns.setDisplayName("Ivorns of fetched Files");
-        ivorns.setDisplayDescription("List of  the ivorns of the fetched files");
-        ivorns.setType(ParameterTypes.TEXT);
-        this.addParameterDescription(ivorns);
-        
-        BaseApplicationInterface intf = new BaseApplicationInterface("basic",this);
-        try {
-            intf.addInputParameter(src.getName());
-            intf.addInputParameter(baseDir.getName());
-            intf.addOutputParameter(urls.getName());
-            intf.addOutputParameter(ivorns.getName());
-        } catch (ParameterDescriptionNotFoundException e) {
-            logger.fatal("Programming error");
-            throw new RuntimeException("Programming Error",e);
-        }
-        this.addInterface(intf);
-    }
-
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
@@ -126,10 +95,9 @@ public class SiapImageFetchDescription extends AbstractApplicationDescription
      */
     public Application initializeApplication(String callerAssignedID,
             User user, Tool tool) throws Exception {
-        String newID = env.getIdGen().getNewID();
-        final DefaultIDs ids = new DefaultIDs(callerAssignedID,newID,user);
         ApplicationInterface iface = this.getInterface(tool.getInterface());
-        return new SiapImageFetchApplication(ids,tool,iface,env.getProtocolLib());
+        ApplicationEnvironment env = new ApplicationEnvironment(callerAssignedID, user, internalComponentFactory.getIdGenerator(), config);
+	return new SiapImageFetchApplication(tool,iface,env , internalComponentFactory.getProtocolLibrary());
     }
     
     public static class ParameterAdapterDataSource extends DataSource {
@@ -153,6 +121,28 @@ public class SiapImageFetchDescription extends AbstractApplicationDescription
 
 /* 
 $Log: SiapImageFetchDescription.java,v $
+Revision 1.3  2008/09/03 14:18:33  pah
+result of merge of pah_cea_1611 branch
+
+Revision 1.2.10.5  2008/09/03 12:01:56  pah
+should perhaps be moved out of javaclass
+
+Revision 1.2.10.4  2008/08/02 13:33:41  pah
+safety checkin - on vacation
+
+Revision 1.2.10.3  2008/05/13 15:14:07  pah
+ASSIGNED - bug 2708: Use Spring as the container
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2708
+
+Revision 1.2.10.2  2008/03/27 13:37:24  pah
+now producing correct registry documents
+
+Revision 1.2.10.1  2008/03/19 23:28:58  pah
+First stage of refactoring done - code compiles again - not all unit tests passed
+
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
 Revision 1.2  2007/02/19 16:20:22  gtr
 Branch apps-gtr-1061 is merged.
 

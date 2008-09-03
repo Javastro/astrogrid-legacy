@@ -8,492 +8,262 @@
  */
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.ApplicationBase;
-import org.astrogrid.applications.beans.v1.ApplicationList;
-import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.DescriptionUtils;
-import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
-import org.astrogrid.applications.description.registry.IvornUtil;
-import org.astrogrid.common.bean.v1.Namespaces;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.contracts.SchemaMap;
-import org.astrogrid.registry.beans.v10.cea.ApplicationDefinition;
-import org.astrogrid.registry.beans.v10.cea.CeaApplicationType;
-import org.astrogrid.registry.beans.v10.cea.CeaServiceType;
-import org.astrogrid.registry.beans.v10.cea.ManagedApplications;
-import org.astrogrid.registry.beans.v10.cea.Parameters;
-import org.astrogrid.registry.beans.v10.resource.AccessURL;
-import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
-import org.astrogrid.test.AstrogridAssert;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.net.URL;
+import java.util.List;
+
+import javax.xml.transform.TransformerConfigurationException;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import net.ivoa.resource.AccessURL;
+import net.ivoa.resource.Interface;
+import net.ivoa.resource.Resource;
+import net.ivoa.resource.Service;
+import net.ivoa.resource.WebService;
+import net.ivoa.resource.cea.CeaApplication;
+import net.ivoa.resource.cea.CeaCapability;
+import net.ivoa.resource.cea.ManagedApplications;
+import net.ivoa.resource.registry.iface.VOResources;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.MetadataAdapter;
+import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.ServiceDefinitionFactory;
+import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.contracts.Namespaces;
+import org.astrogrid.contracts.SchemaMap;
+import org.astrogrid.contracts.StandardIds;
+import org.astrogrid.test.AstrogridAssert;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
 
 /**
- * Standard implementation of the
+ * Standard implementation of the {@link MetadataService}
  * {@link org.astrogrid.applications.manager.MetadataService}component.
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 21-May-2004
  * @author pharriso@eso.org 02-Jun-2005
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 18 Mar 2008
  * @TODO - might want some more thought wrt overriding in other cards.
-  */
-public class DefaultMetadataService implements MetadataService,
-      ComponentDescriptor {
-   private static final Log logger = LogFactory
-         .getLog(DefaultMetadataService.class);
-
-   private static final String FORMATTER_XSL = "registryFormatter.xsl";
-
-   /** configuration settings */
-   private Configuration configuration;
-
-   /** library to generate description for */
-   private final ApplicationDescriptionLibrary lib;
+ * @TODO - perhaps this is no longer worthy of separate "service" - now the CECs
+ *       are actually configured directly in terms of a resource entries.
+ */
+public class DefaultMetadataService extends AbstractMetadataService implements MetadataService,
+	ComponentDescriptor {
+    private static final Log logger = LogFactory
+	    .getLog(DefaultMetadataService.class);
 
 
-   /**
-    * Construct a new DefaultMetadataService
-    * 
-    * @param lib
-    *           The library of descriptions for which to build a registry entry.
-    * @param urls
-    *           URLs needed for configuration.
-    */
-   public DefaultMetadataService(ApplicationDescriptionLibrary lib,
-                                 Configuration configuration) {
-     this.lib = lib;
-     this.configuration = configuration;
-   }
-   
-   /**
-    * Reveals the IVORNs for the supported applications.
-    */
-   public String[] getApplicationIvorns() {
-     String[] names = this.lib.getApplicationNames();
-     for (int i = 0; i < names.length; i++) {
-       if (!names[i].startsWith("ivo://")) {
-         names[i] = "ivo://" + names[i];
-       }
-     }
-     return names;
-   }
+    /** configuration settings */
+    private Configuration configuration;
 
-   /**
-    * Create the registry entry....
-    * 
-    * @return a VOResources.
-    */
-   public VOResources makeEntry() 
-       throws ApplicationDescriptionNotFoundException,
-              MarshalException,
-              ValidationException, 
-              ParserConfigurationException,
-              FactoryConfigurationError, 
-              TransformerException, 
-              IOException {
-     
-      // Make a new template, parsing the input file. This picks up any
-      // recent changes to the template file.
-      VOResources template = this.makeTemplate();
-      
-      VOResources vodesc = new VOResources();
-      CeaApplicationType applicationTemplate = (CeaApplicationType) template
-            .getResource(0);
-      CeaServiceType serviceTemplate = (CeaServiceType) template.getResource(1);
+    /** library to generate description for */
+    private final ApplicationDescriptionLibrary lib;
 
-      CeaServiceType service = cloneTemplate(serviceTemplate);
-      ManagedApplications managedApplications = new ManagedApplications();
-      service.setManagedApplications(managedApplications);
-      ApplicationList applist = makeApplist(lib);
-      
-      //add each of the application definitions.
-      for (int i = 0; i < applist.getApplicationDefnCount(); i++) {
-        ApplicationBase theapp = applist.getApplicationDefn(i);
-        String applicationName = theapp.getName();
-        
-        // Applications without names break the container, so don't use them.
-        if (applicationName == null) continue;
-        
-        // Applications in the org.astrogrid.unregistered authority are
-        // for special tests and shouldn't go in the registry. Don't use them.
-        if (applicationName.startsWith("org.astrogrid.unregistered")) continue;
+    private ServiceDefinitionFactory serviceFactory;
 
-         
-         ApplicationDescription theAppDesc = 
-             lib.getDescription(applicationName);
+    /**
+     * Construct a new DefaultMetadataService
+     * 
+     * @param lib
+     *                The library of descriptions for which to build a registry
+     *                entry.
+     * @param urls
+     *                URLs needed for configuration.
+     *                @TODO should get rid of the exception if possible.
+     */
+    public DefaultMetadataService(ApplicationDescriptionLibrary lib,
+	    Configuration configuration, ServiceDefinitionFactory serviceFac) throws TransformerConfigurationException{
+	this.lib = lib;
+	this.configuration = configuration;
+	this.serviceFactory = serviceFac;
+    }
 
-         CeaApplicationType appentry = 
-             makeApplicationEntry(applicationTemplate, theapp);
+    /**
+     * Reveals the IVORNs for the supported applications.
+     */
+    public String[] getApplicationIvorns() {
+	String[] names = this.lib.getApplicationNames();
+	for (int i = 0; i < names.length; i++) {
+	    if (!names[i].startsWith("ivo://")) {
+		names[i] = "ivo://" + names[i];
+	    }
+	}
+	return names;
+    }
 
-         appentry.getContent()
-             .setDescription(theAppDesc.getAppDescription());
-         
-         appentry.getContent().setReferenceURL(theAppDesc.getReferenceURL());
-         appentry.setTitle(theAppDesc.getUIName());
-         //TODO getting short name from ui name - probably not appropriate
-         String shortname = theAppDesc.getUIName();
-         if (shortname.length() > 16) {
-           logger.warn("truncating "+shortname+"to 16 characters to fit in VO shortname");
-           shortname = shortname.substring(0, 15);
-         }
-         appentry.setShortName(shortname);
-         vodesc.addResource(appentry);
-         
-        //add this application to the list of managed applications.
-         managedApplications.addApplicationReference(appentry.getIdentifier());
+    /**
+     * This should potentially be overriden by subclasses.
+     * 
+     * @see org.astrogrid.applications.component.ProvidesVODescription#getDescription()
+     * @todo could cache the result.
+     */
+    protected Service getServer() throws Exception {
 
-      }
-      //add the service description
-      AccessURL accessurl = new AccessURL();
-      accessurl.setContent(this.configuration.getServiceEndpoint().toString());
-      service.get_interface(0).setAccessURL(accessurl);
-      vodesc.addResource(service);
-      return vodesc;
+	Service service = serviceFactory.getCECDescription();
 
-   }
+	CeaCapability ceaCap = new CeaCapability();
+	ManagedApplications managedApplications = ceaCap
+		.getManagedApplications();
+	managedApplications.getApplicationReference().clear();
 
-   /**
-    * Create and populate a new application entry.
-    * 
-    * @param template
-    *           The template on which the general application information in the
-    *           entry is based.
-    * @param app
-    *           Specific application information to be added to the entry.
-    * @return
-    * @throws MarshalException
-    * @throws ValidationException
-    */
-   private CeaApplicationType makeApplicationEntry(CeaApplicationType template,
-         ApplicationBase app) throws MarshalException, ValidationException {
-      
-      CeaApplicationType entry = cloneTemplate(template);
-      //FIXME the identifier needs to be rationalized...
-      entry.setIdentifier(makeIvorn(IvornUtil.extractAuthorityFragment(app
-            .getName()), IvornUtil.extractIDFragment(app.getName())));
-      //TODO need to get the long description in here too
-      ApplicationDefinition applicationDefinition = new ApplicationDefinition();
-      // set the interfaces - easy it is the same type...
-      applicationDefinition.setInterfaces(app.getInterfaces());
+	String ids[] = lib.getApplicationNames();
+	// add each of the application definitions.
+	for (int i = 0; i < ids.length; i++) {
+	    String applicationName = ids[i];
 
-      //parameters not quite so nice REFACTORME - perhaps the schema could be
-      // refactored....
-      Parameters regpar = new Parameters();
-      regpar.setParameterDefinition(app.getParameters().getParameter());
-      applicationDefinition.setParameters(regpar);
+	    // Applications without names break the container, so don't use
+	    // them.
+	    if (applicationName == null)
+		continue;
 
-      entry.setApplicationDefinition(applicationDefinition);
-      return entry;
-   }
+	    // Applications in the org.astrogrid.unregistered authority are
+	    // for special tests and shouldn't go in the registry. Don't use
+	    // them.
+	    if (applicationName.startsWith("ivo://org.astrogrid.unregistered"))
+		continue;
 
-   /**
-    * Create a clone of the given object. Does this by using the castor
-    * marshalling/unmarshalling on the object.
-    * 
-    * @param app
-    * @return
-    * @throws MarshalException
-    * @throws ValidationException
-    */
-   private CeaApplicationType cloneTemplate(CeaApplicationType app)
-         throws MarshalException, ValidationException {
-      StringWriter sw = new StringWriter();
-      CeaApplicationType newapp = null;
-      app.marshal(sw);
-      StringReader sr = new StringReader(sw.toString());
-      InputSource is = new InputSource(sr);
-      Unmarshaller um = new Unmarshaller(CeaApplicationType.class);
-      newapp = (CeaApplicationType) um.unmarshal(is);
+	    // add this application to the list of managed applications.
+	    managedApplications.getApplicationReference().add(applicationName);
 
-      return newapp;
+	}
 
-   }
+	ceaCap.setStandardID(StandardIds.CEA_1_0);
+	Interface intf = new WebService();
+	intf.setVersion("1.0");
+	AccessURL accessURL = new AccessURL();
+	accessURL.setValue(this.configuration.getServiceEndpoint().toString());
+	intf.getAccessURL().add(accessURL);
+	ceaCap.getInterface().add(intf);
+	// add the service description
+	service.getCapability().add(ceaCap);
+	return service;
 
-   /**
-    * Create a clone of the given object. Does this by using the castor
-    * marshalling/unmarshalling on the object.
-    * 
-    * @param serv
-    * @return
-    * @throws MarshalException
-    * @throws ValidationException
-    */
-   private CeaServiceType cloneTemplate(CeaServiceType serv)
-         throws MarshalException, ValidationException {
-      CeaServiceType newserv = null;
-      StringWriter sw = new StringWriter();
-      serv.marshal(sw);
-      //need to put in the castor hack to make the interface a web service type
-      String sb = sw
-            .toString()
-            .replaceAll(
-                  "xsi:type=\"WebService\"",
-                  "xsi:type=\"java:org.astrogrid.registry.beans.v10.resource.dataservice.WebService\"");
+    }
 
-      StringReader sr = new StringReader(sb);
-      InputSource is = new InputSource(sr);
-      Unmarshaller um = new Unmarshaller(CeaServiceType.class);
-      newserv = (CeaServiceType) um.unmarshal(is);
+    /**
+     * Gets a URL leading to the current registration-template. The location of
+     * the template is set during construction.
+     */
+    public URL getRegistrationTemplate() {
+	return this.configuration.getRegistryTemplate();
+    }
 
-      return newserv;
-   }
+    /**
+     * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
+     */
+    public String getName() {
+	return "Standard CEA Server Description";
+    }
 
-   /**
-    * Make an ApplicationList from a full configuration. This is a deep copy -
-    * new instances of the ApplicationBase objecst are created.
-    * 
-    * @param clecConfig
-    *           a configuration for a command line execution controller
-    * @return
-    * @TODO might be better to refactor the original schema so that there was a
-    *       base type for the common execution contoller configs...
-    */
-   private ApplicationList makeApplist(ApplicationDescriptionLibrary lib)
-         throws ApplicationDescriptionNotFoundException {
-      ApplicationList result = new ApplicationList();
-      String names[] = lib.getApplicationNames();
-      for (int i = 0; i < names.length; i++) {
-         ApplicationDescription descr = lib.getDescription(names[i]);
-         ApplicationBase base = DescriptionUtils
-               .applicationDescription2ApplicationBase(descr);
-         result.addApplicationDefn(base);
-      }
-      return result;
-   }
-   
-   /**
-    * Gets a URL leading to the current registration-template. The
-    * location of the template is set during construction.
-    */
-   public URL getRegistrationTemplate() {
-     return this.configuration.getRegistryTemplate();
-   }
-   
-   /**
-    * This should potentially be overriden by subclasses.
-    * @see org.astrogrid.applications.component.ProvidesVODescription#getDescription()
-    * @todo could cache the result.
-    */
-   public VOResources getVODescription() throws Exception {
-      return makeEntry();
-   }
+    /**
+     * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
+     */
+    public String getDescription() {
+	StringBuffer sb = new StringBuffer(
+		"Standard implementation of the service description component`n");
+	try {
+	    Document doc = this.getServerDescription();
+	    StringWriter sw = new StringWriter();
+	    XMLUtils.PrettyDocumentToWriter(doc, sw);
+	    sb.append("VODescription \n"
+		    + XMLUtils.xmlEncodeString(sw.toString()));
+	} catch (Exception e) {
+	    sb.append("Could not display description: " + e.getMessage());
+	}
 
-   /**
-    * loads template fron url, builds objects from it. Has to "hack" the
-    * template to change it from being valid to allow castor to actually read
-    * it.
-    * 
-    * @throws IOException
-    * @throws TransformerException
-    * @throws FactoryConfigurationError
-    * @throws ParserConfigurationException
-    */
-   private VOResources makeTemplate() 
-       throws MarshalException,
-              ValidationException, 
-              ParserConfigurationException,
-              FactoryConfigurationError, 
-              TransformerException, 
-              IOException {
-      logger.info("Registry template is read from " + 
-                  this.configuration.getRegistryTemplate());
-      String hackedtemplate
-          = transformTemplateForCastor(this.configuration.getRegistryTemplate().openStream(), 
-                                       this.getClass().getResourceAsStream("/CastorHacker.xsl"));
+	return sb.toString();
+    }
 
-      Unmarshaller um = new Unmarshaller(VOResources.class);
-      um.setIgnoreExtraAttributes(true);
-      um.setIgnoreExtraElements(true);
-      StringReader sr = new StringReader(hackedtemplate);
-      InputSource is = new InputSource(sr);
-      VOResources temp = (VOResources) um.unmarshal(is);
-      return temp;
-   }
+    /**
+     * @see org.astrogrid.component.descriptor.ComponentDescriptor#getInstallationTest()
+     */
+    public Test getInstallationTest() {
+	return new InstallationTest("testGetRegistryEntry");
+    }
 
-   private String makeIvorn(String auth, String id) {
-      StringBuffer sb = new StringBuffer("ivo://");
-      sb.append(auth);
-      sb.append("/");
-      sb.append(id);
-      return sb.toString();
-   }
+    public class InstallationTest extends TestCase {
 
-   /**
-    * takes an xml valid template and "hacks" to form that castor can read. This
-    * involves setting xsi:type=java:class for each derived class of Resource,
-    * and is achieved via an xsl translation in an external file.
-    * 
-    * @param in
-    * @param inxsl
-    * @return
-    * @throws ParserConfigurationException
-    * @throws FactoryConfigurationError
-    * @throws TransformerException
-    */
-   private String transformTemplateForCastor(InputStream in, InputStream inxsl)
-         throws ParserConfigurationException, FactoryConfigurationError,
-         TransformerException {
-      // Create transformer factory
-      TransformerFactory factory = TransformerFactory.newInstance();
+	public InstallationTest(String arg0) {
+	    super(arg0);
+	}
 
-      // Use the factory to create a template containing the xsl file
-      Templates template = factory.newTemplates(new StreamSource(inxsl));
+	public void testGetRegistryEntry() throws Exception {
+	    System.out.println(Namespaces.CEA);
+	    System.out.println(Namespaces.CEAIMPL);
+	    Document server = getServerDescription();
+	    assertNotNull(server);
+	    AstrogridAssert.assertSchemaValid(server, "Resource",
+		    SchemaMap.ALL);
+	}
 
-      // Use the template to create a transformer
-      Transformer xformer = template.newTransformer();
+    }
 
-      // Prepare the input file
-      Source source = new StreamSource(in);
+    public Document getApplicationDescription(String id)
+	    throws ApplicationDescriptionNotFoundException {
+/*
+ * get the application description - this can be either just a CEAApplication or a DataService with an application definition. - In the case
+ * that it is a DataService, then the "application definition" may be in-line, or may in fact be a separate application.
+ */
+	
+	MetadataAdapter adapter = lib.getDescription(id).getMetadataAdapter();
 
-      //
-      StringWriter sw = new StringWriter();
+	try {
+	    
+	    if(adapter.isService()){
+		//FIXME - deal with CEA service
+		return marshall(adapter.getResource());
+	    }
+	    else {
+		return marshall(adapter.getResource());
+	    }
+	    
+	} catch (Exception e) {
+	    throw new ApplicationDescriptionNotFoundException(
+		    "error creating the application description for " + id, e);
+	}
 
-      // Create a new document to hold the results
-      Result result = new StreamResult(sw);
+    }
 
-      // Apply the xsl file to the source file and create the DOM tree
-      xformer.transform(source, result);
-      return sw.toString();
-   }
+    public Document getServerDescription() throws MetadataException {
+	
+	try {
+	    return marshall(getServer());
+	} catch (Exception e) {
+	   throw new MetadataException("problem getting service description", e);
+	}
+    }
 
+    public Document returnRegistryEntry() throws MetadataException {
+	VOResources res = new VOResources();
+	List<Resource> reslist = res.getResource();
+	try {
+	    reslist.add(getServer());
+	} catch (Exception e) {
+	  throw new MetadataException("error getting server description",e);
+	}
+	
+	String[] applicationIvorns = getApplicationIvorns();
+	int j = 0;
+	for (int i = 0; i < applicationIvorns.length; i++) {
+	    if(!applicationIvorns[i].equals("ivo://org.astrogrid.unregistered/default")){
+	    reslist.add(lib.getDescription(applicationIvorns[i]).getMetadataAdapter().getResource());
+	    j++;
+	    }
+	}
+	res.setFrom(BigInteger.valueOf(1));
+	res.setNumberReturned(BigInteger.valueOf(j+1));
+	try {
+	    return marshall(res);
+	} catch (Exception e) {
+	    throw new MetadataException("error marshalling descriptions",e);
+	}
+    }
 
-   /**
-    * This is final because the intention is that all differences between implementations are expressed by overriding @link DefaultMetadataService#getVODescription()
-    * @see org.astrogrid.applications.manager.MetadataService#returnRegistryEntry()
-    */
-   public final Document returnRegistryEntry() throws CeaException {
-
-      InputStream formatterXSL = null;
-      Document finalDoc = null;
-
-      try {
-        
-         // Serialize the registration metadata into an XML document using
-         // Castor. Note that the metadata are actually accessed on the very
-         // last call of this block, via getVODescription(); everything else
-         // in the block is setting up Castor. Leave the serialized XML in 
-         // the StringWriter sw.
-         DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-               .newDocumentBuilder();
-         StringWriter sw = new StringWriter(1000);
-         Marshaller marshaller = new Marshaller(sw);
-         marshaller.setDebug(true);
-         marshaller.setMarshalExtendedType(true);
-         marshaller.setSuppressXSIType(false);
-         marshaller.setMarshalAsDocument(true);
-         //     TODO write a castor wiki page about this.... it is useful to stop
-         // castor putting namespace declarations all over the place, and
-         // essential to get the correct declarations inserted for some derived
-         // types, which castor does not do properly.
-         marshaller.setNamespaceMapping("cea", Namespaces.VOCEA);
-         marshaller.setNamespaceMapping("vr", Namespaces.VORESOURCE);
-         marshaller.setNamespaceMapping("ceapd", Namespaces.CEAPD);
-         marshaller.setNamespaceMapping("ceab", Namespaces.CEAB);
-         marshaller.setNamespaceMapping("vs", Namespaces.VODATASERVICE);
-         marshaller.marshal(this.getVODescription());
-
-         // Transform the contents of sw to make a cleaned-up registration.
-         // Extract the result as a DOM.
-         TransformerFactory fac = TransformerFactory.newInstance();
-         String xslpath = DefaultMetadataService.class.getPackage() + FORMATTER_XSL;
-         formatterXSL = DefaultMetadataService.class.getResourceAsStream(FORMATTER_XSL);
-         Source formatter = new StreamSource(formatterXSL);
-         Templates xsltTemplate = fac.newTemplates(formatter);
-         Transformer xformer = xsltTemplate.newTransformer();
-         StringReader sr = new StringReader(sw.toString());
-         Source source = new StreamSource(sr);
-         finalDoc = builder.newDocument();
-         Result result = new DOMResult(finalDoc);
-         xformer.transform(source, result);
-      } catch (Exception e) {
-         logger.error("could not marshal VODescription", e);
-         throw new CeaException("could not marshal VODescription", e);
-      }
-
-      return finalDoc;
-   }
-
-   /**
-    * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
-    */
-   public String getName() {
-      return "Standard CEA Server Description";
-   }
-
-   /**
-    * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
-    */
-   public String getDescription() {
-      StringBuffer sb = new StringBuffer("Standard implementation of the service description component`n");
-      try {
-         Document doc = this.returnRegistryEntry();
-         StringWriter sw = new StringWriter();
-         XMLUtils.PrettyDocumentToWriter(doc, sw);
-         sb.append("VODescription \n" + XMLUtils.xmlEncodeString(sw.toString()));
-      } catch (Exception e) {
-         sb.append( "Could not display description: " + e.getMessage());
-      }
-
-      return sb.toString();
-   }
-
-   /**
-    * @see org.astrogrid.component.descriptor.ComponentDescriptor#getInstallationTest()
-    */
-   public Test getInstallationTest() {
-      return new InstallationTest("testGetRegistryEntry");
-   }
-
-   public class InstallationTest extends TestCase {
-
-      public InstallationTest(String arg0) {
-         super(arg0);
-      }
-
-      public void testGetRegistryEntry() throws Exception {
-        System.out.println(Namespaces.VODATASERVICE);
-        System.out.println(Namespaces.CEAIMPL);
-         Document entry = returnRegistryEntry();
-         assertNotNull(entry);
-         AstrogridAssert.assertSchemaValid(entry, "VOResources", SchemaMap.ALL);
-      }
-
-   }
 }

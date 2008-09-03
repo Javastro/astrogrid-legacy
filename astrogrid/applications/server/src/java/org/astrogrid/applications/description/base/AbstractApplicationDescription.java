@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.5 2004/11/27 13:20:02 pah Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.6 2008/09/03 14:18:42 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,25 +13,29 @@
 
 package org.astrogrid.applications.description.base;
 
+import net.ivoa.resource.Resource;
+import net.ivoa.resource.cea.CeaApplication;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.component.InternalCEAComponents;
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.MetadataAdapter;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.community.User;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Abstract base implementaiton of {@link org.astrogrid.applications.description.ApplicationDescription}
+ * Abstract base implementation of {@link org.astrogrid.applications.description.ApplicationDescription}.
  * <p />
  * Implements all methods in the <tt>ApplicationDescription</tt> interface apart from {@link org.astrogrid.applications.description.ApplicationDescription#initializeApplication(String, User, Tool)},
  * which is left abstract
  * <p />
- * Implemetation is based on two maps - for interfaces and parameters. In addition to the methods of the <tt>ApplicationDescription</tt> interface, this class
+ * Implementation is an adapter for {@link CeaApplication} with extra methods for adding/retrieving interfaces and parameters. In addition to the methods of the <tt>ApplicationDescription</tt> interface, this class
  * provides methods for adding items to these maps ({@link #addInterface(ApplicationInterface)}, {@link #addParameterDescription(ParameterDescription)}), and
  * an implementation of {@link #toString()} that produces a formatted dump of the application description. 
  * @author Noel WInstanley
@@ -39,90 +43,101 @@ import java.util.Map;
  * @version $Name:  $
  * @since iteration4
  */
-public abstract class AbstractApplicationDescription implements ApplicationDescription {
-   private String name;
-   /** the interfaces supported by this application */
-   private final Map interfaces;
+public abstract class AbstractApplicationDescription implements ApplicationDescription{
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+	    .getLog(AbstractApplicationDescription.class);
 
-   /** the parameters defined by this applicaiton */
-   private final Map parameterMap;
-   /** an environment object of supporting components (name generation, etc).*/
-    protected final ApplicationDescriptionEnvironment env;
-   /** this is a human readable description of the application
-    */
-   private String appDescription = "not set";
-   /** a name for the application to be used in the UI.
-    */
-   private String uIName= "not set";
-   /** a url with more information about the application */
-   private String referenceURL =  "http://www.astrogrid.org/";
+   /** underlying description of application - this is in terms of the standard registry description*/
+   protected final ApplicationBase appBase;
+
+   /* the registry description of the application */
+   protected Resource resource;
+
+   protected final MetadataAdapter metadataAdapter ;
+
+private  InternalCEAComponents internalComponentFactory;
+
+ 
    
    /** 
-    *  Construct a new AbstractApplicationDescription
+    *  Construct a new AbstractApplicationDescription from an externally defined
     * @param env environment object (useful shared objects for application descriptions)
     */
-   public AbstractApplicationDescription(ApplicationDescriptionEnvironment env)
+   public AbstractApplicationDescription(MetadataAdapter ma)
    {
-      interfaces = new HashMap();
-      parameterMap = new HashMap();
-      this.env = env;
+      this.metadataAdapter = ma;
+      this.appBase = ma.getApplicationBase();
+      this.resource = ma.getResource();
+
+      assert appBase.isValid() : "ApplicationDescriptions should be passed  CeaApplications with valid BaseApplicationDescriptions";
+      //make sure that the back reference to the application definition is set 
+      for (InterfaceDefinition intf : appBase.interfaces.interfaceDefinition) {
+	      //make sure that the back reference to the application definition is set 
+	intf.setApplicationDescription(this); //IMPL would be better to do this at creation time...
+	
    }
-   /** set the name of the application description */
-   public void setName(String name) {
-       this.name = name;
+   }
+   
+       
+   
+ 
+ 
+
+
+
+protected InternalCEAComponents getInternalComponentFactory() {
+    //lazily initialize the internal component factory as construction time is too soon in many cases.
+    if(internalComponentFactory == null){
+	      internalComponentFactory = InternalCeaComponentFactory.getInstance();	
+    }
+    return internalComponentFactory;
+}
+
+public String getId() {
+      return resource.getIdentifier();
    }
 
-   public String getName() {
-      return name;
-   }
+   
+   public String getDescription() {
+       return resource.getContent().getDescription();
+ }
 
 
-   /**
-    * Add a new interface definition to the application.
-    * @param iface the interface to add. should at least have its name property set as this is used as the key under which the parameter is stored.
-    */
-   public void addInterface(ApplicationInterface iface) {
-      //TODO deal with error conditions.
-      interfaces.put(iface.getName(), iface);
-   }
+    public String getName() {
+     return resource.getShortName();//IMPL is it better to do getTitle?
+}
+
+
+public String getReferenceURL() {
+    return resource.getContent().getReferenceURL();
+}
+
+
    
 
    public ParameterDescription[] getParameterDescriptions()
    {
 
-         return (ParameterDescription[])parameterMap.values().toArray(new ParameterDescription[]{});         
+       return appBase.getParameters().parameterDefinition.toArray(new ParameterDescription[0]);       
    }
 
    public ParameterDescription getParameterDescription(String parameterName) throws ParameterDescriptionNotFoundException
    {
-      if (!parameterMap.containsKey(parameterName))
-      {
-         throw new ParameterDescriptionNotFoundException(parameterName);
-      }
-      else
-      return (ParameterDescription)parameterMap.get(parameterName);
+       return appBase.getParameters().getParameterDefinitionbyId(parameterName);
    }
    
-   /** Add a parameter description to this application description 
- * @param param the description to add
- */
-public void addParameterDescription(ParameterDescription param) {
-       parameterMap.put(param.getName(),param);
-   }
    
 
    public ApplicationInterface getInterface(String interfaceName) throws InterfaceDescriptionNotFoundException
    {
-      if(interfaces.containsKey(interfaceName)){
-         return (BaseApplicationInterface)interfaces.get(interfaceName);
-      }
-      else
-        throw new InterfaceDescriptionNotFoundException("unknown interface="+interfaceName);
-   }
+       return appBase.getInterfaces().getInterfaceById(interfaceName);
+    }
    
    public ApplicationInterface[] getInterfaces() {
-       Collection c = interfaces.values();
-       return (ApplicationInterface[])c.toArray(new ApplicationInterface[]{});
+       return appBase.getInterfaces().getInterfaceDefinition().toArray(new ApplicationInterface[0]);
    }
 
 
@@ -143,36 +158,24 @@ public void addParameterDescription(ParameterDescription param) {
             interfaceBuff.append("\n");
             interfaceBuff.append(ifaces[i].toString());
         }
-        return "Application Description: " + this.getName()
+        return "Application Description: " + this.getId()
         + "\n" + paramBuff.toString()
         + "\n" +  interfaceBuff.toString()
         + "\n-------------------------------------------------------------";
     }
 
-   public String getAppDescription() {
-     return appDescription;
-   }
-   public String getUIName() {
-      return uIName;
-   }
-   public void setAppDescription(String appDescription) {
-      this.appDescription = appDescription;
-   }
-   public void setUIName(String name) {
-      uIName = name;
-   }
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.description.ApplicationDescription#getReferenceURL()
-    */
-   public String getReferenceURL() {
-     return referenceURL;
-   }
-   /**
-    * @param referenceURL The referenceURL to set.
-    */
-   public void setReferenceURL(String referenceURL) {
-      this.referenceURL = referenceURL;
-   }
+
+
+    public MetadataAdapter getMetadataAdapter() {
+	assert metadataAdapter != null : "metadataAdapter should have been set for the application at creation time";
+	return metadataAdapter;
+    }
+
+
+    
+
+
+ 
 }
 
 

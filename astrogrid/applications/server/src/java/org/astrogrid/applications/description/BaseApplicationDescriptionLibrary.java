@@ -7,21 +7,18 @@
  *
  */
 package org.astrogrid.applications.description;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 
 /** Basic implementation of an {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary}
  * <p />
@@ -34,20 +31,18 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(BaseApplicationDescriptionLibrary.class);
+
+    protected Configuration conf;
     
   /**
    * Constructs a new BaseApplicationDescriptionLibrary
    * @param env2
+ * @param conf 
    */
-  public BaseApplicationDescriptionLibrary(ApplicationDescriptionEnvironment env2) {
-    this.env = env2;
-    try {
-      // Every application-description library carries one built-in application.
-      this.addApplicationDescription(new BuiltInApplicationDescription(env2));
-    } catch (CeaException ex) {
-      throw new RuntimeException("Can't add the built-in application!", ex);
-    }
-  }
+  public BaseApplicationDescriptionLibrary(Configuration conf) {
+    this.descMap =  new HashMap<String, ApplicationDescription >();
+    this.conf = conf;
+   }
 
    /**
          * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary#getDescription(java.lang.String)
@@ -65,16 +60,22 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
     public String[] getApplicationNames() {
     return (String[])descMap.keySet().toArray(new String[0]);
       }
-    private final Map descMap = new HashMap();
+    private final Map<String, ApplicationDescription> descMap;
+    
+    /** map keyed on the short name with all spaces removed - this is because the short name is used in some URIs in the UWS interfaces
+     */
+    private final Map<String, ApplicationDescription> shortMap = new HashMap<String, ApplicationDescription >();;
     
     /** add an application description to the library
      * <p> if an application with the same name already exists, it will be overridden. 
      * @param desc the application description, which will be stored under key <tt>desc.getName()</tt>*/
     public void addApplicationDescription(ApplicationDescription desc) {
        
-       
-        logger.info("Adding description for " + desc.getName());
-        descMap.put(desc.getName(),desc);
+        String shortname = desc.getName().replaceAll("\\s", "");
+        logger.info("Adding description for " + desc.getId() + " with shortname="+shortname);
+        descMap.put(desc.getId(),desc);
+        shortMap.put(shortname, desc);
+        
     }
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
@@ -127,5 +128,11 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
       }
     }
     
-   protected final ApplicationDescriptionEnvironment env;
+   public ApplicationDescription getDescriptionByShortName(String name) throws ApplicationDescriptionNotFoundException{
+       ApplicationDescription ad = (ApplicationDescription) shortMap.get(name);
+       if (ad == null) {
+	   throw new ApplicationDescriptionNotFoundException(name);
+       }
+       return ad;
+   }
 }

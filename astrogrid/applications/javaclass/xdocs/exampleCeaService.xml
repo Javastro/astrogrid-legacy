@@ -1,52 +1,39 @@
-<vor:VOResources
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
-	xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
-	xsi:schemaLocation="
-	  http://www.ivoa.net/xml/VOResource/v0.10
-	  http://www.ivoa.net/xml/VOResource/v0.10
-	  http://www.ivoa.net/xml/RegistryInterface/v0.1
-	  http://www.ivoa.net/xml/RegistryInterface/v0.1
-	"
->
-	<vor:Resource xsi:type="cea:CeaServiceType"
-		status="active" 
-		updated="2005-05-12T12:51:57Z" 
-		xmlns="http://www.ivoa.net/xml/VOResource/v0.10" 
-		xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
-		xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
-		xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
-		xsi:schemaLocation="
-		  http://www.ivoa.net/xml/VOResource/v0.10
-		  http://www.ivoa.net/xml/VOResource/v0.10
-		  http://www.ivoa.net/xml/VODataService/v0.5
-		  http://www.ivoa.net/xml/VODataService/v0.5
-		  http://www.ivoa.net/xml/CEAService/v0.2
-		  http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd
-		"
-	>
-        <title>eSDO MSSL database service</title>
-        <shortName>eSDO MSSL</shortName>
-        <identifier>ivo://esdo.mssl.ucl.ac.uk/esdo-pal/ceaService</identifier>
-        <curation>
-            <publisher>Astrogrid</publisher>
-            <date>2005-05-06</date>
-            <contact>
-                <name>Mike Smith</name>
-                <email>ms2@mssl.ucl.ac.uk</email>
-            </contact>
-        </curation>
-        <content>
-            <subject>eSDO MSSL database service</subject>
-            <description>This service allows the eSDO MSSL database to be queried</description>
-            <referenceURL>http://www.astrogrid.org/maven/build/applications/</referenceURL>
-            <type>Other</type>
-        </content>
-        <interface xsi:type="vs:WebService">
-            <accessURL use="base">http://msslxx.mssl.ucl.ac.uk:8080/esdo-pal/services/CommonExecutionConnectorService</accessURL>
-        </interface>
-        <cea:ManagedApplications>
-           <cea:ApplicationReference>ivo://esdo.mssl.ucl.ac.uk/esdo-pal/ceaApplication</cea:ApplicationReference>
-        </cea:ManagedApplications>
-    </vor:Resource>
-</vor:VOResources>
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+  xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1"
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 ../../../contracts/src/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd
+      http://www.ivoa.net/xml/CEA/v1.0 ../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd
+     "
+     xsi:type="vr:Service"
+      created="2005-09-09T12:28:16" updated="2005-09-09T12:28:16" status="active">
+    <title>eSDO MSSL database service</title>
+    <shortName>eSDO MSSL</shortName>
+    <identifier>ivo://esdo.mssl.ucl.ac.uk/esdo-pal/ceaService</identifier>
+    <curation>
+      <publisher>Astrogrid</publisher>
+      <date>2005-05-06</date>
+      <contact>
+        <name>Mike Smith</name>
+        <email>ms2@mssl.ucl.ac.uk</email>
+      </contact>
+    </curation>
+    <content>
+      <subject>eSDO MSSL database service</subject>
+      <description>This service allows the eSDO MSSL database to be queried</description>
+      <referenceURL>http://www.astrogrid.org/maven/build/applications/</referenceURL>
+      <type>Other</type>
+    </content>
+    <capability>
+    </capability>
+    <interface xsi:type="vs:WebService">
+      <accessURL use="base">http://msslxx.mssl.ucl.ac.uk:8080/esdo-pal/services/CommonExecutionConnectorService</accessURL>
+    </interface>
+    <managedApplications>
+      <applicationReference>ivo://esdo.mssl.ucl.ac.uk/esdo-pal/ceaApplication</applicationReference>
+    </managedApplications>
+ </ri:Resource>
