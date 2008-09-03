@@ -1,4 +1,4 @@
-/*$Id: AstrogridAssert.java,v 1.9 2006/10/16 14:38:37 clq2 Exp $
+/*$Id: AstrogridAssert.java,v 1.10 2008/09/03 11:42:46 gtr Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -243,7 +243,7 @@ public class AstrogridAssert extends XMLAssert{
         String locationString = mkSchemaLocationString(schemaLocations);
         try {
 
-            XMLReader reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
+            XMLReader reader = XMLReaderFactory.createXMLReader();
             reader.setFeature("http://xml.org/sax/features/validation",true);
             reader.setFeature("http://apache.org/xml/features/validation/schema",true);
             reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",locationString);
@@ -379,6 +379,9 @@ public class AstrogridAssert extends XMLAssert{
 
 /* 
 $Log: AstrogridAssert.java,v $
+Revision 1.10  2008/09/03 11:42:46  gtr
+I removed an explicit reference to xerces.
+
 Revision 1.9  2006/10/16 14:38:37  clq2
 common-gtr-1933
 
