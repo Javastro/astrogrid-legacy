@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.31 2006/10/13 17:15:16 gtr Exp $ -->
+<!-- $Id: project.xml,v 1.32 2008/09/03 11:40:57 gtr Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <extend>../maven-base/project.xml</extend>
   <artifactId>astrogrid-common</artifactId>
-  <currentVersion>${astrogrid.common.version}</currentVersion>
+  <currentVersion>2008.2</currentVersion>
   <name>Common classes</name>
   <description>Classes used across the components.</description>
   <shortDescription>AstroGrid Common Library</shortDescription>
@@ -73,14 +73,6 @@
     <dependency>
       <id>commons-jxpath</id>
       <version>1.1</version>
-    </dependency>
-    <dependency>
-      <id>xerces</id>
-      <version>2.4.0</version>
-    </dependency>
-    <dependency>
-      <id>xml-apis</id>
-      <version>1.0.b2</version>
     </dependency>
     <dependency>
       <artifactId>hsqldb</artifactId>
