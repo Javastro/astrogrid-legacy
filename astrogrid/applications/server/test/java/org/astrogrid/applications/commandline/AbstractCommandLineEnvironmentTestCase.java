@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.1 2008/08/29 07:28:28 pah Exp $
+ * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.2 2008/09/03 12:22:54 pah Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -39,6 +39,7 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
     protected ApplicationEnvironment env;
     protected File workingDir;
     protected CEAConfiguration configuration;
+    private IdGen idgen;
 
     /**
      * 
@@ -61,7 +62,7 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 	this.configuration = new CEAConfiguration();
 	configuration.setRecordsDirectory(FileUtils.makeTemporaryDirectory());
 	configuration.setTemporaryFilesDirectory(FileUtils.makeTemporaryDirectory());
-	IdGen idgen = new InMemoryIdGen();
+	idgen = new InMemoryIdGen();
 	ProtocolLibrary lib = new DefaultProtocolLibrary(new Protocol[]{new FileProtocol()});
 	AppAuthorityIDResolver resolver = new TestAuthorityResolver();
 
@@ -85,6 +86,9 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
 /*
  * $Log: AbstractCommandLineEnvironmentTestCase.java,v $
+ * Revision 1.2  2008/09/03 12:22:54  pah
+ * improve unit tests so that they can run in single eclipse gulp
+ *
  * Revision 1.1  2008/08/29 07:28:28  pah
  * moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.1 2008/08/29 07:28:30 pah Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.2 2008/09/03 12:22:55 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,7 +24,6 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
-import org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.OptionList;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;

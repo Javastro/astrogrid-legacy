@@ -1,5 +1,5 @@
 /*
- * $Id: Toolbuilder.java,v 1.1 2008/08/29 07:28:27 pah Exp $
+ * $Id: Toolbuilder.java,v 1.2 2008/09/03 12:22:54 pah Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -16,6 +16,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -112,11 +114,13 @@ public abstract class Toolbuilder  {
 
    /**
     * @param testAppDescr
+ * @throws URISyntaxException 
+ * @throws IOException 
     */
-   public static void fixupExecutionPath( CommandLineApplicationDescription testAppDescr) {
+   public static void fixupExecutionPath( CommandLineApplicationDescription testAppDescr) throws URISyntaxException, IOException {
       // will only work with unjarred-classes - but this is always the case in
       // development.
-      try {
+     
          URI uri = new URI(Toolbuilder.class.getResource("/app/testapp.sh")
                  .toString());
          File appPath = (new File(uri)).getParentFile();
@@ -127,10 +131,13 @@ public abstract class Toolbuilder  {
          
          testAppDescr.setExecutionPath(testAppDescr.getExecutionPath().replaceAll(
                  "@TOOLBASEDIR@", appPath.getAbsolutePath()));
-      } catch (URISyntaxException e) {
+         
+         //also fix file permissions - maven removes executable bits - this will only work on unix
+         
+         ProcessBuilder pb = new ProcessBuilder("/bin/chmod","-f","+x", (new File(appPath,"testapp.sh")).getAbsolutePath());
+         pb.redirectErrorStream(true);
+         Process process = pb.start();
         
-         logger.error("problem trying to set real execution path", e);
-      }
     
    }
 
@@ -140,6 +147,9 @@ public abstract class Toolbuilder  {
 
 /*
  * $Log: Toolbuilder.java,v $
+ * Revision 1.2  2008/09/03 12:22:54  pah
+ * improve unit tests so that they can run in single eclipse gulp
+ *
  * Revision 1.1  2008/08/29 07:28:27  pah
  * moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
  *

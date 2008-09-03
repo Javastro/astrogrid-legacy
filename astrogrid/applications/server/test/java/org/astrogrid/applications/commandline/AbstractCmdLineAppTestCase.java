@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.1 2008/08/29 07:28:27 pah Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.2 2008/09/03 12:22:54 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -18,8 +18,6 @@ import static org.junit.Assert.*;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
