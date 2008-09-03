@@ -15,13 +15,13 @@
    <wsdl:documentation>
            Interface definition for the controller web service
    </wsdl:documentation>
-        <wsdl:import location="../../../jes/ExecutionRecord/v1.0/ExecutionRecord.xsd" 
-        	namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" />
-
-        <wsdl:import location="../../../jes/Credentials/v1.0/Credentials.xsd" 
-        	namespace="http://www.astrogrid.org/schema/Credentials/v1" />
    <wsdl:types>
            <xsd:schema targetNamespace="urn:jes/jobcontroller-wrapper/v1" xmlns="http://www.w3.org/2001/XMLSchema">
+         <xsd:import schemaLocation="../../../jes/ExecutionRecord/v1.0/ExecutionRecord.xsd" 
+         namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" />
+
+        <xsd:import schemaLocation="../../../jes/Credentials/v1.0/Credentials.xsd" 
+         namespace="http://www.astrogrid.org/schema/Credentials/v1" />
         <xsd:element name="submitWorkflow">
                 <xsd:complexType>
                         <xsd:sequence>
@@ -88,35 +88,35 @@
         <!-- work-around for axis wsdl2java bugs - try to force wrapped style throughout -->
 
         <wsdl:message name="submitWorkflow">
-                <wsdl:part element="wrapper:submitWorkflow" />
+                <wsdl:part element="wrapper:submitWorkflow" name="parameters" />
         </wsdl:message>
 
         <wsdl:message name="submitWorkflowResponse">
-                <wsdl:part element="wrapper:submitWorkflowResponse" />
+                <wsdl:part element="wrapper:submitWorkflowResponse" name="parameters" />
         </wsdl:message>
 
         <wsdl:message name="cancelJob">
-                <wsdl:part element="wrapper:cancelJob" />
+                <wsdl:part element="wrapper:cancelJob" name="parameters" />
         </wsdl:message>
 
         <wsdl:message name="deleteJob">
-                <wsdl:part element="wrapper:deleteJob" />
+                <wsdl:part element="wrapper:deleteJob" name="parameters" />
         </wsdl:message>
 
         <wsdl:message name="readJobList">
-                <wsdl:part element="wrapper:readJobList" />
+                <wsdl:part element="wrapper:readJobList" name="parameters"/>
         </wsdl:message>
 
         <wsdl:message name="readJobListResponse">
-                <wsdl:part element="wrapper:readJobListResponse" />
+                <wsdl:part element="wrapper:readJobListResponse" name="parameters"/>
         </wsdl:message>
 
         <wsdl:message name="readJob">
-                <wsdl:part element="wrapper:readJob" />
+                <wsdl:part element="wrapper:readJob" name="parameters" />
         </wsdl:message>
 
         <wsdl:message name="readJobResponse">
-                <wsdl:part element="wrapper:readJobResponse" />
+                <wsdl:part element="wrapper:readJobResponse" name="parameters"/>
         </wsdl:message>
 
 

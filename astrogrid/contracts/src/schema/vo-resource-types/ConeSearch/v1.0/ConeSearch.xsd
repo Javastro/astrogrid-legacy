@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
             xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
-            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
             xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v1.0"
             targetNamespace="http://www.ivoa.net/xml/ConeSearch/v1.0"
             elementFormDefault="unqualified" attributeFormDefault="unqualified"
@@ -23,8 +23,8 @@
 
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0"
               schemaLocation="../../../vo-resource-types/VOResource/v1.0/VOResource.xsd"/>
-   <xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.0"
-              schemaLocation="../../../vo-resource-types/VODataService/v1.0/VODataService.xsd"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.1"
+              schemaLocation="../../../vo-resource-types/VODataService/v1.1/VODataService-v1.1-tables-proposal-2.xsd"/>
 
    <xs:complexType name="CSCapRestriction" abstract="true">
       <xs:annotation>

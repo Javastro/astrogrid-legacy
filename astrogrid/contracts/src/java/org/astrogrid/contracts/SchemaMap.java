@@ -8,6 +8,7 @@
  */
 package org.astrogrid.contracts;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +43,13 @@ public class SchemaMap {
         ALL.put("http://adql.ivoa.net/v0.73",SchemaMap.class.getResource("/schema/adql/ADQL/v0.7.3/ADQL.xsd"));
                 
         //CEA schemas
+        ALL.put("http://www.ivoa.net/xml/CEA/base/v1.1", SchemaMap.class.getResource("/schema/cea/CEABase/v1.1/CEABase.xsd"));        
+        ALL.put("http://www.ivoa.net/xml/CEA/types/v1.1",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.1/CEATypes.xsd"));
+        ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"));
+        ALL.put("http://www.astrogrid.org/schema/CEAExecutionRecord/v1.1",SchemaMap.class.getResource("/schema/cea/CEAExecutionRecord/v1.1/CEAExecutionRecord.xsd"));
+        ALL.put("http://www.ivoa.net/xml/UWS/v0.9.1",SchemaMap.class.getResource("/schema/cea/UWS/v0.9/UWS.xsd"));
+        
+        //obsolete CEA schemas - but still used in the original CEC interface
         ALL.put("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", SchemaMap.class.getResource("/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"));        
         ALL.put("http://www.astrogrid.org/schema/CEATypes/v1",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.0/CEATypes.xsd"));
         ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd"));
@@ -90,6 +98,7 @@ public class SchemaMap {
         //vo-resource-types
         ALL.put("http://www.ivoa.net/xml/CEAService/v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"));
         ALL.put("http://www.ivoa.net/xml/CEA/v1.0rc1",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v1.0rc1/CEAService.xsd"));
+        ALL.put("http://www.ivoa.net/xml/CEA/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd"));
         
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd"));
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd"));
@@ -127,14 +136,36 @@ public class SchemaMap {
 
     }
     
+    public static URL getSchemaURL(String namespace)
+    {
+	return (URL) ALL.get(namespace);
+    }
 
 }
 
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.13  2008/09/03 15:10:37  pah
+ASSIGNED - bug 1611: enhancements for stdization holding bug
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
+
+result of merge of pah_contracts_1611 branch
+
 Revision 1.12  2008/06/06 09:21:30  KevinBenson
 added skynode v1.0 and stap v1.0 to the contracts along with the schemaMap.  Small correction on the wsdl referencing the older cea that we never used in contracts so updated that namespace.
+
+Revision 1.11.2.3  2008/08/29 07:19:58  pah
+UWS updates
+
+Revision 1.11.2.2  2008/04/11 15:44:46  pah
+added tentative UWS schema
+
+Revision 1.11.2.1  2008/03/19 12:50:09  pah
+Added latest CEA schema
+
+ASSIGNED - bug 1611: enhancements for stdization holding
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1611
 
 Revision 1.11  2008/03/14 16:07:48  KevinBenson
 added SSA schema v0.4 official from ivoa to our contracts

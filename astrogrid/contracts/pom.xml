@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.astrogrid</groupId>
+   <artifactId>astrogrid-contracts</artifactId>
+   <packaging>jar</packaging>
+   <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2008.2-SNAPSHOT</version>
+   </parent>
+   <name>Astrogrid sub-system contracts</name>
+   <version>2008.2-SNAPSHOT</version>
+   <description>
+      Contracts for interfaces to major components of AstroGrid. The
+      contracts contain the XML schemata for the interfaces plus textual
+      descriptions of the semantics.
+   </description>
+   <properties>
+      <astrogrid.name>contracts</astrogrid.name>
+   </properties>
+   <developers>
+      <developer>
+         <name>Guy Rixon</name>
+         <id>gtr</id>
+         <email>gtr@ast.cam.ac.uk</email>
+         <organization>IoA, Cambridge</organization>
+      </developer>
+      <developer>
+         <name>Catherine Qin</name>
+         <id>clq2</id>
+         <email>clq2@star.le.ac.uk</email>
+         <organization>University of Leicester</organization>
+      </developer>
+      <developer>
+         <name>Kevin Benson</name>
+         <id>KevinBenson</id>
+         <email>kmb@mssl.ucl.ac.uk</email>
+         <organization>MSSL</organization>
+      </developer>
+      <developer>
+         <name>Noel Winstanley</name>
+         <id>nw</id>
+         <email>nw@jb.man.ac.uk</email>
+         <organization>Jodrell</organization>
+      </developer>
+      <developer>
+         <name>Paul Harrison</name>
+         <id>pah</id>
+         <email>pah@jb.man.ac.uk</email>
+         <organization>Jodrell</organization>
+      </developer>
+   </developers>
+   <build>
+      <sourceDirectory>src/java</sourceDirectory>
+      <!-- This section controls the set of files other than Java classes that 
+         are built into the jar artefact (Java classes are included automatically). -->
+      <resources>
+         <!-- The schemata collection. This includes a directory tree rooted at
+            "schema", as required for publication on the AstroGrid software site. -->
+         <resource>
+            <directory>${basedir}/src</directory>
+            <includes>
+               <include>schema/*</include>
+               <include>schema/**/*</include>
+            </includes>
+         </resource>
+      </resources>
+      <testSourceDirectory>src/test/java</testSourceDirectory>
+      <plugins>
+         <plugin><!-- invoke with  jaxb2:xjc--><!-- alternative at  https://maven-jaxb2-plugin.dev.java.net/-->
+           <!-- this is intended to be run manually and any generated code copied manually elsewhere... -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>jaxb2-maven-plugin</artifactId>
+            <configuration>
+               <schemaDirectory>${basedir}/src/schema/</schemaDirectory>
+               <!-- CEABase.xsd, VOCEA-v1.0.xsd, should perhaps be put back...-->
+               <schemaFiles>registry/RegistryInterface/v1.0/RegistryInterface.xsd,vo-resource-types/VORegistry/v1.0/VORegistry.xsd,vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd,vo-resource-types/SIA/v1.0/SIA.xsd,vo-resource-types/VOApplication/v1.0rc1/VOApplication.xsd,vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd,cea/CEAImplementation/v2.0/CEAImplementation.xsd,cea/CEATypes/v1.1/CEATypes.xsd</schemaFiles>
+               <outputDirectory>${basedir}/jaxb</outputDirectory>
+               <bindingDirectory>${basedir}/build/</bindingDirectory>
+               <bindingFiles>xjb-binding.xml</bindingFiles>
+               <verbose>true</verbose>
+               <extension>true</extension>
+               <explicitAnnotation>true</explicitAnnotation>
+               <!-- The name of your generated source package -->
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+   <dependencies>
+      <dependency>
+         <artifactId>servlet-api</artifactId>
+         <groupId>javax.servlet</groupId>
+         <version>2.4</version>
+      </dependency>
+      <dependency>
+         <groupId>javax.xml.bind</groupId>
+         <artifactId>jaxb-api</artifactId>
+         <version>2.1</version>
+         <scope>runtime</scope><!-- make sure that this dependency is not transitive -->
+      </dependency>
+      <dependency>
+         <groupId>com.sun.xml.bind</groupId>
+         <artifactId>jaxb-impl</artifactId>
+         <version>2.1</version>
+         <scope>runtime</scope><!-- make sure that this dependency is not transitive -->
+      </dependency>
+   </dependencies>
+</project>

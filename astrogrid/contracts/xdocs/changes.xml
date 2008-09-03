@@ -1,0 +1,17 @@
+<document>
+  <properties>
+    <title>Changes since previous release</title>
+  </properties>
+  <body>
+    <release version="2008.2" description="new CEA and UWS schema">
+      <action dev="pah" type="add" issue="1611">
+        <p>
+          The CEA related schema were altered to make it possible to register a CEA application as a DAL service.
+        </p>
+        <p>
+        A Namespaces object was introduced that gives symbolic names to the "current" namespaces for each schema.
+        </p>
+      </action>
+   </release>
+  </body>
+</document>

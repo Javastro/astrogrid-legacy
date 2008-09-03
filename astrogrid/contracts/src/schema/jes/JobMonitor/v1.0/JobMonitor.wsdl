@@ -16,10 +16,10 @@
    Interface definition for the 'monitor' web service - used as a callback endpoint by the application controller.
  </wsdl:documentation>
 
-        <wsdl:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" 
-        	location="../../cea/CEATypes/v1.0/CEATypes.xsd"/>
    <wsdl:types>
-           <xsd:schema targetNamespace="urn:jes/jobmonitor-wrapper/v1" xmlns="http://www.w3.org/2001/XMLSchema">
+        <xsd:schema targetNamespace="urn:jes/jobmonitor-wrapper/v1" xmlns="http://www.w3.org/2001/XMLSchema">
+        <xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" 
+         schemaLocation="../../../cea/CEATypes/v1.0/CEATypes.xsd"/>
             <xsd:element name="monitorJob">
                     <xsd:complexType>
                         <xsd:sequence>
@@ -32,7 +32,7 @@
    </wsdl:types>
 
    <wsdl:message name="monitorJobRequest">
-     <wsdl:part element="wrapper:monitorJob" />
+     <wsdl:part element="wrapper:monitorJob" name="parameters" />
    </wsdl:message>
 
    <wsdl:portType name="JobMonitor">

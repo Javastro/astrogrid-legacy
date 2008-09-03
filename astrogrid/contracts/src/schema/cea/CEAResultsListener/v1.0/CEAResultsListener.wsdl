@@ -15,11 +15,12 @@
     <wsdl:documentation>
         interface definition for the results callback web service.
     </wsdl:documentation>
-      <wsdl:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" location="../../../cea/CEATypes/v1.0/CEATypes.xsd"/>
+      
     <wsdl:types>
         <xsd:schema
             targetNamespace="urn:cea/resultslistener-wrapper/v1"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="../../../cea/CEATypes/v1.0/CEATypes.xsd"/>
             <xsd:element name="putResults">
                 <xsd:complexType>
                     <xsd:sequence>
