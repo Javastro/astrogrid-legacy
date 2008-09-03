@@ -1,13 +1,17 @@
 /*
-   $Id: DomLoader.java,v 1.2 2004/03/07 14:58:56 mch Exp $
+   $Id: DomLoader.java,v 1.3 2008/09/03 11:41:32 gtr Exp $
 
    (c) Copyright...
 */
 
 package org.astrogrid.util;
 
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +45,9 @@ public class DomLoader
     */
    public static Document readDocument(String xmlDocument) throws ParserConfigurationException, SAXException, IOException
    {
-      return readDocument(new BufferedInputStream(new StringBufferInputStream(xmlDocument)));
+     // Read the input as a steam of bytes, not characters. readDocument(InputStream) is responsible
+     // for collating bytes into characters.
+      return readDocument(new BufferedInputStream(new ByteArrayInputStream(xmlDocument.getBytes())));
    }
 
    /**
@@ -54,12 +60,17 @@ public class DomLoader
 
 
    /**
-    * Loads and returns the root DOM node (Element) from the given
-    * XML file
+    * Loads and returns the root DOM node (Element) from the given XML file.
+    * The given stream must be a byte stream; the current method undertakes to
+    * convert bytes to characters, respecting the encoding written at the head
+    * of the document.
+    *
+    * @param in Byte stream containing the text of the XML document.
+    * @return The document as a DOM tree.
     */
    public static Document readDocument(InputStream in) throws ParserConfigurationException, SAXException, IOException
    {
-         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance(); 
          //dbf.setValidating(true);
          //dbf.setIgnoringElementContentWhitespace(true);  //not available in 1.3
          dbf.setNamespaceAware(true);
