@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.6 2008/09/03 14:18:42 pah Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.7 2008/09/04 19:10:52 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -27,12 +27,12 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * Abstract base implementation of {@link org.astrogrid.applications.description.ApplicationDescription}.
  * <p />
- * Implements all methods in the <tt>ApplicationDescription</tt> interface apart from {@link org.astrogrid.applications.description.ApplicationDescription#initializeApplication(String, User, Tool)},
+ * Implements all methods in the <tt>ApplicationDescription</tt> interface apart from {@link org.astrogrid.applications.description.ApplicationDescription#initializeApplication(String, SecurityGuard, Tool)},
  * which is left abstract
  * <p />
  * Implementation is an adapter for {@link CeaApplication} with extra methods for adding/retrieving interfaces and parameters. In addition to the methods of the <tt>ApplicationDescription</tt> interface, this class

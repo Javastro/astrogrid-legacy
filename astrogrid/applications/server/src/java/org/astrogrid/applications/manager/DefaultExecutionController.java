@@ -22,6 +22,7 @@ import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.community.User;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.security.AxisServiceSecurityGuard;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.applications.description.execution.Tool;
 
 import java.util.ArrayList;
@@ -96,15 +97,14 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	t.start();
 	return true;
     }
-    public String init(Tool tool, String jobstepID) throws CeaException {
+    public String init(Tool tool, String jobstepID, SecurityGuard securityGuard) throws CeaException {
 	logger.debug("Initializing application " + jobstepID);
 	int idx;
 	String toolname = tool.getId();
 
 	try {
 	    ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
-	    User user = new User();
-	    Application app = descr.initializeApplication(jobstepID,user,tool); 
+	    Application app = descr.initializeApplication(jobstepID,securityGuard,tool); 
 	    Calendar now = GregorianCalendar.getInstance();
 	    now.add(Calendar.SECOND, policy.getDefaultLifetime());
 	    app.setDestruction(now.getTime());// set the destruction time.

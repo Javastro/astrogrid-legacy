@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.2 2008/09/03 12:22:54 pah Exp $
+ * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -28,6 +28,7 @@ import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.io.FileUtils;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * @author Paul Harrison (pharriso@eso.org) 20-Jul-2005
@@ -67,7 +68,7 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 	AppAuthorityIDResolver resolver = new TestAuthorityResolver();
 
 	//TODO fill more of the configuration with suitable defaults
-	env = new CommandLineApplicationEnvironment("userAssignedId",new User(), idgen, this.configuration);
+	env = new CommandLineApplicationEnvironment("userAssignedId",new SecurityGuard(), idgen, this.configuration); //TODO actually assign a real identity to the SecurityGuard
 	assertNotNull(env);
 
 
@@ -86,6 +87,11 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
 /*
  * $Log: AbstractCommandLineEnvironmentTestCase.java,v $
+ * Revision 1.3  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 12:22:54  pah
  * improve unit tests so that they can run in single eclipse gulp
  *

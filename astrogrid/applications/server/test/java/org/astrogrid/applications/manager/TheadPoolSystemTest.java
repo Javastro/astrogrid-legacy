@@ -1,4 +1,4 @@
-/*$Id: TheadPoolSystemTest.java,v 1.3 2008/09/03 14:19:04 pah Exp $
+/*$Id: TheadPoolSystemTest.java,v 1.4 2008/09/04 19:10:53 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class TheadPoolSystemTest extends SystemTest {
     public void testConcurrent() throws CeaException, InterruptedException{
 	String id[] = new String[10];
 	for (int i = 0; i < id.length; i++) {
-	    id[i] = controller.init(tool, "job"+i);
+	    id[i] = controller.init(tool, "job"+i, secGuard);
 	}
 	for (int i = 0; i < id.length; i++) {
 	  boolean ok = controller.execute(id[i]);
@@ -72,7 +72,7 @@ public class TheadPoolSystemTest extends SystemTest {
     
     @Test
     public void testAbort() throws CeaException, InterruptedException {
-	String id = controller.init(tool, "abort1" );
+	String id = controller.init(tool, "abort1", secGuard );
 	controller.execute(id);
 	boolean abort = controller.abort(id);
 	assertTrue("unsuccessful abort", abort);
@@ -110,7 +110,7 @@ public class TheadPoolSystemTest extends SystemTest {
         
 	threadpoolController = new ThreadPoolExecutionController(lib,history,policy, pool);
         controller = threadpoolController;
-	String id = controller.init(tool, "abort1" );
+	String id = controller.init(tool, "abort1", secGuard );
 	controller.execute(id);
 	Thread.sleep(6000); // wait long enough for the abort to happen;
 	assertTrue("application should not be in current set", !history.isApplicationInCurrentSet(id));
@@ -124,6 +124,11 @@ public class TheadPoolSystemTest extends SystemTest {
 
 /* 
 $Log: TheadPoolSystemTest.java,v $
+Revision 1.4  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.3  2008/09/03 14:19:04  pah
 result of merge of pah_cea_1611 branch
 

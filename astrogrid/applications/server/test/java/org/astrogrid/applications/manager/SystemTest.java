@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.13 2008/09/03 14:19:04 pah Exp $
+/*$Id: SystemTest.java,v 1.14 2008/09/04 19:10:53 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,9 +69,8 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
      }
     protected ExecutionController controller;
     protected QueryService querier;
-   
     public void testRun() throws Exception {
-        String id = controller.init(tool,"jobStep");
+        String id = controller.init(tool,"jobStep", secGuard);
         assertNotNull(id);
         MockMonitor monitor = new MockMonitor();
         Application app = history.getApplicationFromCurrentSet(id);
@@ -113,12 +112,12 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
         }
     
     public void testAbortBeforeExecute() throws Exception {
-        String id = controller.init(tool,"jobStep");
+        String id = controller.init(tool,"jobStep", secGuard);
         controller.abort(id); // don't care if we can't abort, just as long as it doesn't throw.
     }
     public void testAbortAfterExecute() throws Exception {
 
-        String id = controller.init(tool,"jobStep");
+        String id = controller.init(tool,"jobStep", secGuard);
         controller.execute(id);
         controller.abort(id); // don't care if we can't abort, just as long as it doesn't throw.
         
@@ -148,6 +147,11 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.14  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.13  2008/09/03 14:19:04  pah
 result of merge of pah_cea_1611 branch
 

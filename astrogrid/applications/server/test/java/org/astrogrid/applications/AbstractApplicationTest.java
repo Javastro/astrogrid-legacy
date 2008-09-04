@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.8 2008/09/03 14:19:04 pah Exp $
+/*$Id: AbstractApplicationTest.java,v 1.9 2008/09/04 19:10:53 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -106,7 +106,7 @@ public class AbstractApplicationTest  {
 	Configuration conf = new MockNonSpringConfiguredConfig();
 	description = new InternallyConfiguredApplicationDescription(appMeta,  conf ) {
 	    public Application initializeApplication(String jobStepID,
-		    User user, Tool tool) throws Exception {
+		    SecurityGuard secGuard, Tool tool) throws Exception {
 		return null;
 	    }
 	    
@@ -130,7 +130,7 @@ public class AbstractApplicationTest  {
 	yVal.setValue("barney");
 	output.addParameter(yVal);
 
-	ApplicationEnvironment runenv = new ApplicationEnvironment("testId",new User(), idgen, conf);
+	ApplicationEnvironment runenv = new ApplicationEnvironment("testId",new SecurityGuard(), idgen, conf);
 	//
 	app = new AbstractApplication( tool, interf, runenv , protolib) {
 
@@ -339,6 +339,11 @@ public class AbstractApplicationTest  {
 
 /*
  * $Log: AbstractApplicationTest.java,v $
+ * Revision 1.9  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.8  2008/09/03 14:19:04  pah
  * result of merge of pah_cea_1611 branch
  *

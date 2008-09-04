@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.5 2008/09/03 14:18:44 pah Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.6 2008/09/04 19:10:53 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.applications.description.AppMetadataAdapter;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /** A description for an application that is implemented as a static java method.
  * <p>
@@ -54,12 +54,12 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
     private final Configuration conf;
     
     /**
-     * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, org.astrogrid.community.User, org.astrogrid.workflow.beans.v1.Tool)
+     * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.workflow.beans.v1.Tool)
      */
-    public Application initializeApplication(String jobStepID, User user, Tool tool) throws Exception {
+    public Application initializeApplication(String jobStepID, SecurityGuard secGuard, Tool tool) throws Exception {
         // we know there's only one interface supported for each application
         ApplicationInterface interf = this.getInterfaces()[0];
-        ApplicationEnvironment env = new ApplicationEnvironment(jobStepID, user, getInternalComponentFactory().getIdGenerator(), conf);
+        ApplicationEnvironment env = new ApplicationEnvironment(jobStepID, secGuard, getInternalComponentFactory().getIdGenerator(), conf);
 	return new JavaClassApplication(tool,interf,env , getInternalComponentFactory().getProtocolLibrary());
     }
 }
@@ -67,6 +67,11 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.6  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.5  2008/09/03 14:18:44  pah
 result of merge of pah_cea_1611 branch
 

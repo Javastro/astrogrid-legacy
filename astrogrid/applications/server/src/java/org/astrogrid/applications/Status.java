@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.astrogrid.applications.manager.ExecutionController;
+import org.astrogrid.security.SecurityGuard;
 
 import net.ivoa.uws.ExecutionPhase;
 
@@ -91,7 +92,7 @@ public int hashCode() {
    public static final Status NEW = new Status("New");
    /** applications are in this state when held on a queue ready for execution. @since 2007.2.02 */
    public static final Status QUEUED = new Status("Queued");
-   /** applications are in this state after the {@link ExecutionController#init(org.astrogrid.applications.description.base.Tool, String)} method has returned - implies that all of the parameters necessary are present */
+   /** applications are in this state after the {@link ExecutionController#init(org.astrogrid.applications.description.base.Tool, String, SecurityGuard)} method has returned - implies that all of the parameters necessary are present */
    public static final Status INITIALIZED = new Status("Initialized");//IMPL does this have any useful meaning any more? parameter testing more difficult....
    /** applications are in this state while reading the parameters */
    public static final Status READINGPARAMETERS = new Status("Reading parameters");

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.2 2008/09/03 12:22:54 pah Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,7 +68,7 @@ public abstract class AbstractCmdLineAppTestCase extends
 
     @Test
     public void testCreateApplication() throws Exception {
-        User user = new User();
+        SecurityGuard user = new SecurityGuard();
         Application app = testAppDescr.initializeApplication("foo",user ,buildTool("1"));
         assertNotNull(app);
     

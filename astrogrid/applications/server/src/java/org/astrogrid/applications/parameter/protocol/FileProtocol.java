@@ -1,4 +1,4 @@
-/*$Id: FileProtocol.java,v 1.2 2008/09/03 14:18:57 pah Exp $
+/*$Id: FileProtocol.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.applications.parameter.protocol;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.security.SecurityGuard;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -38,9 +39,9 @@ public class FileProtocol implements Protocol, ComponentDescriptor {
     }
 
     /**
-     * @see org.astrogrid.applications.parameter.protocol.Protocol#createIndirectValue(java.net.URI)
+     * @see org.astrogrid.applications.parameter.protocol.Protocol#createIndirectValue(java.net.URI, SecurityGuard)
      */
-    public ExternalValue createIndirectValue(final URI reference) throws InaccessibleExternalValueException {
+    public ExternalValue createIndirectValue(final URI reference, SecurityGuard secGuard) throws InaccessibleExternalValueException {
         final File f = new File(reference);
        return new ExternalValue() {
 
@@ -88,6 +89,11 @@ public class FileProtocol implements Protocol, ComponentDescriptor {
 
 /* 
 $Log: FileProtocol.java,v $
+Revision 1.3  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.2  2008/09/03 14:18:57  pah
 result of merge of pah_cea_1611 branch
 

@@ -3,6 +3,19 @@
     <title>Changes since previous release</title>
   </properties>
   <body>
+    <release version="2008.2" date="15/09/2008" description="UWS support + Schema updates">
+      <action dev="pah" type="add" issue="2825">Add VOSpace support</action>
+      <action dev="pah" type="add" issue="1611">
+         <p>This is a significant upgrade of the CEA server to include UWS support and to update the schema - see the bugzilla ticket (and dependencies for more detail)
+         Some other important changes include</p>
+         <ul>
+            <li>build with maven 2</li>
+            <li>Java 1.5 is the minimum supported version</li>
+            <li>Spring used as the IOC container</li>
+            <li>project reorganized so that there is only single CEC</li>
+         </ul>
+      </action>
+    </release>
     <release version="apps-gtr-2061">
       <action dev="gtr" type="update" issue="2071">
         <ul>

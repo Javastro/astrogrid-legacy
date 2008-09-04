@@ -145,6 +145,14 @@
        <groupId>net.ivoa</groupId>
        <artifactId>ivoa-objects</artifactId>
     </dependency>
+
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-vospace-delegate</artifactId>
+       <version>SNAPSHOT</version>
+    </dependency>
+
+
     
    <dependency>
        <groupId>org.springframework</groupId>

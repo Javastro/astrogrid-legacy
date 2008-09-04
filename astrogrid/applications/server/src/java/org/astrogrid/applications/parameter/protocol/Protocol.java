@@ -1,4 +1,4 @@
-/*$Id: Protocol.java,v 1.1 2004/07/26 12:07:38 nw Exp $
+/*$Id: Protocol.java,v 1.2 2008/09/04 19:10:53 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.applications.parameter.protocol;
 
 import java.net.URI;
 
+import org.astrogrid.security.SecurityGuard;
+
 /** Factory interface for creating {@link org.astrogrid.applications.parameter.protocol.ExternalValue} instances.
  * @see org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
@@ -23,14 +25,20 @@ public interface Protocol {
     public String getProtocolName();
     /** create a new indirectParameterValue for the passed in URI 
      * @param reference the uri to build an instance for.
+     * @param secGuard TODO
      * @return a handler for this uri.
      * @throws InaccessibleExternalValueException*/
-    public ExternalValue createIndirectValue(URI reference) throws InaccessibleExternalValueException;
+    public ExternalValue createIndirectValue(final URI reference, final SecurityGuard secGuard) throws InaccessibleExternalValueException;
 }
 
 
 /* 
 $Log: Protocol.java,v $
+Revision 1.2  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.1  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

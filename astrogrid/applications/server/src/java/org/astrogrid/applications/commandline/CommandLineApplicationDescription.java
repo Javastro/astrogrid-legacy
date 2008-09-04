@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescription.java,v 1.2 2008/09/03 14:18:53 pah Exp $
+ * $Id: CommandLineApplicationDescription.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  *
  * Created on 25 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.astrogrid.applications.description.MetadataAdapter;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CeaCmdLineApplicationDefinition;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  *  description of a commandline application. The main specialization in thsi class is how to initialize the runnable {@link Application} object from the standard description.
@@ -58,9 +58,9 @@ public class CommandLineApplicationDescription extends AbstractApplicationDescri
      */
     private static final Log logger = LogFactory.getLog(CommandLineApplicationDescription.class);
     /**
- * @see org.astrogrid.applications.description.base.AbstractApplicationDescription#initializeApplication(java.lang.String, org.astrogrid.community.User, org.astrogrid.applications.ParameterValues)
+ * @see org.astrogrid.applications.description.base.AbstractApplicationDescription#initializeApplication(java.lang.String, SecurityGuard, org.astrogrid.applications.ParameterValues)
  */
-public Application initializeApplication(String jobStepID, User user,Tool tool) throws CeaException {
+public Application initializeApplication(String jobStepID, SecurityGuard secGuard,Tool tool) throws CeaException {
     ApplicationInterface appInterface = this.getInterface(tool.getInterface());
     if (appInterface == null) { // go for default then..
         appInterface = this.getInterfaces()[0];
@@ -83,7 +83,7 @@ public Application initializeApplication(String jobStepID, User user,Tool tool) 
 	Constructor[] cons = clazz.getConstructors();
 	assert cons.length == 1 : "there should only be one constructor for CommandLineApplication classes";
 	Constructor con = cons[0];
-	return (AbstractApplication)con.newInstance(new Object[]{jobStepID, tool, appInterface, new CommandLineApplicationEnvironment(jobStepID, user, 
+	return (AbstractApplication)con.newInstance(new Object[]{jobStepID, tool, appInterface, new CommandLineApplicationEnvironment(jobStepID, secGuard, 
 		getInternalComponentFactory().getIdGenerator(), conf),  getInternalComponentFactory().getProtocolLibrary()});
     } catch (Exception e) {// somethings gone wrong - not the correct deps.
         logger.error("Could not instantiate the application class",e);

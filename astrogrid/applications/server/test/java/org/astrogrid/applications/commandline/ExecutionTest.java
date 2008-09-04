@@ -1,4 +1,4 @@
-/*$Id: ExecutionTest.java,v 1.1 2008/08/29 07:28:28 pah Exp $
+/*$Id: ExecutionTest.java,v 1.2 2008/09/04 19:10:53 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,7 @@ public class ExecutionTest extends AbstractCmdLineAppTestCase {
       
       Tool tool = Toolbuilder.buildTool("0", desc);
       Toolbuilder.fillDirect(tool);
-      String exid = ec.init(tool, "CommandLineCEAComponentManagerTest");
+      String exid = ec.init(tool, "CommandLineCEAComponentManagerTest", secGuard);
       Application app = eh.getApplicationFromCurrentSet(exid);
       assertTrue(app instanceof CommandLineApplication);
            
@@ -118,7 +118,7 @@ public class ExecutionTest extends AbstractCmdLineAppTestCase {
 	      
 	      Tool tool = Toolbuilder.buildTool("15", desc);
 	      Toolbuilder.fillDirect(tool);
-	      String exid = ec.init(tool, "CommandLineCEAComponentManagerTest");
+	      String exid = ec.init(tool, "CommandLineCEAComponentManagerTest", secGuard);
 	      Application app = eh.getApplicationFromCurrentSet(exid);
 	      assertTrue(app instanceof CommandLineApplication);
 	           
@@ -148,7 +148,7 @@ public class ExecutionTest extends AbstractCmdLineAppTestCase {
     
     Tool tool = Toolbuilder.buildTool("15", desc);
     Toolbuilder.fillDirect(tool);
-    String exid = ec.init(tool, "CommandLineCEAComponentManagerTest");
+    String exid = ec.init(tool, "CommandLineCEAComponentManagerTest", secGuard);
     Application app = eh.getApplicationFromCurrentSet(exid);
     assertTrue(app instanceof CommandLineApplication);
          

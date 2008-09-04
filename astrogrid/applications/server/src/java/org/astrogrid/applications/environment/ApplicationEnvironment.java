@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationEnvironment.java,v 1.2 2008/09/03 14:18:55 pah Exp $
+ * $Id: ApplicationEnvironment.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 11 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,13 +13,11 @@
 package org.astrogrid.applications.environment;
 
 import java.io.File;
-import java.net.URL;
 import java.net.URLEncoder;
 
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * The execution environment for a run of an application.
@@ -65,13 +63,14 @@ public class ApplicationEnvironment {
     protected final File executionDirectory;
     protected final TempFileFactory tempFileFactory;
     protected final Configuration config;
-    protected final User user;
+    protected final SecurityGuard secGuard;
 
-    public ApplicationEnvironment(String jobStepId, User user,IdGen idgen, Configuration config) throws CannotCreateWorkingDirectoryException, WorkingDirectoryAlreadyExists {
+ 
+    public ApplicationEnvironment(String jobStepId, SecurityGuard sg, IdGen idgen, Configuration config) throws CannotCreateWorkingDirectoryException, WorkingDirectoryAlreadyExists {
 	      executionId = idgen.getNewID();
 	      logger.info("new execution id="+executionId);
 	      this.jobStepId = jobStepId;
-              this.user = user;
+              this.secGuard = sg;
 	      executionDirectory = createExecutionDirectoryName(executionId, config.getTemporaryFilesDirectory());
 	         
 	      if (!executionDirectory.exists()) {
@@ -143,8 +142,8 @@ public class ApplicationEnvironment {
         return jobStepId;
     }
 
-    public User getUser() {
-        return user;
+    public SecurityGuard getSecGuard() {
+        return secGuard;
     }
 
 }
@@ -152,6 +151,11 @@ public class ApplicationEnvironment {
 
 /*
  * $Log: ApplicationEnvironment.java,v $
+ * Revision 1.3  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 14:18:55  pah
  * result of merge of pah_cea_1611 branch
  *

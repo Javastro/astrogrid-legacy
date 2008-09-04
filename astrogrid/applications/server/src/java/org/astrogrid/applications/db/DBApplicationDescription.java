@@ -1,5 +1,5 @@
 /*
- * $Id: DBApplicationDescription.java,v 1.2 2008/09/03 14:18:46 pah Exp $
+ * $Id: DBApplicationDescription.java,v 1.3 2008/09/04 19:10:54 pah Exp $
  * 
  * Created on 13 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.applications.description.base.AbstractApplicationDescriptio
 import org.astrogrid.applications.description.base.ApplicationBase;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 public class DBApplicationDescription extends AbstractApplicationDescription {
 
@@ -41,7 +41,7 @@ public class DBApplicationDescription extends AbstractApplicationDescription {
     }
 
     public Application initializeApplication(String callerAssignedID,
-	    User user, Tool tool) throws Exception {
+	    SecurityGuard secGuard, Tool tool) throws Exception {
 	// TODO Auto-generated method stub
 	throw new UnsupportedOperationException(
 		"DBApplicationDescription.initializeApplication() not implemented");
@@ -52,6 +52,11 @@ public class DBApplicationDescription extends AbstractApplicationDescription {
 
 /*
  * $Log: DBApplicationDescription.java,v $
+ * Revision 1.3  2008/09/04 19:10:54  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 14:18:46  pah
  * result of merge of pah_cea_1611 branch
  *

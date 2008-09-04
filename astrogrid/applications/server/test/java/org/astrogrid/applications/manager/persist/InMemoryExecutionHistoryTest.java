@@ -10,6 +10,8 @@ package org.astrogrid.applications.manager.persist;
 
 import static org.junit.Assert.*;
 
+import java.util.concurrent.FutureTask;
+
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
@@ -25,6 +27,7 @@ import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,7 +68,9 @@ public class InMemoryExecutionHistoryTest   {
         ListOfParameterValues output = new ListOfParameterValues();
 	tool.setOutput(output );
 	System.out.println("init app in execution history memory test setup()");
-        app = appDesc.initializeApplication("foo",new User(),tool);
+        app = appDesc.initializeApplication("foo",new SecurityGuard(),tool);
+        FutureTask<String> exec = app.createExecutionTask();
+        exec.run();
         eh = new InMemoryExecutionHistory();
         id = app.getId();
     }

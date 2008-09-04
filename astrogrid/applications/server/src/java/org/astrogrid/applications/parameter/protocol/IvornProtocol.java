@@ -1,4 +1,4 @@
-/*$Id: IvornProtocol.java,v 1.4 2008/09/03 14:18:57 pah Exp $
+/*$Id: IvornProtocol.java,v 1.5 2008/09/04 19:10:53 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,26 +10,23 @@
 **/
 package org.astrogrid.applications.parameter.protocol;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.community.common.exception.CommunityException;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.filemanager.client.FileManagerClient;
-import org.astrogrid.filemanager.client.FileManagerClientFactory;
-import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.common.BundlePreferences;
-import org.astrogrid.registry.RegistryException;
-import org.astrogrid.store.Ivorn;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import junit.framework.Test;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerClientFactory;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.common.BundlePreferences;
+import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.store.Ivorn;
+import org.springframework.stereotype.Component;
 
 /** protocol implementation for ivo:/
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
@@ -66,11 +63,11 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
         NO_PREFETCH_POLICY.setPrefetchDepth(new Integer(0));
     }
     /**
-     * @see org.astrogrid.applications.parameter.protocol.Protocol#createIndirectValue(java.net.URI)
+     * @see org.astrogrid.applications.parameter.protocol.Protocol#createIndirectValue(java.net.URI, SecurityGuard)
      * @todo find nice way to pass correct user value in here.
      * @todo cache FileManagerClientFactory?
      */
-    public ExternalValue createIndirectValue(final URI reference) throws InaccessibleExternalValueException {
+    public ExternalValue createIndirectValue(final URI reference, SecurityGuard secGuard) throws InaccessibleExternalValueException {
         final Ivorn ivorn;
         try {
             ivorn = new Ivorn(reference.toString());
@@ -130,6 +127,11 @@ public class IvornProtocol implements Protocol , ComponentDescriptor{
 
 /* 
 $Log: IvornProtocol.java,v $
+Revision 1.5  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.4  2008/09/03 14:18:57  pah
 result of merge of pah_cea_1611 branch
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.1 2008/08/29 07:28:27 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.2 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,6 +16,7 @@ package org.astrogrid.applications.commandline;
 import java.net.URL;
 
 import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
+import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -66,6 +67,7 @@ public abstract class DescriptionBaseTestCase extends AbstractComponentManagerTe
 
  
    protected String TESTAPPNAME;
+protected SecurityGuard secGuard = new SecurityGuard();
 
    
 }

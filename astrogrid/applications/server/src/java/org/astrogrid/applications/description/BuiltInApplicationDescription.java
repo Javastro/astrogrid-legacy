@@ -4,10 +4,7 @@ import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.DefaultIDs;
-import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.ApplicationKind;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
@@ -18,9 +15,7 @@ import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.environment.CannotCreateWorkingDirectoryException;
 import org.astrogrid.applications.environment.WorkingDirectoryAlreadyExists;
 import org.astrogrid.applications.javainternal.BuiltInApplication;
-import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * An {@link ApplicationDescription} whose details are known at compile time. The application is known as
@@ -68,12 +63,12 @@ public class BuiltInApplicationDescription extends InternallyConfiguredApplicati
  * @throws WorkingDirectoryAlreadyExists 
    */
   public Application initializeApplication(String userAssignedId,
-                                           User   user,
+                                           SecurityGuard   secGuard,
                                            Tool   tool)
       throws InterfaceDescriptionNotFoundException, CannotCreateWorkingDirectoryException, WorkingDirectoryAlreadyExists {
       
     
-    ApplicationEnvironment env = new ApplicationEnvironment(userAssignedId, user, getInternalComponentFactory().getIdGenerator(), config);
+    ApplicationEnvironment env = new ApplicationEnvironment(userAssignedId, secGuard, getInternalComponentFactory().getIdGenerator(), config);
   
     return new BuiltInApplication(
                                   tool,

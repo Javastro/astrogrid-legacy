@@ -1,5 +1,5 @@
 /*
- * $Id: ExecutionController.java,v 1.4 2008/09/03 14:18:56 pah Exp $
+ * $Id: ExecutionController.java,v 1.5 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,7 @@ import java.util.List;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.security.SecurityGuard;
 
 /**
   Interface to a service that allows applications to be executed and controlled
@@ -30,10 +31,11 @@ public interface ExecutionController {
      * 
      * @param tool provides application name, interface name, parameters
      * @param jobstepID id assigned by client to this new execution
+     * @param securityGuard TODO
      * @return id assigned by server to this new execution.
      * @throws CeaException
      */
-    public String init(Tool tool, String jobstepID) throws CeaException;
+    public String init(Tool tool, String jobstepID, SecurityGuard securityGuard) throws CeaException;
     
 
    /** starts asynchronous executoion of a application

@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibrary.java,v 1.4 2008/09/03 14:18:57 pah Exp $
+/*$Id: DefaultProtocolLibrary.java,v 1.5 2008/09/04 19:10:53 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import junit.framework.Test;
 
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.security.SecurityGuard;
 import org.springframework.stereotype.Service;
 
 /** Default implementation of {@link org.astrogrid.applications.parameter.protocol.ProtocolLibrary}
@@ -49,9 +50,10 @@ public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescrip
     protected final Map<String,Protocol>
     map;
     /**
-     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(org.astrogrid.applications.beans.v1.parameters.ParameterValue)
+     * @param secGuard 
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(org.astrogrid.applications.beans.v1.parameters.ParameterValue, SecurityGuard)
      */
-    public ExternalValue getExternalValue(ParameterValue pval)
+    public ExternalValue getExternalValue(ParameterValue pval, SecurityGuard secGuard)
         throws InaccessibleExternalValueException, UnrecognizedProtocolException{
         URI reference;
         try {
@@ -60,26 +62,28 @@ public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescrip
         catch (URISyntaxException e) {
             throw new UnrecognizedProtocolException(pval.getValue(),e);
         } 
-        return getExternalValue(reference);
+        return getExternalValue(reference, secGuard);
     }
     /**
-     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(java.net.URI)
+     * @param secGuard 
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(java.net.URI, SecurityGuard)
      */
-    public ExternalValue getExternalValue(URI reference) throws InaccessibleExternalValueException, UnrecognizedProtocolException {
+    public ExternalValue getExternalValue(URI reference, SecurityGuard secGuard) throws InaccessibleExternalValueException, UnrecognizedProtocolException {
         Protocol p = (Protocol) map.get(reference.getScheme());
         if (p == null) {
             throw new UnrecognizedProtocolException(reference.toString());
         }
-        return p.createIndirectValue(reference);
+        return p.createIndirectValue(reference, secGuard);
     }
     
 
 
     /**
-     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(java.lang.String)
+     * @param secGuard 
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(java.lang.String, SecurityGuard)
      */
-    public ExternalValue getExternalValue(String location) throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
-        return getExternalValue(new URI(location));
+    public ExternalValue getExternalValue(String location, SecurityGuard secGuard) throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
+        return getExternalValue(new URI(location), secGuard);
     }    
     /**
      * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#listSupportedProtocols()
@@ -124,6 +128,11 @@ public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescrip
 
 /* 
 $Log: DefaultProtocolLibrary.java,v $
+Revision 1.5  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.4  2008/09/03 14:18:57  pah
 result of merge of pah_cea_1611 branch
 

@@ -67,4 +67,11 @@
 <bean id="ExecutionPolicy" class="org.astrogrid.applications.manager.DefaultExecutionPolicy">
 	
 </bean>
+
+<bean id="VosProtocol"
+   class="org.astrogrid.applications.parameter.protocol.VosProtocol"
+>
+<constructor-arg><value type="java.net.URL">${registry.endpoint.url}</value>
+</constructor-arg>
+</bean>
 </beans>

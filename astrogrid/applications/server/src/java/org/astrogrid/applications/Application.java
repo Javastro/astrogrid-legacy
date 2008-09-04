@@ -20,7 +20,7 @@ import org.astrogrid.applications.description.exception.ParameterNotInInterfaceE
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.ResultListType;
 import org.astrogrid.applications.manager.ExecutionController;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 
 /**
@@ -33,7 +33,7 @@ import org.astrogrid.community.User;
  * This is the core interface to be implemented by CEA provider back-ends.
  * The functionality splits into the following sections.
  * <h2>Static info</h2>
- * The {@link #getInputParameters()}, {@link #getId()}, {@link #getUser()}, 
+ * The {@link #getInputParameters()}, {@link #getId()}, {@link #getSecurityGuard()}, 
  * {@link #getJobStepID()}, {@link #getApplicationDescription()}, 
  * {@link #getApplicationInterface()}
  * methods return information provided when the application was created. 
@@ -107,7 +107,7 @@ public interface Application  {
     public String getId();
     /** access the user this application is running for 
      * @return the user*/
-   public User getUser() ;
+   public SecurityGuard getSecurityGuard() ;
    /** access the particular interface of the application description that this application conforms to
     * @return an interface object belonging to {@link #getApplicationDescription()} */
    public ApplicationInterface getApplicationInterface() ;

@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibraryTest.java,v 1.3 2008/09/03 14:19:00 pah Exp $
+/*$Id: DefaultProtocolLibraryTest.java,v 1.4 2008/09/04 19:10:53 pah Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import org.astrogrid.security.SecurityGuard;
 
 
 
@@ -35,6 +37,7 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
     }
     
     DefaultProtocolLibrary lib ;
+    private SecurityGuard secGuard = new SecurityGuard();//TODO put security guard with credentials
  
     /*
      * @see TestCase#tearDown()
@@ -50,7 +53,7 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
                 return A_NEW_PROTOCOL;
             }
 
-            public ExternalValue createIndirectValue(URI reference) throws InaccessibleExternalValueException {
+            public ExternalValue createIndirectValue(URI reference, SecurityGuard secGuard) throws InaccessibleExternalValueException {
                 return new ExternalValue() {
 
                     public InputStream read() throws InaccessibleExternalValueException {
@@ -65,7 +68,7 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
         };
        lib.addProtocol(p);
        assertTrue(lib.isProtocolSupported(A_NEW_PROTOCOL));
-       assertNotNull(lib.getExternalValue(A_NEW_PROTOCOL + "://something"));
+       assertNotNull(lib.getExternalValue(A_NEW_PROTOCOL + "://something", secGuard));
     }
 
 
@@ -81,20 +84,20 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
      */
     public void testGetExternalValueURI() throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
         URI uri = new URI("http://www.slashdot.org");
-        assertNotNull(lib.getExternalValue(uri));
+        assertNotNull(lib.getExternalValue(uri, secGuard));
     }
 
     /*
      * Class under test for ExternalValue getExternalValue(String)
      */
     public void testGetExternalValueString() throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
-        assertNotNull(lib.getExternalValue("http://www.slashdot.org"));    
+        assertNotNull(lib.getExternalValue("http://www.slashdot.org", secGuard));    
         // can't really test reading it.
     }
     
     public void testGetExternalValueFails() throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
         try {
-        ExternalValue ev = lib.getExternalValue("unknown-scheme://something-else");
+        ExternalValue ev = lib.getExternalValue("unknown-scheme://something-else", secGuard);
         fail("Expected to throw an excepion");
         } catch (UnrecognizedProtocolException e) {
             // expected
@@ -130,6 +133,11 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
 
 /* 
 $Log: DefaultProtocolLibraryTest.java,v $
+Revision 1.4  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.3  2008/09/03 14:19:00  pah
 result of merge of pah_cea_1611 branch
 

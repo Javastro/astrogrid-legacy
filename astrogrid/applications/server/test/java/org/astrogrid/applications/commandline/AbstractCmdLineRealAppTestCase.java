@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineRealAppTestCase.java,v 1.1 2008/08/29 07:28:27 pah Exp $
+ * $Id: AbstractCmdLineRealAppTestCase.java,v 1.2 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -16,10 +16,9 @@ import static org.junit.Assert.*;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.test.MockMonitor;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -48,7 +47,7 @@ public abstract class AbstractCmdLineRealAppTestCase extends
     public void testParameterSetup() throws Exception
     {
         Application app = testAppDescr.initializeApplication("testExecution",
-                new User(), buildTool(null));
+                secGuard, buildTool(null));
         assertNotNull(app);
         assertTrue(app instanceof CommandLineApplication);
         CommandLineApplication cmdapp = (CommandLineApplication)app;

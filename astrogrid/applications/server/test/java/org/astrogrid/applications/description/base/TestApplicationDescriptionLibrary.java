@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.4 2008/09/03 14:18:52 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.5 2008/09/04 19:10:53 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.applications.description.AppMetadataAdapter;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * Test / Mock implementation of an application description library. will contain a single resource.
@@ -62,7 +62,7 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
         appIface.addOutputParameter("bar");
         appMeta.addInterface(appIface);
 	appDesc = new AbstractApplicationDescription(new AppMetadataAdapter(appMeta) ) {
-            public Application initializeApplication(String jobStepID, User user, Tool tool )
+            public Application initializeApplication(String jobStepID, SecurityGuard secGuard, Tool tool )
                 throws Exception {
                 return null;
             }
@@ -91,6 +91,11 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.5  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.4  2008/09/03 14:18:52  pah
 result of merge of pah_cea_1611 branch
 

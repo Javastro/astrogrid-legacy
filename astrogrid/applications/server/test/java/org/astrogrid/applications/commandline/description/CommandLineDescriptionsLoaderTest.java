@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.2 2008/09/03 12:22:55 pah Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.3 2008/09/04 19:10:54 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -34,7 +34,6 @@ import org.astrogrid.applications.description.exception.ParameterNotInInterfaceE
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CommandLineParameterDefinition;
 import org.astrogrid.applications.description.impl.SwitchTypes;
-import org.astrogrid.community.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -179,8 +178,7 @@ public class CommandLineDescriptionsLoaderTest extends AbstractCmdLineAppTestCas
     
      @Test
     public void testCreateDefaultApplication() throws Exception {
-        User user = new User();
-        Application app = testAppDescr.initializeApplication("foo",user,buildTool("1"));
+        Application app = testAppDescr.initializeApplication("foo",secGuard,buildTool("1"));
         assertNotNull(app);
         assertEquals(CommandLineApplication.class,app.getClass()); 
     }

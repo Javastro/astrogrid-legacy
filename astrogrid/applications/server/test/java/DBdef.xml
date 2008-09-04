@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:DBDefinition xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" 
+xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0" xmlns:p="http://www.ivoa.net/xml/STC/stc-v1.30.xsd"
+xmlns:p1="http://www.ivoa.net/xml/VOApplication/v1.0rc1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd ">
+<schema> 
+<name>stap</name>
+  <table>
+    <name>ogle</name>
+    <description>Stap table</description>
+    <column>
+      <name>ivorn</name>
+      <description>ivo identifier for the VOEvent</description>
+      <ucd>meta.id</ucd>
+      <dataType arraysize="200">char</dataType>
+    </column>
+    <column >
+      <name>url</name>
+      <description>location of the VOEvent file</description>
+      <ucd>meta.ref.url</ucd>
+      <dataType arraysize="200">char</dataType>
+    </column>
+    <column>
+      <name>ra</name>
+      <description>the RA of interest</description>
+      <ucd>pos.eq.ra</ucd>
+      <dataType>double</dataType>
+    </column>
+    <column>
+       <name>dc</name>
+      <description>the Dec of interest</description>
+      <ucd>pos.eq.dec</ucd>
+      <dataType>double</dataType>
+    </column>
+    <column>
+        <name>start</name>
+        <description>the start time</description>
+        <ucd>time.start</ucd>
+        <dataType>long</dataType><!-- does datatype mean the DB datatype or the datatype for VOTable.... -->
+    </column>
+    <column>
+        <name>stop</name>
+        <description>the end time</description>
+        <ucd>time.end</ucd>
+        <dataType>long</dataType>
+    </column>
+     <column>
+        <name>instant</name>
+        <description>the end time</description>
+        <ucd>time.epoch</ucd>
+        <dataType>long</dataType>
+    </column>
+    <column>
+      <name>name</name>
+      <description>name</description>
+      <ucd>meta.id</ucd>
+      <dataType arraysize="50">char</dataType>
+    </column>
+    <column>
+      <name>contactname</name>
+      <description>name</description>
+      <ucd>meta.id</ucd>
+      <dataType arraysize="50">char</dataType>
+    </column>
+     <column>
+      <name>contactemail</name>
+      <description>name</description>
+      <ucd>meta.email</ucd>
+      <dataType arraysize="50">char</dataType>
+    </column>
+     <column>
+      <name>params</name>
+      <description>name</description>
+      <ucd>meta.id</ucd>
+      <dataType arraysize="500">char</dataType>
+    </column>
+     <column>
+      <name>refs</name>
+      <description>name</description>
+      <ucd>meta.id</ucd>
+      <dataType arraysize="500">char</dataType>
+    </column>
+    
+  </table>
+</schema>
+</ceaimp:DBDefinition>

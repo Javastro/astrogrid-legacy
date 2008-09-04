@@ -27,6 +27,10 @@
                   <entry key="cea.webapp.url"  >
                     <value type="java.lang.String">http://localhost:8888/astrogrid-cea-server/</value>
                    </entry>
+                   <entry key="registry.endpoint.url"  >
+                    <value type="java.lang.String">http://registry.astrogrid.org/astrogrid-registry/services/RegistryQuery</value>
+                   </entry>
+ 
                 </map>
             </constructor-arg>
          </bean>

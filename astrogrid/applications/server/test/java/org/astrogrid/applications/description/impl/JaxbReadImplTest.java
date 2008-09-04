@@ -1,5 +1,5 @@
 /*
- * $Id: JaxbReadImplTest.java,v 1.2 2008/09/03 14:19:08 pah Exp $
+ * $Id: JaxbReadImplTest.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 11 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -71,7 +71,7 @@ public class JaxbReadImplTest extends TestCase {
 	  um.setEventHandler(new DefaultValidationEventHandler());  
 	  //Unmarshall the file into a content object
 //	  JAXBElement<?> o = (JAXBElement<?>) um.unmarshal(getClass().getResourceAsStream("/CeaApplicationConfig.xml"));
-	  CECConfig c = (CECConfig) um.unmarshal(getClass().getResourceAsStream("/CeaApplicationConfig.xml"));
+	  CECConfig c = (CECConfig) um.unmarshal(getClass().getResourceAsStream("/TestApplicationConfig.xml"));
 	  assertTrue("should be more than one appliccation", c.getCeaApplicationOrCeaDALServiceOrDBDefinition().size() > 0);
           CeaApplication appdesc = (CeaApplication) c.getCeaApplicationOrCeaDALServiceOrDBDefinition().get(0);
           
@@ -89,6 +89,11 @@ public class JaxbReadImplTest extends TestCase {
 
 /*
  * $Log: JaxbReadImplTest.java,v $
+ * Revision 1.3  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 14:19:08  pah
  * result of merge of pah_cea_1611 branch
  *

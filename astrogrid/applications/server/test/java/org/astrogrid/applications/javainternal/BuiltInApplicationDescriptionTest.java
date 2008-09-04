@@ -1,5 +1,5 @@
 /*
- * $Id: BuiltInApplicationDescriptionTest.java,v 1.2 2008/09/03 14:19:07 pah Exp $
+ * $Id: BuiltInApplicationDescriptionTest.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 21 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,6 +13,12 @@
 package org.astrogrid.applications.javainternal;
 
 import static org.junit.Assert.*;
+
+import java.security.Principal;
+
+import javax.security.auth.Subject;
+
+import com.sun.security.auth.UnixPrincipal;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -33,6 +39,7 @@ import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,9 +49,10 @@ public class BuiltInApplicationDescriptionTest {
     protected Application app;
     protected ApplicationDescriptionLibrary lib;
     protected BuiltInApplicationDescription appDesc;
-    protected User user;
+    protected SecurityGuard user;
     protected Tool tool;
     protected ExecutionHistory history;
+    protected SecurityGuard secGuard;
     private static DefaultProtocolLibrary protocolLib;
     protected static CEAConfiguration conf;
 
@@ -62,7 +70,10 @@ public class BuiltInApplicationDescriptionTest {
 	conf = new MockNonSpringConfiguredConfig();
 	appDesc = new BuiltInApplicationDescription( conf);
 	assertNotNull(appDesc);
-	user = new User("pah@test.org","group","token");
+	Principal principal = new UnixPrincipal("pah");//TODO think about this a little more...
+	Subject sub = new Subject();
+	sub.getPrincipals().add(principal);
+	user = new SecurityGuard(sub);
 
         history = new InMemoryExecutionHistory();
       
@@ -118,6 +129,11 @@ public class BuiltInApplicationDescriptionTest {
 
 /*
  * $Log: BuiltInApplicationDescriptionTest.java,v $
+ * Revision 1.3  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 14:19:07  pah
  * result of merge of pah_cea_1611 branch
  *

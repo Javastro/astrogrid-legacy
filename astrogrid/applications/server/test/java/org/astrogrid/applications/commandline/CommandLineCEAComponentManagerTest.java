@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManagerTest.java,v 1.1 2008/08/29 07:28:27 pah Exp $
+/*$Id: CommandLineCEAComponentManagerTest.java,v 1.2 2008/09/04 19:10:52 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary;
 import org.astrogrid.applications.description.execution.Tool;
@@ -46,6 +47,7 @@ public class CommandLineCEAComponentManagerTest
     private ExecutionController ec;
     private CommandLineApplicationDescription desc;
     private ExecutionHistory eh;
+    private SecurityGuard secGuard = new SecurityGuard();//TODO will want to test the operation of securityGuard in future
 
     @Override
     public void setUp() throws Exception {
@@ -76,7 +78,7 @@ public class CommandLineCEAComponentManagerTest
    {
        Tool tool = Toolbuilder.buildTool("0", desc);
        Toolbuilder.fillDirect(tool);
-       String exid = ec.init(tool, "CommandLineCEAComponentManagerTest");
+       String exid = ec.init(tool, "CommandLineCEAComponentManagerTest", secGuard);
        Application app = eh.getApplicationFromCurrentSet(exid);
        app.checkParameterValues();  
    }
@@ -86,7 +88,7 @@ public class CommandLineCEAComponentManagerTest
    {
        Tool tool = Toolbuilder.buildTool("0", desc);
        Toolbuilder.fillDirect(tool);
-       String exid = ec.init(tool, "CommandLineCEAComponentManagerTest");
+       String exid = ec.init(tool, "CommandLineCEAComponentManagerTest", secGuard);
        Application app = eh.getApplicationFromCurrentSet(exid);
        assertTrue(app instanceof CommandLineApplication);
        CommandLineApplication capp = (CommandLineApplication) app;
@@ -105,7 +107,7 @@ public class CommandLineCEAComponentManagerTest
       
       Tool tool = Toolbuilder.buildTool("0", desc);
       Toolbuilder.fillDirect(tool);
-      String exid = ec.init(tool, "CommandLineCEAComponentManagerTest");
+      String exid = ec.init(tool, "CommandLineCEAComponentManagerTest", secGuard);
       Application app = eh.getApplicationFromCurrentSet(exid);
       assertTrue(app instanceof CommandLineApplication);
       
@@ -154,6 +156,11 @@ public class CommandLineCEAComponentManagerTest
 
 /* 
 $Log: CommandLineCEAComponentManagerTest.java,v $
+Revision 1.2  2008/09/04 19:10:52  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.1  2008/08/29 07:28:27  pah
 moved most of the commandline CEC into the main server - also new schema for CEAImplementation in preparation for DAL compatible service registration
 

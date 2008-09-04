@@ -1,5 +1,5 @@
 /*
- * $Id: IvornProtocolTest.java,v 1.2 2008/09/03 14:19:00 pah Exp $
+ * $Id: IvornProtocolTest.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,6 +14,7 @@ package org.astrogrid.applications.parameter.protocol;
 
 import static org.junit.Assert.*;
 
+import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class IvornProtocolTest {
     }
 
     /**
-     * Test method for {@link org.astrogrid.applications.parameter.protocol.IvornProtocol#createIndirectValue(java.net.URI)}.
+     * Test method for {@link org.astrogrid.applications.parameter.protocol.IvornProtocol#createIndirectValue(java.net.URI, SecurityGuard)}.
      */
     @Test
     public void testCreateIndirectValue() {
@@ -84,6 +85,11 @@ public class IvornProtocolTest {
 
 /*
  * $Log: IvornProtocolTest.java,v $
+ * Revision 1.3  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 14:19:00  pah
  * result of merge of pah_cea_1611 branch
  *

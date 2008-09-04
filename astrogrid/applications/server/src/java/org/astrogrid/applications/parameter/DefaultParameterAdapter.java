@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.15 2008/09/03 14:18:57 pah Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.16 2008/09/04 19:10:53 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,8 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
+import org.astrogrid.security.SecurityGuard;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +34,7 @@ import java.io.StringWriter;
 /** The default implementation of {@link org.astrogrid.applications.parameter.ParameterAdapter}
  * <p/>
  * Handles both direct and indirect parameters, returing them as an in-memory string.
- * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(ParameterValue)
+ * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(ParameterValue, SecurityGuard)
  * @author Noel Winstanley (nw@jb.man.ac.uk)
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @todo should really do different things according to what the type of the parameter is.
@@ -200,6 +202,11 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.16  2008/09/04 19:10:53  pah
+ASSIGNED - bug 2825: support VOSpace
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+
 Revision 1.15  2008/09/03 14:18:57  pah
 result of merge of pah_cea_1611 branch
 

@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.16 2008/09/03 14:18:58 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.17 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -112,7 +112,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl extends org.springfr
                ctool.setId(sb.toString());
            }
            this.decide("init", ctool);
-           return cec.init(ctool, jobstepID.toString());
+           return cec.init(ctool, jobstepID.toString(), CeaSecurityGuard.getInstanceFromContext());
          }
          catch (Exception e) {
            logger.error("init(_tool tool = " + tool + ") - Throwable caught:", e);
@@ -272,6 +272,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
    * the authenticated identity, if any, are loaded. If the request has not
    * been authenticated, this method stores a security guard with no
    * principals or credentials.
+   * @TODO review all this caching business - I think it it broken and not needed anyway as he securityGuard is passed into the {@link Application} (which represents an applicaiton execution) at creation time.
    */
    private void cacheSecurityGuard() throws ClassNotFoundException, 
                                             InstantiationException, 
@@ -304,7 +305,7 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
     HashMap h = new HashMap();
     h.put("cea.soap.operation", operationName);
     h.put("cea.application", a);
-    h.put("cea.job.owner", (a == null)? null : a.getUser().getPrincipal());
+    h.put("cea.job.owner", (a == null)? null : a.getSecurityGuard().getAccountIvorn());//FIXME is the account ivorn appropriate here...
     CeaSecurityGuard.getInstanceFromContext().decide(h);
   }
   

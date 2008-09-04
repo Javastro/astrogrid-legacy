@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationEnvironment.java,v 1.2 2008/09/03 14:18:53 pah Exp $
+ * $Id: CommandLineApplicationEnvironment.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.environment.CannotCreateWorkingDirectoryException;
 import org.astrogrid.applications.environment.WorkingDirectoryAlreadyExists;
 import org.astrogrid.applications.manager.idgen.IdGen;
+import org.astrogrid.security.SecurityGuard;
 /**
  * Encapsulates all that is needed to run a command line application in its own workspace.
  * @author Paul Harrison (pah@jb.man.ac.uk)
@@ -25,10 +26,10 @@ import org.astrogrid.applications.manager.idgen.IdGen;
  */
 public class CommandLineApplicationEnvironment  extends ApplicationEnvironment {
  
-   public CommandLineApplicationEnvironment(String jobstepId, org.astrogrid.community.User user, IdGen idg, Configuration config)
+   public CommandLineApplicationEnvironment(String jobstepId, SecurityGuard sg, IdGen idg, Configuration config)
       throws CannotCreateWorkingDirectoryException, WorkingDirectoryAlreadyExists {
 
-      super(jobstepId, user, idg, config);
+      super(jobstepId, sg, idg, config);
    }
 
 }

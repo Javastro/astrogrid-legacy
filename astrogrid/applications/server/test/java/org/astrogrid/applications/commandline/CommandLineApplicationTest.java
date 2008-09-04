@@ -224,7 +224,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         }
         try {
         Application app = testAppDescr.initializeApplication("testExecution",
-                new User(), t);
+                secGuard, t);
         assertNotNull(app);
         assertTrue(app instanceof CommandLineApplication);
         // and now run it.
@@ -276,7 +276,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                e.printStackTrace();
            }
            Application app = testAppDescr.initializeApplication("testExecution",
-                   new User(), t);
+                   secGuard, t);
            assertNotNull(app);
            assertTrue(app instanceof CommandLineApplication);
 
@@ -314,7 +314,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
         // now create an application based on these details
         AbstractApplication app = (AbstractApplication) testAppDescr.initializeApplication("testExecution",
-                new User(), t);
+                secGuard, t);
 
         assertNotNull(app);
         assertTrue(app instanceof CommandLineApplication);
@@ -348,11 +348,6 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         return results;
     }
 
-    @Test
-    public void testGetEnvironment()
-    {
-       fail("not yet implemented");
-    }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.commandline.AbstractCmdLineAppTestCase#buildTool(java.lang.String)

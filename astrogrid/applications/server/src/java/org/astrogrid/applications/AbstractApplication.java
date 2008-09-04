@@ -27,6 +27,7 @@ import org.astrogrid.applications.parameter.ParameterAdapterException;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 import org.apache.commons.collections.iterators.IteratorChain;
 import org.apache.commons.logging.Log;
@@ -59,7 +60,7 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
  * The {@link #instantiateAdapter(ParameterValue, ParameterDescription, ExternalValue)}
  * method may be overridden to return instances of a custom 
  * {@link org.astrogrid.applications.parameter.ParameterAdapter} if needed.<br/>
- * The default implementaiton of {@link #attemptAbort(boolean)} does nothing. Providers may extend this if suitable.<br />
+ * The default implementation of {@link #attemptAbort(boolean)} does nothing. Providers may extend this if suitable.<br />
  * The {@link #createTemplateMessage()} method can also be overridden to return more application-specific information, similarly {@link #toString()} if desired.<br/>
  * 
  * <h2>Helper Methods</h2>
@@ -70,7 +71,7 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 *  <h3>Parameter Adapters</h3>
 *    There are methods to iterate through input parameterAdapters, 
  * output parameterAdapters, and all parameterAdapters - ant to 
- * find input / output / eitther kind of adapter by parameter name.
+ * find input / output / either kind of adapter by parameter name.
 *    All these methods have {@link #createAdapters()} as a precondition - 
  * this initializes the adapter sets.
 *  <h3>Progress Reporting</h3>
@@ -90,7 +91,7 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
  */
 public abstract class AbstractApplication extends Observable implements Application, Identify {
    /** interface to the set of identifiers for an application
-    * @deprecated put eveything in the {@link ApplicationEnvironment} */
+    * @deprecated put everything in the {@link ApplicationEnvironment} */
    public static interface IDs {
         /** the cea-assigned id for this application execution */
        public String getId();
@@ -336,13 +337,13 @@ protected final ApplicationEnvironment applicationEnvironment;
         results.getResult().clear();
         for  (Iterator params = inputParameterValues(); params.hasNext();){
              ParameterValue param = (ParameterValue)params.next();       
-            ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param) : null);
+            ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param, applicationEnvironment.getSecGuard()) : null);
              ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),iVal);
              inputAdapters.add(adapter);
           }
         for  (Iterator params = outputParameterValues(); params.hasNext();){
             ParameterValue param = (ParameterValue)params.next();       
-           ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param) : null);
+           ExternalValue iVal = (param.isIndirect() ? lib.getExternalValue(param, applicationEnvironment.getSecGuard()) : null);
             ParameterAdapter adapter = this.instantiateAdapter(param,getApplicationDescription().getParameterDescription(param.getId()),iVal);
             outputAdapters.add(adapter);
             results.getResult().add(adapter.getWrappedParameter());
@@ -508,8 +509,8 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
       return status;
    }
 
-   public final User getUser() {
-      return applicationEnvironment.getUser();
+   public final SecurityGuard getSecurityGuard() {
+      return applicationEnvironment.getSecGuard();
    }
    /** iterator over all parameter values in the tool inputs */
    protected final  Iterator inputParameterValues() {

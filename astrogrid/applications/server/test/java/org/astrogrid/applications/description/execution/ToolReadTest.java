@@ -1,5 +1,5 @@
 /*
- * $Id: ToolReadTest.java,v 1.2 2008/09/03 14:19:07 pah Exp $
+ * $Id: ToolReadTest.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 1 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
@@ -57,9 +58,10 @@ public class ToolReadTest {
 		    um.setSchema(schema);
 		    um.setEventHandler(handler);
 		    // Unmarshall the file into a content object
-		    tool = (Tool) um
-			    .unmarshal(getClass()
-					.getResourceAsStream("/testTool.xml"));
+		    JAXBElement<?> o = (JAXBElement<?>) um
+		    .unmarshal(getClass()
+				.getResourceAsStream("/testTool.xml"));
+		    tool = (Tool) o.getValue();
 		    
 		} catch (Exception e) {
 		    System.err.println("error reading tool");
@@ -81,6 +83,11 @@ public class ToolReadTest {
 
 /*
  * $Log: ToolReadTest.java,v $
+ * Revision 1.3  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 14:19:07  pah
  * result of merge of pah_cea_1611 branch
  *

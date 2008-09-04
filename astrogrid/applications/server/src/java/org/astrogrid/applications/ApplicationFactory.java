@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationFactory.java,v 1.2 2008/09/03 14:18:33 pah Exp $
+ * $Id: ApplicationFactory.java,v 1.3 2008/09/04 19:10:53 pah Exp $
  * 
  * Created on 12 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,7 +13,7 @@
 package org.astrogrid.applications;
 
 import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.community.User;
+import org.astrogrid.security.SecurityGuard;
 
 /**
  * Creating new application instances.
@@ -26,18 +26,23 @@ public interface ApplicationFactory {
     /**
      * Apply this application description to a set of parameters, to create an instance of the application, ready to execute.
      * @param callerAssignedID external identifer for the new application. This identifier is assigned by the caller, but is not used within CEA for distinguishing the application
-     * @param user the user whose permissions to execute this tool under
+     * @param secGuard the user whose permissions to execute this tool under
      * @param tool data object that defines which interface to call, and with what parameter values.
      * @return an <tt>Application</tt>
      * @throws Exception
      */
-    public  Application initializeApplication(String callerAssignedID, User user, Tool tool) throws Exception;
+    public  Application initializeApplication(String callerAssignedID, SecurityGuard secGuard, Tool tool) throws Exception;
 
 }
 
 
 /*
  * $Log: ApplicationFactory.java,v $
+ * Revision 1.3  2008/09/04 19:10:53  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement
+ *
  * Revision 1.2  2008/09/03 14:18:33  pah
  * result of merge of pah_cea_1611 branch
  *
