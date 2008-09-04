@@ -1,5 +1,5 @@
 /*
- * $Id: SiapController.java,v 1.2 2008/09/03 14:18:34 pah Exp $
+ * $Id: SiapController.java,v 1.3 2008/09/04 21:20:02 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -64,7 +64,7 @@ public class SiapController extends AbstractAccessProtocolController {
 
 	    ExecutionController executionController = manager.getExecutionController();
 	    String jobid = executionController.init(tool,
-		    "job from siap interface");
+		    "job from siap interface", secGuard);
 	    //directly run the job
 	    executionController.execute(jobid);
 	    QueryService qs = manager.getQueryService();
@@ -132,6 +132,11 @@ public class SiapController extends AbstractAccessProtocolController {
 
 /*
  * $Log: SiapController.java,v $
+ * Revision 1.3  2008/09/04 21:20:02  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement - also UWS security will not be functional
+ *
  * Revision 1.2  2008/09/03 14:18:34  pah
  * result of merge of pah_cea_1611 branch
  *

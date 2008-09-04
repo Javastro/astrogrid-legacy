@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractorCommandLineFormationTest.java,v 1.3 2008/09/03 14:18:49 pah Exp $
+ * $Id: SExtractorCommandLineFormationTest.java,v 1.4 2008/09/04 21:20:02 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -14,14 +14,12 @@ package org.astrogrid.applications.commandline;
 
 import static org.junit.Assert.*;
 
-
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.commandline.sextractor.SExtractor;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.community.User;
 import org.junit.Test;
 
 /**
@@ -109,8 +107,8 @@ public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTe
     
     @Test
     public void testCreateCustomApplication() throws Exception{
-        User user = new User();
-	Application app = testAppDescr.initializeApplication("foo",user ,buildTool("1"));
+        
+	Application app = testAppDescr.initializeApplication("foo",secGuard ,buildTool("1"));
         assertNotNull(app);
         assertTrue("was expecting app to be SExtractor, but actually is "+ app.getClass().getCanonicalName(),app instanceof SExtractor);
         

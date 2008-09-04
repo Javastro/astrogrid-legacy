@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractAccessProtocolController.java,v 1.2 2008/09/03 14:18:34 pah Exp $
+ * $Id: AbstractAccessProtocolController.java,v 1.3 2008/09/04 21:20:02 pah Exp $
  * 
  * Created on 14 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.security.SecurityGuard;
 import org.springframework.web.util.UrlPathHelper;
 
 /**
@@ -54,6 +55,7 @@ public class AbstractAccessProtocolController {
     private final String appRegexp ;
     protected final Pattern appPattern;
     protected ApplicationDescription appdesc;
+    protected SecurityGuard secGuard;
     /**
      * Configure a tool from the input parameters.
      * 
@@ -122,6 +124,11 @@ public class AbstractAccessProtocolController {
 
 /*
  * $Log: AbstractAccessProtocolController.java,v $
+ * Revision 1.3  2008/09/04 21:20:02  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement - also UWS security will not be functional
+ *
  * Revision 1.2  2008/09/03 14:18:34  pah
  * result of merge of pah_cea_1611 branch
  *

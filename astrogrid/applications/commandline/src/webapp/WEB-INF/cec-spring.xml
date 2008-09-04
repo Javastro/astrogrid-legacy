@@ -35,6 +35,10 @@
                    <entry key="cea.application.authorityid">
                      <jee:jndi-lookup resource-ref="true" jndi-name="cea.application.authorityid" expected-type="java.lang.String" />
                   </entry>
+                    <entry key="registry.endpoint.url"  >
+                        <jee:jndi-lookup resource-ref="true" jndi-name="org.astrogrid.registry.query.endpoint" expected-type="java.lang.String" />
+                      
+                    </entry>
                 </map>
             </constructor-arg>
          </bean>

@@ -1,5 +1,5 @@
 /*
- * $Id: AppJobCreationController.java,v 1.2 2008/09/03 14:18:34 pah Exp $
+ * $Id: AppJobCreationController.java,v 1.3 2008/09/04 21:20:02 pah Exp $
  * 
  * Created on 9 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,7 +13,6 @@
 package org.astrogrid.applications.uws;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +24,6 @@ import org.astrogrid.applications.component.CEAComponents;
 import org.astrogrid.applications.description.execution.Tool;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.util.UrlPathHelper;
 
 /**
  * An application job creation controller that is not strictly UWS, but allows
@@ -44,7 +42,6 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
      */
     private static final Log logger = LogFactory
 	    .getLog(AppJobCreationController.class);
-
     public AppJobCreationController(CEAComponents manager) {
 	super(manager, "/app/+([^/\\?#]+)[/\\?#]?");
     }
@@ -53,9 +50,9 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
     public void startApplication(HttpServletRequest request,
 	    HttpServletResponse response) throws IOException, CeaException {
 	Tool tool = configureTool(request);
-
+        secGuard = UWSUtils.createSecurityGuard(request);
 	String jobid = manager.getExecutionController().init(tool,
-		"job from simple post interface");
+		"job from simple post interface", secGuard);
 	manager.getExecutionController().execute(jobid);
 	UWSUtils.redirect(request, response, jobid);
 //	response.sendRedirect(rURL.toString());
@@ -70,6 +67,11 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
 
 /*
  * $Log: AppJobCreationController.java,v $
+ * Revision 1.3  2008/09/04 21:20:02  pah
+ * ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
+ * Added the basic implementation to support VOSpace  - however essentially untested on real deployement - also UWS security will not be functional
+ *
  * Revision 1.2  2008/09/03 14:18:34  pah
  * result of merge of pah_cea_1611 branch
  *
