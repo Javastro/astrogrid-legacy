@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Release notes for security facade 2008.2.01</title>
+  
+  <body>
+  	
+    <section name="Release notes for security facade 2008.2.01">
+      <p>
+        V2008.2.01 is a minor enhancement to v2008.2. It not worth upgrading
+        unless you are experiencing the specific problem described below.
+      </p>
+      
+      <subsection name="Inclusion of classes from Apache Xalan">
+        <p>
+          The security facade includes modified copies of classes from the
+          Apache library WSS4J. These classes need one class,
+          <i>org.apache.xml.utils.URI</i>, from Apache Xalan and that class
+          in turns uses the package <i>org.apache.xml.res</i> which is also in
+          Xalan.
+        </p>
+        <p>
+          If an application uses the SOAP-digital-signature feature of the
+          security facade and does not link in a Xalan jar, then the results
+          are variable. With some JDKs, everything works as expected. With
+          others, there are complaints of missing classes. See
+          <a href="http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2827">bug 2827</a>
+          for details.
+        </p>
+        <p>
+          In general, we expect applications to use the XSLT and XPath
+          implementations that come with the JDK rather than depending
+          explicitly on Xalan. Therefore, the few Xalan classes needed by
+          the facade are included in the facade itself and packaged in its jar.
+          The code has been taken from Apache Xalan 2.7.1.
+        </p>
+      </subsection>
+    </section>
+  
+  </body>
+  
+ </document>
