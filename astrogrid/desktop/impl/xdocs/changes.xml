@@ -15,7 +15,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.2" date="unreleased">
+<release version="2008.2" date="unreleased"/>
+<release version="2008.1.2" date="unreleased">
+  <action dev="gtr" type="fix" issue="2827">
+    Upgraded security to 2008.2.01.
+  </action>
 </release>
 <release version="2008.1.1" date="2008-8-20">
     <action dev="nw" type="add">
