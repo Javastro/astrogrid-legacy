@@ -1,5 +1,5 @@
 /*
- * $Id: CEAComponentContainer.java,v 1.2 2008/09/03 14:18:57 pah Exp $
+ * $Id: CEAComponentContainer.java,v 1.3 2008/09/05 07:55:45 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -41,19 +41,10 @@ import org.springframework.beans.factory.ListableBeanFactory;
  * @version $Name:  $
  * @since VOTech Stage 7
  */
-public final class CEAComponentContainer implements CEAComponents, BeanFactoryAware {
+public final class CEAComponentContainer extends AbstractCEAComponentContainer implements CEAComponents, BeanFactoryAware {
 
    // would be nice if this were autowireable - using the BeanFactoryAware interface for now
     private static ListableBeanFactory appCtx;
-    
-    private ControlService controlService;
-    private ExecutionController executionController;
-    private MetadataService metadataService;
-    private QueryService queryService;
-    private RegistryUploader registryUploaderService;
-    private ExecutionHistory executionHistoryService;
-    private ApplicationDescriptionLibrary applicationDescriptionLibrary;
-    
     
     public CEAComponentContainer(ControlService controlService, ExecutionController executionController,
 	    MetadataService metadataService, QueryService queryService,
@@ -71,35 +62,21 @@ public final class CEAComponentContainer implements CEAComponents, BeanFactoryAw
      * Retrieve an instance of itself from the underlying container technology.
      * @return
      */
-    public static CEAComponentContainer getInstance()
+    public static AbstractCEAComponentContainer getInstance()
     {
-	CEAComponentContainer retval = null;;
+	AbstractCEAComponentContainer retval = null;;
 	if(appCtx != null)
 	{
-	   retval = (CEAComponentContainer) appCtx.getBean("ComponentManager");
+	   retval = (AbstractCEAComponentContainer) appCtx.getBean("ComponentManager");
 	   
 	}
 	return retval;
     }
     /**
-     * @return the controlService
-     */
-    public ControlService getControlService() {
-        return controlService;
-    }
-
-    /**
      * @param controlService the controlService to set
      */
     public void setControlService(ControlService controlService) {
         this.controlService = controlService;
-    }
-
-    /**
-     * @return the executionController
-     */
-    public ExecutionController getExecutionController() {
-        return executionController;
     }
 
     /**
@@ -110,13 +87,6 @@ public final class CEAComponentContainer implements CEAComponents, BeanFactoryAw
     }
 
     /**
-     * @return the metadataService
-     */
-    public MetadataService getMetadataService() {
-        return metadataService;
-    }
-
-    /**
      * @param metadataService the metadataService to set
      */
     public void setMetadataService(MetadataService metadataService) {
@@ -124,24 +94,10 @@ public final class CEAComponentContainer implements CEAComponents, BeanFactoryAw
     }
 
     /**
-     * @return the queryService
-     */
-    public QueryService getQueryService() {
-        return queryService;
-    }
-
-    /**
      * @param queryService the queryService to set
      */
     public void setQueryService(QueryService queryService) {
         this.queryService = queryService;
-    }
-
-    /**
-     * @return the registryUploaderService
-     */
-    public RegistryUploader getRegistryUploaderService() {
-        return registryUploaderService;
     }
 
     /**
@@ -213,16 +169,8 @@ public TestSuite getSuite() {
 	CEAComponentContainer.appCtx =  (ListableBeanFactory) beanFactory;
     }
 
-    public ExecutionHistory getExecutionHistoryService() {
-	return executionHistoryService;
-    }
-
     public void setExecutionHistoryService(ExecutionHistory executionHistoryService) {
         this.executionHistoryService = executionHistoryService;
-    }
-
-    public ApplicationDescriptionLibrary getApplicationDescriptionLibrary() {
-        return applicationDescriptionLibrary;
     }
 
     public void setApplicationDescriptionLibrary(
@@ -235,6 +183,9 @@ public TestSuite getSuite() {
 
 /*
  * $Log: CEAComponentContainer.java,v $
+ * Revision 1.3  2008/09/05 07:55:45  pah
+ * extract out a component container base class
+ *
  * Revision 1.2  2008/09/03 14:18:57  pah
  * result of merge of pah_cea_1611 branch
  *

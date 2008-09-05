@@ -22,12 +22,11 @@
 <!-- note that the beanIds are generally the names of the interfaces that the bean implements if applicable  -->
 
 <bean id="ComponentManager" class="org.astrogrid.applications.component.CEAComponentContainer">
-  <!--  I think that this is now not a variable component could be moved to central config --> 
+  
 </bean>
 
 <bean id="internalComponentManager" class="org.astrogrid.applications.component.InternalCeaComponentFactory">
 <!-- this is the internal component managager that is used to stop some dependency propagation --></bean>
-
 
 <bean id="RegistryUploader" class="org.astrogrid.applications.description.registry.RegistryUploader">
    
@@ -68,6 +67,7 @@
 	
 </bean>
 
+<!-- note that the other protocols have void constructors and are wired with annotations. -->
 <bean id="VosProtocol"
    class="org.astrogrid.applications.parameter.protocol.VosProtocol"
 >
