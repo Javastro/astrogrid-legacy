@@ -336,6 +336,7 @@ public class OAIHandler extends HttpServlet {
     public static Writer getWriter(HttpServletRequest request, HttpServletResponse response)
 	throws IOException {
 	Writer out;
+	response.setContentType("UTF-8");
 	String encodings = request.getHeader("Accept-Encoding");
         if (debug) {
             System.out.println("encodings=" + encodings);

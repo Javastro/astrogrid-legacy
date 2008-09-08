@@ -194,8 +194,10 @@ public abstract class RecordFactory {
       }
        }
        xmlHeader.append("</oai:header>");
+       String resultString = xmlHeader.toString();
+       xmlHeader = null;
        return new String[] {
-      xmlHeader.toString(),
+      resultString,
       identifier
        };
    }

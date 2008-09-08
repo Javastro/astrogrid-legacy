@@ -215,6 +215,8 @@ public class OAIHandler extends HttpServlet {
 //             throw new IOException(e.getMessage());
 //         }
         Date then = null;
+        String result;
+        Writer out = null;
         if (monitor) then = new Date();
 	if (debug) {
 	    Enumeration headerNames = request.getHeaderNames();
@@ -249,7 +251,7 @@ public class OAIHandler extends HttpServlet {
                         serverTransformer = transformer;
                     }
                 }
-		String result = getResult(attributes, request, response, serverTransformer, serverVerbs, extensionVerbs, extensionPath);
+		        result = getResult(attributes, request, response, serverTransformer, serverVerbs, extensionVerbs, extensionPath);
 //                 logger.debug("result=" + result);
                 
 //                 if (serverTransformer) { // render on the server
@@ -263,8 +265,8 @@ public class OAIHandler extends HttpServlet {
 //                     response.setContentType("text/xml; charset=UTF-8");
 //                     result = getResult(request);
 //                 }
-        
-                Writer out = getWriter(request, response);
+		        response.setContentType("text/xml; charset=UTF-8");
+                out = getWriter(request, response);
                 out.write(result);
                 out.close();
             } catch (FileNotFoundException e) {
@@ -280,6 +282,14 @@ public class OAIHandler extends HttpServlet {
             } catch (Throwable e) {
                 e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }finally {
+            	result = null;
+            	if(out != null) {
+            		out.close();
+            	}
+            	System.out.println("clean up done with gc call");
+            	out = null;
+            	System.gc();
             }
         }
         if (monitor) {
@@ -288,6 +298,7 @@ public class OAIHandler extends HttpServlet {
         }
     }
 
+    /*
     public static String getResult(HashMap attributes,
 				   HttpServletRequest request,
 				   HttpServletResponse response,
@@ -295,6 +306,14 @@ public class OAIHandler extends HttpServlet {
 				   HashMap serverVerbs,
 				   HashMap extensionVerbs,
 				   String extensionPath)
+				   */
+    public  String getResult(HashMap attributes,
+			   HttpServletRequest request,
+			   HttpServletResponse response,
+			   Transformer serverTransformer,
+			   HashMap serverVerbs,
+			   HashMap extensionVerbs,
+			   String extensionPath)    
         throws Throwable {
         try {
             boolean isExtensionVerb = extensionPath.equals(request.getPathInfo());
@@ -356,7 +375,8 @@ public class OAIHandler extends HttpServlet {
      * @param response the servlet's response information
      * @exception IOException an I/O error occurred
      */
-    public static Writer getWriter(HttpServletRequest request, HttpServletResponse response)
+    //public static Writer getWriter(HttpServletRequest request, HttpServletResponse response)
+    public Writer getWriter(HttpServletRequest request, HttpServletResponse response)
 	throws IOException {
 	Writer out;
 	String encodings = request.getHeader("Accept-Encoding");

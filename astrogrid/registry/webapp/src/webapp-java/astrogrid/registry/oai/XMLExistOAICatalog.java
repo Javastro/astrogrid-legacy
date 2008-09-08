@@ -34,7 +34,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.ByteArrayInputStream;
+//import java.io.ByteArrayInputStream;
+import org.xml.sax.InputSource;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -152,8 +153,13 @@ public class XMLExistOAICatalog extends AbstractCatalog {
        String versionNumber = rsSearch.getResourceVersion();
        
        maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",200);
+       Document sourceFile;
+       Document oaiDoc;
+       SAXParser saxParser;
+       String xmlDoc;
+       StringReader xmlReader = null;
        try {
-           Document sourceFile = rsSearch.getQueryHelper().getResourceByIdentifier(oaiIdentifier);
+           sourceFile = rsSearch.getQueryHelper().getResourceByIdentifier(oaiIdentifier);
            if(sourceFile.getElementsByTagNameNS("*","Resource").getLength() == 0)
                throw new IdDoesNotExistException(oaiIdentifier);
 
@@ -163,18 +169,20 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            XSLHelper xsh = new XSLHelper();
            //resultDoc = sourceFile;
            //Document oaiDoc = xsh.transformToOAI(resultDoc,versionNumber);
-           Document oaiDoc = xsh.transformToOAI(sourceFile,versionNumber);
+           oaiDoc = xsh.transformToOAI(sourceFile,versionNumber);
         
            //System.out.println("the oai from xmlexistoaicatalog = " + DomHelper.DocumentToString(oaiDoc));
-           String xmlDoc = DomHelper.DocumentToString(oaiDoc);
-           ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
+           xmlDoc = DomHelper.DocumentToString(oaiDoc);
+           //ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
+           InputSource inputs = new InputSource((xmlReader = new StringReader(xmlDoc)));
            RecordStringHandler rsh = new RecordStringHandler();
            SAXParserFactory factory = SAXParserFactory.newInstance();
            factory.setNamespaceAware(true);
            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-           SAXParser saxParser = factory.newSAXParser();
+           saxParser = factory.newSAXParser();
            //saxParser.parse(new File(sourceFile), rsh);
-           saxParser.parse(bas, rsh);
+           //saxParser.parse(bas, rsh);
+           saxParser.parse(inputs, rsh);
            nativeMap = rsh.getNativeRecords();
       }catch(SOAPFaultException e) {
     	  e.printStackTrace();
@@ -198,12 +206,27 @@ public class XMLExistOAICatalog extends AbstractCatalog {
       }catch(RegistryException re) {
           re.printStackTrace();
           throw new OAIInternalServerError(re.getMessage());
+      }finally {
+    	  xmlDoc = null;
+    	  oaiDoc = null;
+    	  sourceFile = null;
+    	  saxParser = null;
+    	  if(xmlReader != null) {
+    		  xmlReader.close();
+    	  }
+    	  xmlReader = null;
       }
        
    }
    
    
    private void populateNativeMap(String from, String until, String set,int fromSequence) throws OAIInternalServerError, NoItemsMatchException {
+       Node sourceFile;
+       Document oaiDoc;
+       SAXParser saxParser;
+       String xmlDoc;
+       StringReader xmlReader = null;
+       ResourceSet rs;
        try {
            String contractVersion = props.getProperty("registry_contract_version",null);
            ISearch rsSearch = null;
@@ -296,12 +319,12 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            log.info("the build xql = " + xqlQuery);
            
            XMLDBService xdb = XMLDBFactory.createXMLDBService();
-           Node sourceFile = null;
+           sourceFile = null;
            Collection coll = null;
            try {
                long currentTimeInMillis = System.currentTimeMillis();
                coll = xdb.openCollection(collectionName);            
-               ResourceSet rs = xdb.queryXQuery(coll, xqlQuery);
+               rs = xdb.queryXQuery(coll, xqlQuery);
                log.info("OAI query time = " + (System.currentTimeMillis() - currentTimeInMillis));
                log.info("OAI query performed resulted in returns/size = " + rs.getSize());
                if(rs.getSize() > 0) {
@@ -324,18 +347,21 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            
            XSLHelper xsh = new XSLHelper();
            //Document oaiDoc = xsh.transformToOAI(resultDoc,versionNumber);
-           Document oaiDoc = xsh.transformToOAI(sourceFile,versionNumber);
+           oaiDoc = xsh.transformToOAI(sourceFile,versionNumber);
 
            //System.out.println("the oai from xmlexistoaicataling populatenativerecords = " + DomHelper.DocumentToString(oaiDoc));
-           String xmlDoc = DomHelper.DocumentToString(oaiDoc);
+           xmlDoc = DomHelper.DocumentToString(oaiDoc);
            //System.out.println("here is the xmlDOC = " + xmlDoc);
-           ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
+           //ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
+           System.out.println("trying inputSource");
+           InputSource inputs = new InputSource((xmlReader = new StringReader(xmlDoc)));
            RecordStringHandler rsh = new RecordStringHandler();
            SAXParserFactory factory = SAXParserFactory.newInstance();
            factory.setNamespaceAware(true);
            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-           SAXParser saxParser = factory.newSAXParser();
-           saxParser.parse(bas, rsh);
+           saxParser = factory.newSAXParser();
+           //saxParser.parse(bas, rsh);
+           saxParser.parse(inputs, rsh);
            nativeMap = rsh.getNativeRecords();
           } catch (SAXException e) {
               e.printStackTrace();
@@ -352,6 +378,16 @@ public class XMLExistOAICatalog extends AbstractCatalog {
           } catch(RegistryException re) {
               re.printStackTrace();
               throw new OAIInternalServerError(re.getMessage());
+          }finally {
+        	  xmlDoc = null;
+        	  oaiDoc = null;
+        	  sourceFile = null;
+        	  saxParser = null;
+        	  rs = null;
+        	  if(xmlReader != null) {
+        		  xmlReader.close();
+        	  }
+        	  xmlReader = null;
           }
    }
 
@@ -576,6 +612,9 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    }
         listIdentifiersMap.put("headers", headers.iterator());
         listIdentifiersMap.put("identifiers", identifiers.iterator());
+        System.out.println("cleaning out nativeMap should be done with it");
+        nativeMap.clear();
+        nativeMap = null;
         return listIdentifiersMap;
     }
 
@@ -695,6 +734,10 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         }
              listIdentifiersMap.put("headers", headers.iterator());
              listIdentifiersMap.put("identifiers", identifiers.iterator());
+
+             System.out.println("cleaning out nativeMap should be done with it (with resumptiontoken)");
+             nativeMap.clear();
+             nativeMap = null;             
              return listIdentifiersMap;
     }
 

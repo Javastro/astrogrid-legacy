@@ -69,18 +69,20 @@ public class ListIdentifiers extends ServerVerb {
 	requiredParamNames2.add("resumptionToken");
     }
 
-    public static String construct(HashMap context,
+    public  static String construct(HashMap context,
                                    HttpServletRequest request,
                                    HttpServletResponse response,
                                    Transformer serverTransformer)
 	throws OAIInternalServerError, TransformerException {
         Properties properties =
 	    (Properties)context.get("OAIHandler.properties");
+        //System.out.println("dropping static construct for listidentifiers");
 	AbstractCatalog abstractCatalog =
 	    (AbstractCatalog)context.get("OAIHandler.catalog");
 	boolean xmlEncodeSetSpec = "true".equalsIgnoreCase((String)properties.getProperty("OAIHandler.xmlEncodeSetSpec"));
 	boolean urlEncodeSetSpec = !"false".equalsIgnoreCase((String)properties.getProperty("OAIHandler.urlEncodeSetSpec"));
 	String baseURL = (String)properties.getProperty("OAIHandler.baseURL");
+    Map listIdentifiersMap = null;
 	if (baseURL == null) {
 	    try {
 		baseURL = request.getRequestURL().toString();
@@ -121,7 +123,6 @@ public class ListIdentifiers extends ServerVerb {
 	} else {
 	    ArrayList validParamNames = null;
 	    ArrayList requiredParamNames = null;
-	    Map listIdentifiersMap = null;
 	    if (oldResumptionToken == null) {
 		validParamNames = validParamNames1;
 		requiredParamNames = requiredParamNames1;
@@ -248,6 +249,11 @@ public class ListIdentifiers extends ServerVerb {
 	    System.out.println("ListIdentifiers.constructListIdentifiers: returning: "
 			       + sb.toString());
 	}
-        return render(response, "text/xml; charset=UTF-8", sb.toString(), serverTransformer);
+	//System.out.println("cleaning listidentmap from ListIdentifiers Verb");
+	listIdentifiersMap.clear();
+	listIdentifiersMap = null;
+	String resultReturn = sb.toString();
+	sb = null;
+    return render(response, "text/xml; charset=UTF-8", resultReturn, serverTransformer);
     }
 }
