@@ -1,0 +1,1 @@
+SELECT * FROM PhotoObj as p WHERE AREA( CIRCLE('ICRS', p.col1, p.col2, p.col3) ) = 1 ;

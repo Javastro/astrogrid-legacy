@@ -1,0 +1,9 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select  ( SIN(a.POS_EQ_RA) + COS(a.POS_EQ_DEC) )  /  ( SQRT(ABS(a.POS_EQ_RA)) - LOG(ABS(a.POS_EQ_DEC)) )     
+From catalogue as a ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select (((SIN(a.POS_EQ_RA)  + COS(a.POS_EQ_DEC) ) )  / ((SQRT(ABS(a.POS_EQ_RA) )  - LOG(ABS(a.POS_EQ_DEC) ) ) ) )   From catalogue as a 

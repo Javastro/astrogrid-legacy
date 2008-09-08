@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project - ADQL Utilities</title>
+
+  <body>
+    <menu name="Documents"> 
+      <item name="Home" href="../../index.html"/> 
+      <item name="Overview" href="overview.html"/>  
+      <item name="BNF Extraction" href="bnfextraction.html"/> 
+      <item name="Interactive Sessions" href="interactive.html"/>             
+   </menu>
+
+  </body>
+</project>

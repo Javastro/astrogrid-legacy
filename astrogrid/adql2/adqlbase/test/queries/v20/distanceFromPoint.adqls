@@ -1,0 +1,2 @@
+select * from cata as a
+where distance( point( 'J2000', 12.2, -4.5 ), point( 'J2000', a.col3, a.col4 ) ) <= 0.0001 ;

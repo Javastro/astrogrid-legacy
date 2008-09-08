@@ -1,0 +1,45 @@
+<!--+
+ Extension: bit processing and hex literal.
+ Give me the colours of a random 1% sample of objects from all fields
+ which are 'survey quality' so that I could plot up colour-colour diagrams
+ and play around with more sophisticated cuts. From Karl Glazebrook. Uses
+ the HTM spatial index ID to apply the cut against. Replace the last '1' by
+ a different number if you want to sample a different percentage of objects.
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="u"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="r"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="i"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="z"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="Galaxy"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+      <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="htmid"/>
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="37" xsi:type="adql:integerType"/>
+          </adql:Arg>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="000000000000FFFF" xsi:type="adql:hexStringType"/>
+        </adql:Arg>
+      </adql:Arg>
+      <adql:Arg xsi:type="adql:closedExprType">
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="650" xsi:type="adql:integerType"/>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="1" xsi:type="adql:integerType"/>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Arg>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

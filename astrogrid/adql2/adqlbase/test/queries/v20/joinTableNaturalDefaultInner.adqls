@@ -1,0 +1,3 @@
+select cata.* 
+from cata natural join catb
+where catb.err2 < 0.045 ;

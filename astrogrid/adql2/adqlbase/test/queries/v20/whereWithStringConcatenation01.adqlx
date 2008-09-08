@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <adql:SelectionList>
+        <adql:Item xsi:type="adql:allSelectionItemType"/>
+    </adql:SelectionList>
+    <adql:From>
+        <adql:Table xsi:type="adql:tableType" Name="catalogue" Alias="a"/>
+    </adql:From>
+    <adql:Where>
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+            <adql:Arg xsi:type="adql:characterValueExpressionType">
+                <adql:CharacterFactor xsi:type="adql:columnReferenceType" Name="col1" Table="a"/>
+                <adql:CharacterFactor xsi:type="adql:characterValueExpressionType">
+                    <adql:CharacterFactor xsi:type="adql:atomType">
+                        <adql:Literal xsi:type="adql:stringType" Value="Star"/>
+                    </adql:CharacterFactor>
+                </adql:CharacterFactor>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal xsi:type="adql:stringType" Value="DwarfStar"/>
+            </adql:Arg>
+        </adql:Condition>
+    </adql:Where>
+</adql:Select>

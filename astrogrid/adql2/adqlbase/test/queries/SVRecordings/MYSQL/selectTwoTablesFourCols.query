@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select a.POS_EQ_RA, a.POS_EQ_DEC, b.ID_FIELD, b.CODE_QUALITY From catalogueA as a, catalogueB as b 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select a.POS_EQ_RA, a.POS_EQ_DEC, b.ID_FIELD, b.CODE_QUALITY  From catalogueA as a, catalogueB as b 

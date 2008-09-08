@@ -1,0 +1,5 @@
+select * 
+from cata as a, catb as b 
+where 
+contains( point('J2000', a.ra, a.dec), polygon( 'J2000', b.ra, b.dec, 2.0, 2.0, 3.0, 1.0 ) ) = 1
+and b.ra between 1.0 and 1.25 and b.dec between 1.25 and 1.75 ; 

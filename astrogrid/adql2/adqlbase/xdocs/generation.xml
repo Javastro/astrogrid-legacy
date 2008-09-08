@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Base Parser - Generation</title>
+    </properties>
+    <body>
+    <section name="Generation">
+       <p>
+         The parsing component AdqlStoX is generated from a JavaCC module named AdqlStoX.jjt, named because
+         the JavaCC framework generates from it AdqlStoX, as well as a fairly full syntax tree of modules all
+         of whose names start with the prefix AST_. If you wish to see the main structure of ADQL as a language, 
+         the AdqlStoX.jjt file is the one to study. It is heavily commented to pick out the main
+         BNF structure of the language.
+       </p>
+       <p>
+         Within the Maven build the generation is managed by a Maven v1.0 plugin. This is all automatic. 
+         Please note, however, that the plugin required some amendment in order to function correctly. 
+         If you have access to the AstroGrid Maven repository, the plugin should be automatically downloaded 
+         when you need it. If you wish to build by hand, I recommend the Eclipse JavaCC plugin, which
+         makes development a whole lot easier. Otherwise, you must read the JavaCC documentation to configure
+         a command line execution of the generator.
+       </p>
+       <p>
+       	<ul>  
+       		<li><a href="https://javacc.dev.java.net">Read about JavaCC here.</a>  </li>
+       		<li><a href="http://eclipse-javacc.sourceforge.net/">Read about the Eclipse JavaCC plugin here.</a></li> 
+       	</ul>
+       </p>
+ 
+    </section>
+   </body>
+</document>

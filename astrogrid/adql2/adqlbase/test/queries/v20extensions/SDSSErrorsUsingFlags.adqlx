@@ -1,0 +1,113 @@
+<!--+
+ Extension: Qualified function names and bit processing.
+ Another useful query is to see if the errors on moving (or
+ apparently moving) objects are correct. For example, it used to be that
+ some known QSOs were being flagged as moving objects. One way to look for
+ such objects is to compare the velocity to the error in velocity and see if
+ the "OBJECT1_MOVED" or "OBJECT2_BAD_MOVING_FIT" is set.
+ This query introduces bitwise logic for flags, and uses the 'as' syntax to
+ make the query more readable. Note that if a flag is not set, the value
+ will be zero. If you want to ensure multiple flags are not set, you can
+ either check that each individually is zero, or their sum is zero.
+ (From Gordon Richards)
+
+ NOTE: This query takes a long time to run without the "TOP 1000".
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:Restrict Top="1000"/>
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="run"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="rerun"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="camcol"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="field"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="objID"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="ra"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="dec"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="rowv"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="colv"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="rowvErr"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="colvErr"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="i"/>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="MOVED">
+      <adql:Expression xsi:type="adql:closedExprType">
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+            <adql:Arg xsi:type="adql:atomType">
+              <adql:Literal xsi:type="adql:stringType" Value="MOVED"/>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="BAD_MOVING_FIT">
+      <adql:Expression xsi:type="adql:closedExprType">
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+            <adql:Arg xsi:type="adql:atomType">
+              <adql:Literal xsi:type="adql:stringType" Value="BAD_MOVING_FIT"/>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Expression>
+    </adql:Item>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="Galaxy"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+        <adql:Arg xsi:type="adql:closedExprType">
+          <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+            <adql:Arg xsi:type="adql:closedExprType">
+              <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal xsi:type="adql:stringType" Value="MOVED"/>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal xsi:type="adql:stringType" Value="BAD_MOVING_FIT"/>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="0" xsi:type="adql:integerType"/>
+        </adql:Arg>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">=">
+        <adql:Arg xsi:type="adql:closedExprType">
+          <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="rowv"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="rowv"/>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="colv"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="colv"/>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:closedExprType">
+          <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="rowvErr"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="rowvErr"/>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="colvErr"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="colvErr"/>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

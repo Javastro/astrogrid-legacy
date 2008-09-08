@@ -1,0 +1,2 @@
+-- NOT IN predicate where the list is composed of a join.
+Select * From cata Where cata.col3 Not In ( catb INNER JOIN catc USING ( col1, col2 ) ) ;

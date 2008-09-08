@@ -1,0 +1,28 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Low-z QSO candidates using the color cuts from Gordon Richards.
+-- Also a simple query with a long WHERE clause.
+
+SELECT
+    gal.g, 
+    gal.run, 
+    gal.rerun, 
+    gal.camcol, 
+    gal.field, 
+    gal.objID 
+FROM
+    Galaxy as gal 
+WHERE ( (gal.g <= 22)
+    and (gal.u - gal.g >= -0.27) 
+    and (gal.u - gal.g < 0.71) 
+    and (gal.g - gal.r >= -0.24) 
+    and (gal.g - gal.r < 0.35) 
+    and (gal.r - gal.i >= -0.27) 
+    and (gal.r - gal.i < 0.57) 
+    and (gal.i - gal.z >= -0.35) 
+    and (gal.i - gal.z < 0.70) ) ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select gal.g, gal.run, gal.rerun, gal.camcol, gal.field, gal.objID From Galaxy as gal  Where (((gal.g <= 22)) And ((((gal.u - gal.g) >= -0.27)) And ((((gal.u - gal.g) < 0.71)) And ((((gal.g - gal.r) >= -0.24)) And ((((gal.g - gal.r) < 0.35)) And ((((gal.r - gal.i) >= -0.27)) And ((((gal.r - gal.i) < 0.57)) And ((((gal.i - gal.z) >= -0.35)) And (((gal.i - gal.z) < 0.7)))))))))) 

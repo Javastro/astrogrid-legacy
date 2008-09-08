@@ -1,0 +1,20 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Find galaxies with an isophotal surface brightness (SB) larger
+-- than 24 in the red band, and with an ellipticity > 0.5, and with the major
+-- axis of the ellipse having a declination between 30" and 60" arc seconds.
+-- This is also a simple query that uses a WHERE clause with three conditions
+-- that must be met. We introduce the syntax 'between' to do a range search.
+
+SELECT gal.ObjID
+FROM Galaxy gal
+WHERE
+    gal.r + gal.rho < 24  -- red surface brightness more than 24 mag/sq-arcsec
+    and gal.isoA_r between 30 and 60                  -- major axis between 30" and 60"
+    and (power(gal.q_r,2) + power(gal.u_r,2)) > 0.25  -- square of ellipticity > 0.5 squared
+    ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select gal.ObjID From Galaxy as gal  Where ((gal.r + gal.rho) < 24) And ((gal.isoA_r Between 30 And 60 ) And (((POWER(gal.q_r, 2)  + POWER(gal.u_r, 2) )) > 0.25)) 

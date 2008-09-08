@@ -1,0 +1,16 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select Top 100 SIN(RADIANS(a.POS_EQ_RA) ) , 
+               COS(RADIANS(a.POS_EQ_RA) ) , 
+               TAN(RADIANS(a.POS_EQ_RA) ) , 
+               COT(RADIANS(a.POS_EQ_RA) ) , 
+               ASIN(RADIANS(a.POS_EQ_RA) ) , 
+               ACOS(RADIANS(a.POS_EQ_RA) ) , 
+               ATAN(RADIANS(a.POS_EQ_RA) ) , 
+               ATAN2(RADIANS(a.POS_EQ_RA), RADIANS(a.POS_EQ_DEC))  
+From catalogue as a 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select LIMIT 100 SIN(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) ) , COS(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) ) , TAN(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) ) , COT(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) ) , ASIN(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) ) , ACOS(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) ) , ATAN(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) ) , ATAN2(RADIANS( CAST( a.POS_EQ_RA AS double precision) ) , RADIANS( CAST( a.POS_EQ_DEC AS double precision) ) )   From catalogue as a 

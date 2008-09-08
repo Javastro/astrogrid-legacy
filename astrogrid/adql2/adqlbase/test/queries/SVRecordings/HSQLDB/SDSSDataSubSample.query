@@ -1,0 +1,16 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Extension: bit processing and hex literal.
+-- Give me the colours of a random 1% sample of objects from all fields
+-- which are 'survey quality' so that I could plot up colour-colour diagrams
+-- and play around with more sophisticated cuts. From Karl Glazebrook. Uses
+-- the HTM spatial index ID to apply the cut against. Replace the last '1' by
+-- a different number if you want to sample a different percentage of objects.
+
+SELECT u, g, r, i, z FROM Galaxy
+WHERE htmid*37 & 0x000000000000FFFF < (650 * 1)
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select u, g, r, i, z From Galaxy  Where  BITAND( (htmid * 37), X'000000000000FFFF' )  < ((650 * 1)) 

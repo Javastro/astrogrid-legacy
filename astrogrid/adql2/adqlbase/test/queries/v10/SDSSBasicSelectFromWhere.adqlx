@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Returns 5261 objects in DR2 (5278 in DR1) in a few sec.
+
+ Find objects in a particular field.
+ A basic SELECT - FROM - WHERE query.-->
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+    <v1:SelectionList>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="p" Name="objID" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <!--Get the unique object ID,-->
+        <v1:Item xsi:type="v1:columnReferenceType" Table="p" Name="field" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="p" Name="ra" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="p" Name="dec" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:SelectionList>
+    <!--the field number, and coordinates-->
+    <v1:From>
+        <v1:Table xsi:type="v1:tableType" Name="PhotoObj" Alias="p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:From>
+    <!--From the photometric data-->
+    <v1:Where>
+        <v1:Condition xsi:type="v1:intersectionSearchType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <v1:Condition xsi:type="v1:comparisonPredType" Comparison="=">
+                <v1:Arg xsi:type="v1:columnReferenceType" Table="p" Name="run"/>
+                <v1:Arg xsi:type="v1:atomType">
+                    <v1:Literal Value="1336" xsi:type="v1:integerType"/>
+                </v1:Arg>
+            </v1:Condition>
+            <v1:Condition xsi:type="v1:comparisonPredType" Comparison="=">
+                <v1:Arg xsi:type="v1:columnReferenceType" Table="p" Name="field"/>
+                <v1:Arg xsi:type="v1:atomType">
+                    <v1:Literal Value="11" xsi:type="v1:integerType"/>
+                </v1:Arg>
+            </v1:Condition>
+        </v1:Condition>
+    </v1:Where>
+</v1:Select>
+<!--that matches our criteria-->

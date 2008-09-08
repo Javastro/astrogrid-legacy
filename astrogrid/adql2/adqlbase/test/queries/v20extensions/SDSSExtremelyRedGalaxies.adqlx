@@ -1,0 +1,141 @@
+<!--+
+ Extension: Qualified functions and bit processing.
+ Extremely red galaxies (from James Annis).
+ Similar to the previous query.
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="run" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="camCol" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="rerun" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="field" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="objID" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="ra" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="dec" Table="g"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="Field" Alias="f"/>
+    <adql:Table xsi:type="adql:tableType" Name="Galaxy" Alias="g"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="fieldID" Table="g"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="fieldID" Table="f"/>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:intersectionSearchType">
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+          <adql:Arg xsi:type="adql:closedExprType">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="flags" Table="g"/>
+              <adql:Arg xsi:type="adql:closedExprType">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                  <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal xsi:type="adql:stringType" Value="BINNED1"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                    <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal xsi:type="adql:stringType" Value="BINNED2"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal xsi:type="adql:stringType" Value="BINNED4"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="0" xsi:type="adql:integerType"/>
+          </adql:Arg>
+        </adql:Condition>
+        <adql:Condition xsi:type="adql:intersectionSearchType">
+          <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;>">
+            <adql:Arg xsi:type="adql:closedExprType">
+              <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="flags" Table="g"/>
+                <adql:Arg xsi:type="adql:closedExprType">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                    <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal xsi:type="adql:stringType" Value="BLENDED"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                      <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal xsi:type="adql:stringType" Value="NODEBLEND"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal xsi:type="adql:stringType" Value="CHILD"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal xsi:type="adql:stringType" Value="BLENDED"/>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Condition>
+          <adql:Condition xsi:type="adql:intersectionSearchType">
+            <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+              <adql:Arg xsi:type="adql:closedExprType">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                  <adql:Arg xsi:type="adql:columnReferenceType" Name="flags" Table="g"/>
+                  <adql:Arg xsi:type="adql:closedExprType">
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                      <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal xsi:type="adql:stringType" Value="COSMIC_RAY"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal xsi:type="adql:stringType" Value="INTERP"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="0" xsi:type="adql:integerType"/>
+              </adql:Arg>
+            </adql:Condition>
+            <adql:Condition xsi:type="adql:intersectionSearchType">
+              <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="psfWidth_r" Table="f"/>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="1.5" xsi:type="adql:realType"/>
+                </adql:Arg>
+              </adql:Condition>
+              <adql:Condition xsi:type="adql:closedSearchType">
+                <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="i" Table="g"/>
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="z" Table="g"/>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal Value="1.0" xsi:type="adql:realType"/>
+                  </adql:Arg>
+                </adql:Condition>
+              </adql:Condition>
+            </adql:Condition>
+          </adql:Condition>
+        </adql:Condition>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

@@ -1,0 +1,16 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select Top 100 SIN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               COS(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               TAN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               COT(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ASIN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ACOS(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ATAN(DEGREES(RADIANS(a.POS_EQ_RA) ) ) , 
+               ATAN2(DEGREES(RADIANS(a.POS_EQ_RA)), DEGREES(RADIANS(a.POS_EQ_DEC)) )  
+From catalogue as a 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select LIMIT 100 SIN(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) ) , COS(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) ) , TAN(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) ) , COT(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) ) , ASIN(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) ) , ACOS(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) ) , ATAN(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) ) , ATAN2(DEGREES( CAST( RADIANS( CAST( a.POS_EQ_RA AS double precision) )  AS double precision) ) , DEGREES( CAST( RADIANS( CAST( a.POS_EQ_DEC AS double precision) )  AS double precision) ) )   From catalogue as a 

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Base Parser - Runtime Considerations</title>
+    </properties>
+    <body>
+    <section name="Runtime Considerations">
+    
+    	<subsection name="Invocation">
+    		<p>
+    		The parser can be invoked for processing whole queries or fragments of queries.
+    		First a new parser must be instantiated or an existing one re-initialized with the query or 
+    		fragment of a query to be processed. There are then a number of convenience methods for executing a parse, 
+    		depending upon what is required to be returned: DOM, XML text, or XMLBean. You can ask for the text
+    		to be indented.	         
+	       </p>
+  		</subsection>
+  		
+  		<subsection name="Syntax Options">
+    		<p>
+    		There are a number options which set or unset areas of ADQL syntax for checking, and a number
+    		of convenience methods to switch whole sets of these on or off. The idea is to set boundaries
+    		for the parser according to different needs and environments. For example, if you set some options
+    		on, you have an ADQL version 2 reference implementation of the parser. If you set other options,
+    		you will have a more restricted AstroGrid level of support for ADQL (there is no current support
+    		for region syntax).        
+	       </p>
+	       <p>
+	       This technique is also used to develop and try out facilities ahead of any standard.
+	       </p>
+  		</subsection>
+  		
+
+  		<subsection name="Semantic Processing and the Metadata Callback">
+    		<p>
+    		Semantic processing can be turned on/off. Any semantic processing is undertaken after a successful
+    		syntactical parse of a query. The semantic processing is fairly fundamental; eg: to check consistent
+    		use of table aliases or aliased expressions.          
+	       </p>
+	       <p>
+    		An optional metadata callback can be set. Basically this is to allow the parser to call back to 
+    		the enclosing software environment when checking for table existence, column existence within a table, 
+    		or the existence of a user-defined function and the cardinality of its arguments. Semantic processing
+    		must be turned on for this to be effective.         
+	       </p>
+  		</subsection>
+       
+        <subsection name="User-defined Function Prefix">
+    		<p>
+    		The default function prefix for user-defined functions can be set. By default the prefix is "udf_".
+    		Typically one might want to set this to "f" where an archive's standard is for all functions to
+    		begin with "f" (see SDSS, for example). If set, the syntax checking mechanism will use it. 
+    		If set to the empty string, no function prefix checking is undertaken, which - if there is no metadata 
+    		callback or indeed if semantic processing is switched off - means all function names will be allowed 
+    		apart from reserved words. 
+    		</p>
+  		</subsection>
+  		
+  		<subsection name="Reserved Word Hints">
+    		<p>
+    		Different relational databases and different astronomical archives have allowed certain words to be used
+    		as identifiers which stray into the area of SQL and ADQL reserved words. Here is a small selection: 
+    		first, distance, match, area, next, region. The use of reserved words as identifiers can usually be 
+    		facilitated by escaping the identifier with 
+    		double quotes (Select * from "first"). However, it is a source of irritation and can be quite difficult 
+    		to spot 
+    		if you use one without escaping. The parser allows a collection of reserved words to be set as hints of 
+    		what to look for
+    		if one is used in an inexplicable way. So, if you know your archive uses "first" as the name
+    		of a table, add it to the reserved word hints list when you prime the parser, and the parser will prompt 
+    		the user about any misuse of the word "first" without escaping.
+    		</p>
+  		</subsection>
+  		
+    </section>
+   </body>
+</document>

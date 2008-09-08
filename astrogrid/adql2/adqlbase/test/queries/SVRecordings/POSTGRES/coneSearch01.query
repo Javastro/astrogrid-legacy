@@ -1,0 +1,25 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select * From catalogue as a Where 
+(a.POS_EQ_RA<100)  
+And  
+( 
+  ( a.POS_EQ_RA>100 )  
+  And  
+  ( 
+    ACOS((
+           ( SIN( a.POS_EQ_DEC ) * SIN( 100 ) ) 
+           + 
+           ( 
+             COS(a.POS_EQ_DEC)  
+             *  
+             ( COS(100)  * COS( (a.POS_EQ_RA - 100) ) )  
+           )
+        )) <= 100
+  ) 
+)
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From catalogue as a  Where ((a.POS_EQ_RA < 100)) And ((((a.POS_EQ_RA > 100)) And ((ACOS(((((SIN(a.POS_EQ_DEC)  * SIN(100) )) + ((COS(a.POS_EQ_DEC)  * ((COS(100)  * COS(((a.POS_EQ_RA - 100))) )))))))  <= 100)))) 

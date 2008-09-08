@@ -1,0 +1,32 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Extension: Qualified functions and bit processing.
+-- Extremely red galaxies (from James Annis).
+-- Similar to the previous query.
+
+SELECT
+    g.run, 
+    g.camCol, 
+    g.rerun, 
+    g.field, 
+    g.objID, 
+    g.ra, g.dec 
+FROM Field f, Galaxy g
+WHERE
+    g.fieldID = f.fieldID 
+    and ( g.flags & (dbo.fPhotoFlags('BINNED1') 
+    | dbo.fPhotoFlags('BINNED2') 
+    | dbo.fPhotoFlags('BINNED4')) ) > 0 
+    and ( g.flags & (dbo.fPhotoFlags('BLENDED') 
+    | dbo.fPhotoFlags('NODEBLEND') 
+    | dbo.fPhotoFlags('CHILD')) ) != dbo.fPhotoFlags('BLENDED') 
+    and ( g.flags & (dbo.fPhotoFlags('COSMIC_RAY') 
+    | dbo.fPhotoFlags('INTERP')) ) = 0 
+    and f.psfWidth_r < 1.5 
+    and (g.i - g.z > 1.0 ) 
+
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select g.run, g.camCol, g.rerun, g.field, g.objID, g.ra, g.dec From Field as f, Galaxy as g  Where (g.fieldID = f.fieldID) And ((((g.flags & ((dbo.fPhotoFlags('BINNED1')   | (dbo.fPhotoFlags('BINNED2')   | dbo.fPhotoFlags('BINNED4')  ))))) > 0) And ((((g.flags & ((dbo.fPhotoFlags('BLENDED')   | (dbo.fPhotoFlags('NODEBLEND')   | dbo.fPhotoFlags('CHILD')  ))))) <> dbo.fPhotoFlags('BLENDED')  ) And ((((g.flags & ((dbo.fPhotoFlags('COSMIC_RAY')   | dbo.fPhotoFlags('INTERP')  )))) = 0) And ((f.psfWidth_r < 1.5) And (((g.i - g.z) > 1.0)))))) 

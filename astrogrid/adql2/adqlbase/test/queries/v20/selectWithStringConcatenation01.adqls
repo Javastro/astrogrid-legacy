@@ -1,0 +1,1 @@
+select 'Galaxy ' || a.col1 from cata as a where a.z between 4 and 5 ;

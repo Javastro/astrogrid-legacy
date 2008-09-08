@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT * FROM PhotoObj as p WHERE AREA( CIRCLE('ICRS', p.col1, p.col2, p.col3) ) = 1 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From PhotoObj as p  Where AREA(CIRCLE('ICRS', p.col1, p.col2, p.col3)  )   = 1 

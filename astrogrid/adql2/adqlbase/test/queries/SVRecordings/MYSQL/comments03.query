@@ -1,0 +1,22 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select 
+-- Comment about user_id
+u.user_id, 
+-- Comment about email
+u.email, 
+-- Comment about count(*)
+count(*), 
+-- Comment about max(posted)
+max(c.posted)
+from users as u, classified_ads as c
+where u.user_id = c.user_id
+group by u.user_id, u.email
+order by email
+-- Comment after order by 
+;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select u.user_id, u.email, COUNT( *) , MAX( c.posted)   From users as u, classified_ads as c  Where u.user_id = c.user_id  Group By u.user_id, u.email  Order By email ASC 

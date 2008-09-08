@@ -1,0 +1,24 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Returns 1000 objects in a few sec.
+
+-- Find all galaxies brighter than r magnitude 22, where the local
+-- extinction is > 0.175. This is a simple query that uses a WHERE clause,
+-- but now two conditions that must be met simultaneously. However, this
+-- query returns a lot of galaxies (29 Million in DR2!), so it will take a
+-- long time to get the results back. The sample therefore includes a
+-- "TOP 1000" restriction to make it run quickly.
+-- This query also introduces the Galaxy view, which contains the
+-- photometric parameters (no redshifts or spectra) for unresolved objects.
+
+SELECT TOP 1000 g.objID
+FROM Galaxy g
+WHERE
+    g.r < 22 	                -- r IS NOT deredenned
+    and g.extinction_r > 0.175 	-- extinction more than 0.175 
+;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select LIMIT 1000 g.objID  From Galaxy as g  Where (g.r < 22) And (g.extinction_r > CAST( 0.175 AS double precision)) 

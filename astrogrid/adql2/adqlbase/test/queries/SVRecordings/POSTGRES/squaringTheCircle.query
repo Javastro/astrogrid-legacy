@@ -1,0 +1,11 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT * FROM CAT as c WHERE (c."DEC" BETWEEN (-45.67-0.01) AND (-45.67+0.01)) 
+AND (DEGREES(ACOS(SIN(RADIANS(c."DEC")) 
+* SIN(RADIANS(-45.67)) + COS(RADIANS(c."DEC")) 
+* COS(RADIANS(-45.67)) * COS(RADIANS(c.RA-123.45))))) < 0.01
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From CAT as c  Where ((c.DEC Between ((-CAST( 45.67 AS double precision) - CAST( 0.01 AS double precision))) And ((-CAST( 45.67 AS double precision) + CAST( 0.01 AS double precision))) )) And ((DEGREES( CAST( ACOS(((SIN(RADIANS( CAST( c.DEC AS double precision) ) )  * SIN(RADIANS( CAST( -CAST( 45.67 AS double precision) AS double precision) ) ) ) + (COS(RADIANS( CAST( c.DEC AS double precision) ) )  * (COS(RADIANS( CAST( -CAST( 45.67 AS double precision) AS double precision) ) )  * COS(RADIANS( CAST( (c.RA - CAST( 123.45 AS double precision)) AS double precision) ) ) ))))  AS double precision) ) ) < CAST( 0.01 AS double precision)) 

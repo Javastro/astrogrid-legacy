@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="Circle">
+      <adql:Expression xsi:type="adql:geometryFunctionType" Name="CIRCLE">
+        <adql:Arg xsi:type="adql:characterValueExpressionType">
+          <adql:CharacterFactor xsi:type="adql:systemFunctionType" Name="COORDSYS">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="regioncol" Table="a"/>
+          </adql:CharacterFactor>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="colx" Table="a"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="coly" Table="a"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="radius" Table="a"/>
+      </adql:Expression>
+    </adql:Item>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="cata" Alias="a"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+      <adql:Arg xsi:type="adql:systemFunctionType" Name="DISTANCE">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="p24" Table="a"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="p54" Table="a"/>
+      </adql:Arg>
+      <adql:Arg xsi:type="adql:atomType">
+        <adql:Literal Value="2.3E-4" xsi:type="adql:realType"/>
+      </adql:Arg>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

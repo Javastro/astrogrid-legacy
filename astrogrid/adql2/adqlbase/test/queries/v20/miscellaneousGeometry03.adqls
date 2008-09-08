@@ -1,0 +1,1 @@
+SELECT * FROM PhotoObj as p WHERE CONTAINS( POINT('ICRS', 1, 2), p.col ) = 1;

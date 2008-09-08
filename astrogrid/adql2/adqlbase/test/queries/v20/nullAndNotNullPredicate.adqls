@@ -1,0 +1,1 @@
+Select * From cata where col1 is null and col2 is not null ;

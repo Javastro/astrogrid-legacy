@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT CENTROID( a.regionColumn ) as "Centroid of Region" FROM cata as a WHERE INTERSECTS( a.regionColumn, CIRCLE('ICRS', 2.32, -4.51, 0.001) ) = 1 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select CENTROID(a.regionColumn)   as Centroid of Region From cata as a  Where INTERSECTS(a.regionColumn, CIRCLE('ICRS', 2.32, -4.51, 0.0010)  )   = 1 

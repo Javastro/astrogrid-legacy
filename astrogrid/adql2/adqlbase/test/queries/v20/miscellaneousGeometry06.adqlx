@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql">
+    <adql:SelectionList>
+        <adql:Item xsi:type="adql:aliasSelectionItemType" As="dX" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <adql:Expression xsi:type="adql:systemFunctionType" Name="DISTANCE">
+                <adql:Arg xsi:type="adql:geometryFunctionType" Name="POINT">
+                    <adql:Arg xsi:type="adql:characterValueExpressionType">
+                        <adql:CharacterFactor xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="ICRS"/>
+                        </adql:CharacterFactor>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="p"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="2" xsi:type="adql:integerType"/>
+                    </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:geometryFunctionType" Name="POINT">
+                    <adql:Arg xsi:type="adql:characterValueExpressionType">
+                        <adql:CharacterFactor xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="ICRS"/>
+                        </adql:CharacterFactor>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="col2" Table="p"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="2" xsi:type="adql:integerType"/>
+                    </adql:Arg>
+                </adql:Arg>
+            </adql:Expression>
+        </adql:Item>
+    </adql:SelectionList>
+    <adql:From>
+        <adql:Table xsi:type="adql:tableType" Name="PhotoObj" Alias="p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </adql:From>
+    <adql:Where>
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="flag" Table="p"/>
+            <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal xsi:type="adql:stringType" Value="A"/>
+            </adql:Arg>
+        </adql:Condition>
+    </adql:Where>
+</adql:Select>

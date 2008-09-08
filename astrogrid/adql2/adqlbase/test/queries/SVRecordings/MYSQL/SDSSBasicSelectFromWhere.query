@@ -1,0 +1,18 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Returns 5261 objects in DR2 (5278 in DR1) in a few sec.
+
+-- Find objects in a particular field.
+-- A basic SELECT - FROM - WHERE query.
+
+SELECT p.objID,                     -- Get the unique object ID,
+    p.field, p.ra, p."dec" 	        -- the field number, and coordinates
+FROM PhotoObj as p 	                -- From the photometric data
+WHERE p.run=1336 and p.field = 11   -- that matches our criteria
+;
+
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select p.objID, p.field, p.ra, p.dec  From PhotoObj as p  Where (p.run = 1336)  And  (p.field = 11) 

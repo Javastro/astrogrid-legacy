@@ -1,0 +1,10 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- IN predicate where the list is not simply a list of constants
+-- but made of expressions and column references.
+select * from cata, catb where cata.col1 in ( catb.col1, sin(catb.col2), catb.col3 / catb.col4 ) ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From cata, catb  Where cata.col1 In (catb.col1, SIN(catb.col2) , (catb.col3 / catb.col4) )  

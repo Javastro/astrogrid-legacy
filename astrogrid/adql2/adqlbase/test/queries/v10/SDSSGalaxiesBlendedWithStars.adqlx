@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Find galaxies that are blended with a star, and output the
+ deblended galaxy magnitudes.
+
+ This query introduces the use of multiple tables or views. You can assign
+ nicknames to tables as in the FROM clause below. Since you are using
+ multiple tables, you ,ust specify which table each quantity in the SELECT
+ clause comes from. Finally, the last line in the query is the join between
+ the two tables, which is achieved by requiring that a quantity present in
+ both tables be equal.
+
+ NOTE: This query takes a long time to run without the "TOP 1000".-->
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <v1:SelectionList>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="G" Name="ObjID"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="G" Name="u"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="G" Name="g"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="G" Name="r"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="G" Name="i"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="G" Name="z"/>
+    </v1:SelectionList>
+    <!--get the ObjID and final mags-->
+    <v1:From>
+        <v1:Table xsi:type="v1:tableType" Name="Galaxy" Alias="G"/>
+        <v1:Table xsi:type="v1:tableType" Name="Star" Alias="S"/>
+    </v1:From>
+    <!--use two Views, Galaxy and Star, as a
+	 convenient mechanism to compare objects-->
+    <v1:Where>
+        <v1:Condition xsi:type="v1:intersectionSearchType">
+            <v1:Condition xsi:type="v1:comparisonPredType" Comparison=">">
+                <v1:Arg xsi:type="v1:columnReferenceType" Table="G" Name="parentID"/>
+                <v1:Arg xsi:type="v1:atomType">
+                    <v1:Literal Value="0" xsi:type="v1:integerType"/>
+                </v1:Arg>
+            </v1:Condition>
+            <v1:Condition xsi:type="v1:comparisonPredType" Comparison="=">
+                <v1:Arg xsi:type="v1:columnReferenceType" Table="G" Name="parentID"/>
+                <v1:Arg xsi:type="v1:columnReferenceType" Table="S" Name="parentID"/>
+            </v1:Condition>
+        </v1:Condition>
+    </v1:Where>
+</v1:Select>
+<!--and the star has the same parent-->

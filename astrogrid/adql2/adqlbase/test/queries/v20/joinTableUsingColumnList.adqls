@@ -1,0 +1,3 @@
+select cata.*, catb.col1
+from cata left outer join catb using (col1, col2, col3, col7)
+where catb.col1 <= -1.0023 ;

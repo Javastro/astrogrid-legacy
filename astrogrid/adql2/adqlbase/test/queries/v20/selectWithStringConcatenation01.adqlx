@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <adql:SelectionList>
+        <adql:Item xsi:type="adql:characterValueExpressionType">
+            <adql:CharacterFactor xsi:type="adql:atomType">
+                <adql:Literal xsi:type="adql:stringType" Value="Galaxy "/>
+            </adql:CharacterFactor>
+            <adql:CharacterFactor xsi:type="adql:characterValueExpressionType">
+                <adql:CharacterFactor xsi:type="adql:columnReferenceType" Name="col1" Table="a"/>
+            </adql:CharacterFactor>
+        </adql:Item>
+    </adql:SelectionList>
+    <adql:From>
+        <adql:Table xsi:type="adql:tableType" Name="cata" Alias="a"/>
+    </adql:From>
+    <adql:Where>
+        <adql:Condition xsi:type="adql:betweenPredType">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="z" Table="a"/>
+            <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="4" xsi:type="adql:integerType"/>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="5" xsi:type="adql:integerType"/>
+            </adql:Arg>
+        </adql:Condition>
+    </adql:Where>
+</adql:Select>

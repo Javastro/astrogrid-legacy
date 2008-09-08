@@ -1,0 +1,1 @@
+SELECT * FROM cata as a WHERE contains( point( 'J2000', a.ra, a.dec ), circle( 'J2000', 12.4, -3.5, 10 ) ) = 1 ; 

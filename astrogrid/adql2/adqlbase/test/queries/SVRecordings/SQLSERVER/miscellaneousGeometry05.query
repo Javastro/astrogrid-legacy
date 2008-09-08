@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT AREA( CIRCLE('ICRS', p.col1, p.col2, p.col3) ) as areaX FROM PhotoObj as p WHERE p.flag = 'A' ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select AREA(CIRCLE('ICRS, p.col1, p.col2, p.col3)  )   as areaX From PhotoObj as p  Where p.flag = 'A' 

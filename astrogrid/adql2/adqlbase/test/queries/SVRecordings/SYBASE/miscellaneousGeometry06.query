@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT DISTANCE( POINT('ICRS', p.col1, 2), POINT('ICRS', p.col2, 2) ) as dX FROM PhotoObj as p WHERE p.flag = 'A' ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select DISTANCE(POINT('ICRS', p.col1, 2)  , POINT('ICRS', p.col2, 2)  )   as dX From PhotoObj as p  Where p.flag = 'A' 

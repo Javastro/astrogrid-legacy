@@ -1,0 +1,4 @@
+-- Should not be able to compare a region using the bare comparison predicate.
+select cata.* 
+from cata 
+where circle( 'J2000', cata.ra, cata.dec, 0.0002 ) = 1.2 ;

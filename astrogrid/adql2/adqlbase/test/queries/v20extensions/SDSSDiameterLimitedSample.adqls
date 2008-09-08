@@ -1,0 +1,27 @@
+-- Extension: Qualified function names and bit processing.
+-- Diameter-limited sample of galaxies from James Annis.
+-- Another query showing the use of flags, now using the bitwise '|' (or).
+
+SELECT
+    run, 
+    camCol, 
+    rerun, 
+    field, 
+    objID, 
+    ra, 
+    dec 
+FROM Galaxy
+WHERE ( flags & (dbo.fPhotoFlags('BINNED1')
+    | dbo.fPhotoFlags('BINNED2') 
+    | dbo.fPhotoFlags('BINNED4')) ) > 0 
+    and ( flags & (dbo.fPhotoFlags('BLENDED') 
+    | dbo.fPhotoFlags('NODEBLEND') 
+    | dbo.fPhotoFlags('CHILD')) ) != dbo.fPhotoFlags('BLENDED') 
+    and ( ( (flags & dbo.fPhotoFlags('NOPETRO') = 0) 
+    and petroRad_i > 15) 
+    or ( (flags & dbo.fPhotoFlags('NOPETRO') > 0) 
+    and petroRad_i > 7.5) 
+    or ( (flags & dbo.fPhotoFlags('TOO_LARGE') > 0) 
+    and petroRad_i > 2.5) 
+    or ( (flags & dbo.fPhotoFlags('SATURATED') = 0) 
+    and petroRad_i > 17.5) )

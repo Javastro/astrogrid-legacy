@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:artifact="artifact" >
+
+    <!-- ================ Reactor goals ================ -->
+
+    <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
+    <goal name="astrogrid-install-artifact" prereqs="jar:install"/>
+    <goal name="astrogrid-deploy-snapshot"  prereqs="jar:deploy-snapshot"/>
+    <goal name="astrogrid-deploy-artifact"  prereqs="jar:deploy-artifact"/>
+    <goal name="astrogrid-deploy-site"      prereqs="site:deploy"/>
+    <goal name="astrogrid-build-site"       prereqs="site:site"/>
+
+    <!-- ================ Component goals ================ -->
+
+    <!--+
+        | Prepare for the java:compile task.
+        | Generate xml beans from the ADQL schema.
+        +-->
+    <preGoal name="java:compile">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing for java:compile ...."/>
+    	
+    	<ant:taskdef name="xmlbean" 
+    		         classname="org.apache.xmlbeans.impl.tool.XMLBean" 
+    		         classpathref="maven.dependency.classpath" />
+    	
+    	<!--+
+            | Generate beans...
+            +-->
+    	<ant:xmlbean 
+    		  srconly="true"
+    		  javasource="1.5"
+    		  srcgendir="${maven.build.dir}/java"
+    		  nopvr="true"
+    		  classgendir="${maven.build.dir}/classes"
+    	      failonerror="true">
+    	  <fileset dir="../contracts/src/schema/adql/v2.0" includes="**/*.xsd"/> 
+    	  <fileset dir="config" includes="**/*.xsdconfig"/>
+    	</ant:xmlbean>
+    	
+    	<!--+
+    	    | Add the generated Java files to our source path.
+    	    | Note - need a non-empty java directory in the source tree for this to work.
+    	    | If source/java directory is empty, then the java:compile task will not do anything.
+    	    +-->
+    	<ant:path id="generated" location="${maven.build.dir}/java"/>
+    	<maven:addPath id="maven.compile.src.set" refid="generated"/>
+    </preGoal>
+	
+	<!--+
+	    | Tidy up after the java:compile task.
+	    | (removes the Empty class)
+	    +-->
+
+	<postGoal name="java:compile">
+		<ant:echo message=""/>
+		<ant:echo message="Artifact : ${pom.artifactId}"/>
+		<ant:echo message="Tidy up after for java:compile ...."/>
+
+		<!--+
+	        | Remove the Empty class.
+	        +-->
+		<ant:delete file="${maven.build.dir}/classes/Empty.class"/>
+
+	</postGoal>
+
+
+</project>

@@ -1,0 +1,10 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Derived table within the FROM clause.
+-- Shows a join using a correlation specification.
+select * from cata as a, (select * from catb where catb.col1 between 2.3 and 2.35) as b where a.err <= b.err ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From cata as a, ( Select *  From catb  Where catb.col1 Between CAST( 2.3 AS double precision) And CAST( 2.35 AS double precision)   ) as b  Where a.err <= b.err 

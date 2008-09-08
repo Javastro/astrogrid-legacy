@@ -1,0 +1,46 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Extension: Qualified function names and uses bit processing.
+-- A version of the LRG sample, by James Annis.
+-- Another query with many conditions and flag tests.
+
+SELECT
+    run, 
+    camCol, 
+    rerun, 
+    field, 
+    objID, 
+    ra, 
+    dec 
+FROM Galaxy
+WHERE ( ( flags & (dbo.fPhotoFlags('BINNED1')
+    | dbo.fPhotoFlags('BINNED2') 
+    | dbo.fPhotoFlags('BINNED4')) ) > 0 
+    and ( flags & (dbo.fPhotoFlags('BLENDED') 
+    | dbo.fPhotoFlags('NODEBLEND') 
+    | dbo.fPhotoFlags('CHILD')) ) != dbo.fPhotoFlags('BLENDED') 
+    and ( flags & (dbo.fPhotoFlags('EDGE') 
+    | dbo.fPhotoFlags('SATURATED')) ) = 0 
+    and petroMag_i > 17.5 
+    and (petroMag_r > 15.5 or petroR50_r > 2) 
+    and (petroMag_r > 0 and g > 0 and r > 0 and i > 0) 
+    and ( (petroMag_r-extinction_r) < 19.2 
+    and (petroMag_r - extinction_r < 
+    (13.1 + (7/3) * (dered_g - dered_r) + 4 * (dered_r - dered_i) 
+    - 4 * 0.18) ) 
+    and ( (dered_r - dered_i - (dered_g - dered_r)/4 - 0.18) < 0.2) 
+    and ( (dered_r - dered_i - (dered_g - dered_r)/4 - 0.18) > -0.2) 
+    -- dered_ quantities already include reddening 
+    and ( (petroMag_r - extinction_r + 
+    2.5 * LOG10(2 * 3.1415 * petroR50_r * petroR50_r)) < 24.2) ) 
+    or ( (petroMag_r - extinction_r < 19.5) 
+    and ( (dered_r - dered_i - (dered_g - dered_r)/4 - 0.18) > (0.45 - 4 * 
+    (dered_g - dered_r)) ) 
+    and ( (dered_g - dered_r) > (1.35 + 0.25 * (dered_r - dered_i)) ) ) 
+    and ( (petroMag_r - extinction_r + 
+    2.5 * LOG10(2 * 3.1415 * petroR50_r * petroR50_r) ) < 23.3 ) )
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select run, camCol, rerun, field, objID, ra, dec  From Galaxy  Where (((((flags & ((dbo.fPhotoFlags('BINNED1')  | (dbo.fPhotoFlags('BINNED2')  | dbo.fPhotoFlags('BINNED4') ) ) ) ) )  > 0)  And  ((((flags & ((dbo.fPhotoFlags('BLENDED')  | (dbo.fPhotoFlags('NODEBLEND')  | dbo.fPhotoFlags('CHILD') ) ) ) ) )  <> dbo.fPhotoFlags('BLENDED') )  And  ((((flags & ((dbo.fPhotoFlags('EDGE')  | dbo.fPhotoFlags('SATURATED') ) ) ) )  = 0)  And  ((petroMag_i > 17.5)  And  ((((petroMag_r > 15.5)  Or  (petroR50_r > 2)) )  And  ((((petroMag_r > 0)  And  ((g > 0)  And  ((r > 0)  And  (i > 0)))) )  And  (((((petroMag_r - extinction_r) )  < 19.2)  And  ((((petroMag_r - extinction_r)  < ((13.1 + ((((7 / 3) )  * ((dered_g - dered_r) ) )  + ((4 * ((dered_r - dered_i) ) )  - (4 * 0.18) ) ) ) ) ) )  And  (((((dered_r - (dered_i - ((((dered_g - dered_r) )  / 4)  - 0.18) ) ) )  < 0.2) )  And  (((((dered_r - (dered_i - ((((dered_g - dered_r) )  / 4)  - 0.18) ) ) )  > -0.2) )  And  ((((petroMag_r - (extinction_r + (2.5 * LOG10((2 * (3.1415 * (petroR50_r * petroR50_r) ) ) ) ) ) ) )  < 24.2) ))))) )))))))  Or  ((((((petroMag_r - extinction_r)  < 19.5) )  And  (((((dered_r - (dered_i - ((((dered_g - dered_r) )  / 4)  - 0.18) ) ) )  > ((0.45 - (4 * ((dered_g - dered_r) ) ) ) ) ) )  And  ((((dered_g - dered_r) )  > ((1.35 + (0.25 * ((dered_r - dered_i) ) ) ) ) ) ))) )  And  ((((petroMag_r - (extinction_r + (2.5 * LOG10((2 * (3.1415 * (petroR50_r * petroR50_r) ) ) ) ) ) ) )  < 23.3) )))  

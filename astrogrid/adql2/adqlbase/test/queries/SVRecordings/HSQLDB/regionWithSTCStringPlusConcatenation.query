@@ -1,0 +1,12 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * 
+from cata as a 
+where 
+   contains( point( 'ICRS', a.ra, a.dec )
+           , region('Circle ICRS ' || a.ra || ' ' || a.dec || ' 0.7') ) = 1
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From cata as a  Where CONTAINS(POINT('ICRS', a.ra, a.dec)  , REGION(CONCAT( 'Circle ICRS ', CONCAT( a.ra, CONCAT( ' ', CONCAT( a.dec, ' 0.7' )  )  )  ) )  )   = 1 

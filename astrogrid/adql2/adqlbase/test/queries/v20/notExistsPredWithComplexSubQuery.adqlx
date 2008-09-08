@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="seqno" Table="a"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="target" Alias="a"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="targetNo" Table="a"/>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="100367" xsi:type="adql:integerType"/>
+        </adql:Arg>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:inverseSearchType">
+        <adql:Condition xsi:type="adql:existsPredType">
+          <adql:SubQuery>
+            <adql:QueryExpression>
+              <adql:Select>
+                <adql:SelectionList>
+                  <adql:Item xsi:type="adql:allSelectionItemType"/>
+                </adql:SelectionList>
+                <adql:From>
+                  <adql:Table xsi:type="adql:tableType" Name="target" Alias="b"/>
+                </adql:From>
+                <adql:Where>
+                  <adql:Condition xsi:type="adql:intersectionSearchType">
+                    <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="seqno" Table="b"/>
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="seqno" Table="a"/>
+                    </adql:Condition>
+                    <adql:Condition xsi:type="adql:intersectionSearchType">
+                      <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                        <adql:Arg xsi:type="adql:columnReferenceType" Name="targetNo" Table="b"/>
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal Value="100367" xsi:type="adql:integerType"/>
+                        </adql:Arg>
+                      </adql:Condition>
+                      <adql:Condition xsi:type="adql:closedSearchType">
+                        <adql:Condition xsi:type="adql:unionSearchType">
+                          <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                            <adql:Arg xsi:type="adql:columnReferenceType" Name="errorx" Table="b"/>
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal Value="0.0030" xsi:type="adql:realType"/>
+                            </adql:Arg>
+                          </adql:Condition>
+                          <adql:Condition xsi:type="adql:nullPredType">
+                            <adql:Column Name="errorx" Table="b"/>
+                          </adql:Condition>
+                        </adql:Condition>
+                      </adql:Condition>
+                    </adql:Condition>
+                  </adql:Condition>
+                </adql:Where>
+              </adql:Select>
+            </adql:QueryExpression>
+          </adql:SubQuery>
+        </adql:Condition>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

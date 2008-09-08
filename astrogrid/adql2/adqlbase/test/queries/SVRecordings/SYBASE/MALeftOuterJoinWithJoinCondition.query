@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * from arc1.tab1 as t1 left outer join arc2.tab2 as t2 on t1.a=t2.a where t1.a = 27 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From arc1.tab1 as t1 LEFT OUTER JOIN arc2.tab2 as t2 ON t1.a = t2.a  Where t1.a = 27 

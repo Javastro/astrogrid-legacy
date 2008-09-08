@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:allSelectionItemType"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="cata"/>
+    <adql:Table xsi:type="adql:tableType" Name="catb"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:likePredType">
+      <adql:Arg xsi:type="adql:characterValueExpressionType">
+        <adql:CharacterFactor xsi:type="adql:userDefinedFunctionType" Name="udf_Munge">
+          <adql:Arg xsi:type="adql:characterValueExpressionType">
+            <adql:CharacterFactor xsi:type="adql:columnReferenceType" Name="col1" Table="cata"/>
+          </adql:Arg>
+        </adql:CharacterFactor>
+      </adql:Arg>
+      <adql:Pattern xsi:type="adql:characterValueExpressionType">
+        <adql:CharacterFactor xsi:type="adql:columnReferenceType" Name="col3" Table="catb"/>
+        <adql:CharacterFactor xsi:type="adql:characterValueExpressionType">
+          <adql:CharacterFactor xsi:type="adql:columnReferenceType" Name="col4" Table="catb"/>
+        </adql:CharacterFactor>
+      </adql:Pattern>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

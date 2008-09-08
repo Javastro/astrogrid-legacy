@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT * FROM PhotoObj as p WHERE CONTAINS( POINT('ICRS', p.ra, p.dec), CIRCLE('ICRS', 1, 2, 0.1) ) = 1 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From PhotoObj as p  Where CONTAINS(POINT('ICRS', p.ra, p.dec) , CIRCLE('ICRS', 1, 2, CAST( 0.1 AS double precision)) )  = 1 

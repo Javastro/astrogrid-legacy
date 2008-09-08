@@ -1,0 +1,18 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT TOP 100  
+( 
+  ( 
+    SIN(a.INSERT_RA) + COS(a.INSERT_DEC) 
+  ) 
+  / 
+  ( 
+    SQRT( ABS(a.INSERT_RA) ) - LOG( ABS(a.INSERT_DEC) ) 
+  ) 
+) AS exprAlias
+FROM catalogue AS a ; 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select LIMIT 100 ((((SIN(a.INSERT_RA)  + COS(a.INSERT_DEC) )) / ((SQRT( CAST( ABS( CAST( a.INSERT_RA AS double precision) )  AS double precision) )  - LN( CAST( ABS( CAST( a.INSERT_DEC AS double precision) )  AS double precision) ) )))) as exprAlias  From catalogue as a 

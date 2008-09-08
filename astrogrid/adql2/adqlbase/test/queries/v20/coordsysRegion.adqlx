@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="COORDSYS">
+      <adql:Expression xsi:type="adql:characterValueExpressionType">
+        <adql:CharacterFactor xsi:type="adql:systemFunctionType" Name="COORDSYS">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="reg" Table="a"/>
+        </adql:CharacterFactor>
+      </adql:Expression>
+    </adql:Item>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="cata" Alias="a"/>
+  </adql:From>
+</adql:Select>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Parser Utilities - BNF Extraction</title>
+    </properties>
+    <body>
+    <section name="BNF Extraction">
+  		<p>
+  		   The BNF extraction utility processes the AdqlStoX.jjt file and extracts special comments within
+  		   the file to compose a set of BNF diagrams which describes ADQL. Currently the utility can be run
+  		   in two modes.
+  		   <ul>
+  		   	 <li>BNF for the projected ADQL v2.0 Standard</li>
+       		 <li>BNF for the aspects of the ADQL v2.0 Standard supported by AstroGrid</li> 
+  		   </ul>
+  		</p>
+    </section>
+   </body>
+</document>

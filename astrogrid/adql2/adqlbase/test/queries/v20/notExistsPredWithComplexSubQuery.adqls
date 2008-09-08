@@ -1,0 +1,9 @@
+select a.seqno
+from target as a
+where a.targetNo = 100367
+and not exists
+( select *
+  from target as b
+  where b.seqno = a.seqno
+    and b.targetNo = 100367
+    and (b.errorx > 0.003 or b.errorx is null) ) ;

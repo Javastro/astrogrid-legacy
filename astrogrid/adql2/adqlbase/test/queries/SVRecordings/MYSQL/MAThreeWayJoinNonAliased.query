@@ -1,0 +1,17 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT cat1.lasSource.sourceID, 
+       cat1.lasSource.ra, 
+       cat1.lasSource."dec", 
+       cat2.rosat_fsc.seqNo, 
+       cat2.rosat_fsc.ra, 
+       cat2.rosat_fsc."dec"
+FROM cat1.lasSource, cat2.rosat_fsc, cat3.lasSourceXrosat_fsc
+WHERE cat3.lasSourceXrosat_fsc.masterObjID=cat1.lasSource.sourceID 
+  AND cat3.lasSourceXrosat_fsc.slaveObjID=cat2.rosat_fsc.seqNo 
+  AND cat3.lasSourceXrosat_fsc.distanceMins<0.1
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select cat1.lasSource.sourceID, cat1.lasSource.ra, cat1.lasSource.dec, cat2.rosat_fsc.seqNo, cat2.rosat_fsc.ra, cat2.rosat_fsc.dec  From cat1.lasSource, cat2.rosat_fsc, cat3.lasSourceXrosat_fsc  Where (cat3.lasSourceXrosat_fsc.masterObjID = cat1.lasSource.sourceID)  And  ((cat3.lasSourceXrosat_fsc.slaveObjID = cat2.rosat_fsc.seqNo)  And  (cat3.lasSourceXrosat_fsc.distanceMins < 0.1)) 

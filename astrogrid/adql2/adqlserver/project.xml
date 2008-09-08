@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="maven-project.xsd">
+	
+    <extend>../maven/project.xml</extend>
+
+    <artifactId>astrogrid-adqlparser-sv</artifactId>
+    <package>org.astrogrid.adql</package>
+    <currentVersion>${astrogrid.adqlparser.sv.version}</currentVersion>
+    <name>Astrogrid ADQL Parser Server Version</name>
+    <description><![CDATA[
+          This project contains a program which manages a pool of Astrogrid ADQL parsers.
+         ]]></description>
+    <shortDescription>Server version of the Astrogrid ADQL Parser</shortDescription>
+
+    <dependencies>
+    
+    	<dependency>
+            <groupId>org.astrogrid</groupId>
+            <type>jar</type>
+            <artifactId>astrogrid-adqlparser-base</artifactId>
+            <version>${astrogrid.adqlparser.base.version}</version>
+        </dependency>
+
+		<dependency>
+            <groupId>saxon</groupId>
+            <type>jar</type>
+            <artifactId>saxon</artifactId>
+            <version>6.5.5</version>
+        </dependency> 
+
+	<!-- xmlbeans for adql -->
+	 	<dependency>
+			<artifactId>xbean</artifactId>
+			<groupId>xmlbeans</groupId>
+			<version>2.3.0</version>
+			<type>jar</type>
+	 	</dependency>
+	 	
+	 	<dependency>
+			<artifactId>jsr173_1.0_api</artifactId>
+			<groupId>xmlbeans</groupId>
+			<version>2.3.0</version>
+			<type>jar</type>
+	 	</dependency>
+	 	
+	 	<!-- dependency>
+			<artifactId>xmlbeans_qname</artifactId>
+			<groupId>xmlbeans</groupId>
+			<version>2.3.0</version>
+			<type>jar</type>
+	 	</dependency -->
+	 	
+	  	<dependency>
+	     	<!-- These are the generated beans for adql -->
+		 	<artifactId>astrogrid-adqlbeans</artifactId>	      
+		 	<groupId>org.astrogrid</groupId>
+		 	<version>${astrogrid.adqlbeans.version}</version>
+		 	<type>jar</type>
+	 	</dependency>
+	 
+	  <dependency>
+        <id>xmlunit</id>
+        <version>1.0</version>
+      </dependency>
+      
+        <!--+
+            | Commons logging API.
+            +-->
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.4</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <!--+
+            | Log4j toolkit.
+            +-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+  
+    </dependencies>
+       
+    <build>
+     	<defaultGoal>jar:jar</defaultGoal>
+        <sourceDirectory>src/java</sourceDirectory>       
+        <resources>
+           <resource>
+               <directory>${basedir}/src/xslt</directory>
+               <includes>
+                  <include>**/*.xsl</include>
+               </includes>
+               <filtering>false</filtering>
+           </resource>
+        </resources>
+    </build>
+  
+</project>

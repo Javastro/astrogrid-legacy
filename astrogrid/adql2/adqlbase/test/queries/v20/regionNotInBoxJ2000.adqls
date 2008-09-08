@@ -1,0 +1,1 @@
+select * from cata as a where contains( point( 'J2000', a.ra, a.dec), box( 'J2000', 12.3, -4.5, 20, 40 ) ) = 0;

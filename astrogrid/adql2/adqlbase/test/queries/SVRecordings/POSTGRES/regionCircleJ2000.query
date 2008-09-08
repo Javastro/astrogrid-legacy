@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT * FROM cata as a WHERE contains( point( 'J2000', a.ra, a.dec ), circle( 'J2000', 12.4, -3.5, 10 ) ) = 1 ; 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From cata as a  Where CONTAINS(POINT('J2000', a.ra, a.dec) , CIRCLE('J2000', CAST( 12.4 AS double precision), -CAST( 3.5 AS double precision), 10) )  = 1 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--The qualification of type table.* had a bug when processed in differing orders...
+ a.*, col1 would be ok, col1, a.* would fail.-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="col1"/>
+    <adql:Item xsi:type="adql:allSelectionItemType" Table="a"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="col2" Table="tabc" Catalog="cat" Schema="sch"/>
+    <adql:Item xsi:type="adql:allSelectionItemType" Catalog="cat" Schema="sch" Table="tabd"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="taba" Alias="a"/>
+    <adql:Table xsi:type="adql:tableType" Name="tabc" Catalog="cat" Schema="sch"/>
+    <adql:Table xsi:type="adql:tableType" Name="tabd" Catalog="cat" Schema="sch"/>
+  </adql:From>
+</adql:Select>

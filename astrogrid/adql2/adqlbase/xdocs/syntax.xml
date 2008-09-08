@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Base Parser - Syntax Diagrams</title>
+    </properties>
+    <body>
+    <section name="BNF Syntax Diagrams">
+       <p>
+          The following links show BNF diagrams for differenct syntaxes supported by the parser. 
+       </p>
+       <p>
+       	<ul>  
+       		<li><a href="bnf/adqlbnf-v20-plusRFC.html">BNF diagrams for ADQL v2.0 Reference Implementation.</a></li>
+       		<li><a href="bnf/adqlbnf-v20-AG.html">BNF diagrams for Astrogrid's first projected release of ADQL v2.0 support.</a></li> 
+       	</ul>
+       </p>
+
+    </section>
+   </body>
+</document>

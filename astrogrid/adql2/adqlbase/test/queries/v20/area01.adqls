@@ -1,0 +1,1 @@
+select * from "region" as r where area( r.col1 ) > 2 ;

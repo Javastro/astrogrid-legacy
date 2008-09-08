@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment>
+    <adql:Expression xsi:type="adql:columnReferenceType" Name="col1" xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <adql:Order Direction="ASC" xmlns:adql="http://www.ivoa.net/xml/v2.0/adql"/>
+</xml-fragment>

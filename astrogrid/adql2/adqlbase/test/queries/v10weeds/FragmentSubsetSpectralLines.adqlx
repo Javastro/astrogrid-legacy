@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:QueryExpression xmlns:adql="http://www.ivoa.net/xml/v2.0/adql">
+    <adql:Select>
+        <adql:SelectionList>
+            <adql:Item xsi:type="adql:allSelectionItemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </adql:SelectionList>
+        <adql:From>
+            <adql:Table xsi:type="adql:tableType" Name="unified_lines" Alias="a" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        </adql:From>
+        <adql:Where>
+            <adql:Condition xsi:type="adql:intersectionSearchType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <adql:Condition xsi:type="adql:closedSearchType">
+                    <adql:Condition xsi:type="adql:unionSearchType">
+                        <adql:Condition xsi:type="adql:closedSearchType">
+                            <adql:Condition xsi:type="adql:intersectionSearchType">
+                                <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;=">
+                                    <adql:Arg xsi:type="adql:columnReferenceType" Name="frequency" Table="a"/>
+                                    <adql:Arg xsi:type="adql:atomType">
+                                        <adql:Literal Value="110" xsi:type="adql:integerType"/>
+                                    </adql:Arg>
+                                </adql:Condition>
+                                <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">=">
+                                    <adql:Arg xsi:type="adql:columnReferenceType" Name="frequency" Table="a"/>
+                                    <adql:Arg xsi:type="adql:atomType">
+                                        <adql:Literal Value="100" xsi:type="adql:integerType"/>
+                                    </adql:Arg>
+                                </adql:Condition>
+                            </adql:Condition>
+                        </adql:Condition>
+                        <adql:Condition xsi:type="adql:closedSearchType">
+                            <adql:Condition xsi:type="adql:intersectionSearchType">
+                                <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;=">
+                                    <adql:Arg xsi:type="adql:columnReferenceType" Name="frequency" Table="a"/>
+                                    <adql:Arg xsi:type="adql:atomType">
+                                        <adql:Literal Value="220" xsi:type="adql:integerType"/>
+                                    </adql:Arg>
+                                </adql:Condition>
+                                <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">=">
+                                    <adql:Arg xsi:type="adql:columnReferenceType" Name="frequency" Table="a"/>
+                                    <adql:Arg xsi:type="adql:atomType">
+                                        <adql:Literal Value="210" xsi:type="adql:integerType"/>
+                                    </adql:Arg>
+                                </adql:Condition>
+                            </adql:Condition>
+                        </adql:Condition>
+                    </adql:Condition>
+                </adql:Condition>
+                <adql:Condition xsi:type="adql:closedSearchType">
+                    <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">=">
+                        <adql:Arg xsi:type="adql:columnReferenceType" Name="lower_state_energy" Table="a"/>
+                        <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal Value="1000" xsi:type="adql:integerType"/>
+                        </adql:Arg>
+                    </adql:Condition>
+                </adql:Condition>
+            </adql:Condition>
+        </adql:Where>
+    </adql:Select>
+</adql:QueryExpression>

@@ -1,0 +1,99 @@
+<!--+
+ Extension: uses bit processing.
+ Find the parameters for all objects in fields with desired PSF width and range
+ of columns. Now we are using three tables, but it is still a simple query.
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="run" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="rerun" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="camCol" Table="g"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="field" Table="f"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="objID" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="ra" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="dec" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="Rowc" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="Colc" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="u" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="modelMagErr_u" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="g" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="modelMagErr_g" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="r" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="modelMagErr_r" Table="p"/>
+    <adql:Item xsi:type="adql:binaryExprType" Oper="-">
+      <adql:Arg xsi:type="adql:columnReferenceType" Name="petroMag_r" Table="p"/>
+      <adql:Arg xsi:type="adql:columnReferenceType" Name="extinction_r" Table="p"/>
+    </adql:Item>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="petroMagErr_r" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="i" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="modelMagErr_i" Table="p"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="z" Table="p"/>
+    <adql:Item xsi:type="adql:binaryExprType" Oper="&amp;">
+      <adql:Arg xsi:type="adql:columnReferenceType" Name="status" Table="p"/>
+      <adql:Arg xsi:type="adql:atomType">
+        <adql:Literal Value="00002000" xsi:type="adql:hexStringType"/>
+      </adql:Arg>
+    </adql:Item>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="psfWidth_r" Table="f"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="photoObj" Alias="p"/>
+    <adql:Table xsi:type="adql:tableType" Name="field" Alias="f"/>
+    <adql:Table xsi:type="adql:tableType" Name="segment" Alias="g"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="fieldid" Table="f"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="fieldid" Table="p"/>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:intersectionSearchType">
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="segmentid" Table="f"/>
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="segmentid" Table="g"/>
+        </adql:Condition>
+        <adql:Condition xsi:type="adql:intersectionSearchType">
+          <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="run" Table="g"/>
+            <adql:Arg xsi:type="adql:atomType">
+              <adql:Literal Value="1336" xsi:type="adql:integerType"/>
+            </adql:Arg>
+          </adql:Condition>
+          <adql:Condition xsi:type="adql:intersectionSearchType">
+            <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="camCol" Table="g"/>
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="1" xsi:type="adql:integerType"/>
+              </adql:Arg>
+            </adql:Condition>
+            <adql:Condition xsi:type="adql:intersectionSearchType">
+              <adql:Condition xsi:type="adql:betweenPredType">
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="field" Table="f"/>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="11" xsi:type="adql:integerType"/>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="13" xsi:type="adql:integerType"/>
+                </adql:Arg>
+              </adql:Condition>
+              <adql:Condition xsi:type="adql:intersectionSearchType">
+                <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                  <adql:Arg xsi:type="adql:columnReferenceType" Name="psfWidth_r" Table="f"/>
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal Value="1.2" xsi:type="adql:realType"/>
+                  </adql:Arg>
+                </adql:Condition>
+                <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                  <adql:Arg xsi:type="adql:columnReferenceType" Name="colc" Table="p"/>
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal Value="400.0" xsi:type="adql:realType"/>
+                  </adql:Arg>
+                </adql:Condition>
+              </adql:Condition>
+            </adql:Condition>
+          </adql:Condition>
+        </adql:Condition>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

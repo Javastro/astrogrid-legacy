@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * from personnel p where p.city_name not in ( 'New York', 'Chicago', 'Atlanta', 'Austin' ) ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From personnel as p  Where p.city_name Not In ('New York', 'Chicago', 'Atlanta', 'Austin')  

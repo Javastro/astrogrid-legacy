@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * from personnel as p where p.city_name in ( select c.city_name from cities as c where c.state = 'NY' ) ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From personnel as p  Where p.city_name In (Select c.city_name From cities as c  Where c.state = 'NY' )  

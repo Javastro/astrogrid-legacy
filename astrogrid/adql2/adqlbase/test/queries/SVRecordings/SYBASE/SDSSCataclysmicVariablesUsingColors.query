@@ -1,0 +1,24 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Search for Cataclysmic Variables and pre-CVs with White Dwarfs and
+-- very late secondaries. Just uses some simple color cuts from Paula Szkody.
+-- Another simple query that uses math in the WHERE clause
+
+SELECT p.run,
+    p.camCol, 
+    p.rerun, 
+    p.field, 
+    p.objID, 
+    p.u, p.g, p.r, p.i, p.z, 
+    p.ra, p."dec"             -- Just get some basic quantities
+FROM PhotoPrimary as p        -- From all primary detections, regardless of class
+WHERE p.u - p.g < 0.4
+    and p.g - p.r < 0.7 
+    and p.r - p.i > 0.4 
+    and p.i - p.z > 0.4       -- that meet the color criteria
+    ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select p.run, p.camCol, p.rerun, p.field, p.objID, p.u, p.g, p.r, p.i, p.z, p.ra, p.dec From PhotoPrimary as p  Where ((p.u - p.g) < 0.4) And (((p.g - p.r) < 0.7) And (((p.r - p.i) > 0.4) And ((p.i - p.z) > 0.4))) 

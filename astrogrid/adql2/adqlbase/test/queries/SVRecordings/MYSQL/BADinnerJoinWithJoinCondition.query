@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * from foo inner join bar on foo.y >= bar.x inner join flub on foo.y <= flub.z ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From foo INNER JOIN bar ON foo.y >= bar.x INNER JOIN flub ON foo.y <= flub.z 

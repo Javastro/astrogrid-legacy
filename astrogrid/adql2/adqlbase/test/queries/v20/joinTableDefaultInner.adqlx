@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:allSelectionItemType" Table="cata"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:joinTableType" NaturalJoin="false">
+      <adql:Qualifier>DEFAULT_INNER</adql:Qualifier>
+      <adql:Tables>
+        <adql:fromTableType xsi:type="adql:tableType" Name="cata"/>
+        <adql:fromTableType xsi:type="adql:tableType" Name="catb"/>
+      </adql:Tables>
+      <adql:JoinSpecification xsi:type="adql:joinConditionType">
+        <adql:Condition xsi:type="adql:betweenPredType">
+          <adql:Arg xsi:type="adql:trigonometricFunctionType" Name="SIN">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="cata"/>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:mathFunctionType" Name="ABS">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="catb"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="col2" Table="catb"/>
+            </adql:Arg>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:mathFunctionType" Name="ABS">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="catb"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="col2" Table="catb"/>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Condition>
+      </adql:JoinSpecification>
+    </adql:Table>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:betweenPredType">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="ra" Table="cata"/>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="12.3" xsi:type="adql:realType"/>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="12.4" xsi:type="adql:realType"/>
+        </adql:Arg>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:betweenPredType">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="cata"/>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="2.6" xsi:type="adql:realType"/>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="2.7" xsi:type="adql:realType"/>
+        </adql:Arg>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

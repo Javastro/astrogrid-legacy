@@ -1,0 +1,1 @@
+select * from tab1 as t1 left outer join tab2 as t2 on t1.a=t2.a where t1.a = 27 ;

@@ -1,0 +1,5 @@
+select u.user_id, u.email, count(*), max(c.posted)
+from users as u, classified_ads as c
+where u.user_id = c.user_id
+group by u.user_id, u.email
+order by email ;

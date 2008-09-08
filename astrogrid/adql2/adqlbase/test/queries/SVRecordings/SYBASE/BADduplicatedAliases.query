@@ -1,0 +1,14 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select 
+	min(a.ra) as minra, 
+	max(a.ra) as maxra, 
+	min(a."dec") as minra, 
+	max(a."dec") as maxra  
+from cata as a
+where a.signal >= 23 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select MIN(  a.ra )  as minra, MAX(  a.ra )  as maxra, MIN(  a.dec )  as minra, MAX(  a.dec )  as maxra From cata as a  Where a.signal >= 23 

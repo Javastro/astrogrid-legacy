@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Parser Utilities - Overview</title>
+    </properties>
+    <body>
+    <section name="Overview">
+       <p>
+   		  The utilities are largely to help with development, either with documenting the ADQL standard,
+   		  or with examining and tracing the result of parsing a query. 
+       </p>     
+    </section>
+   </body>
+</document>

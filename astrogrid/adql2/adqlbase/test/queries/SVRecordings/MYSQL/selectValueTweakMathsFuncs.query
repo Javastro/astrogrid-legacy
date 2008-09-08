@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select ABS(a.POS_EQ_RA) , CEILING(a.POS_EQ_RA) , FLOOR(a.POS_EQ_RA) , ROUND(a.POS_EQ_RA) , TRUNCATE(a.POS_EQ_RA)  From catalogue as a 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select ABS(a.POS_EQ_RA) , CEILING(a.POS_EQ_RA) , FLOOR(a.POS_EQ_RA) , ROUND(a.POS_EQ_RA, 0) , TRUNCATE(a.POS_EQ_RA, 0)   From catalogue as a 

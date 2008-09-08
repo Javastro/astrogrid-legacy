@@ -1,0 +1,9 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select top 100 c.POS_EQ_RA from catalogue as c
+where c.POS_EQ_RA between 0.0 and 0.5 AND c.POS_EQ_RA not between 0.1 and 0.4 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select LIMIT 100 c.POS_EQ_RA  From catalogue as c  Where (c.POS_EQ_RA Between CAST( 0.0 AS double precision) And CAST( 0.5 AS double precision) ) And (c.POS_EQ_RA Not Between CAST( 0.1 AS double precision) And CAST( 0.4 AS double precision) ) 

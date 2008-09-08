@@ -1,0 +1,1 @@
+SELECT * FROM PhotoObj as p WHERE CONTAINS( p.pt, p.circ ) = 1 ;

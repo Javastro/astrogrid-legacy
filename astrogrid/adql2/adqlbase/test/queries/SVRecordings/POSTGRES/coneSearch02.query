@@ -1,0 +1,42 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select * From catalogue as a Where 
+(a.POS_EQ_DEC<5.01)  
+And  
+( 
+  (a.POS_EQ_DEC>4.99)  
+  And  
+  ( (
+     2.0 
+     * 
+     ASIN(
+           SQRT(( 
+                  POWER( 
+                          SIN( ( (RADIANS(a.POS_EQ_DEC)  - 0.08726646259971647)   / 2.0)  ) 
+                        , 2
+                       )  
+                  +  
+                  ( 
+                    ( 
+                      COS(RADIANS(a.POS_EQ_DEC) )  
+                      *  
+                      ( 
+                        COS(0.08726646259971647)  
+                        * 
+                        POWER( SIN( ( (RADIANS(a.POS_EQ_RA)  - 0.08726646259971647) / 2.0)  ) ,2 )
+
+                      )  
+                    )  
+                  )  
+              )) 
+          ) 
+    ) 
+    <
+    1.7453292519943296E+3
+  ) 
+)
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From catalogue as a  Where ((a.POS_EQ_DEC < CAST( 5.01 AS double precision))) And ((((a.POS_EQ_DEC > CAST( 4.99 AS double precision))) And ((((CAST( 2.0 AS double precision) * ASIN(SQRT( CAST( ((POW( CAST( SIN(((((RADIANS( CAST( a.POS_EQ_DEC AS double precision) )  - CAST( 0.08726646259971647 AS double precision))) / CAST( 2.0 AS double precision))))  AS double precision), CAST( 2 AS double precision) )  + (((COS(RADIANS( CAST( a.POS_EQ_DEC AS double precision) ) )  * ((COS(CAST( 0.08726646259971647 AS double precision))  * POW( CAST( SIN(((((RADIANS( CAST( a.POS_EQ_RA AS double precision) )  - CAST( 0.08726646259971647 AS double precision))) / CAST( 2.0 AS double precision))))  AS double precision), CAST( 2 AS double precision) ) ))))))) AS double precision) ) ) )) < CAST( 1745.3292519943295 AS double precision))))) 

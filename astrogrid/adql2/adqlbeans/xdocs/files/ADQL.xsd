@@ -1,0 +1,954 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema 
+    targetNamespace="http://www.ivoa.net/xml/v2.0/adql" 
+	xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    elementFormDefault="qualified"
+    version="2.0">
+		
+	<xs:simpleType name="schemaVersionType">
+		<xs:annotation>
+			<xs:documentation>The range of ADQL schema version numbers that are compatible with this schema version</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:enumeration value="2.0"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="selectionItemType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The base type for any of items to be selected in a query</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="scalarExpressionType" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The base type for a scalar expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:selectionItemType">
+		       <xs:attribute name="id" type="xs:ID" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="closedExprType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents an expression inside a bracket</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="Arg" type="adql:scalarExpressionType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="binaryExprType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a binary expression such as a+b</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="Arg" type="adql:scalarExpressionType" minOccurs="2" maxOccurs="2"/>
+				</xs:sequence>
+				<xs:attribute name="Oper" type="adql:binaryOperatorType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="binaryOperatorType">
+		<xs:annotation>
+			<xs:documentation>Used for expressing operations like A+B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="+"/>
+			<xs:enumeration value="-"/>
+			<xs:enumeration value="*"/>
+			<xs:enumeration value="/"/>
+			<xs:enumeration value="&amp;"/>
+			<xs:enumeration value="|"/>
+			<xs:enumeration value="^"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="unaryExprType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents an unary expression such as -(a.ra)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="Arg" type="adql:scalarExpressionType"/>
+				</xs:sequence>
+				<xs:attribute name="Oper" type="adql:unaryOperatorType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="unaryOperatorType">
+		<xs:annotation>
+			<xs:documentation>Operators for expressing a single element operation</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="+"/>
+			<xs:enumeration value="-"/>
+			<xs:enumeration value="~"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="columnReferenceType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a column</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+			    <xs:attribute name="Catalog" type="xs:string" use="optional"/>
+			    <xs:attribute name="Schema" type="xs:string" use="optional"/>
+				<xs:attribute name="Table" type="xs:string" use="optional"/>
+				<xs:attribute name="Name" type="xs:string" use="required"/>
+				<xs:attribute name="xpathName" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="atomType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Encapsulates basic literals such as Strings, Integers and Real numbers</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="Literal" type="adql:literalType"/>
+					<xs:element name="Unit" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="literalType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The base type for all literals</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="numberType" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The base type for all numbers</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:literalType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="realType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a real number</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:numberType">
+				<xs:attribute name="Value" type="xs:double" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="integerType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents an integer</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:numberType">
+				<xs:attribute name="Value" type="xs:long" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="stringType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a string literal</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:literalType">
+				<xs:attribute name="Value" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="bitStringType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a bit string literal</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:literalType">
+				<xs:attribute name="Value" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="hexStringType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a hex string literal</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:literalType">
+				<xs:attribute name="Value" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="functionType" abstract="true" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The base type for a function</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType"/>
+		</xs:complexContent>		
+	</xs:complexType>
+	<xs:group name="functionArgsGroup" >
+	    <xs:sequence>
+			<xs:element name="Arg" type="adql:selectionItemType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="selectionOptionType">
+		<xs:annotation>
+			<xs:documentation>Option of selecting all or distinct elements in a query</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Option" type="adql:allOrDistinctType" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="allOrDistinctType">
+		<xs:annotation>
+			<xs:documentation>Enumeration for All and Distinct options</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="All"/>
+			<xs:enumeration value="DISTINCT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="trigonometricFunctionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a trigonometric function</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:functionType">
+			    <xs:sequence>			      
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>	
+				<xs:attribute name="Name" type="adql:trigonometricFunctionNameType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="trigonometricFunctionNameType">
+		<xs:annotation>
+			<xs:documentation>Enumeration of allowed trigonometric functions</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIN"/>
+			<xs:enumeration value="COS"/>
+			<xs:enumeration value="TAN"/>
+			<xs:enumeration value="COT"/>
+			<xs:enumeration value="ASIN"/>
+			<xs:enumeration value="ACOS"/>
+			<xs:enumeration value="ATAN"/>
+			<xs:enumeration value="ATAN2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="mathFunctionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a math function</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:functionType">
+			    <xs:sequence>			      
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>	
+				<xs:attribute name="Name" type="adql:mathFunctionNameType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="mathFunctionNameType">
+		<xs:annotation>
+			<xs:documentation>Enumeration of allowed math functions</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ABS"/>
+			<xs:enumeration value="CEILING"/>
+			<xs:enumeration value="DEGREES"/>
+			<xs:enumeration value="EXP"/>
+			<xs:enumeration value="FLOOR"/>
+			<xs:enumeration value="LOG"/>
+			<xs:enumeration value="PI"/>
+			<xs:enumeration value="POWER"/>
+			<xs:enumeration value="RADIANS"/>
+			<xs:enumeration value="SQRT"/>
+			<xs:enumeration value="SQUARE"/>
+			<xs:enumeration value="LOG10"/>
+			<xs:enumeration value="RAND"/>
+			<xs:enumeration value="ROUND"/>
+			<xs:enumeration value="TRUNCATE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:complexType name="systemFunctionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a region-orientated or astronomical type function</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:functionType">
+			    <xs:sequence>			      
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>	
+				<xs:attribute name="Name" type="adql:systemFunctionNameType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="systemFunctionNameType">
+		<xs:annotation>
+			<xs:documentation>Enumeration of allowed system functions</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AREA"/>
+			<xs:enumeration value="CONTAINS"/>
+            <xs:enumeration value="COORDSYS"/>			
+			<xs:enumeration value="DISTANCE"/>
+			<xs:enumeration value="INTERSECTS"/>
+			<xs:enumeration value="LATITUDE"/>
+			<xs:enumeration value="LONGITUDE"/>
+			<xs:enumeration value="COORD1"/>
+			<xs:enumeration value="COORD2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="geometryFunctionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a function that returns a region</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:functionType">
+			    <xs:sequence>			      
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>	
+				<xs:attribute name="Name" type="adql:geometryFunctionNameType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="geometryFunctionNameType">
+		<xs:annotation>
+			<xs:documentation>Enumeration of allowed system functions</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BOX"/>
+			<xs:enumeration value="CENTROID"/>
+			<xs:enumeration value="CIRCLE"/>
+			<xs:enumeration value="POINT"/>			
+			<xs:enumeration value="POLYGON"/>
+			<xs:enumeration value="REGION"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- xs:complexType name="userDefinedFunctionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents user defined function expressions</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="Name" type="xs:string"/>
+					<xs:element name="Params" type="adql:scalarExpressionType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType -->
+	
+	<xs:complexType name="userDefinedFunctionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents user defined function expressions</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:functionType">
+				<xs:sequence>
+					<xs:group ref="adql:functionArgsGroup"/>
+				</xs:sequence>
+				<xs:attribute name="Name" type="xs:string" use="required"/>
+				<xs:attribute name="Catalog" type="xs:string" use="optional"/>
+			    <xs:attribute name="Schema" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+		
+	<xs:complexType name="aggregateFunctionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents an aggregate function</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:functionType">				
+			    <xs:sequence>			    
+			        <xs:element name="Allow" type="adql:selectionOptionType" minOccurs="0"/>   
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>				    		
+				<xs:attribute name="Name" type="adql:aggregateFunctionNameType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="aggregateFunctionNameType">
+		<xs:annotation>
+			<xs:documentation>Enumeration of allowed aggregate functions</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AVG"/>
+			<xs:enumeration value="MIN"/>
+			<xs:enumeration value="MAX"/>
+			<xs:enumeration value="SUM"/>
+			<xs:enumeration value="COUNT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="aliasSelectionItemType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Used to select an expression as a new alias column</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:selectionItemType">
+				<xs:sequence>
+					<xs:element name="Expression" type="adql:scalarExpressionType"/>
+				</xs:sequence>
+				<xs:attribute name="As" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="allSelectionItemType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represent all columns as in Select * query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:selectionItemType">
+			    <xs:attribute name="Catalog" type="xs:string" use="optional"/>
+			    <xs:attribute name="Schema" type="xs:string" use="optional"/>
+				<xs:attribute name="Table" type="xs:string" use="optional"/>
+			</xs:extension>	
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="comparisonType">
+		<xs:annotation>
+			<xs:documentation>The Comparison operators such as Less-than or More-than, etc</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="="/>
+			<xs:enumeration value="&lt;&gt;"/>
+			<xs:enumeration value="&gt;"/>
+			<xs:enumeration value="&gt;="/>
+			<xs:enumeration value="&lt;"/>
+			<xs:enumeration value="&lt;="/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="fromTableType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The base type for all tables used in the From clause of the query</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+<!-- archiveTableType removed as an experiment 
+#	<xs:complexType name="archiveTableType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>Same as a tableType with an additional archive name</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:fromTableType">
+#				<xs:attribute name="Archive" type="xs:string" use="required"/>
+#				<xs:attribute name="Name" type="xs:string" use="required"/>
+#				<xs:attribute name="Alias" type="xs:string" use="optional"/>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
+-->
+	<xs:complexType name="tableType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a table with its name and its alias name</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:fromTableType">
+			    <xs:attribute name="Catalog" type="xs:string" use="optional"/>
+			    <xs:attribute name="Schema" type="xs:string" use="optional"/>
+				<xs:attribute name="Name" type="xs:string" use="required"/>
+				<xs:attribute name="Alias" type="xs:string" use="optional"/>
+				<xs:attribute name="xpathName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+<!-- Removed by Jeff Lusted 28 June 2007
+#	<xs:complexType name="xMatchTableAliasType" abstract="true">
+#		<xs:annotation>
+#			<xs:documentation>The base type for all table inclusion or drop types used in a cross match expression</xs:documentation>
+#		</xs:annotation>
+#	</xs:complexType>
+#	<xs:complexType name="includeTableType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>Used for adding a table for the Xmatch operation</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:xMatchTableAliasType">
+#				<xs:attribute name="Name" type="xs:string" use="required"/>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
+#	<xs:complexType name="dropTableType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>Used for avoiding a table in Xmatch</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:xMatchTableAliasType">
+#				<xs:attribute name="Name" type="xs:string" use="required"/>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
+-->
+	<xs:complexType name="searchType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The base type for searches in Where and Having clauses of the query</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="intersectionSearchType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents expressions like A And B</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Condition" type="adql:searchType" minOccurs="2" maxOccurs="2"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="unionSearchType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents expressions like A Or B</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Condition" type="adql:searchType" minOccurs="2" maxOccurs="2"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+<!-- Removed by Jeff Lusted 28 June 2007
+#	<xs:complexType name="xMatchType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>A cross match expression</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:searchType">
+#				<xs:sequence>
+#					<xs:element name="Table" type="adql:xMatchTableAliasType" minOccurs="2" maxOccurs="unbounded"/>
+#					<xs:element name="Nature" type="adql:comparisonType"/>
+#					<xs:element name="Sigma" type="adql:numberType"/>
+#				</xs:sequence>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
+-->
+	<xs:complexType name="likePredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The Like expression of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Arg" type="adql:scalarExpressionType"/>
+					<xs:element name="Pattern" type="adql:scalarExpressionType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="notLikePredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The Not Like expression of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:likePredType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="exclusiveSearchType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL NOT IN expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:inclusiveSearchType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="inPredicateValueType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL92 in_predicate_value</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="SubQuery" type="adql:subQueryType"/>
+			<xs:element name="InValueList" type="adql:inValueListType"/>
+		</xs:choice>
+	</xs:complexType>
+		
+	<xs:complexType name="subQueryType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the subquery in a SQL IN and EXISTS expression</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="QueryExpression" type="adql:queryExpressionType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="closedSearchType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents expressions like (A)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Condition" type="adql:searchType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="comparisonPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the Comparison of two expressions</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Arg" type="adql:scalarExpressionType" minOccurs="2" maxOccurs="2"/>
+				</xs:sequence>
+				<xs:attribute name="Comparison" type="adql:comparisonType" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="betweenPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the Between expression of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Arg" type="adql:scalarExpressionType" minOccurs="3" maxOccurs="3"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="notBetweenPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the Not Between expression of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:betweenPredType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="inverseSearchType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents expressions like Not A</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Condition" type="adql:searchType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="havingType">
+		<xs:annotation>
+			<xs:documentation>Represents the Having expression part of a query</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Condition" type="adql:searchType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="groupByType">
+		<xs:annotation>
+			<xs:documentation>Represents the Group By expression part of a query</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Column" type="adql:columnReferenceType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="whereType">
+		<xs:annotation>
+			<xs:documentation>Represents the Where part of the query</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Condition" type="adql:searchType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="fromType">
+		<xs:annotation>
+			<xs:documentation>Represents the From part of the query</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Table" type="adql:fromTableType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="selectionListType">
+		<xs:annotation>
+			<xs:documentation>List of items to be selected in the Query</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Item" type="adql:selectionItemType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="selectionLimitType">
+		<xs:annotation>
+			<xs:documentation>Represents the TOP part of a query</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Top" type="xs:unsignedInt"/>
+	</xs:complexType>
+	<xs:complexType name="intoType">
+		<xs:annotation>
+			<xs:documentation>Represents the SQL INTO expression</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TableName" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="orderDirectionType">
+		<xs:annotation>
+			<xs:documentation>Ascending or Descending order of an Order by term</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ASC"/>
+			<xs:enumeration value="DESC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="orderOptionType">
+		<xs:annotation>
+			<xs:documentation>Option for setting the direction for Order By </xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Direction" type="adql:orderDirectionType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="orderType">
+		<xs:annotation>
+			<xs:documentation>Represents the ORDER BY part of a query</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Expression" type="adql:scalarExpressionType"/>
+			<xs:element name="Order" type="adql:orderOptionType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="orderExpressionType">
+		<xs:annotation>
+			<xs:documentation>List of expressions in which order the results should be provided</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Item" type="adql:orderType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="inValueListType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a list provided for an SQL IN expression</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Item" type="adql:scalarExpressionType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="inclusiveSearchType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL IN expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Expression" type="adql:scalarExpressionType"/>
+					<xs:element name="InPredicateValue" type="adql:inPredicateValueType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="Select">
+		<xs:annotation>
+			<xs:documentation>The only permitted root element of a query, the SELECT element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent mixed="false">
+            	<xs:extension base="adql:selectType">
+            		<xs:attribute name="schemaVersion" type="adql:schemaVersionType" use="optional" default="2.0"/>
+            	</xs:extension>
+        	</xs:complexContent>
+        </xs:complexType>
+	</xs:element>
+	<xs:complexType name="selectType">
+		<xs:annotation>
+			<xs:documentation>The SELECT part of a query</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Allow" type="adql:selectionOptionType" minOccurs="0"/>
+			<xs:element name="Restrict" type="adql:selectionLimitType" minOccurs="0"/>
+			<xs:element name="SelectionList" type="adql:selectionListType"/>
+			<xs:element name="InTo" type="adql:intoType" minOccurs="0"/>
+			<xs:element name="From" type="adql:fromType" minOccurs="0"/>
+			<xs:element name="Where" type="adql:whereType" minOccurs="0"/>
+			<xs:element name="GroupBy" type="adql:groupByType" minOccurs="0"/>
+			<xs:element name="Having" type="adql:havingType" minOccurs="0"/>
+			<xs:element name="OrderBy" type="adql:orderExpressionType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="joinTableQualifierType">
+		<xs:annotation>
+			<xs:documentation>Denotes the type of a Join operation</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="LEFT_OUTER"/>
+			<xs:enumeration value="RIGHT_OUTER"/>
+			<xs:enumeration value="FULL_OUTER"/>
+			<xs:enumeration value="INNER"/>
+			<xs:enumeration value="CROSS"/>
+			<xs:enumeration value="DEFAULT_INNER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="joinTableType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL JOIN expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:fromTableType">
+				<xs:sequence>
+					<xs:element name="Qualifier" type="adql:joinTableQualifierType"/>
+					<xs:element name="Tables" type="adql:ArrayOfFromTableType"/>
+					<xs:element name="JoinSpecification" type="adql:joinSpecType" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="NaturalJoin" type="xs:boolean" use="optional" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ArrayOfFromTableType">
+		<xs:annotation>
+			<xs:documentation>Represents an array of tables in the from expression</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="fromTableType" type="adql:fromTableType" nillable="true" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+    <xs:complexType name="joinSpecType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The base type for all join specification used in the From clause of a query</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>	
+	
+	<xs:complexType name="joinConditionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents join condition within join specification </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:joinSpecType">
+				<xs:sequence>
+					<xs:element name="Condition" type="adql:searchType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+    <xs:complexType name="namedColumnsJoinType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL name_columns_join </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:joinSpecType">
+				<xs:sequence>
+					<xs:element name="ColumnList" type="adql:columnNameListType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>		
+	</xs:complexType>		
+
+	<xs:complexType name="columnNameListType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL column_names_list </xs:documentation>
+		</xs:annotation>		
+		<xs:sequence>
+		    <xs:element name="ColumnName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+			
+	<!-- Inclusions made by Jeff Lusted -->
+	<xs:complexType name="existsPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL EXISTS expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="SubQuery" type="adql:subQueryType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="nullPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the IS NULL predicate of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Column" type="adql:columnReferenceType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="notNullPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the IS NOT NULL predicate of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:nullPredType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	
+    <xs:complexType name="characterValueExpressionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The character_value_expression in SQL</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="CharacterFactor" type="adql:scalarExpressionType" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="derivedTableType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL92 derived table type</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:fromTableType">
+				<xs:choice>
+					<xs:element name="SubQuery" type="adql:subQueryType"/>
+				</xs:choice>
+				<xs:attribute name="Alias" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
+	
+	<xs:complexType name="queryExpressionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL92 query expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:fromTableType">
+				<xs:choice>
+					<xs:element name="Select" type="adql:selectType"/>
+					<xs:element name="JoinedTable" type="adql:joinTableType"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="variableSpecType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The symbolic specification for a scripting variable</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="Variable" type="adql:atomType" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
+
+</xs:schema>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Parser Server Version - Overview</title>
+    </properties>
+    <body>
+    <section name="Overview">
+       <p>
+          The AdqlParserSV manages a pool of base parsers in a thread safe manner.
+          The base parser is not thread safe and this is a simple way of circumventing the restriction. 
+       </p>
+      
+    </section>
+   </body>
+</document>

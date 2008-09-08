@@ -1,0 +1,2 @@
+--Select/SelectionList
+u.user_id, u.email, count(*), max(c.posted)

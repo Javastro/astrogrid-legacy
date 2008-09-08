@@ -1,0 +1,16 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select a.seqno
+from target as a
+where a.targetNo = 100367
+and not exists
+( select *
+  from target as b
+  where b.seqno = a.seqno
+    and b.targetNo = 100367
+    and (b.errorx > 0.003 or b.errorx is null) ) ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select a.seqno  From target as a  Where (a.targetNo = 100367) And ( NOT  EXISTS ( Select *  From target as b  Where (b.seqno = a.seqno) And ((b.targetNo = 100367) And (((b.errorx > CAST( 0.0030 AS double precision)) Or (b.errorx IS NULL  ))))  )  ) 

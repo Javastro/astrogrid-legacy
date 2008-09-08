@@ -1,0 +1,25 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select * From unified_lines as a Where 
+(
+  (
+    a.frequency<=110 
+    And
+    a.frequency>=100
+  ) 
+  Or
+  ( 
+    a.frequency<=220 
+    And 
+    a.frequency>=210
+  ) 
+)
+And
+(
+  a.lower_state_energy>=1000
+)
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From unified_lines as a  Where (((((a.frequency <= 110) And (a.frequency >= 100))) Or (((a.frequency <= 220) And (a.frequency >= 210))))) And ((a.lower_state_energy >= 1000)) 

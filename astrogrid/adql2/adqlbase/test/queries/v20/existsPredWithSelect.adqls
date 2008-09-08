@@ -1,0 +1,1 @@
+select * from cata, catb where exists ( select * from catb where cata.col1 = catb.col1 ) ;

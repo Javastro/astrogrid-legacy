@@ -1,0 +1,3 @@
+-- The qualification of type table.* had a bug when processed in differing orders...
+-- a.*, col1 would be ok, col1, a.* would fail.
+select col1, a.*, cat.sch.tabc.col2, cat.sch.tabd.* from taba as a, cat.sch.tabc, cat.sch.tabd ;

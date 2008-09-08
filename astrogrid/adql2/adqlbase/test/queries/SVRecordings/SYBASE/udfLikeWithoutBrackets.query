@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select * from people p where udf_NameMunge(p.surname, p.firstName ) like '%son' ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From people as p  Where udf_NameMunge(p.surname, p.firstName)   Like '%son'  

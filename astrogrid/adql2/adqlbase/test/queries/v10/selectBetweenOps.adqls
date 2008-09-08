@@ -1,0 +1,2 @@
+select top 100 c.POS_EQ_RA from catalogue as c
+where c.POS_EQ_RA between 0.0 and 0.5 AND c.POS_EQ_RA not between 0.1 and 0.4 ;

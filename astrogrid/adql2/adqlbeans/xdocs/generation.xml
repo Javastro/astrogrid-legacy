@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>Generating XMLBeans</title>
+    </properties>
+    <body>
+    <section name="Generation">
+       <p>
+         Within the Maven build the beans are generated using an Ant task. This is all automatic. 
+         However, if you wish to build by hand, see the scomp utility available with the XMLBeans distribution. 
+         Here is an example of a scomp command:
+         <br/><br/>
+         scomp -nopvr -d ../target/classes -src ../target/src/java -out ../target/lib/adqlxmlbeans.jar ../contracts/schema/adql ../config/adql.xsdconfig 
+       	 <br/><br/>
+       </p>
+       <p>
+         Both the Ant task and the scomp utility require a schema and a configuration file.
+       </p>
+       <p>
+       	<ul>  
+       		<li><a href="files/ADQL.xsd">Here is the schema file.</a></li>
+       		<li><a href="files/adql.xsdconfig">Here is the config file.</a></li> 
+       	</ul>
+       </p>
+
+    </section>
+   </body>
+</document>

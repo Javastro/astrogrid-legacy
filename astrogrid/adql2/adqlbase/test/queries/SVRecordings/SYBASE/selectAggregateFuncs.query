@@ -1,0 +1,13 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select top 100  AVG(a.POS_EQ_RA), 
+                MIN(a.POS_EQ_RA),
+                MAX(a.POS_EQ_RA),
+                SUM(a.POS_EQ_RA),
+                COUNT(a.POS_EQ_RA)
+from catalogue as a ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select Top 100 AVG(  a.POS_EQ_RA ) , MIN(  a.POS_EQ_RA ) , MAX(  a.POS_EQ_RA ) , SUM(  a.POS_EQ_RA ) , COUNT(  a.POS_EQ_RA )  From catalogue as a 

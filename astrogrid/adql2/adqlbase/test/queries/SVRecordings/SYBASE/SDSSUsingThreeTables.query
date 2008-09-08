@@ -1,0 +1,43 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+-- Extension: uses bit processing.
+-- Find the parameters for all objects in fields with desired PSF width and range
+-- of columns. Now we are using three tables, but it is still a simple query.
+
+SELECT
+    g.run, 
+    g.rerun, 
+    g.camCol, 
+    f.field, 
+    p.objID, 
+    p.ra, 
+    p.dec, 
+    p.Rowc, 
+    p.Colc, 
+    p.u, 
+    p.modelMagErr_u , 
+    p.g, 
+    p.modelMagErr_g, 
+    p.r, 
+    p.modelMagErr_r, 
+    p.petroMag_r - p.extinction_r, 
+    p.petroMagErr_r, 
+    p.i, 
+    p.modelMagErr_i, 
+    p.z, 
+    p.status & 0x00002000, 
+    f.psfWidth_r 
+FROM
+    photoObj p, field f, segment g 
+WHERE
+    f.fieldid = p.fieldid 
+    and f.segmentid = g.segmentid 
+    and g.run = 1336 and g.camCol = 1 
+    and f.field between 11 and 13 
+    and f.psfWidth_r > 1.2 
+    and p.colc > 400.0 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select g.run, g.rerun, g.camCol, f.field, p.objID, p.ra, p.dec, p.Rowc, p.Colc, p.u, p.modelMagErr_u, p.g, p.modelMagErr_g, p.r, p.modelMagErr_r, (p.petroMag_r - p.extinction_r), p.petroMagErr_r, p.i, p.modelMagErr_i, p.z, (p.status & 0x00002000), f.psfWidth_r From photoObj as p, field as f, segment as g  Where (f.fieldid = p.fieldid) And ((f.segmentid = g.segmentid) And ((g.run = 1336) And ((g.camCol = 1) And ((f.field Between 11 And 13 ) And ((f.psfWidth_r > 1.2) And (p.colc > 400.0)))))) 

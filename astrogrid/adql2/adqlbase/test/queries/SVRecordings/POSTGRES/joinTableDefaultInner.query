@@ -1,0 +1,11 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select cata.* 
+from cata join catb 
+     on sin(cata.col1) between abs(catb.col1 - catb.col2) and abs(catb.col1 + catb.col2) 
+where cata.ra between 12.3 and 12.4 and cata.dec between 2.6 and 2.7 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select cata.*  From cata JOIN catb ON SIN(cata.col1)  Between ABS( CAST( (catb.col1 - catb.col2) AS double precision) )  And ABS( CAST( (catb.col1 + catb.col2) AS double precision) )    Where (cata.ra Between CAST( 12.3 AS double precision) And CAST( 12.4 AS double precision) ) And (cata.dec Between CAST( 2.6 AS double precision) And CAST( 2.7 AS double precision) ) 

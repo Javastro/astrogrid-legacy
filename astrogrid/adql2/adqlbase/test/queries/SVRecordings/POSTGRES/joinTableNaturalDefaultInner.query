@@ -1,0 +1,10 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select cata.* 
+from cata natural join catb
+where catb.err2 < 0.045 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select cata.*  From cata NATURAL JOIN catb  Where catb.err2 < CAST( 0.045 AS double precision) 

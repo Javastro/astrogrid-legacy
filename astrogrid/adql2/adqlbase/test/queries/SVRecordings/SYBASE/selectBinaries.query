@@ -1,0 +1,13 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select top 100  a.POS_EQ_RA + a.POS_EQ_DEC, 
+                a.POS_EQ_RA - a.POS_EQ_DEC, 
+                a.POS_EQ_RA * a.POS_EQ_DEC, 
+                a.POS_EQ_RA / a.POS_EQ_DEC
+from catalogue as a ;
+ 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select Top 100 (a.POS_EQ_RA + a.POS_EQ_DEC), (a.POS_EQ_RA - a.POS_EQ_DEC), (a.POS_EQ_RA * a.POS_EQ_DEC), (a.POS_EQ_RA / a.POS_EQ_DEC) From catalogue as a 

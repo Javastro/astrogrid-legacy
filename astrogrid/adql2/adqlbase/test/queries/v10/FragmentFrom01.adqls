@@ -1,0 +1,2 @@
+--Select/From 
+from users as u, classified_ads as c

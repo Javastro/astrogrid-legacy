@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+    <v1:SelectionList>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="id" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="s" Name="name" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="o" Name="order_amount" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:SelectionList>
+    <v1:From>
+        <v1:Table xsi:type="v1:joinTableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <v1:Qualifier>FULL_OUTER</v1:Qualifier>
+            <v1:Tables>
+                <v1:fromTableType xsi:type="v1:tableType" Archive="ar1" Name="orders" Alias="o"/>
+                <v1:fromTableType xsi:type="v1:tableType" Archive="ar2" Name="suppliers" Alias="s"/>
+            </v1:Tables>
+            <v1:Condition Comparison="=">
+                <v1:Arg xsi:type="v1:columnReferenceType" Table="s" Name="id"/>
+                <v1:Arg xsi:type="v1:columnReferenceType" Table="o" Name="id"/>
+            </v1:Condition>
+        </v1:Table>
+    </v1:From>
+</v1:Select>

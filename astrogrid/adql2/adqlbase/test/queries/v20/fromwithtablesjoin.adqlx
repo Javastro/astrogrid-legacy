@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+ This was producing a syntax error on the comma
+ Trying to process cata as a join
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql">
+    <adql:SelectionList>
+        <adql:Item xsi:type="adql:allSelectionItemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </adql:SelectionList>
+    <adql:From>
+        <adql:Table xsi:type="adql:tableType" Name="cata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <adql:Table xsi:type="adql:derivedTableType" Alias="x" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <adql:SubQuery>
+                <adql:QueryExpression>
+                    <adql:JoinedTable NaturalJoin="false">
+                        <adql:Qualifier>DEFAULT_INNER</adql:Qualifier>
+                        <adql:Tables>
+                            <adql:fromTableType xsi:type="adql:tableType" Name="catb"/>
+                            <adql:fromTableType xsi:type="adql:tableType" Name="catc"/>
+                        </adql:Tables>
+                    </adql:JoinedTable>
+                </adql:QueryExpression>
+            </adql:SubQuery>
+        </adql:Table>
+    </adql:From>
+</adql:Select>

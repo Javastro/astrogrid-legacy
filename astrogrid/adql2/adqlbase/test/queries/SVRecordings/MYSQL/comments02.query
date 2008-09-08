@@ -1,0 +1,13 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select 
+-- Here is a comment before the allow (all/distinct)...
+distinct
+-- Here is a comment before the top...
+top 10000 * from catalogue as a 
+;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select DISTINCT *  From catalogue as a LIMIT 10000 

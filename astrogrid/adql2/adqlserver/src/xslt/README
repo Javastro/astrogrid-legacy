@@ -1,0 +1,13 @@
+These style sheets are used to transform ADQL/x into variant SQL.
+
+Feel free to provide feedback or subscribe ones for missing manufacturers.
+
+The least tested are SYBASE and HSQLDB. 
+
+[ They were amended from the following originals...]
+
+HSQLDB-1.8.0.xsl
+MYSQL-4.1.16.xsl
+POSTGRES-7.2.3.xsl
+SQLSERVER-8.00.xsl
+SYBASE-ASE-15.0.xsl

@@ -1,0 +1,1 @@
+SELECT * FROM PhotoObj as p WHERE CONTAINS( POINT('ICRS', p.ra, p.dec), CIRCLE('ICRS', 1, 2, 0.1) ) = 1 ;

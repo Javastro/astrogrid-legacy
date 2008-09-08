@@ -1,0 +1,1 @@
+select * from cata as a,, catb b, dbc.tabc as c ;

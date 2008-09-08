@@ -1,0 +1,38 @@
+-- Extension: Qualified function names and bit processing.
+-- Find all galaxies with a deVaucouleours profile and the
+-- photometric colors consistent with an elliptical galaxy. NOTE THAT THE
+-- NAMES AND VALUES OF THE LIKELIHOODS HAVE CHANGED SINCE THE EDR; they are
+-- now log likelihoods, and named accordingly (lDev is now lnlDev, etc.) to
+-- indicate these are log likelihoods. This query has many conditions, and
+-- also has the use of bitwise logic necessary for dealing with flags.
+
+SELECT ObjID
+FROM Galaxy as G
+WHERE
+    G.lnlDev_r > G.lnlExp_r + 0.1 
+    -- the likelihood of the deVaucouleours profile fit is 10% greater than the 
+    -- likelihood of the exponential fit 
+    and G.lnlExp_r > -999 
+    -- and the likelihoods are actually meaningful 
+    and (G.flags & (dbo.fPhotoFlags('BINNED1') + dbo.fPhotoFlags('BINNED2') + 
+    dbo.fPhotoFlags('BINNED4'))) > 0 
+    -- and it is detected from at least one of the binned images 
+    and (G.flags & ( dbo.fPhotoFlags('BLENDED') + dbo.fPhotoFlags('NODEBLEND') + 
+    dbo.fPhotoFlags('CHILD'))) != dbo.fPhotoFlags('BLENDED') 
+    -- and, if it is blended, it is either a child or not deblended further 
+    and (G.flags & (dbo.fPhotoFlags('EDGE') + dbo.fPhotoFlags('SATURATED'))) = 0 
+    -- and it is not near a ccd edge or saturated, where measurements may be bad 
+    and G.petroMag_i > 17.5 
+    -- and it is fainter than 17.5 in i-band 
+    and (G.petroMag_r > 15.5 or G.petroR50_r > 2) 
+    and (G.petroMag_r > 0 and G.g > 0 and G.r > 0 and G.i > 0) 
+    and ( (G.petroMag_r - G.extinction_r) < 19.2 
+    and (G.petroMag_r - G.extinction_r < 
+    (13.1 + (7/3)*(G.g - G.r) + 4 *(G.r - G.i) - 4 * 0.18) ) 
+    and ( (G.r - G.i - (G.g - G.r)/4 - 0.18) < 0.2 ) 
+    and ( (G.r - G.i - (G.g - G.r)/4 - 0.18) > -0.2 ) ) 
+    or ( (G.petroMag_r - G.extinction_r < 19.5) 
+    and ( (G.r - G.i - (G.g - G.r)/4 - 0.18) > 
+    (0.45 - 4*(G.g - G.r) ) ) 
+    and ( (G.g - G.r) > (1.35 + 0.25 *(G.r - G.i) ) ) ) 
+    -- and many constraints on colors and mags to make it have elliptical-type colors.

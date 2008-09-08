@@ -1,0 +1,6 @@
+select 
+-- Here is a comment before the allow (all/distinct)...
+distinct
+-- Here is a comment before the top...
+top 10000 * from catalogue as a 
+;

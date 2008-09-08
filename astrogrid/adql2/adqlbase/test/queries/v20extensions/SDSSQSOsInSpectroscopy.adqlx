@@ -1,0 +1,61 @@
+<!--Extension: Functions are qualified.
+ Find quasars with 2.5 < redshift < 2.7. This will use the spectro tables,with a simple
+ multi-constraint WHERE clause. We introduce the use of a function, in this case
+ dbo.fSpecClass, to select objects by named types instead of using the bitwise flags.-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="specObjID"/>
+    <!--get the spectroscopic object id-->
+    <adql:Item xsi:type="adql:columnReferenceType" Name="z"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="zConf"/>
+    <!--redshift, redshift confidence-->
+    <adql:Item xsi:type="adql:columnReferenceType" Name="SpecClass"/>
+  </adql:SelectionList>
+  <!--and spectral classification-->
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="SpecObj"/>
+  </adql:From>
+  <!--from the spectroscopic objects-->
+  <adql:Where>
+    <!--use a function to translate SpecClass bits to names; want quasars-->
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:closedSearchType">
+        <adql:Condition xsi:type="adql:unionSearchType">
+          <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="SpecClass"/>
+            <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fSpecClass" Schema="dbo">
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal xsi:type="adql:stringType" Value="QSO"/>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Condition>
+          <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="SpecClass"/>
+            <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fSpecClass" Schema="dbo">
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal xsi:type="adql:stringType" Value="HIZ_QSO"/>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Condition>
+        </adql:Condition>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:intersectionSearchType">
+        <adql:Condition xsi:type="adql:betweenPredType">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="z"/>
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="2.5" xsi:type="adql:realType"/>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="2.7" xsi:type="adql:realType"/>
+          </adql:Arg>
+        </adql:Condition>
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="zConf"/>
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="0.9" xsi:type="adql:realType"/>
+          </adql:Arg>
+        </adql:Condition>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

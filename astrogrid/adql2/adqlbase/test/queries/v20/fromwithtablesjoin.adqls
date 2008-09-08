@@ -1,0 +1,3 @@
+-- This was producing a syntax error on the comma
+-- Trying to process cata as a join
+Select * From cata, ( catb JOIN catc ) as x ;

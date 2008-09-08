@@ -1,0 +1,429 @@
+<!--+
+ Extension: Qualified function names and bit processing.
+ Find all galaxies with a deVaucouleours profile and the
+ photometric colors consistent with an elliptical galaxy. NOTE THAT THE
+ NAMES AND VALUES OF THE LIKELIHOODS HAVE CHANGED SINCE THE EDR; they are
+ now log likelihoods, and named accordingly (lDev is now lnlDev, etc.) to
+ indicate these are log likelihoods. This query has many conditions, and
+ also has the use of bitwise logic necessary for dealing with flags.
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="ObjID"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="Galaxy" Alias="G"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:unionSearchType">
+      <adql:Condition xsi:type="adql:intersectionSearchType">
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="lnlDev_r" Table="G"/>
+          <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="lnlExp_r" Table="G"/>
+            <adql:Arg xsi:type="adql:atomType">
+              <adql:Literal Value="0.1" xsi:type="adql:realType"/>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Condition>
+        <adql:Condition xsi:type="adql:intersectionSearchType">
+          <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="lnlExp_r" Table="G"/>
+            <adql:Arg xsi:type="adql:unaryExprType" Oper="-">
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="999" xsi:type="adql:integerType"/>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Condition>
+          <adql:Condition xsi:type="adql:intersectionSearchType">
+            <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+              <adql:Arg xsi:type="adql:closedExprType">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                  <adql:Arg xsi:type="adql:columnReferenceType" Name="flags" Table="G"/>
+                  <adql:Arg xsi:type="adql:closedExprType">
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                      <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal xsi:type="adql:stringType" Value="BINNED1"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                        <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                          <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="BINNED2"/>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                          <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="BINNED4"/>
+                          </adql:Arg>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="0" xsi:type="adql:integerType"/>
+              </adql:Arg>
+            </adql:Condition>
+            <adql:Condition xsi:type="adql:intersectionSearchType">
+              <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;>">
+                <adql:Arg xsi:type="adql:closedExprType">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="flags" Table="G"/>
+                    <adql:Arg xsi:type="adql:closedExprType">
+                      <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                        <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                          <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="BLENDED"/>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal xsi:type="adql:stringType" Value="NODEBLEND"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal xsi:type="adql:stringType" Value="CHILD"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal xsi:type="adql:stringType" Value="BLENDED"/>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Condition>
+              <adql:Condition xsi:type="adql:intersectionSearchType">
+                <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                  <adql:Arg xsi:type="adql:closedExprType">
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="flags" Table="G"/>
+                      <adql:Arg xsi:type="adql:closedExprType">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal xsi:type="adql:stringType" Value="EDGE"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal xsi:type="adql:stringType" Value="SATURATED"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                  </adql:Arg>
+                </adql:Condition>
+                <adql:Condition xsi:type="adql:intersectionSearchType">
+                  <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="petroMag_i" Table="G"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="17.5" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                  </adql:Condition>
+                  <adql:Condition xsi:type="adql:intersectionSearchType">
+                    <adql:Condition xsi:type="adql:closedSearchType">
+                      <adql:Condition xsi:type="adql:unionSearchType">
+                        <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="petroMag_r" Table="G"/>
+                          <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal Value="15.5" xsi:type="adql:realType"/>
+                          </adql:Arg>
+                        </adql:Condition>
+                        <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="petroR50_r" Table="G"/>
+                          <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal Value="2" xsi:type="adql:integerType"/>
+                          </adql:Arg>
+                        </adql:Condition>
+                      </adql:Condition>
+                    </adql:Condition>
+                    <adql:Condition xsi:type="adql:intersectionSearchType">
+                      <adql:Condition xsi:type="adql:closedSearchType">
+                        <adql:Condition xsi:type="adql:intersectionSearchType">
+                          <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                            <adql:Arg xsi:type="adql:columnReferenceType" Name="petroMag_r" Table="G"/>
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                            </adql:Arg>
+                          </adql:Condition>
+                          <adql:Condition xsi:type="adql:intersectionSearchType">
+                            <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="g" Table="G"/>
+                              <adql:Arg xsi:type="adql:atomType">
+                                <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                              </adql:Arg>
+                            </adql:Condition>
+                            <adql:Condition xsi:type="adql:intersectionSearchType">
+                              <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                                <adql:Arg xsi:type="adql:atomType">
+                                  <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                                </adql:Arg>
+                              </adql:Condition>
+                              <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="i" Table="G"/>
+                                <adql:Arg xsi:type="adql:atomType">
+                                  <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                                </adql:Arg>
+                              </adql:Condition>
+                            </adql:Condition>
+                          </adql:Condition>
+                        </adql:Condition>
+                      </adql:Condition>
+                      <adql:Condition xsi:type="adql:closedSearchType">
+                        <adql:Condition xsi:type="adql:intersectionSearchType">
+                          <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+                            <adql:Arg xsi:type="adql:closedExprType">
+                              <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="petroMag_r" Table="G"/>
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="extinction_r" Table="G"/>
+                              </adql:Arg>
+                            </adql:Arg>
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal Value="19.2" xsi:type="adql:realType"/>
+                            </adql:Arg>
+                          </adql:Condition>
+                          <adql:Condition xsi:type="adql:intersectionSearchType">
+                            <adql:Condition xsi:type="adql:closedSearchType">
+                              <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+                                <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                  <adql:Arg xsi:type="adql:columnReferenceType" Name="petroMag_r" Table="G"/>
+                                  <adql:Arg xsi:type="adql:columnReferenceType" Name="extinction_r" Table="G"/>
+                                </adql:Arg>
+                                <adql:Arg xsi:type="adql:closedExprType">
+                                  <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                                    <adql:Arg xsi:type="adql:atomType">
+                                      <adql:Literal Value="13.1" xsi:type="adql:realType"/>
+                                    </adql:Arg>
+                                    <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                                      <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                                        <adql:Arg xsi:type="adql:closedExprType">
+                                          <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                                            <adql:Arg xsi:type="adql:atomType">
+                                              <adql:Literal Value="7" xsi:type="adql:integerType"/>
+                                            </adql:Arg>
+                                            <adql:Arg xsi:type="adql:atomType">
+                                              <adql:Literal Value="3" xsi:type="adql:integerType"/>
+                                            </adql:Arg>
+                                          </adql:Arg>
+                                        </adql:Arg>
+                                        <adql:Arg xsi:type="adql:closedExprType">
+                                          <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                            <adql:Arg xsi:type="adql:columnReferenceType" Name="g" Table="G"/>
+                                            <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                                          </adql:Arg>
+                                        </adql:Arg>
+                                      </adql:Arg>
+                                      <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                        <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                                          <adql:Arg xsi:type="adql:atomType">
+                                            <adql:Literal Value="4" xsi:type="adql:integerType"/>
+                                          </adql:Arg>
+                                          <adql:Arg xsi:type="adql:closedExprType">
+                                            <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                              <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                                              <adql:Arg xsi:type="adql:columnReferenceType" Name="i" Table="G"/>
+                                            </adql:Arg>
+                                          </adql:Arg>
+                                        </adql:Arg>
+                                        <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                                          <adql:Arg xsi:type="adql:atomType">
+                                            <adql:Literal Value="4" xsi:type="adql:integerType"/>
+                                          </adql:Arg>
+                                          <adql:Arg xsi:type="adql:atomType">
+                                            <adql:Literal Value="0.18" xsi:type="adql:realType"/>
+                                          </adql:Arg>
+                                        </adql:Arg>
+                                      </adql:Arg>
+                                    </adql:Arg>
+                                  </adql:Arg>
+                                </adql:Arg>
+                              </adql:Condition>
+                            </adql:Condition>
+                            <adql:Condition xsi:type="adql:intersectionSearchType">
+                              <adql:Condition xsi:type="adql:closedSearchType">
+                                <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+                                  <adql:Arg xsi:type="adql:closedExprType">
+                                    <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                      <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                                      <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                        <adql:Arg xsi:type="adql:columnReferenceType" Name="i" Table="G"/>
+                                        <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                          <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                                            <adql:Arg xsi:type="adql:closedExprType">
+                                              <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                                <adql:Arg xsi:type="adql:columnReferenceType" Name="g" Table="G"/>
+                                                <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                                              </adql:Arg>
+                                            </adql:Arg>
+                                            <adql:Arg xsi:type="adql:atomType">
+                                              <adql:Literal Value="4" xsi:type="adql:integerType"/>
+                                            </adql:Arg>
+                                          </adql:Arg>
+                                          <adql:Arg xsi:type="adql:atomType">
+                                            <adql:Literal Value="0.18" xsi:type="adql:realType"/>
+                                          </adql:Arg>
+                                        </adql:Arg>
+                                      </adql:Arg>
+                                    </adql:Arg>
+                                  </adql:Arg>
+                                  <adql:Arg xsi:type="adql:atomType">
+                                    <adql:Literal Value="0.2" xsi:type="adql:realType"/>
+                                  </adql:Arg>
+                                </adql:Condition>
+                              </adql:Condition>
+                              <adql:Condition xsi:type="adql:closedSearchType">
+                                <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                                  <adql:Arg xsi:type="adql:closedExprType">
+                                    <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                      <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                                      <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                        <adql:Arg xsi:type="adql:columnReferenceType" Name="i" Table="G"/>
+                                        <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                          <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                                            <adql:Arg xsi:type="adql:closedExprType">
+                                              <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                                <adql:Arg xsi:type="adql:columnReferenceType" Name="g" Table="G"/>
+                                                <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                                              </adql:Arg>
+                                            </adql:Arg>
+                                            <adql:Arg xsi:type="adql:atomType">
+                                              <adql:Literal Value="4" xsi:type="adql:integerType"/>
+                                            </adql:Arg>
+                                          </adql:Arg>
+                                          <adql:Arg xsi:type="adql:atomType">
+                                            <adql:Literal Value="0.18" xsi:type="adql:realType"/>
+                                          </adql:Arg>
+                                        </adql:Arg>
+                                      </adql:Arg>
+                                    </adql:Arg>
+                                  </adql:Arg>
+                                  <adql:Arg xsi:type="adql:unaryExprType" Oper="-">
+                                    <adql:Arg xsi:type="adql:atomType">
+                                      <adql:Literal Value="0.2" xsi:type="adql:realType"/>
+                                    </adql:Arg>
+                                  </adql:Arg>
+                                </adql:Condition>
+                              </adql:Condition>
+                            </adql:Condition>
+                          </adql:Condition>
+                        </adql:Condition>
+                      </adql:Condition>
+                    </adql:Condition>
+                  </adql:Condition>
+                </adql:Condition>
+              </adql:Condition>
+            </adql:Condition>
+          </adql:Condition>
+        </adql:Condition>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:closedSearchType">
+        <adql:Condition xsi:type="adql:intersectionSearchType">
+          <adql:Condition xsi:type="adql:closedSearchType">
+            <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+              <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="petroMag_r" Table="G"/>
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="extinction_r" Table="G"/>
+              </adql:Arg>
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="19.5" xsi:type="adql:realType"/>
+              </adql:Arg>
+            </adql:Condition>
+          </adql:Condition>
+          <adql:Condition xsi:type="adql:intersectionSearchType">
+            <adql:Condition xsi:type="adql:closedSearchType">
+              <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                <adql:Arg xsi:type="adql:closedExprType">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="i" Table="G"/>
+                      <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                          <adql:Arg xsi:type="adql:closedExprType">
+                            <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="g" Table="G"/>
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                          <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal Value="4" xsi:type="adql:integerType"/>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal Value="0.18" xsi:type="adql:realType"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:closedExprType">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="0.45" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="4" xsi:type="adql:integerType"/>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:closedExprType">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="g" Table="G"/>
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Condition>
+            </adql:Condition>
+            <adql:Condition xsi:type="adql:closedSearchType">
+              <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                <adql:Arg xsi:type="adql:closedExprType">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="g" Table="G"/>
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:closedExprType">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="1.35" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="0.25" xsi:type="adql:realType"/>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:closedExprType">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="r" Table="G"/>
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="i" Table="G"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Condition>
+            </adql:Condition>
+          </adql:Condition>
+        </adql:Condition>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>
+<!--+ 
+     and many constraints on colors and mags to make it have elliptical-type colors.
++-->

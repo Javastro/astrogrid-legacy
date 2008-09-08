@@ -1,0 +1,9 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * from cata, catb 
+where exists ( cata inner join catb using ( col1, col3, col7) ) ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From cata, catb  Where  EXISTS (cata INNER JOIN catb USING (col1, col3, col7 ) )  

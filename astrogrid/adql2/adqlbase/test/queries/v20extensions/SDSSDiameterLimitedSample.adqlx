@@ -1,0 +1,197 @@
+<!--+
+ Extension: Qualified function names and bit processing.
+ Diameter-limited sample of galaxies from James Annis.
+ Another query showing the use of flags, now using the bitwise '|' (or).
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="run"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="camCol"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="rerun"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="field"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="objID"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="ra"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="dec"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="Galaxy"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+        <adql:Arg xsi:type="adql:closedExprType">
+          <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+            <adql:Arg xsi:type="adql:closedExprType">
+              <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal xsi:type="adql:stringType" Value="BINNED1"/>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                  <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal xsi:type="adql:stringType" Value="BINNED2"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal xsi:type="adql:stringType" Value="BINNED4"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="0" xsi:type="adql:integerType"/>
+        </adql:Arg>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:intersectionSearchType">
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;>">
+          <adql:Arg xsi:type="adql:closedExprType">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+              <adql:Arg xsi:type="adql:closedExprType">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                  <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal xsi:type="adql:stringType" Value="BLENDED"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="|">
+                    <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal xsi:type="adql:stringType" Value="NODEBLEND"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal xsi:type="adql:stringType" Value="CHILD"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+            <adql:Arg xsi:type="adql:atomType">
+              <adql:Literal xsi:type="adql:stringType" Value="BLENDED"/>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Condition>
+        <adql:Condition xsi:type="adql:closedSearchType">
+          <adql:Condition xsi:type="adql:unionSearchType">
+            <adql:Condition xsi:type="adql:closedSearchType">
+              <adql:Condition xsi:type="adql:intersectionSearchType">
+                <adql:Condition xsi:type="adql:closedSearchType">
+                  <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+                      <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal xsi:type="adql:stringType" Value="NOPETRO"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                    </adql:Arg>
+                  </adql:Condition>
+                </adql:Condition>
+                <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                  <adql:Arg xsi:type="adql:columnReferenceType" Name="petroRad_i"/>
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal Value="15" xsi:type="adql:integerType"/>
+                  </adql:Arg>
+                </adql:Condition>
+              </adql:Condition>
+            </adql:Condition>
+            <adql:Condition xsi:type="adql:unionSearchType">
+              <adql:Condition xsi:type="adql:closedSearchType">
+                <adql:Condition xsi:type="adql:intersectionSearchType">
+                  <adql:Condition xsi:type="adql:closedSearchType">
+                    <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                      <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                        <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+                        <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                          <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="NOPETRO"/>
+                          </adql:Arg>
+                        </adql:Arg>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                      </adql:Arg>
+                    </adql:Condition>
+                  </adql:Condition>
+                  <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="petroRad_i"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="7.5" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                  </adql:Condition>
+                </adql:Condition>
+              </adql:Condition>
+              <adql:Condition xsi:type="adql:unionSearchType">
+                <adql:Condition xsi:type="adql:closedSearchType">
+                  <adql:Condition xsi:type="adql:intersectionSearchType">
+                    <adql:Condition xsi:type="adql:closedSearchType">
+                      <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+                          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal xsi:type="adql:stringType" Value="TOO_LARGE"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                        </adql:Arg>
+                      </adql:Condition>
+                    </adql:Condition>
+                    <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="petroRad_i"/>
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="2.5" xsi:type="adql:realType"/>
+                      </adql:Arg>
+                    </adql:Condition>
+                  </adql:Condition>
+                </adql:Condition>
+                <adql:Condition xsi:type="adql:closedSearchType">
+                  <adql:Condition xsi:type="adql:intersectionSearchType">
+                    <adql:Condition xsi:type="adql:closedSearchType">
+                      <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="&amp;">
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="flags"/>
+                          <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fPhotoFlags" Schema="dbo">
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal xsi:type="adql:stringType" Value="SATURATED"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal Value="0" xsi:type="adql:integerType"/>
+                        </adql:Arg>
+                      </adql:Condition>
+                    </adql:Condition>
+                    <adql:Condition xsi:type="adql:comparisonPredType" Comparison=">">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="petroRad_i"/>
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="17.5" xsi:type="adql:realType"/>
+                      </adql:Arg>
+                    </adql:Condition>
+                  </adql:Condition>
+                </adql:Condition>
+              </adql:Condition>
+            </adql:Condition>
+          </adql:Condition>
+        </adql:Condition>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

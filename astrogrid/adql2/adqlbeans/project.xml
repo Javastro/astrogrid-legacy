@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    
+    <extend>../maven/project.xml</extend>
+    
+    <id>astrogrid-adqlbeans</id>
+    <currentVersion>${astrogrid.adqlbeans.version}</currentVersion>
+    <name>Generated XMLBeans for ADQL</name>
+    <package>org.astrogrid.adql.beans</package>
+    <shortDescription>
+        The XMLBeans generated from an ADQL Schema
+    </shortDescription>
+    <description>
+        <![CDATA[
+    		<p>
+            The ADQL parser, having parsed a piece of ADQL, then forms it into an intermediate XML format
+            according to an ADQL schema. All creation and manipulation is undertaken using the XMLBeans
+            framework. The beans generated from the schema are a critical part of the process. 
+            <br/><br/>
+            The beans are also used within the AstroGrid VO desktop.<br/>
+    	</p>    	
+        ]]>
+    </description>
+
+    <!--+
+        | The external libraries required...
+        +-->
+    <dependencies>
+        
+        <dependency>
+			<artifactId>xbean</artifactId>
+			<groupId>xmlbeans</groupId>
+			<version>2.3.0</version>
+			<type>jar</type>
+	 	</dependency>
+	 	
+	 	<dependency>
+			<artifactId>jsr173_1.0_api</artifactId>
+			<groupId>xmlbeans</groupId>
+			<version>2.3.0</version>
+			<type>jar</type>
+	 	</dependency>
+	 	
+	 	<dependency>
+			<artifactId>xmlbeans_qname</artifactId>
+			<groupId>xmlbeans</groupId>
+			<version>2.3.0</version>
+			<type>jar</type>
+	 	</dependency>
+	 	       
+    </dependencies>
+    
+    <reports/>
+    
+    <build>
+		<sourceDirectory>src/java</sourceDirectory>
+	</build>
+
+</project>

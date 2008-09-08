@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:allSelectionItemType"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="cata"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:nullPredType">
+        <adql:Column Name="col1"/>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:notNullPredType">
+        <adql:Column Name="col2"/>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

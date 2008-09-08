@@ -1,0 +1,918 @@
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="alpha">
+      <adql:Expression xsi:type="adql:columnReferenceType" Name="ra" Table="las"/>
+    </adql:Item>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="delta">
+      <adql:Expression xsi:type="adql:columnReferenceType" Name="dec" Table="las"/>
+    </adql:Item>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="ymj_1Pnt"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="j_1mhPnt"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="hmkPnt"/>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="ymk">
+      <adql:Expression xsi:type="adql:binaryExprType" Oper="-">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="yAperMag3"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="kAperMag3"/>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="jmk">
+      <adql:Expression xsi:type="adql:binaryExprType" Oper="-">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="j_1AperMag3"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="kAperMag3"/>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="yaperMag3"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="j_1aperMag3"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="haperMag3"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="kaperMag3"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="j_m"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="h_m"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="k_m"/>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="pmRA">
+      <adql:Expression xsi:type="adql:binaryExprType" Oper="*">
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="3600.0" xsi:type="adql:realType"/>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+          <adql:Arg xsi:type="adql:trigonometricFunctionType" Name="COS">
+            <adql:Arg xsi:type="adql:mathFunctionType" Name="RADIANS">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="las"/>
+            </adql:Arg>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+            <adql:Arg xsi:type="adql:closedExprType">
+              <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="ra" Table="las"/>
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="ra" Table="m2"/>
+              </adql:Arg>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:closedExprType">
+              <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                <adql:Arg xsi:type="adql:closedExprType">
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="mjdObs" Table="mj"/>
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="jdate"/>
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="2400000.5" xsi:type="adql:realType"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="365.25" xsi:type="adql:realType"/>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="pmDec">
+      <adql:Expression xsi:type="adql:binaryExprType" Oper="*">
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="3600.0" xsi:type="adql:realType"/>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+          <adql:Arg xsi:type="adql:closedExprType">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="las"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="m2"/>
+            </adql:Arg>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:closedExprType">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+              <adql:Arg xsi:type="adql:closedExprType">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                  <adql:Arg xsi:type="adql:columnReferenceType" Name="mjdObs" Table="mj"/>
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="jdate"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="2400000.5" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+              <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="365.25" xsi:type="adql:realType"/>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="totalPM">
+      <adql:Expression xsi:type="adql:mathFunctionType" Name="SQRT">
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+          <adql:Arg xsi:type="adql:atomType">
+            <adql:Literal Value="1.296E7" xsi:type="adql:realType"/>
+          </adql:Arg>
+          <adql:Arg xsi:type="adql:closedExprType">
+            <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+              <adql:Arg xsi:type="adql:mathFunctionType" Name="POWER">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                  <adql:Arg xsi:type="adql:trigonometricFunctionType" Name="COS">
+                    <adql:Arg xsi:type="adql:mathFunctionType" Name="RADIANS">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="las"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                    <adql:Arg xsi:type="adql:closedExprType">
+                      <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                        <adql:Arg xsi:type="adql:columnReferenceType" Name="ra" Table="las"/>
+                        <adql:Arg xsi:type="adql:columnReferenceType" Name="ra" Table="m2"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:closedExprType">
+                      <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                        <adql:Arg xsi:type="adql:closedExprType">
+                          <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                            <adql:Arg xsi:type="adql:columnReferenceType" Name="mjdObs" Table="mj"/>
+                            <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="jdate"/>
+                              <adql:Arg xsi:type="adql:atomType">
+                                <adql:Literal Value="2400000.5" xsi:type="adql:realType"/>
+                              </adql:Arg>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal Value="365.25" xsi:type="adql:realType"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="2" xsi:type="adql:integerType"/>
+                </adql:Arg>
+              </adql:Arg>
+              <adql:Arg xsi:type="adql:mathFunctionType" Name="POWER">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                  <adql:Arg xsi:type="adql:closedExprType">
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="las"/>
+                      <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="m2"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:closedExprType">
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                      <adql:Arg xsi:type="adql:closedExprType">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                          <adql:Arg xsi:type="adql:columnReferenceType" Name="mjdObs" Table="mj"/>
+                          <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                            <adql:Arg xsi:type="adql:columnReferenceType" Name="jdate"/>
+                            <adql:Arg xsi:type="adql:atomType">
+                              <adql:Literal Value="2400000.5" xsi:type="adql:realType"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="365.25" xsi:type="adql:realType"/>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="2" xsi:type="adql:integerType"/>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="HJ">
+      <adql:Expression xsi:type="adql:binaryExprType" Oper="+">
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="5.0" xsi:type="adql:realType"/>
+        </adql:Arg>
+        <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="j_1AperMag3" Table="las"/>
+          <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+            <adql:Arg xsi:type="adql:atomType">
+              <adql:Literal Value="5.0" xsi:type="adql:realType"/>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:mathFunctionType" Name="LOG10">
+              <adql:Arg xsi:type="adql:mathFunctionType" Name="SQRT">
+                <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                  <adql:Arg xsi:type="adql:atomType">
+                    <adql:Literal Value="1.296E7" xsi:type="adql:realType"/>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:closedExprType">
+                    <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                      <adql:Arg xsi:type="adql:mathFunctionType" Name="POWER">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="*">
+                          <adql:Arg xsi:type="adql:trigonometricFunctionType" Name="COS">
+                            <adql:Arg xsi:type="adql:mathFunctionType" Name="RADIANS">
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="las"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                          <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                            <adql:Arg xsi:type="adql:closedExprType">
+                              <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="ra" Table="las"/>
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="ra" Table="m2"/>
+                              </adql:Arg>
+                            </adql:Arg>
+                            <adql:Arg xsi:type="adql:closedExprType">
+                              <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                                <adql:Arg xsi:type="adql:closedExprType">
+                                  <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                    <adql:Arg xsi:type="adql:columnReferenceType" Name="mjdObs" Table="mj"/>
+                                    <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                                      <adql:Arg xsi:type="adql:columnReferenceType" Name="jdate"/>
+                                      <adql:Arg xsi:type="adql:atomType">
+                                        <adql:Literal Value="2400000.5" xsi:type="adql:realType"/>
+                                      </adql:Arg>
+                                    </adql:Arg>
+                                  </adql:Arg>
+                                </adql:Arg>
+                                <adql:Arg xsi:type="adql:atomType">
+                                  <adql:Literal Value="365.25" xsi:type="adql:realType"/>
+                                </adql:Arg>
+                              </adql:Arg>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal Value="2" xsi:type="adql:integerType"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                      <adql:Arg xsi:type="adql:mathFunctionType" Name="POWER">
+                        <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                          <adql:Arg xsi:type="adql:closedExprType">
+                            <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="las"/>
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="dec" Table="m2"/>
+                            </adql:Arg>
+                          </adql:Arg>
+                          <adql:Arg xsi:type="adql:closedExprType">
+                            <adql:Arg xsi:type="adql:binaryExprType" Oper="/">
+                              <adql:Arg xsi:type="adql:closedExprType">
+                                <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                                  <adql:Arg xsi:type="adql:columnReferenceType" Name="mjdObs" Table="mj"/>
+                                  <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                                    <adql:Arg xsi:type="adql:columnReferenceType" Name="jdate"/>
+                                    <adql:Arg xsi:type="adql:atomType">
+                                      <adql:Literal Value="2400000.5" xsi:type="adql:realType"/>
+                                    </adql:Arg>
+                                  </adql:Arg>
+                                </adql:Arg>
+                              </adql:Arg>
+                              <adql:Arg xsi:type="adql:atomType">
+                                <adql:Literal Value="365.25" xsi:type="adql:realType"/>
+                              </adql:Arg>
+                            </adql:Arg>
+                          </adql:Arg>
+                        </adql:Arg>
+                        <adql:Arg xsi:type="adql:atomType">
+                          <adql:Literal Value="2" xsi:type="adql:integerType"/>
+                        </adql:Arg>
+                      </adql:Arg>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Arg>
+              </adql:Arg>
+            </adql:Arg>
+          </adql:Arg>
+        </adql:Arg>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="num2MASSNeighbs" Table="T1"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="lasSource" Alias="las"/>
+    <adql:Table xsi:type="adql:tableType" Name="twomass_psc" Catalog="TWOMASS" Schema="" Alias="m2"/>
+    <adql:Table xsi:type="adql:tableType" Name="lasSourceXtwomass_psc" Alias="x"/>
+    <adql:Table xsi:type="adql:tableType" Name="lasMergeLog" Alias="l"/>
+    <adql:Table xsi:type="adql:tableType" Name="Multiframe" Alias="mj"/>
+    <!--Get the counts of 2MASS neighbours to aid identification of possible spurious associations:-->
+    <adql:Table xsi:type="adql:derivedTableType" Alias="T1">
+      <adql:SubQuery>
+        <adql:QueryExpression>
+          <adql:Select>
+            <adql:SelectionList>
+              <adql:Item xsi:type="adql:columnReferenceType" Name="masterObjID"/>
+              <adql:Item xsi:type="adql:aliasSelectionItemType" As="num2MASSNeighbs">
+                <adql:Expression xsi:type="adql:aggregateFunctionType" Name="COUNT">
+                  <adql:Arg xsi:type="adql:allSelectionItemType"/>
+                </adql:Expression>
+              </adql:Item>
+            </adql:SelectionList>
+            <adql:From>
+              <adql:Table xsi:type="adql:tableType" Name="lasSourceXtwomass_psc"/>
+            </adql:From>
+            <adql:GroupBy>
+              <adql:Column Name="masterObjID"/>
+            </adql:GroupBy>
+          </adql:Select>
+        </adql:QueryExpression>
+      </adql:SubQuery>
+    </adql:Table>
+  </adql:From>
+  <adql:Where>
+    <!--Joining predicates:-->
+    <adql:Condition xsi:type="adql:intersectionSearchType">
+      <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="frameSetID" Table="las"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="frameSetID" Table="l"/>
+      </adql:Condition>
+      <adql:Condition xsi:type="adql:intersectionSearchType">
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="j_1mfID"/>
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="multiframeID" Table="mj"/>
+        </adql:Condition>
+        <adql:Condition xsi:type="adql:intersectionSearchType">
+          <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="masterObjID" Table="x"/>
+            <adql:Arg xsi:type="adql:columnReferenceType" Name="sourceID" Table="las"/>
+          </adql:Condition>
+          <adql:Condition xsi:type="adql:intersectionSearchType">
+            <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="slaveObjID"/>
+              <adql:Arg xsi:type="adql:columnReferenceType" Name="pts_key" Table="m2"/>
+            </adql:Condition>
+            <adql:Condition xsi:type="adql:intersectionSearchType">
+              <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="masterObjID" Table="T1"/>
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="masterObjID" Table="x"/>
+              </adql:Condition>
+              <adql:Condition xsi:type="adql:intersectionSearchType">
+                <adql:Condition xsi:type="adql:inclusiveSearchType">
+                  <adql:Expression xsi:type="adql:columnReferenceType" Name="distanceMins"/>
+                  <adql:InPredicateValue>
+                    <adql:SubQuery>
+                      <adql:QueryExpression>
+                        <adql:Select>
+                          <adql:SelectionList>
+                            <adql:Item xsi:type="adql:aggregateFunctionType" Name="MIN">
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="distanceMins"/>
+                            </adql:Item>
+                          </adql:SelectionList>
+                          <adql:From>
+                            <adql:Table xsi:type="adql:tableType" Name="lasSourceXtwomass_psc"/>
+                          </adql:From>
+                          <adql:Where>
+                            <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="masterObjID"/>
+                              <adql:Arg xsi:type="adql:columnReferenceType" Name="masterObjID" Table="x"/>
+                            </adql:Condition>
+                          </adql:Where>
+                        </adql:Select>
+                      </adql:QueryExpression>
+                    </adql:SubQuery>
+                  </adql:InPredicateValue>
+                </adql:Condition>
+                <adql:Condition xsi:type="adql:intersectionSearchType">
+                  <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="j_m" Table="m2"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="15.8" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                  </adql:Condition>
+                  <adql:Condition xsi:type="adql:inclusiveSearchType">
+                    <adql:Expression xsi:type="adql:columnReferenceType" Name="sourceID"/>
+                    <adql:InPredicateValue>
+                      <adql:InValueList>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799519306" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794486175" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799373646" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433800045529" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798404360" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798349988" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799336148" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798428023" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798340976" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799022677" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799417893" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796693629" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798531296" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799388448" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799116892" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799938261" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798884670" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796441571" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796486142" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433793660030" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799949462" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795569244" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798364651" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433793472393" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799417797" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799014257" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798982240" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798102820" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798935948" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798972181" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433800297725" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798438276" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799878863" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798942256" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795664719" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799312810" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798939598" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794157330" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799028523" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799695288" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433797906407" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795893713" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796267569" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799175725" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795965774" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433800170460" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795006418" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799079176" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433797406565" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796423994" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798877494" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798392126" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799612283" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798902200" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799114039" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794843345" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794478994" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799255129" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796219684" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795752185" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799352084" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799196904" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795567527" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795069106" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799026206" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795652411" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794479498" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433793701892" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433800180109" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796387381" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796866338" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799006321" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799575872" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798374545" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799350348" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798917454" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798367536" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799553369" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799247547" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794139631" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794353499" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799098776" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796478241" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798011146" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433797830319" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795647956" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798977213" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799578841" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798884738" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798377122" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798938205" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796964101" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799199543" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799232783" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796492514" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799009698" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799022871" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794589801" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794059353" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794051780" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798965640" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433793776719" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799028278" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794050913" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799011856" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799282197" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798356136" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795585086" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799254932" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796892871" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795574653" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799022673" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799324973" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799607900" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799146085" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796285982" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794049569" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796910546" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795724665" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795362202" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798051795" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798336891" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799668202" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433800050446" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799355004" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794170476" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796523228" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799572908" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796043900" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795422048" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794118443" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799209160" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795996689" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794485383" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799337532" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796137860" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799559153" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799760618" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799216767" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798014858" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799376920" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795702245" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795644499" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799377954" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795743220" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798196059" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798348701" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795584831" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798937970" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798907444" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796852097" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799351455" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798902211" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799459709" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795290750" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798333349" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796022379" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796004242" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798348349" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794802216" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796076134" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799415759" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796507785" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798334094" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796488553" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433799155857" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798557067" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796011256" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794111025" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796486081" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433794204816" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795609101" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795336796" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433796572067" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433795088398" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                        <adql:Item xsi:type="adql:atomType">
+                          <adql:Literal Value="433798898090" xsi:type="adql:integerType"/>
+                        </adql:Item>
+                      </adql:InValueList>
+                    </adql:InPredicateValue>
+                  </adql:Condition>
+                </adql:Condition>
+              </adql:Condition>
+            </adql:Condition>
+          </adql:Condition>
+        </adql:Condition>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

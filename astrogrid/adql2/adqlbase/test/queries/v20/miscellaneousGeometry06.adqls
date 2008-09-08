@@ -1,0 +1,1 @@
+SELECT DISTANCE( POINT('ICRS', p.col1, 2), POINT('ICRS', p.col2, 2) ) as dX FROM PhotoObj as p WHERE p.flag = 'A' ;

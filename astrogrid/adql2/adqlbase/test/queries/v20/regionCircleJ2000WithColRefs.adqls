@@ -1,0 +1,3 @@
+select * 
+from cata as a 
+where Contains( Point( 'J2000', a.ra, a.dec), Circle( 'J2000', 12.4, -3.5, udf_FormRadiusFromError(a.error) ) ) = 1

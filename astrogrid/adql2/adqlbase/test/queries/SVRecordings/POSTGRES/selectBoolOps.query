@@ -1,0 +1,11 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select top 100  a.POS_EQ_RA, a.POS_EQ_DEC from catalogue as a 
+where 
+( ( not a.POS_EQ_RA = a.POS_EQ_DEC ) OR ( a.POS_EQ_RA = a.POS_EQ_DEC ) ) AND ( a.POS_EQ_RA > a.POS_EQ_DEC ) ;
+
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select LIMIT 100 a.POS_EQ_RA, a.POS_EQ_DEC  From catalogue as a  Where (((( NOT a.POS_EQ_RA = a.POS_EQ_DEC )) Or ((a.POS_EQ_RA = a.POS_EQ_DEC) ))) And ((a.POS_EQ_RA > a.POS_EQ_DEC)) 

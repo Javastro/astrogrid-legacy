@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+Select ABS(a.POS_EQ_RA) , CEILING(a.POS_EQ_RA) , FLOOR(a.POS_EQ_RA) , ROUND(a.POS_EQ_RA) , TRUNCATE(a.POS_EQ_RA)  From catalogue as a 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select ABS( CAST( a.POS_EQ_RA AS double precision) ) , CEIL( CAST( a.POS_EQ_RA AS double precision) ) , FLOOR( CAST( a.POS_EQ_RA AS double precision) ) , ROUND( CAST( a.POS_EQ_RA AS double precision), CAST( 0 AS double precision) ) , TRUNC( CAST( a.POS_EQ_RA AS double precision), CAST( 0 AS double precision) )   From catalogue as a 

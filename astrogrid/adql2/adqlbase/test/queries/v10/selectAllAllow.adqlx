@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+    <v1:Allow Option="All"/>
+    <v1:SelectionList>
+        <v1:Item xsi:type="v1:allSelectionItemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:SelectionList>
+    <v1:From>
+        <v1:Table Name="catalogue" Alias="c" xsi:type="v1:tableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:From>
+</v1:Select>

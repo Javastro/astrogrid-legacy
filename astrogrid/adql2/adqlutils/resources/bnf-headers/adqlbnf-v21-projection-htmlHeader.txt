@@ -1,0 +1,15 @@
+<html>
+<head>
+<title>BNF for a projected ADQL v2.1</title>
+</head>
+<body>
+<pre>
+EXPERIMENTAL. 
+This file contains a BNF definition of a future projected version 2.1 of ADQL, 
+the Astronomical Data Query Language. The elements are arranged in alphabetical order. 
+ADQL is based upon a subset of SQL92 with extensions for astronomical usage.
+The select statement is found at <a href="#query_specification">&lt;query_specification&gt;</a>.
+
+User defined function is found at <a href="#user_defined_function">&lt;user_defined_function&gt;</a>.
+See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar page describing SQL92 in full.
+

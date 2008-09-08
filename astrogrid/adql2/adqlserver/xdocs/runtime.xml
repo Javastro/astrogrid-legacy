@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Parser Server Version - Runtime Initialization</title>
+    </properties>
+    <body>
+    <section name="Runtime Initialization">
+    
+    	<subsection name="The Number of Parsers">
+    		<p>
+    		   The number of base parsers managed can be from 1 to 16, with default set to 2.
+    		   The default is probably more than adequate.         
+	       </p>
+  		</subsection>
+  		
+  		<subsection name="Initialization Callback">
+    		<p>
+    		   Each base parser should be initialized correctly. On first use of a parser instance this callback is 
+    		   invoked upon it so that any settings can be set by the controlling environment.       
+	       </p>
+
+  		</subsection>
+  		
+
+  		<subsection name="Post-Parse Callback">
+    		<p>
+    		   Once an ADQL query has been parsed into XML, this callback is invoked, passing a reference
+    		   using XMLBeans. The controlling environment then has the option to alter the query directly using
+    		   XMLBeans. After the callback returns, the query is translated given the set style sheet.
+	       </p>
+  		</subsection>
+       
+        <subsection name="Style Sheets">
+    		<p>
+    		   After the post-parse callback (see above), the query is translated into SQL using the set style sheet.
+    		   There is a method for setting the style sheet, which applies to all the parsers within the pool. There
+    		   are a sample of style sheets within the project which cover the major RDBMS manufacturers.
+    		</p>
+  		</subsection>
+  		
+    </section>
+   </body>
+</document>

@@ -1,0 +1,1 @@
+select v.state_code, v.city_name, count(*) from villes as v group by v.state_code ;

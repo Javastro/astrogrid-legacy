@@ -1,0 +1,45 @@
+Contents of the zip:
+====================
+
+README ....................................This readme file
+astrogrid-adqlparser-base-2008.2.jar ......Base parser that produces XML from ADQL
+astrogrid-adqlparser-sv-2008.2.jar ........Server version that manages a pool of base parsers
+astrogrid-adqlparser-utils-2008.2.jar .....Basic utilities, some used in testing
+astrogrid-adqlbeans-2008.2.jar ............XMLBeans generated against an AQDL schema
+adqli.sh ..................................Shell script for running one of the utilities (requires editing)
+log4j.properties ..........................a basic log4j properties file
+
+Style Sheets:
+=============
+There are a selection of xsl style sheets included within the server version jar file.
+At present they cover SqlServer, MySql, PostgreSql, Sybase and Hsqldb.
+
+There is also one that I use in development which echoes back ADQL.
+I use this with the interactive test programme (see the adqli.sh script), which allows
+me to type in ADQL, parse it, and then translate it back into ADQL. It provides direct feedback.
+
+It may be convenient to unpack (or even remove) the style sheets from the jar.
+Feel free to criticize or suggest changes to these. 
+There are weaknesses here from the viewpoint of depth of testing. And... 
+Please forward changes and suggestions to me: Jeff Lusted [ email: jl99@star.le.ac.uk ]
+
+Runtime Dependencies:
+=====================
+These are the runtime dependencies, which are smaller than those from the Maven build.
+The Maven dependencies list everything required for development and unit testing. 
+Java 1.5.0_15 or above is required. It has not been tested yet with Java 1.6.
+
+commons-logging 1.0.4	
+log4j           1.2.8	
+saxon           6.5.5 (This dependency may be eliminated in the future)	
+jsr173_1.0_api  2.3.0	
+xbean           2.3.0
+
+The xbean and jsr173_1.0_api artifacts are included with the XMLBeans distribution. Those available
+from the AstroGrid maven repository are renamed to include a version number.
+
+Script:
+=======
+The adqli.sh script requires editing. 
+It will run a command-line conversation with the base parser.
+For debugging syntax, include a log4j properties file with level set to TRACE. 

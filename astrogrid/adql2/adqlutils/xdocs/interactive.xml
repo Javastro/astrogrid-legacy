@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+    <properties>
+        <title>ADQL Parser Utilities - Interactive Sessions</title>
+    </properties>
+    <body>
+    <section name="Interactive Sessions">
+    
+    	<subsection name="Base Parser">
+    		<p> 
+    		  The Interactive programme runs a simple command line conversation which allows ADQL to be typed in
+    		  and echoes back useful information on what the parser produces.
+	       </p>  
+	       <p> 
+    		  The basic display is a pretty print of the intermediate XML, or error messages if the parse fails
+    		  for any reason. It can be augmented by passing in a style sheet, which will be applied to the XML.    		        
+	       </p>
+	       <p>
+	          There is an option to pass in metadata so some metadata processing can be simulated.
+	       </p>
+	       <p>
+	          Switch tracing on in Log4J for extensive tracing of the syntax call path.
+	          Really useful if you are debugging syntax.
+	       </p>
+  		</subsection>
+  		
+  		<subsection name="Server Version">
+    		<p> 
+    		  The InteractiveSV programme runs a simple command line conversation which tests out the server
+    		  version which manages a pool of base parsers. It allows ADQL to be typed
+    		  in and echoes back the SQL produced from a style sheet. The style sheet must be provided.      
+	       </p>
+
+  		</subsection>
+  		
+    </section>
+   </body>
+</document>

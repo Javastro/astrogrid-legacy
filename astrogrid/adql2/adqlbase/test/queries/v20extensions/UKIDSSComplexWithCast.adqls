@@ -1,0 +1,43 @@
+select 
+	cast(round(jAperMag3*10.0,0) as int)/10.0, 
+	avg( sqrt( power( (3.6e6*cos(radians(gcs.dec))*(gcs.ra-m2.ra)/((mj.mjdObs - jdate+2400000.5)/365.25)),2.0 )+power( (3.6e6*(gcs.dec-m2.dec)/((mj.mjdObs - jdate+2400000.5)/365.25)),2.0 ) ) )/1.414 as rmsPM, 
+	count(*) as numObj 
+	FROM gcsSource AS gcs, 
+	     TWOMASS..twomass_psc AS m2, 
+	     gcsSourceXtwomass_psc AS x, 
+	     gcsMergeLog AS l, 
+	     Multiframe AS mj 
+	WHERE 
+		gcs.frameSetID=l.frameSetID AND 
+		jmfID=mj.multiframeID AND 
+		project='u/ukidss/gcs2' 
+		/* Bright saturation cut-offs */ AND (zaperMag3 < -0.9e9 OR zaperMag3 > 11.4) 
+		AND (yaperMag3 < -0.9e9 OR yaperMag3 > 11.3) 
+		AND japerMag3 > 10.5 AND haperMag3 > 10.2 
+		AND k_1aperMag3 > 9.7 
+		/* Limit merged passband selection to +/- 1 arcsec */ 
+		AND (zXi BETWEEN -1.0 AND +1.0 OR zXi < -0.9e9) 
+		AND (yXi BETWEEN -1.0 AND +1.0 OR yXi < -0.9e9) 
+		AND jXi BETWEEN -1.0 AND +1.0 
+		AND hXi BETWEEN -1.0 AND +1.0 AND k_1Xi BETWEEN -1.0 AND +1.0 
+		AND (zEta BETWEEN -1.0 AND +1.0 OR zEta < -0.9e9) 
+		AND (yEta BETWEEN -1.0 AND +1.0 OR yEta < -0.9e9) 
+		AND jEta BETWEEN -1.0 AND +1.0 
+		AND hEta BETWEEN -1.0 AND +1.0 
+		AND k_1Eta BETWEEN -1.0 AND +1.0 
+		/* Retain only point-like sources */ 
+		AND (zClass BETWEEN -2 AND -1 OR zClass = -9999) 
+		AND (yClass between -2 and -1 OR yClass = -9999) 
+		AND jClass between -2 and -1 
+		AND hClass between -2 and -1 
+		AND k_1Class between -2 and -1 
+		AND masterObjID=gcs.sourceID 
+		AND slaveObjID=m2.pts_key 
+		AND distanceMins<0.033333 
+		AND distanceMins IN ( SELECT 
+		                          MIN(distanceMins) 
+		                      FROM gcsSourceXtwomass_psc 
+		                      WHERE masterObjID=x.masterObjID) 
+		                            AND (priOrSec = gcs.frameSetID OR priOrSec = 0) 
+		                      group by cast(round(jAperMag3*10.0,0) as int)/10.0 
+		                      order by cast(round(jAperMag3*10.0,0) as int)/10.0

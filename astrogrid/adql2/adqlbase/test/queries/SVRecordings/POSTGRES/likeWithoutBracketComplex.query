@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * from cata, catb where udf_Munge(cata.col1) like catb.col3 || catb.col4 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From cata, catb  Where udf_Munge(cata.col1)  Like catb.col3 || catb.col4  

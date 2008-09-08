@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql">
+    <adql:SelectionList>
+        <adql:Item xsi:type="adql:allSelectionItemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </adql:SelectionList>
+    <adql:From>
+        <adql:Table xsi:type="adql:derivedTableType" Alias="c" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <adql:SubQuery>
+                <adql:QueryExpression>
+                    <adql:JoinedTable NaturalJoin="false">
+                        <adql:Qualifier>INNER</adql:Qualifier>
+                        <adql:Tables>
+                            <adql:fromTableType xsi:type="adql:tableType" Name="cata" Alias="a"/>
+                            <adql:fromTableType xsi:type="adql:tableType" Name="catb" Alias="b"/>
+                        </adql:Tables>
+                        <adql:JoinSpecification xsi:type="adql:joinConditionType">
+                            <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="a"/>
+                                <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="b"/>
+                            </adql:Condition>
+                        </adql:JoinSpecification>
+                    </adql:JoinedTable>
+                </adql:QueryExpression>
+            </adql:SubQuery>
+        </adql:Table>
+    </adql:From>
+</adql:Select>

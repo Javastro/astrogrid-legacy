@@ -1,0 +1,2 @@
+--Where/Condition
+a.col1 + a.col2 >= 3.2875 and a.col3 between a.col4 and a.col5

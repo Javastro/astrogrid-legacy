@@ -1,0 +1,12 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * 
+from cata as a, catb as b 
+where 
+contains( point('J2000', a.ra, a.dec), polygon( 'J2000', b.ra, b.dec, 2.0, 2.0, 3.0, 1.0 ) ) = 1
+and b.ra between 1.0 and 1.25 and b.dec between 1.25 and 1.75 ; 
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From cata as a, catb as b  Where (CONTAINS(POINT('J2000, a.ra, a.dec)  , POLYGON('J2000, b.ra, b.dec, 2.0, 2.0, 3.0, 1.0)  )   = 1) And ((b.ra Between 1.0 And 1.25 ) And (b.dec Between 1.25 And 1.75 )) 

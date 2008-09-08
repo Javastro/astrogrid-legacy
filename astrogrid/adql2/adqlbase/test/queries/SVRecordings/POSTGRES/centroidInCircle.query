@@ -1,0 +1,9 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * from cata as a
+where contains( circle( 'J2000', 12.2, -3.5, 0.002 ), centroid( a.regionX ) ) = 1 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select *  From cata as a  Where CONTAINS(CIRCLE('J2000', CAST( 12.2 AS double precision), -CAST( 3.5 AS double precision), CAST( 0.0020 AS double precision)) , CENTROID(a.regionX) )  = 1 

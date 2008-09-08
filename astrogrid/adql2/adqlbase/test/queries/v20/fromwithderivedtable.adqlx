@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+ Derived table within the FROM clause.
+ Shows a join using a correlation specification.
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:allSelectionItemType"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="cata" Alias="a"/>
+    <adql:Table xsi:type="adql:derivedTableType" Alias="b">
+      <adql:SubQuery>
+        <adql:QueryExpression>
+          <adql:Select>
+            <adql:SelectionList>
+              <adql:Item xsi:type="adql:allSelectionItemType"/>
+            </adql:SelectionList>
+            <adql:From>
+              <adql:Table xsi:type="adql:tableType" Name="catb"/>
+            </adql:From>
+            <adql:Where>
+              <adql:Condition xsi:type="adql:betweenPredType">
+                <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="catb"/>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="2.3" xsi:type="adql:realType"/>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:atomType">
+                  <adql:Literal Value="2.35" xsi:type="adql:realType"/>
+                </adql:Arg>
+              </adql:Condition>
+            </adql:Where>
+          </adql:Select>
+        </adql:QueryExpression>
+      </adql:SubQuery>
+    </adql:Table>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;=">
+      <adql:Arg xsi:type="adql:columnReferenceType" Name="err" Table="a"/>
+      <adql:Arg xsi:type="adql:columnReferenceType" Name="err" Table="b"/>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

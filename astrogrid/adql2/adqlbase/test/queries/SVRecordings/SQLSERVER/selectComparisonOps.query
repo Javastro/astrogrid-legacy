@@ -1,0 +1,20 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT TOP 100 a.POS_EQ_RA, a.POS_EQ_DEC 
+FROM catalogue as a 
+WHERE a.POS_EQ_RA=a.POS_EQ_DEC
+      AND
+      a.POS_EQ_RA<>a.POS_EQ_DEC
+      AND
+      a.POS_EQ_RA>a.POS_EQ_DEC
+      AND
+      a.POS_EQ_RA>=a.POS_EQ_DEC
+      AND
+      a.POS_EQ_RA<a.POS_EQ_DEC
+      AND
+      a.POS_EQ_RA<=a.POS_EQ_DEC ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select Top 100 a.POS_EQ_RA, a.POS_EQ_DEC From catalogue as a  Where (a.POS_EQ_RA = a.POS_EQ_DEC) And ((a.POS_EQ_RA <> a.POS_EQ_DEC) And ((a.POS_EQ_RA > a.POS_EQ_DEC) And ((a.POS_EQ_RA >= a.POS_EQ_DEC) And ((a.POS_EQ_RA < a.POS_EQ_DEC) And (a.POS_EQ_RA <= a.POS_EQ_DEC))))) 

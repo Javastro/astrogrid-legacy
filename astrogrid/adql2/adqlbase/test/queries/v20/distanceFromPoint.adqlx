@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql">
+    <adql:SelectionList>
+        <adql:Item xsi:type="adql:allSelectionItemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </adql:SelectionList>
+    <adql:From>
+        <adql:Table xsi:type="adql:tableType" Name="cata" Alias="a" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </adql:From>
+    <adql:Where>
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;=" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <adql:Arg xsi:type="adql:systemFunctionType" Name="DISTANCE">
+                <adql:Arg xsi:type="adql:geometryFunctionType" Name="POINT">
+                    <adql:Arg xsi:type="adql:characterValueExpressionType">
+                        <adql:CharacterFactor xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="J2000"/>
+                        </adql:CharacterFactor>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:atomType">
+                        <adql:Literal Value="12.2" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:unaryExprType" Oper="-">
+                        <adql:Arg xsi:type="adql:atomType">
+                            <adql:Literal Value="4.5" xsi:type="adql:realType"/>
+                        </adql:Arg>
+                    </adql:Arg>
+                </adql:Arg>
+                <adql:Arg xsi:type="adql:geometryFunctionType" Name="POINT">
+                    <adql:Arg xsi:type="adql:characterValueExpressionType">
+                        <adql:CharacterFactor xsi:type="adql:atomType">
+                            <adql:Literal xsi:type="adql:stringType" Value="J2000"/>
+                        </adql:CharacterFactor>
+                    </adql:Arg>
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="col3" Table="a"/>
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="col4" Table="a"/>
+                </adql:Arg>
+            </adql:Arg>
+            <adql:Arg xsi:type="adql:atomType">
+                <adql:Literal Value="1.0E-4" xsi:type="adql:realType"/>
+            </adql:Arg>
+        </adql:Condition>
+    </adql:Where>
+</adql:Select>

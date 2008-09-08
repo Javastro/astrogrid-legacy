@@ -1,0 +1,4841 @@
+/*$Id: AdqlStoX.jjt,v 1.2 2008/09/08 15:37:03 jl99 Exp $*/
+
+//
+// High-level JavaDoc comments are present in this file.
+// There is little point in placing any here. 
+// At this point they are ignored by the JavaCC processors. 
+//
+// Jeff Lusted 
+// 
+    
+options {
+  JDK_VERSION="1.5"; 
+  STATIC=false;
+  MULTI=true;
+  VISITOR=false;
+  NODE_USES_PARSER=true;
+  NODE_DEFAULT_VOID=true; 
+  NODE_PREFIX="AST_";
+  IGNORE_CASE=true;
+  NODE_SCOPE_HOOK=true ; 
+} 
+
+PARSER_BEGIN(AdqlStoX)
+package org.astrogrid.adql ;
+
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+import java.util.HashSet ;
+import java.util.ArrayList ;
+import java.util.List ;
+import org.astrogrid.adql.beans.* ;
+import org.astrogrid.adql.AdqlParser.SyntaxOption;
+
+/**
+ * AdqlStoX         
+ * <p>
+ * AdqlStoX is a generated class. It started life as a JavaCC file with a file extension of .jjt, 
+ * producing a syntax tree.
+ * All of the classes with a name prefix of "AST_" were emitted as part of this syntax tree.
+ * Other classes emitted as an adjunct of AdqlStoX are:
+ * <blockquote><pre>
+ * org.astrogrid.adql.AdqlStoXConstants
+ * org.astrogrid.adql.AdqlStoTokenManager 
+ * org.astrogrid.adql.AdqlStoXTreeConstants 
+ * org.astrogrid.adql.ParseException 
+ * org.astrogrid.adql.SimpleCharacterStream
+ * org.astrogrid.adql.SimpleNode
+ * org.astrogrid.adql.Token
+ * org.astrogrid.adql.TokenMgrError     
+ * </pre></blockquote>
+ * There is one emitted interface:
+ * org.astrogrid.adql.SimpleNode
+ * <p>
+ * AdqlStoX takes text in the form of Adql/s and parsers it into xml Adql/x format.
+ * Adql/s is based upon SQL/92 with astronomical extensions. However, AdqlStoX is wrapped
+ * by class org.astrogrid.adql.AdqlParser. All public and protected methods should
+ * be invoked only from AdqlParser!
+ * <p>
+ * For those who are interested, and have access to the source for AdqlStoX.jtt,
+ * the following details may be of use in reconciling the method names to the BNF
+ * specification of ADQL. The methods are not documented, and will probably remain
+ * undocumented, although some constructors are approximately mirrored within AdqlParser.  
+ * However, there is a naming convention for methods, which is aimed at making the match
+ * with the BNF diagrams as clear as possible...
+ * <p>
+ * (1) All methods which are quoted bnf statements follow the bnf format, 
+ *     with any embedded dashes (-) removed from the name.
+ *     Thus the statment &lt;comparison_predicate> from the SQL/92 standard
+ *     will have a corresponding method with a name similar to comparison_predicate().
+ *     However, such methods are decorated in a particular way, for which see
+ *     points (2) and (3) below. All methods which are tantamount to quoted
+ *     bnf will have the standard syntax as a comment embedded within the source. However,
+ *     this style of comment is private to the original .jjt file and is not emitted
+ *     into the java code. 
+ *     Thus:
+ * <blockquote><pre>
+ *     //S:
+ *     // &lt;row_value_constructor> &lt;comp_op> &lt;row_value_constructor>
+ * </pre></blockquote>
+ * <p>
+ * (2) Methods which follow exactly the SQL/92 syntax at a shallow level are suffixed _S.
+ *     Thus comparison_predicate_S() represents the SQL/92 standard syntax. Shallow implies
+ *     that the syntax can still vary from the standard within statements quoted
+ *     within the given construct. This is usually pretty obvious from the quoted statements
+ *     (eg: quoted statement some_statement_A() means an ADQL variation, see next point), 
+ *     but be aware that it is possible for variations to be deeply embedded.
+ *     NB: A statement that is just a synonym for another statement will take
+ *         the quoted statement's decoration. This is the one exception.
+ * <p>
+ * (3) Methods which are varied for some reason within ADQL, or are simply
+ *     specific to ADQL, are suffixed _A.
+ *     Thus comparison_predicate_A() represents an ADQL deviation.
+ * <p>
+ * (4) Some methods are introduced as implementations of part of a syntax.
+ *     This is just to make for a neater structure. These methods follow
+ *     the standard Java OO naming convention and are not decorated, 
+ *     eg: numericValueExpressionList().
+ * <p>
+ * (5) Some methods are experimental and not connected to the main parsing path; ie: they 
+ *     do not take part in any parse unless a coding change is made to re-incorporate them.
+ *     These begin with an underscore; eg: _datetime_value_expression_S().
+ *
+ * There is built-in documentation to help in supporting BNF syntax diagrams. This built-in
+ * documentation consists of special comments throughout the code. It is separate from the
+ * above four conventions and must be maintained by the developer to correspond to the working
+ * of the parser. Thus the resulting BNF documentation represents what the parser does. 
+ * This seems a little back-to-front but is reasonably thorough in its results. There are two 
+ * sorts of comments: singletons and multiples, depending on whether the BNF definition is on 
+ * one or more lines. Two examples are given below:
+ * <p>
+ * <blockquote><pre>
+ *     bnf-single &lt;boolean_factor> ::= [ NOT ] &lt;boolean_test> 
+ *     bnf-start
+ *        &lt;between_predicate> ::=
+ *          &lt;value_expression> [ NOT ] BETWEEN
+ *          &lt;value_expression> AND &lt;value_expression>
+ *     bnf-end
+ * </pre></blockquote>
+ * (Real ones have to be positioned at the beginning of a line with each line prefixed by
+ * the string " * " exactly. )
+ * <p>
+ * A utility programme BnfExtractor extracts these from the source and places them in 
+ * suitable files (or to standard out). BnfExtractor produces output in two formats:
+ * plain text and html. 
+ * <p>     
+ * @author Jeff Lusted jl99@star.le.ac.uk
+ * Sep 2006
+ */
+public class AdqlStoX {
+	
+	private static Log log = LogFactory.getLog( AdqlStoX.class ) ;
+	
+	private static final int DONT_CHANGE_SIGN = 1 ;
+    
+	protected Tracker tracker ;
+	protected AdqlParser parser ; 
+	void jjtreeOpenNodeScope( org.astrogrid.adql.Node n ) {		((SimpleNode)n).firstToken = getToken(1);	}		    void jjtreeCloseNodeScope( org.astrogrid.adql.Node n ) {        ((SimpleNode)n).lastToken = getToken(0);    }    	private void enterTrace( String entry ) {
+		log.trace( parser.getIndent().toString() + "enter: " + entry ) ;
+		parser.indentPlus() ;	}    private void exitTrace( String entry ) {    	parser.indentMinus() ;
+		log.trace( parser.getIndent().toString() + "exit : " + entry ) ;	}
+	
+	private boolean lookForStringOperator() {
+		return true ;
+	}
+	
+}
+PARSER_END(AdqlStoX)
+
+/*
+ * SPECIAL_TOKEN: COMMENTS
+ *
+ * bnf-single <comment> ::= <comment_introducer> [ <comment_character>... ] <newline>
+ * bnf-single <comment_character> ::= <nonquote_character> | <quote>
+ * bnf-single <comment_introducer> ::= <minus_sign><minus_sign> [<minus_sign>...]
+ * bnf-start
+ *  <newline> ::= 
+ *  !! Implementation defined end of line indicator
+ * bnf-end
+ * bnf-start
+ *  <nonquote_character> ::= 
+ *  !! One ASCII character but not a single quote 
+ * bnf-end
+ *
+ */
+SPECIAL_TOKEN : /* COMMENTS */
+{ 
+// There are shortcomings in this definition to do with
+// comments (-- or // style) stretching over more than one line that do not start at the
+// beginning of a line; ie: a comment where there is white space at the start of lines.
+   < COMMENT : ( <SINGLE_LINE_COMMENT> )+ | ( <MULTI_LINE_COMMENT> )+ >
+   
+//
+// Single line comment delineated by -- or //
+|  < #SINGLE_LINE_COMMENT: ("\n"|"\r"|"\r\n"|" "|"\t")* ("--"|"//") (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+//
+// Standard C comment; ie: /* this is a comment */
+|  < #MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/" ("\n"|"\r"|"\r\n")? >
+}
+
+SKIP :
+{
+ 	" "
+|	"\n"
+|	"\r"
+|	"\t"
+}
+
+
+/*
+ * TOKEN <SQL_special_character> 
+ *
+ * bnf-start
+ *  <SQL_special_character> ::=
+ *     <space>
+ *   | <double_quote>
+ *   | <percent>
+ *   | <ampersand>
+ *   | <quote>
+ *   | <left_paren>
+ *   | <right_paren>
+ *   | <asterisk>
+ *   | <plus_sign>
+ *   | <comma>
+ *   | <minus_sign>
+ *   | <period>
+ *   | <solidus>
+ *   | <colon>
+ *   | <semicolon>
+ *   | <less_than_operator>
+ *   | <equals_operator>
+ *   | <greater_than_operator>
+ *   | <question_mark>
+ *   | <underscore>
+ *   | <vertical_bar>
+ * bnf-end
+ * bnf-start
+ *  <space> ::=
+ *  !! Imagine there is a space character here
+ * bnf-end
+ * bnf-single <double_quote> ::= "
+ * bnf-single <percent> ::= %
+ * bnf-single <ampersand> ::= &
+ * bnf-single <quote> ::= '
+ * bnf-single <left_paren> ::= (
+ * bnf-single <right_paren> ::= )
+ * bnf-single <asterisk> ::= *
+ * bnf-single <plus_sign> ::= +
+ * bnf-single <comma> ::= ,
+ * bnf-single <minus_sign> ::= -
+ * bnf-single <period> ::= .
+ * bnf-single <solidus> ::= /
+ * bnf-single <colon> ::= :
+ * bnf-single <semicolon> ::= ;
+ * bnf-single <less_than_operator> ::= <
+ * bnf-single <equals_operator> ::= =
+ * bnf-single <greater_than_operator> ::= >
+ * bnf-single <question_mark> ::= ?
+ * bnf-single <underscore> ::= _
+ * bnf-single <vertical_bar> ::= |
+ */
+TOKEN : // <SQL_special_character> 
+{
+  < DOUBLE_QUOTE: "\"\"" >
+| < PERCENT: "%" >
+// ampersand does not appear in the draft
+| < AMPERSAND: "&" >
+| < QUOTE: "'" >
+| < LEFT_PAREN: "(" >
+| < RIGHT_PAREN: ")" >
+| < ASTERISK: "*" >
+| < PLUS_SIGN: "+" >
+| < COMMA: "," >
+| < MINUS_SIGN: "-" >
+| < PERIOD: "." >
+| < SOLIDUS: "/" >
+| < COLON: ":" >
+// semicolon does not appear in the draft
+| < SEMICOLON: ";" >
+| < LESS_THAN_OPERATOR : "<" >
+| < EQUALS_OPERATOR : "=" >
+| < GREATER_THEN_OPERATOR : ">" >
+// question mark does not appear in the draft
+| < QUESTION_MARK: "?" >
+| < UNDERSCORE: "_" >
+| < CONCATENATION_OPERATOR: <VERTICAL_BAR> <VERTICAL_BAR> >
+| < VERTICAL_BAR: "|" >
+| < CIRCUMFLEX: "^" >
+| < TILDE: "~" >
+
+}
+
+/*
+ * TOKEN <SQL_embedded_language_character>
+ *
+ * bnf-start
+ *  <SQL_embedded_language_character> ::=
+ *      <left_bracket>
+ *    | <right_bracket>
+ * bnf-end
+ * bnf-single <left_bracket> ::= [
+ * bnf-single <right_bracket> ::= ]
+ *
+ */
+TOKEN : // <SQL_embedded_language_character>
+{
+  < LEFT_BRACKET: "[" >
+| < RIGHT_BRACKET: "]" >	
+}
+
+/*
+ * TOKEN <SQL_reserved_word>
+ *
+ * bnf-start
+ *  <SQL_reserved_word> ::=
+ *     ABSOLUTE | ACTION | ADD | ALL
+ *   | ALLOCATE | ALTER | AND
+ *   | ANY | ARE
+ *   | AS | ASC
+ *   | ASSERTION | AT
+ *   | AUTHORIZATION | AVG
+ *   | BEGIN | BETWEEN | BIT | BIT_LENGTH
+ *   | BOTH | BY
+ *   | CASCADE | CASCADED | CASE | CAST
+ *   | CATALOG
+ *   | CHAR | CHARACTER | CHAR_LENGTH
+ *   | CHARACTER_LENGTH | CHECK | CLOSE | COALESCE
+ *   | COLLATE | COLLATION
+ *   | COLUMN | COMMIT
+ *   | CONNECT
+ *   | CONNECTION | CONSTRAINT
+ *   | CONSTRAINTS | CONTINUE
+ *   | CONVERT | CORRESPONDING | COUNT | CREATE | CROSS
+ *   | CURRENT
+ *   | CURRENT_DATE | CURRENT_TIME
+ *   | CURRENT_TIMESTAMP | CURRENT_USER | CURSOR
+ *   | DATE | DAY | DEALLOCATE 
+ *   | DECIMAL | DECLARE | DEFAULT | DEFERRABLE
+ *   | DEFERRED | DELETE | DESC | DESCRIBE | DESCRIPTOR
+ *   | DIAGNOSTICS
+ *   | DISCONNECT | DISTINCT | DOMAIN | DOUBLE | DROP
+ *   | ELSE | END | END-EXEC | ESCAPE
+ *   | EXCEPT | EXCEPTION
+ *   | EXEC | EXECUTE | EXISTS
+ *   | EXTERNAL | EXTRACT
+ *   | FALSE | FETCH | FIRST | FLOAT | FOR
+ *   | FOREIGN | FOUND | FROM | FULL
+ *   | GET | GLOBAL | GO | GOTO
+ *   | GRANT | GROUP
+ *   | HAVING | HOUR
+ *   | IDENTITY | IMMEDIATE | IN | INDICATOR
+ *   | INITIALLY | INNER | INPUT
+ *   | INSENSITIVE | INSERT | INT | INTEGER | INTERSECT
+ *   | INTERVAL | INTO | IS
+ *   | ISOLATION
+ *   | JOIN
+ *   | KEY
+ *   | LANGUAGE | LAST | LEADING | LEFT
+ *   | LEVEL | LIKE | LOCAL | LOWER
+ *   | MATCH | MAX | MIN | MINUTE | MODULE
+ *   | MONTH
+ *   | NAMES | NATIONAL | NATURAL | NCHAR | NEXT | NO
+ *   | NOT | NULL
+ *   | NULLIF | NUMERIC
+ *   | OCTET_LENGTH | OF
+ *   | ON | ONLY | OPEN | OPTION | OR
+ *   | ORDER | OUTER
+ *   | OUTPUT | OVERLAPS
+ *   | PAD | PARTIAL | POSITION | PRECISION | PREPARE
+ *   | PRESERVE | PRIMARY
+ *   | PRIOR | PRIVILEGES | PROCEDURE | PUBLIC
+ *   | READ | REAL | REFERENCES | RELATIVE | RESTRICT
+ *   | REVOKE | RIGHT
+ *   | ROLLBACK | ROWS
+ *   | SCHEMA | SCROLL | SECOND | SECTION
+ *   | SELECT
+ *   | SESSION | SESSION_USER | SET
+ *   | SIZE | SMALLINT | SOME | SPACE | SQL | SQLCODE
+ *   | SQLERROR | SQLSTATE
+ *   | SUBSTRING | SUM | SYSTEM_USER
+ *   | TABLE | TEMPORARY
+ *   | THEN | TIME | TIMESTAMP
+ *   | TIMEZONE_HOUR | TIMEZONE_MINUTE
+ *   | TO | TRAILING | TRANSACTION
+ *   | TRANSLATE | TRANSLATION | TRIM | TRUE
+ *   | UNION | UNIQUE | UNKNOWN | UPDATE | UPPER | USAGE
+ *   | USER | USING
+ *   | VALUE | VALUES | VARCHAR | VARYING | VIEW
+ *   | WHEN | WHENEVER | WHERE | WITH | WORK | WRITE
+ *   | YEAR
+ *   | ZONE
+ * bnf-end
+ */
+TOKEN : // <SQL_reserved_word>
+{
+  < ABSOLUTE : "absolute" >
+| < ACTION : "action" >
+| < ADD : "add" >
+| < ALL : "all" >
+| < ALLOCATE : "allocate" >
+| < ALTER : "alter" >
+| < AND : "and" >
+| < ANY : "any" >
+| < ARE : "are" >
+| < AS : "as" >
+| < ASC : "asc" >
+| < ASSERTION : "assertion" >
+| < AT : "at" >
+| < AUTHORIZATION : "authorization" >
+| < AVG : "avg" >
+| < BEGIN : "begin" >
+| < BETWEEN : "between" >
+| < BIT : "bit" >
+| < BIT_LENGTH : "bit_length" >
+| < BOTH : "both" >
+| < BY : "by" >
+| < CASCADE : "cascade" >
+| < CASCADED : "cascaded" >
+| < CASE : "case" >
+| < CAST : "cast" >
+| < CATALOG : "catalog" >
+| < CHAR : "char" >
+| < CHARACTER : "character" >
+| < CHAR_LENGTH : "char_length" >
+| < CHARACTER_LENGTH : "character_length" >
+| < CHECK : "check" >
+| < CLOSE : "close" >
+| < COALESCE : "coalesce" >
+| < COLLATE : "collate" >
+| < COLLATION : "collation" >
+| < COLUMN : "column" >
+| < COMMIT : "commit" >
+| < CONNECT : "connect" >
+| < CONNECTION : "connection" >
+| < CONSTRAINT : "constraint" >
+| < CONSTRAINTS : "constraints" >
+| < CONTINUE : "continue" >
+| < CONVERT : "convert" >
+| < CORRESPONDING : "corresponding" >
+| < COUNT : "count" >
+| < CREATE : "create" >
+| < CROSS : "cross" >
+| < CURRENT : "current" >
+| < CURRENT_DATE : "current_date" >
+| < CURRENT_TIME : "current_time" >
+| < CURRENT_TIMESTAMP : "current_timestamp" >
+| < CURRENT_USER : "current_user" >
+| < CURSOR : "cursor" >
+| < DATE : "date" >
+| < DAY : "day" >
+| < DEALLOCATE : "deallocate" >
+// | < DEC : "dec" >
+| < DECIMAL : "decimal" >
+| < DECLARE : "declare" >
+| < SQL_DEFAULT : "default" >
+| < DEFERRABLE : "deferrable" >
+| < DEFERRED : "deferred" >
+| < DELETE : "delete" >
+| < DESC : "desc" >
+| < DESCRIBE : "describe" >
+| < DESCRIPTOR : "descriptor" >
+| < DIAGNOSTICS : "diagnostics" >
+| < DISCONNECT : "disconnect" >
+| < DISTINCT : "distinct" >
+| < DOMAIN : "domain" >
+| < DOUBLE : "double" >
+| < DROP : "drop" >
+| < ELSE : "else" >
+| < END : "end" >
+| < ENDEXEC : "end-exec" >
+| < ESCAPE : "escape" >
+| < EXCEPT : "except" >
+| < EXCEPTION : "exception" >
+| < EXEC : "exec" >
+| < EXECUTE : "execute" >
+| < EXISTS : "exists" >
+| < EXTERNAL : "external" >
+| < EXTRACT : "extract" >
+| < FALSE : "false" >
+| < FETCH : "fetch" >
+| < FIRST : "first" >
+| < FLOAT : "float" >
+| < FOR : "for" >
+| < FOREIGN : "foreign" >
+| < FOUND : "found" >
+| < FROM : "from" >
+| < FULL : "full" >
+| < GET : "get" >
+| < GLOBAL : "global" >
+| < GO : "go" >
+| < GOTO : "goto" >
+| < GRANT : "grant" >
+| < GROUP : "group" >
+| < HAVING : "having" >
+| < HOUR : "hour" >
+| < IDENTITY : "identity" >
+| < IMMEDIATE : "immediate" >
+| < IN : "in" >
+| < INDICATOR : "indicator" >
+| < INITIALLY : "initially" >
+| < INNER : "inner" >
+| < INPUT : "input" >
+| < INSENSITIVE : "insensitive" >
+| < INSERT : "insert" >
+| < INT : "int" >
+| < INTEGER : "integer" >
+| < INTERSECT : "instersect" >
+| < INTERVAL : "interval" >
+| < INTO : "into" >
+| < IS : "is" >
+| < ISOLATION : "isolation" >
+| < JOIN : "join" >
+| < KEY : "key" >
+| < LANGUAGE : "language" >
+| < LAST : "last" >
+| < LEADING : "leading" >
+| < LEFT : "left" >
+| < LEVEL : "level" >
+| < LIKE : "like" >
+| < LOCAL : "local" >
+| < LOWER : "lower" >
+| < MATCH : "match" >
+| < MAX : "max" >
+| < MIN : "min" >
+| < MINUTE : "minute" >
+| < MODULE : "module" >
+| < MONTH : "month" >
+| < NAMES : "names" >
+| < NATIONAL : "national" >
+| < NATURAL : "natural" >
+| < NCHAR : "nchar" >
+| < NEXT : "next" >
+| < NO : "no" >
+| < NOT : "not" >
+| < NULL : "null" >
+| < NULLIF : "nullif" >
+| < NUMERIC : "numeric" >
+| < OCTET_LENGTH : "octet_length" >
+| < OF : "of" >
+| < ON : "on" >
+| < ONLY : "only" >
+| < OPEN : "open" >
+| < OPTION : "option" >
+| < OR : "or" >
+| < ORDER : "order" >
+| < OUTER : "outer" >
+| < OUTPUT : "output" >
+| < OVERLAPS : "overlaps" >
+| < PAD : "pad" >
+| < PARTIAL : "partial" >
+| < POSITION : "position" >
+| < PRECISION : "precision" >
+| < PREPARE : "prepare" >
+| < PRESERVE : "preserve" >
+| < PRIMARY : "primary" >
+| < PRIOR : "prior" >
+| < PRIVILEGES : "privileges" >
+| < PROCEDURE : "procedure" >
+| < PUBLIC : "public" >
+| < READ : "read" >
+| < REAL : "real" >
+| < REFERENCES : "references" >
+| < RELATIVE : "relative" >
+| < RESTRICT : "restrict" >
+| < REVOKE : "revoke" >
+| < RIGHT : "right" >
+| < ROLLBACK : "rollback" >
+| < ROWS : "rows" >
+| < SCHEMA : "schema" >
+| < SCROLL : "scroll" >
+| < SECOND : "second" >
+| < SECTION : "section" >
+| < SELECT : "select" >
+| < SESSION : "session" >
+| < SESSION_USER : "session_user" >
+| < SET : "set" >
+| < SIZE : "size" >
+| < SMALLINT : "smallint" >
+| < SOME : "some" >
+| < SPACE : "space" >
+| < SQL : "sql" >
+| < SQLCODE : "sqlcode" >
+| < SQLERROR : "sqlerror" >
+| < SQLSTATE : "sqlstate" >
+| < SUBSTRING : "substring" >
+| < SUM : "sum" >
+| < SYSTEM_USER : "system_user" >
+| < TABLE : "table" >
+| < TEMPORARY : "temporary" >
+| < THEN : "then" >
+| < TIME : "time" >
+| < TIMESTAMP : "timestamp" >
+| < TIMEZONE_HOUR : "timezone_hour" >
+| < TIMEZONE_MINUTE : "timezone_minute" >
+| < TO : "to" >
+| < TRAILING : "trailing" >
+| < TRANSACTION : "transaction" >
+| < TRANSLATE : "translate" >
+| < TRANSLATION : "translation" >
+| < TRIM : "trim" >
+| < TRUE : "true" >
+| < UNION : "union" >
+| < UNIQUE : "unique" >
+| < UNKNOWN : "unknown" >
+| < UPDATE : "update" >
+| < UPPER : "upper" >
+| < USAGE : "usage" >
+| < USER : "user" >
+| < USING : "using" >
+| < VALUE : "value" >
+| < VALUES : "values" >
+| < VARCHAR : "varchar" >
+| < VARYING : "varying" >
+| < VIEW : "view" >
+| < WHEN : "when" >
+| < WHENEVER : "whenever" >
+| < WHERE : "where" >
+| < WITH : "with" >
+| < WORK : "work" >
+| < WRITE : "write" >
+| < YEAR : "year" >
+| < ZONE : "zone" >
+}
+
+// <non-reserved_word> 
+//
+// Cannot be certain what to make of these yet
+//{ //  < ADA : "ada" >//| < C: "c" >//| < CATALOG_NAME: "catalog_name" >//| < CHARACTER_SET_CATALOG: "character_set_catalog" >//| < CHARACTER_SET_NAME: "character_set_name" >//| < CHARACTER_SET_SCHEMA: "character_set_schema" >//| < CLASS_ORIGIN: "class_origin" >//| < COBOL: "cobol" >//| < COLLATION_CATALOG: "collation_catalog" >//| < COLLATION_NAME: "collation_name" >//| < COLLATION_SCHEMA: "collation_schema" >//| < COLUMN_NAME: "column_name" >//| < COMMAND_FUNCTION: "command_function" >//| < COMMITTED: "committed" >//| < CONDITION_NUMBER: "condition_number" >//| < CONNECTION_NAME: "connection_name" >//| < CONSTRAINT_CATALOG: "constraint_catalog" >//| < CONSTRAINT_NAME: "constraint_name" >//| < CONSTRAINT_SCHEMA: "constraint_schema" >//| < CURSOR_NAME: "cursor_name" >//| < DATA: "data" >//| < DATETIME_INTERVAL_CODE: "datetime_interval_code" >//| < DATETIME_INTERVAL_PRECISION: "datetime_interval_precision" >//| < DYNAMIC_FUNCTION: "dynamic_function" >//| < FORTRAN: "fortran" >//| < LENGTH: "length" >//| < MESSAGE_LENGTH: "message_length" >//| < MESSAGE_OCTET_LENGTH: "message_octet_length" >//| < MESSAGE_TEXT: "message_text" >//| < SQL_MORE: "more" >//| < MUMPS: "mumps" >//| < NAME: "name" >//| < NULLABLE: "nullable" >//| < NUMBER: "number" >//| < PASCAL: "pascal" >//| < PLI: "pli" >//| < REPEATABLE: "repeatable" >//| < RETURNED_LENGTH: "returned_length" >//| < RETURNED_OCTET_LENGTH: "returned_octet_length" >//| < RETURNED_SQLSTATE: "returned_sqlstate" >//| < ROW_COUNT: "row_count" >//| < SCALE: "scale" >//| < SCHEMA_NAME: "schema_name" >//| < SERIALIZABLE: "serializable" >//| < SERVER_NAME: "server_name" >//| < SUBCLASS_ORIGIN: "subclass_origin" >//| < TABLE_NAME: "table_name" >//| < TYPE: "type" >//| < UNCOMMITTED: "uncommitted" >//| < UNNAMED: "unnamed" >//}
+
+/*
+ * TOKEN <ADQL-reserved-word>
+ * 
+ * bnf-start
+ *  <ADQL_reserved_word> ::=
+ *      AREA
+ *    | ABS 
+ *    | ACOS 
+ *    | ASIN 
+ *    | ATAN 
+ *    | ATAN2 
+ *    | BOX
+ *    | CEILING 
+ *    | CENTROID
+ *    | CIRCLE
+ *    | CONTAINS
+ *    | COORD1
+ *    | COORD2
+ *    | COS 
+ *    | DEGREES 
+ *    | DISTANCE
+ *    | ELLIPSE
+ *    | EXP 
+ *    | FLOOR 
+ *    | INTERSECTS
+ *    | LOG 
+ *    | LOG10 
+ *    | PI 
+ *    | POINT
+ *    | POLYGON
+ *    | POWER 
+ *    | RADIANS 
+ *    | REGION 
+ *    | RAND 
+ *    | ROUND 
+ *    | SIN 
+ *    | SQUARE
+ *    | SQRT 
+ *    | TOP
+ *    | TAN 
+ *    | TRUNCATE
+ * bnf-end
+ *
+ */
+TOKEN : // <ADQL_reserved_word>
+{
+
+	< TOP: "TOP" >
+	
+	//region
+|	< AREA: "AREA" >
+|   < CENTROID: "CENTROID" >
+|   < COORDSYS: "COORDSYS" >
+|   < COORD1: "COORD1" >
+|   < COORD2: "COORD2">
+|	< LATITUDE: "latitude" >
+|	< LONGITUDE: "longitude" >	
+|	< REGION: "region" >
+//|   < J2000: "J2000" > //|   < LATLON: "LATLON" >//|   < CARTESIAN: "CARTESIAN" >//|   < CONVEX: "CONVEX" > 
+|   < CIRCLE: "CIRCLE" >
+|   < ELLIPSE: "ELLIPSE" >
+//|   < RECT: "RECT" >
+//|   < POLY: "POLY" >
+|   < POLYGON: "POLYGON" >
+//|   < CHULL: "CHULL" >|   < BOX: "BOX" >
+//|   < RECTANGLE: "RECTANGLE" >
+|   < INTERSECTS: "INTERSECTS" >
+//|   < ICRS: "ICRS" >//|   < GAL: "GAL">
+|   < DISTANCE: "DISTANCE">
+|   < CONTAINS: "CONTAINS">
+|   < POINT: "POINT">
+	
+	//math
+|   < ABS: "abs" >
+|	< CEILING: "ceiling" >
+|	< DEGREES: "degrees" >
+|	< EXP: "exp" >
+|	< FLOOR: "floor" >
+|	< LOG: "log" >
+|	< PI: "pi" >
+|	< POWER: "power" >
+|	< RADIANS: "radians" >
+|	< SQRT: "sqrt" >
+|	< SQUARE: "square" >
+|	< LOG10: "log10" >
+|	< RAND: "rand" >
+|	< ROUND: "round" >
+|	< TRUNCATE: "truncate" >
+	
+	//trig
+|	< SIN: "sin" >
+|	< COS: "cos" >
+|	< TAN: "tan" >
+|	< COT: "cot" >
+|	< ASIN: "asin" >
+|	< ACOS: "acos" >
+|	< ATAN: "atan" >
+|	< ATAN2: "atan2" >
+
+|   < VAR: "var" >
+}
+
+/*
+ * TOKEN <ADQL_special_character>
+ *
+ *-bnf-start
+ *- <ADQL_special_character> ::=
+ *-     <left_brace>
+ *-   | <right_brace>
+ *-   | <dollar>
+ *-  !! ADQL Note:
+ *-  !! These are not present in the ADQL draft.
+ *-  !! Part of an experiment to see whether it is possible to accommodate
+ *-  !! the presence of scripting variables in a query.
+ *-bnf-end
+ *-bnf-single <left_brace> ::= {
+ *-bnf-single <right_brace> ::= }
+ *-bnf-single <dollar> ::= $
+ */
+TOKEN : // <ADQL_special_character>
+{ 
+	< LBRACE : "{" >
+|	< RBRACE : "}" >
+|	< DOLLAR : "$" >		
+}
+
+/*
+ * TOKEN miscellaneous SQL92 
+ *
+ * bnf-start 
+ *  <ADQL_language_character> ::=
+ *      <simple_Latin_letter>
+ *    | <digit>
+ *    | <SQL_special_character>
+ * bnf-end
+ *
+ * bnf-single <keyword> ::= <SQL_reserved_word> | <ADQL_reserved_word>
+ *
+ * bnf-single <not_equals_operator1> ::= <>
+ * bnf-single <not_equals_operator2> ::= !=
+ * bnf-single <not_equals_operator> ::= <not_equals_operator1> | <not_equals_operator2>
+ * bnf-single <less_than_or_equals_operator> ::= <=
+ * bnf-single <greater_than_or_equals_operator> ::= >=
+ * bnf-single <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+ * bnf-start
+ *  <simple_Latin_letter> ::=
+ *      <simple_Latin_upper_case_letter>
+ *    | <simple_Latin_lower_case_letter>
+ * bnf-end
+ * bnf-start
+ *  <simple_Latin_upper_case_letter> ::=
+ *      A | B | C | D | E | F | G | H | I | J | K | L | M | N | O
+ *    | P | Q | R | S | T | U | V | W | X | Y | Z
+ * bnf-end
+ * bnf-start
+ *  <simple_Latin_lower_case_letter> ::=
+ *      a | b | c | d | e | f | g | h | i | j | k | l | m | n | o
+ *    | p | q | r | s | t | u | v | w | x | y | z
+ * bnf-end
+ * bnf-start
+ *  <regular_identifier> ::=
+ *      <simple_Latin_letter>... 
+ *      [ { <digit> | <simple_Latin_letter> | <underscore> }... ]
+ * bnf-end
+ *-bnf-start
+ *- <delimited_identifier> ::=
+ *- !! ADQL Note:
+ *- !! Begins and ends with a double quote as delimiters
+ *- !! but itself contains no double quotes or white space.
+ *- !! The draft spec needs adjusting. It has
+ *- !! <delimited_identifier> ::= <double_quote> <regular_identifier> <double_quote> 
+ *- !! which cannot be correct, as we could then simply make do with <regular_identifier>.
+ *-bnf-end
+ *
+ * bnf-start 
+ *  <delimited_identifier> ::= <double_quote> <delimited_identifier_body> <double_quote>
+ *  !! These diagrams are somewhat difficult to follow through and understand immediately. 
+ *  !! The idea is to allow any identifier to be quoted by enclosing within double quotes.
+ *  !! This can allow the use of reserved words as identifiers, eg: "DATE" as a column name.  
+ *  !! The identifier can also contain double quotes as long as they are escaped by double quotes. 
+ *  !! For example: "Table""X" will be identifier Table"X
+ * bnf-end
+ * bnf-single <delimited_identifier_body> ::= <delimited_identifier_part>...
+ * bnf-single <delimited_identifier_part> ::= <nondoublequote_character> | <double_quote_symbol>
+ * bnf-single <double_quote_symbol> ::= <double_quote><double_quote>
+ * bnf-start 
+ *   <nondoublequote_character> ::= 
+ *   !! See SQL92 syntax rules. But basically what it says.
+ * bnf-end
+ *
+ * bnf-single <unsigned_integer> ::= <digit>...
+ * bnf-single <mantissa> ::= <exact_numeric_literal>
+ * bnf-single <exponent> ::= <signed_integer> 
+ * bnf-single <signed_integer> ::= [ <sign> ] <unsigned_integer>
+ *
+ */
+TOKEN : // miscellaneous SQL92 
+{
+	< ASCII_STRING_LITERAL : "\'" (~["\'"])* "\'" >
+
+//| < ASCIIStringLiteral : "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
+//|	< UnicodeStringLiteral : "n" "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
+
+|	< BIT_STRING_LITERAL : <BIT_STRING_LITERAL_TYPE2> >
+|	< #BIT_STRING_LITERAL_TYPE2 : ["B","b"] "\'" ( "0" | "1" )+ "\'" >
+|   < HEX_STRING_LITERAL : <HEX_STRING_LITERAL_TYPE1> | <HEX_STRING_LITERAL_TYPE2> >
+|   < #HEX_STRING_LITERAL_TYPE1 : "0" ["X","x"] ( ["a"-"f", "A"-"F", "0"-"9"] )+ >
+|   < #HEX_STRING_LITERAL_TYPE2 : ["X","x"] "\'" ( ["a"-"f", "A"-"F", "0"-"9"] )+ "\'" >
+
+
+|	< NOT_EQUALS_OPERATOR : "<>" | "!=" >
+|	< LESS_THAN_OR_EQUALS_OPERATOR : "<=" >
+|	< GREATER_THAN_OR_EQUALS_OPERATOR : ">=" >
+|	< CROSS_JOIN : "cross join">
+|	< GROUPBY: "group by" >
+|	< ORDERBY : "order by" >
+|	< TIME_ZONE: "TIME ZONE" >
+|	< TRUTH_VALUE : "true" | "false" | "unknown" >
+
+|   < REGULAR_IDENTIFIER : ( <LETTER> )+ ( <DIGIT> | <LETTER> | <SPECIAL_CHARS> )* >|	< DELIMITED_IDENTIFIER : "\"" (~["\n","\r","\""])* "\"" >
+| 	< #LETTER: ["a"-"z", "A"-"Z"] >
+|   < #SPECIAL_CHARS: <DOLLAR> | "_">
+|   < APPROXIMATE_NUMERIC_LITERAL : <MANTISSA> <E> <EXPONENT> > 
+|	< UNSIGNED_INTEGER : ( <DIGIT> )+ > 
+|  	< DIGIT: ["0" - "9"] >   
+|   < EXACT_NUMERIC_LITERAL : 
+        ( <UNSIGNED_INTEGER> ( <PERIOD> ( <UNSIGNED_INTEGER> )? )? )
+        | 
+        ( <PERIOD> <UNSIGNED_INTEGER> ) >
+|   < #MANTISSA : <EXACT_NUMERIC_LITERAL> >
+|   < #EXPONENT : <SIGNED_INTEGER> >        
+|	< #SIGNED_INTEGER : ( <SIGN> )? <UNSIGNED_INTEGER> >
+|   < #E : ["E", "e"] >
+|   < #SIGN : <PLUS_SIGN> | <MINUS_SIGN> >
+|   < PERIOD_ASTERISK : <PERIOD> <ASTERISK> >
+
+}
+
+/*
+ * TOKEN The remainder men.
+ *
+ *
+ */
+TOKEN : // The remainder
+{
+	< OTHER : ~[] >
+}
+
+/*
+ * Dummy Tokens.
+ * This section is really comment only, consisting of documentation
+ * of things that are not used (so far) but are there for completeness
+ * of the BNF diagrams.
+ *
+ * bnf-start
+ *  <delimiter_token> ::=
+ *        <character_string_literal>
+ *    |   <delimited_identifier>
+ *    |   <SQL_special_character>
+ *    |   <not_equals_operator>
+ *    |   <greater_than_or_equals_operator>
+ *    |   <less_than_or_equals_operator>
+ *    |   <concatenation_operator>
+ *    |   <double_period>
+ *    |   <left_bracket>
+ *    |   <right_bracket>
+ * bnf-end
+ * bnf-start
+ *  <nondelimiter_token> ::= 
+ *      <regular_identifier>
+ *    | <keyword>
+ *    | <unsigned_numeric_literal>
+ * bnf-end
+ * bnf-start
+ *  <token> ::= 
+ *      <nondelimiter_token>
+ *    | <delimiter_token>
+ * bnf-end
+ * bnf-single <double_period> ::= ..
+ * bnf-single <concatenation_operator> ::= ||
+ *
+ */
+
+/*
+ * actual_identifier_S
+ *
+ * bnf-single <identifier> ::= <regular_identifier> | <delimited_identifier>
+ *
+ */
+void actual_identifier_S() #ActualIdentifier : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "actual_identifier_S()" ) ;
+    Token t = null ;
+} 
+{
+    //S:
+    // <regular_identifier> | <delimited_identifier>
+    LOOKAHEAD( { parser.checkSomeReservedWords() == false } )
+	( t=<REGULAR_IDENTIFIER> | t=<DELIMITED_IDENTIFIER> )
+	{
+		if( log.isDebugEnabled() ) {
+			if( parser.isDebugIdentifiers() ) {
+				log.debug( "identifier: " + t.image ) ;
+			}
+		}
+		if( log.isTraceEnabled() ) exitTrace ( "actual_identifier_S()" ) ;		
+	}
+}
+
+
+Long signed_integer_S() : 
+{
+	Token tSign = null ;
+	Token tInteger = null ;
+}
+{
+	[ tSign=<PLUS_SIGN> | tSign=<MINUS_SIGN> ] tInteger=<UNSIGNED_INTEGER> 
+    
+    {
+       if( tInteger != null ) {
+      	  Long l = new Long( tInteger.image ) ;
+      	  if( tSign != null ) {
+      	  	 if( tSign.image.startsWith( "-" ) ) {
+      	  	 	l = new Long( -l.longValue() ) ;
+      	  	 }	
+      	  }
+      	  return l ; 
+       }
+    }
+}
+
+/*
+ * between_predicate_A
+ *
+ * bnf-start
+ * <between_predicate> ::=
+ *     <value_expression> [ NOT ] BETWEEN
+ *     <value_expression> AND <value_expression>
+ * bnf-end
+ *
+ */
+void between_predicate_A() #BetweenPredicate : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "between_predicate_A()" ) ;
+}
+{
+	//S:
+	// <row_value_constructor> [ NOT ] BETWEEN
+    // <row_value_constructor> AND <row_value_constructor>
+    
+    // Note the absence of row_value_constructor...	
+    (
+	   restricted_value_expression_A( AdqlParser.ARG_ELEMENT ) 
+	   [ <NOT> { jjtThis.setNot(); } ] 
+	   <BETWEEN> 
+	   restricted_value_expression_A( AdqlParser.ARG_ELEMENT )
+	   <AND> 
+	   restricted_value_expression_A( AdqlParser.ARG_ELEMENT )
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "between_predicate_A()" ) ;
+	}
+}
+
+/*
+ * boolean_primary_S
+ *
+ * bnf-start
+ *  <boolean_primary> ::=
+ *     | <left_paren> <search_condition> <right_paren> 
+ *       <predicate> 
+ * bnf-end
+ *
+ */
+void boolean_primary_S() #BooleanPrimary :  
+{
+	if( log.isTraceEnabled() ) enterTrace ( "boolean_primary_S()" ) ;
+} 
+{
+	//S:
+	// <boolean_primary> ::=
+    //    <predicate>
+    //  | <left_paren> <search_condition> <right_paren>
+ 	try {
+	    (
+	    // lookahead was 6 and not happy about this 
+	    // as the error messages produced are gargantuan
+	       LOOKAHEAD( <LEFT_PAREN> search_condition_S() )
+		   ( 
+		     <LEFT_PAREN> 
+		     { jjtThis.setParenthesized() ; }
+		     search_condition_S()
+		     { jjtThis.popPosition() ; }
+		     <RIGHT_PAREN> 
+		   )
+		   |
+		   predicate_A()
+	    )
+ 	} 	catch ( ParseException pex ) {		 	   throw pex ;	 	}
+    finally {  	
+    	if( log.isTraceEnabled() ) exitTrace ( "boolean_primary_S()" ) ;
+    }
+}
+
+/*
+ * boolean_term_S
+ *
+ * bnf-start
+ *  <boolean_term> ::=
+ *      <boolean_factor>
+ *    | <boolean_term> AND <boolean_factor>
+ * bnf-end
+ *
+ */
+void boolean_term_S() #BooleanTerm : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "boolean_term_S()" ) ;
+}
+{
+	//S:
+	// <boolean_term> ::=
+    //    <boolean_factor>
+    //  | <boolean_term> AND <boolean_factor>
+
+	// Refactored to
+	// boolean_factor_S() ( <AND> boolean_term_S() )?
+	// which I believe is equivalent to the above
+		( boolean_factor_S() 		  ( LOOKAHEAD(3) 		    <AND> { jjtThis.setAnd() ; }		    boolean_term_S()		  )? 		)
+
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "boolean_term_S()" ) ;
+	}
+}
+
+/*
+ * boolean_factor_S
+ *
+ * bnf-start
+ *   <boolean_factor> ::= [ NOT ] <boolean_primary>
+ * bnf-end
+ */
+void boolean_factor_S() #BooleanFactor :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "boolean_factor_S()" ) ;
+}
+{
+	//S:
+	// <boolean factor> ::= [ NOT  ] <boolean test>
+    // <boolean test> ::= <boolean primary> [ IS  [ NOT  ] <truth value> ]
+	// <truth value> ::= TRUE | FALSE  | UNKNOWN
+	
+		( [ <NOT> { jjtThis.setInverse(); } ] 
+		  boolean_primary_S() 
+		  { if( jjtThis.isInverse() ) { 
+			    jjtThis.popPosition(); 
+		    }
+		  }
+		)
+
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "boolean_factor_S()" ) ; 
+	}
+}
+
+
+/*
+ * like_predicate_A
+ *
+ * bnf-start
+ *  <like_predicate> ::=
+ *      <match_value> [ NOT ] LIKE <pattern>
+ * bnf-end
+ *
+ */
+void like_predicate_A() #LikePredicate: 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "like_predicate_A()" ) ;
+}
+{
+	//S: 
+	// <like_predicate> ::=
+	//   <match_value> [ NOT ] LIKE <pattern> [ ESCAPE <escape_character> ]
+      
+	( match_value_S() 
+	  [ <NOT> { jjtThis.setLike(false); } ] 
+	    <LIKE> pattern_A() )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "like_predicate_A()" ) ;
+	}
+}
+
+void _caseExpression_S() : {}
+{
+	"to be implemented: caseExpression"	
+}
+
+void _castSpecification_S() : {}
+{
+	"to be implemented: castSpecification"
+}
+
+/*
+ * character_factor_A
+ *
+ * bnf-start
+ *  <character_factor> ::= <character_primary>
+ *  !! For information only, SQL92 supports <collate_clause>
+ * bnf-end
+ *
+ */
+void character_factor_A() : {}
+{
+	//S:
+	// <character_factor> ::= <character_primary> [ <collate_clause> ]
+	character_primary_A()
+}
+
+/*
+ * character_primary_A
+ *
+ * bnf-start v20+RFC
+ *  <character_primary> ::= 
+ *      <value_expression_primary>
+ *    | <user_defined_function>
+ * bnf-end
+ * bnf-start v21-Projection
+ *  <character_primary> ::= 
+ *      <value_expression_primary>
+ *    | <string_value_function>
+ * bnf-end
+ * bnf-start v20-AG
+ *  <character_primary> ::= <value_expression_primary>
+ * bnf-end
+ *
+ */
+void character_primary_A() : {}
+{
+	//S:
+	//  <character_primary> ::=
+    //    <value_expression_primary> | <string_value_function>
+    LOOKAHEAD(16)
+    string_value_function_A( null )
+    |	value_expression_primary_A( null )
+}
+
+/*
+ * string_value_function_A
+ *
+ * bnf-start v21-Projection
+ *   <string_value_function> ::=
+ *       <string_geometry_function>
+ *     | <user_defined_function>
+ * bnf-end  
+ */
+void string_value_function_A( String elementName ) : {}
+{
+	string_geometry_function_A( elementName )
+	|
+	user_defined_function_A( elementName )
+}
+
+
+/*
+ * string_geometry_function_A
+ *
+ * bnf-start v21-Projection
+ *   <string_geometry_function> ::= <extract_coordsys>
+ * bnf-end
+ * bnf-start v21-Projection 
+ *   <extract_coordsys> ::= COORDSYS <left_paren> <geometry_value_expression> <right_paren>
+ * bnf-end
+ */
+void string_geometry_function_A( String elementName ) #SystemDefinedFunction : {}
+{
+	<COORDSYS> <LEFT_PAREN> geometry_value_expression_A( elementName ) <RIGHT_PAREN>
+}
+
+/*
+ * character_string_literal_A
+ *
+ * bnf-start
+ *  <character_string_literal> ::=
+ *     <quote> [ <character_representation>... ] <quote>
+ *     [ { <separator>... <quote> [ <character_representation>... ] <quote> }... ]
+ * bnf-end
+ *
+ * bnf-start
+ * <character_representation> ::= <nonquote_character> | <quote_symbol>
+ * !! A way of allowing a single quote to be escaped by a single quote.
+ * bnf-end
+ * bnf-single <quote_symbol> ::= <quote> <quote>
+ * bnf-single <separator> ::= { <comment> | <space> | <newline> }...
+ *
+ */
+void character_string_literal_A() #CharacterStringLiteral : {}
+{
+	//S:
+	// <character_string_literal> ::=
+    //    [ <introducer><character_set_specification> ]
+    //    <quote> [ <character_representation>... ] <quote>
+    //    [ { <separator>... <quote> [ <character_representGroupingColumnReferenceListation>... ] <quote> }... ]
+	ASCIIStringLiteral()
+}
+
+void ASCIIStringLiteral() #ASCIIStringLiteral : {}
+{
+	( ASCIIStringLiteralPart() )+ 
+}
+
+void ASCIIStringLiteralPart() #ASCIIStringLiteralPart : {}
+{
+	<ASCII_STRING_LITERAL>
+}
+
+void bit_string_literal_A() #BitStringLiteral : {}
+{
+	( <BIT_STRING_LITERAL> | <HEX_STRING_LITERAL> )
+	{
+		if( !parser.isSyntaxSet( SyntaxOption.BITWISE_MANIPULATION) ) {
+		    tracker.setError( "Reference Implementation: bit/hex literals and bit manipulation not supported" ) ;
+		}
+		
+	}	
+}
+
+/*
+ * character_value_expression_S
+ *
+ * bnf-start
+ *  <character_value_expression> ::= <concatenation> | <character_factor>
+ * bnf-end
+ *
+ * bnf-start
+ *  <concatenation> ::= <character_value_expression> <concatenation_operator> <character_factor>
+ * bnf-end
+ *
+ */
+void character_value_expression_S( String elementName ) #CharacterValueExpression : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "character_value_expression_S()" ) ;
+}
+{
+	//S:
+	// <character_value_expression> ::=
+    //     <concatenation>
+    //   | <character_factor>
+    //
+    // To avoid left recursion, refactored to the following, which I believe
+    // is equivalent...]
+	character_factor_A() [ <CONCATENATION_OPERATOR> character_value_expression_S( elementName) ] 
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "character_value_expression_S()" ) ;
+	}	
+}
+
+/*
+ * column_name_S
+ *
+ * bnf-single <column_name> ::= <identifier>
+ *
+ */
+void column_name_S() #ColumnName :  
+{
+	if( log.isTraceEnabled() ) enterTrace ( "column_name_S()" ) ;
+}
+{
+	//S:
+	// <column_name> ::= <identifier>
+	identifier_A()
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "column_name_S()" ) ;
+	}
+}
+
+/*
+ * column_name_list_S
+ *
+ * bnf-single <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
+ *
+ */
+void column_name_list_S() #ColumnNameList : {}
+{
+	//S:
+	// <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
+	 column_name_S() ( <COMMA> column_name_S() )*	
+}
+
+/*
+ * column_reference_A
+ *
+ * bnf-start
+ *  <column_reference> ::= [ <qualifier> <period> ] <column_name>
+ * bnf-end
+ *
+ */
+void column_reference_A( String elementName ) #ColumnReference : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "column_reference_A()" ) ;
+	jjtThis.pushPosition( elementName ) ;
+}
+{
+	//S: 
+	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
+	(
+		LOOKAHEAD(6)
+		( columnOwnership() identifier_A() <PERIOD> column_name_S() )
+		 | 
+		LOOKAHEAD(5)
+		( identifier_A() <PERIOD> column_name_S() )
+		 |
+		 column_name_S()
+	)
+	{
+		jjtThis.popPosition( elementName ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;					
+	}
+}
+
+/*
+ * value_expression_primary_A
+ *
+ * NB: Referred in some sources as <common_primary>
+ *
+ * bnf-start
+ *  <value_expression_primary> ::=
+ *      <unsigned_value_specification>
+ *    | <column_reference>
+ *    | <set_function_specification>
+ *    | <left_paren> <value_expression> <right_paren>
+ * bnf-end
+ *
+ */
+void value_expression_primary_A( String elementName ) #ValueExpressionPrimary : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "value_expression_primary_A()" ) ;
+}
+{
+	//S:
+	//	<value_expression_primary> ::=
+	//      <unsigned_value_specification>
+	//    | <column_reference>
+	//    | <set_function_specification>
+	//    | <scalar_subquery>
+	//    | <case_expression>
+	//    | <left_paren> <value_expression> <right_paren>
+	//    | <cast_specification>
+
+	(
+		// Foreshortened 
+		unsigned_value_specification_S() 
+		|
+		column_reference_A( elementName )
+		|
+		set_function_specification_S()
+		|
+	//		LOOKAHEAD(3)
+	//		scalarSubquery()
+	//	|
+	//	caseExpression()
+	//	| 
+		( 
+		  <LEFT_PAREN>
+		  { jjtThis.setParenthesized( elementName ); }
+		  value_expression_A( AdqlParser.ARG_ELEMENT )
+		  { jjtThis.popPosition() ; } 
+		  <RIGHT_PAREN> 
+		)
+	//	|
+	//	castSpecification()
+	)
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "value_expression_primary_A()" ) ;
+	}
+}
+
+/*
+ * comp_op_S
+ *
+ * bnf-start
+ *  <comp_op> ::=
+ *      <equals_operator>
+ *    | <not_equals_operator>
+ *    | <less_than_operator>
+ *    | <greater_than_operator>
+ *    | <less_than_or_equals_operator>
+ *    | <greater_than_or_equals_operator>
+ * bnf-end
+ *
+ */
+void comp_op_S() #Comparison : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "comp_op_S()" ) ;
+}
+{
+	//S:
+	// <comp_op> ::=
+    //    <equals_operator>
+    //  | <not_equals_operator>
+    //  | <less_than_operator>
+    //  | <greater_than_operator>
+    //  | <less_than_or_equals_operator>
+    //  | <greater_than_or_equals_operator>
+	(
+	   <EQUALS_OPERATOR> 
+	   |
+	   <NOT_EQUALS_OPERATOR> 
+	   |
+	   <LESS_THAN_OPERATOR> 
+	   | 
+	   <GREATER_THEN_OPERATOR> 
+	   | 
+	   <LESS_THAN_OR_EQUALS_OPERATOR> 
+	   | 
+	   <GREATER_THAN_OR_EQUALS_OPERATOR>	
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "comp_op_S()" ) ;
+	}
+}
+
+/*
+ * comparison_predicate_A
+ *
+ * bnf-start
+ *  <comparison_predicate> ::=
+ *      <value_expression> <comp_op> <value_expression>
+ * bnf-end
+ *
+ */
+void comparison_predicate_A() #ComparisonPredicate : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "comparison_predicate_A()" ) ;
+	jjtThis.pushPosition() ;
+}
+{
+	//S:
+	//  <row_value_constructor> <comp_op> <row_value_constructor>		( 
+		  restricted_value_expression_A( parser.ARG_ELEMENT ) 
+		  comp_op_S() 
+		  restricted_value_expression_A( parser.ARG_ELEMENT ) 
+		)
+	{ 
+	   jjtThis.popPosition() ;
+	   if( log.isTraceEnabled() ) exitTrace( "comparison_predicate_A()" ) ;	
+	}
+}
+
+/*
+ * correlation_name_S
+ *
+ * bnf-single <correlation_name> ::= <identifier>
+ *
+ */
+void correlation_name_S() #CorrelationName : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "correlation_name_S()" ) ;
+}
+{
+	//S:
+	// <correlation_name> ::= <identifier>
+	try {
+	   identifier_A()
+	}
+	catch( ParseException pex ) {
+		parser.errorSkipTo( new int[]{ token.kind } ) ;
+		tracker.setError( pex ) ;			
+	}
+	
+	{ if( log.isTraceEnabled() ) exitTrace ( "correlation_name_S()" ) ; }
+}
+
+void _datetime_factor_S() : {}
+{
+	//S:
+	//  <datetime_factor> ::=
+    //     <datetime_primary> [ <time_zone> ]
+    
+	_datetime_primary_S() [  LOOKAHEAD(2) _time_zone_S() ]
+}
+
+void _datetime_primary_S() : {}
+{
+	//S:
+	// <datetime_primary> ::=
+    //    <value_expression_primary>
+    //  | <datetime_value_function>
+
+	value_expression_primary_A( null )
+    | 
+    _datetime_value_function_S()
+}
+
+void _datetime_term_S() : {}
+{
+	//S:
+	// <datetime_term> ::= <datetime_factor>
+    _datetime_factor_S()
+}
+
+void _datetime_value_expression_S() : {}
+{
+	//S:
+	// <datetime_value_expression> ::=
+    //    <datetime_term>
+    //  | <interval_value_expression> <plus_sign> <datetime_term>
+    //  | <datetime_value_expression> <plus_sign> <interval_term>
+    //  | <datetime_value_expression> <minus_sign> <interval_term>
+
+	// refactored to
+	LOOKAHEAD(3)
+    ( _datetime_term_S() ( LOOKAHEAD(2) (<PLUS_SIGN> | <MINUS_SIGN>) _datetime_value_expression_S() )* )
+    |
+    ( _interval_value_expression_S() <PLUS_SIGN> _datetime_term_S() )
+}
+
+void _datetime_value_function_S() : {}
+{
+	//S:
+	// <datetime_value_function> ::=
+    //    <current_date_value_function>
+    //  | <current_time_value_function>
+    //  | <current_timestamp_value_function>
+
+	<CURRENT_DATE>
+	|
+	<CURRENT_TIME> [ <LEFT_PAREN> _time_precision_S() <RIGHT_PAREN> ]
+	|
+	<CURRENT_TIMESTAMP> [ <LEFT_PAREN> _timestamp_precision_S() <RIGHT_PAREN> ]
+}
+
+/*
+ * derived_table_S
+ *
+ * bnf-single <derived_table> ::= <table_subquery>
+ *
+ * 
+ */
+void derived_table_S() #DerivedTable : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "derived_table_S()" ) ;
+}
+{
+	//S:
+	// <derived_table> ::= <table_subquery>
+   	table_subquery_S()
+   	{
+   		if( log.isTraceEnabled() ) exitTrace ( "derived_table_S()" ) ;
+   	}
+}
+
+void _end_field_S() : {}
+{
+	//S:
+	// <end_field> ::=
+    //    <non-second_datetime_field>
+    //  | SECOND [ <left_paren> <interval_fractional_seconds_precision> <right_paren> ]
+	_nonsecond_datetime_field_S() | <SECOND> [ <LEFT_PAREN> _interval_fractional_seconds_precision_S() <RIGHT_PAREN> ]
+}
+
+void _escape_character_A() : {}
+{
+	//S:
+	// <escape_character> ::= <character_value_expression>
+	character_value_expression_S( "todo" )	
+}
+
+/*
+ * exact_numeric_literal_S
+ *
+ * bnf-start
+ *  <exact_numeric_literal> ::=
+ *      <unsigned_integer> [ <period> [ <unsigned_integer> ] ]
+ *    | <period> <unsigned_integer>
+ * bnf-end
+ *
+ */
+void exact_numeric_literal_S( int signIndicator ) #ExactNumericLiteral :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "exact_numeric_literal_S()" ) ;
+	jjtThis.setSign( signIndicator ) ;
+	Token t ;
+}
+{
+	//S:
+	//  <exact_numeric_literal> ::=    //      <unsigned_integer> [ <period> [ <unsigned_integer> ] ]    //    | <period> <unsigned_integer>
+    
+    // NB: The repeat check below for <UNSIGNED_INTEGER>!
+    // Not sure whether there is a better way of doing this...
+    // <EXACT_NUMERIC_LITERAL> and <UNSIGNED_INTEGER> compete
+    // with each other as tokens. Where only an unsigned integer
+    // is used, they both represent the same thing (!), and the token
+    // manager chooses unsigned integer (probably because it happens
+    // to be before exact numeric literal in the token list)!
+    //
+    // This is probably worthy of study to see whether a more
+    // stable way of doing this is possible.
+		( t=<EXACT_NUMERIC_LITERAL> | t=<UNSIGNED_INTEGER> )
+		{ 
+			if( t != null ) {
+				if( log.isDebugEnabled() ) {
+					log.debug( "Token encountered: kind [" + t.kind + "] with image [" + t.image + "]" ) ;
+				}
+			}
+			if( log.isTraceEnabled() ) exitTrace ( "exact_numeric_literal_S()" ) ; 
+		}
+}
+
+
+/*
+ * exists_predicate_A
+ *
+ * bnf-single <exists_predicate> ::= EXISTS <table_subquery>
+ *
+ */
+void exists_predicate_A() #ExistsPredicate : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "exists_predicate_A()" ) ;
+}
+{
+	//S: 
+	// <exists_predicate> ::= EXISTS <table_subquery>
+	<EXISTS> table_subquery_S()
+	{ 
+	   if( log.isTraceEnabled() ) exitTrace ( "exists_predicate_A()" ) ;		
+	}	
+}
+
+
+void _explicit_table_S() : {}
+{
+	//S:
+	// <explicit_table> ::= TABLE <table_name>
+	<TABLE> table_name_A()
+}
+
+/*
+ * factor_S
+ *
+ * bnf-single <factor> ::= [ <sign> ] <numeric_primary> 
+ *
+ */
+void factor_S( String elementName ) #Factor : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "factor_S()" ) ;
+	Token t = null ;
+	String em = elementName ;
+}
+{
+	//S:
+	// <factor> ::= [ <sign> ] <numeric_primary>  
+	( 
+	  [
+	    t=sign_S() 
+	    {  if( t!=null ) {
+	    	  jjtThis.setSign( t, elementName ) ;
+	    	  em = AdqlParser.ARG_ELEMENT ;
+	       }
+	    } 
+	  ] 
+	  numeric_primary_S( em ) { if( t!=null) jjtThis.popPosition(); }
+	)
+	{ 
+	   if( log.isTraceEnabled() ) exitTrace ( "factor_S()" ) ;
+	}
+}
+
+/*
+ * sign_S
+ *
+ * bnf-single <sign> ::= <plus_sign> | <minus_sign>
+ *
+ */
+Token sign_S() #Sign : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "sign_S()" ) ;
+    Token t = null ;
+}
+{
+	( t=<PLUS_SIGN> | t=<MINUS_SIGN> )
+	{ 
+	   log.debug( "sign: " + t.image ) ;
+	   if( log.isTraceEnabled() ) exitTrace ( "sign_S()" ) ;
+	   return t ;
+	}
+}
+
+/*
+ * from_clause_S
+ *
+ * bnf-start
+ *  <from_clause> ::= FROM <table_reference>
+ *     [ { <comma> <table_reference> }... ]
+ * bnf-end
+ *
+ */
+void from_clause_S() #From : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "from_clause_S()" ) ;
+    jjtThis.pushPosition() ;
+}
+{
+	//S:
+	// FROM <table_reference>
+    // [ { <comma> <table_reference> }... ]
+	try {		
+	   (  <FROM> table_reference_A() ( <COMMA> table_reference_A() )*  )
+	}
+	catch( ParseException pex ) {
+		parser.errorSkipTo( parser.FROM_SKIP_TO ) ;
+        tracker.setError( pex ) ;
+	}
+	finally {
+		jjtThis.popPosition() ;
+		if( log.isTraceEnabled() ) exitTrace ( "from_clause_S()" ) ;
+	}
+
+}
+
+
+/*
+ * general_literal_A
+ *
+ * bnf-start
+ *  <general_literal> ::= <character_string_literal>
+ * bnf-end
+ *
+ */
+void general_literal_A() : {}
+{
+	//S:
+	//  <general_literal> ::=
+    //    <character_string_literal>
+    //  | <national_character_string_literal>
+    //  | <bit_string_literal>
+    //  | <hex_string_literal>
+    //  | <datetime_literal>
+    //  | <interval_literal>
+	character_string_literal_A()
+	|
+	bit_string_literal_A()	
+}
+
+/*
+ * general_set_function_A
+ *
+ * bnf-start
+ *  <general_set_function> ::=
+ *     <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
+ * bnf-end
+ *
+ * bnf-single <set_function_type> ::= AVG | MAX | MIN | SUM | COUNT
+ *
+ */
+void general_set_function_A() #GeneralSetFunction : 
+{  
+	if( log.isTraceEnabled() ) enterTrace ( "general_set_function_A()" ) ; 
+}
+{
+	//S:
+	// <general_set_function> ::=
+    //   <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
+	
+	(
+	( <AVG> | <MAX> | <MIN> | <SUM> | <COUNT> ) 
+	<LEFT_PAREN>
+	   [  set_quantifier_S()  ]
+	   value_expression_A( parser.ARG_ELEMENT ) 
+	<RIGHT_PAREN>
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "general_set_function_A()" ) ; 
+	}
+}
+
+/*
+ * general_value_specification_A
+ *
+ *-bnf-start
+ *- <general_value_specification> ::= <variable_specification>
+ *- !! ADQL Note:
+ *- !! Missing from the ADQL draft spec.
+ *- !! Part of an experiment to see if scripting variables can be accommodated.
+ *- !! SQL92 also supports <parameter_specification>, <dynamic_parameter_specification>,
+ *- !! USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
+ *-bnf-end
+ *
+ */
+void general_value_specification_A() : {}
+{
+	//S:
+	//<general_value_specification> ::=
+    //   <parameter_specification>
+    // | <dynamic_parameter_specification>
+    // | <variable_specification>
+    // | USER
+    // | CURRENT_USER
+    // | SESSION_USER
+    // | SYSTEM_USER
+    // | VALUE
+	
+	// Foreshortened
+	variable_specification_A()
+}
+
+/*
+ * group_by_clause_S
+ *
+ * bnf-start
+ *  <group_by_clause> ::= GROUP BY <grouping_column_reference_list>
+ * bnf-end
+ *
+ */
+void group_by_clause_S() #GroupBy : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "group_by_clause_S()" ) ;
+	jjtThis.pushPosition() ; 
+}
+{
+	//S:
+	// GROUP BY <grouping_column_reference_list>
+	( <GROUPBY> grouping_column_reference_list_S() )
+	{
+		jjtThis.popPosition() ;
+		if( log.isTraceEnabled() ) exitTrace ( "group_by_clause_S()" ) ;
+	}
+}
+
+/*
+ * grouping_column_reference_list_S
+ *
+ * bnf-start
+ *  <grouping_column_reference_list> ::=
+ *      <grouping_column_reference> [ { <comma> <grouping_column_reference> }... ]
+ * bnf-end
+ *
+ */
+void grouping_column_reference_list_S() #GroupingColumnReferenceList : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "grouping_column_reference_list_S()" ) ;
+}
+{
+	//S:
+	// <grouping_column_reference_list> ::=
+    //   <grouping_column_reference> [ { <comma> <grouping_column_reference> }... ]
+	( grouping_column_reference_A() ( <COMMA> grouping_column_reference_A() )* ) 
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "grouping_column_reference_list_S()" ) ;
+	}
+}
+
+/*
+ * grouping_column_reference_A
+ *
+ * bnf-start
+ *  <grouping_column_reference> ::= <column_reference> 
+ * bnf-end
+ *
+ */
+void grouping_column_reference_A() : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "grouping_column_reference_A()" ) ;
+}
+{
+    //S:
+    // <grouping_column_reference> ::=
+    //      <column_reference> [ <collate_clause> ]
+	column_reference_A( "todo" )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "grouping_column_reference_A()" ) ;
+	}	
+}
+
+/*
+ * having_clause_S
+ *
+ * bnf-single <having_clause> ::= HAVING <search_condition>	
+ *
+ */
+void having_clause_S() #Having :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "having_clause_S()" ) ;
+	jjtThis.pushPosition() ;
+}
+{	
+	//S:
+	//  HAVING <search_condition>	
+	( <HAVING> search_condition_S() )
+	{	
+		jjtThis.popPosition() ;
+		if( log.isTraceEnabled() ) exitTrace ( "having_clause_S()" ) ;	
+	}
+}
+
+/*
+ * identifier_A
+ *
+ * For the moment, <identifier> is a synonym for <actual_identifier>
+ *
+ */
+void identifier_A() : {}
+{
+	//S:
+	// <identifier> ::=
+    //   [ <introducer><character_set_specification> ] <actual_identifier>
+	actual_identifier_S()
+} 
+
+/*
+ * in_predicate_A
+ *
+ * bnf-start
+ *  <in_predicate> ::=
+ *      <value_expression> [ NOT ] IN <in_predicate_value>
+ * bnf-end
+ *
+ */
+void in_predicate_A() #InPredicate : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "in_predicate_A()" ) ;
+}
+{
+	//S:
+	// <in_predicate> ::=
+    //   <row_value_constructor> [ NOT ] IN <in_predicate_value>
+    
+	// refactored to
+	( 
+	  value_expression_A( null ) [ <NOT> {jjtThis.setIn(false);} ] <IN> in_predicate_value_S()
+	)
+    {
+       if( log.isTraceEnabled() ) exitTrace ( "in_predicate_A()" ) ;	
+	}
+}
+
+/*
+ * in_predicate_value_S
+ *
+ * bnf-start
+ *  <in_predicate_value> ::=
+ *     <table_subquery> | <left_paren> <in_value_list> <right_paren>
+ * bnf-end
+ *
+ */
+void in_predicate_value_S() #InPredicateValue : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "in_predicate_value_S()" ) ;
+}
+{
+	//S:
+    // <in_predicate_value> ::= <table_subquery>  | <left_paren> <in_value_list> <right_paren>
+	
+	( LOOKAHEAD(5) table_subquery_S() | ( <LEFT_PAREN> in_value_list_A() <RIGHT_PAREN> ) )
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "in_predicate_value_S()" ) ;
+	} 	
+}
+
+void _interval_factor_S() : {}
+{
+	//S:
+	// <interval_factor> ::=
+    //   [ <sign> ] <interval_primary>
+
+    [ <PLUS_SIGN> | <MINUS_SIGN> ] _interval_primary_S()
+}
+
+void _interval_fractional_seconds_precision_S() : {}
+{
+	//S:
+	// <interval_fractional_seconds_precision> ::= <unsigned_integer>
+	<UNSIGNED_INTEGER>	
+}
+
+void _interval_leading_field_precision_S() : {}
+{
+	//S:
+	// <interval_leading_field_precision> ::= <unsigned_integer>
+	<UNSIGNED_INTEGER>	
+}
+
+void _interval_primary_S() : {}
+{
+	//S:
+	// <interval_primary> ::=
+    //    <value_expression_primary> [ <interval_qualifier> ]
+
+      value_expression_primary_A( null ) [ LOOKAHEAD(2) _interval_qualifier_S() ]
+}
+
+void _interval_qualifier_S() : {}
+{
+	//S:
+	// <interval_qualifier> ::=
+    //    <start_field> TO <end_field> | <single_datetime_field>
+
+	LOOKAHEAD(3)
+    _start_field_S() <TO> _end_field_S()
+    | 
+    _single_datetime_field_S()
+}
+
+void _interval_term_S() : {}
+{
+	//S:
+	// <interval_term> ::=
+    //    <interval_factor>
+    //  | <interval_term_2> <asterisk> <factor>
+    //  | <interval_term_2> <solidus> <factor>
+    //  | <term> <asterisk> <interval_factor>
+
+	// refactored...
+	LOOKAHEAD(3)
+	_interval_factor_S() 
+    |
+	LOOKAHEAD(3)    
+    factor_S( "to-do" ) (<ASTERISK> | <SOLIDUS>) _interval_term_S()
+    | 
+    term_S( "to-do" ) <ASTERISK> _interval_factor_S()
+}
+
+void _interval_value_expression_S() : {}
+{
+	//S:
+	// <interval_value_expression> ::=
+    //    <interval_term>
+    //  | <interval_value_expression_1> <plus_sign> <interval_term_1>
+    //  | <interval_value_expression_1> <minus_sign> <interval_term_1>
+    //  | <left_paren> <datetime_value_expression> <minus_sign>
+    //      <datetime_term> <right_paren> <interval_qualifier>
+
+	// refactored
+	LOOKAHEAD(3)
+	_interval_term_S() ( LOOKAHEAD(2) (<PLUS_SIGN> | <MINUS_SIGN>) _interval_term_S() )*
+    | 
+    <LEFT_PAREN> _datetime_value_expression_S() <MINUS_SIGN> _datetime_term_S() <RIGHT_PAREN> _interval_qualifier_S()
+}
+
+/*
+ * in_value_list_A
+ *
+ * bnf-start
+ *  <in_value_list> ::=
+ *      <value_expression> { <comma> <value_expression> } ...
+ * bnf-end
+ *
+ */
+void in_value_list_A() #InValueList : {}
+{
+	//S:
+	// <in_value_list> ::=
+    //   <value_expression> { <comma> <value_expression> }...    
+    ( value_expression_A( null ) ( <COMMA> value_expression_A( null ) )* )
+}
+
+/*
+ * join_specification_S
+ *
+ * bnf-start
+ *  <join_specification> ::= <join_condition> | <named_columns_join>	
+ * bnf-end
+ *
+ */
+void join_specification_S() #JoinSpecification : {}
+{
+	//S:
+	// <join_specification> ::=
+    //    <join_condition>
+    //  | <named_columns_join>	
+    //
+    // <join_condition> ::= ON <search_condition>
+    //
+    // <named_columns_join> ::= USING <left_paren> <join_column_list> <right_paren>
+    //
+    // <join_column_list> ::= <column_name_list>
+    
+    join_condition_S() | named_columns_join_S()
+}
+
+/*
+ * join_condition_S
+ *
+ * bnf-single <join_condition> ::= ON <search_condition>
+ *
+ */
+void join_condition_S() #JoinCondition : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "join_condition_S()" ) ;
+}
+{
+	<ON> search_condition_S()
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "join_condition_S()" ) ;
+	}
+} 
+
+/*
+ * named_columns_join_S
+ *
+ * bnf-single <named_columns_join> ::= USING <left_paren> <join_column_list> <right_paren> 
+ *
+ */
+void named_columns_join_S() #NamedColumnsJoin :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "named_columns_join_S()" ) ;
+}
+{
+	<USING> <LEFT_PAREN> join_column_list_S() <RIGHT_PAREN>
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "named_columns_join_S()" ) ;
+	}
+}
+
+/*
+ * join_column_list_S
+ *
+ * bnf-single <join_column_list> ::= <column_name_list>
+ *
+ */
+void join_column_list_S() : {}
+{	
+	column_name_list_S()
+}
+
+
+/*
+ * joined_table_A
+ *
+ * bnf-start
+ *  <joined_table> ::=
+ *      <qualified_join>
+ *    | <left_paren> <joined_table> <right_paren>
+ * bnf-end
+ *
+ */
+void joined_table_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "joined_table_A()" ) ;
+}
+{
+	//S:
+	// <joined_table> ::=
+    //    <cross_join>
+    //  | <qualified_join>
+    //  | <left_paren> <joined_table> <right_paren>
+		qualified_join_A()
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "joined_table_A()" ) ;
+	}
+}
+
+/*
+ * join_type_A
+ *
+ * bnf-start
+ *  <join_type> ::=
+ *     INNER
+ *   | <outer_join_type> [ OUTER ]
+ *  !! For information, SQL92 also supports UNION
+ * bnf-end
+ *
+ * bnf-single <outer_join_type> ::= LEFT | RIGHT | FULL
+ *
+ */
+void join_type_A() #JoinType : {}
+{
+	//S:
+	// <join_type> ::=
+    //    INNER
+    //  | <outer_join_type> [ OUTER ]
+    //  | UNION
+
+		// refactored to...
+		(
+		   <INNER>
+	       | 
+	       ( ( <LEFT> | <RIGHT> | <FULL> ) [ <OUTER> ] )
+// JL. Adql does not appear to support UNION
+//	       | 
+//	       <UNION>
+        )
+}
+
+/*
+ * match_value_S
+ *
+ * bnf-single <match_value> ::= <character_value_expression>
+ *
+ */
+void match_value_S() #MatchValue : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "match_value_S()" ) ;
+}
+{
+	//S:
+	// <match_value> ::= <character_value_expression>
+
+	character_value_expression_S( "" )
+	{
+	   if( log.isTraceEnabled() ) exitTrace ( "match_value_S()" ) ;
+	}	
+}
+
+void _match_predicate_S() : {}
+{
+	//S:
+	// <match_predicate> ::=
+    //   <row_value_constructor> MATCH [ UNIQUE ] [ PARTIAL | FULL ] <table_subquery>
+
+	_row_value_constructor_S() <MATCH> [ <UNIQUE> ] [ <PARTIAL> | <FULL> ] table_subquery_S() 
+}
+
+/*
+ * math_function_A
+ *
+ * bnf-start
+ *  <math_function> ::=
+ *      ABS <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | CEILING <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | DEGREES <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | EXP <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | FLOOR <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | LOG <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | PI <left_paren><right_paren> 
+ *	  | POWER <left_paren> <numeric_value_expression> <comma> <unsigned_integer> <right_paren> 
+ *	  | RADIANS <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | SQUARE <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | SQRT <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | LOG10 <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | RAND <left_paren> [ <numeric_value_expression> ] <right_paren> 
+ *	  | ROUND <left_paren> <numeric_value_expression> [ <comma> <signed_integer> ] <right_paren> 
+ *	  | TRUNCATE <left_paren> <numeric_value_expression> [ <comma> <signed_integer> ] <right_paren> 
+ * bnf-end
+ *
+ */
+void math_function_A( String elementName ) #MathFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "math_function_A()" ) ;
+	jjtThis.pushPosition( elementName ) ;
+    Token arg2 = null ;
+    Long signedLong ;
+}
+{
+	(
+		( <ABS> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) 
+		     <RIGHT_PAREN> )
+		|
+		( <CEILING> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <RIGHT_PAREN> )
+		|
+		( <DEGREES> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <RIGHT_PAREN> )
+		|
+		( <EXP> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <RIGHT_PAREN> )
+		|
+		( <FLOOR> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <RIGHT_PAREN> )
+		|
+		( <LOG> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <RIGHT_PAREN> )
+		|
+		( <PI> 
+		     <LEFT_PAREN><RIGHT_PAREN> )
+		|
+		( <POWER> 
+		     <LEFT_PAREN> 
+                numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <COMMA> 
+		        arg2=<UNSIGNED_INTEGER> {jjtThis.setArg2(new Long(arg2.image));} 
+		     <RIGHT_PAREN> )
+		|
+		( <RADIANS> 
+		     <LEFT_PAREN> 
+                numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <RIGHT_PAREN> )
+		|
+		( <SQUARE> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) 
+		     <RIGHT_PAREN> )
+		|
+		( <SQRT> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) 
+		     <RIGHT_PAREN> )
+		|
+		( <LOG10> 
+		     <LEFT_PAREN> 
+		        numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		     <RIGHT_PAREN> )
+		|
+		( <RAND> 
+		     <LEFT_PAREN> 
+		         [ numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) ] 
+		     <RIGHT_PAREN> )
+		|
+		( <ROUND> 
+		     <LEFT_PAREN> 
+		        { tracker.push( parser.ARG_ELEMENT ) ; } numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) { tracker.pop() ; } 
+		        [ <COMMA> signedLong=signed_integer_S() { jjtThis.setArg2( signedLong ) ; } ]
+		     <RIGHT_PAREN> )
+		|
+		( <TRUNCATE> 
+		     <LEFT_PAREN> 
+		        { tracker.push( parser.ARG_ELEMENT ) ; } numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) { tracker.pop() ; } 
+		        [ <COMMA> signedLong=signed_integer_S() { jjtThis.setArg2( signedLong ) ; } ]
+		     <RIGHT_PAREN> )
+	)
+	{
+	   jjtThis.popPosition( elementName ) ;
+	   if( log.isTraceEnabled() ) exitTrace ( "math_function_A()" ) ;
+	}
+}
+
+/*
+ * null_predicate_A
+ *
+ * bnf-start
+ *  <null_predicate> ::= <column_reference> IS [ NOT ] NULL
+ * bnf-end
+ *
+ */
+void null_predicate_A() #NullPredicate : 
+{
+	   if( log.isTraceEnabled() ) enterTrace ( "null_predicate_A()" ) ;	   
+}
+{
+	//S:
+	// <null_predicate> ::= 
+	//   <row_value_constructor> IS [ NOT ] NULL
+
+	column_reference_A( "" ) <IS> [ <NOT> {jjtThis.setNullPredicate(false);} ] <NULL>	
+	
+	{
+	   if( log.isTraceEnabled() ) exitTrace ( "null_predicate_A()" ) ;
+	}
+}
+
+/*
+ * numeric_primary_S
+ *
+ * bnf-start
+ *  <numeric_primary> ::=
+ *      <value_expression_primary>
+ *    | <numeric_value_function>
+ * bnf-end
+ *
+ */
+void numeric_primary_S( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "numeric_primary_S()" ) ;
+}
+{
+	//S:
+	// <numeric_primary> ::=
+    //    <value_expression_primary>
+    //  | <numeric_value_function>
+    
+    // Refactored to...
+	( 
+	  LOOKAHEAD(6)
+	  numeric_value_function_A( elementName )	
+	  |
+	  value_expression_primary_A( elementName )
+	)
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "numeric_primary_S()" ) ;
+	} 
+	
+}
+
+/*
+ * numeric_value_expression_S
+ *
+ * bnf-start
+ *  <numeric_value_expression> ::=
+ *      <term>
+ *    | <numeric_value_expression> <plus_sign> <term>
+ *    | <numeric_value_expression> <minus_sign> <term>
+ * bnf-end
+ *
+ */
+void numeric_value_expression_S( String elementName ) #NumericValueExpression : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "numeric_value_expression_S()" ) ;
+	Token t = null ;
+}
+{
+	//S:
+	// <numeric_value_expression> ::=
+    //    <term>
+    //  | <numeric_value_expression> <plus_sign> <term>
+    //  | <numeric_value_expression> <minus_sign> <term>
+	
+	// refactored to...
+	( term_S( elementName ) 
+	  [
+	     ( 
+	        ( t=<PLUS_SIGN> | t=<MINUS_SIGN> ) 
+	        { jjtThis.setOperator( t, elementName ); } 
+	     ) numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) 
+	  ]  	)
+    {
+        if( log.isTraceEnabled() ) exitTrace ( "numeric_value_expression_S()" ) ;		
+	}
+}
+
+void numericValueExpressionBitFactor() #BitFactor :
+{
+	Token t = null ;	
+}
+{
+	( numeric_value_expression_S( null )
+	  [
+	     (
+	        ( t=bitwiseAND() | t=bitwiseOR() | t=bitwiseXOR() )
+	        { 	jjtThis.setOperator( t.image ) ; 
+	          	if( !parser.isSyntaxSet( SyntaxOption.BITWISE_MANIPULATION) ) {
+				  	tracker.setError( "Reference Implementation: Bit value expressions not supported." ) ;
+			  	}
+	        }
+	     ) numericValueExpressionBitFactor()
+	  ]
+	)
+	
+}
+
+Token bitwiseAND() : 
+{ Token t = null; }
+{
+	t=<AMPERSAND>
+	{ return t ;}
+}
+
+Token bitwiseOR() : 
+{ Token t = null; }
+{
+	t=<VERTICAL_BAR>
+	{ return t ;}
+}
+
+Token bitwiseXOR() : 
+{ Token t = null; }
+{
+	t=<CIRCUMFLEX>
+	{ return t ;}
+}
+
+Token bitwiseNOT() : 
+{ Token t = null; }
+{
+	t=<TILDE>
+	{ return t ;}
+}
+
+
+
+/*
+ * numeric_value_function_A
+ *
+ * bnf-start v20+RFC 
+ *   <numeric_value_function> ::=
+ *       <trig_function>
+ *     | <math_function>
+ *     | <user_defined_function>
+ *     | <system_defined_function>
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *  <numeric_value_function> ::= 
+ *     <trig_function> 
+ *   | <math_function>	
+ *   | <numeric_geometry_function>
+ *   | <user_defined_function>
+ * bnf-end
+ *
+ * bnf-start v20-AG
+ *  <numeric_value_function> ::= 
+ *     <trig_function> 
+ *   | <math_function>	
+ *   | <user_defined_function>
+ * bnf-end
+ *
+ */
+void numeric_value_function_A( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "numeric_value_function_A()" ) ;
+}
+{
+	//S:
+	//<numeric_value_function> ::=
+    //   <position_expression>
+    // | <extract_expression>
+    // | <length_expression>
+
+	(
+		// JBL ADQL adaptation
+		trig_function_A( elementName )
+		|
+		math_function_A( elementName )	
+	    |
+	    numeric_geometry_function_A( elementName ) 
+	    |	    user_defined_function_A( elementName )		
+	)
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "numeric_value_function_A()" ) ;	
+	}
+}
+
+/*
+ * numeric_geometry_function_A
+ *
+ * bnf-start v21-Projection
+ *   <numeric_geometry_function> ::=
+ *      <predicate_geometry_function> | <non_predicate_geometry_function>
+ * bnf-end
+ *
+ */
+void  numeric_geometry_function_A( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "numeric_geometry_function_A()" ) ;
+}
+{
+	(
+		predicate_geometry_function_A( elementName )
+		|
+		non_predicate_geometry_function_A( elementName )
+	)
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "numeric_geometry_function_A()" ) ;	
+	}
+}
+
+
+/*
+ * user_defined_function_A
+ *
+ * bnf-start
+ *  <user_defined_function> ::=
+ *      <user_defined_function_name> 
+ *          <left_paren> 
+ *              [ <user_defined_function_param> [ { <comma> <user_defined_function_param> }... ] ]
+ *          <right_paren> 
+ *  !! ADQL Note:
+ *  !! If metadata on a user defined function is available, this should be used.
+ *  !! For example, function names and cardinality of arguments should be checked.
+ * bnf-end
+ *
+ * bnf-start
+ *  <user_defined_function_param> ::= <value_expression>
+ * bnf-end
+ *
+ * bnf-start
+ *   <user_defined_function_name> ::=
+ *       [ <default_function_prefix> ] <regular_identifier>
+ *   !! Function names should be checked against metadata where available. 
+ * bnf-end 
+ *
+ * bnf-start
+ *   <default_function_prefix> ::=
+ *   !! The prefix is set by default to "udf_".
+ *   !! It should be possible to change the default prefix to accommodate local preferences.
+ * bnf-end
+ *
+ */
+void user_defined_function_A( String elementName ) #UserDefinedFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "user_defined_function_A()" ) ;
+	jjtThis.pushPosition( elementName ) ;
+	Token tName = null ;
+}
+{
+	(
+		( [ LOOKAHEAD(4) objectOwnership() ] 
+		     tName=<REGULAR_IDENTIFIER> <LEFT_PAREN> { jjtThis.setFunctionName( tName.image ) ; }
+		     [
+                value_expression_A( AdqlParser.ARG_ELEMENT ) 
+                ( <COMMA> value_expression_A( AdqlParser.ARG_ELEMENT ) )* 
+             ]	       
+		     <RIGHT_PAREN> 
+		     
+		)
+	)
+	{
+		jjtThis.popPosition() ;
+	   	if( log.isTraceEnabled() ) exitTrace ( "user_defined_function_A()" ) ;
+	}
+}
+
+void columnOwnership() #Ownership :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "columnOwnership()" ) ;
+}
+{
+	//
+	// Accommodates: 
+	// (1) x.y.
+	// (2) x..
+	// (3) x. or y. however you want to interpret it.
+
+	( LOOKAHEAD( 4, { parser.ifQualifiedPartsEqual(4) } )
+    ( identifier_A() <PERIOD> identifier_A() <PERIOD> { jjtThis.setQualifierDepth(2) ; } )
+    |
+    LOOKAHEAD(4)
+    ( identifier_A() <PERIOD> <PERIOD> { jjtThis.setQualifierDepth(2) ; } )
+    |
+    ( identifier_A() <PERIOD> { jjtThis.setQualifierDepth(1) ;  } )
+    )	
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "columnOwnership()" ) ;
+	}
+}
+
+void objectOwnership() #Ownership :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "objectOwnership()" ) ;
+}
+{
+	//
+	// Accommodates: 
+	// (1) x.y.
+	// (2) x..
+	// (3) x. or y. however you want to interpret it.
+
+	( LOOKAHEAD( 4, { parser.ifQualifiedPartsEqual(3) } )
+    ( identifier_A() <PERIOD> identifier_A() <PERIOD> { jjtThis.setQualifierDepth(2) ; } )
+    |
+    LOOKAHEAD(4)
+    ( identifier_A() <PERIOD> <PERIOD> { jjtThis.setQualifierDepth(2) ; } )
+    |
+    ( identifier_A() <PERIOD> { jjtThis.setQualifierDepth(1) ;  } )
+    )	
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "objectOwnership()" ) ;
+	}
+}
+
+
+/*
+ * order_by_clause
+ *
+ * bnf-start
+ *  <order_by_clause> ::= ORDER BY <sort_specification_list>
+ * bnf-end
+ *
+ */
+void order_by_clause_S() #OrderByClause :
+{ 
+	if( log.isTraceEnabled() ) enterTrace ( "order_by_clause_S()" ) ;
+} 
+{
+	//S:
+	//	ORDER BY <sort_specification_list>
+	//
+	( <ORDERBY> sort_specification_list_S( AdqlParser.ORDERBY_ELEMENT ) )
+	{ 
+	  if( log.isTraceEnabled() ) exitTrace ( "order_by_clause_S()" ) ;
+	}
+}
+
+/*
+ * sort_specification_list
+ *
+ * bnf-start
+ *  <sort_specification_list> ::=
+ *      <sort_specification> [ { <comma> <sort_specification> }... ]
+ * bnf-end 
+ *
+ */
+void sort_specification_list_S( String elementName) #SortSpecificationList : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "sort_specification_list_S()" ) ;
+} 
+{
+	//S:
+	// <sort_specification_list> ::=
+	//    <sort_specification> [ { <comma> <sort_specification> }... ]
+	
+	// refactored to...
+	( sort_specification_A( null ) ( <COMMA> sort_specification_A( null ) )* )
+	
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "sort_specification_list_S()" ) ;	
+	}
+}
+
+/*
+ * sort_specification_A
+ *
+ * bnf-start
+ *  <sort_specification> ::=
+ *      <sort_key> [ <ordering_specification> ]
+ *  !! For information, SQL92 also supports <collate_clause>
+ * bnf-end
+ * 
+ */
+void sort_specification_A( String elementName ) #SortSpecification : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "sort_specification_A()" ) ;
+    jjtThis.pushPosition( elementName ) ;
+}
+{
+	( sort_key_S() [ ordering_specification_S() ] )
+	
+	{
+		jjtThis.popPosition() ;
+		if( log.isTraceEnabled() ) exitTrace ( "sort_specification_A()" ) ;
+	}
+}
+
+/*
+ * sort_key_S
+ *
+ * bnf-start
+ *   <sort_key> ::= <column_name> | <unsigned_integer> 
+ *   !! For information, the use of <unsigned_integer> in <sort_key>is a deprecated feature of SQL92
+ * bnf-end
+ *
+ */
+void sort_key_S() #SortKey : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "sort_key_S()" ) ;
+	Token t = null ;
+}
+{
+	//S:
+	// <sort_key> ::= <column_name> | <unsigned_integer> 
+	
+	( column_reference_A( null ) | t=<UNSIGNED_INTEGER> )
+	{
+		if( t!= null ) {
+			if( t.image.equals( "0" ) ) {
+				throw new ParseException( "Sort key in ORDER BY clause cannot be 0." ) ;
+			}	
+		}
+		if( log.isTraceEnabled() ) exitTrace ( "sort_key_S()" ) ;
+	}
+}
+
+/*
+ * ordering_specification_S
+ * 
+ * bnf-single <ordering_specification> ::= ASC | DESC
+ */
+void ordering_specification_S() #OrderingSpecification : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "ordering_specification_S()" ) ;
+}
+{
+	( <ASC> | <DESC> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "ordering_specification_S()" ) ;
+	}
+}
+
+void _overlaps_predicate_S() : {}
+{
+	//S:
+	// <overlaps_predicate> ::=
+    //   <row_value_constructor_1> OVERLAPS <row_value_constructor_2>
+    //
+    // <row_value_constructor_1> ::= <row_value_constructor>
+    // <row_value_constructor_2> ::= <row_value_constructor>
+
+	_row_value_constructor_S() <OVERLAPS> _row_value_constructor_S()	
+}
+
+/*
+ * pattern_A
+ *
+ * bnf-start
+ *  <pattern> ::= <character_value_expression>
+ * bnf-end
+ *
+ */
+void pattern_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "pattern_A()" ) ;
+}
+{
+	//S:
+	//   <pattern> ::= <character_value_expression>
+	// character_string_literal_A()
+	character_value_expression_S( "todo" )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "pattern_A()" ) ;
+	}	
+}
+
+/*
+ * predicate_A
+ *
+ * bnf-start
+ *  <predicate> ::=
+ *     <comparison_predicate>
+ *   | <between_predicate>
+ *   | <in_predicate>
+ *   | <like_predicate>
+ *   | <null_predicate>
+ *   | <exists_predicate>
+ * bnf-end
+ *
+ */
+void predicate_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "predicate_A()" ) ;
+}
+{
+	//S:
+	//    <comparison_predicate>
+	//    | <between_predicate>
+	//    | <in_predicate>
+	//    | <like_predicate>
+	//    | <null_predicate>
+	//    | <quantified_comparison_predicate>
+	//    | <exists_predicate>
+	//    | <unique_predicate>
+	//    | <match_predicate>
+	//    | <overlaps_predicate>
+//	try {
+		  (
+	
+	// NB: Possible site of some specialized processing to make the
+	//     lookahead more efficient
+			LOOKAHEAD( comparison_predicate_A() )
+			comparison_predicate_A()
+			|
+		    LOOKAHEAD( between_predicate_A() )
+		    between_predicate_A()
+		    |
+		    LOOKAHEAD( in_predicate_A() )
+		    in_predicate_A()
+		    |
+		    LOOKAHEAD( like_predicate_A() ) 
+		    like_predicate_A()
+		    | 
+		    null_predicate_A()
+		    | 
+	// adql does not support quantified comparisons
+	//	    LOOKAHEAD(3)
+	//		quantifiedComparisonPredicate()
+	//	    |
+		    exists_predicate_A()
+	//	    | 
+	// adql does not support UNIQUE
+	//	    uniquePredicate()
+	//	    | 
+	// adql does not support match
+	//	    LOOKAHEAD(3)
+	//	    matchPredicate()
+	//	    | 
+	// adql does not support overlap
+	//	    overlapsPredicate()
+	//    	
+//	        |//	        ( //	          { parser.checkForMatchingBrace(-1); }//	        )
+	        
+	    )
+//	}//	catch( ParseException pex ) {//	    errorSkipTo( new int[] { token.kind }, pex ) ;	//	}
+    { 
+    	if( log.isTraceEnabled() ) exitTrace ( "predicate_A()" ) ;
+    }
+}
+
+
+/*
+ * point_A
+ *
+ * bnf-start v20+RFC,v21-Projection 
+ *   <point> ::= POINT <left_paren> <coord_sys> <comma> <coordinates> <right_paren>
+ * bnf-end
+ *
+ */
+void point_A( String elementName ) #GeometryFunction : 
+{ 
+	if( log.isTraceEnabled() ) enterTrace ( "point_A()" ) ;
+}
+{
+	( <POINT> <LEFT_PAREN> coord_sys_A() <COMMA> coordinates_A() <RIGHT_PAREN> )
+	{ 
+    	if( log.isTraceEnabled() ) exitTrace ( "point_A()" ) ;
+    }
+}
+
+/*
+ * coordinates_A
+ *
+ * bnf-start v21-Projection,v20+RFC
+ *   <coordinates> ::=  <coordinate1>  <comma>  <coordinate2> 
+ * bnf-end
+ *
+ */
+void coordinates_A() : {}
+{
+	coordinate1_A() <COMMA> coordinate2_A()	
+}
+
+
+/*
+ * coordinate1_A
+ *
+ * bnf-start
+ *   <coordinate1> ::= <numeric_value_expression>
+ * bnf-end
+ *
+ */
+void coordinate1_A() : {}
+{
+	 numeric_value_expression_S( null )	
+}
+
+/*
+ * coordinate2_A
+ *
+ * bnf-start
+ *   <coordinate2> ::= <numeric_value_expression>
+ * bnf-end
+ *
+ */
+void coordinate2_A() : {}
+{
+	 numeric_value_expression_S( null )	
+}
+
+/*
+ * size1_A
+ *
+ */
+void size1_A() : {}
+{
+	 numeric_value_expression_S( null )	
+}
+
+/*
+ * size2_A
+ *
+ */
+void size2_A() : {}
+{
+	 numeric_value_expression_S( null )	
+}
+ 
+
+/*
+ * coord_sys_A
+ *
+ * bnf-start v21-Projection,v20+RFC 
+ *  <coord_sys> ::= <string_value_expression>
+ * bnf-end
+ *
+ */
+void coord_sys_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "coord_sys_A()" ) ;
+}
+{
+	string_value_expression_A( null )
+	{
+	   if( log.isTraceEnabled() ) exitTrace ( "coord_sys_A()" ) ;	
+	}	
+} 
+
+
+/*
+ * box_A
+ *
+ * bnf-start v20+RFC,v21-Projection
+ *   <box> ::= 
+ *      BOX <left_paren> <coord_sys>
+ *                     <comma> <coordinates> 
+ *                     <comma> <numeric_value_expression> 
+ *                     <comma> <numeric_value_expression> 
+ *                <right_paren>
+ * bnf-end
+ *
+ */
+void box_A( String elementName ) #GeometryFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "box_A()" ) ;
+}
+{
+	(
+	  <BOX> <LEFT_PAREN> coord_sys_A()
+	             <COMMA> coordinates_A() 
+	             <COMMA> size1_A()
+	             <COMMA> size2_A()
+	        <RIGHT_PAREN>   
+    )
+      {
+      	   if( log.isTraceEnabled() ) exitTrace ( "box_A()" ) ;
+      }
+}
+
+
+/*
+ * circle_A
+ *
+ * bnf-start v20+RFC,v21-Projection
+ *   <circle> ::= 
+ *      CIRCLE <left_paren> <coord_sys> 
+ *                  <comma> <coordinates> 
+ *                  <comma> <radius> 
+ *             <right_paren>
+ * bnf-end
+ *
+ */
+void circle_A( String elementName ) #GeometryFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "circle_A()" ) ;
+}
+{ 
+	( <CIRCLE> <LEFT_PAREN> coord_sys_A()
+	                <COMMA> coordinates_A()
+	                <COMMA> radius_A() 
+	           <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "circle_A()" ) ;	
+	}
+}
+
+
+/* * ellipse_A * *-bnf-start *-  <ellipse> ::=  *-     ELLIPSE <left_paren> <coord_sys>  *-                  <comma> <coordinates>  *-                  <comma> <radius>  *-                  <comma> <minor_radius> *-                  <comma> <position_angle> *-             <right_paren> *-bnf-end * */void _ellipse_A() : {	if( log.isTraceEnabled() ) enterTrace ( "ellipse_A()" ) ;}{ 	( <ELLIPSE> <LEFT_PAREN> coord_sys_A()	                <COMMA> coordinates_A()	                <COMMA> radius_A()	                <COMMA> _minor_radius_A() 	                <COMMA> _position_angle_A()  	           <RIGHT_PAREN> )	{		if( log.isTraceEnabled() ) exitTrace ( "ellipse_A()" ) ;		}}
+
+
+
+/*
+ * polygon_A
+ *
+ * bnf-start v20+RFC,v21-Projection
+ *   <polygon> ::=
+ *      POLYGON <left_paren> <coord_sys> 
+ *                   <comma> <coordinates> 
+ *                   <comma> <coordinates> 
+ *                 { <comma> <coordinates> } ?
+ *              <right_paren>
+ * bnf-end
+ */
+void polygon_A( String elementName ) #GeometryFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "polygon_A()" ) ;
+}
+{
+	<POLYGON> <LEFT_PAREN> coord_sys_A()
+	               <COMMA> coordinates_A() 
+	               <COMMA> coordinates_A() 
+                 ( <COMMA> coordinates_A() )+ 
+             <RIGHT_PAREN>
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "polygon_A()" ) ;	
+	}
+}
+
+
+/*
+ * radius_A
+ *
+ * bnf-start v20+RFC,v21-Projection
+ *   <radius> ::= <numeric_value_expression>
+ * bnf-end
+ *
+ */
+void radius_A() : {}
+{
+	numeric_value_expression_S( null )	
+}
+
+/*
+ * minor_radius_A
+ *
+ *-bnf-single <minor_radius> ::= <numeric_value_expression>
+ *
+ */
+void _minor_radius_A() : {}
+{
+	numeric_value_expression_S( null )	
+}
+
+/*
+ * position_angle_A
+ *
+ *-bnf-single <position_angle> ::= <numeric_value_expression>
+ *
+ */
+void _position_angle_A() : {}
+{
+	numeric_value_expression_S( null )	
+}
+
+/*
+ * region_A
+ *
+ * bnf-start v20+RFC,v21-Projection
+ *   <region> ::= REGION <left_paren> <string_value_expression> <right_paren>
+ * bnf-end
+ *
+ */
+void region_A( String elementName ) #GeometryFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "region_A()" ) ;	
+}
+{
+	( <REGION> <LEFT_PAREN> string_value_expression_A( null ) <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "region_A()" ) ;	
+	}
+}
+
+
+void table_array_fragment() #TableArrayFragment : {    if( log.isTraceEnabled() ) enterTrace ( "table_array_fragment()" ) ;}{	(	   table_reference_A()	   <COMMA> 	   table_reference_A() 	   <SEMICOLON>	)	{	   if( log.isTraceEnabled() ) exitTrace ( "table_array_fragment()" ) ;		}}
+
+
+/*
+ * schema_name_A
+ *
+ * bnf-start
+ *    <schema_name> ::= [ <catalog_name> <period> ] <unqualified_schema name>
+ * bnf-end
+ * bnf-single <catalog_name> ::= <identifier>
+ * bnf-single <unqualified_schema name> ::= <identifier>
+ *
+ */
+void schema_name_A() #SchemaName : 
+{
+   if( log.isTraceEnabled() ) enterTrace ( "schema_name_A()" ) ;
+}
+{
+	//S:
+	//  <schema name> ::=
+	//    [ <catalog name> <period> ] <unqualified schema name>
+	LOOKAHEAD(6) 
+	identifier_A()
+	|
+	( catalog_name_A() <PERIOD> identifier_A() )
+	
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "schema_name_A()" ) ;
+	}
+}
+
+void catalog_name_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "catalog_name_A()" ) ;
+}
+{
+	identifier_A()
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "catalog_name_A()" ) ;
+	}
+}
+
+/*
+ * 
+ * bnf-start
+ *  <qualifier> ::= <table_name> | <correlation_name> 
+ * bnf-end
+ *
+ */
+void qualifier_A() : 
+{
+   if( log.isTraceEnabled() ) enterTrace ( "qualifier_A()" ) ;
+}
+{
+	//S:
+	// <qualifier> ::=
+    //    <table_name> 
+    //  | <correlation_name>
+
+	// Foreshortened, but this is indeed equivalent...
+	table_name_A()
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "qualifier_A()" ) ;
+	}
+}
+
+/*
+ * 
+ *
+ * bnf-start
+ *  <query_specification> ::=
+ *      SELECT [ <set_quantifier> ] [ <set_limit> ] <select_list> <table_expression>
+ * bnf-end
+ *
+ * bnf-start
+ *  <table_expression> ::=
+ *      <from_clause>
+ *      [ <where_clause> ]
+ *      [ <group_by_clause> ]
+ *      [ <having_clause> ]
+ *      [ <order_by_clause> ]
+ * bnf-end 
+ *
+ */
+void query_specification_A() #Select : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "query_specification_A()" ) ;
+    jjtThis.pushPosition() ;
+}
+{ 
+	(
+	//S:
+	// SELECT [ <set_quantifier> ] <select_list> <table_expression>
+	//
+	// <table_expression> ::=
+	//    <from_clause>
+    //    [ <where_clause> ]
+    //    [ <group_by_clause> ]
+    //    [ <having_clause> ]
+	 
+	//A:
+	// Refactored to include <set-limit> and to bring up <table_expression> 
+	// into this method. <table_expression> also now includes <order_by_clause>
+
+		<SELECT>
+		[ set_quantifier_S() ]
+		[ set_limit_A() ] 
+		select_list_S() 
+		from_clause_S() 
+		[ LOOKAHEAD(3) where_clause_S() ] 		
+		[ LOOKAHEAD(3) group_by_clause_S() ] 		
+		[ LOOKAHEAD(3) having_clause_S() ] 		
+		[ LOOKAHEAD(3) order_by_clause_S() ]	
+		[ <SEMICOLON> ]
+    )
+	{ 
+		jjtThis.popPosition() ;
+		if( log.isTraceEnabled() ) exitTrace ( "query_specification_A()" ) ;
+	}
+}
+
+void _row_subquery_S() : {} 
+{
+	//S:
+	// <row_subquery> ::= <subquery>
+	subquery_S()	
+}
+
+
+ScalarExpressionType _row_value_constructor_S() : 
+{
+	ScalarExpressionType seType = null ;
+}
+{
+	//S:
+	// <row_value_constructor> ::=
+    //     <row_value_constructor_element>
+    //  | <left_paren> <row_value_constructor_list> <right_paren>
+    //  | <row_subquery>
+
+	(
+		LOOKAHEAD(3)
+		_row_value_constructor_element_S()
+	    | 
+	    LOOKAHEAD(2)
+	    <LEFT_PAREN> _row_value_constructor_list_S() <RIGHT_PAREN>
+	    | 
+	    _row_subquery_S()
+	 )
+	 { return seType ; }
+}
+
+ScalarExpressionType _row_value_constructor_element_S() : 
+{
+	ScalarExpressionType seType = null ;
+} 
+{
+	//S:
+	//  <row_value_constructor_element> ::=
+    //     <value_expression>
+    //   | <null_specification>
+    //   | <default_specification>
+
+	value_expression_A( null )
+// adql has nothing to support the embedding of keywords...
+//    | 
+//    <NULL>
+//    | 
+//    <SQL_DEFAULT>
+
+	{ return seType ; }
+}
+
+void _row_value_constructor_list_S() : {}
+{
+	//S:
+	//  <row_value_constructor_list> ::=
+    //    <row_value_constructor_element> [ { <comma> <row_value_constructor_element> }... ]
+
+	_row_value_constructor_element_S() ( <COMMA> _row_value_constructor_element_S() ) *
+}
+
+void _scalar_subquery_S() : {}
+{
+	//S:
+	// <scalar_subquery> ::= <subquery>
+	subquery_S()
+}
+
+/*
+ * 
+ *
+ * bnf-start
+ *  <search_condition> ::=
+ *      <boolean_term>
+ *    | <search_condition> OR <boolean_term>
+ * bnf-end
+ *
+ */
+void search_condition_S() #SearchCondition : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "search_condition_S" ) ;
+}
+{
+	//S:
+	// <search_condition> ::=
+    //    <boolean_term>
+    //  | <search_condition> OR <boolean_term>
+	
+	//
+    // Refactored to		( boolean_term_S() 		  ( <OR> { jjtThis.setOr() ; }	      		    search_condition_S() 		  )? 		)
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "search_condition_S" ) ;	
+	}
+}
+
+/*
+ * select_list_S
+ *
+ * bnf-start
+ *  <select_list> ::=
+ *      <asterisk>
+ *    | <select_sublist> [ { <comma> <select_sublist> }... ]
+ * bnf-end
+ *
+ */
+void select_list_S() #SelectionList : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "select_list_S()" ) ;
+	jjtThis.pushPosition() ;
+}
+{
+	//S:
+	// <select_list> ::=
+	//   <asterisk>
+    // | <select_sublist> [ { <comma> <select_sublist> }... ]
+    try {
+		(
+			allSelectionItem()
+			| 
+			( select_sublist_A( true ) ( <COMMA> select_sublist_A( false ) )* )		
+		)
+    }    catch( ParseException pex ) {
+    	parser.errorSkipTo( new int[] { AdqlStoXConstants.FROM } ) ;
+        tracker.setError( pex ) ;    }
+    finally {
+    	jjtThis.popPosition() ;
+    	if( log.isTraceEnabled() ) exitTrace ( "select_list_S()" ) ;	
+    }
+	
+}
+
+void allSelectionItem() #AllSelectionItem : 
+{ jjtThis.pushPosition( parser.ITEM_ELEMENT ) ; }
+{
+	<ASTERISK>
+    { jjtThis.popPosition( parser.ITEM_ELEMENT ) ; }
+}
+
+/*
+ * select_sublist_A
+ *
+ * bnf-start
+ *  <select_sublist> ::= <derived_column> | <qualifier> <period> <asterisk>
+ * bnf-end
+ *
+ */
+void select_sublist_A( boolean first ) #SelectSublist : 
+{ 
+	if( log.isTraceEnabled() ) enterTrace ( "select_sublist_A()" ) ;
+	jjtThis.pushPosition( parser.ITEM_ELEMENT ) ; 
+	if( first ) {
+		parser.selectSublistEnsureNotComma() ;
+	}
+}
+{   
+	//S:
+	// <select_sublist> ::= <derived_column> | <qualifier> <period> <asterisk>
+    try {
+       LOOKAHEAD(12, { parser.findPeriodAsterisk(12) == false } )  	   ( derived_column_S( AdqlParser.ITEM_ELEMENT ) { parser.selectSublistEnsureCommaOrFrom() ; } )	   |	   ( qualifierPeriodAsterisk( AdqlParser.ITEM_ELEMENT ) { parser.selectSublistEnsureCommaOrFrom() ; } )	   |	   { parser.selectSublistError( first, new ParseException( "SELECT list error" ) ) ; }	 
+    }    catch( ParseException pex ) {       parser.selectSublistError( first, pex ) ;	    }
+    finally {
+       jjtThis.popPosition( parser.ITEM_ELEMENT ) ;
+       if( log.isTraceEnabled() ) exitTrace ( "select_sublist_A()" ) ;
+    }
+	
+}
+
+void qualifierPeriodAsterisk( String elementName ) #QualifierPeriodAsterisk : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "qualifierPeriodAsterisk()" ) ;
+//	jjtThis.pushPosition( elementName ) ;
+}
+{
+	table_name_A() <PERIOD_ASTERISK>
+	{
+//		jjtThis.popPosition( elementName ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "qualifierPeriodAsterisk()" ) ;
+	}
+}
+
+
+/*
+ * derived_column_S
+ *
+ * bnf-start
+ *  <derived_column> ::= <value_expression> [ <as_clause> ]
+ * bnf-end
+ * bnf-start
+ *  <as_clause> ::= [ AS ] <column_name>
+ * bnf-end
+ */
+void derived_column_S( String elementName ) #DerivedColumn : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "derived_column_S()" ) ;
+}
+{ 
+	//S:
+	// <derived_column> ::= <value_expression> [ <as_clause> ]
+	// <as_clause> ::= [ AS ] <column_name>
+	( value_expression_A( elementName ) [ [ <AS> ] column_name_S() {jjtThis.setAliased( elementName );}  ] )
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "derived_column_S()" ) ;
+	}	
+}
+
+/*
+ * set_function_specification_S
+ *
+ * bnf-start
+ *  <set_function_specification> ::=
+ *      COUNT <left_paren> <asterisk> <right_paren>
+ *    | <general_set_function>
+ * bnf-end
+ *
+ */
+void set_function_specification_S() #SetFunctionSpecification : {}
+{
+	//S:
+	//  <set_function_specification> ::=
+    //     COUNT <left_paren> <asterisk> <right_paren>
+    //   | <general_set_function>
+	( 
+	  LOOKAHEAD(3)
+	  ( <COUNT> <LEFT_PAREN> <ASTERISK> <RIGHT_PAREN> ) 
+	  |
+	  general_set_function_A()
+	)
+}
+
+void set_function_specification_part_fragment() #SetFunctionSpecificationPartFragment : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "set_function_specification_part_fragment()" ) ;
+}
+{
+		( ( <ASTERISK> | value_expression_A( null ) ) )
+		{
+		  if( log.isTraceEnabled() ) exitTrace ( "set_function_specification_part_fragment()" ) ;
+		}
+}
+
+/*
+ * 
+ *
+ * bnf-start
+ *  <set_limit> ::= TOP <unsigned_integer>
+ * bnf-end
+ *
+ */
+void set_limit_A() #Restrict : 
+{ if( log.isTraceEnabled() ) enterTrace ( "set_limit_A" ) ;
+  jjtThis.pushPosition() ; 
+  Token t = null ;
+}
+{
+	// There is no equivalent in the SQL/92 standard
+	//
+	try { 
+		( <TOP> 
+		  t=<UNSIGNED_INTEGER> 
+		  {
+		  	if( t!=null ) {
+				try { 
+				   jjtThis.setLimit( ( new Integer( t.image )).intValue() ) ;
+				}
+				catch( NumberFormatException ex ) {
+				   throw new ParseException( ex.getLocalizedMessage() ) ;	
+				}
+			}
+		  }
+		)
+	}	catch( ParseException pex ) {
+	    tracker.setError( pex.getLocalizedMessage() ) ;	}
+	{ 		
+		jjtThis.popPosition() ;
+        if( log.isTraceEnabled() ) exitTrace ( "set_limit_A" ) ;
+	}
+}
+
+/*
+ * set_quantifier_S
+ *
+ * bnf-single <set_quantifier> ::= DISTINCT | ALL
+ *
+ */
+void set_quantifier_S() #Allow : 
+{ jjtThis.pushPosition() ; }
+{
+	//S:
+	// <set_quantifier> ::= DISTINCT | ALL
+	//
+	( <DISTINCT> | <ALL> )
+	{ jjtThis.popPosition() ; }
+}
+
+
+void _single_datetime_field_S() : {}
+{
+	//S:
+	//  <single_datetime_field> ::=
+    //     <non-second_datetime_field> [ <left_paren> <interval_leading_field_precision> <right_paren> ]
+    //   | SECOND [ <left_paren> <interval_leading_field_precision> [ <comma> <interval_fractional_seconds_precision> ] <right_paren> ]
+
+	_nonsecond_datetime_field_S() [ <LEFT_PAREN> _interval_leading_field_precision_S() <RIGHT_PAREN> ]
+    | 
+    <SECOND> [ <LEFT_PAREN> _interval_leading_field_precision_S() [ <COMMA> _interval_fractional_seconds_precision_S() ] <RIGHT_PAREN> ]
+}
+
+void _start_field_S() : {}
+{
+	//S:
+	//  <start_field> ::=
+    //    <non-second_datetime_field> [ <left_paren> <interval_leading_field_precision> <right_paren> ]
+
+    _nonsecond_datetime_field_S() [ <LEFT_PAREN> _interval_leading_field_precision_S() <RIGHT_PAREN> ]
+}
+
+/*
+ * string_value_expression_A()
+ *
+ * bnf-start
+ *  <string_value_expression> ::=
+ *      <character_value_expression>
+ * bnf-end
+ *
+ */
+void string_value_expression_A( String elementName ) : {}
+{
+	//S:
+	// <string_value_expression> ::=
+    //    <character_value_expression>
+    //  | <bit_value_expression>
+	character_value_expression_S( elementName )
+
+}
+
+
+/*
+ * subquery_S
+ *
+ * bnf-start
+ *    <subquery> ::= <left_paren> <query_expression> <right_paren>
+ * bnf-end
+ */
+void subquery_S() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "subquery_S()" ) ;
+}
+{
+	//S:
+	//  <subquery> ::= <left_paren> <query_expression> <right_paren>
+	( <LEFT_PAREN> query_expression_A() <RIGHT_PAREN> )	
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "subquery_S()" ) ;	
+	}
+}
+
+
+void _quantified_comparison_predicate_S() : {}
+{
+	//S:
+	// <quantified_comparison_predicate> ::=
+    //    <row_value_constructor> <comp_op> <quantifier> <table_subquery>
+
+	_row_value_constructor_S() comp_op_S() _quantifier_S() table_subquery_S()	
+}
+
+void _quantifier_S() : {}
+{
+	//S:
+	// <quantifier> ::= <all> | <some>
+	//
+	// <all> ::= ALL
+	// <some> ::= SOME | ANY
+	//
+	<ALL> | ( <SOME> | <ANY> )	
+}
+
+/*
+ * query_expression_A
+ *
+ * bnf-start
+ *   <query_expression> ::=
+ *       <query_specification>
+ *     | <joined_table>
+ * bnf-end
+ *
+ */
+void query_expression_A() #QueryExpression : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "query_expression_A()" ) ;
+}
+{
+	//S:
+	// <query_expression> ::=
+    //    <non-join_query_expression>
+    //  | <joined_table>
+	
+	( LOOKAHEAD(3)
+	query_specification_A()
+	|
+	joined_table_A() )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "query_expression_A()" ) ;	
+	}
+}
+
+void _query_primary_S() : {}
+{
+	//S:
+	// <query_primary> ::=
+    //    <non-join_query_primary>
+    //  | <joined_table>
+
+    LOOKAHEAD(3)
+ 	_nonjoin_query_primary_S()
+    | 
+    joined_table_A()
+}
+
+
+void query_term_S() : {}
+{
+	//S:
+	// <query_term> ::=
+    //    <non-join_query_term>
+    //  | <joined_table>
+
+	LOOKAHEAD(2)
+	_nonjoin_query_term_S()
+	|
+	joined_table_A()	
+}
+
+void corresponding_spec_S() : {}
+{
+	//S:
+	// <corresponding_spec> ::=
+    //    CORRESPONDING [ BY <left_paren> <corresponding_column_list> <right_paren> ]
+	<CORRESPONDING> [ <BY> <LEFT_PAREN> corresponding_column_list_S() <RIGHT_PAREN> ] 
+}
+    
+void corresponding_column_list_S() : {}
+{
+	//S:
+	// <corresponding_column_list> ::= <column_name_list>
+	column_name_list_S()	
+}
+
+
+void _nonjoin_query_expression_S() : {}
+{
+	//S:
+	// <non-join_query_expression> ::=
+    //    <non-join_query_term>
+    //  | <query_expression> UNION  [ ALL ] [ <corresponding_spec> ] <query_term>
+    //  | <query_expression> EXCEPT [ ALL ] [ <corresponding_spec> ] <query_term>
+
+//	Refactored to...
+//	But I'm uncertain the refactoring is the same as the original!
+	LOOKAHEAD(4)
+	( query_term_S() ( (<UNION> | <EXCEPT> ) [ <ALL> ] [ corresponding_spec_S() ] query_term_S() )* )
+	|
+	_nonjoin_query_term_S()
+}
+
+void _nonjoin_query_term_S() : {}
+{
+	//S:
+	// <non-join_query_term> ::=
+    //    <non-join_query_primary>
+    //  | <query_term> INTERSECT [ ALL ] [ <corresponding_spec> ] <query_primary>
+
+	// Refactored to...
+	LOOKAHEAD(3)
+	_nonjoin_query_primary_S()
+	|
+	( _query_primary_S() <INTERSECT> [ <ALL> ] [ corresponding_spec_S() ] _query_primary_S() )	
+}
+
+void _nonjoin_query_primary_S() : {}
+{
+	//S:
+	//  <non-join_query_primary> ::=
+    //    <simple_table>
+    //  | <left_paren> <non-join_query_expression> <right_paren>
+    
+	_simple_table_S()
+	|
+	( <LEFT_PAREN> _nonjoin_query_expression_S() <RIGHT_PAREN> )
+}
+
+void _nonsecond_datetime_field_S() : {}
+{
+	//S:
+	// <non-second_datetime_field> ::= YEAR | MONTH | DAY | HOUR | MINUTE
+	<YEAR> | <MONTH> | <DAY> | <HOUR> | <MINUTE>
+}
+
+void _simple_table_S() : {}
+{
+	//S:
+	// <simple_table> ::=
+    //    <query_specification>
+    //  | <table_value_constructor>
+    //  | <explicit_table>
+
+	query_specification_A()
+	|
+	_table_value_constructor_S()
+	|
+	_explicit_table_S()	
+}
+
+/*
+ * table_name_A
+ *
+ * bnf-start
+ *  <table_name> ::= [ <schema_name> <period> ] <identifier>
+ * bnf-end
+ *
+ */
+void table_name_A() #TableName : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "table_name_A()" ) ;
+}
+{
+	//S:
+	// <table_name> ::=
+    //  <qualified_name> | <qualified_local_table_name>
+    
+	[ LOOKAHEAD( 4 ) objectOwnership() ] identifier_A()
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "table_name_A()" ) ;
+	}
+}
+
+/* 
+ * table_reference_A
+ *
+ * bnf-start
+ *  <table_reference> ::=
+ *     <table_name> [ <correlation_specification> ]
+ *   | <derived_table> <correlation_specification>
+ *   | <joined_table>
+ * bnf-end
+ *
+ */
+ void table_reference_A() #TableReference : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "table_reference_A()" ) ;
+	jjtThis.pushPosition( AdqlParser.TABLE_ELEMENT ) ; 
+} 
+{
+	//S:
+	// <table reference> ::=
+    //     <table name> [ <correlation specification> ]
+    //   | <derived table> <correlation specification>
+    //   | <joined table>
+	try {
+		LOOKAHEAD( tableReference2() )
+	  	( tableReference2() ( LOOKAHEAD(3) joinPart() )* )
+	  	|
+	  	( <LEFT_PAREN> joined_table_A() <RIGHT_PAREN> )
+	}
+	catch( ParseException pex ) {
+		parser.errorSkipTo( AdqlParser.TABLE_REF_SKIP_TO ) ;
+        tracker.setError( pex ) ;
+	}
+	finally	{ 		
+		jjtThis.popPosition( AdqlParser.TABLE_ELEMENT ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "table_reference_A()" ) ;
+	} 
+}
+
+/* 
+ * qualified_join_A
+ *
+ * bnf-start
+ *  <qualified_join> ::=
+ *      <table_reference> [ NATURAL ] [ <join_type> ] JOIN
+ *      <table_reference> [ <join_specification> ]
+ * bnf-end
+ *
+ */
+void qualified_join_A() #QualifiedJoin : 
+{
+ 	if( log.isTraceEnabled() ) enterTrace ( "qualified_join_A()" ) ; 
+} 
+{
+	( tableReference2() joinPart() )	
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "qualified_join_A()" ) ;
+	} 
+}
+
+/* 
+ * joinPart
+ *
+ */
+void joinPart() #JoinPart : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "joinPart()" ) ;
+}
+{
+	try {
+		[ <NATURAL> { jjtThis.setNatural( true ); } ] 
+		[ join_type_A() ] 
+		<JOIN> 
+		table_reference_A() 
+		[ LOOKAHEAD(3) join_specification_S() ]
+	
+		{ 
+			if( jjtThis.isNatural() && jjtThis.isJoinSpecification() ) {
+				throw new ParseException( "NATURAL join with join specification." ) ;
+			}				
+		}
+	}
+	catch( ParseException pex ) {
+		throw pex ;
+	}
+	finally {
+		if( log.isTraceEnabled() ) exitTrace ( "joinPart()" ) ;
+	}
+}
+
+/* 
+ * tableReference2
+ *
+ *
+ */
+void tableReference2() #TableReference2 : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "tableReference2()" ) ;
+}
+{
+	( derived_table_S() correlation_specification_A() )
+	|
+	( table_name_A() [ correlation_specification_A() ] )
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "tableReference2()" ) ;
+	}
+}
+
+
+/*
+ * correlation_specification_A
+ *
+ * bnf-single <correlation_specification> ::= [ AS ] <correlation_name>
+ *
+ */
+void correlation_specification_A() : {}
+{
+	//S:
+	//  <correlation specification>    ::=
+    //     [ AS ] <correlation name> [ <left paren> <derived column list> <right paren> ]
+	[ <AS> ] correlation_name_S()
+}
+
+
+/*
+ * table_subquery_S
+ *
+ * bnf-start
+ *  <table_subquery> ::= <subquery>
+ * bnf-end
+ *
+ */
+void table_subquery_S() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "table_subquery_S" ) ;
+}
+{
+	//S:
+	// <table_subquery> ::= <subquery>
+	subquery_S()	
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "table_subquery_S" ) ;
+	}
+}
+
+void _table_value_constructor_S() : {}
+{
+	//S:
+	//  <table_value_constructor> ::=
+    //     VALUES <table_value_constructor_list>
+
+	<VALUES> _table_value_constructor_list_S()
+}
+
+void _table_value_constructor_list_S() : {}
+{
+	//S:
+	// <table_value_constructor_list> ::=
+    //    <row_value_constructor> [ { <comma> <row_value_constructor> }... ]
+
+	_row_value_constructor_S() ( <COMMA> _row_value_constructor_S() )*	
+}
+
+/*
+ * term_S
+ *
+ * bnf-start
+ *  <term> ::=
+ *      <factor>
+ *    | <term> <asterisk> <factor>
+ *    | <term> <solidus> <factor>
+ * bnf-end
+ *
+ */
+void term_S( String elementName ) #Term :  
+{
+	if( log.isTraceEnabled() ) enterTrace ( "term_S()" ) ;
+	Token t = null ;
+}
+{
+	//S:
+	//  <term> ::=
+    //     <factor>
+    //   | <term> <asterisk> <factor>
+    //   | <term> <solidus> <factor>
+
+	// refactored
+	// factor() ( LOOKAHEAD(2) (<ASTERISK> | <SOLIDUS> ) term() )?
+	( 	   factorBitTerm( elementName ) 	   ( LOOKAHEAD(2) 	     ( 	       ( t=<ASTERISK> | t=<SOLIDUS> ) 	       { jjtThis.setOperator(t); } 	     ) 	     term_S( AdqlParser.ARG_ELEMENT )	   )? 		)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "term_S()" ) ;
+	}
+}
+
+void factorBitTerm( String element) #BitTerm :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "factorBitTerm()" ) ;
+	Token t = null ;
+}
+{
+	( [ t=bitwiseNOT() ] factor_S( element ) 
+		{  if( t != null ) {
+			  jjtThis.setBitInversion( t.image ) ;
+			  if( !parser.isSyntaxSet( SyntaxOption.BITWISE_MANIPULATION) ) {
+				  tracker.setError( "Reference Implementation: Bit value expressions not supported." ) ;
+			  }
+		   }
+		}
+	)
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "factorBitTerm()" ) ;
+	}	
+	
+}
+
+void _time_fractional_seconds_precision_S() : {}
+{
+	//S:
+	// <time_fractional_seconds_precision> ::= <unsigned_integer>
+	<UNSIGNED_INTEGER> 	
+}
+
+void _time_precision_S() : {}
+{
+	//S:
+	// <time_precision> ::= <time_fractional_seconds_precision>
+	_time_fractional_seconds_precision_S()	
+}
+
+void _timestamp_precision_S() : {}
+{
+	//S:
+	// <timestamp_precision> ::= <time_fractional_seconds_precision>
+	_time_fractional_seconds_precision_S()	
+}
+
+void _time_zone_S() : {}
+{
+	//S:
+	//  <time_zone> ::= AT <time_zone_specifier>
+    //  <time_zone_specifier> ::= LOCAL | TIME ZONE <interval_value_expression>
+
+	// refactored
+    <AT> ( <LOCAL> | ( <TIME_ZONE> _interval_value_expression_S() ) ) 
+}
+
+/*
+ * 
+ *
+ * bnf-start
+ *  <trig_function> ::=
+ *      ACOS <left_paren> <numeric_value_expression> <right_paren>
+ *    | ASIN <left_paren> <numeric_value_expression> <right_paren>
+ *    | ATAN <left_paren> <numeric_value_expression> <right_paren>
+ *    | ATAN2 <left_paren> <numeric_value_expression> <comma> <numeric_value_expression> <right_paren>
+ *    | COS <left_paren> <numeric_value_expression> <right_paren>
+ *    | COT <left_paren> <numeric_value_expression> <right_paren>
+ *    | SIN <left_paren> <numeric_value_expression> <right_paren>
+ *    | TAN <left_paren> <numeric_value_expression> <right_paren>
+ * bnf-end
+ *
+ */
+void trig_function_A( String elementName ) #TrigFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "trig_function_A()" ) ;
+	jjtThis.pushPosition( elementName ) ;
+}
+{
+	(
+		<ACOS> <LEFT_PAREN>
+		          numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		       <RIGHT_PAREN>
+		|
+		<ASIN> <LEFT_PAREN> 
+		          numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		       <RIGHT_PAREN>
+		|
+        <ATAN> <LEFT_PAREN> 
+                  numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+               <RIGHT_PAREN>
+		|
+		( <ATAN2> <LEFT_PAREN> 
+		             numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		          <COMMA> 
+		             numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		          <RIGHT_PAREN> )
+		|
+		<COS> <LEFT_PAREN> 
+		         numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		      <RIGHT_PAREN>
+		|
+		<COT> <LEFT_PAREN> 
+		         numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		      <RIGHT_PAREN>
+		|
+		<SIN> <LEFT_PAREN> 
+		         numeric_value_expression_S( AdqlParser.ARG_ELEMENT ) 
+		      <RIGHT_PAREN>
+		|
+		<TAN> <LEFT_PAREN> 
+		         numeric_value_expression_S( AdqlParser.ARG_ELEMENT )
+		      <RIGHT_PAREN>
+	)
+	{
+		jjtThis.popPosition( elementName ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "trig_function_A()" ) ;
+	}
+}
+
+void _unique_predicate_S() : {}
+{
+	//S:
+	// <unique_predicate> ::= UNIQUE <table_subquery>
+	<UNIQUE> table_subquery_S()	
+}
+
+/*
+ * unsigned_literal_S
+ *
+ * bnf-single <unsigned_literal> ::= <unsigned_numeric_literal> | <general_literal>
+ *
+ */
+void unsigned_literal_S() : {}
+{
+	//S: 
+	// <unsigned_literal> ::=
+    //    <unsigned_numeric_literal>
+    //  | <general_literal>
+	unsigned_numeric_literal_S()
+    | 
+    general_literal_A()
+}
+
+/*
+ * unsigned_numeric_literal_S
+ *
+ * bnf-start
+ *  <unsigned_numeric_literal> ::=
+ *     <exact_numeric_literal>
+ *   | <approximate_numeric_literal>
+ * bnf-end
+ *
+ */
+void unsigned_numeric_literal_S() : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "unsigned_numeric_literal_S()" ) ;
+} 
+{
+	//S:
+	//  <unsigned_numeric_literal> ::=
+    //      <exact_numeric_literal>
+    //    | <approximate_numeric_literal>
+    (
+    	exact_numeric_literal_S( +1 )
+    	|
+		approximate_numeric_literal_S( +1 ) 
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "unsigned_numeric_literal_S()" ) ;
+	}
+}
+
+
+/*
+ * approximate_numeric_literal_S
+ *
+ * bnf-start
+ *  <approximate_numeric_literal> ::= <mantissa>E<exponent>
+ * bnf-end
+ *
+ */
+void approximate_numeric_literal_S( int sign ) #ApproximateNumericLiteral : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "approximate_numeric_literal_S()" ) ;
+	jjtThis.setSign( sign ) ;
+} 
+{
+	<APPROXIMATE_NUMERIC_LITERAL>
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "approximate_numeric_literal_S()" ) ;
+	}	
+}
+
+/*
+ * unsigned_value_specification_S
+ *
+ *-bnf-start
+ *- <unsigned_value_specification> ::=
+ *-     <unsigned_literal>
+ *-   | <general_value_specification>
+ *-bnf-end
+ * 
+ * bnf-start
+ *  <unsigned_value_specification> ::= <unsigned_literal>
+ * bnf-end
+ *
+ */
+void unsigned_value_specification_S() : {}
+{
+	//S:
+	// <unsigned_value_specification> ::=
+    //     <unsigned_literal>
+    //   | <general_value_specification>
+	unsigned_literal_S()
+//	|//	general_value_specification_A()
+}
+
+/*
+ * value_expression_A
+ *
+ * bnf-start v21-Projection
+ *  <value_expression> ::=
+ *      <numeric_value_expression>
+ *    | <string_value_expression>
+ *    | <geometry_value_expression>
+ * bnf-end
+ * bnf-start v20+RFC,v20-AG
+ *  <value_expression> ::=
+ *      <numeric_value_expression>
+ *    | <string_value_expression>
+ * bnf-end
+ *
+ */
+void value_expression_A( String elementName ) #ValueExpression : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "value_expression_A()" ) ;
+} 
+{
+	//S:
+	// <value_expression> ::=
+	//    <numeric_value_expression>
+    //  | <string_value_expression>
+    //  | <datetime_value_expression>
+    //  | <interval_value_expression>
+    try {
+		(
+		//
+		// I've had to resort to a semantic lookahead (not sure I agree with the term).
+		// It is a balanced lookahead to see whether the first likely operator is an
+		// arithmetic operator (returns 0) or a string operator (returns 1). The only
+		// string operator at present is for concatenation of strings ( 'Jeff' || 'Lusted').
+		// If no operator is found within the first n tokens, arithmetic is assumed.
+		//
+		// Why do this? ...
+		//
+		// If you follow the SQL92 syntax right through from either 
+		// <numeric_value_expression> or <string_value_expression>, then you will find
+		// both are satisfied (eventually) with a column reference or a string literal!!!
+		// It means, for example, that a simple 'Star' literal (no concatenation) will be 
+		// composed via a <numeric_value_expression>. There is no harm in this until
+		// you attempt to concatenate two strings ('Star' || 'Gazer'). This will fail, 
+		// because although 'Star' can be composed via <numeric_value_expression>, the
+		// construct only supports arithmetic operators (ie: +-*/). 
+		//
+		// I've tried various minor adjustments of constructs and lookahead, but to no avail.
+		// This appears to work. It is a judgement call as to how far to check ahead
+		// (Some experimentation to whittle down from the present 16 might be a good idea).
+		// The supposition is that for any expression, the first operator encountered will
+		// drive it until another expression is encountered (remember, expressions can
+		// be nested). So if a concatenation operator is encountered first, we assume the
+		// intention is a string expression of some description.
+		//
+		// COMMENTS:
+		// (1) There are some overall strange features to SQL92 exposed by the above
+		//     problem, which I think requires further thought. For example, you appear
+		//     to be able to add, subtract, muliply or divide two strings! ...
+		//     'Star' + 'Gazer'.
+		// (2) The lookahead findFirstOperator() gets invoked multiple times, often
+		//     consecutively because of multiple lookaheads.
+		//     The worst is a bracketted compare:
+		//     
+		//          WHERE ( some complex expression = another expression ) ;
+		//
+		//     I might have known. Need some strategy to circumvent this,
+		//     but I'm not sure there is a simple one. 
+		// 
+		LOOKAHEAD(16, { parser.findFirstOperator(16,0) != 1 } ) 
+        numericValueExpressionBitFactor()
+		|		LOOKAHEAD(16 )		string_value_expression_A( elementName )  
+
+		// JL. foreshortened. At present there is no accommodation for
+		// datetime and interval expressions in adql
+	//	|
+	//	LOOKAHEAD(3) 
+	//	dateTimeValueExpression() 
+	//	|
+	//	intervalValueExpression()
+		|
+		geometry_value_expression_A( elementName )	
+		)
+    }    catch( ParseException pex ) {
+    	if( log.isDebugEnabled() ) log.debug( "value_expression_A() throwing pex" ) ;		throw pex ;    }
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "value_expression_A()" ) ;
+	}
+	
+}
+
+/*
+ * restricted_value_expression_A
+ *
+ * This is a restricted version of the main structure value_expression_A().
+ * At present it is here purely for the sake of the COMPARISON and BETWEEN predicates...
+ * geometry_value_expression_A() is omitted as there is no such thing as
+ * being between two geometries (well, at the present time), nor of comparing geometries.
+ */
+void restricted_value_expression_A( String elementName ) #ValueExpression : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "restricted_value_expression_A()" ) ;
+} 
+{
+	//S:
+	// <value_expression> ::=
+	//    <numeric_value_expression>
+    //  | <string_value_expression>
+    //  | <datetime_value_expression>
+    //  | <interval_value_expression>
+    try {
+		(
+		//
+		// Please see the method value_expression_A() for
+		// detailed comments on the semantic lookahead
+		LOOKAHEAD( 16, { parser.findFirstOperator(16,0) !=1 } ) 
+        numericValueExpressionBitFactor()
+		|		string_value_expression_A( elementName )  
+		)
+    }
+    catch( ParseException pex ) {
+    	if( log.isDebugEnabled() ) log.debug( "restricted_value_expression_A() throwing pex" ) ;
+		throw pex ;
+    }
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "restricted_value_expression_A()" ) ;
+	}
+	
+}
+
+/*
+ * variable_specification_A
+ *
+ *-bnf-start
+ *-<variable_specification> ::=
+ *-    <dollar> <left_brace> <regular_identifier> <right_brace>
+ *-  | VAR <regular_identifier>
+ *- !! ADQL Note:
+ *- !! Not in the draft spec.
+ *- !! Part of an ADQL experiment to specify symbolic scripting variables.
+ *-bnf-end
+ *
+ */
+void variable_specification_A() #VariableSpec : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "variable_specification_A" ) ;
+	Token t ;
+}
+{
+	//S:
+	// <variable_specification> ::=
+    //    <embedded_variable_name> [ <indicator_variable> ]
+    
+	( <DOLLAR> <LBRACE> t=<REGULAR_IDENTIFIER> <RBRACE> 
+	  |
+	  <VAR> t=<REGULAR_IDENTIFIER> )
+	{
+		if( t != null ) {
+			jjtThis.setVariable( t.image ) ;
+		}
+        if( log.isTraceEnabled() ) exitTrace ( "variable_specification_A" ) ;
+	}
+}
+
+/*
+ * where_clause_S
+ *
+ * bnf-single <where_clause> ::= WHERE <search_condition>
+ *
+ */
+void where_clause_S() #Where : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "where_clause_S" ) ;
+	jjtThis.pushPosition() ;
+	Token whereToken = null ;
+	Token eof = null ;
+}
+{
+	//S:
+	// WHERE <search_condition>
+    try {   	
+	  ( whereToken=<WHERE> search_condition_S() )
+    }
+    catch( ParseException pex ) { 
+    	boolean eofEncountered = parser.errorSkipTo( parser.WHERE_SKIP_TO ) ;
+    	boolean matchingBraces = parser.checkForMatchingBraces( whereToken, token ) ;	
+    	if( matchingBraces ) {
+    		tracker.setError( pex ) ;
+    	}
+    }
+	{ 					
+		jjtThis.popPosition() ;
+		if( log.isTraceEnabled() ) exitTrace ( "where_clause_S" ) ;
+	}
+}
+
+/*
+ * non_predicate_geometry_function_A
+ *
+ * bnf-start v20+RFC 
+ *   <system_defined_function> ::=
+ *       <distance_function>
+ *     | <region_function>
+ *     | <longitude>
+ *     | <latitude>
+ *     | <area>
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *  <non_predicate_geometry_function> ::= 
+ *     <area>
+ *   | <coord1>
+ *   | <coord2> 
+ *   | <distance>
+ * bnf-end
+ *
+ */
+void non_predicate_geometry_function_A( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "non_predicate_geometry_function_A()" ) ;
+}
+{
+	(
+		distance_A( elementName )
+	  | coord1_A( elementName )	  | coord2_A( elementName )
+	  | area_A( elementName )
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "non_predicate_geometry_function_A()" ) ;
+	}}
+
+/*
+ * distance_A
+ *
+ * bnf-start v20+RFC 
+ *   <distance_function> ::= DISTANCE <left_paren> <point> <comma> <point> <right_paren>
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *  <distance> ::=     
+ *     DISTANCE <left_paren> <coord_value> <comma> <coord_value> <right_paren>
+ * bnf-end
+ *
+ */
+void distance_A( String elementName ) #SystemDefinedFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "distance_A()" ) ;
+}
+{
+    ( <DISTANCE> <LEFT_PAREN> coord_value_A( elementName ) <COMMA> coord_value_A( elementName ) <RIGHT_PAREN> )
+    {
+    	if( log.isTraceEnabled() ) exitTrace ( "distance_A()" ) ;
+    }
+}
+
+/*
+ * predicate_geometry_function_A
+ *
+ * bnf-start v20+RFC
+ *    <region_function> ::= <contains_function> | <intersects_function>
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *   <predicate_geometry_function> ::= <contains> | <intersects>
+ * bnf-end
+ *
+ */
+void predicate_geometry_function_A( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "predicate_geometry_function_A()" ) ;
+}
+{
+	( contains_A( elementName ) | intersects_A( elementName ) )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "predicate_geometry_function_A()" ) ;
+	}
+}
+
+/*
+ * contains_A
+ *
+ * bnf-start v20+RFC
+ *   <contains_function> ::= CONTAINS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>  
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *   <contains> ::= CONTAINS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>  
+ * bnf-end
+ *
+ */
+void contains_A( String elementName ) #SystemDefinedFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "contains_A()" ) ;
+}
+{
+	( <CONTAINS> <LEFT_PAREN> geometry_value_expression_A( null ) 
+	                <COMMA> geometry_value_expression_A( null ) 
+	             <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "contains_A()" ) ;
+	}
+}
+
+/*
+ * intersects_A
+ *
+ * bnf-start v20+RFC
+ *   <intersects_function> ::= INTERSECTS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *   <intersects> ::= INTERSECTS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>
+ * bnf-end
+ *
+ */
+void intersects_A( String elementName ) #SystemDefinedFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "intersects_A()" ) ;
+}
+{
+	( <INTERSECTS> <LEFT_PAREN> geometry_value_expression_A( null ) 
+	                  <COMMA> geometry_value_expression_A( null ) 
+	              <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "intersects_A()" ) ;
+	}
+} 
+
+/*
+ * geometry_value_expression_A
+ *
+ * bnf-start v20+RFC
+ *   <geometry_value_expression> ::= <geometry_expression> | <geometry_value> | <centroid>
+ * bnf-end
+ *
+ * bnf-start v20+RFC
+ *   <geometry_expression> ::= <point> | <circle> | <box> | <polygon> | <region>
+ * bnf-end
+ *
+ * bnf-start v20+RFC
+ *   <geometry_value> ::= <column_reference>
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *  <geometry_value_expression> ::= <value_expression_primary> | <geometry_value_function>
+ * bnf-end
+ *
+ */
+void geometry_value_expression_A( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "geometry_value_expression_A()" ) ;
+}
+{
+	(
+		LOOKAHEAD(3)
+		value_expression_primary_A( elementName )
+		|
+		geometry_value_function_A( elementName ) 
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "geometry_value_expression_A()" ) ;
+	}
+}
+
+/*
+ * geometry_value_function_A
+ *
+ * bnf-start v21-Projection
+ *   <geometry_value_function> ::=
+ *       <box> 
+ *     | <centroid> 
+ *     | <circle> 
+ *     | <point> 
+ *     | <polygon> 
+ *     | <region> 
+ *     | <user_defined_function>
+ * bnf-end
+ *
+ */
+void geometry_value_function_A( String elementName )  : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "geometry_value_function_A()" ) ;
+}
+{
+	(  region_function_A( elementName ) | user_defined_function_A( elementName ) )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "geometry_value_function_A()" ) ;
+	}
+}
+
+void region_function_A( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "region_function_A()" ) ;
+}
+{
+	(
+      	point_A( elementName ) 
+	  | circle_A( elementName ) 
+	  | box_A( elementName ) 
+	  | polygon_A( elementName ) 
+	  | region_A( elementName ) 
+	  | centroid_A( elementName ) 
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "region_function_A()" ) ;
+	}	
+}
+
+/*
+ * centroid_A
+ *
+ * bnf-start v20+RFC
+ *   <centroid> ::= CENTROID <left_paren> <geometry_expression> <right_paren>
+ * bnf-end
+ *
+ * bnf-start v21-Projection
+ *  <centroid> ::= CENTROID <left_paren> <geometry_value_expression> <right_paren>
+ * bnf-end
+ */
+void centroid_A( String elementName ) #GeometryFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "centroid_A()" ) ;
+}
+{
+	( <CENTROID> <LEFT_PAREN> geometry_value_expression_A( elementName ) <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "centroid_A()" ) ;
+	}
+}
+
+
+/*
+ * coord1_A
+ *
+ * bnf-start v20+RFC
+ *   <longitude> ::= LONGITUDE <left_paren> <point> <right_paren>
+ * bnf-end
+ *
+ * bnf-start v21-Projection 
+ *  <coord1> ::= COORD1 <left_paren> <coord_value> <right_paren>
+ * bnf-end
+ */
+void coord1_A( String elementName ) #SystemDefinedFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "coord1_A()" ) ;
+}
+{
+	( <LATITUDE> <LEFT_PAREN> coord_value_A( elementName ) <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "coord1_A()" ) ;	
+	}
+}
+
+/*
+ * coord2_A
+ *
+ * bnf-start v20+RFC
+ *   <latitude> ::= LATITUDE <left_paren> <point> <right_paren>
+ * bnf-end 
+ *
+ * bnf-start v21-Projection
+ *  <coord2> ::= COORD2 <left_paren> <coord_value> <right_paren>
+ * bnf-end
+ */
+void coord2_A( String elementName ) #SystemDefinedFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "coord2_A()" ) ;
+}
+{
+	( <LONGITUDE> <LEFT_PAREN> coord_value_A( elementName ) <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "coord2_A()" ) ;
+	}
+}
+
+
+/*
+ * area_A
+ *
+ * bnf-start V20+RFC,v21-Projection
+ *  <area> ::= AREA <left_paren> <geometry_value_expression> <right_paren>
+ * bnf-end
+ */
+void area_A( String elementName ) #SystemDefinedFunction : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "area_A()" ) ;
+}
+{
+	( <AREA> <LEFT_PAREN> geometry_value_expression_A( elementName ) <RIGHT_PAREN> )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "area_A()" ) ;
+	}
+}
+
+
+/*
+ * coord_value_A
+ *
+ * bnf-start v21-Projection
+ *   <coord_value> ::= <point> | <column_reference>
+ * bnf-end
+ *
+ */
+void coord_value_A( String elementName ) : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "coord_value_A()" ) ;
+}
+ {
+ 	( point_A( elementName ) | column_reference_A( elementName ) )
+ 	{
+		if( log.isTraceEnabled() ) exitTrace ( "coord_value_A()" ) ;
+	}
+ }
+   
+/* 
+$Log: AdqlStoX.jjt,v $
+Revision 1.2  2008/09/08 15:37:03  jl99
+Merge of branch adql_jl_2575_mark2 into HEAD
+
+Revision 1.1.2.5  2008/09/08 11:09:16  jl99
+Change to conditional bnf tag.
+
+Revision 1.1.2.4  2008/09/05 07:31:54  jl99
+Refactoring some names plus documentation
+
+Revision 1.1.2.3  2008/08/31 20:28:53  jl99
+Tidy of cvs log
+
+Revision 1.1.2.2  2008/08/31 14:33:35  jl99
+Corrected error applying to the new DISTANCE function
+
+Revision 1.1.2.1  2008/08/29 14:49:02  jl99
+First mass commit for the new project adql2
+
+Revision 1.49.2.35  2008/08/28 18:22:36  jl99
+Updating BNF
+
+Revision 1.49.2.34  2008/08/07 14:45:49  jl99
+Option to compile set to java 1.5
+
+Revision 1.49.2.33  2008/08/01 18:47:35  jl99
+Complete reorg for purposes of setting up a maven build
+
+Revision 1.49.2.32  2008/07/21 13:24:36  jl99
+conditional processing in BNF utility
+
+Revision 1.49.2.31  2008/07/21 09:47:38  jl99
+Refinement of option settings plus unit tests
+
+Revision 1.49.2.30  2008/07/18 17:12:05  jl99
+Refinement of option settings plus unit tests
+
+Revision 1.49.2.29  2008/07/18 11:32:38  jl99
+Tidy
+
+Revision 1.49.2.28  2008/07/18 08:54:20  jl99
+Tidy
+
+Revision 1.49.2.27  2008/07/14 16:54:11  jl99
+Preparation for renaming of parser.
+
+Revision 1.49.2.26  2008/07/14 16:17:34  jl99
+Multiple type comments supported
+
+Revision 1.49.2.25  2008/07/14 12:15:18  jl99
+Rejigged options to use type safe enums and bet settings.
+
+Revision 1.49.2.24  2008/07/12 09:24:46  jl99
+(1) Introduced warning messages.
+(2) Used warning messages where possible incorrect use of reserved words encountered.
+(3) Allowing sort keys to be qualified.
+
+Revision 1.49.2.23  2008/07/10 11:32:49  jl99
+Quite involved hex and bit string processing plus object ownership.
+
+Revision 1.49.2.22  2008/07/08 16:21:31  jl99
+Quite involved hex and bit string processing supported.
+
+Revision 1.49.2.21  2008/07/08 10:57:50  jl99
+Delving into bit processing and bit/hex literals: tidy.
+Note. There are twists that makes this more complex than I thought:
+(1) Operator precedence
+(2) Mixing expressions (bit string literals and numerics?).
+
+Revision 1.49.2.20  2008/07/05 21:12:25  jl99
+Delving into bit processing and bit/hex literals: nearly done
+
+Revision 1.49.2.19  2008/07/05 11:21:52  jl99
+Delving into bit processing and bit/hex literals
+
+Revision 1.49.2.18  2008/07/04 09:13:14  jl99
+Starting to implement beyond ADQL standard, protected by option settings
+
+Revision 1.49.2.17  2008/07/03 10:02:14  jl99
+Non-SQL92 Nested Join Syntax accommodated
+
+Revision 1.49.2.16  2008/06/26 20:38:56  jl99
+Corrected error to bnf diagram documentation
+
+Revision 1.49.2.15  2008/06/18 17:51:45  jl99
+In predicate and null predicate improved
+
+Revision 1.49.2.14  2008/06/11 11:06:14  jl99
+Fixed multiple tables in from where one is a join
+
+Revision 1.49.2.13  2008/06/04 17:52:23  jl99
+(i) some type safety for function return values in region/geometry
+(ii) removed the possibility of using comparison and between predicates on geometries.
+
+Revision 1.49.2.12  2008/06/03 15:17:52  jl99
+New type safety(-ish) approach to geometry functions.
+
+Revision 1.49.2.11  2008/06/03 10:06:56  jl99
+Trial as of TEG 2008-05-28
+
+Revision 1.49.2.10  2008/05/27 09:03:56  jl99
+Code tidy
+
+Revision 1.49.2.9  2008/05/26 15:11:43  jl99
+Correction for derived table with alias where the derived table contains a join.
+
+Revision 1.49.2.8  2008/05/26 14:31:49  jl99
+JOIN working according to the syntax.
+
+Revision 1.49.2.7  2008/05/25 20:50:30  jl99
+Corrections to JOIN. Still not complete.
+
+Revision 1.49.2.6  2008/05/12 11:49:18  jl99
+Solution to concatinating string expressions.
+
+Revision 1.49.2.5  2008/05/09 09:51:16  jl99
+Correction to AREA function.
+
+Revision 1.49.2.4  2008/05/07 14:08:20  jl99
+More of Region
+
+Revision 1.49.2.3  2008/05/07 09:19:06  jl99
+Complexities of JOIN accommodated.
+
+Revision 1.49.2.2  2008/03/03 13:24:34  jl99
+First working version for recent changes to region syntax.
+
+Revision 1.49.2.1  2008/02/27 12:39:47  jl99
+Changes to Region
+
+Revision 1.49  2007/10/19 15:32:03  jl99
+Towards 18th Sept draft plus Cambridge Interop
+
+*/
+
+

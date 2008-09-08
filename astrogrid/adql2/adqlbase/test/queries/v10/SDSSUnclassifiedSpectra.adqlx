@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+ Find all objects with unclassified spectra.
+ A simple SELECT-FROM-WHERE query, using a function
++-->
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="pecObjID" Table="s"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="SpecObj" Alias="s"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+      <adql:Arg xsi:type="adql:columnReferenceType" Name="SpecClass" Table="s"/>
+      <adql:Arg xsi:type="adql:userDefinedFunctionType" Name="fSpecClass">
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal xsi:type="adql:stringType" Value="UNKNOWN"/>
+        </adql:Arg>
+      </adql:Arg>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

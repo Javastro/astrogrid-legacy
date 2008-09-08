@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:allSelectionItemType" Table="cata"/>
+    <adql:Item xsi:type="adql:columnReferenceType" Name="col1" Table="catb"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:joinTableType" NaturalJoin="false">
+      <adql:Qualifier>LEFT_OUTER</adql:Qualifier>
+      <adql:Tables>
+        <adql:fromTableType xsi:type="adql:tableType" Name="cata"/>
+        <adql:fromTableType xsi:type="adql:tableType" Name="catb"/>
+      </adql:Tables>
+      <adql:JoinSpecification xsi:type="adql:namedColumnsJoinType">
+        <adql:ColumnList>
+          <adql:ColumnName>col1</adql:ColumnName>
+          <adql:ColumnName>col2</adql:ColumnName>
+          <adql:ColumnName>col3</adql:ColumnName>
+          <adql:ColumnName>col7</adql:ColumnName>
+        </adql:ColumnList>
+      </adql:JoinSpecification>
+    </adql:Table>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:comparisonPredType" Comparison="&lt;=">
+      <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="catb"/>
+      <adql:Arg xsi:type="adql:unaryExprType" Oper="-">
+        <adql:Arg xsi:type="adql:atomType">
+          <adql:Literal Value="1.0023" xsi:type="adql:realType"/>
+        </adql:Arg>
+      </adql:Arg>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

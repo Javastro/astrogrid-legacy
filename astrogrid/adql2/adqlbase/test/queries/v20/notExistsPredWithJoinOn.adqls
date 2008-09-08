@@ -1,0 +1,2 @@
+select * from cata, catb 
+where not exists ( cata inner join catb on cata.col1 between catb.col1 - 0.001 and catb.col1 + 0.001 ) ;

@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select circle( coordsys( a.regioncol), a.colx, a.coly, a.radius ) as "Circle" from cata as a where distance( a.p24, a.p54 ) < 2.3E-4 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select CIRCLE(COORDSYS(a.regioncol) , a.colx, a.coly, a.radius)  as Circle  From cata as a  Where DISTANCE(a.p24, a.p54)  < 2.3E-4 

@@ -1,0 +1,4 @@
+select cata.* 
+from cata join catb 
+     on sin(cata.col1) between abs(catb.col1 - catb.col2) and abs(catb.col1 + catb.col2) 
+where cata.ra between 12.3 and 12.4 and cata.dec between 2.6 and 2.7 ;

@@ -1,0 +1,1 @@
+Select * from people p where udf_NameMunge(p.surname, p.firstName ) like '%son' ;

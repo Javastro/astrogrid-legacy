@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:allSelectionItemType"/>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="cata"/>
+    <adql:Table xsi:type="adql:tableType" Name="catb"/>
+  </adql:From>
+  <adql:Where>
+    <adql:Condition xsi:type="adql:inverseSearchType">
+      <adql:Condition xsi:type="adql:existsPredType">
+        <adql:SubQuery>
+          <adql:QueryExpression>
+            <adql:JoinedTable NaturalJoin="false">
+              <adql:Qualifier>INNER</adql:Qualifier>
+              <adql:Tables>
+                <adql:fromTableType xsi:type="adql:tableType" Name="cata"/>
+                <adql:fromTableType xsi:type="adql:tableType" Name="catb"/>
+              </adql:Tables>
+              <adql:JoinSpecification xsi:type="adql:joinConditionType">
+                <adql:Condition xsi:type="adql:betweenPredType">
+                  <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="cata"/>
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="-">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="catb"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="0.0010" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                  <adql:Arg xsi:type="adql:binaryExprType" Oper="+">
+                    <adql:Arg xsi:type="adql:columnReferenceType" Name="col1" Table="catb"/>
+                    <adql:Arg xsi:type="adql:atomType">
+                      <adql:Literal Value="0.0010" xsi:type="adql:realType"/>
+                    </adql:Arg>
+                  </adql:Arg>
+                </adql:Condition>
+              </adql:JoinSpecification>
+            </adql:JoinedTable>
+          </adql:QueryExpression>
+        </adql:SubQuery>
+      </adql:Condition>
+    </adql:Condition>
+  </adql:Where>
+</adql:Select>

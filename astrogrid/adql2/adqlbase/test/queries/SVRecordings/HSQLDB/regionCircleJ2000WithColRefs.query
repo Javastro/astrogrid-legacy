@@ -1,0 +1,10 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+select * 
+from cata as a 
+where Contains( Point( 'J2000', a.ra, a.dec), Circle( 'J2000', 12.4, -3.5, udf_FormRadiusFromError(a.error) ) ) = 1
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select * From cata as a  Where CONTAINS(POINT('J2000', a.ra, a.dec)  , CIRCLE('J2000', 12.4, -3.5, udf_FormRadiusFromError(a.error)  )  )   = 1 

@@ -1,0 +1,8 @@
++=====================================================+
+|  Input ADQL:                                        |
++=====================================================+
+SELECT CIRCLE('ICRS', p.col1, p.col2, p.col3) as cirX FROM PhotoObj as p WHERE p.col4 = 1.2 ;
++=====================================================+
+|  Output SQL:                                        |
++=====================================================+
+Select CIRCLE('ICRS, p.col1, p.col2, p.col3)   as cirX From PhotoObj as p  Where p.col4 = 1.2 
