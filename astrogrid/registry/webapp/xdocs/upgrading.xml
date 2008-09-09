@@ -4,9 +4,23 @@
         <title>AstroGrid registry upgrading</title>
     </properties>
     <body>
+    <section name="Switching to 1.0 VOResources">
+      <p>
+		 If your registry is still mainly focused on 0.10 then you should switch to 1.0 as soon as possible.  The
+		 registry supports both Resource versions. At the current moment though 1.0 is used everywhere in Astrogrid
+		 and only a very few clients 'may' still call the 0.10.  The registry handles the 1.0 Resources in a separate table
+		 so you will need to self register again <a href="../admin/selfRegisterForm.jsp">here</a> <strong>Note as of mid 2008 most registries have already been upgraded and
+		 self registered, but might not have upgraded other components</strong>.  Various 
+		 components have been upgraded such as CEA, Community, VOSpace, DAL so these would need to be upgraded and go through
+		 the various steps of submitting it into the Registry.<br />
+      </p>
+      <p>
+      	 Some administrators sometimes keep old property files if you are getting a warning on your index page saying you are not on
+      	 1.0 version then go your your 'Edit Properties' <a href='../admin/environment-main.jsp'>here</a> to change the property reg.custom.query.defaultContractVersion to be 1.0
+      </p>
+   </section>    
     <section name="Upgrading">
       <p>
-         This page deals with upgrading your registry.
          <strong><font color='red'>If your registry was installed before October 15 2006 then you must read the next section below 'Upgrading embedded eXist when binaries change' before you do any upgrade.</font></strong>         
          <ul>
             <li>First go into your Tomcat Manager.</li>

@@ -22,7 +22,7 @@ public class QueryConfigExtractor extends ConfigExtractor {
         
     
     public static String getDefaultContractVersion() {
-        return conf.getString("reg.custom.query.defaultContractVersion","0.1");
+        return conf.getString("reg.custom.query.defaultContractVersion","1.0");
     }
     
     /**

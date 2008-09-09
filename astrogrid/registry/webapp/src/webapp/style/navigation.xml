@@ -10,7 +10,7 @@
    String contractVersion = search.getContractVersion();
    String voResourceVersion = search.getResourceVersion();
 %>
-         <li><a href="<%=request.getContextPath()%>/currentContractSession.jsp" >3.Current Contract - (<%=contractVersion%>,<%=voResourceVersion%>)</a></li>
+         <!--  <li><a href="<%=request.getContextPath()%>/currentContractSession.jsp" >3.Current Contract - (<%=contractVersion%>,<%=voResourceVersion%>)</a></li>-->
       </ul>
    </div>
    <div id='menuDocs'>

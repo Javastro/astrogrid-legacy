@@ -4,14 +4,16 @@
     |
     +-->
 <project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
     <!--+
         | Extend the common project descriptor.
         +-->
     <extend>${basedir}/../maven/project.xml</extend>
+    
+    <siteAddress>terror.star.le.ac.uk</siteAddress>
+   	<siteDirectory>/software_docs/registry-${pom.currentVersion}</siteDirectory> 
+    
 
     <!--+
         | The short name of the project.

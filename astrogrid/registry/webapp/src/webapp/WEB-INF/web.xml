@@ -591,6 +591,13 @@
 
 
 	<env-entry>
+		<description>Default Contract used for queries if it cannot be determined via endpoint, request or the JSP pages.</description>
+		<env-entry-name>reg.custom.query.defaultContractVersion</env-entry-name>
+		<env-entry-value>1.0</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<env-entry>
 		<description>Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This might be handly if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file.</description>
 		<env-entry-name>reg.custom.exist.configuration</env-entry-name>
 		<env-entry-value/>
