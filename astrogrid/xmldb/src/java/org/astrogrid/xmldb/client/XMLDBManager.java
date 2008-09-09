@@ -110,10 +110,10 @@ public class XMLDBManager {
             Class cl = Class.forName( dbDriver );
             Database database = (Database) cl.newInstance();
             if(props != null) {
-                Enumeration enum = props.keys();
+                Enumeration enumProps = props.keys();
                 String key = null;
-                while(enum.hasMoreElements()) {
-                    key = (String)enum.nextElement();
+                while(enumProps.hasMoreElements()) {
+                    key = (String)enumProps.nextElement();
                     database.setProperty(key,(String)props.getProperty(key));
                 }
             }//if
