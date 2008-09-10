@@ -109,7 +109,8 @@ for s in sources:
 		i.append( siap )
 		imageDir = '#' + odir + '/' + str(sIndex) + '_' + str(iIndex)
 		m.mkdir( imageDir )
-		res, thread = siap.execute( ra, dec, radius, saveDatasets = imageDir )
+		formats = 'image/fits,image/png,image/jpeg'
+		res, thread = siap.execute( ra, dec, radius, format=formats, saveDatasets = imageDir )
 		i.append( thread )
 #		print siap.info['content']['description']
 #		print time.strftime('%T')
@@ -123,6 +124,7 @@ while count < 120 :
 		for i in s:
       # If one thread in a source is finished, that's good enough...
 			if i[2].isAlive() == False:
+				print 'Finished: ' + i[0] 
 				sourcesFinished = sourcesFinished+1 
 				break
 	if sourcesFinished == len( sources ):
