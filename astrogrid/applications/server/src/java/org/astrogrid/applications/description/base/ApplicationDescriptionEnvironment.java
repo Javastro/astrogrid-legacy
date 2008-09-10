@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.12 2008/09/03 14:18:42 pah Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.13 2008/09/10 23:27:16 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.description.base;
 
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
@@ -25,7 +26,7 @@ import junit.framework.Test;
  * At present, this class containts a unique-id-generator, and library of indirection handlers.
  * @todo could add hash map, so providers can stuff their own things in here? -becomes a kind of context object. unsure whether this is a good idea - extension may be better.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
- * @deprecated better to have direct dependencies of the components in here...
+ * @deprecated using the {@link InternalCeaComponentFactory} for a similar job
  *
  */
 public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
@@ -98,6 +99,9 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.13  2008/09/10 23:27:16  pah
+moved all of http CEC and most of javaclass CEC code here into common library
+
 Revision 1.12  2008/09/03 14:18:42  pah
 result of merge of pah_cea_1611 branch
 

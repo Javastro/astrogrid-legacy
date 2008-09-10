@@ -68,7 +68,7 @@ public class BuiltInApplicationDescription extends InternallyConfiguredApplicati
       throws InterfaceDescriptionNotFoundException, CannotCreateWorkingDirectoryException, WorkingDirectoryAlreadyExists {
       
     
-    ApplicationEnvironment env = new ApplicationEnvironment(userAssignedId, secGuard, getInternalComponentFactory().getIdGenerator(), config);
+    ApplicationEnvironment env = new ApplicationEnvironment(userAssignedId, secGuard, getInternalComponentFactory().getIdGenerator(), conf);
   
     return new BuiltInApplication(
                                   tool,

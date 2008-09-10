@@ -1,5 +1,5 @@
 /*
- * $Id: JaxbReadImplTest.java,v 1.3 2008/09/04 19:10:53 pah Exp $
+ * $Id: JaxbReadImplTest.java,v 1.4 2008/09/10 23:27:20 pah Exp $
  * 
  * Created on 11 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -24,16 +24,14 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import junit.framework.TestCase;
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.cea.CeaApplication;
 
-import org.astrogrid.applications.description.base.ApplicationBase;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 public class JaxbReadImplTest extends TestCase {
 
@@ -89,6 +87,9 @@ public class JaxbReadImplTest extends TestCase {
 
 /*
  * $Log: JaxbReadImplTest.java,v $
+ * Revision 1.4  2008/09/10 23:27:20  pah
+ * moved all of http CEC and most of javaclass CEC code here into common library
+ *
  * Revision 1.3  2008/09/04 19:10:53  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescription.java,v 1.3 2008/09/04 19:10:53 pah Exp $
+ * $Id: CommandLineApplicationDescription.java,v 1.4 2008/09/10 23:27:19 pah Exp $
  *
  * Created on 25 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataAdapter;
@@ -41,16 +40,14 @@ public class CommandLineApplicationDescription extends AbstractApplicationDescri
   
     
     private final CeaCmdLineApplicationDefinition clapp;
-    private final Configuration conf;
-
     /** Construct a new CommandLineApplicationDescription
      * @param env
      * @param lib 
      */
     public CommandLineApplicationDescription(Configuration conf, MetadataAdapter ma) {
-        super(ma);
+        super(ma, conf);
         this.clapp = (CeaCmdLineApplicationDefinition) ma.getApplicationBase();
-        this.conf = conf;
+        
     }
 
     /**

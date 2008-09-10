@@ -1,5 +1,5 @@
 /*
- * $Id: Toolbuilder.java,v 1.2 2008/09/03 12:22:54 pah Exp $
+ * $Id: Toolbuilder.java,v 1.3 2008/09/10 23:27:18 pah Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
@@ -91,7 +92,7 @@ public abstract class Toolbuilder  {
         t.getOutput().addParameter(localfileout);
    }
 
-   public static Tool buildTool(String delay, CommandLineApplicationDescription testAppDescr) throws Exception {
+   public static Tool buildTool(String delay, AbstractApplicationDescription testAppDescr) throws Exception {
         // select the interface we're going to use.
         ApplicationInterface interf = testAppDescr.getInterface("I1");
         assert interf != null : "interface I1 not found for test application";
@@ -147,6 +148,9 @@ public abstract class Toolbuilder  {
 
 /*
  * $Log: Toolbuilder.java,v $
+ * Revision 1.3  2008/09/10 23:27:18  pah
+ * moved all of http CEC and most of javaclass CEC code here into common library
+ *
  * Revision 1.2  2008/09/03 12:22:54  pah
  * improve unit tests so that they can run in single eclipse gulp
  *

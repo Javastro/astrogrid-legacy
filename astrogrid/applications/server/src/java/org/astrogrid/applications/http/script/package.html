@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<!-- $Id: package.html,v 1.1 2008/09/10 23:27:18 pah Exp $ -->
+		<title>Applications</title>
+		<meta http-equiv="Content-Type" 
+			content="text/html; charset=ISO-8859-1"/>
+	</head>
+	<body>
+		<p>Classes to transform input parameters to and output results from the http service.
+			
+			This  allows extra parameters to be added in, parameters split up, etc. The flexibility gives a number of potential
+			benefits
+			<ul>it allows us to use more descriptive parameter names</ul>
+			<ul>it allows us to call services where the parameters aren't just 
+passed in as ?key=value pairs at the end of the url. Sometimes 'parameters' 
+make up part of the url itself.</ul>
+
+			Post-processing of the results might be required when an http service returns an html page for example, and the results need to be 
+			stripped out.
+			</p> 
+			<p> In general, SIAP services will not require this flexibility, 
+				therefore if no scripts are supplied in the registry, a default 
+				do-nothing transformation is used. </p>
+	</body>
+</html>

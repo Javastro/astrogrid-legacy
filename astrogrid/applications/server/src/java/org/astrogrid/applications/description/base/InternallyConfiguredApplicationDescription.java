@@ -1,5 +1,5 @@
 /*
- * $Id: InternallyConfiguredApplicationDescription.java,v 1.2 2008/09/03 14:18:42 pah Exp $
+ * $Id: InternallyConfiguredApplicationDescription.java,v 1.3 2008/09/10 23:27:16 pah Exp $
  * 
  * Created on 13 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,7 +16,6 @@ import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.AppMetadataAdapter;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 
 /**
  * Adds helper methods for static creation of application definitions.
@@ -27,7 +26,6 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 public abstract class InternallyConfiguredApplicationDescription extends
 	AbstractApplicationDescription {
 
-    protected final Configuration config;
     protected static BaseParameterDefinition addParameter(CeaApplication app, String id,
 	    ParameterTypes type, String name,  String description) {
 	        BaseParameterDefinition param = new BaseParameterDefinition();
@@ -47,8 +45,8 @@ public abstract class InternallyConfiguredApplicationDescription extends
     }
     public InternallyConfiguredApplicationDescription(CeaApplication base,
 	     Configuration configuration) {
-	super(new AppMetadataAdapter(base));
-	this.config = configuration;
+	super(new AppMetadataAdapter(base), configuration);
+	
 	
     }
  
@@ -58,6 +56,9 @@ public abstract class InternallyConfiguredApplicationDescription extends
 
 /*
  * $Log: InternallyConfiguredApplicationDescription.java,v $
+ * Revision 1.3  2008/09/10 23:27:16  pah
+ * moved all of http CEC and most of javaclass CEC code here into common library
+ *
  * Revision 1.2  2008/09/03 14:18:42  pah
  * result of merge of pah_cea_1611 branch
  *

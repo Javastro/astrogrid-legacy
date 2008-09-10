@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.5 2008/09/04 19:10:53 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.6 2008/09/10 23:27:19 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications.description.base;
 import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.contracts.MockCeaConfiguration;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.AppMetadataAdapter;
@@ -61,7 +62,7 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
         appIface.addInputParameter("foo");
         appIface.addOutputParameter("bar");
         appMeta.addInterface(appIface);
-	appDesc = new AbstractApplicationDescription(new AppMetadataAdapter(appMeta) ) {
+	appDesc = new AbstractApplicationDescription(new AppMetadataAdapter(appMeta), new MockCeaConfiguration() ) {
             public Application initializeApplication(String jobStepID, SecurityGuard secGuard, Tool tool )
                 throws Exception {
                 return null;
@@ -91,6 +92,9 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.6  2008/09/10 23:27:19  pah
+moved all of http CEC and most of javaclass CEC code here into common library
+
 Revision 1.5  2008/09/04 19:10:53  pah
 ASSIGNED - bug 2825: support VOSpace
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

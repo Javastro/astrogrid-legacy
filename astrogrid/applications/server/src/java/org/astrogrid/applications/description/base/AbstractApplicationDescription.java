@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.7 2008/09/04 19:10:52 pah Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.8 2008/09/10 23:27:16 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.InternalCEAComponents;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataAdapter;
@@ -60,17 +61,21 @@ public abstract class AbstractApplicationDescription implements ApplicationDescr
 
 private  InternalCEAComponents internalComponentFactory;
 
+protected final Configuration conf;
+
  
    
    /** 
     *  Construct a new AbstractApplicationDescription from an externally defined
+    * @param theConf 
     * @param env environment object (useful shared objects for application descriptions)
     */
-   public AbstractApplicationDescription(MetadataAdapter ma)
+   public AbstractApplicationDescription(MetadataAdapter ma, Configuration theConf)
    {
       this.metadataAdapter = ma;
       this.appBase = ma.getApplicationBase();
       this.resource = ma.getResource();
+      this.conf = theConf;
 
       assert appBase.isValid() : "ApplicationDescriptions should be passed  CeaApplications with valid BaseApplicationDescriptions";
       //make sure that the back reference to the application definition is set 

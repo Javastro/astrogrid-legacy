@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.2 2008/09/03 14:19:02 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.3 2008/09/10 23:27:17 pah Exp $
  * 
  * Created on 26 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.CEAConfiguration;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
+import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
@@ -51,12 +52,31 @@ public class ConfigFileReadingDescriptionLibraryTest {
 	assertNotNull(names);
 	assertTrue("there should be at least one application defined", names.length > 0);
     }
+    
+    @Test
+    public void testLoadJustApp() throws ApplicationDescriptionNotFoundException {
+	lib.loadApplications(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TestSingleApplicationConfig.xml"));
+	ApplicationDescription desc = lib.getDescription("ivo://org.testit/testappsingle");
+	assertNotNull("Should have found the singly defined application", desc);
+    }
+    
+    @Test
+    public void testIncorrectApp() {
+	boolean retval = lib.loadApplications(ConfigFileReadingDescriptionLibraryTest.class.getResource("/TestIncorrectApplicationDefn.xml"));
+	assertTrue("application loading should have failed for incorrect application definition",!retval);
+	String error = lib.getErrorMessage();
+	assertNotNull(error);
+        System.err.println(error);
+    }
 
 }
 
 
 /*
  * $Log: ConfigFileReadingDescriptionLibraryTest.java,v $
+ * Revision 1.3  2008/09/10 23:27:17  pah
+ * moved all of http CEC and most of javaclass CEC code here into common library
+ *
  * Revision 1.2  2008/09/03 14:19:02  pah
  * result of merge of pah_cea_1611 branch
  *

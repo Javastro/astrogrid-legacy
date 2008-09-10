@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.3 2008/09/10 23:27:17 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -12,11 +12,13 @@
 
 package org.astrogrid.applications.description;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
@@ -25,6 +27,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import net.ivoa.resource.Resource;
 import net.ivoa.resource.cea.CeaApplication;
 
 import org.apache.commons.logging.Log;
@@ -38,6 +41,7 @@ import org.astrogrid.applications.description.impl.CeaCmdLineApplicationDefiniti
 import org.astrogrid.applications.description.impl.CeaDBApplicationDefinition;
 import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
+import org.astrogrid.applications.http.HttpApplicationDescription;
 import org.astrogrid.contracts.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
 
@@ -55,21 +59,31 @@ public class ConfigFileReadingDescriptionLibrary extends
      */
     private static final Log logger = LogFactory
 	    .getLog(ConfigFileReadingDescriptionLibrary.class);
+    private ValidationEventCollector handler;
+    private boolean errorLoading = false;
     
     
-    private Configuration conf;
-    public ConfigFileReadingDescriptionLibrary(
+   public ConfigFileReadingDescriptionLibrary(
 	    
 	    Configuration conf
 	 ) {
 	super(conf);
-	this.conf = conf;
-	loadApplications();
+	try {
+	    errorLoading = loadApplications(conf.getApplicationDescriptionUrl());
+	} catch (IOException e) {
+	    errorLoading = true;
+	   logger.fatal("error while loading application definitions", e);
+	}
     }
    
-
-    public void loadApplications() {
-	ValidationEventCollector handler = new ValidationEventCollector();
+    /**
+     * load the applications from a particular file. The file must contain
+     * @param applicationDescriptionUrl = 
+     * @return TODO
+     */
+    protected boolean loadApplications(URL applicationDescriptionUrl) {
+	handler = new ValidationEventCollector();
+	boolean retval = true;
 
 	try {
 	    JAXBContext jc = CEAJAXBContextFactory.newInstance();
@@ -84,49 +98,37 @@ public class ConfigFileReadingDescriptionLibrary extends
 	    um.setSchema(schema);
 	    um.setEventHandler(handler);
 	    // Unmarshall the file into a content object
-	    CECConfig c = (CECConfig) um
-		    .unmarshal(conf.getApplicationDescriptionUrl());
+	    Object raw =  um.unmarshal(applicationDescriptionUrl);
+	    
+	    if(raw instanceof JAXBElement)
+	    {
+		//IMPL perhaps there is a way of making sure that JAXB2 can directly instantiate the classes, but this is here as a safetynet
+		// if a raw element has been returned
+		raw = ((JAXBElement)raw).getValue();
+	    }
+	    
+	    if(raw instanceof CECConfig){
+	    CECConfig c = (CECConfig)raw;
 	    
 	    //commonality here - the metadata definition is actually of a similar kind
 	    // each can have the same types of CEA applications..
 	    List<Object> appDefs = c.getCeaApplicationOrCeaDALServiceOrDBDefinition();
 	    for (Iterator iterator = appDefs.iterator(); iterator.hasNext();) {
 		Object object = (Object) iterator.next();
-		if (object instanceof CeaApplication) {
-		    CeaApplication ceaApp = (CeaApplication) object;
-		    ApplicationBase apptyp = ceaApp.getApplicationDefinition();
-		    if (apptyp instanceof CeaCmdLineApplicationDefinition) {
-			this.addApplicationDescription(new CommandLineApplicationDescription(conf,new AppMetadataAdapter(ceaApp)));
-			
-		    }
-		    else if (apptyp instanceof CeaDBApplicationDefinition) {
-			CeaDBApplicationDefinition cmdDef = (CeaDBApplicationDefinition) apptyp;
-			//FIXME need to be the factory for the DB application.
-		    }
-		    else if (apptyp instanceof CeaHttpApplicationDefinition) {
-			CeaHttpApplicationDefinition cmdDef = (CeaHttpApplicationDefinition) apptyp;
-			//FIXME need to be the factory for the application.
-		    }
-		    
-		    
-		} else if(object instanceof CEADALService){
-		    CEADALService  dalService = (CEADALService)object;
-		    ApplicationBase apptyp = dalService.getApplicationDefinition();
-		    if (apptyp instanceof CeaCmdLineApplicationDefinition) {
-			this.addApplicationDescription(new CommandLineApplicationDescription(conf,new ServiceMetadataAdapter(dalService)));
-			//FIXME need to take account of other application types...
-		    }
-
-		}
+		addSingleApplication(object);
 		
 	    }
+	    } else if (raw instanceof Resource){
+		addSingleApplication(raw);
+	    }
+	    else {
+		logger.fatal("unknown application definition class="+ raw.getClass().getCanonicalName());
+		retval = false;
+	    }
 	    
-//	    for (CeaCmdLineApplicationDefinition appDef : c.getCmdLineApplication()) {
-//		CommandLineApplicationDescription desc = new CommandLineApplicationDescription(appDef, this.env, this.lib, conf);
-//		this.addApplicationDescription(desc);
-//	    }
 	} catch (Exception e) {
-	    logger.fatal("error reading application definitions", e);
+	    retval = false;
+	    logger.fatal("error reading application definitions from "+ applicationDescriptionUrl, e);
 	    if (handler.hasEvents()) {
 		for (int i = 0; i < handler.getEvents().length; i++) {
 		    ValidationEvent event = handler.getEvents()[i];
@@ -135,13 +137,73 @@ public class ConfigFileReadingDescriptionLibrary extends
 
 	    }
 	}
-
+    return retval;
     }
 
+    private void addSingleApplication(Object object) {
+	if (object instanceof CeaApplication) {
+	    final CeaApplication ceaApp = (CeaApplication) object;
+	    addApp(ceaApp.getApplicationDefinition(), new AppMetadataAdapter(ceaApp));
+	} else if(object instanceof CEADALService){
+	    final CEADALService  dalService = (CEADALService)object;
+	    ApplicationBase apptyp = dalService.getApplicationDefinition();
+	    addApp(apptyp, new ServiceMetadataAdapter(dalService));
+		
+
+	}
+    }
+
+
+    private void addApp(ApplicationBase apptyp, MetadataAdapter ma) {
+	
+	if (apptyp instanceof CeaCmdLineApplicationDefinition) {
+	this.addApplicationDescription(new CommandLineApplicationDescription(conf,ma));
+	
+	}
+	else if (apptyp instanceof CeaDBApplicationDefinition) {
+	CeaDBApplicationDefinition cmdDef = (CeaDBApplicationDefinition) apptyp;
+	//FIXME need to be the factory for the DB application.
+	}
+	else if (apptyp instanceof CeaHttpApplicationDefinition) {
+	this.addApplicationDescription(new HttpApplicationDescription(conf, ma));
+	}
+    }
+
+    /**
+     * return if there was an error in the last reading of a config file.
+     * @return
+     */
+    public boolean isErrorLoading() {
+        return errorLoading;
+    }
+
+    /**
+     * Return the error message associated with the last reading of a config file.
+     * @return
+     */
+    public String getErrorMessage() {
+	if (errorLoading) {
+	    if (handler.hasEvents()) {
+		StringBuffer error = new StringBuffer();
+		for (ValidationEvent event : handler.getEvents()) {
+		    error.append(event.toString());
+		    error.append("\n");
+		}
+		return error.toString();
+	    } else {
+              return "unknown error - see log files for more detail";
+	    }
+	} else {
+           return null;
+	}
+    }
 }
 
 /*
  * $Log: ConfigFileReadingDescriptionLibrary.java,v $
+ * Revision 1.3  2008/09/10 23:27:17  pah
+ * moved all of http CEC and most of javaclass CEC code here into common library
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

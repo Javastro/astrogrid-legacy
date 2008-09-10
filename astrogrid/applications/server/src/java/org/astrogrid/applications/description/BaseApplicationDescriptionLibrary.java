@@ -24,6 +24,7 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
  * <p />
  * Unsurprisingly, based on a map. Provides methods to add descriptions to the library. 
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2004
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 10 Sep 2008
  *
  */
 public class BaseApplicationDescriptionLibrary implements ApplicationDescriptionLibrary, ComponentDescriptor {
@@ -72,7 +73,7 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
     public void addApplicationDescription(ApplicationDescription desc) {
        
         String shortname = desc.getName().replaceAll("\\s", "");
-        logger.info("Adding description for " + desc.getId() + " with shortname="+shortname);
+        logger.info("Adding description for " + desc.getId() + " with shortname="+shortname+" type="+desc.getClass().getCanonicalName());
         descMap.put(desc.getId(),desc);
         shortMap.put(shortname, desc);
         

@@ -1,5 +1,5 @@
 /*
- * $Id: DBApplicationDescription.java,v 1.3 2008/09/04 19:10:54 pah Exp $
+ * $Id: DBApplicationDescription.java,v 1.4 2008/09/10 23:27:19 pah Exp $
  * 
  * Created on 13 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -29,14 +29,12 @@ import org.astrogrid.security.SecurityGuard;
 public class DBApplicationDescription extends AbstractApplicationDescription {
 
     protected DataSource ds;
-    protected Configuration conf;
     protected ProtocolLibrary lib;
 
     public DBApplicationDescription( MetadataAdapter ma,
 	    Configuration conf, DataSource ds) {
-	super(ma);//FIXME what if the application definition is not in the resource...
+	super(ma, conf);//FIXME what if the application definition is not in the resource...
 	this.ds = ds;
-	this.conf = conf;
 	this.lib = lib;
     }
 
@@ -52,6 +50,9 @@ public class DBApplicationDescription extends AbstractApplicationDescription {
 
 /*
  * $Log: DBApplicationDescription.java,v $
+ * Revision 1.4  2008/09/10 23:27:19  pah
+ * moved all of http CEC and most of javaclass CEC code here into common library
+ *
  * Revision 1.3  2008/09/04 19:10:54  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
