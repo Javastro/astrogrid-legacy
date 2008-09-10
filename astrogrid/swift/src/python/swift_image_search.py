@@ -3,6 +3,7 @@ import string, sys, os, time, random
 from astrogrid import acr
 from astrogrid import SiapSearch
 from astrogrid import MySpace
+from astrogrid import utils
 
 #
 # Global arguments passed in...
@@ -23,7 +24,6 @@ odir = ''
 # arg5: name of VOSpace directory for holding image results
 #
 def validateArgs():
-#	print 'entry: validateArgs()'
 	global ra, dec, radius, ifile, odir
 	# If no arguments were given, print a helpful message
 	if len(sys.argv)!=6:
@@ -35,7 +35,6 @@ def validateArgs():
 		radius = float( sys.argv[3] )
 		ifile = sys.argv[4]
 		odir = sys.argv[5]
-#	print 'exit: validateArgs()'
 	return
 
 #
@@ -92,9 +91,6 @@ print( 'Making myspace dir at ' + time.strftime('%T') )
 m.mkdir( '#' + odir )
 print( 'Myspace dir made by ' + time.strftime('%T') )
 
-#siap = SiapSearch( 'ivo://archive.eso.org/dss' )
-#print siap.info['content']['description']
-
 # Trigger off the image searches on separate threads...
 # We have a list sources...
 sIndex = 0
@@ -105,6 +101,8 @@ for s in sources:
 		print i[0] 
 		# Generate a service for each ivorn...
 		siap = SiapSearch( i[0] ) 
+#   print '=============================================='
+#		print siap.info['content']['description']
 		i.append( siap )
 		# Generate a directory in vospace for each service's results...
 		imageDir = '#' + odir + '/' + str(sIndex) + '_' + str(iIndex)
@@ -112,9 +110,9 @@ for s in sources:
 		# Start the execution on a separate thread...
 		formats = 'image/fits,image/png,image/jpeg'
 		res, thread = siap.execute( ra, dec, radius, format='image/fits', saveDatasets = imageDir )
-		i.append( thread ) # save the thread in the list for later referencing
-		i.append( False )  # for each thread save its state as not finished. An optimization.
-#		print siap.info['content']['description']
+		i.append( res )    # save the result field. INDEX 2
+		i.append( thread ) # save the thread in the list for later referencing. INDEX 3
+		i.append( False )  # for each thread save its state as not finished. An optimization. INDEX 4
 		iIndex = iIndex+1
 	sIndex = sIndex+1
 
@@ -127,13 +125,23 @@ while count < 60 :
 	for s in sources:
 		for i in s:
       # Only if we have not flagged it as already finished...
-			if i[3] == False:
+			if i[4] == False:
       	# If one thread in a source is finished, that's good enough...
-				if i[2].isAlive() == False:
-					print 'Finished: ' + i[0] 
+				if i[3].isAlive() == False:
+					print 'Finished: ' + i[0]
+					print '==== res: =============' 
+					if len( i[2] ) > 0: 
+						try:
+							vot = utils.read_votable( i[2], ofmt='votable' )
+							print( vot.printAllNodes() )
+						except:
+							print 'Bad vot'
+					else:
+						print 'No result!'
+					print ' '
 					sourcesFinished = sourcesFinished+1 
-					i[3] = True # flag this one as finished. An optimization.
-			breakf
+					i[4] = True # flag this one as finished. An optimization.
+			break
 	if sourcesFinished == len( sources ):
 		print 'About to break on count of ' + str( count ) 
 		break 
@@ -150,10 +158,11 @@ sIndex = 0
 for s in sources:
 	iIndex = 0
 	for i in s:
-		if i[2].isAlive() == False:
+		if i[4] == True:
 			d = odir + '/' + str(sIndex) + '_' + str(iIndex)
+			# This call to myspace is the real killer bottle neck...
 			print 'Retrieving directory list for ' + d + 'starting at ' + time.strftime('%T')
-			list = m.ls( directory= '#' + d ) ;
+			list = m.ls( directory= '#' + d ) 
 			print 'Directory list retrieved by ' + time.strftime('%T')
 			# We only try if there are any results to download...
 			if len( list ) > 0:
