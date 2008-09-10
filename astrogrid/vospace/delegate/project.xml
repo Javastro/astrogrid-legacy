@@ -353,7 +353,8 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/DSAQueryTestCase.java</include>
+                <include>**/AGVOSpaceDelegateTestCase.java</include>
+                <!--include>**/DSAQueryTestCase.java</include-->
                 <!--include>**/*TestCase.java</include-->
 
             </includes>

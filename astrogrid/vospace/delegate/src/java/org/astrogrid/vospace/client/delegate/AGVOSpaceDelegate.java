@@ -15,20 +15,14 @@
  */
 package org.astrogrid.vospace.client.delegate ;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.registry.RegistryException;
-
-import org.astrogrid.vospace.v11.client.system.SystemDelegate;
+import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
 
 /**
- * Interface for an AstroGrid  VOSpace delegate.
+ * Interface for an AstroGrid VOSpace delegate.
  *
  */
 public interface AGVOSpaceDelegate
-extends SystemDelegate
+extends StreamingDelegate
     {
 
     }

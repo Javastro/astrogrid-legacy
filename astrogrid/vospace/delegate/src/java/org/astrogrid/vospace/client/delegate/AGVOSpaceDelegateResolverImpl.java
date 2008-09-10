@@ -32,15 +32,15 @@ import org.astrogrid.vospace.v11.client.transfer.export.ExportHandler ;
 import org.astrogrid.vospace.v11.client.transfer.inport.http.HttpPutInportHandlerImpl ;
 import org.astrogrid.vospace.v11.client.transfer.export.http.HttpGetExportHandlerImpl ;
 
-import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
-import org.astrogrid.vospace.v11.client.system.SystemDelegateResolverImpl;
+import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateResolver;
+import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateResolverImpl;
 
 /**
  * AstroGrid VOSpaceDelegateResolver implementation.
  *
  */
 public class AGVOSpaceDelegateResolverImpl
-extends SystemDelegateResolverImpl
+extends StreamingDelegateResolverImpl
 implements AGVOSpaceDelegateResolver
     {
 

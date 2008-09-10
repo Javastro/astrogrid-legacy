@@ -20,18 +20,18 @@ import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.security.SecurityGuard;
 
-import org.astrogrid.vospace.v11.client.system.SystemDelegate;
-import org.astrogrid.vospace.v11.client.system.SystemDelegateImpl;
-
 import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolver;
 import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolverImpl;
+
+import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
+import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateImpl;
 
 /**
  * AstroGrid VOSpace delegate implementation.
  *
  */
 public class AGVOSpaceDelegateImpl
-extends SystemDelegateImpl
+extends StreamingDelegateImpl
 implements AGVOSpaceDelegate
     {
 

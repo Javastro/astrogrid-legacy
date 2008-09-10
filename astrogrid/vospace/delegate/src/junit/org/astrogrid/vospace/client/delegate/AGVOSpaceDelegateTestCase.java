@@ -33,12 +33,6 @@ import org.astrogrid.vospace.v11.client.node.NodeTypeEnum ;
 
 import org.astrogrid.vospace.v11.client.exception.* ;
 
-import org.astrogrid.vospace.v11.client.transfer.inport.InportConnection ;
-import org.astrogrid.vospace.v11.client.transfer.inport.InportTransferResponse ;
-
-import org.astrogrid.vospace.v11.client.transfer.export.ExportConnection ;
-import org.astrogrid.vospace.v11.client.transfer.export.ExportTransferResponse ;
-
 import org.astrogrid.vospace.v02.junit.TestBase ;
 
 /**
@@ -150,7 +144,6 @@ extends TestBase
         //
         // Create our delegate.
         final AGVOSpaceDelegate delegate = resolver.resolve();
-
         //
         // Create our root node.
         // (using .auto to generate a new root node for each test).
@@ -158,7 +151,6 @@ extends TestBase
             NodeTypeEnum.TREE_NODE,
             vosrn(".auto")
             );
-
         log.debug("Root created");
         log.debug("  URI  [" + root.uri()  + "]");
         log.debug("  Type [" + root.type() + "]");
@@ -166,13 +158,12 @@ extends TestBase
         log.debug("  Path [" + root.path() + "]");
 
         //
-        // Create a tree node.
-        // (ading 'tree' to the unique root for this test).
+        // Create a tree node, 
+        // (adding 'tree' to the unique root for this test).
         final Node tree = delegate.create(
             NodeTypeEnum.TREE_NODE,
             root.vosrn().append("tree")
             );
-
         log.debug("Tree created");
         log.debug("  URI  [" + tree.uri()  + "]");
         log.debug("  Type [" + tree.type() + "]");
@@ -180,55 +171,18 @@ extends TestBase
         log.debug("  Path [" + tree.path() + "]");
 
         //
-        // Initiate an import transfer to 'tree/file'.
-        // (ading 'tree/file' to the unique root for this test).
-        // (defaults to creating FILE_NODE with application/binary format).
-        InportTransferResponse inport = delegate.inport(
-            NodeTypeEnum.FILE_NODE,
+        // Open a stream to write data into 'tree/file'.
+        // (creating a FILE_NODE and sending data using the default application/binary format)
+        OutputStream output = delegate.write(
             root.vosrn().append("tree/file")
             );
-
-        log.debug("Transfer initiated");
-        log.debug("  Node [" + inport.node().uri() + "]");
-        log.debug("  Type [" + inport.node().type() + "]");
-        log.debug("  Name [" + inport.node().name() + "]");
-        log.debug("  Path [" + inport.node().path() + "]");
-        log.debug("  View [" + inport.view() + "]");
-
-// @TODO
-// Add 'first()' method to just get the first connection.
-
         //
-        // Get the list of connections.
-        Iterator<InportConnection> inports = inport.connections().iterator();
-        //
-        // Check if we have any conenctions.
-        if (inports.hasNext())
-            {
-            //
-            // Get the first connection.
-            InportConnection connection = inports.next();
-            //
-            // Open the stream and write some data.
-            try {
-                this.write(
-                    connection.stream(),
-                    100,
-                    100
-                    );
-// @TODO
-// Check the connection response code.
-                }
-            catch (IOException ouch)
-                {
-                log.error("IOException during data transfer [" + connection.endpoint() + "][" + ouch.getMessage() + "]");
-                }
-            }
-        //
-        // If we don't have any connections.
-        else {
-            log.error("No connections available");
-            }
+        // Write some test data into the file.
+        this.write(
+            output,
+            100,
+            100
+            );
         }
 
 
@@ -257,7 +211,6 @@ extends TestBase
             NodeTypeEnum.TREE_NODE,
             vosrn(".auto")
             );
-
         log.debug("Root created");
         log.debug("  URI  [" + root.uri()  + "]");
         log.debug("  Type [" + root.type() + "]");
@@ -271,7 +224,6 @@ extends TestBase
             NodeTypeEnum.TREE_NODE,
             root.vosrn().append("tree")
             );
-
         log.debug("Tree created");
         log.debug("  URI  [" + tree.uri()  + "]");
         log.debug("  Type [" + tree.type() + "]");
@@ -279,97 +231,31 @@ extends TestBase
         log.debug("  Path [" + tree.path() + "]");
 
         //
-        // Initiate an import transfer to 'tree/file'.
-        // (ading 'tree/file' to the unique root for this test).
-        // (defaults to creating FILE_NODE with application/binary format).
-        InportTransferResponse inport = delegate.inport(
+        // Open a stream to write data into 'tree/file'.
+        // (creating a FILE_NODE and sending data using the default application/binary format)
+        OutputStream output = delegate.write(
             root.vosrn().append("tree/file")
             );
-
-        log.debug("Transfer initiated");
-        log.debug("  Node [" + inport.node().uri() + "]");
-        log.debug("  Type [" + inport.node().type() + "]");
-        log.debug("  Name [" + inport.node().name() + "]");
-        log.debug("  Path [" + inport.node().path() + "]");
-        log.debug("  View [" + inport.view() + "]");
-
-// @TODO
-// Add 'first()' method to just get the first connection.
-
         //
-        // Get the list of connections.
-        Iterator<InportConnection> inports = inport.connections().iterator();
+        // Write some test data into the file.
+        this.write(
+            output,
+            100,
+            100
+            );
         //
-        // Check if we have any conenctions.
-        if (inports.hasNext())
-            {
-            //
-            // Get the first connection.
-            InportConnection connection = inports.next();
-            //
-            // Open the stream and write some data.
-            try {
-                this.write(
-                    connection.stream(),
-                    100,
-                    100
-                    );
-// @TODO
-// Check the connection response code.
-                }
-            catch (IOException ouch)
-                {
-                log.error("IOException during data transfer [" + connection.endpoint() + "][" + ouch.getMessage() + "]");
-                }
-            }
-        //
-        // If we don't have any connections.
-        else {
-            log.error("No connections available");
-            }
-
-        // Initiate an export transfer from 'tree/file'.
-        // (ading 'tree/file' to the unique root for this test).
-        ExportTransferResponse export = delegate.export(
+        // Open a stream to read data from 'tree/file'.
+        // (requesting the data in whatever format it was stored in)
+        InputStream input = delegate.read(
             root.vosrn().append("tree/file")
             );
-        log.debug("Transfer initiated");
-        log.debug("  View [" + export.view() + "]");
-
-// @TODO
-// Add 'first()' method to just get the first connection.
-
         //
-        // Get the list of connections.
-        Iterator<ExportConnection> exports = export.connections().iterator();
-        //
-        // Check if we have any conenctions.
-        if (exports.hasNext())
-            {
-            //
-            // Get the first connection.
-            ExportConnection connection = exports.next();
-            //
-            // Open the stream and read some data.
-            try {
-                this.read(
-                    connection.stream(),
-                    100,
-                    100
-                    );
-// @TODO
-// Check the connection response code.
-                }
-            catch (IOException ouch)
-                {
-                log.error("IOException during data transfer [" + connection.endpoint() + "][" + ouch.getMessage() + "]");
-                }
-            }
-        //
-        // If we don't have any connections.
-        else {
-            log.error("No connections available");
-            }
+        // Read the data from the file.
+        this.read(
+            input,
+            100,
+            100
+            );
         }
     }
 

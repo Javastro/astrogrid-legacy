@@ -20,15 +20,15 @@ import java.net.URISyntaxException;
 
 import org.astrogrid.security.SecurityGuard;
 
-import org.astrogrid.vospace.v11.client.system.SystemDelegate;
-import org.astrogrid.vospace.v11.client.system.SystemDelegateResolver;
+import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
+import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateResolver;
 
 /**
  * Interface for an AstroGrid AGVOSpaceDelegate resolver.
  *
  */
 public interface AGVOSpaceDelegateResolver
-extends SystemDelegateResolver
+extends StreamingDelegateResolver
     {
 
     /**
