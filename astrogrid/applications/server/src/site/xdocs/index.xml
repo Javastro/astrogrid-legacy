@@ -1,52 +1,34 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
 	<properties>
-		<author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
-		<title>Command-line CEC: overview</title>
+		<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+		<title>CEA Library: overview</title>
 	</properties>
 	<body>
 		<section name="Overview">
-			<p> This component provides a Common Execution Connector web-service for Java-class applications.
-				applications (JC-CEC for short). The JC-CEC makes astronomy applications available to the
-				virtual observatory; notably, it makes them visible to AstroGrid's web portal, desktop UI
-				and workflow system.</p>
-			<p> Suitable applications for this kind of CEC (there are other kinds) are Java classes with
-				static methods, have no graphical interface, and need no user interaction once launched.
-				</p>
-			<p> You should install this component if you wish to allow virtual-observatory users to run
-				selected applications on your computer. You choose the applications that may be run.
-				You must obtain and install these applications; they are not supplied with the JC-CEC.
-				The applications will run on the computer where you install
-				the service, and you must provide sufficent resources (CPU, memory, disc space) for the
-				applications to run efficiently. </p>
-			<p> If your application is to serve archive data then this may not be the ideal component. You
-				should look first at the Data Set Access (DSA) component of AstroGrid.</p>
-			<p>
-				If your applications are not Java classes but are runnable from a command line, then you
-				should look instead at the command-line CEC (CL-CEC).
-			</p>
-			<p> If your application has a web interface instead of a command-line interface then you
-				should not use this component but should use instead the HTTP-CEC component of AstroGrid
-				(but only if the interface is based on the HTTP-get protocol; HTTP-post is not supported).
-				If the application has both command-line and web interfaces then you can use either of the
-				two components. </p>
+			<p> This component provides the common library for the Astrogrid Common Execution Architecture (CEA). This library contains the
+         bulk of the CEA code, but does not supply an environment in which the code runs. Other components bundle this
+         library to create a working service - for instance the Common Execution Controller (CEC) component</p>
+         
+			<p> You can use this library as the basis for creating your own form of IVOA compliant web service.</p>
 			
-			<subsection name="Internal web-pages and local controls">
+			<subsection name="Internals">
 				<p>
-					The CEC web-application contains a copy of these web-pages. If you install the web
-					application as, say, <i>CEC-1</i> on server <i>my.cea.server</i> on port <i>8081</i>,
-					then the internal web pages are at
+					The library is designed as a collection of pluggable software modules that can be constructed into a working
+               system. One of the main design aims of the modules is that the so called "inversion of control" paradigm is used, which
+               means that all of a particular classes dependencies are "injected" into the class at construction time. These sorts of collections of 
+               classes typically are then instantiated by a "container", that offers services such as dynamic configuration.
 				</p>
-				<pre>
-					http://my.cea.server:8081/CEC-1/
-				</pre>
-				<p>	
-					The internal copy of the pages
-					has, in its sidebar, extra links leading to local controls for configuration, testing and
-					registration. Therefore, while setting up the CEC, you should look at the internal pages.
-					If you can't find the controls, you're probably reading the web pages on 
-					<i>software.astrogrid.org</i> instead.
+				<p>The container that has been chosen for this implementation is the <a href="http://www.springframework.org/">Spring Framework</a>. The
+                master Spring configuration file is located at <tt>/org/astrogrid/applications/component/ceaspring.xml</tt>, and this file constructs a "working" CEC, but without any particular
+                external transport configured - (c.f. the standard CEC (in another project) has a SOAP and REST webservice interface to the CEC configured also)
+                Such an interfaceless CEC could be used in a specialized Java application to run CEAApplication locally for instance.
+                
 				</p>
+                <p>
+                It should be relatively easy to use a different container technology to create a working CEC as the only class that is directly aware of the interaction with Spring is
+                the org.astrogrid.applications.component.CEAComponentContainer class. However, there are numerous unit tests that do depend directly on Spring.
+                </p>
 			</subsection>
 		</section>
 	</body>
