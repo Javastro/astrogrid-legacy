@@ -52,11 +52,6 @@
 <!-- I think that this can go.. -->
 <bean id="AppAuthorityIDResolver" class="org.astrogrid.applications.description.base.TestAuthorityResolver">
 </bean>
-
-
-<bean id="ApplicationDescriptionLibrary" class="org.astrogrid.applications.http.HttpApplicationDescriptionLibrary">
-	
-</bean>
  
 <bean id="RegistryAdminLocator" class="org.astrogrid.applications.description.registry.MockRegistryAdminService">
 	
@@ -76,9 +71,5 @@
 <property name="maxRunTime" value="4" />   
 </bean>
 
-<bean id="RegistryQuerier" class="org.astrogrid.applications.http.test.TestRegistryQuerier"></bean>
+<bean id="RegistryQuerier" class="org.astrogrid.applications.http.test.TestHttpApplicationLibrary"></bean>
 
-<!-- not sure that this level of abstraction is really necessary... -->
-<bean id="RegistryQueryLocator" class="org.astrogrid.applications.http.test.TestRegistryLocator"/>
-
-</beans>
