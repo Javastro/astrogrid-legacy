@@ -1,34 +1,39 @@
 #
 # File containing service ivorns for SIAP searches.
-# Take care that ivorns DO NOT HAVE any white space at the end!!!
+# The format is...
+#
+# integer
+# [ directory name for results from this service | ivorn of service ]
+#
+# where integer is the number of services to use as alternatives for a given source.
 #
 # ESO:
 2
-ivo://archive.eso.org/dss
-ivo://archive.eso.org/siap
+[ESO_DSS | ivo://archive.eso.org/dss]
+[ESI_SIAP | ivo://archive.eso.org/siap]
 #
 # Heidelberg Digitized Astronomical Plates:
 1
-ivo://org.gavo.dc/lswscans/res/positions/siap
+[HDAP | ivo://org.gavo.dc/lswscans/res/positions/siap]
 #
 # HST:
 1
-ivo://obelix.lambrate.inaf.it/vodb/SIAP_CDFS
-ivo://opo.stsci/hst_pr_sia
+[SIAP_CDFS | ivo://obelix.lambrate.inaf.it/vodb/SIAP_CDFS]
+#[HST_PR_SIA |ivo://opo.stsci/hst_pr_sia]
 #
 # INT/WFS:
 1
-ivo://uk.ac.cam.ast/INT-WFS/images/SIAP-atlas
+[INTWFS_SIAP_ATLAS | ivo://uk.ac.cam.ast/INT-WFS/images/SIAP-atlas]
 #
 # ROSAT:
 1
-ivo://www.g-vo.org/sia.service.rosat
+[ROSAT | ivo://www.g-vo.org/sia.service.rosat]
 #
 # SSS:
 1
-ivo://wfau.roe.ac.uk/sss-siap
+[SSS | ivo://wfau.roe.ac.uk/sss-siap]
 #
 # UKIDSS:
 2
-ivo://wfau.roe.ac.uk/ukidss-siap
-ivo://wfau.roe.ac.uk/ukidssdr2-siap
+[UKIDSS | ivo://wfau.roe.ac.uk/ukidss-siap]
+[UKIDSS2 | ivo://wfau.roe.ac.uk/ukidssdr2-siap]
