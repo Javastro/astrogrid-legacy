@@ -13,7 +13,7 @@
       <version>2008.2-SNAPSHOT</version>
    </parent>
    <name>Astrogrid sub-system contracts</name>
-   <version>2008.2-SNAPSHOT</version>
+   <version>2008.2</version>
    <description>
       Contracts for interfaces to major components of AstroGrid. The
       contracts contain the XML schemata for the interfaces plus textual
@@ -100,8 +100,8 @@
       <dependency>
          <artifactId>servlet-api</artifactId>
          <groupId>javax.servlet</groupId>
-         <version>2.4</version>
-         <scope>supplied</scope>
+         <version>2.3</version>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>javax.xml.bind</groupId>
