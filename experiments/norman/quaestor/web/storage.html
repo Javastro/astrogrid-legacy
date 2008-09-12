@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Quaestor: persistent storage</title>
+<link rel='stylesheet' type='text/css' href='base.css'/>
+</head>
+
+<body>
+
+<h1>Persistent storage of models</h1>
+
+<p>The models in a Quaestor knowledgebase are by default transient –
+if the Quaestor server is stopped, then the contents of the
+knowledgebase disappear.  It is possible, however, to create a
+persistent model (or, in Quaestor’s terms, a persistent submodel
+within a ‘knowledgebase’), backed by a database, which will persist
+between Quaestor invocations.</p>
+
+<h2>Jena SDB</h2>
+
+<p>The only persistence mechanism currently implemented in Quaestor is
+one which uses the <a href='http://jena.sourceforge.net/SDB/'>Jena SDB
+interface</a>.</p>
+
+<p>To use this persistence mechanism, you must set up and initialise
+your SDB database, as discussed at <a
+href='http://jena.sourceforge.net/SDB/'>the Jena SDB support
+pages</a>.  This is unfortunately a rather fiddly process.</p>
+
+<p>Having done that, you create a new submodel for the knowledgebase,
+by uploading RDF as described <a href='http.html'>elsewhere</a>.  In
+this case, however, rather than the RDF being the content of the
+submodel, it is a specification of the connection to the SDB database,
+as described in <a
+href='http://jena.hpl.hp.com/wiki/SDB/Store_Description' >the SDB
+documentation</a>.  For example, if you had set up SDB
+using a PostgreSQL database named <code>sdb1</code>, with a username
+of <code>postgres</code>, then this configuration file might look as
+follows:</p>
+<pre>
+@prefix rdf:      &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix sdb:      &lt;http://jena.hpl.hp.com/2007/sdb#&gt; .
+
+[] rdf:type sdb:Store;
+        sdb:layout      "layout2/index";
+        sdb:connection  _:c.
+
+_:c rdf:type sdb:SDBConnection;
+        sdb:sdbType     "postgresql";
+        sdb:sdbHost     "localhost";
+        sdb:sdbName     "sdb1";
+        sdb:sdbUser     "postgres";
+        sdb:driver      "org.postgresql.Driver".
+</pre>
+
+<p>After that, the contents of the SDB store will appear as part of
+the knowledgebase containing this submodel.</p>
+
+
+</body>
+</html>
