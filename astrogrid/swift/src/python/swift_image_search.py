@@ -7,12 +7,27 @@ from astrogrid import utils
 
 #
 # Global arguments passed in...
-#
 ra = 0
 dec = 0
 radius = 0
 ifile = ''
 odir = ''
+
+#
+# Index into sources/services list...
+SI_IMAGE_OUTPUT_DIRECTORY = 0
+SI_IVORN = 1
+SI_SIAP_SERVICE_OBJECT = 2
+SI_RESULT = 3
+SI_THREAD = 4
+SI_FINISHED = 5
+
+#
+# Format of image files requested.
+# Can be a coma-delimited string:
+# FORMAT = 'image/fits,image/png,image/jpeg,imag/gif'
+#
+FORMAT = 'image/fits'
 
 #
 # Validate arguments passed.
@@ -60,9 +75,20 @@ def processIvornFile( filePath ):
 					sources.append( ivorns )
 					ivorns = []
 			else:
-				# We make the ivorn itself a first item in a list.
-				# Subsequently we will add the service and its thread of execution.
-				ivorns.append( [l] )
+				# For each service we make the name of the output directory
+				# and the ivorn itself a first item in a list.
+				# Subsequently we will add the service object itself.
+				lbrace = l.rfind( '[' )
+				rbrace = l.rfind( ']' )
+				if lbrace == -1 or rbrace == -1:
+					print 'Malformed line in ivorn file: ' + l
+				else:
+					l = l[lbrace+1:rbrace]
+#					print l
+					bits = l.split( '|' )
+					# save the name of the given output directory for this service and its ivorn together...
+					ivorns.append( [ bits[0].strip(), bits[1].strip() ] ) 
+#					print ivorns
 	if len( ivorns ) > 0:
 		sources.append( ivorns )
 	return sources
@@ -98,21 +124,20 @@ for s in sources:
 	# We have a list of ivorns for each source...
 	iIndex = 0
 	for i in s:
-		print i[0] 
+		print i[ SI_IVORN ] 
 		# Generate a service for each ivorn...
-		siap = SiapSearch( i[0] ) 
+		siap = SiapSearch( i[ SI_IVORN ] ) 
 #   print '=============================================='
 #		print siap.info['content']['description']
-		i.append( siap )
+		i.append( siap )   # INDEX 2
 		# Generate a directory in vospace for each service's results...
-		imageDir = '#' + odir + '/' + str(sIndex) + '_' + str(iIndex)
+		imageDir = '#' + odir + '/' + i[ SI_IMAGE_OUTPUT_DIRECTORY ]
 		m.mkdir( imageDir )
 		# Start the execution on a separate thread...
-		formats = 'image/fits,image/png,image/jpeg'
-		res, thread = siap.execute( ra, dec, radius, format='image/fits', saveDatasets = imageDir )
-		i.append( res )    # save the result field. INDEX 2
-		i.append( thread ) # save the thread in the list for later referencing. INDEX 3
-		i.append( False )  # for each thread save its state as not finished. An optimization. INDEX 4
+		res, thread = siap.execute( ra, dec, radius, format=FORMAT, saveDatasets = imageDir )
+		i.append( res )    # save the result field. INDEX 3
+		i.append( thread ) # save the thread in the list for later referencing. INDEX 4
+		i.append( False )  # for each thread save its state as not finished. An optimization. INDEX 5
 		iIndex = iIndex+1
 	sIndex = sIndex+1
 
@@ -125,22 +150,22 @@ while count < 60 :
 	for s in sources:
 		for i in s:
       # Only if we have not flagged it as already finished...
-			if i[4] == False:
+			if i[ SI_FINISHED ] == False:
       	# If one thread in a source is finished, that's good enough...
-				if i[3].isAlive() == False:
-					print 'Finished: ' + i[0]
-					print '==== res: =============' 
-					if len( i[2] ) > 0: 
+				if i[ SI_THREAD ].isAlive() == False:
+					print 'Finished: ' + i[ SI_IVORN ]
+#					print '==== res: =============' 
+					if i[ SI_RESULT ]: 
 						try:
-							vot = utils.read_votable( i[2], ofmt='votable' )
-							print( vot.printAllNodes() )
+							vot = utils.read_votable( i[ SI_RESULT ], ofmt='votable' )
+#							print( vot.printAllNodes() )
 						except:
-							print 'Bad vot'
+							print i[ SI_IVORN ] + ': bad vot!'
 					else:
-						print 'No result!'
+						print i[ SI_IVORN ] + ': no result!'
 					print ' '
 					sourcesFinished = sourcesFinished+1 
-					i[4] = True # flag this one as finished. An optimization.
+					i[ SI_FINISHED ] = True # flag this one as finished. An optimization.
 			break
 	if sourcesFinished == len( sources ):
 		print 'About to break on count of ' + str( count ) 
@@ -151,6 +176,7 @@ while count < 60 :
 
 #
 # At least one service for each source has returned.
+# (Idea: place the downloads from one service on a separate thread)
 # We start the download process...
 #
 print( 'Downloading results at ' + time.strftime('%T') )
@@ -158,10 +184,10 @@ sIndex = 0
 for s in sources:
 	iIndex = 0
 	for i in s:
-		if i[4] == True:
-			d = odir + '/' + str(sIndex) + '_' + str(iIndex)
+		if i[ SI_FINISHED ] == True:
+			d = odir + '/' + i[ SI_IMAGE_OUTPUT_DIRECTORY ]
 			# This call to myspace is the real killer bottle neck...
-			print 'Retrieving directory list for ' + d + 'starting at ' + time.strftime('%T')
+			print 'Retrieving directory list for ' + d + ' starting at ' + time.strftime('%T')
 			list = m.ls( directory= '#' + d ) 
 			print 'Directory list retrieved by ' + time.strftime('%T')
 			# We only try if there are any results to download...
