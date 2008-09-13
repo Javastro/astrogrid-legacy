@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractMetadataAdapter.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: AbstractMetadataAdapter.java,v 1.3 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 27 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -11,18 +11,6 @@
  */
 
 package org.astrogrid.applications.description;
-
-import java.io.IOException;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-
-import org.astrogrid.applications.description.base.ApplicationBase;
-import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
-import org.astrogrid.contracts.Namespaces;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import net.ivoa.resource.Resource;
 
@@ -44,6 +32,9 @@ public abstract class AbstractMetadataAdapter implements MetadataAdapter {
 
 /*
  * $Log: AbstractMetadataAdapter.java,v $
+ * Revision 1.3  2008/09/13 09:51:05  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

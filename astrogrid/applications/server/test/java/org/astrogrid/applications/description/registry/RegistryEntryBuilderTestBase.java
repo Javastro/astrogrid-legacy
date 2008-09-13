@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTestBase.java,v 1.8 2008/09/03 14:19:00 pah Exp $
+ * $Id: RegistryEntryBuilderTestBase.java,v 1.9 2008/09/13 09:51:02 pah Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -60,7 +60,8 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
    private static final Log logger 
        = LogFactory.getLog(RegistryEntryBuilderTestBase.class);
    
-   protected void setUp() throws Exception {
+   @Override
+protected void setUp() throws Exception {
      super.setUp();
      ApplicationDescriptionLibrary lib = createDesciptionLibrary();
      Configuration configuration = new MockNonSpringConfiguredConfig();
@@ -124,6 +125,9 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
 
 /*
  * $Log: RegistryEntryBuilderTestBase.java,v $
+ * Revision 1.9  2008/09/13 09:51:02  pah
+ * code cleanup
+ *
  * Revision 1.8  2008/09/03 14:19:00  pah
  * result of merge of pah_cea_1611 branch
  *

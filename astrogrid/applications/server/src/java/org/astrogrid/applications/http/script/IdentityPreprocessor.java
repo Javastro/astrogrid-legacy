@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessor.java,v 1.1 2008/09/10 23:27:18 pah Exp $
+/* $Id: IdentityPreprocessor.java,v 1.2 2008/09/13 09:51:04 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,11 +10,6 @@
  */
 package org.astrogrid.applications.http.script;
 
-import java.util.Enumeration;
-
-
-import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
-import org.astrogrid.applications.description.impl.HttpURLType;
 import org.astrogrid.applications.description.impl.WebHttpApplicationSetup;
 import org.astrogrid.applications.description.impl.WebHttpCall;
 import org.astrogrid.applications.description.impl.WebHttpCall.SimpleParameter;

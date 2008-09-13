@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.common.j2ee.environment.EnvEntry;
 import org.astrogrid.common.j2ee.environment.Environment;
 import org.astrogrid.common.j2ee.environment.EnvironmentServlet;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * A servlet to manage environment entries in JNDI and web.xml.
@@ -46,7 +45,8 @@ public class CeaEnvironmentServlet extends EnvironmentServlet {
    * Initializes the servlet.
    * This adds actions to the initialization in the super-class.
    */
-  public void init() throws ServletException {
+  @Override
+public void init() throws ServletException {
     super.init();
     
     log.debug("EnvironmentServlet is initialized.");

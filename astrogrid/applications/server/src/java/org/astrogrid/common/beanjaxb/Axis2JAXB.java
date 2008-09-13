@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2JAXB.java,v 1.2 2008/09/03 14:18:33 pah Exp $
+ * $Id: Axis2JAXB.java,v 1.3 2008/09/13 09:51:05 pah Exp $
  *
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,7 +18,6 @@ import net.ivoa.uws.ExecutionPhase;
 import org.astrogrid.applications.description.base.BinaryEncodings;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.InputListType;
-import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.ResultListType;
 import org.astrogrid.applications.description.execution.Tool;
@@ -26,10 +25,6 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.axis._Account;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-
 import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.joda.time.DateTime;

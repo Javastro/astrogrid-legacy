@@ -1,5 +1,5 @@
 /*
- * $Id: MergingParameterAdapter.java,v 1.2 2008/09/03 14:18:53 pah Exp $
+ * $Id: MergingParameterAdapter.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -108,7 +108,8 @@ public class MergingParameterAdapter extends DefaultCommandLineParameterAdapter 
     * 
     * @see org.astrogrid.applications.parameter.CommandLineParameterAdapter#addSwitches()
     */
-   public List addSwitches() throws CeaException {
+   @Override
+public List addSwitches() throws CeaException {
       if (concentrator.haveListedSwitches()) {
          return null;
       }
@@ -133,7 +134,8 @@ public class MergingParameterAdapter extends DefaultCommandLineParameterAdapter 
     * 
     * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
     */
-   public Object process() throws CeaException {
+   @Override
+public Object process() throws CeaException {
       Object o = super.process();
       concentrator.add(o);
       return o;

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.3 2008/09/04 19:10:53 pah Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.4 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.community.User;
 import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +34,7 @@ public abstract class AbstractCmdLineAppTestCase extends
         DescriptionBaseTestCase {
 
 
+    @Override
     @Before
     public void setUp() throws Exception {
       super.setUp();

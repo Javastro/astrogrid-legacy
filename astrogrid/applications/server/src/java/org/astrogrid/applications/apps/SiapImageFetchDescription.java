@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchDescription.java,v 1.6 2008/09/10 23:27:16 pah Exp $
+/*$Id: SiapImageFetchDescription.java,v 1.7 2008/09/13 09:51:02 pah Exp $
  * Created on 15-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,20 +20,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.security.SecurityGuard;
-import org.springframework.stereotype.Service;
-
 import uk.ac.starlink.util.DataSource;
 
 /** @todo implementation is a bit tatty - could do with refactoring a bunch of these applications,
@@ -42,7 +37,6 @@ import uk.ac.starlink.util.DataSource;
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Nov-2004
  *
  */
-@Service
 public class SiapImageFetchDescription extends InternallyConfiguredApplicationDescription
         implements ComponentDescriptor {
     static final String URLS = "urls";
@@ -79,6 +73,7 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
+    @Override
     public String getDescription() {
         return "Application that parses results from a siap query and saves to myspace";
     }
@@ -105,7 +100,8 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
             this.p = p;
         }
         CatApplicationDescription.StreamParameterAdapter p;
-        protected InputStream getRawInputStream() throws IOException {
+        @Override
+	protected InputStream getRawInputStream() throws IOException {
             
             try {
                 return (InputStream)p.process();
@@ -121,6 +117,9 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: SiapImageFetchDescription.java,v $
+Revision 1.7  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.6  2008/09/10 23:27:16  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

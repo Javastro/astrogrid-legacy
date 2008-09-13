@@ -1,5 +1,5 @@
 /*
- * $Id: DBApplicationDescriptionLibrary.java,v 1.2 2008/09/03 14:18:46 pah Exp $
+ * $Id: DBApplicationDescriptionLibrary.java,v 1.3 2008/09/13 09:51:06 pah Exp $
  * 
  * Created on 13 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,7 +14,6 @@ package org.astrogrid.applications.db;
 
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 
 public class DBApplicationDescriptionLibrary extends
 	BaseApplicationDescriptionLibrary {
@@ -30,6 +29,9 @@ public class DBApplicationDescriptionLibrary extends
 
 /*
  * $Log: DBApplicationDescriptionLibrary.java,v $
+ * Revision 1.3  2008/09/13 09:51:06  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:46  pah
  * result of merge of pah_cea_1611 branch
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.17 2008/09/04 19:10:53 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.18 2008/09/13 09:51:06 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,7 @@ import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
 
+import org.apache.axis.AxisFault;
 import org.apache.axis.description.ServiceDesc;
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
@@ -93,7 +94,8 @@ public class CommonExecutionConnectorServiceSoapBindingImpl extends org.springfr
    }
 
    
-   protected void onInit() {//IMPL can this be done in the constructor?
+   @Override
+protected void onInit() {//IMPL can this be done in the constructor?
 		this.components = (CEAComponents) CEAComponentContainer.getInstance();
 		this.cec = components.getExecutionController();
    }
@@ -116,11 +118,11 @@ public class CommonExecutionConnectorServiceSoapBindingImpl extends org.springfr
          }
          catch (Exception e) {
            logger.error("init(_tool tool = " + tool + ") - Throwable caught:", e);
-           throw CeaFault.makeFault(e);
+           throw AxisFault.makeFault(e);
          }
          catch(Throwable e) {
             logger.error("init(_tool tool = " + tool + ") - Exception caught:", e);
-            throw CeaFault.makeFault(new Exception("an Throwable occurred in init-"+e.getMessage(), e));
+            throw AxisFault.makeFault(new Exception("an Throwable occurred in init-"+e.getMessage(), e));
          }
    }
 
@@ -137,10 +139,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl extends org.springfr
        return cec.execute(job);
      } catch (Exception e) {
        logger.error("Operation execute("+ job + ") failed", e);
-       throw CeaFault.makeFault(e);
+       throw AxisFault.makeFault(e);
      } catch (Throwable e) {
        logger.error("Operation execute("+ job +") failed", e);
-       throw CeaFault.makeFault(new Exception("a throwable occurred in execute-"+e.getMessage(),e)); 
+       throw AxisFault.makeFault(new Exception("a throwable occurred in execute-"+e.getMessage(),e)); 
      }
    }
 
@@ -154,10 +156,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl extends org.springfr
         return cec.abort(executionId);
       } catch (Exception e) {
         logger.error("abort(" + executionId + ")", e);
-          throw CeaFault.makeFault(e);
+          throw AxisFault.makeFault(e);
       } catch (Throwable t) {
         logger.error("abort(" + executionId+")", t);
-          throw CeaFault.makeFault(new Exception("a throwable occurred in abort",t));
+          throw AxisFault.makeFault(new Exception("a throwable occurred in abort",t));
    }
    }
 
@@ -175,12 +177,12 @@ public class CommonExecutionConnectorServiceSoapBindingImpl extends org.springfr
          }
          catch (Exception e) {
             logger.error("queryExecutionStatus(" + executionId+")", e);
-            throw CeaFault.makeFault(e);
+            throw AxisFault.makeFault(e);
          }
          catch(Throwable e)
          {
             logger.error("queryExecutionStatus(" + executionId+")", e);
-            throw CeaFault.makeFault(new Exception("an Throwable occurred in query status-"+e.getMessage(), e));
+            throw AxisFault.makeFault(new Exception("an Throwable occurred in query status-"+e.getMessage(), e));
          }
    }
      
@@ -192,10 +194,10 @@ public boolean registerResultsListener(String arg0, URI arg1) throws RemoteExcep
         return query.registerResultsListener(arg0,new java.net.URI(arg1.toString()));
     } catch (Exception e) {
         logger.error("registerResultsListener(" + arg0 + ", " + arg1+")", e);
-        throw CeaFault.makeFault(e);
+        throw AxisFault.makeFault(e);
     } catch (Throwable e) {
         logger.error("registerResultsListener(" + arg0 + ", " + arg1 +")", e);
-        throw CeaFault.makeFault(new Exception("a throwable occurred in registerResultsListener-"+e.getMessage(),e));
+        throw AxisFault.makeFault(new Exception("a throwable occurred in registerResultsListener-"+e.getMessage(),e));
     }
 }
 
@@ -207,11 +209,11 @@ public boolean registerProgressListener(String arg0, URI arg1) throws RemoteExce
         return query.registerProgressListener(arg0,new java.net.URI(arg1.toString()));
     } catch (Exception e) {
         logger.error("registerProgressListener(" + arg0 + ", " + arg1+")", e);
-        throw CeaFault.makeFault(e);
+        throw AxisFault.makeFault(e);
     } catch (Throwable e) {
         logger.error("registerProgressListener(" + arg0 + ", " + arg1 +")", e);
 
-        throw CeaFault.makeFault(new Exception("a throwable occurred in registerProgressListener-"+e.getMessage(),e));
+        throw AxisFault.makeFault(new Exception("a throwable occurred in registerProgressListener-"+e.getMessage(),e));
     }
 }
 
@@ -225,10 +227,10 @@ public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteExcept
         return JAXB2Axis.convert(query.getSummary(arg0));
     } catch (Exception e) {
         logger.error("getExecutionSummary("+arg0+")", e);
-        throw CeaFault.makeFault(e);
+        throw AxisFault.makeFault(e);
     } catch (Throwable e) {
         logger.error("getExecutionSummary("+arg0+")", e);
-        throw CeaFault.makeFault(new Exception("a throwable occurred in getExecutionSummary-"+e.getMessage(),e));
+        throw AxisFault.makeFault(new Exception("a throwable occurred in getExecutionSummary-"+e.getMessage(),e));
     }
 }
 /**
@@ -241,11 +243,11 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
         return JAXB2Axis.convert(query.getResults(arg0));
     } catch (Exception e) {
         logger.error("getResults("+arg0+")", e);
-        throw CeaFault.makeFault(e);
+        throw AxisFault.makeFault(e);
     } catch (Throwable e) {
         logger.error("getResults("+arg0+")", e);
 
-        throw CeaFault.makeFault(new Exception("a throwable occurred in getResults-"+e.getMessage(),e));
+        throw AxisFault.makeFault(new Exception("a throwable occurred in getResults-"+e.getMessage(),e));
     }
 }
    
@@ -258,10 +260,10 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
          return XMLUtils.DocumentToString(CEAComponentContainer.getInstance().getMetadataService().returnRegistryEntry());
      } catch (Exception e) {
 		 logger.error("returnRegistryEntry()", e);
-         throw CeaFault.makeFault(e);       
+         throw AxisFault.makeFault(e);       
      } catch (Throwable e) {
 		 logger.error("returnRegistryEntry()", e);
-         throw CeaFault.makeFault(new Exception("A throwable occured in return registry entry-"+e.getMessage(),e));
+         throw AxisFault.makeFault(new Exception("A throwable occured in return registry entry-"+e.getMessage(),e));
      }
   }
  

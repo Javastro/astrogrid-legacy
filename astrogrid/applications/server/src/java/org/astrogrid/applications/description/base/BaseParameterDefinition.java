@@ -1,5 +1,5 @@
 /*
- * $Id: BaseParameterDefinition.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: BaseParameterDefinition.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -312,6 +312,7 @@ public class BaseParameterDefinition
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return "Parameter: " + getId() + " /" + getType()                         
 //FIXME            + (getDefaultValue() != "" ? "::Default Value: " + getDefaultValue(): "")

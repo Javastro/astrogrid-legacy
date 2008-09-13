@@ -1,4 +1,4 @@
-/*$Id: MockRegistryAdminService.java,v 1.2 2008/09/03 14:19:02 pah Exp $
+/*$Id: MockRegistryAdminService.java,v 1.3 2008/09/13 09:51:06 pah Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ public class MockRegistryAdminService extends UpdateRegistry implements Registry
     	//hello
     }
     
+    @Override
     public Document update(Document doc) throws RegistryException{
         callCount++;
         try {
@@ -41,6 +42,9 @@ public class MockRegistryAdminService extends UpdateRegistry implements Registry
 
 /* 
 $Log: MockRegistryAdminService.java,v $
+Revision 1.3  2008/09/13 09:51:06  pah
+code cleanup
+
 Revision 1.2  2008/09/03 14:19:02  pah
 result of merge of pah_cea_1611 branch
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StreamParameterAdapter.java,v 1.5 2008/09/03 14:18:57 pah Exp $
+ * $Id: StreamParameterAdapter.java,v 1.6 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 09-Nov-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -20,9 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.List;
-
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
@@ -60,7 +57,8 @@ public class StreamParameterAdapter extends AbstractParameterAdapter {
     * 
     * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
     */
-   public Object process() throws CeaException {
+   @Override
+public Object process() throws CeaException {
       if (externalVal == null) {
          return new ByteArrayInputStream(val.getValue().getBytes());
       }
@@ -75,7 +73,8 @@ public class StreamParameterAdapter extends AbstractParameterAdapter {
     * 
     * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
     */
-   public void writeBack(Object o) throws CeaException {
+   @Override
+public void writeBack(Object o) throws CeaException {
       OutputStream os = null;
       if (!(o instanceof InputStream)) {
          logger.error("programming error the method argument should be an InputStream");

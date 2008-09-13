@@ -1,4 +1,4 @@
-/*$Id: FtpProtocol.java,v 1.2 2008/09/03 14:18:57 pah Exp $
+/*$Id: FtpProtocol.java,v 1.3 2008/09/13 09:51:02 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ public class FtpProtocol extends HttpProtocol{
     /**
      * @see org.astrogrid.applications.parameter.protocol.Protocol#getProtocolName()
      */
+    @Override
     public String getProtocolName() {
         return "ftp";
     }
@@ -32,6 +33,7 @@ public class FtpProtocol extends HttpProtocol{
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
      */
+    @Override
     public String getName() {
      return "FtpProtocol";
     }
@@ -39,6 +41,7 @@ public class FtpProtocol extends HttpProtocol{
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
+    @Override
     public String getDescription() {   
         return "Protocol adapter for ftp:/ protocol";
     }
@@ -48,6 +51,9 @@ public class FtpProtocol extends HttpProtocol{
 
 /* 
 $Log: FtpProtocol.java,v $
+Revision 1.3  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.2  2008/09/03 14:18:57  pah
 result of merge of pah_cea_1611 branch
 

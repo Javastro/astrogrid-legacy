@@ -1,4 +1,4 @@
-/* $Id: HttpApplicationException.java,v 1.1 2008/09/10 23:27:18 pah Exp $
+/* $Id: HttpApplicationException.java,v 1.2 2008/09/13 09:51:05 pah Exp $
  * Created on Jul 27, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -8,9 +8,6 @@
  */
 ///CLOVER:OFF 
 package org.astrogrid.applications.http.exceptions;
-
-import java.io.PrintStream;
-import java.io.PrintWriter;
 
 import org.astrogrid.applications.CeaException;
 
@@ -41,6 +38,9 @@ public class HttpApplicationException extends CeaException {
 
 /* 
  * $Log: HttpApplicationException.java,v $
+ * Revision 1.2  2008/09/13 09:51:05  pah
+ * code cleanup
+ *
  * Revision 1.1  2008/09/10 23:27:18  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

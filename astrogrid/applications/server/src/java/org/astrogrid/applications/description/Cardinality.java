@@ -1,4 +1,4 @@
-/*$Id: Cardinality.java,v 1.1 2004/08/16 11:03:07 nw Exp $
+/*$Id: Cardinality.java,v 1.2 2008/09/13 09:51:05 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,6 +58,7 @@ public class Cardinality {
      *
      * @return <code>true</code> if this <code>Cardinality</code> is the same as the o argument.
      */
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -76,12 +77,14 @@ public class Cardinality {
      *
      * @return the Objects hashcode.
      */
+    @Override
     public int hashCode() {
         int hashCode = 1;
         hashCode = 31 * hashCode + min;
         hashCode = 31 * hashCode + max;
         return hashCode;
     }
+    @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[Cardinality:");
@@ -97,6 +100,9 @@ public class Cardinality {
 
 /* 
 $Log: Cardinality.java,v $
+Revision 1.2  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.1  2004/08/16 11:03:07  nw
 added classes to model cardinality of prefs.
  

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.3 2008/09/04 19:10:54 pah Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.4 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -53,6 +53,7 @@ public class CommandLineDescriptionsLoaderTest extends AbstractCmdLineAppTestCas
     protected ApplicationDescriptionLibrary dl;
  
   
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         dl =  manager.getApplicationDescriptionLibrary();

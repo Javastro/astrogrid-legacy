@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.16 2008/09/04 19:10:53 pah Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.17 2008/09/13 09:51:05 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,6 +64,7 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
      * if indirect, retreive the value from the {@link #externalVal}
      * @return always returns the string value of this parameter
      *  */
+    @Override
     public Object process() throws CeaException {
         if (externalVal == null) {
             return val.getValue();
@@ -112,7 +113,8 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
    * for an indirect parameter. In a direct parameter, the value is
    * forced into a String object and may be corrupted in the process.
    */
-  public void writeBack(Object o) throws CeaException {
+  @Override
+public void writeBack(Object o) throws CeaException {
     if (this.externalVal == null) {
       this.writeBackToParameterValue(o);
     }
@@ -202,6 +204,9 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.17  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.16  2008/09/04 19:10:53  pah
 ASSIGNED - bug 2825: support VOSpace
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

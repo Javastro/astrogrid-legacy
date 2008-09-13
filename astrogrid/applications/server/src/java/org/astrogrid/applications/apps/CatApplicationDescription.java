@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.10 2008/09/10 23:27:16 pah Exp $
+/*$Id: CatApplicationDescription.java,v 1.11 2008/09/13 09:51:02 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,28 +18,21 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.FutureTask;
-
 import junit.framework.Test;
 import net.ivoa.resource.cea.CeaApplication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.CEAConfiguration;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
-import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
@@ -86,6 +79,7 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
+    @Override
     public String getDescription() {
         return "Cat application\n" + this.toString();
     }
@@ -136,7 +130,8 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
         	reportError("something failed",e);
             }
         }
-         protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+         @Override
+	protected ParameterAdapter instantiateAdapter(ParameterValue pval,
                 ParameterDescription descr, ExternalValue indirectVal) {
             return new StreamParameterAdapter(pval, descr, indirectVal);
         }
@@ -147,7 +142,8 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
      * @todo maybe a candidate for factoring out into a package of useful parameter adapters later.*/
     public static class StreamParameterAdapter extends DefaultParameterAdapter {
         /** always returns an InputStream */
-        public Object process() throws CeaException {
+        @Override
+	public Object process() throws CeaException {
             if (externalVal == null) {
                 return new ByteArrayInputStream(val.getValue().getBytes());
             } else {
@@ -156,7 +152,8 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
         }
         
         /** expects a list of input streams */
-        public void writeBack(Object o) throws CeaException {
+        @Override
+	public void writeBack(Object o) throws CeaException {
             if (! (o instanceof List)) {
                 throw new CeaException("Programming error - expected List of Streams, got " + o.getClass().getName());                
             }
@@ -209,6 +206,9 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.11  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.10  2008/09/10 23:27:16  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

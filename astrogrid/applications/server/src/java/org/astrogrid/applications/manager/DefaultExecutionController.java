@@ -9,9 +9,6 @@
 
 package org.astrogrid.applications.manager;
 
-import java.security.Principal;
-
-import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
@@ -19,9 +16,7 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.PersistenceException;
-import org.astrogrid.community.User;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.astrogrid.security.AxisServiceSecurityGuard;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.applications.description.execution.Tool;
 
@@ -105,7 +100,7 @@ implements ExecutionController, Observer, ComponentDescriptor, Stopable {
 	try {
 	    ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
 	    Application app = descr.initializeApplication(jobstepID,securityGuard,tool); 
-	    Calendar now = GregorianCalendar.getInstance();
+	    Calendar now = Calendar.getInstance();
 	    now.add(Calendar.SECOND, policy.getDefaultLifetime());
 	    app.setDestruction(now.getTime());// set the destruction time.
 	    app.checkParameterValues();          

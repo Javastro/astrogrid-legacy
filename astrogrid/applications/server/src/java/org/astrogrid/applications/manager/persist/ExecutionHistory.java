@@ -1,4 +1,4 @@
-/*$Id: ExecutionHistory.java,v 1.4 2008/09/03 14:18:48 pah Exp $
+/*$Id: ExecutionHistory.java,v 1.5 2008/09/13 09:51:02 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,6 @@ package org.astrogrid.applications.manager.persist;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.manager.QueryService;
@@ -74,6 +72,9 @@ public interface ExecutionHistory {
 
 /* 
 $Log: ExecutionHistory.java,v $
+Revision 1.5  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.4  2008/09/03 14:18:48  pah
 result of merge of pah_cea_1611 branch
 

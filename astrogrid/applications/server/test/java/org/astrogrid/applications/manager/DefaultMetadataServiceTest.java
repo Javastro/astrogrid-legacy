@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataServiceTest.java,v 1.4 2008/09/03 14:19:04 pah Exp $
+/*$Id: DefaultMetadataServiceTest.java,v 1.5 2008/09/13 09:51:05 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,7 @@ public class DefaultMetadataServiceTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -48,6 +49,7 @@ public class DefaultMetadataServiceTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -67,6 +69,9 @@ public class DefaultMetadataServiceTest extends TestCase {
 
 /* 
 $Log: DefaultMetadataServiceTest.java,v $
+Revision 1.5  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.4  2008/09/03 14:19:04  pah
 result of merge of pah_cea_1611 branch
 

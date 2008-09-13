@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceDescriptionException.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: ServiceDescriptionException.java,v 1.3 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -11,8 +11,6 @@
  */ 
 
 package org.astrogrid.applications.description;
-
-import org.astrogrid.applications.CeaException;
 
 /**
  * an error occurred while creating a description of the service.
@@ -36,6 +34,9 @@ public class ServiceDescriptionException extends MetadataException {
 
 /*
  * $Log: ServiceDescriptionException.java,v $
+ * Revision 1.3  2008/09/13 09:51:05  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

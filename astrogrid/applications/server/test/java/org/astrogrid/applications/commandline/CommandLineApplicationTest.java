@@ -20,7 +20,6 @@ import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.ResultListType;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.test.MockMonitor;
-import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
 import org.junit.Test;
 

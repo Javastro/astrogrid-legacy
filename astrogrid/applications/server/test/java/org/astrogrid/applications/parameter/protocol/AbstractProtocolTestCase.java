@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractProtocolTestCase.java,v 1.2 2008/09/03 14:19:00 pah Exp $
+ * $Id: AbstractProtocolTestCase.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 25 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -26,6 +26,7 @@ public abstract class AbstractProtocolTestCase extends TestCase {
 	super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         System.setProperty(RegistryDelegateFactory.QUERY_URL_PROPERTY, "http://dummy");//TODO should this really be necessary - but in the registry delegate to NPE?
@@ -35,6 +36,9 @@ public abstract class AbstractProtocolTestCase extends TestCase {
 
 /*
  * $Log: AbstractProtocolTestCase.java,v $
+ * Revision 1.3  2008/09/13 09:51:04  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:19:00  pah
  * result of merge of pah_cea_1611 branch
  *

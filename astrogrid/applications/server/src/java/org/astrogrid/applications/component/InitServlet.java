@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.20 2008/09/03 14:18:57 pah Exp $
+ * $Id: InitServlet.java,v 1.21 2008/09/13 09:51:02 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -65,7 +65,8 @@ public class InitServlet extends HttpServlet {
     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
     *      javax.servlet.http.HttpServletResponse)
     */
-   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+   @Override
+protected void doGet(HttpServletRequest req, HttpServletResponse resp)
          throws ServletException, IOException {
       //always do it for now if (! LifecycleListener.storedEndpoint) {
       URL url = makeEndPointURL(req);

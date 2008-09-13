@@ -1,5 +1,5 @@
 /*
- * $Id: BuiltInApplicationDescriptionTest.java,v 1.3 2008/09/04 19:10:53 pah Exp $
+ * $Id: BuiltInApplicationDescriptionTest.java,v 1.4 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 21 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -38,7 +38,6 @@ import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.applications.parameter.protocol.Protocol;
-import org.astrogrid.community.User;
 import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -129,6 +128,9 @@ public class BuiltInApplicationDescriptionTest {
 
 /*
  * $Log: BuiltInApplicationDescriptionTest.java,v $
+ * Revision 1.4  2008/09/13 09:51:05  pah
+ * code cleanup
+ *
  * Revision 1.3  2008/09/04 19:10:53  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

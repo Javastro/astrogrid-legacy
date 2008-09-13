@@ -67,14 +67,16 @@ public class BaseJavaClassConfiguration
   /**
    * Reveals the name of the component.
    */
-  public String getName() {
+  @Override
+public String getName() {
     return "Configuration for a Java-class CEC.";
   }
   
   /**
    * Describes the component and its current state.
    */
-  public String getDescription() {
+  @Override
+public String getDescription() {
     StringBuffer sb = new StringBuffer();
     sb.append("Class providing the applications: ");
     sb.append(this.getApplicationClass().getName());

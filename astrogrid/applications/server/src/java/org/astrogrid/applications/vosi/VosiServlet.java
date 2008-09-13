@@ -28,7 +28,8 @@ public class VosiServlet extends HttpServlet {
    * Initializes the servlet. Records the start time so that service
    * up-time may later be reported.
    */
-  public void init() {
+  @Override
+public void init() {
     this.startTime = new Date();
   }
   
@@ -36,7 +37,8 @@ public class VosiServlet extends HttpServlet {
    * @param request servlet request
    * @param response servlet response
    */
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+  @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
   throws ServletException, IOException {
     
     this.setAttributes(request, response);
@@ -54,13 +56,14 @@ public class VosiServlet extends HttpServlet {
       this.forward(this.getAvailabilityWebResource(), request, response);
     }
     else {
-      response.sendError(response.SC_NOT_FOUND);
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
   }
   
   /** Returns a short description of the servlet.
    */
-  public String getServletInfo() {
+  @Override
+public String getServletInfo() {
     return "Short description";
   }
   
@@ -126,7 +129,7 @@ public class VosiServlet extends HttpServlet {
     System.out.println(targetUri);
     RequestDispatcher dispatcher = request.getRequestDispatcher(targetUri);
     if (dispatcher == null) {
-      response.sendError(response.SC_NOT_FOUND, targetUri);
+      response.sendError(HttpServletResponse.SC_NOT_FOUND, targetUri);
     }
     else {
       dispatcher.forward(request, response);

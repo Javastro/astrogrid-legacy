@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibraryTest.java,v 1.4 2008/09/04 19:10:53 pah Exp $
+/*$Id: DefaultProtocolLibraryTest.java,v 1.5 2008/09/13 09:51:04 pah Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
      * @see TestCase#setUp()
      */
     private static final String A_NEW_PROTOCOL = "a-new-protocol";
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         
@@ -42,6 +43,7 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -133,6 +135,9 @@ public class DefaultProtocolLibraryTest extends AbstractProtocolTestCase {
 
 /* 
 $Log: DefaultProtocolLibraryTest.java,v $
+Revision 1.5  2008/09/13 09:51:04  pah
+code cleanup
+
 Revision 1.4  2008/09/04 19:10:53  pah
 ASSIGNED - bug 2825: support VOSpace
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

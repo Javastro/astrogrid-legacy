@@ -1,4 +1,4 @@
-/*$Id: SummaryHelper.java,v 1.4 2008/09/03 14:18:48 pah Exp $
+/*$Id: SummaryHelper.java,v 1.5 2008/09/13 09:51:02 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,14 +13,10 @@ package org.astrogrid.applications.manager.persist;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.InputListType;
@@ -89,6 +85,9 @@ public class SummaryHelper {
 
 /* 
 $Log: SummaryHelper.java,v $
+Revision 1.5  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.4  2008/09/03 14:18:48  pah
 result of merge of pah_cea_1611 branch
 

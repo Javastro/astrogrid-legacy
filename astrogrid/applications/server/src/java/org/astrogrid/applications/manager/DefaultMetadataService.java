@@ -22,7 +22,6 @@ import net.ivoa.resource.Interface;
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.Service;
 import net.ivoa.resource.WebService;
-import net.ivoa.resource.cea.CeaApplication;
 import net.ivoa.resource.cea.CeaCapability;
 import net.ivoa.resource.cea.ManagedApplications;
 import net.ivoa.resource.registry.iface.VOResources;

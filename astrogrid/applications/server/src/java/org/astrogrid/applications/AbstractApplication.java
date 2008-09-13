@@ -38,14 +38,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.FutureTask;
-
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 /**
  * Basic implementation of {@link org.astrogrid.applications.Application}
@@ -631,7 +627,8 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    }
 
 
-   public String toString() {
+   @Override
+public String toString() {
       return getApplicationDescription().getId() + "#" + getApplicationInterface().getId() + " runid=" + getId(); 
    }
 

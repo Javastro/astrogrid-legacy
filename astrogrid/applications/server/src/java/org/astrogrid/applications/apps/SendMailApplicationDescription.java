@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.8 2008/09/10 23:27:16 pah Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.9 2008/09/13 09:51:02 pah Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.applications.apps;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.FutureTask;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -32,27 +31,21 @@ import net.ivoa.resource.cea.CeaApplication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.CEAConfiguration;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
+import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.environment.ApplicationEnvironment;
+import org.astrogrid.applications.javainternal.JavaInternalApplication;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.applications.environment.ApplicationEnvironment;
-import org.astrogrid.applications.javainternal.JavaInternalApplication;
-import org.springframework.stereotype.Service;
 
 /** Implementation of a send-mail application
  * <P>
@@ -63,7 +56,6 @@ import org.springframework.stereotype.Service;
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 14 Mar 2008
  *
  */
-@Service
 public class SendMailApplicationDescription extends InternallyConfiguredApplicationDescription implements ComponentDescriptor {
     private static final String SIMPLE = "simple";
     private static final String ADVANCED = "advanced";
@@ -107,6 +99,7 @@ public class SendMailApplicationDescription extends InternallyConfiguredApplicat
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
+    @Override
     public String getDescription() {
         return "Email application\n" + this.toString();
     }
@@ -195,6 +188,9 @@ public class SendMailApplicationDescription extends InternallyConfiguredApplicat
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.9  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.8  2008/09/10 23:27:16  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

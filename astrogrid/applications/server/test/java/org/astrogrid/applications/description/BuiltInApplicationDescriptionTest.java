@@ -1,5 +1,5 @@
 /*
- * $Id: BuiltInApplicationDescriptionTest.java,v 1.2 2008/09/03 14:19:02 pah Exp $
+ * $Id: BuiltInApplicationDescriptionTest.java,v 1.3 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 14 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -15,7 +15,6 @@ package org.astrogrid.applications.description;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.jaxb.DescriptionValidator;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
@@ -49,6 +48,9 @@ public class BuiltInApplicationDescriptionTest {
 
 /*
  * $Log: BuiltInApplicationDescriptionTest.java,v $
+ * Revision 1.3  2008/09/13 09:51:05  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:19:02  pah
  * result of merge of pah_cea_1611 branch
  *

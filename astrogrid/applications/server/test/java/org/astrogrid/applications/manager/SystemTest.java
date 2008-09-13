@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.14 2008/09/04 19:10:53 pah Exp $
+/*$Id: SystemTest.java,v 1.15 2008/09/13 09:51:05 pah Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,31 +20,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 
-import junit.framework.TestCase;
-
 import net.ivoa.uws.ExecutionPhase;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
-import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.MessageType;
 import org.astrogrid.applications.description.execution.ParameterValue;
-import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.DefaultExecutionEnvRetriever;
-import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
-import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
 import org.astrogrid.applications.javainternal.BuiltInApplicationDescriptionTest;
-import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
-import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.applications.parameter.protocol.FileProtocol;
-import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.test.MockMonitor;
+import org.astrogrid.jes.delegate.Delegate;
 import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
 
 /** test the DefaultCommonExecutionController - with a javaclass backend
@@ -55,6 +42,7 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         controller = new DefaultExecutionController(lib,history, new DefaultExecutionPolicy());
@@ -75,7 +63,7 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
         MockMonitor monitor = new MockMonitor();
         Application app = history.getApplicationFromCurrentSet(id);
         app.addObserver(monitor);  
-        URI testURI = new URI(JobMonitorDelegate.TEST_URI);
+        URI testURI = new URI(Delegate.TEST_URI);
         querier.registerProgressListener(id,testURI );
     // sadly this one won't accept the test uri.    
     //    querier.registerResultsListener(id,testURI);
@@ -147,6 +135,9 @@ public class SystemTest extends BuiltInApplicationDescriptionTest {
 
 /* 
 $Log: SystemTest.java,v $
+Revision 1.15  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.14  2008/09/04 19:10:53  pah
 ASSIGNED - bug 2825: support VOSpace
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

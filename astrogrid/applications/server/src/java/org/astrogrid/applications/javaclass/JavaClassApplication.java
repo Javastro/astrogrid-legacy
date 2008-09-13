@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.9 2008/09/03 14:18:44 pah Exp $
+/*$Id: JavaClassApplication.java,v 1.10 2008/09/13 09:51:03 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,6 +59,7 @@ public class JavaClassApplication extends AbstractApplication {
      * @todo bug here - we assume our parameters are in the correct order to pass to the java method. should sort them into correct order first.
      * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
      */
+    @Override
     public FutureTask<String> createExecutionTask() throws CeaException {
         createAdapters();
 
@@ -112,6 +113,7 @@ public class JavaClassApplication extends AbstractApplication {
     /** overridden to return a {@link JavaClassParameterAdapter}
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
      */
+    @Override
     protected ParameterAdapter instantiateAdapter(ParameterValue pval,
             ParameterDescription descr, ExternalValue indirectVal) {
         return new JavaClassParameterAdapter(pval, descr, indirectVal);
@@ -128,6 +130,9 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.10  2008/09/13 09:51:03  pah
+code cleanup
+
 Revision 1.9  2008/09/03 14:18:44  pah
 result of merge of pah_cea_1611 branch
 

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.7 2008/09/10 23:27:19 pah Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.8 2008/09/13 09:51:03 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.Application;
-import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.AppMetadataAdapter;
@@ -64,6 +63,9 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.8  2008/09/13 09:51:03  pah
+code cleanup
+
 Revision 1.7  2008/09/10 23:27:19  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

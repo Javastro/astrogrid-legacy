@@ -1,4 +1,4 @@
-/*$Id: RegistryUploaderTest.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: RegistryUploaderTest.java,v 1.4 2008/09/13 09:51:02 pah Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ public class RegistryUploaderTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         MetadataService provider = new DummyVODescriptionProvider("test.org","testapp");
@@ -56,6 +57,9 @@ public class RegistryUploaderTest extends TestCase {
 
 /* 
 $Log: RegistryUploaderTest.java,v $
+Revision 1.4  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.3  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 

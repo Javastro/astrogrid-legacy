@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleApplicationDescriptionLibrary.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: SimpleApplicationDescriptionLibrary.java,v 1.3 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 16 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 
 /**
  * Simple description library that only contains the applications that are added to it with the {@link #setApplications(List)} method. Will always contain a {@link BuiltInApplicationDescription}.
@@ -56,6 +55,9 @@ public class SimpleApplicationDescriptionLibrary extends
 
 /*
  * $Log: SimpleApplicationDescriptionLibrary.java,v $
+ * Revision 1.3  2008/09/13 09:51:05  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

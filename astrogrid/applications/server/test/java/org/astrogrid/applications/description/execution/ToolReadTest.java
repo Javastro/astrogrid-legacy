@@ -1,5 +1,5 @@
 /*
- * $Id: ToolReadTest.java,v 1.3 2008/09/04 19:10:53 pah Exp $
+ * $Id: ToolReadTest.java,v 1.4 2008/09/13 09:51:06 pah Exp $
  * 
  * Created on 1 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -15,7 +15,6 @@ package org.astrogrid.applications.description.execution;
 
 import java.net.URL;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
@@ -28,7 +27,6 @@ import javax.xml.validation.SchemaFactory;
 
 import static junit.framework.Assert.*;
 
-import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.contracts.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
@@ -83,6 +81,9 @@ public class ToolReadTest {
 
 /*
  * $Log: ToolReadTest.java,v $
+ * Revision 1.4  2008/09/13 09:51:06  pah
+ * code cleanup
+ *
  * Revision 1.3  2008/09/04 19:10:53  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

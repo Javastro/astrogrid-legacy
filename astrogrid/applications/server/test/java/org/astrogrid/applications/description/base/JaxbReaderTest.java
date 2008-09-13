@@ -1,5 +1,5 @@
 /*
- * $Id: JaxbReaderTest.java,v 1.2 2008/09/03 14:18:52 pah Exp $
+ * $Id: JaxbReaderTest.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -46,6 +46,7 @@ public class JaxbReaderTest extends TestCase {
 	super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
 	super.setUp();
     }
@@ -95,6 +96,9 @@ public class JaxbReaderTest extends TestCase {
 
 /*
  * $Log: JaxbReaderTest.java,v $
+ * Revision 1.3  2008/09/13 09:51:04  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:52  pah
  * result of merge of pah_cea_1611 branch
  *

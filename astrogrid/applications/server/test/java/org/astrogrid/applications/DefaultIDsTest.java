@@ -1,4 +1,4 @@
-/*$Id: DefaultIDsTest.java,v 1.2 2005/08/10 17:45:10 clq2 Exp $
+/*$Id: DefaultIDsTest.java,v 1.3 2008/09/13 09:51:05 pah Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ public class DefaultIDsTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         u = new User();
@@ -34,6 +35,7 @@ public class DefaultIDsTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -56,6 +58,9 @@ public class DefaultIDsTest extends TestCase {
 
 /* 
 $Log: DefaultIDsTest.java,v $
+Revision 1.3  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.2  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests
 

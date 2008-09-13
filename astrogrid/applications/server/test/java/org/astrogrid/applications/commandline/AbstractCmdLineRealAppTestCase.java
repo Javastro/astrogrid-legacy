@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineRealAppTestCase.java,v 1.2 2008/09/04 19:10:53 pah Exp $
+ * $Id: AbstractCmdLineRealAppTestCase.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.test.MockMonitor;
-import org.astrogrid.security.SecurityGuard;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,6 +31,7 @@ public abstract class AbstractCmdLineRealAppTestCase extends
 
  
   
+    @Override
     public void setUp() throws Exception {
      super.setUp();
      //naughty little kludge to get a noop app on unix.... we do not care if actually gets to execute for these tests

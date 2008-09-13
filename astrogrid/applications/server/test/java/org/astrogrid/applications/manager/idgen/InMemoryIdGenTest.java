@@ -1,4 +1,4 @@
-/*$Id: InMemoryIdGenTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: InMemoryIdGenTest.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ public class InMemoryIdGenTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         id = new InMemoryIdGen();
@@ -44,6 +45,9 @@ public class InMemoryIdGenTest extends TestCase {
 
 /* 
 $Log: InMemoryIdGenTest.java,v $
+Revision 1.3  2008/09/13 09:51:04  pah
+code cleanup
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

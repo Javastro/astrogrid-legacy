@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistory.java,v 1.8 2008/09/03 14:18:48 pah Exp $
+/*$Id: FileStoreExecutionHistory.java,v 1.9 2008/09/13 09:51:02 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +23,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 import junit.framework.Test;
@@ -33,13 +31,10 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
-import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.contracts.Namespaces;
-import org.xml.sax.SAXException;
 
 /** Execution history that persists archives as xml documents to disk.
  * Current Set of executing applications still only kept in memory.
@@ -160,6 +155,7 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
+    @Override
     public String getDescription() {
         return "Execution History Store that persists records as xmldocuments on disk"
          + "\n store directory " + baseDir.getAbsolutePath()
@@ -170,6 +166,7 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getInstallationTest()
      */
+    @Override
     public Test getInstallationTest() {
         return new InstallationTest("testBaseDir");
     }
@@ -197,6 +194,7 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
      */
+    @Override
     public String getName() {
         return "FileStoreExecutionHistory";
     }
@@ -208,6 +206,9 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
 
 /* 
 $Log: FileStoreExecutionHistory.java,v $
+Revision 1.9  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.8  2008/09/03 14:18:48  pah
 result of merge of pah_cea_1611 branch
 

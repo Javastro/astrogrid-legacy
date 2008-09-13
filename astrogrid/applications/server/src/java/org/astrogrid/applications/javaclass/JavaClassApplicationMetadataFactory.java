@@ -1,5 +1,5 @@
 /*
- * $Id: JavaClassApplicationMetadataFactory.java,v 1.2 2008/09/03 14:18:44 pah Exp $
+ * $Id: JavaClassApplicationMetadataFactory.java,v 1.3 2008/09/13 09:51:03 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 
 import org.astrogrid.applications.description.ServiceDefinitionFactory;
 import org.astrogrid.applications.description.ServiceDescriptionException;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.ApplicationKind;
 import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
@@ -124,6 +123,9 @@ public class JavaClassApplicationMetadataFactory {
 
 /*
  * $Log: JavaClassApplicationMetadataFactory.java,v $
+ * Revision 1.3  2008/09/13 09:51:03  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:44  pah
  * result of merge of pah_cea_1611 branch
  *

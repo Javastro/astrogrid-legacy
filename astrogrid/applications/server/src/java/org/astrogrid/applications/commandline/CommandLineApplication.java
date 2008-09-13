@@ -86,6 +86,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
     /** override  so that commandline parameters are returned
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
      */
+    @Override
     protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {                
         CommandLineParameterDefinition clpd = (CommandLineParameterDefinition)desr;
              logger.debug("creating parameter adapter for " + pval.getId());
@@ -415,7 +416,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       message.append("Errors in writing out parameters to external storage:\n");
       message.append((writeBackErrors == null)? "No errors." : writeBackErrors);
       
-      this.logger.info(message.toString());
+      CommandLineApplication.logger.info(message.toString());
       
       // Make a value object to carry the report as a parameter.
       ParameterValue report = new ParameterValue();
@@ -431,7 +432,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
     // If the error reporting fails, then there's nothing to do but log it and
     // go on.
     catch (Exception ex) {
-      this.logger.error("Failed to make an error report to the client: ", ex);
+      CommandLineApplication.logger.error("Failed to make an error report to the client: ", ex);
     }
   }
   

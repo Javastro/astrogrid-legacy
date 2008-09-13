@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationEnvironmentTest.java,v 1.1 2008/08/29 07:28:28 pah Exp $
+ * $Id: CommandLineApplicationEnvironmentTest.java,v 1.2 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 11-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,8 +15,6 @@ package org.astrogrid.applications.commandline;
 
 
 import java.io.File;
-
-import junit.framework.TestCase;
 
 /** test behaviour of the commandline application environment.
  * @author Paul Harrison (pah@jb.man.ac.uk)

@@ -1,5 +1,5 @@
 /*
- * $Id: DBApplicationDescription.java,v 1.4 2008/09/10 23:27:19 pah Exp $
+ * $Id: DBApplicationDescription.java,v 1.5 2008/09/13 09:51:06 pah Exp $
  * 
  * Created on 13 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,14 +14,10 @@ package org.astrogrid.applications.db;
 
 import javax.sql.DataSource;
 
-import net.ivoa.resource.dataservice.DataService;
-
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.description.ServiceMetadataAdapter;
 import org.astrogrid.applications.description.MetadataAdapter;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
-import org.astrogrid.applications.description.base.ApplicationBase;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.security.SecurityGuard;
@@ -50,6 +46,9 @@ public class DBApplicationDescription extends AbstractApplicationDescription {
 
 /*
  * $Log: DBApplicationDescription.java,v $
+ * Revision 1.5  2008/09/13 09:51:06  pah
+ * code cleanup
+ *
  * Revision 1.4  2008/09/10 23:27:19  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

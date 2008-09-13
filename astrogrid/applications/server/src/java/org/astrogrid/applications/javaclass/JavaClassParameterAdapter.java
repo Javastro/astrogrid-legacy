@@ -1,4 +1,4 @@
-/*$Id: JavaClassParameterAdapter.java,v 1.6 2008/09/03 14:18:44 pah Exp $
+/*$Id: JavaClassParameterAdapter.java,v 1.7 2008/09/13 09:51:03 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
  * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
  * @todo add handling for other types - e.g. URI / URL / Document / Node.
  */
+    @Override
     public Object process() throws CeaException {
         String result = (String)super.process(); // we know super always returns a string.
         Class targetClass = ((JavaClassParameterDescription)description).getTargetClass();
@@ -53,6 +54,9 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
 
 /* 
 $Log: JavaClassParameterAdapter.java,v $
+Revision 1.7  2008/09/13 09:51:03  pah
+code cleanup
+
 Revision 1.6  2008/09/03 14:18:44  pah
 result of merge of pah_cea_1611 branch
 

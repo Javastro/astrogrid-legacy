@@ -1,4 +1,4 @@
-/*$Id: ParameterDirection.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: ParameterDirection.java,v 1.4 2008/09/13 09:51:05 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,8 @@ public class ParameterDirection
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
-  public String toString() {
+  @Override
+public String toString() {
      return direction;
 
   }
@@ -39,6 +40,9 @@ public class ParameterDirection
 
 /* 
 $Log: ParameterDirection.java,v $
+Revision 1.4  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 

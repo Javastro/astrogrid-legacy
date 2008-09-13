@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.3 2008/09/04 19:10:53 pah Exp $
+ * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.4 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -26,7 +26,6 @@ import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.community.User;
 import org.astrogrid.io.FileUtils;
 import org.astrogrid.security.SecurityGuard;
 
@@ -58,6 +57,7 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 	// TODO Auto-generated constructor stub
     }
 
+    @Override
     protected void setUp() throws Exception {
 	super.setUp();
 	this.configuration = new CEAConfiguration();
@@ -87,6 +87,9 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
 /*
  * $Log: AbstractCommandLineEnvironmentTestCase.java,v $
+ * Revision 1.4  2008/09/13 09:51:04  pah
+ * code cleanup
+ *
  * Revision 1.3  2008/09/04 19:10:53  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

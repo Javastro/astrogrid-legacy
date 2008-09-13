@@ -1,4 +1,4 @@
-/*$Id: ThreadPoolExecutionController.java,v 1.4 2008/09/03 14:18:55 pah Exp $
+/*$Id: ThreadPoolExecutionController.java,v 1.5 2008/09/13 09:51:05 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,6 +75,7 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
 	
     }
  
+    @Override
     protected boolean startRunnable(Application r) throws CeaException {
 	r.enqueue();
         executor.execute(r.createExecutionTask());
@@ -83,6 +84,7 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
      */
+    @Override
     public String getName() {
         return "Thread Pool Execution Controller";
     }
@@ -91,11 +93,13 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getInstallationTest()
      */
+    @Override
     public Test getInstallationTest() {
         return null;
     }
     
     
+    @Override
     public List<Application> getQueue()
     {
 	List<Application> retval = new ArrayList<Application>();
@@ -131,6 +135,9 @@ public class ThreadPoolExecutionController extends DefaultExecutionController {
 
 /* 
 $Log: ThreadPoolExecutionController.java,v $
+Revision 1.5  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.4  2008/09/03 14:18:55  pah
 result of merge of pah_cea_1611 branch
 

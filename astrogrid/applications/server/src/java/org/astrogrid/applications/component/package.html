@@ -5,9 +5,8 @@
 		Depending on the components used, and the way they are confgured, different kinds of server can be produced, 
 		while still reusing large amounts of code.
 		<p />
-		The core class is {@link CEAComponentManagerFactory} - a static singleton that is responsible for selecting (via config)
-		a class to instantiate that defines the components in the server. 
-		The instantiated class must implement the {@link CEAComponentManager} interface.
+		The core class is {@link CEAComponentContainer} - which is configured via spring. 
+		The instantiated class must implement the {@link CEAComponents} interface.
 		<p />
 		This package extends classes in the {@link org.astrogrid.component} package (in <tt>common</tt> project), where the concepts of the component manager are documented more fully.
 		

@@ -1,4 +1,4 @@
-/*$Id: ExecutionTest.java,v 1.2 2008/09/04 19:10:53 pah Exp $
+/*$Id: ExecutionTest.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,18 +18,14 @@ import java.io.FileReader;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.commandline.DescriptionBaseTestCase.TestAppInfo;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary;
 import org.astrogrid.applications.description.execution.Tool;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /** 

@@ -38,7 +38,8 @@ public class CeaSecurityGuard extends SecurityGuard {
    */
   private static InheritableThreadLocal store
       = new InheritableThreadLocal() {
-          protected synchronized Object initialValue() {
+          @Override
+	protected synchronized Object initialValue() {
             return new CeaSecurityGuard();
           }
         };

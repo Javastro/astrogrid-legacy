@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.13 2008/09/03 14:18:44 pah Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.14 2008/09/13 09:51:03 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ServiceDefinitionFactory;
 import org.astrogrid.applications.description.ServiceDescriptionException;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
@@ -84,6 +83,7 @@ public class JavaClassApplicationDescriptionLibrary
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
+    @Override
     public String getDescription() {
         return "Implementation class: " + implClass.getName() + "\n" + super.getDescription();
     }
@@ -91,6 +91,7 @@ public class JavaClassApplicationDescriptionLibrary
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
      */
+    @Override
     public String getName() {
         return "Java Class Application Library";
     }
@@ -99,6 +100,9 @@ public class JavaClassApplicationDescriptionLibrary
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.14  2008/09/13 09:51:03  pah
+code cleanup
+
 Revision 1.13  2008/09/03 14:18:44  pah
 result of merge of pah_cea_1611 branch
 

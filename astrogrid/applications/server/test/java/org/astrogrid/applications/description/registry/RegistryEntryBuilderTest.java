@@ -1,4 +1,4 @@
-/*$Id: RegistryEntryBuilderTest.java,v 1.6 2008/09/03 14:19:00 pah Exp $
+/*$Id: RegistryEntryBuilderTest.java,v 1.7 2008/09/13 09:51:02 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,8 @@ public class RegistryEntryBuilderTest extends RegistryEntryBuilderTestBase {
     * @return
      * @throws ParameterDescriptionNotFoundException 
     */
-   protected ApplicationDescriptionLibrary createDesciptionLibrary() throws ParameterDescriptionNotFoundException {
+   @Override
+protected ApplicationDescriptionLibrary createDesciptionLibrary() throws ParameterDescriptionNotFoundException {
       return new TestApplicationDescriptionLibrary("ivo://astrogrid.org/testapp", "testapp");
    }    
 }
@@ -41,6 +42,9 @@ public class RegistryEntryBuilderTest extends RegistryEntryBuilderTestBase {
 
 /* 
 $Log: RegistryEntryBuilderTest.java,v $
+Revision 1.7  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.6  2008/09/03 14:19:00  pah
 result of merge of pah_cea_1611 branch
 

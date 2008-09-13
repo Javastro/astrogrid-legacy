@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibraryFactoryTest.java,v 1.3 2008/09/03 14:19:00 pah Exp $
+/*$Id: DefaultProtocolLibraryFactoryTest.java,v 1.4 2008/09/13 09:51:04 pah Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,6 @@
  *
 **/
 package org.astrogrid.applications.parameter.protocol;
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Jul-2005
@@ -34,6 +33,9 @@ public class DefaultProtocolLibraryFactoryTest extends AbstractProtocolTestCase 
 
 /* 
 $Log: DefaultProtocolLibraryFactoryTest.java,v $
+Revision 1.4  2008/09/13 09:51:04  pah
+code cleanup
+
 Revision 1.3  2008/09/03 14:19:00  pah
 result of merge of pah_cea_1611 branch
 

@@ -1,4 +1,4 @@
-/*$Id: ExternalValue.java,v 1.4 2004/11/27 13:20:02 pah Exp $
+/*$Id: ExternalValue.java,v 1.5 2008/09/13 09:51:02 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.applications.parameter.protocol;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -47,6 +46,9 @@ public interface ExternalValue {
 
 /* 
 $Log: ExternalValue.java,v $
+Revision 1.5  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.4  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

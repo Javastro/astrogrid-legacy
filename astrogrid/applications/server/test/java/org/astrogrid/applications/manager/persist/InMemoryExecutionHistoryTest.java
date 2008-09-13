@@ -26,7 +26,6 @@ import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.community.User;
 import org.astrogrid.security.SecurityGuard;
 import org.junit.Before;
 import org.junit.BeforeClass;

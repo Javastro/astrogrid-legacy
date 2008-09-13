@@ -1,4 +1,4 @@
-/*$Id: RemoteProgressListener.java,v 1.6 2008/09/03 14:18:58 pah Exp $
+/*$Id: RemoteProgressListener.java,v 1.7 2008/09/13 09:51:05 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,7 @@ public class RemoteProgressListener extends AbstractProgressListener {
      * 
      * any communication failure, logs a warning.
      */
+    @Override
     protected void reportMessage(Application app, MessageType message) {
         try {
             delegate.monitorJob(new JobIdentifierType( app.getJobStepID()),JAXB2Axis.convert(message));
@@ -65,6 +66,7 @@ public class RemoteProgressListener extends AbstractProgressListener {
      * 
      * any communication failure, logs  a warning
      */
+    @Override
     protected void reportStatusChange(Application app, Status status) {
         try {
             MessageType message = app.createTemplateMessage();
@@ -84,6 +86,9 @@ public class RemoteProgressListener extends AbstractProgressListener {
 
 /* 
 $Log: RemoteProgressListener.java,v $
+Revision 1.7  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.6  2008/09/03 14:18:58  pah
 result of merge of pah_cea_1611 branch
 

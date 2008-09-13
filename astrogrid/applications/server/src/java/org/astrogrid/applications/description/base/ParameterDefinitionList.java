@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterDefinitionList.java,v 1.2 2008/09/03 14:18:42 pah Exp $
+ * $Id: ParameterDefinitionList.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,7 +14,6 @@
 
 package org.astrogrid.applications.description.base;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

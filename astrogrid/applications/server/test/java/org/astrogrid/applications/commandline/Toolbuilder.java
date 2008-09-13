@@ -1,5 +1,5 @@
 /*
- * $Id: Toolbuilder.java,v 1.3 2008/09/10 23:27:18 pah Exp $
+ * $Id: Toolbuilder.java,v 1.4 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -17,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -148,6 +147,9 @@ public abstract class Toolbuilder  {
 
 /*
  * $Log: Toolbuilder.java,v $
+ * Revision 1.4  2008/09/13 09:51:04  pah
+ * code cleanup
+ *
  * Revision 1.3  2008/09/10 23:27:18  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

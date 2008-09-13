@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultCommandLineParameterAdapter.java,v 1.2 2008/09/03 14:18:53 pah Exp $
+ * $Id: DefaultCommandLineParameterAdapter.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 20-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -121,7 +121,8 @@ public class DefaultCommandLineParameterAdapter extends
     * @return the name of the file the value has been written to.
     * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
     */
-   public Object process() throws CeaException {
+   @Override
+public Object process() throws CeaException {
 
       commandLineVal = val.getValue();
       if (logger.isDebugEnabled()) {
@@ -233,7 +234,8 @@ public class DefaultCommandLineParameterAdapter extends
     * 
     * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
     */
-   public void writeBack(Object arg0) throws CeaException {
+   @Override
+public void writeBack(Object arg0) throws CeaException {
       StringWriter sw = null;
       Reader r = null;
       InputStream is = null;

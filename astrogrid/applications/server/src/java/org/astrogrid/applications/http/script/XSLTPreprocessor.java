@@ -1,4 +1,4 @@
-/* $Id: XSLTPreprocessor.java,v 1.1 2008/09/10 23:27:18 pah Exp $
+/* $Id: XSLTPreprocessor.java,v 1.2 2008/09/13 09:51:04 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.impl.WebHttpApplicationSetup;
 import org.astrogrid.applications.description.impl.WebHttpCall;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;

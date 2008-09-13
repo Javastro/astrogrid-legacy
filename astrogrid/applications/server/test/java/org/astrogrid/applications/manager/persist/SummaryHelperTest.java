@@ -1,5 +1,5 @@
 /*
- * $Id: SummaryHelperTest.java,v 1.2 2008/09/03 14:18:59 pah Exp $
+ * $Id: SummaryHelperTest.java,v 1.3 2008/09/13 09:51:02 pah Exp $
  * 
  * Created on 21 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -18,12 +18,12 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.javainternal.BuiltInApplicationDescriptionTest;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SummaryHelperTest extends BuiltInApplicationDescriptionTest {
 
  
+    @Override
     @Before
     public void setUp() throws Exception {
 	super.setUp();
@@ -41,6 +41,9 @@ public class SummaryHelperTest extends BuiltInApplicationDescriptionTest {
 
 /*
  * $Log: SummaryHelperTest.java,v $
+ * Revision 1.3  2008/09/13 09:51:02  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:59  pah
  * result of merge of pah_cea_1611 branch
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: CEAConfiguration.java,v 1.2 2008/09/03 14:19:08 pah Exp $
+ * $Id: CEAConfiguration.java,v 1.3 2008/09/13 09:51:06 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
@@ -152,8 +154,32 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
     }
 
     public Test getInstallationTest() {
-	// FIXME should get an installation test for this, as it is pretty fundamental to having stuff set up properly
-	return null;
+	TestSuite suite = new TestSuite(
+	"Configuration Test");
+        suite.addTest(new ConfigurationTest("testRecordsDirectoryOK"));
+        suite.addTest(new ConfigurationTest("testWorkingDirectoryOK"));
+        return suite;
+	
+	
+    }
+
+    public  class ConfigurationTest extends TestCase {
+	
+	public ConfigurationTest(String name) {
+	    super(name);
+	}
+	public void testRecordsDirectoryOK() throws Exception {
+	    assertTrue("records directory does not exist dir="+recordsDirectory.getAbsolutePath(), recordsDirectory.exists());
+	    assertTrue("records directory is not a diretory dir="+recordsDirectory.getAbsolutePath(), recordsDirectory.isDirectory());
+            assertTrue("records directory not writable dir="+recordsDirectory.getAbsolutePath(), recordsDirectory.canWrite());
+            assertTrue("records directory not readable dir="+recordsDirectory.getAbsolutePath(), recordsDirectory.canRead());
+        }
+        public void testWorkingDirectoryOK() throws Exception {
+            assertTrue("working directory does not exist dir="+temporaryFilesDirectory.getAbsolutePath(), temporaryFilesDirectory.exists());
+            assertTrue("working directory is not a directoryt dir="+temporaryFilesDirectory.getAbsolutePath(), temporaryFilesDirectory.isDirectory());
+            assertTrue("working directory not writable dir="+temporaryFilesDirectory.getAbsolutePath(), temporaryFilesDirectory.canWrite());
+            assertTrue("working directory not readable dir="+temporaryFilesDirectory.getAbsolutePath(), temporaryFilesDirectory.canRead());
+        }
     }
 
     public String getName() {
@@ -211,6 +237,9 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 
 /*
  * $Log: CEAConfiguration.java,v $
+ * Revision 1.3  2008/09/13 09:51:06  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:19:08  pah
  * result of merge of pah_cea_1611 branch
  *

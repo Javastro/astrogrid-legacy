@@ -1,5 +1,5 @@
 /*
- * $Id: InterfaceDefinition.java,v 1.2 2008/09/03 14:18:42 pah Exp $
+ * $Id: InterfaceDefinition.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.ivoa.resource.cea.CeaApplication;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,7 +30,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.Cardinality;
-import org.astrogrid.applications.description.Identify;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.ParameterDirection;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
@@ -370,7 +367,8 @@ public InterfaceDefinition(){
             
         }
 
-        public String toString() {
+        @Override
+	public String toString() {
             StringBuffer buffer = new StringBuffer();
             buffer.append("[ApplicationInterface:");
             buffer.append(" id: ");

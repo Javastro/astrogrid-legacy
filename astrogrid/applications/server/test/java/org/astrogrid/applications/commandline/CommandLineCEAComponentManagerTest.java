@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManagerTest.java,v 1.2 2008/09/04 19:10:52 pah Exp $
+/*$Id: CommandLineCEAComponentManagerTest.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,10 +24,8 @@ import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary;
 import org.astrogrid.applications.description.execution.Tool;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,6 +154,9 @@ public class CommandLineCEAComponentManagerTest
 
 /* 
 $Log: CommandLineCEAComponentManagerTest.java,v $
+Revision 1.3  2008/09/13 09:51:04  pah
+code cleanup
+
 Revision 1.2  2008/09/04 19:10:52  pah
 ASSIGNED - bug 2825: support VOSpace
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

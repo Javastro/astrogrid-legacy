@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.2 2008/09/04 19:10:53 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.3 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,8 +12,6 @@
  */ 
 
 package org.astrogrid.applications.commandline;
-
-import java.net.URL;
 
 import org.astrogrid.applications.test.AbstractComponentManagerTestCase;
 import org.astrogrid.security.SecurityGuard;
@@ -56,7 +54,8 @@ public abstract class DescriptionBaseTestCase extends AbstractComponentManagerTe
  
     };
  
-   @Before
+   @Override
+@Before
    public void setUp() throws Exception {
       super.setUp();
       appInfo =setupApplication();

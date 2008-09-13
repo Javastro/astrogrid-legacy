@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClient.java,v 1.1 2008/09/10 23:27:17 pah Exp $
+/* $Id: HttpServiceClient.java,v 1.2 2008/09/13 09:51:06 pah Exp $
  * Created on Jul 24, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -25,7 +25,6 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.astrogrid.applications.http.exceptions.HttpApplicationException;
 import org.astrogrid.applications.http.exceptions.HttpApplicationNetworkException;
 import org.astrogrid.applications.http.exceptions.HttpApplicationWebServiceException;
 import org.astrogrid.applications.http.exceptions.HttpApplicationWebServiceURLException;
@@ -89,7 +88,8 @@ public class HttpServiceClient {
             this.type = type;
         }
 
-        public String toString() {
+        @Override
+	public String toString() {
             return type;
         }
     }
@@ -289,6 +289,9 @@ public class HttpServiceClient {
 
 /*
  * $Log: HttpServiceClient.java,v $
+ * Revision 1.2  2008/09/13 09:51:06  pah
+ * code cleanup
+ *
  * Revision 1.1  2008/09/10 23:27:17  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

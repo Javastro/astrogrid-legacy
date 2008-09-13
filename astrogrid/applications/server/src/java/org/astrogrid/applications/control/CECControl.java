@@ -1,5 +1,5 @@
 /*
- * $Id: CECControl.java,v 1.2 2008/09/03 14:18:52 pah Exp $
+ * $Id: CECControl.java,v 1.3 2008/09/13 09:51:05 pah Exp $
  * 
  * Created on 19-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -26,7 +26,6 @@ import junit.framework.Test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.manager.ControlService;
 import org.astrogrid.applications.manager.ExecutionPolicy;
@@ -34,7 +33,6 @@ import org.astrogrid.applications.manager.Stopable;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.springframework.stereotype.Service;
 
 /**
  * Provides useful functions for managing the resources consumed by the
@@ -214,6 +212,9 @@ public void shutdown() {
 
 /*
  * $Log: CECControl.java,v $
+ * Revision 1.3  2008/09/13 09:51:05  pah
+ * code cleanup
+ *
  * Revision 1.2  2008/09/03 14:18:52  pah
  * result of merge of pah_cea_1611 branch
  *

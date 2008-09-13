@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.8 2008/09/10 23:27:16 pah Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.9 2008/09/13 09:51:04 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -150,6 +150,7 @@ public String getReferenceURL() {
     /** produce a nicely-formatted dump of the metadata for this application 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         StringBuffer paramBuff = new StringBuffer();
         StringBuffer interfaceBuff = new StringBuffer();

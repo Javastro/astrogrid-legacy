@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.13 2008/09/10 23:27:16 pah Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.14 2008/09/13 09:51:04 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.applications.description.base;
 
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
-import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
@@ -99,6 +98,9 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.14  2008/09/13 09:51:04  pah
+code cleanup
+
 Revision 1.13  2008/09/10 23:27:16  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

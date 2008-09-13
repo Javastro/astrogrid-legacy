@@ -1,4 +1,4 @@
-/*$Id: TheadPoolSystemTest.java,v 1.4 2008/09/04 19:10:53 pah Exp $
+/*$Id: TheadPoolSystemTest.java,v 1.5 2008/09/13 09:51:05 pah Exp $
  * Created on 14-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ public class TheadPoolSystemTest extends SystemTest {
     }
     private ThreadPoolExecutionController threadpoolController;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
          
@@ -124,6 +125,9 @@ public class TheadPoolSystemTest extends SystemTest {
 
 /* 
 $Log: TheadPoolSystemTest.java,v $
+Revision 1.5  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.4  2008/09/04 19:10:53  pah
 ASSIGNED - bug 2825: support VOSpace
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

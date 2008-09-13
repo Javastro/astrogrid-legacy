@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.1 2008/09/10 23:27:17 pah Exp $
+/* $Id: HttpApplication.java,v 1.2 2008/09/13 09:51:06 pah Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
  */
 package org.astrogrid.applications.http;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,10 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.impl.HttpMethodType;
 import org.astrogrid.applications.description.impl.Script;
 import org.astrogrid.applications.description.impl.WebHttpApplicationSetup;
@@ -116,6 +113,7 @@ public class HttpApplication extends AbstractApplication  {
             return returnWebHttpCall;
     }
 
+    @Override
     public Runnable createRunnable()  {
         log.debug("createExecutionTask() - creating worker thread");
         Runnable task = new Exec();
@@ -235,6 +233,9 @@ public class HttpApplication extends AbstractApplication  {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.2  2008/09/13 09:51:06  pah
+ * code cleanup
+ *
  * Revision 1.1  2008/09/10 23:27:17  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

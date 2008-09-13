@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchApplication.java,v 1.5 2008/09/10 23:27:16 pah Exp $
+/*$Id: SiapImageFetchApplication.java,v 1.6 2008/09/13 09:51:02 pah Exp $
  * Created on 23-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,8 +38,6 @@ import org.astrogrid.filemanager.client.FileManagerClientFactory;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Ivorn;
-import org.springframework.stereotype.Service;
-
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
@@ -65,6 +63,7 @@ public class SiapImageFetchApplication extends AbstractApplication {
      * standard strings for the other ones.
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.protocol.ExternalValue)
      */
+    @Override
     protected ParameterAdapter instantiateAdapter(ParameterValue pval,
             ParameterDescription descr, ExternalValue indirectVal) {
         if (descr.getId().equals(SiapImageFetchDescription.TABLE)) {
@@ -201,6 +200,9 @@ public class SiapImageFetchApplication extends AbstractApplication {
 
 /* 
 $Log: SiapImageFetchApplication.java,v $
+Revision 1.6  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.5  2008/09/10 23:27:16  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistoryTest.java,v 1.6 2008/09/03 14:18:59 pah Exp $
+/*$Id: FileStoreExecutionHistoryTest.java,v 1.7 2008/09/13 09:51:02 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ public class FileStoreExecutionHistoryTest extends InMemoryExecutionHistoryTest 
     /**
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         this.eh = new FileStoreExecutionHistory(new MockNonSpringConfiguredConfig());
@@ -36,6 +37,9 @@ public class FileStoreExecutionHistoryTest extends InMemoryExecutionHistoryTest 
 
 /* 
 $Log: FileStoreExecutionHistoryTest.java,v $
+Revision 1.7  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.6  2008/09/03 14:18:59  pah
 result of merge of pah_cea_1611 branch
 

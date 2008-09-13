@@ -1,5 +1,5 @@
 /*
- * $Id: JaxbReadImplTest.java,v 1.4 2008/09/10 23:27:20 pah Exp $
+ * $Id: JaxbReadImplTest.java,v 1.5 2008/09/13 09:51:06 pah Exp $
  * 
  * Created on 11 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -39,6 +39,7 @@ public class JaxbReadImplTest extends TestCase {
 	super(name);
     }
 
+    @Override
     protected void setUp() throws Exception {
 	super.setUp();
     }
@@ -87,6 +88,9 @@ public class JaxbReadImplTest extends TestCase {
 
 /*
  * $Log: JaxbReadImplTest.java,v $
+ * Revision 1.5  2008/09/13 09:51:06  pah
+ * code cleanup
+ *
  * Revision 1.4  2008/09/10 23:27:20  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

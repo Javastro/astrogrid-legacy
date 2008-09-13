@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.14 2008/09/10 23:27:14 pah Exp $
+/*$Id: JavaClassProviderTest.java,v 1.15 2008/09/13 09:51:02 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,6 +48,7 @@ public class JavaClassProviderTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         secGuard = new SecurityGuard();//TODO should put in some real credenials perhaps
@@ -176,6 +177,9 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.15  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.14  2008/09/10 23:27:14  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

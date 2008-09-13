@@ -1,5 +1,5 @@
 /*
- * $Id: DummyVODescriptionProvider.java,v 1.11 2008/09/03 14:18:52 pah Exp $
+ * $Id: DummyVODescriptionProvider.java,v 1.12 2008/09/13 09:51:04 pah Exp $
  * Created on 02-Jun-2004
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,12 +13,6 @@ package org.astrogrid.applications.description.base;
 
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.GregorianCalendar;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerConfigurationException;
 
 import net.ivoa.resource.AccessURL;
@@ -38,7 +32,6 @@ import net.ivoa.resource.cea.CeaApplication;
 import net.ivoa.resource.cea.CeaCapability;
 import net.ivoa.resource.registry.iface.VOResources;
 
-import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.AbstractMetadataService;
@@ -200,6 +193,9 @@ public class DummyVODescriptionProvider extends AbstractMetadataService
 
 /*
  * $Log: DummyVODescriptionProvider.java,v $
+ * Revision 1.12  2008/09/13 09:51:04  pah
+ * code cleanup
+ *
  * Revision 1.11  2008/09/03 14:18:52  pah
  * result of merge of pah_cea_1611 branch
  *

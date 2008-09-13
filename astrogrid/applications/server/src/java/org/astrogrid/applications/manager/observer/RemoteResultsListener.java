@@ -1,4 +1,4 @@
-/*$Id: RemoteResultsListener.java,v 1.6 2008/09/03 14:18:58 pah Exp $
+/*$Id: RemoteResultsListener.java,v 1.7 2008/09/13 09:51:05 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,6 +59,7 @@ public class RemoteResultsListener extends AbstractResultsListener {
      * 
      * @see org.astrogrid.applications.manager.observer.AbstractResultsListener#notifyResultsAvailable(org.astrogrid.applications.Application)
      */
+    @Override
     protected void notifyResultsAvailable(Application app)  {
            try {
             delegate.putResults(new JobIdentifierType(app.getJobStepID()),JAXB2Axis.convert( app.getResult()));
@@ -73,6 +74,9 @@ public class RemoteResultsListener extends AbstractResultsListener {
 
 /* 
 $Log: RemoteResultsListener.java,v $
+Revision 1.7  2008/09/13 09:51:05  pah
+code cleanup
+
 Revision 1.6  2008/09/03 14:18:58  pah
 result of merge of pah_cea_1611 branch
 

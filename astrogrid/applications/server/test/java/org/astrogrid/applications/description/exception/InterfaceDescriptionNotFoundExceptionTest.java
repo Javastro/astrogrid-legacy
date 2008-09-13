@@ -1,5 +1,5 @@
 /*
- * $Id: InterfaceDescriptionNotFoundExceptionTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: InterfaceDescriptionNotFoundExceptionTest.java,v 1.3 2008/09/13 09:51:06 pah Exp $
  * 
  * Created on 27-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -37,7 +37,8 @@ public class InterfaceDescriptionNotFoundExceptionTest extends TestCase {
    /*
     * @see TestCase#setUp()
     */
-   protected void setUp() throws Exception {
+   @Override
+protected void setUp() throws Exception {
       super.setUp();
    }
 

@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistory.java,v 1.4 2008/09/03 14:18:48 pah Exp $
+/*$Id: InMemoryExecutionHistory.java,v 1.5 2008/09/13 09:51:02 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,8 @@
 **/
 package org.astrogrid.applications.manager.persist;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.description.execution.ExecutionSummaryType;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +23,13 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import junit.framework.Test;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.Application;
+import org.astrogrid.applications.description.execution.ExecutionSummaryType;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.joda.time.DateTime;
 
 /** In-memory implementation of an execution history component - keeps everything in memory, persists nothing
  * <p />
@@ -245,6 +243,9 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
 
 /* 
 $Log: InMemoryExecutionHistory.java,v $
+Revision 1.5  2008/09/13 09:51:02  pah
+code cleanup
+
 Revision 1.4  2008/09/03 14:18:48  pah
 result of merge of pah_cea_1611 branch
 
