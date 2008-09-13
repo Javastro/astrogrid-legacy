@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.3 2008/09/10 23:27:17 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.4 2008/09/13 09:49:18 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -26,6 +26,9 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
 
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.cea.CeaApplication;
@@ -54,25 +57,55 @@ import org.astrogrid.contracts.SchemaMap;
  */
 public class ConfigFileReadingDescriptionLibrary extends
 	BaseApplicationDescriptionLibrary {
+    /* (non-Javadoc)
+     * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary#getName()
+     */
+    @Override
+    public String getName() {
+	return "Configuration File Reading Library";
+    }
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary#getInstallationTest()
+     */
+    @Override
+    public Test getInstallationTest() {
+           return new InstallationTest("testLoadApplications");
+    }
+    
+    public class InstallationTest extends TestCase {
+	public InstallationTest(String name) {
+	    super(name);
+	}
+	public void testLoadApplications(){
+	    String error = getErrorMessage();
+	    if(error == null){
+		error="ok";
+	    }
+	    assertTrue(error, loadok);
+	}
+	
+    }
+
     /**
      * Logger for this class
      */
     private static final Log logger = LogFactory
 	    .getLog(ConfigFileReadingDescriptionLibrary.class);
     private ValidationEventCollector handler;
-    private boolean errorLoading = false;
+    private boolean loadok = true;
     
     
    public ConfigFileReadingDescriptionLibrary(
 	    
-	    Configuration conf
+	Configuration conf
 	 ) {
 	super(conf);
 	try {
-	    errorLoading = loadApplications(conf.getApplicationDescriptionUrl());
+	    loadok = loadApplications(conf.getApplicationDescriptionUrl());
 	} catch (IOException e) {
-	    errorLoading = true;
-	   logger.fatal("error while loading application definitions", e);
+	    loadok = false;
+	    logger.fatal("error while loading application definitions", e);
 	}
     }
    
@@ -171,10 +204,10 @@ public class ConfigFileReadingDescriptionLibrary extends
 
     /**
      * return if there was an error in the last reading of a config file.
-     * @return
+     * @return true if the config file was loaded ok
      */
-    public boolean isErrorLoading() {
-        return errorLoading;
+    public boolean isLoadok() {
+        return loadok;
     }
 
     /**
@@ -182,7 +215,7 @@ public class ConfigFileReadingDescriptionLibrary extends
      * @return
      */
     public String getErrorMessage() {
-	if (errorLoading) {
+	if (!loadok) {
 	    if (handler.hasEvents()) {
 		StringBuffer error = new StringBuffer();
 		for (ValidationEvent event : handler.getEvents()) {
@@ -201,6 +234,9 @@ public class ConfigFileReadingDescriptionLibrary extends
 
 /*
  * $Log: ConfigFileReadingDescriptionLibrary.java,v $
+ * Revision 1.4  2008/09/13 09:49:18  pah
+ * make installation test report error
+ *
  * Revision 1.3  2008/09/10 23:27:17  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *
