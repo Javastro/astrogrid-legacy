@@ -1,5 +1,5 @@
 /*
- * $Id: VosProtocol.java,v 1.2 2008/09/15 19:25:43 pah Exp $
+ * $Id: VosProtocol.java,v 1.3 2008/09/15 19:26:18 pah Exp $
  * 
  * Created on 3 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.Iterator;
 
 import junit.framework.Test;
 
@@ -25,11 +24,6 @@ import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegate;
 import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegateResolver;
 import org.astrogrid.vospace.client.delegate.AGVOSpaceDelegateResolverImpl;
-import org.astrogrid.vospace.v11.client.exception.ConnectionException;
-import org.astrogrid.vospace.v11.client.transfer.export.ExportConnection;
-import org.astrogrid.vospace.v11.client.transfer.export.ExportTransferResponse;
-import org.astrogrid.vospace.v11.client.transfer.inport.InportConnection;
-import org.astrogrid.vospace.v11.client.transfer.inport.InportTransferResponse;
 
 /**
  * A {@link Protocol} for communicating with VOSpace. 
@@ -99,6 +93,9 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 
 /*
  * $Log: VosProtocol.java,v $
+ * Revision 1.3  2008/09/15 19:26:18  pah
+ * remove unused imports
+ *
  * Revision 1.2  2008/09/15 19:25:43  pah
  * use new simpler delegate interface.
  *
