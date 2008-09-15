@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rs:VOResources 
+from="1"
+more="false"
+numberReturned="10"
+xmlns:rs="http://www.ivoa.net/xml/RegistryInterface/v1.0" 
+xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.0" 
+xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1" 
+xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+ xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
+ xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1" 
+ xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 http://www.ivoa.net/xml/RegistryInterface/v1.0 http://www.ivoa.net/xml/CEA/v1.0rc1 http://www.eso.org/~pharriso/ivoa/schema/VOCEA-v1.0.xsd">
+  <rs:Resource status="active" xsi:type="cea:CeaApplication" created="1999-01-01T00:00:00" updated="2008-03-10T10:00:00">
+    <title>Cut out HDF(N) (GOODS) MERLIN+VLA radio images</title>
+    <shortName>Cut out HDF(N) </shortName>
+    <identifier>ivo://org.astrogrid/HDFImager</identifier>
+    <curation>
+      <publisher>Astrogrid</publisher>
+      <creator>
+        <name>Astrogrid</name>
+        <logo>??</logo>
+      </creator>
+      <date role="representative">2006-02-16</date>
+      <version>1.0</version>
+      <contact>
+        <name>Anita Richards</name>
+        <email>amsr@jb.man.ac.uk</email>
+      </contact>
+    </curation>
+    <content>
+      <subject>???</subject>
+      <description>This tool extracts cutouts of chosen size and resolution from the MERLIN+VLA
+            1.4 GHz Hubble Deep Field (N) (GOODS)  8-arcmin field</description>
+      <referenceURL>http://ukads.nottingham.ac.uk/abs/2005MNRAS.358.1159M</referenceURL>
+      <type>Other</type>
+    </content>
+    <applicationDefinition>
+      <parameters>
+        <parameterDefinition id="ImageSize" type="real">
+          <name>Image Size</name>
+          <description>Image size (arcsec) in range 8 to 128 arcsec. </description>
+          <unit/>
+          <ucd/>
+          <defaultValue>8.0</defaultValue>
+        </parameterDefinition>
+        <parameterDefinition id="output" type="text">
+          <name>output type</name>
+          <description>This can be one of HTML VOTable or Ascii, with the default
+                    being VOTable</description>
+          <unit/>
+          <ucd/>
+          <defaultValue>VOTable</defaultValue>
+          <optionList>
+            <optionVal>HTML</optionVal>
+            <optionVal>VOTable</optionVal>
+            <optionVal>Ascii</optionVal>
+          </optionList>
+        </parameterDefinition>
+        <parameterDefinition id="Dec" type="text">
+          <name>Dec</name>
+          <description>Dec. in sexagesimal (colon-separated) or in decimal degrees. 
+                    Must be in format and range (+62:08:42.6 to +62:17:13.3) or 
+                    (+62.145167 to +62.287028) (J2000, number of decimal places optional). 
+                    If blank, Name will be used. </description>
+          <unit/>
+          <ucd/>
+          <defaultValue/>
+        </parameterDefinition>
+        <parameterDefinition id="Name" type="text">
+          <name>HDF name</name>
+          <description>HDF source name like J123613.97+620852.6 (decimal places
+                    optional) Only give either (RA and Dec) or Name! </description>
+          <unit/>
+          <ucd/>
+          <defaultValue/>
+        </parameterDefinition>
+        <parameterDefinition id="Resolution" type="real">
+          <name>Resolution</name>
+          <description>Resolution (arcsec), one of 0.2, 0.3, 0.4, 0.5 arcsec. </description>
+          <unit/>
+          <ucd/>
+          <defaultValue>0.4</defaultValue>
+          <optionList>
+            <optionVal>0.2</optionVal>
+            <optionVal>0.3</optionVal>
+            <optionVal>0.4</optionVal>
+            <optionVal>0.5</optionVal>
+          </optionList>
+        </parameterDefinition>
+        <parameterDefinition id="RA" type="text">
+          <name>RA</name>
+          <description>RA in sexagesimal (colon-separated) or in decimal degrees. 
+                    Must be in format and range  (12:36:12.97 to 12:37:24.95) or 
+                    (189.054042 to 189.353958) (J2000, number of decimal places optional). 
+                    If blank, Name will be used. </description>
+          <unit/>
+          <ucd/>
+          <defaultValue/>
+        </parameterDefinition>
+        <parameterDefinition id="HDFRadioImages" type="VOTable">
+          <name>MERLIN+VLA HDF Images List</name>
+          <description>Name for VOTable which will contain image URLs and
+                metadata</description>
+          <unit/>
+          <ucd/>
+          <defaultValue/>
+        </parameterDefinition>
+      </parameters>
+      <interfaces>
+        <interfaceDefinition id="full">
+          <input>
+            <pref maxOccurs="1" minOccurs="0" ref="RA"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Dec"/>
+            <pref maxOccurs="1" minOccurs="0" ref="Name"/>
+            <pref maxOccurs="1" minOccurs="1" ref="ImageSize"/>
+            <pref maxOccurs="1" minOccurs="1" ref="Resolution"/>
+          </input>
+          <output>
+            <pref maxOccurs="1" minOccurs="1" ref="HDFRadioImages"/>
+          </output>
+        </interfaceDefinition>
+      </interfaces>
+    </applicationDefinition>
+  </rs:Resource>
+</rs:VOResources>

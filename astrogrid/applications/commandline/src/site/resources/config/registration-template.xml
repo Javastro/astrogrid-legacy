@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rs:VOResources xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:rs="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+   xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+   xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 ../../../../contracts/src/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd
+                                    http://www.ivoa.net/xml/CEA/v1.0 ../../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd"
+   from="1" more="false" numberReturned="1"
+>
+<!-- This is the template registration document for the service itself..... -->
+   <rs:Resource xsi:type="vr:Service" created="1999-01-01T00:00:00"
+      updated="1999-01-01T00:00:00" status="active"
+   >
+      <!-- Enter a title for your service. This will typically be displayed in
+         tables of service metadata raised in registry queries. The title is
+         free-form: machines display it but don't parse it. -->
+      <title>Title</title>
+      <!-- Enter a short name - 16 characters or less - to identify your service.
+         This is used in the same way as the title element. -->
+      <shortName>ServiceName</shortName>
+      <!-- You MUST set this or your registration won't work properly.
+         Set the bit between "ivo://" and "/ServiceName" to the 
+         (naming) authority ID of your chosen publishing-registry.
+         Replace "ServiceName" with a name for your service that is 
+         unique for that authority ID. You can use forward slashes
+         in the service name to imply hierarchical naming: e.g.
+         INT-WFS/images/broad-band.  Note that this name applies to
+         the service, not to an individual application. Most CEC services
+         run a mixed bag of applications so need fairly generic names. -->
+      <identifier>ivo://org.astrogrid.localhost/ServiceName</identifier>
+      <!-- Information for humans about who controls this service.
+         The software doesn't use this directly, but you need to fill 
+         this to help the smooth running off the IVO. -->
+      <curation>
+         <!-- Give the name of the person or organization putting this CEC 
+            on-line. If that entity has an IVOID (registered name starting
+            with ivo://) then you can put this into the ivo-id attribute;
+            otherwise, delete that attribute. -->
+         <publisher ivo-id="ivo://foo/bar">AstroGrid</publisher>
+         <!-- AstroGrid made this software, so we get to set this.
+            No need for you to change this bit. -->
+         <creator>
+            <name>AstroGrid</name>
+         </creator>
+         <!-- Identify the version of the service description (this 
+            document, as opposed to the software it describes).
+            Set the data and version number to show when you changed the
+            description. IVO users might check this if they find the
+            service behaving "oddly" due to a change in its registration. -->
+         <date>2006-01-01</date>
+         <version>2006.0</version>
+         <!-- Give the name and email address of the person who should
+            receive enquiries about your CEC and its applications.
+            You MUST fill this in; it's an entry requirement for
+            publishing into the IVO. -->
+         <contact>
+            <name>Paul Harrison</name>
+            <email>pah@jb.man.ac.uk</email>
+         </contact>
+      </curation>
+      <!-- Information for humans about the scientific use of the CEC service. End-users
+         aren't going to be very interested in the service per se; they need to see
+         the science detail in the registration of the applications. Therefore, you
+         probably don't want to need to changee the values in this part. -->
+      <content><!-- Keywords for use in Registry searches. -->
+         <subject>service, CEA, virtual observatory</subject>
+         <!-- Words to be shown to users in the results of registry searches.
+            You might want to outline here the kinds of application that your 
+            service offers. -->
+         <description>
+            A service in the Common Execution Architecture. This service
+            provides one or more science applications which are
+            separately registered. See the ManagedApplications element
+            of this document for a list of applications
+         </description>
+         <!-- Docs on how to operate this software. This refers to the CEC as
+            an AstroGrid component, not to the applications it provides. Hence,
+            the value set by AstroGrid is the right one. -->
+         <referenceURL>
+            http://www.astrogrid.org/maven/docs/head/applications/
+         </referenceURL>
+         <!-- Don't change this; the machines need this to be set to Other. -->
+         <type>Other</type>
+      </content>
+      <!-- Information for machines and programmers on how to use the service.
+         The CEC fills this in for itself; you shouldn't change anything below here -->
+      <capability xsi:type="cea:CeaCapability"
+         standardID="ivo://org.astrogrid/std/CEA/v1.0"
+      >
+         <interface role="std" xsi:type="cea:CECInterface"
+            version="1.0"
+         >
+            <accessURL>TemplateEntry</accessURL>
+         </interface>
+         <managedApplications>
+            <applicationReference>ivo://abc.de/aa</applicationReference>
+         </managedApplications>
+      </capability>
+   </rs:Resource>
+</rs:VOResources>

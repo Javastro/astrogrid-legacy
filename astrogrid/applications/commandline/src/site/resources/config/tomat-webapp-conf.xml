@@ -1,0 +1,18 @@
+<Context path="/cea">
+    <Environment name="cea.base.dir" override="false" type="java.lang.String"
+     description="The directory where the cea configuration is rooted"
+     value="/home/user/ceabase" />
+    <!-- service endpoint as seen by the outside world - here because of possible NAT firewall issues-->
+    <Environment name="cea.webapp.url" type="java.lang.String" 
+        override="false"
+        value="http://localhost:8080/cea/" 
+        description="service end point as seen by outside world"/>
+
+    <!-- registry endpoints - these are essential for the proper working of CEA - 
+	it needs to be able to query the registry to do myspace operations and can update the registry with its own configuration 
+	If you want to use the astrogrid registry then these entries should not need to be changed-->
+    <Environment name="org.astrogrid.registry.query.endpoint" description="registry query service endpoint URL" type="java.lang.String" 
+        value="http://registry.astrogrid.org/astrogrid-registry/services/RegistryQuery" />
+    <Environment name="org.astrogrid.registry.query.altendpoint" description="fallback registry query service endpoint URL" type="java.lang.String" 
+        value="http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQuery" />
+</Context>

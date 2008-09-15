@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><title>GALAXEV</title></head>
+
+<body>
+<div style="text-align: center;">
+<h3 style="color: rgb(51, 51, 255);"><big><big><big>GALAXEV</big></big></big></h3>
+<div style="text-align: left;"><big>GALAXEV computes the spectral evolution
+of stellar populations for a wide range of star formation history and
+stella rpopulation parameters. The latest source code and documentation
+(2003) can be
+found at: </big><a href="http://www.cida.ve/%7Ebruzual/bc2003">http://www.cida.ve/~bruzual/bc2003</a><br>
+<br>
+</div>
+<span style="font-weight: bold; text-decoration: underline;"></span></div>
+<hr style="width: 100%; height: 2px;"><br>
+To facilitate installation and testing a PYTHON script, written by
+Veronica Strazzullo (a student at ESO), is included here.<br>
+The python script <a href="http://www.eso.org/%7Eprosati/avo/runBC03reduced.py">runBC03reduced.py</a>
+acts as a friendly interface to executables and parameter files. It
+only requires a SExtractor-like <a href="http://www.eso.org/%7Eprosati/avo/inputfile">inputfile</a> and
+generates a set of output files from which spectra at different galaxy
+ages
+can be extracted as well as magnitudes, colors at varying redshifts for
+a standard set of filters. <span style="text-decoration: underline;"><span style="font-weight: bold;"></span></span><span style="text-decoration: underline;"><span style="font-weight: bold;"></span></span><span style="font-weight: bold; text-decoration: underline;"><br>
+</span>The script, in its current form, does not include all possible
+star formation histories (but definitely enough for the Demo!) but
+could be easily generalized to do so.<br>
+<br>
+One should always refer to the user manual in the doc directory (<a href="http://www.eso.org/%7Eprosati/avo/bc03.ps.gz">bc03.ps.gz</a>) for a clear explanation of the work
+flow.<br>
+<br>
+Once the Bruzual-Charlot 03 package (<a href="http://www.eso.org/%7Eprosati/avo/bc03.tar.gz">bc03.tar.gz</a>)
+has been installed and compiled, the example below shows how to use the
+script. <span style="font-weight: bold; text-decoration: underline;"><br>
+<br>
+<big>Example</big></span><big><span style="font-weight: bold;">:</span></big><br>
+<br>
+1) Edit "inputfile" and set parameters; see example <a href="http://www.eso.org/%7Eprosati/avo/inputfile">inputfile</a>
+and a more verbose <a href="http://www.eso.org/%7Eprosati/avo/inputfile.README">version</a> (not to be
+used as an inputfile!)<br>
+<br>
+2) <big><tt>python runBC03reduced.py inputfile</tt></big><br>
+<br>
+This runs 3 executables (after constructing all the appropriate input
+files):<br>
+i) <big><tt>csp_galaxev</tt></big>: compute spectral evolution<br>
+ii) <big><tt>galaxevpl</tt></big>: extract spectrum at chosen ages<br>
+iii) <big><tt>cm_evolution</tt></big>: compute redshift evolution<br>
+<br>
+3)...and generates the following output files with self-explanatory
+headers<br>
+&nbsp;(files more relevant for the Demo are highlighted):<br>
+<br>
+<span style="font-weight: bold;">test.1ABmag</span>: AB magnitudes in
+SDSS filters as function of galaxy Age (see Table 2)<br>
+<span style="font-weight: bold;">test.1color</span>: mags and colors
+(Vega) as function of galaxy Age in standard filters <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (see
+Table 2 in the user manual)<br>
+<span style="font-weight: bold;">test.2color</span>: as above for more
+filter sets (see Table 2)<br>
+test.3color: spectral features et al. as function of galaxy Age (see
+Table 2)<br>
+test.4color: stellar masses, M/L ratios, etc. as function of galaxy Age
+(see Table 2)<br>
+test.5color: details...<br>
+test.6,7,8lsindx*: Lick indexes (see Table 2) <br>
+<span style="font-weight: bold;">test_age5,7:</span> Spectra (lambda
+&amp; fluxes at chosen ages). See Sect.3.3<br>
+<span style="font-weight: bold;">test.magnitude_F003</span>: Magnitude
+redshift evolution in FILTER2 (see Table 6)<br>
+<span style="font-weight: bold;">test.magnitude_F012</span>: As above
+for FILTER1<br>
+<span style="font-weight: bold;">test.color_F012_F003</span>: Color
+redshift evolution in FILTER1-FILTER2 (see Table 6)<br>
+test.ised: Binary file containing all output information <br>
+<br>
+If non-standard filters are used, filter responses should be added
+following instructions in Sec.3.4.<br>
+<br>
+Specific information to extract from these files will depend on the
+details of Demo work flow for the section "data/models comparison".<br>
+<br>
+<small>P.Rosati</small><br>
+<br>
+<br>
+</body></html>
