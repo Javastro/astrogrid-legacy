@@ -1,5 +1,5 @@
 /*
- * $Id: UWSUtils.java,v 1.3 2008/09/04 21:20:02 pah Exp $
+ * $Id: UWSUtils.java,v 1.4 2008/09/15 17:19:05 pah Exp $
  * 
  * Created on 28 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,11 +13,13 @@
 package org.astrogrid.applications.uws;
 
 import java.net.MalformedURLException;
+import java.security.cert.CertificateException;
 
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.astrogrid.security.HttpsServiceSecurityGuard;
 import org.astrogrid.security.SecurityGuard;
 
 public class UWSUtils {
@@ -51,16 +53,20 @@ public class UWSUtils {
 
     }
 
-    public static SecurityGuard createSecurityGuard(HttpServletRequest request) {
-	Subject subject = new Subject();
-	subject.getPrincipals().add(request.getUserPrincipal());//FIXME need to do Principal properly
-	return new SecurityGuard(subject);
+    public static SecurityGuard createSecurityGuard(HttpServletRequest request) throws CertificateException {
+	
+	HttpsServiceSecurityGuard retval = new HttpsServiceSecurityGuard();
+	retval.loadHttpsAuthentication(request);
+	return retval ;
 
     }
 }
 
 /*
  * $Log: UWSUtils.java,v $
+ * Revision 1.4  2008/09/15 17:19:05  pah
+ * get securityguard into UWS chain
+ *
  * Revision 1.3  2008/09/04 21:20:02  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

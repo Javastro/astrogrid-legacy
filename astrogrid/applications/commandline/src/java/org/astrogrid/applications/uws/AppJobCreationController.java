@@ -1,5 +1,5 @@
 /*
- * $Id: AppJobCreationController.java,v 1.3 2008/09/04 21:20:02 pah Exp $
+ * $Id: AppJobCreationController.java,v 1.4 2008/09/15 17:19:05 pah Exp $
  * 
  * Created on 9 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,6 +13,7 @@
 package org.astrogrid.applications.uws;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +49,7 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
 
     @RequestMapping("*")
     public void startApplication(HttpServletRequest request,
-	    HttpServletResponse response) throws IOException, CeaException {
+	    HttpServletResponse response) throws IOException, CeaException, CertificateException {
 	Tool tool = configureTool(request);
         secGuard = UWSUtils.createSecurityGuard(request);
 	String jobid = manager.getExecutionController().init(tool,
@@ -67,6 +68,9 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
 
 /*
  * $Log: AppJobCreationController.java,v $
+ * Revision 1.4  2008/09/15 17:19:05  pah
+ * get securityguard into UWS chain
+ *
  * Revision 1.3  2008/09/04 21:20:02  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
