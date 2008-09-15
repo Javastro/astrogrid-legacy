@@ -1,55 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-<title>Command-line-application server - Command-line CEC: overview</title>
-<%@ include file="../inc/header.jsp" %>
-<div id="bodyColumn">
-  <div class="contentBox">
-    <div class="section"><a name="Overview"></a>
-      <h2>Overview</h2>
-      <p> This component provides a Common Execution Connector web-service for command-line
-        applications (CL-CEC for short). The CL-CEC makes astronomy applications available to the
-        virtual observatory; notably, it makes them visible to AstroGrid's web portal, desktop UI
-        and workflow system.</p>
-      <p> Suitable applications for this kind of CEC (there are other kinds) can be run from the
-        command line, have no graphical interface, and need no user interaction once launched. These
-        are some of the applications already in use in AstroGrid. </p>
-      <ul>
-        <li>SExtractor</li>
-        <li>HyperZ</li>
-        <li>BPZ</li>
-        <li>Pegase</li>
-        <li>Galaxev</li>
-      </ul>
-      <p> You should install this component if you wish to allow virtual-observatory users to run
-        selected applications on your computer. You choose the applications that may be run.
-        You must obtain and install these applications; they are not supplied with the CL-CEC.
-        The applications will run on the computer where you install
-        the service, and you must provide sufficent resources (CPU, memory, disc space) for the
-        applications to run efficiently. </p>
-      <p> If your application is to serve archive data then this may not be the ideal component. You
-        should look first at the Data Set Access (DSA) component of AstroGrid. It is possible to use
-        the command-line CEC as an archive interface, but the DSA component provides better support
-        for archive queries. </p>
-      <p> If your application has a web interface instead of a command-line interface then you
-        should not use this component but should use instead the HTTP-CEC component of AstroGrid
-        (but only if the interface is based on the HTTP-get protocol; HTTP-post is not supported).
-        If the application has both command-line and web interfaces then you can use either of the
-        two components. </p>
-      <div class="subsection"><a name="Internal_web-pages_and_local_controls"></a>
-        <h3>Internal web-pages and local controls</h3>
-        <p> The CEC web-application contains a copy of these web-pages. If you install the web
-          application as, say, <i>CEC-1</i> on server <i>my.cea.server</i> on port <i>8081</i>,
-          then the internal web pages are at </p>
-        <pre>
-http://my.cea.server:8081/CEC-1/
-				</pre>
-        <p> The internal copy of the pages
-          has, in its sidebar, extra links leading to local controls for configuration, testing and
-          registration. Therefore, while setting up the CEC, you should look at the internal pages.
-          If you can't find the controls, you're probably reading the web pages on <i>software.astrogrid.org</i> instead. </p>
-      </div>
-    </div>
-  </div>
-</div>
-<%@ include file="../inc/footer.jsp" %>
+<?xml version="1.0" encoding="UTF-8" ?>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<jsp:include page="display.jsp">
+<jsp:param name="doc" value="index.xml"/>
+<jsp:param name="title" value="Introduction"/>
+</jsp:include>
