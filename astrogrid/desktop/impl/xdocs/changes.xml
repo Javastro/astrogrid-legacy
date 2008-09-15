@@ -16,7 +16,7 @@
 	</head>
 <body>
 <release version="2008.2" date="unreleased"/>
-<release version="2008.1.2" date="unreleased">
+<release version="2008.1.2" date="2008-9-15">
   <action dev="gtr" type="fix" issue="2827">
     Upgraded security to 2008.2.01.
   </action>
