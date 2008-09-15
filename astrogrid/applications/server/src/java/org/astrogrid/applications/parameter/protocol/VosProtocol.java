@@ -1,5 +1,5 @@
 /*
- * $Id: VosProtocol.java,v 1.1 2008/09/04 19:10:53 pah Exp $
+ * $Id: VosProtocol.java,v 1.2 2008/09/15 19:25:43 pah Exp $
  * 
  * Created on 3 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -58,14 +58,7 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
           	 
 	    public InputStream read() throws InaccessibleExternalValueException {
 		try {
-		    ExportTransferResponse req = delegate.export(reference);
-		    Iterator<ExportConnection> conns = req.connections().iterator();
-		    if (conns.hasNext()) {
-		        ExportConnection conn = conns.next();//IMPL just choose the first - if the delegate can always produce a stream what do I care what the protocol is...
-		        return conn.stream();
-		    } else {
-		        throw new ConnectionException("no connection to VOSpace available");
-		    }
+		    return  delegate.read(reference);
 		} catch (Exception e) { 
 		   throw new InaccessibleExternalValueException("Error communicating with VOSpace", e);
 		} 
@@ -75,14 +68,7 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 	    public OutputStream write()
 		    throws InaccessibleExternalValueException {
 		try {
-		InportTransferResponse req = delegate.inport(reference);
-		Iterator<InportConnection> conns = req.connections().iterator();
-		    if (conns.hasNext()) {
-		        InportConnection conn = conns.next();//IMPL just choose the first - if the delegate can always produce a stream what do I care what the protocol is...
-		        return conn.stream();
-		    } else {
-		        throw new ConnectionException("no connection to VOSpace available");
-		    }
+		    return delegate.write(reference);
 		} catch (Exception e) {
 		    throw new InaccessibleExternalValueException("Error communicating with VOSpace", e);
 		}
@@ -113,6 +99,9 @@ public class VosProtocol implements Protocol, ComponentDescriptor {
 
 /*
  * $Log: VosProtocol.java,v $
+ * Revision 1.2  2008/09/15 19:25:43  pah
+ * use new simpler delegate interface.
+ *
  * Revision 1.1  2008/09/04 19:10:53  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
