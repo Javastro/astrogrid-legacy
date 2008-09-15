@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+		<title>CEC: overview</title>
+	</properties>
+	<body>
+		<section name="Overview">
+			<p> This component provides a Common Execution Controller (CEC) web-service for running various asynchronous applications. It is part of the 
+         Common Execution Architecture (CEA) suite of software from Astrogrid.
+             </p>
+                <p>This component is highly compliant with all the general IVOA Standards</p>
+                <ul>
+                  <li>UWS</li>
+                  <li>VOSI</li>
+                  <li>General Security</li>
+                  <li>Registry</li>
+                  <li>Delegation</li>
+                  <li>VOSpace</li>
+                </ul>
+            <p>
+            </p>
+            <p>
+              This component can be used to "wrap" existing applications so that they are presented as IVOA standard web services. The applications are
+              formally exposed to the rest of the VO as CEAApplications, which have initial parameter lists defined by their registry entries.
+               This component provides support for wrapping
+            </p>
+            <ul>
+              <li>Commandline applications</li>
+              <li>Existing web form based HTTP applications</li>
+              <li>Custom written Java applications</li>
+            </ul>
+            
+			<p> Suitable applications are subject to two main constraints</p>
+                <ol>
+                  <li>have no graphical interface</li>
+                  <li>need no user interaction once launched</li>
+                </ol>
+			<ul>
+         <p>These
+            are some of the commandline applications already in use in AstroGrid.</p>
+				<li>SExtractor</li>
+				<li>HyperZ</li>
+				<li>BPZ</li>
+				<li>Pegase</li>
+				<li>Galaxev</li>
+			</ul>
+			<p> You should install this component if you wish to allow virtual-observatory users to run
+				selected applications on your computer. You choose the applications that may be run.
+				You must obtain and install these applications; they are not supplied with the CL-CEC.
+				The applications will run on the computer where you install
+				the service, and you must provide sufficient resources (CPU, memory, disc space) for the
+				applications to run efficiently.</p>
+            
+          <p> There is also a variant of the Common Execution Controller that is customised to serve other standard IVOA Protocols including</p>
+            <ul>
+              <li>SIAP</li>
+              <li>SSAP</li>
+              <li>TAP</li>
+            </ul>
+            <p>whilst still retaining the CEA flexibility of choice in how to configure the back end implentation.</p>
+            
+            <p> However, at this time, if your application is to serve archive data then this may not be the ideal component. You
+            should look first at the Data Set Access (DSA) component of AstroGrid, which specializes in connecting directly to a variety of database backends.</p>
+           
+ 
+			
+			<subsection name="Internal web-pages and local controls">
+				<p>
+					The CEC web-application contains a copy of these web-pages. If you install the web
+					application as, say, <i>CEC-1</i> on server <i>my.cea.server</i> on port <i>8081</i>,
+					then the internal web pages are at
+				</p>
+				<pre>
+http://my.cea.server:8081/CEC-1/
+				</pre>
+				<p>	
+					The copy of these pages that is bundled with the web service components
+					has, in its sidebar, extra links leading to local controls for configuration, testing and
+					registration. Therefore, while setting up the CEC, you should look at the internal pages.
+					If you can't find the controls, you're probably reading the web pages on 
+					<i>software.astrogrid.org</i> instead.
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="Maven">
+<project>
   <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
     <src>http://www.astrogrid.org/images/AGlogo.png</src>
   </bannerRight>
+  <version position="left"/>
+  
   <body>
     <links>
       <item name="Astrogrid" href="http://www.astrogrid.org/" />
@@ -12,20 +14,23 @@
     </links>
 
     <menu name="Administrator Quickstart">
-       <item name="About this component" href="about.txt"/>
        <item name="Overview" href="index.html"/>
-       <item name="Download" href="doc/DOWNLOAD.html"/>
-       <item name="Installation" href="doc/INSTALL.html"/>
-       <item name="Configuration" href="doc/CONFIGURE.html"/>
-       <item name="Self-testing" href="doc/SELF-TEST.html"/>
-       <item name="Registration" href="doc/REGISTER.html"/>
-       <item name="External testing" href="doc/EXTTEST.html"/>
-       <item name="Upgrading" href="doc/UPGRADE.html"/>
-       <item name="Uninstallation" href="doc/UNINSTALL.html"/>
+       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-cec-${project.version}.war"/>
+       <item name="Installation" href="INSTALL.html"/>
+       <item name="Configuration" href="CONFIGURE.html"/>
+       <item name="Self-testing" href="SELF-TEST.html"/>
+       <item name="Registration" href="REGISTER.html"/>
+       <item name="External testing" href="EXTTEST.html"/>
+       <item name="Upgrading" href="UPGRADE.html"/>
+       <item name="Uninstallation" href="UNINSTALL.html"/>
     </menu>
    
     <menu name="Administrator Reference">
-	     <item name="Reference guide" href="doc/REFERENCE.html"/>
+	     <item name="Reference guide" href="REFERENCE.html"/>
+    </menu>
+    <menu name="Application Definition">
+         <item name="Guide" href="ApplicationConfiguration.html"/>
+         <item name="Examples" href="config/"/>
     </menu>
 
     <menu ref="reports"></menu>

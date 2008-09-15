@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+   <properties>
+      <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+      <title>Download</title>
+   </properties>
+   <body>
+      <section name="Download">
+         <p> The links on this page lead to version
+            ${project.version} of the CEC.</p>
+         <p>
+            The CEC component is supplied as a J2EE web-application
+            in a
+            <a
+               href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-cec-${project.version}.war"
+            >WAR file</a>
+            (http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-cec-${project.version}.war).
+            Download the WAR file to the computer where you want to run
+            the web-application.
+         </p>
+         <p> There is also an installer programme, available as an
+            executable JAR-file. Use of this installer is not currently
+            recommended and is not documented in these pages.</p>
+      </section>
+   </body>
+</document>

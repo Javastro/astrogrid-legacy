@@ -1,0 +1,39 @@
+<document>
+   <properties>
+      <author email="pah@jb.manac.uk">Paul Harrison</author>
+      <title>Security</title>
+   </properties>
+   <body>
+      <section name="Introduction">
+         <p>To utilise the CEC capabilities to the full you will need
+            to configure the container to be able to use TLS/HTTPS.
+            There are two main reasons for wanting to configure security
+         </p>
+         <ol>
+            <li>To be able to interact with other services requiring
+               security - the most likely of these being VOSpace</li>
+            <li>The CEC itself can be configured to only allow
+               authorised users to run jobs</li>
+         </ol>
+         <p>It is perfectly possible to run a CEC without configuring
+            security as detailed on this page, but then it will only be
+            able to interact with other non-secure services and be open
+            to all callers.</p>
+      </section>
+      <section name="TLS">
+         <p>Transport layer security (TLS) is the name for the
+            general approach of ensuring that HTTP communications are
+         </p>
+         <ol>
+            <li>Encrypted</li>
+            <li>Authenticated - at the server, and
+               optionally the client end</li>
+         </ol>
+         <p> - this is typically known as "enabling HTTPS".</p>
+         <subsection name="Certificates">
+         </subsection>
+         <subsection name="Trust Anchors">
+         </subsection>
+      </section>
+   </body>
+</document>

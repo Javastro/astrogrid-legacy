@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+   <properties>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+      <title>Configuration</title>
+   </properties>
+   <body>
+      <section name="Configuration">
+         <p> You must configure the CEC so that it works with your
+            chosen applications and in the environment of your site.
+            Please follow this sequence:</p>
+         <ol>
+            <li>Edit the CEC's "environment" to tell it where to
+               find things.</li>
+            <li>Edit the "registration-template" document.</li>
+            <li>Preview the registration document.</li>
+            <li>Restart the web application to pick up the
+               changed configuration.</li>
+         </ol>
+         <p> Instructions for each step are gven below.</p>
+      </section>
+      <section name="Edit the CEC's environment">
+         <p> The CEC needs to be told where to find things in its
+            operating environment. You do this by editing the
+            "environment entries" (i.e. named properties) for your
+            application server.</p>
+          <p>The method by which these environment entries are edited will depend on the application server that you are using.
+          </p>
+          <p>The environment entries are described in <a href="./env-entry-reference.html">more detail here</a>.
+          </p>
+         
+         <p> When you have saved the changes in the configuration. This
+            makes a safe copy of the environment but doesn't apply the
+            changes. The editor then applies the environment by copying
+            it into Tomcat's configuration directory. At this point,
+            Tomcat should detect the change and restart the web
+            application with the new environment.</p>
+         <subsection
+            name="The CEC's working directories and configuration files"
+         >
+            <p> By default, the CEC uses a fixed directory-structure for
+               its configuration and working files.</p>
+            <pre> 
+                  (base)/ 
+                  (base)/temp 
+                  (base)/records 
+                  (base)/config
+                  (base)/config/registration-template.xml
+                  (base)/config/app-description.xml</pre>
+            <p>
+               In this structure,
+               <i>(base)</i>
+               is the directory you specify by setting the environment
+               entry
+               <i>cea.base.dir</i>
+               . By changing this entry, you can move the directory
+               structure anywhere you like. However, it is 
+               usually best to place the structure at the location outside the tomcat directory tree. That way, the
+              the configuration will be saved when updating either the CEA CEC or Tomcat itself. 
+            </p>
+            <p>
+               The file
+               <i>(base)/config/registration-template.xml
+               </i>
+               is the registration-template document.
+            </p>
+         </subsection>
+      </section>
+      <section name="Edit the registration template">
+         <p> The CEC uses an XML document called a registration template
+            to generate the registration documents that it submits to
+            the IVO resource-registry. You need to edit this template.
+         </p>
+         <p>
+            To find the registration template, use the
+            <i>show current configuration</i>
+            link in the sidebar. You need to replace the copy at that
+            location with a customized version.
+         </p>
+         <p> The template initialized by the CEC has extensive comments
+            to tell you what to set; please read them. Note that this template is for the service registration, the applications are configured separately.</p>
+     
+      <subsection name="Preview the registration document">
+         <p> When you have the environment set, including the entry that
+            leads the URL to your edited copy of the registration
+            template, you should check that the registration documents
+            are coming out satisfactorily. Use the "show registration
+            document" link in the side-bar.</p>
+         <p> The registration document is what will eventually be sent
+            to the IVO resource registry to identify your CEC and its
+            applications. These documents are public and are read both
+            by human users of your service and by machines. Therefore,
+            they need to be both scientifically useful and technically
+            correct. You need to check them at this stage before going
+            on to registration.</p>
+         <p>
+            The most important thing to check is the
+            <i>identifier</i>
+            element in the service description. This is the formal name
+            for your service in the registry, and you can't change it
+            once you've registered (changing the name creates a second
+            registration; it doesn't rename the original one). Almost
+            anything else can be patched up by registry updates, but you
+            have to get the identifier right first time. Things to
+            check:
+         </p>
+         <ul>
+            <li>
+               Is the authority ID part of the identifier (e.g. the
+               <i>foo.bar</i>
+               in
+               <i>ivo://foo.bar/baz</i>
+               right for the registry where you're publishing? A given
+               registry accepts registrations only under a limited,
+               pre-agreed set of authorities.
+            </li>
+            <li>
+               Is the resource-key part (e.g. the
+               <i>baz</i>
+               in
+               <i>ivo://foo.bar/baz</i>
+               unique within the naming authority?
+            </li>
+            <li>Is the resource key a sensible and memorable name for
+               the service?</li>
+         </ul>
+      </subsection>
+       </section>
+       <section name="Application Configuration">
+       <p>In order for the CEC to have a useful function at least one application needs to be configured - This is covered in detail in the <a href="ApplicationConfiguration.xml">Application Configuration page</a></p>
+       
+       <p>In addition to this documentation there are also examples of previous <a href="../config/">example configurations</a> for a range of applications that can serve as a template for creating a suitable configuration for a new application.</p> 
+       </section>
+      <section name="Restart the web application">
+         <p> The CEC web-service needs to be restarted to pick up the
+            changed configuration. This means that you have to restart
+            the whole web-application. Either restart Tomcat itself, or
+            use the Tomcat Manager application to restart the current
+            web-application.</p>
+      </section>
+   </body>
+</document>

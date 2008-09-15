@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+   <properties>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+      <title>Upgrading</title>
+   </properties>
+   <body>
+      <section name="Upgrading">
+         <p> This page describes how to install a new version of the
+            CEC. component while retaining the configuration from your
+            previous version.</p>
+         <p> An upgrade is supplied as a new version of the WAR file
+            containing the CEC. This new WAR replaces the old version.
+         </p>
+         <p>
+            First, install the WAR for the CEC in Tomcat's
+            <i>webapp</i>
+            directory, as you did in the initial installation of the
+            CEC. Tomcat detects the change in the WAR file and reacts
+            thus:
+         </p>
+         <ol>
+            <li>
+               It "undeploys" the old copy of the web application. This
+               destroys the old WAR file and all files associated with
+               it,
+               <em>except</em>
+               the files in the directory structure at
+               <i>cea.base.dir</i>
+               ; Tomcat does not know about these.
+            </li>
+            <li>It deploys the new WAR, putting the web application
+               and the CEC on-line with a default configuration.</li>
+         </ol>
+         <p> At this stage, the CEC won't work satisfactorily as the
+            application configuration file format is different in this
+            release. The following section details how an existing
+            application configuration file and registry template can be
+            updated for this release.</p>
+         <p>
+           If for some reason the updating does not work correctly, then some manual editing might be necessary. In all cases the configuration files should be 
+           xml schema validated as the first stage in ensuring that the 
+         </p>
+         <subsection
+            name="Automatic updating the application configuration files"
+         >
+            <p>
+               If the war has simply been installed on top of an
+               existing version of CEC the the environment should be
+               pointing to the old configuration files. In this case
+               there is a
+               <a href="../admin/updateConfig.jsp">update configuration</a>
+               page that is capable of reading the old configuration and
+               transforming it.
+            </p>
+            <p>When running this page you should check that the
+               paths to the configuration files are correct and then
+               press the update button. This will create the correct
+               contents for a new format app-description.xml file in the
+               text area. This content should then be manually copied to
+               the app-description.xml file.</p>
+         </subsection>
+         <subsection name="Manual updating of the configuration files">
+         <p>If for some reason the automatic upgrade does not work, then there is an <a href="http://www.astrogrid.org/viewcvs/astrogrid/applications/commandline/config/CEA_UpdateConfigTo1.0.xsl?view=co">xsl script</a> that can be used to update an
+            existing configuration</p>
+         <p>This script can be run using an standard XSLT transformation tool such as Saxon on the app-description.xml file with the location of the registration-template.xml file as a stylesheet parameter called "regtemplate"</p>
+         </subsection >
+      </section>
+   </body>
+</document>

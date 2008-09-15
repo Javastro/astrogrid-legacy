@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+        <title>Administrator Reference</title>
+</properties>
+
+<body>
+
+<section name="Administrator Reference">
+	<ul>
+		<li><a href="installation-options.html">Alternative installations</a></li>
+        <li><a href="ADVANCEDConfig.html">Advanced Configuration</a></li>
+	</ul>
+</section>
+<section name="Application Configuration">
+    <ul>
+        <li><a href="ApplicationConfiguration.html">Application Configuration</a></li>
+        <li><a href="http://www.astrogrid.org/schema/">Schema</a></li>
+    </ul>
+</section>
+
+</body>
+</document>

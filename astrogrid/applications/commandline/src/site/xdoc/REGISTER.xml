@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+        <title>Registration</title>
+</properties>
+
+<body>
+
+  <section name="Required registrations">
+  	<p>
+	    To make your CEC useful in the IVO, you must register, in an
+	    IVOA-compliant resource registry, the CEC as a service. 
+    </p>
+  	<p>
+		  The service registration states the service endpoint (the URL for access)
+		  and lists the applications that the CEC can run. For each registration,
+		  you submit a resource document (an XML file) stating the necessary metadata
+		  in a machine-readable format.
+	  </p>
+	  <p>
+		  The CEC presents the possible registration documents at the "registration" side bar menu. 
+The resource documents have to be registered manually with a registry, the method of doing this with an Astrogrid registry below.
+  	</p>
+  </section>
+
+	<section name="Registering individual applications">	
+		<p>
+			It is not always possible or necessary to register all of the applications that your CEC is capable of running. If the CEC is mirroring 
+         an application that was originally published by another CEC (and consequently already registered), then it is not necessary to try to reregister that application.
+		</p>
+	</section>
+		
+  <section name="Manual registration">
+  	<p>
+  		Most registries have a web-browser interface whereby you can submit 
+  		resource documents manually. Typically, and especially in the AstroGrid
+  		implementation of the registry, you upload the registration documents
+  		from files on disc.
+  	</p>
+  	<p>
+  		You can get a registration document using the "show registration document"
+  		link in the sidebar. Save this to disc and edit it as necessary. You need
+  		to be very careful not to "break" the structure of the document. Refer to
+  		the registration template in your configuration directory for advice on
+  		what to write.
+  	</p>
+   
+   <p>
+     The Astrogrid registry is capable of loading a registration document directly from a URL. This is probably the easiest way to register from the CEC as it is possible to use
+     a web browsers "copy link" operation on one of the application registrations and then paste that URL to the registry upload page on the registry application. 
+   </p>
+	</section>
+
+<section name="Deregistering obsolete resources">
+	
+	<subsection name="Ceasing service of an application">
+	  <p>
+		  If you want to cease service of an application, then you should update the list 
+		  of managed applications in the service registration of your CEC. Do this by
+		  changing the configuration - see the manual-registration section, above
+		  - and repeating the registration of the CEC as described above. This states to the IVO
+		  that your own CEC no longer provides the application. It doesn't eliminate the
+		  registered description of the application; thus you can do this whether or not
+	  	you originally registered the application and whether or not other services are
+	  	offering the same application.
+	  </p>
+	</subsection>
+	
+	<subsection name="Unregistering an application">
+		<p>
+			Unregistering an application removes it from the IVO resource-register causing 
+			the IVO to forget its details. You must do this if you control the 
+			application implementation - i.e. the HTTP service that the CECs call -
+			and you are taking it out of service permanently.
+		</p>
+		<p>
+			To deregister an application, use the controls for the registry; you can't do this
+			from the CEC's local controls. The exact technique varies between registry 
+			implementations, but typically you set the <i>status</i> attribute of the
+			registration to "deleted".
+		</p>
+	</subsection>
+	
+	<subsection name="Deregistering the CEC service">
+ 	  <p>
+		  If you want to withdraw your CEC from service permanently or for a lengthy period 
+ 	  	(but not just for short down-time), then you should deregister it. You do this by 
+ 	  	editing the service resource-document, changing the value of the <i>status</i> 
+ 	  	attribute on the <i>Resource</i> element to "deleted" and re-registering it, 
+ 	  	as described above, under the same identifier.
+ 	  </p>
+	</subsection>
+	
+</section>
+
+</body>
+</document>

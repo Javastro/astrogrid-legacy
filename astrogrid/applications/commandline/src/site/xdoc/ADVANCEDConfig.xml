@@ -1,0 +1,54 @@
+<document>
+   <properties>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+      <title>Advanced Configuration</title>
+   </properties>
+   <body>
+      <section name="Introduction">
+         <p>The CEC has been designed as a collection of pluggable
+            components that can be "glued together" to create a working
+            server. This approach allows considerable scope for fine
+            grained control and extension of the behaviour of the CEC.
+            This page discusses some of the more coarse grained
+            customisations (i.e. choosing different versions of
+            particular components) that are possible. For more
+            specialized needs, such as writing a new version of a
+            component then the reader is advised to consult the
+            documentation that comes with the CEA Common Library.</p>
+         <subsection name="Spring">
+            <p>
+               The CEC is constructed the
+               <a = href="http://www.springframework.org/">Spring Framework</a>
+               as the architectural "glue", and consequently advanced
+               configuration does require some knowledge about the
+               spring framework - in particular the configuration files
+               themselves are standard Spring configuration files.
+            </p>
+            <p>Because of this access to such low level of
+               configurability it is possible to significantly alter and
+               customize the CEC, including adding new behaviour that
+               you yourself write. With this level of control comes
+               danger - it is easy to mis-configure in such a way that
+               the CEC will not function, so in all cases back up the
+               original files before making alterations.</p>
+         </subsection>
+      </section>
+      <section name="Customizing existing components">
+         <subsection name="Configuration Files">
+         </subsection>
+         <subsection name="Adding new Applications">
+         </subsection>
+      </section>
+      <section name="Writing new components">
+         <subsection name="Inversion of control">
+            <p>
+               The CEC has been written with the design aim that each of
+               the components obtains its dependencies at construction
+               time - a pattern that is known as "inversion of control".
+               In the specific case of spring this translates to
+               <code>autowire="constructor"</code>
+            </p>
+         </subsection>
+      </section>
+   </body>
+</document>

@@ -1,0 +1,74 @@
+<document>
+   <properties>
+      <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+      <title>USE of the CEC</title>
+   </properties>
+   <body>
+      <section name="Using this service">
+         <p>
+            This server provides a dual interface for using the remotely
+            defined applications, and it it possible, though perhaps not
+            recommended, to control a single job with either interface.</p>
+            <subsection name="SOAP services">
+               The SOAP interface is the so called CEA Common Execution
+               Connector interface defined by this
+               <a
+                  href="http://software.astrogrid.org/schema/cea/CommonExecutionConnector/v1.0/CommonExecutionConnector.wsdl"
+               >WSDL</a>
+               and described in this
+               <a href="http://www.ivoa.net/Documents/latest/CEA.html">IVOA Note</a>
+               . It is possible to write a custom application to access
+               this web service with any standard SOAP toolkit. However,
+               we recommend that you use one of the clients listed
+               below.
+            </subsection>
+            <subsection name="UWS">
+               The server also supports a Universal Worker Service (UWS)
+               REST style interface described on the
+               <a
+                  href="http://www.ivoa.net/internal/IVOA/AsynchronousHome/UWS-0.4.pdf"
+               >IVOA Site</a>
+               . This is generally easier to drive than the SOAP
+               interface, making it possible to use, for example, a web
+               browser to interact with a UWS service. This CEC has a
+               basic web interface for interacting with UWS built-in,
+               and accessible via the side-menus.
+               <dl>
+                  <dt>Test Run Application</dt>
+                  <dd>This allows the installed applications to be
+                     run in a simple fashion via a web form. After the
+                     application parameters are set a job is created in
+                     the UWS system.</dd>
+                  <dt>UWS Root</dt>
+                  <dd>This is the root of the UWS system as defined
+                     in the IVOA Standard. The initial URL gives a list
+                     of jobs known to the CEC, which links to each job
+                     to allow further control such as aborting or
+                     deleting the job.</dd>
+               </dl>
+            </subsection>
+      </section>
+      <section name="Clients">
+         <p></p>
+         <subsection name="VODesktop">
+            <p>
+               The recommended client for this CEC is the
+               <a href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop">Astrogrid VODesktop</a>
+               .
+            </p>
+            <p>This client not only provides a GUI for running the
+               applications on the CEC, but also provides support for
+               all of the interacting services that make up the Virtual
+               Observatory - for example discovery and security are
+               handled seemlessly.</p>
+            <p>The VODesktop also provides a programatic interface to
+               access all aspects of the VO via the AstroRuntime.</p>
+         </subsection>
+         <subsection name="Java client">
+            <p>Astrogrid supplies a Java client for the SOAP
+               service that deals with creating a authenticated SOAP
+               connection to the server.</p>
+         </subsection>
+      </section>
+   </body>
+</document>
