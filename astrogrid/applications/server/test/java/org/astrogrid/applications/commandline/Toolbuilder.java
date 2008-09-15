@@ -1,5 +1,5 @@
 /*
- * $Id: Toolbuilder.java,v 1.4 2008/09/13 09:51:04 pah Exp $
+ * $Id: Toolbuilder.java,v 1.5 2008/09/15 19:27:22 pah Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -120,9 +120,12 @@ public abstract class Toolbuilder  {
    public static void fixupExecutionPath( CommandLineApplicationDescription testAppDescr) throws URISyntaxException, IOException {
       // will only work with unjarred-classes - but this is always the case in
       // development.
-     
+      //FIXME - make this work in jarred classes by copying the resource out of the jar....
          URI uri = new URI(Toolbuilder.class.getResource("/app/testapp.sh")
                  .toString());
+         
+         
+         
          File appPath = (new File(uri)).getParentFile();
  
          System.out.println("TESTAPPDIR := " + appPath.getAbsolutePath());
@@ -147,6 +150,9 @@ public abstract class Toolbuilder  {
 
 /*
  * $Log: Toolbuilder.java,v $
+ * Revision 1.5  2008/09/15 19:27:22  pah
+ * comment on need to make this work in jar
+ *
  * Revision 1.4  2008/09/13 09:51:04  pah
  * code cleanup
  *
