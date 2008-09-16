@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import string, sys, os, time
+import string, sys, os, time, thread
 from astrogrid import acr
 from astrogrid import SiapSearch
 from astrogrid import utils
@@ -10,10 +10,6 @@ from urlparse import *
 #
 #		Swift SIAP search.
 #		This one is downloading the images itself.
-#   
-#   NOTE. I am not sure the votables should be parsed on slave threads.
-#         I don't know whether the parsing mechanism used will be thread safe.
-#         So perhaps there should be a bit more rejigging here.
 #
 
 #
@@ -24,6 +20,7 @@ dec = 0
 radius = 0
 ifile = ''
 odir = ''
+minimages = 2
 maximages = 5
 
 #
@@ -33,14 +30,40 @@ SI_IVORN = 1
 SI_SIAP_SERVICE_OBJECT = 2
 
 #
+# Total number of services involved...
+countServices = 0
+
+#
 # Format of image files requested.
 # Can be a coma-delimited string:
-# FORMAT = 'image/fits,image/png,image/jpeg,imag/gif'
+# FORMAT = 'image/fits,image/png,image/jpeg,image/gif'
 #
 # Can be set to 'ALL', but you must be prepared to filter.
-# Some services provide lots of bumf.
+# Some services provide lots of bumf, eg: html with requests.
 #
 FORMAT = 'image/fits'
+
+#
+# A simple local class to help manage thread termination 
+#
+class Termination:
+
+	def __init__( self ):
+		self.flag = [ False ]
+		self.lock = thread.allocate_lock()
+
+	def isSet( self ):
+		self.lock.acquire()
+		flagValue = False # Am I being neurotic here?
+		flagValue = self.flag[0]
+		self.lock.release()
+		return flagValue
+
+	def set( self ):
+		self.lock.acquire()
+		self.flag[0] = True 
+		self.lock.release()
+		return
 
 #
 # Validate arguments passed. 
@@ -51,13 +74,14 @@ FORMAT = 'image/fits'
 # arg3: radius
 # arg4: path to file containing list of service ivorns.
 # arg5: unique name for the overall search directory to hold image results for this search (will be created!).
-# arg6: the maximum number of images to be downloaded from any one service
+# arg6: the minimum number of images to be considered suitable from a source
+# arg7: the maximum number of images to be downloaded from any one service
 #
 def validateArgs():
-	global ra, dec, radius, ifile, odir, maximages
+	global ra, dec, radius, ifile, odir, minimages, maximages
 	# If no arguments were given, print a helpful message
-	if len(sys.argv)!=7:
-		print 'Usage: ra dec radius file_of_ivorns results_directory max_images_from_each_service'
+	if len(sys.argv)!=8:
+		print 'Usage: ra dec radius file_of_ivorns results_directory min_images_acceptable max_images_from_each_service'
 		sys.exit(0)
 	else:
 		ra = float( sys.argv[1] )
@@ -65,8 +89,10 @@ def validateArgs():
 		radius = float( sys.argv[3] )
 		ifile = sys.argv[4]
 		odir = sys.argv[5]
-		maximages = int(sys.argv[6])
+		minimages = int(sys.argv[6])
+		maximages = int(sys.argv[7])
 	return
+# end of validateArgs()
 
 #
 # Process the input file of service ivorns.
@@ -80,6 +106,7 @@ def validateArgs():
 #
 #
 def processIvornFile( filePath ):
+	global countServices
 	sources = []
 	ivorns = []
 	for line in open( filePath ).readlines():
@@ -105,30 +132,38 @@ def processIvornFile( filePath ):
 					# save the name of the given output directory for this service and its ivorn together...
 					ivorns.append( [ bits[0].strip(), bits[1].strip() ] ) 
 #					print ivorns
+					countServices += 1
 	if len( ivorns ) > 0:
 		sources.append( ivorns )
 	return sources
+# end of processIvornFile( filePath )
 
 #
 # Search function to pass to thread pool.
 #
-def searchAndRetrieve( image_directory, siap, ra, dec, radius, maximages ) :
+def searchAndRetrieve( image_directory, siap, ra, dec, radius, minimages, maximages, terminate ) :
 	global FORMAT
+	if terminate.isSet():
+		print image_directory + ' has been terminated prematurely!'
+		return 
 	res = siap.execute( ra, dec, radius, format=FORMAT )
 	if res: 
 		try:
 			vot = utils.read_votable( res, ofmt='votable' )
-			retrieveImages( image_directory, vot, maximages )
+			countImages = retrieveImages( image_directory, vot, maximages, terminate )
+			if countImages >= minimages :
+				terminate.set()
 		except:
 			print image_directory + ': bad vot!'
 	else:
 		print image_directory + ': no result!'
 	return
+# end of searchAndRetrieve( image_directory, siap, ra, dec, radius, maximages )
 
 #
 # Download function (retrieves images).
 # 
-def retrieveImages( image_directory, vot, maximages ) :
+def retrieveImages( image_directory, vot, maximages, terminate ) :
 	# Get column index for access url
 	urlColIdx = vot.getColumnIdx ('VOX:Image_AccessReference')
 	formatIdx = vot.getColumnIdx ('VOX:Image_Format')
@@ -146,6 +181,9 @@ def retrieveImages( image_directory, vot, maximages ) :
 		os.mkdir( image_directory )
 	cnt = 0
 	for row in dataRows:
+		if terminate.isSet():
+			print image_directory + ' has been terminated prematurely!'
+			break 
 		cells = getData (row)
 		url = cells[urlColIdx]
 		fmt = cells[formatIdx]
@@ -160,12 +198,13 @@ def retrieveImages( image_directory, vot, maximages ) :
 			ext = ''
 		iname = "image%d%s" % (cnt, ext)
 		print "Saving image %d as %s" % (cnt, iname) 
-		retrieveOneImage (image_directory, url, iname)
-		cnt += 1
+		retrieveOneImage (image_directory, url, iname )	
+		cnt += 1	
 		if cnt >= maximages:
+			cnt -= 1
 			break
-	return
-# end of retrieveImages( vot )
+	return cnt
+# end of retrieveImages( image_directory, vot, maximages )
 
 #
 # Retrieve one image 
@@ -180,7 +219,7 @@ def retrieveOneImage( image_directory, url, fname ) :
 	infile.close()
 	outfile.close()
 	return
-# end of retrieveOneImage( url, fname )
+# end of retrieveOneImage( image_directory, url, fname )
 
 #####################################################
 #    Mainline                                       #
@@ -189,7 +228,9 @@ print 'Started at: ' + time.strftime('%T')
 #
 # Validate the input arguments passed to us...
 validateArgs()
-print ra, dec, radius, ifile, odir, maximages
+print ra, dec, radius, ifile, odir, minimages, maximages
+#sys.exit(0)
+
 #
 # Retrieve ivorns for the sources we wish to search...
 sources = processIvornFile( ifile )
@@ -205,7 +246,8 @@ os.mkdir( odir )
 #
 # Define the command to execute and the pool size
 pool = easy_pool( searchAndRetrieve )
-pool.start_threads( len(sources) )
+#pool.start_threads( len(sources) )
+pool.start_threads( countServices )
 #
 # We have a list of sources and a list of ivorns for each source.
 # Create a service for each ivorn and store it in the list...
@@ -213,6 +255,7 @@ ivornCount = 0
 for s in sources:
 	# We have a list of ivorns for each source...
 	iIndex = 0
+	terminate = Termination()
 	for i in s:
 		print i[ SI_IVORN ] 
 		# Generate a service for each ivorn...
@@ -223,7 +266,7 @@ for s in sources:
 		# Form the image directory path/name...
 		image_directory = odir + '/' + i[ SI_IMAGE_OUTPUT_DIRECTORY ]
 		# Add the service and its inputs to the thread pool...
-		input = ( image_directory, siap, ra, dec, radius, maximages )
+		input = ( image_directory, siap, ra, dec, radius, minimages, maximages, terminate )
 		pool.put( input )
 		iIndex = iIndex+1
 		ivornCount = ivornCount+1
