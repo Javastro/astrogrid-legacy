@@ -7,33 +7,15 @@
 #
 # where integer is the number of services to use as alternatives for a given source.
 #
-# ESO:
+# DSS Image:
 2
+# These first two are rejected. The url access points are incorrect in the registry...
+#[STSCI1 | ivo://archive.stsci.edu/dss/dss1blue]
+#[STSCI2 | ivo://archive.stsci.edu/dss/dss2blue]
 [ESO_DSS | ivo://archive.eso.org/dss]
-[ESI_SIAP | ivo://archive.eso.org/siap]
+[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
 #
-# Heidelberg Digitized Astronomical Plates:
-1
-[HDAP | ivo://org.gavo.dc/lswscans/res/positions/siap]
-#
-# HST:
-1
-[SIAP_CDFS | ivo://obelix.lambrate.inaf.it/vodb/SIAP_CDFS]
-#[HST_PR_SIA |ivo://opo.stsci/hst_pr_sia]
-#
-# INT/WFS:
-1
-[INTWFS_SIAP_ATLAS | ivo://uk.ac.cam.ast/INT-WFS/images/SIAP-atlas]
-#
-# ROSAT:
-1
-[ROSAT | ivo://www.g-vo.org/sia.service.rosat]
-#
-# SSS:
-1
-[SSS | ivo://wfau.roe.ac.uk/sss-siap]
-#
-# UKIDSS:
+# 2Mass Image:
 2
-[UKIDSS | ivo://wfau.roe.ac.uk/ukidss-siap]
-[UKIDSS2 | ivo://wfau.roe.ac.uk/ukidssdr2-siap]
+[IRSA2 | ivo://irsa.ipac/2MASS-QL]
+[NED | ivo://ned.ipac/Image]
