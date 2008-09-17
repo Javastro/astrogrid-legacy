@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFactory.java,v 1.4 2004/02/24 15:29:14 mch Exp $
+ * $Id: ConfigFactory.java,v 1.5 2008/09/17 08:16:05 pah Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,6 +44,8 @@ public class ConfigFactory
 
       return config;
    }
+   
+ 
    
 }
 

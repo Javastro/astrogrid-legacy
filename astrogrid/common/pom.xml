@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $id:$ -->
+<!-- this is an unofficial maven 2 pom to make my maven2 builds easier pah -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-common</artifactId>
+  <name>Common classes</name>
+  <version>2009.1-SNAPSHOT</version>
+  <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2008.2-SNAPSHOT</version>
+  </parent>
+  
+  <packaging>jar</packaging>
+  <description>Classes used across the components.</description>
+  <properties>
+   <astrogrid.name>common</astrogrid.name>
+  </properties>
+  <build>
+ </build>
+  <dependencies>
+     <dependency>
+        <groupId>org.apache.axis</groupId>
+        <type>jar</type>
+        <artifactId>axis</artifactId>
+        <version>1.4</version>
+        <scope>provided</scope>
+     </dependency>
+     <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+     </dependency>
+     <dependency>
+        <groupId>jconfig</groupId>
+        <artifactId>jconfig</artifactId>
+        <version>2.1</version>
+     </dependency>
+     <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+     </dependency>
+     <dependency>
+        <groupId>xmlunit</groupId>
+        <artifactId>xmlunit</artifactId>
+     </dependency>
+     <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+     </dependency>
+     <dependency>
+        <groupId>commons-discovery</groupId>
+        <artifactId>commons-discovery</artifactId>
+        <version>20030211.213356</version>
+     </dependency>
+     <dependency>
+        <groupId>commons-jxpath</groupId>
+        <artifactId>commons-jxpath</artifactId>
+        <version>1.1</version>
+     </dependency>
+     <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+     </dependency>
+     <dependency>
+        <artifactId>hsqldb</artifactId>
+        <groupId>hsqldb</groupId>
+        <version>1.7.1</version>
+     </dependency>
+     <!-- pico container -->
+     <dependency>
+        <groupId>picocontainer</groupId>
+        <artifactId>picocontainer</artifactId>
+     </dependency>
+     <!-- transactions lib - for unique number source -->
+     <dependency>
+        <groupId>commons-transaction</groupId>
+        <artifactId>commons-transaction</artifactId>
+        <version>1.0.1</version>
+     </dependency>
+     <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.0.1</version>
+     </dependency>
+     <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servletapi</artifactId>
+        <version>2.4</version>
+        <scope>provided</scope>
+     </dependency>
+  </dependencies>
+
+ </project>
