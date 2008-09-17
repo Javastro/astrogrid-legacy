@@ -1,0 +1,28 @@
+#
+# File containing service ivorns and associated data for catalogue cone searches.
+# The format is...
+#
+# integer
+# [ directory name for results from this service | ivorn of service | table name | column names | stars arg | galaxies arg ]
+#
+# where integer is the number of services to use as alternatives for a given source.
+#
+# SDSS for stars and galaxies:
+1
+[SDSS | ivo://CDS.VizieR/II/276 |  | RAJ2000 DEJ2000 umag gmag rmag imag zmag | SOME  | SOME ]
+#
+# APM for galaxies:
+1
+[APM | ivo://CDS.VizieR/I/267 |  | RAJ2000 DEJ2000 rmag rDiam bmag bDiam rClass bClass APM-ID | NONE | ALL  ]
+#
+# PSCz for galaxies:
+1
+[PSCz | ivo://CDS.VizieR/VII/221 |  | _RAJ2000 _DEJ2000 Bmag MajAxiO MinAxiO recno | NONE | ALL  ]
+#
+# USNO for stars and galaxies:
+1
+[USNO | ivo://CDS.VizieR/I/284 |  | RAJ2000 DEJ2000 B1mag B1s/g R1mag R1s/g B2mag B2s/g R2mag R2s/g Imag Is/g USNO-B1.0 | SOME | SOME  ]
+#
+# 6DF for galaxies:
+1
+[6DF | ivo://wfau.roe.ac.uk/6df-dsa/wsa | agn2mass | * | NONE | ALL  ]
