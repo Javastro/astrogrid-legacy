@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" status="active" updated="2007-04-12T13:04:01Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd http://www.ivoa.net/xml/SIA/v0.7 http://software.astrogrid.org/schema/vo-resource-types/SIA/v0.7/SIA.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sia:SimpleImageAccess">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">INT WFS: whole-CCD images</vr:title>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">ivo://uk.ac.cam.ast/INT-WFS/images/SIAP-atlas</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vr:publisher>Cambridge Astronomical Survey Unit</vr:publisher>
+            <vr:creator>
+                <vr:name>Cambridge Astronomical Survey Unit</vr:name>
+                <vr:logo>http://www.ast.cam.ac.uk/~mike/casu/logos/casu.gif</vr:logo>
+            </vr:creator>
+            <vr:contact>
+                <vr:name>Guy Rixon</vr:name>
+                <vr:email>gtr@ast.cam.ac.uk</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vr:subject>SIAP</vr:subject>
+            <vr:description>A Simple Image Access Protocol service (atlas type) for the reduced images of the Isaac Newton Telescope wide-field survey.</vr:description>
+            <vr:referenceURL>http://wiki.astrogrid.org/bin/view/Astrogrid/IntWfsDataModel</vr:referenceURL>
+            <vr:type>Archive</vr:type>
+        </vr:content>
+        <vr:interface xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" qtype="GET" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" xsi:schemaLocation="" xsi:type="vs:ParamHTTP">
+            <vr:accessURL use="base">http://astrogrid.ast.cam.ac.uk/int-wfs/siap-atlas/queryImage?</vr:accessURL>
+            <vs:resultType>application/xml+votable</vs:resultType>
+        </vr:interface>
+        <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vs:spatial>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>33.0</vs:min>
+                        <vs:max>36.5</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-6.8</vs:min>
+                        <vs:max>-3.8</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>57.0</vs:min>
+                        <vs:max>60.0</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-1.4</vs:min>
+                        <vs:max>1.8</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>118.5</vs:min>
+                        <vs:max>122.4</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>38.7</vs:min>
+                        <vs:max>41.9</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>239.8</vs:min>
+                        <vs:max>244.7</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>52.9</vs:min>
+                        <vs:max>56.1</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>247.3</vs:min>
+                        <vs:max>251.9</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>39.6</vs:min>
+                        <vs:max>42.9</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>313.5</vs:min>
+                        <vs:max>314.6</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-5.3</vs:min>
+                        <vs:max>-4.0</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>338.4</vs:min>
+                        <vs:max>341.6</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-1.6</vs:min>
+                        <vs:max>1.6</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>150.0</vs:min>
+                        <vs:max>224.3</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-0.2</vs:min>
+                        <vs:max>0.3</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>-30.3</vs:min>
+                        <vs:max>45.3</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-0.3</vs:min>
+                        <vs:max>0.3</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>184.3</vs:min>
+                        <vs:max>192.9</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>10.8</vs:min>
+                        <vs:max>20.0</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>10.3</vs:min>
+                        <vs:max>11.3</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>40.7</vs:min>
+                        <vs:max>41.9</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>46.1</vs:min>
+                        <vs:max>46.7</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-9.9</vs:min>
+                        <vs:max>-9.2</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>299.7</vs:min>
+                        <vs:max>300.3</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>54.7</vs:min>
+                        <vs:max>55.2</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>15.9</vs:min>
+                        <vs:max>16.4</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>0.4</vs:min>
+                        <vs:max>0.9</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>247.5</vs:min>
+                        <vs:max>249.7</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>45.9</vs:min>
+                        <vs:max>47.0</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>2.5</vs:min>
+                        <vs:max>5.6</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>34.7</vs:min>
+                        <vs:max>36.4</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>136.1</vs:min>
+                        <vs:max>138.9</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>40.1</vs:min>
+                        <vs:max>42.4</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>355.2</vs:min>
+                        <vs:max>356.8</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>26.7</vs:min>
+                        <vs:max>27.8</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>36.5</vs:min>
+                        <vs:max>39.9</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>14.3</vs:min>
+                        <vs:max>15.4</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>116.7</vs:min>
+                        <vs:max>119.8</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>20.2</vs:min>
+                        <vs:max>21.2</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>192.1</vs:min>
+                        <vs:max>194.3</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>26.1</vs:min>
+                        <vs:max>27.4</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>245.0</vs:min>
+                        <vs:max>305.3</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>25.7</vs:min>
+                        <vs:max>26.9</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>53.3</vs:min>
+                        <vs:max>60.7</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>28.8</vs:min>
+                        <vs:max>27.2</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:region xsi:schemaLocation="" xsi:type="CoordRange">
+                    <vs:coordFrame>FK5</vs:coordFrame>
+                    <vs:long>
+                        <vs:min>152.4</vs:min>
+                        <vs:max>154.1</vs:max>
+                    </vs:long>
+                    <vs:lat>
+                        <vs:min>-2.0</vs:min>
+                        <vs:max>-0.7</vs:max>
+                    </vs:lat>
+                </vs:region>
+                <vs:resolution>0.00022</vs:resolution>
+                <vs:regionOfRegard>1800</vs:regionOfRegard>
+            </vs:spatial>
+            <vs:spectral>
+                <vs:waveband>Optical</vs:waveband>
+                <vs:range>
+                    <vs:min>326e-9</vs:min>
+                    <vs:max>950e-9</vs:max>
+                </vs:range>
+                <vs:resolution>0.2</vs:resolution>
+            </vs:spectral>
+        </vs:coverage>
+        <sia:capability xmlns="http://www.ivoa.net/xml/SIA/v0.7" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <sia:imageServiceType>Pointed</sia:imageServiceType>
+            <sia:maxQueryRegionSize>
+                <sia:long>360</sia:long>
+                <sia:lat>360</sia:lat>
+            </sia:maxQueryRegionSize>
+            <sia:maxImageExtent>
+                <sia:long>360</sia:long>
+                <sia:lat>360</sia:lat>
+            </sia:maxImageExtent>
+            <sia:maxImageSize>
+                <sia:long>4096</sia:long>
+                <sia:lat>4096</sia:lat>
+            </sia:maxImageSize>
+            <sia:maxFileSize>16800000</sia:maxFileSize>
+            <sia:maxRecords>15000</sia:maxRecords>
+        </sia:capability>
+    </vor:Resource>

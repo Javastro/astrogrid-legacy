@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" created="2007-06-21" status="active" updated="2007-06-21" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd http://www.ivoa.net/xml/SIA/v0.7 http://software.astrogrid.org/schema/vo-resource-types/SIA/v0.7/SIA.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sia:SimpleImageAccess">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ESO Simple Image Access Test service</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ESO TEST SIAP</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://dca.workshop.sample/eso/siap</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher>European Southern Observatory</vr:publisher>
+            <vr:creator>
+                <vr:name>European Southern Observatory</vr:name>
+                <vr:logo>http://www.eso.org/i/esologo.jpg</vr:logo>
+            </vr:creator>
+            <vr:contact>
+               <vr:name>Bruno Rino</vr:name>
+               <vr:email>brino@eso.org</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:subject></vr:subject>
+            <vr:description></vr:description>
+            <vr:referenceURL></vr:referenceURL>
+            <vr:contentLevel>Research</vr:contentLevel>
+        </vr:content>
+        <vr:interface xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"  xsi:type="vs:ParamHTTP">
+            <vr:accessURL use="base">http://vops2.hq.eso.org/cgi-bin/siap</vr:accessURL>
+            <vs:resultType>application/xml+votable</vs:resultType>
+        </vr:interface>
+        <sia:capability>
+            <sia:imageServiceType>Pointed</sia:imageServiceType>
+            <sia:maxQueryRegionSize>
+                <sia:long>0</sia:long>
+                <sia:lat>0</sia:lat>
+            </sia:maxQueryRegionSize>
+            <sia:maxImageExtent>
+                <sia:long>0</sia:long>
+                <sia:lat>0</sia:lat>
+            </sia:maxImageExtent>
+            <sia:maxImageSize>
+                <sia:long>0</sia:long>
+                <sia:lat>0</sia:lat>
+            </sia:maxImageSize>
+            <sia:maxFileSize>0</sia:maxFileSize>
+            <sia:maxRecords>0</sia:maxRecords>
+        </sia:capability>
+    </vor:Resource>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id: castor-binding.xml,v 1.1 2008/09/17 13:36:19 pah Exp $
+castor binding file : configures the process of generating java classes from xml schema
+
+
+at present, just defined package - namespace mappings
+-->
+
+<binding defaultBindingType="type" xmlns="http://www.castor.org/SourceGenerator/Binding">
+  <package>
+    <name>org.astrogrid.community.beans</name>
+    <namespace>http://www.astrogrid.org/schema/Credentials/v1</namespace>
+  </package> 
+  <package>
+    <name>net.ivoa.cea.base</name>
+    <namespace>http://www.ivoa.net/xml/CEA/base/v1.0rc3</namespace><!-- should this map to the same pagage as below? -->
+  </package> 
+ <package>
+  	    <name>org.astrogrid.workflow.beans.v1</name>
+    <namespace>http://www.astrogrid.org/schema/AGWorkflow/v1</namespace>
+  </package>
+  <package>
+  	<name>org.astrogrid.workflow.beans.v1.execution</name>
+  	<namespace>http://www.astrogrid.org/schema/ExecutionRecord/v1</namespace>
+  </package>
+  <package>
+  	<name>net.ivoa.cea.ceatypes</name>
+  	<namespace>http://www.ivoa.net/xml/CEA/types/v0.2</namespace>
+  </package>
+  
+  <!-- CEC implementation specific-->
+  <package>
+  	<name>org.astrogrid.applications.beans.v1.cea.implementation</name>
+  	<namespace>http://www.astrogrid.org/schema/CEAImplementation/v1.0rc2</namespace>
+  </package>
+
+ <!-- The registry stuff for cea note that we are preserving the v9 at the moment to minimise impacct on other code in short term - long term this should be removed and everything made 0.10 compliant-->
+  <package>
+    <name>net.ivoa.resource.ssa</name>
+    <namespace>http://www.ivoa.net/xml/SSA/v1.0rc1</namespace><!-- should put versions on these namespaces -->
+  </package>
+ 
+<!-- other CEA --> 
+ <package>
+   <name>net.ivoa.resource.applications</name>
+   <namespace>http://www.ivoa.net/xml/VOApplication/v1.0rc1</namespace>
+  </package>
+    
+  <package>
+  	<name>net.ivoa.votable</name>
+  	<namespace>http://www.ivoa.net/xml/VOTable/v1.1</namespace>
+  </package>  
+  
+  <!-- ones from standard registry schema in the registry project v10 TODO check these... -->
+   <package>
+    <name>net.ivoa.resource</name>
+    <namespace>http://www.ivoa.net/xml/VOResource/v1.0</namespace>
+  </package> 
+   <package>
+    <name>net.ivoa.stc</name>
+    <namespace>http://www.ivoa.net/xml/STC/stc-v1.30.xsd</namespace>
+  </package> 
+  <package>
+    <name>net.ivoa.resource.registry</name>
+    <namespace>http://www.ivoa.net/xml/VORegistry/v1.0</namespace>
+  </package>
+  <package>
+	<name>net.ivoa.resource.dataservice</name>
+    <namespace>http://www.ivoa.net/xml/VODataService/v1.0</namespace>
+  </package>
+  <package>
+  	<name>net.ivoa.resource.conesearch</name>
+  	<namespace>http://www.ivoa.net/xml/ConeSearch/v1.0</namespace>
+  </package>
+  <package>
+  	<name>net.ivoa.resource.sia</name>
+  	<namespace>http://www.ivoa.net/xml/SIA/v1.0</namespace>
+  </package>
+  <package>
+  <name>net.ivoa.resource.cea</name>
+  <namespace>http://www.ivoa.net/xml/CEA/v1.0rc1</namespace>
+  </package>
+  <package>
+  <name>net.ivoa.resource.standard</name>
+  <namespace>http://www.ivoa.net/xml/VOStandard/v0.2beta1</namespace>
+  </package>
+  <package>
+  <name>net.ivoa.resource.vospace</name>
+  <namespace>http://www.ivoa.net/schema/VOSpaceResource/v1.0rc7</namespace>
+  </package>
+  <!-- interface -->
+  <package>
+  	<name>net.ivoa.registry.interface</name>
+  	<namespace>http://www.ivoa.net/xml/RegistryInterface/v1.0</namespace>
+  </package>
+ 
+</binding>

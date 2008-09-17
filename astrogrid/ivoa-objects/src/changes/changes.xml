@@ -1,0 +1,14 @@
+<document>
+  <properties>
+    <title>Changes since previous release</title>
+  </properties>
+  <body>
+    <release version="2008.2" date="2008-09-01" description="Initial Release">
+      <action dev="pah" type="add" issue="2320">
+        <p>
+          Inital release
+        </p>
+      </action>
+   </release>
+  </body>
+</document>

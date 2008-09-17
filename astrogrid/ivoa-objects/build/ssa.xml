@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
+   created="2007-06-21" status="active" updated="2007-06-21"
+   xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+   xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
+   xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+   xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+   xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3"
+   xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+   xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1"
+   xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2"
+   xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:ssa="http://www.ivoa.net/xml/SSA/v0.1"
+   xsi:type="ssa:SimpleSpectrumAccess">
+   <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+      ESO Simple Spectrum Data Access Test Service
+   </vr:title>
+   <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+      ESO TEST SSAP
+   </vr:shortName>
+   <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+      ivo://dca.workshop.sample/eso/ssap
+   </vr:identifier>
+   <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+      <vr:publisher>European Space Agency</vr:publisher>
+      <vr:creator>
+         <vr:name>European Southern Observatory</vr:name>
+         <vr:logo>http://www.eso.org/i/esologo.jpg</vr:logo>
+      </vr:creator>
+      <vr:contact>
+         <vr:name>Bruno Rino</vr:name>
+         <vr:email>brino@eso.org</vr:email>
+      </vr:contact>
+   </vr:curation>
+   <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+      <vr:subject></vr:subject>
+      <vr:description></vr:description>
+      <vr:referenceURL></vr:referenceURL>
+      <vr:contentLevel>Research</vr:contentLevel>
+   </vr:content>
+   <vr:interface xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+      xsi:type="vs:ParamHTTP">
+      <vr:accessURL use="base">
+         http://vops2.hq.eso.org:8080/
+      </vr:accessURL>
+   </vr:interface>
+</vor:Resource>

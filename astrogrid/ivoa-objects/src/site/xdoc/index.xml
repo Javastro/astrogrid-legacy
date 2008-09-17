@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+		<title>IVOA Objects</title>
+	</properties>
+	<body>
+		<section name="Overview">
+			<p> This library contains object for data binding to standard IVOA schema. The binding technology that is used is
+         <a href="https://jaxb.dev.java.net/">JAXB2</a>.</p>
+         <p>The objects are originally automatically generated from the schema, but now include specific customizations so that when the schema change the objects will have to have
+         these customizations reapplied - fortunately JAXB2 annotations make this process relatively painless. The schema that these objects will bind to are all contained in the "astrogrid contracts" project.
+         </p>
+		</section>
+	</body>
+</document>

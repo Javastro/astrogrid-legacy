@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>net.ivoa</groupId>
+   <artifactId>ivoa-objects</artifactId>
+   <name>IVOA objects</name>
+   <description>IVOA schema</description>
+   <version>2008.2</version>
+   <scm>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/ivoa/ivoa-objects/</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:ivoa/ivoa-objects/</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/</url>
+      <tag>2008_2</tag>
+   </scm>
+   
+   <packaging>jar</packaging>
+   <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2008.2</version>
+    </parent>
+ 	<dependencies>
+     <dependency>
+        <artifactId>astrogrid-contracts</artifactId>
+        <groupId>org.astrogrid</groupId>
+     </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1</version>
+        </dependency>
+     <!--junit-->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+             <dependency>
+         <groupId>org.codehaus.xfire</groupId>
+         <artifactId>xfire-generator</artifactId>
+         <version>1.2.6</version>
+         <scope>provided</scope>
+       </dependency>
+       <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+       
+	</dependencies>
+   
+	<build>
+	   <plugins>
+	      <plugin><!-- invlke with mvn castor:generate -->
+	         <groupId>org.codehaus.mojo</groupId>
+	         <artifactId>castor-maven-plugin</artifactId>
+	         <version>2.0-alpha1</version>
+            <dependencies>
+               <dependency>
+                  <groupId>org.codehaus.castor</groupId>
+                  <artifactId>castor</artifactId>
+                  <version>1.1.2.1</version>
+               </dependency>
+            </dependencies>
+	         <configuration>
+ 	           <schemaDirectory>${basedir}/v11</schemaDirectory> 
+               <dest>castor/</dest>
+               <properties>build/castorbuilder.properties</properties>
+               <bindingfile>build/castor-binding.xml</bindingfile>
+               <verbose>true</verbose>
+               <generateImportedSchemas>false</generateImportedSchemas>
+               <marshal>false</marshal>
+               <descriptors>true</descriptors>
+               <warnings>false</warnings><!-- reenable to check for conflicts -->
+	         </configuration>
+	      </plugin>
+	      <plugin> <!-- invoke with  jaxb2:xjc--><!-- alternative at  https://maven-jaxb2-plugin.dev.java.net/-->
+	         <groupId>org.codehaus.mojo</groupId>
+	         <artifactId>jaxb2-maven-plugin</artifactId>
+	         <configuration>
+                <schemaDirectory>${basedir}/../../ag/src/contracts/src/schema/</schemaDirectory>
+                <!-- CEABase.xsd, VOCEA-v1.0.xsd, should perhaps be put back...-->
+                <schemaFiles>registry/RegistryInterface/v1.0/RegistryInterface.xsd,vo-resource-types/VORegistry/v1.0/VORegistry.xsd,vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd,vo-resource-types/SIA/v1.0/SIA.xsd,vo-resource-types/VOApplication/v1.0rc1/VOApplication.xsd,vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd,cea/CEAImplementation/v2.0/CEAImplementation.xsd,cea/CEATypes/v1.1/CEATypes.xsd</schemaFiles>
+                <outputDirectory>${basedir}/jaxb</outputDirectory>
+                <bindingDirectory>${basedir}/../../ag/src/contracts/build/</bindingDirectory>
+                 <bindingFiles>xjb-binding.xml</bindingFiles>
+                 <verbose>true</verbose>
+                <extension>true</extension>
+                <explicitAnnotation>true</explicitAnnotation>
+	            <!-- The name of your generated source package -->
+	         </configuration>
+	      </plugin>
+	      <plugin>
+	         <groupId>org.codehaus.mojo</groupId> <!-- xmlbeans:xmlbeans -->
+	         <artifactId>xmlbeans-maven-plugin</artifactId>
+	         <configuration> 
+<!-- 	            <xmlConfigs>
+	               <xmlConfig implementation="java.io.File">
+	                  src/wsdl
+	               </xmlConfig>
+	            </xmlConfigs> -->
+               <schemaDirectory>${basedir}/src/wsdl</schemaDirectory>
+                <sourceSchemas>
+                   <sourceSchema>${basedir}/src/wsdl/VOSpaceContract-v1.0.wsdl</sourceSchema>
+                </sourceSchemas>
+	            <sourceGenerationDirectory>${basedir}/xmlbeans/</sourceGenerationDirectory>
+               <verbose>true</verbose>
+               <quiet>false</quiet>
+	         </configuration>
+	      </plugin>
+	   </plugins>
+	</build>
+    
+</project>
