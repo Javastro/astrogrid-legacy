@@ -10,7 +10,7 @@
     <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2008.2-SNAPSHOT</version>  
+      <version>2008.2</version>  
     </parent>
   <name>CEA CEC web server</name>
   <version>2008.2-SNAPSHOT</version>
@@ -44,6 +44,7 @@
           <include>**/*.txt</include>
           <include>**/*.csv</include>
         </includes>
+        
       </testResource>
       <testResource>
         <directory>${basedir}/config</directory>
@@ -53,6 +54,27 @@
       </testResource>
     </testResources>
           <plugins>
+          <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+               <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory> <!-- consistent with current 1.0 practice -->
+              <webResources>
+              
+                <resource>  <!-- put a copy of the raw xdocs into the webapp - these are translated on the fly by the webapp -->         
+                  <directory>src/site/xdoc</directory> 
+                  <targetPath>doc/xdoc</targetPath>
+                  <filtering>true</filtering>
+                 </resource>
+                 <resource> <!-- put the example configuration in the webapp -->
+                    <directory>src/site/resources/config</directory>
+                    <targetPath>config</targetPath>
+                    <filtering>true</filtering>
+                 </resource>
+               </webResources>
+               
+            </configuration>
+         </plugin>
+          
          <!-- eclipse project generation for web projects - assumes that you have wtp 1.5 installed and there is a runtime-->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -76,7 +98,10 @@
             <phase>package</phase><!-- in maven 2.1 there will be a prepare-package phase , which would make this simpler - could just echo the file to ${project.build.directory}/${project.build.finalName}/ -->
             <configuration>
               <tasks> <!-- want this only to happen if there is -->
-                  <echo message="${pom.name} ${pom.version}" file="${project.build.directory}/about.txt" level="error" />
+                    <tstamp>
+    <format property="TODAY_UK" pattern="d-MMMM-yyyy" locale="en,UK"/>
+  </tstamp>
+                  <echo message="${pom.name} version:${pom.version} built:${TODAY_UK}" file="${project.build.directory}/about.txt" level="error" />
                   <available 
                     file="${project.build.directory}/${project.build.finalName}.war" 
                     property="file.exists" value="true" /> 
@@ -235,7 +260,7 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
         <version>2.5.2</version>
-        <scope>test</scope>
+        <!-- <scope>test</scope> seem to need in the javadoc -->
      </dependency>
   </dependencies>
   <profiles><profile><id>chibaprof</id> <!-- need to switch this profile on to activate the repositories for initial download -->
