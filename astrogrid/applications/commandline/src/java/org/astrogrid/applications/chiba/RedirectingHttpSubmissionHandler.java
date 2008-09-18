@@ -1,5 +1,5 @@
 /*
- * $Id: RedirectingHttpSubmissionHandler.java,v 1.2 2008/09/03 14:18:40 pah Exp $
+ * $Id: RedirectingHttpSubmissionHandler.java,v 1.3 2008/09/18 08:46:45 pah Exp $
  * 
  * Created on 2 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -29,6 +29,12 @@ import org.apache.commons.logging.LogFactory;
 import org.chiba.xml.xforms.connector.http.HTTPSubmissionHandler;
 import org.chiba.xml.xforms.exception.XFormsException;
 
+/**
+ * A specialisation of the submission handler for chiba. This is the needed because the UWS pattern uses HTTP redirects.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 public class RedirectingHttpSubmissionHandler extends HTTPSubmissionHandler {
     /**
      * Logger for this class
@@ -107,6 +113,9 @@ public class RedirectingHttpSubmissionHandler extends HTTPSubmissionHandler {
 
 /*
  * $Log: RedirectingHttpSubmissionHandler.java,v $
+ * Revision 1.3  2008/09/18 08:46:45  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:40  pah
  * result of merge of pah_cea_1611 branch
  *

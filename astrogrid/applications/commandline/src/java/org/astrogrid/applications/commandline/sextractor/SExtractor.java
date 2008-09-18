@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.9 2008/09/03 14:19:06 pah Exp $
+ * $Id: SExtractor.java,v 1.10 2008/09/18 08:46:46 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -31,6 +31,12 @@ import org.astrogrid.community.User;
 
 import java.io.IOException;
 
+/**
+ * Specialisation of {@link CommandLineApplication} to handle SExtractor. Deals with the slightly anomalous way that SExtractor treats the image arguments.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 17 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 public class SExtractor extends CommandLineApplication {
    /**
     * Logger for this class

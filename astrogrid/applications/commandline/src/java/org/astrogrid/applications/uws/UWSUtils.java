@@ -1,5 +1,5 @@
 /*
- * $Id: UWSUtils.java,v 1.4 2008/09/15 17:19:05 pah Exp $
+ * $Id: UWSUtils.java,v 1.5 2008/09/18 08:46:45 pah Exp $
  * 
  * Created on 28 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -22,6 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.security.HttpsServiceSecurityGuard;
 import org.astrogrid.security.SecurityGuard;
 
+/**
+ * Useful utilities for UWS.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 public class UWSUtils {
     private UWSUtils() {
 	// stop instantiation
@@ -64,6 +70,9 @@ public class UWSUtils {
 
 /*
  * $Log: UWSUtils.java,v $
+ * Revision 1.5  2008/09/18 08:46:45  pah
+ * improved javadoc
+ *
  * Revision 1.4  2008/09/15 17:19:05  pah
  * get securityguard into UWS chain
  *

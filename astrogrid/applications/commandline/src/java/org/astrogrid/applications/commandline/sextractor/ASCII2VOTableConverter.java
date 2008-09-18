@@ -1,5 +1,5 @@
 /*
- * $Id: ASCII2VOTableConverter.java,v 1.6 2008/09/03 14:19:06 pah Exp $
+ * $Id: ASCII2VOTableConverter.java,v 1.7 2008/09/18 08:46:46 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -79,6 +79,13 @@ public class ASCII2VOTableConverter {
          }
          catch (FileNotFoundException e1) {
             logger.error("sextractor output file not found",e1);
+         }
+         finally{
+         try {
+	    in.close();
+	} catch (IOException e) {
+	    logger.error("failed to close file", e);
+	}
          }
    }
 

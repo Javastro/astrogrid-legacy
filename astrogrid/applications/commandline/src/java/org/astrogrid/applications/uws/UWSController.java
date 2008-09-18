@@ -1,5 +1,5 @@
 /*
- * $Id: UWSController.java,v 1.2 2008/09/03 14:18:34 pah Exp $
+ * $Id: UWSController.java,v 1.3 2008/09/18 08:46:45 pah Exp $
  * 
  * Created on 8 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -65,6 +65,16 @@ import org.springframework.web.util.UrlPathHelper;
  * @since VOTech Stage 7
  * @TODO when returning just the xml version of the various enties
  * @TODO there is an issue with requesting a resource with or without the trailing / makes sense in some cases not in others - need to find some consistency...views need to cooperate as well otherwise relative links do not work properly...
+ */
+/**
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
+/**
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
  */
 @Controller
 @RequestMapping("/jobs/**")
@@ -287,6 +297,12 @@ public class UWSController  {
 	return modelAndView;
     }
 
+    /**
+     * Result information.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     public static class ResultInfo extends ParameterValue {
 	public ResultInfo(ParameterValue v1) {
 	    try {
@@ -532,6 +548,9 @@ public class UWSController  {
 
 /*
  * $Log: UWSController.java,v $
+ * Revision 1.3  2008/09/18 08:46:45  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:34  pah
  * result of merge of pah_cea_1611 branch
  *

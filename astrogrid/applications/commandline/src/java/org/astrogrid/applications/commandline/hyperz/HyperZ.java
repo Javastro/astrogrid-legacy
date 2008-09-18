@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.7 2008/09/03 14:18:54 pah Exp $
+ * $Id: HyperZ.java,v 1.8 2008/09/18 08:46:46 pah Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -94,7 +94,8 @@ public class HyperZ extends CommandLineApplication {
           }        
 
 
-    /* inderector - allows late binding between reader and writer */
+    /**
+     *  indirector - allows late binding between reader and writer. */
     static class VOTableSourceIndirector implements HyperZVOTableWriter.VOTableSource {
         public SavotVOTable getVOTable() {
             return source.getVOTable();

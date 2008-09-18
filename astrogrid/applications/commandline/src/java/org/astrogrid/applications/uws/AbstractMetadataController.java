@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractMetadataController.java,v 1.2 2008/09/03 14:18:34 pah Exp $
+ * $Id: AbstractMetadataController.java,v 1.3 2008/09/18 08:46:45 pah Exp $
  * 
  * Created on 12 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -35,6 +35,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UrlPathHelper;
 import org.w3c.dom.Document;
 
+/**
+ * Common functionality of the metadata controller.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 public class AbstractMetadataController {
 
     protected final CEAComponents manager;
@@ -46,6 +52,12 @@ public class AbstractMetadataController {
     protected static final Pattern resultPattern = Pattern.compile(resultRegexp);
     
 
+    /**
+     * Model for resource info in MVC.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 17 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     public static class ResInfo{
         final private String shortref;
         final private String name;
@@ -153,6 +165,9 @@ public class AbstractMetadataController {
 
 /*
  * $Log: AbstractMetadataController.java,v $
+ * Revision 1.3  2008/09/18 08:46:45  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:34  pah
  * result of merge of pah_cea_1611 branch
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: OutputParams.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: OutputParams.java,v 1.3 2008/09/18 08:46:46 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -50,6 +50,7 @@ public class OutputParams {
          }
       }
       br.close();
+      fr.close();
 
    }
 

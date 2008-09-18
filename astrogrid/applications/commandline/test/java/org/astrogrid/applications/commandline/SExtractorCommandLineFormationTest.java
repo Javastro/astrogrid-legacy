@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractorCommandLineFormationTest.java,v 1.4 2008/09/04 21:20:02 pah Exp $
+ * $Id: SExtractorCommandLineFormationTest.java,v 1.5 2008/09/18 08:46:58 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.junit.Test;
  * @author Paul Harrison (pah@jb.man.ac.uk) 23-Sep-2004
  * @version $Name:  $
  * @since iteration6
+ * @TODO this probably lives in the wrong project 
  */
 public class SExtractorCommandLineFormationTest extends AbstractCmdLineRealAppTestCase {
 
