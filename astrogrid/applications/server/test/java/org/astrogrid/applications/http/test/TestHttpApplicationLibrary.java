@@ -1,4 +1,4 @@
-/* $Id: TestHttpApplicationLibrary.java,v 1.1 2008/09/10 23:27:16 pah Exp $
+/* $Id: TestHttpApplicationLibrary.java,v 1.2 2008/09/18 09:13:39 pah Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,6 +8,8 @@
  * with this distribution in the LICENSE.txt file.
  */
 package org.astrogrid.applications.http.test;
+
+import java.io.IOException;
 
 import junit.framework.Test;
 
@@ -33,9 +35,10 @@ public class TestHttpApplicationLibrary extends ConfigFileReadingDescriptionLibr
 
    /**
     * Ctor
+ * @throws IOException 
     *
     */
-   public TestHttpApplicationLibrary(Configuration locator)
+   public TestHttpApplicationLibrary(Configuration locator) 
           {
       super(locator);
       addApplication("/helloWorld-app.xml");

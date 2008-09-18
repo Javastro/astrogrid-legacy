@@ -1,5 +1,5 @@
 /*
- * $Id: BasicSpringContainerTest.java,v 1.2 2008/09/03 14:18:44 pah Exp $
+ * $Id: BasicSpringContainerTest.java,v 1.3 2008/09/18 09:13:38 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -25,6 +25,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Base for spring configured tests.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration(locations={ "/org/astrogrid/applications/component/ceaspring.xml","/ceaspringTest.xml"}) 
 public class BasicSpringContainerTest extends AbstractJUnit4SpringContextTests{
@@ -67,6 +73,9 @@ public class BasicSpringContainerTest extends AbstractJUnit4SpringContextTests{
 
 /*
  * $Log: BasicSpringContainerTest.java,v $
+ * Revision 1.3  2008/09/18 09:13:38  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:44  pah
  * result of merge of pah_cea_1611 branch
  *

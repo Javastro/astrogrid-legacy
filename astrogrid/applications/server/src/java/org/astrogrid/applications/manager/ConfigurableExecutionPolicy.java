@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigurableExecutionPolicy.java,v 1.2 2008/09/03 14:18:56 pah Exp $
+ * $Id: ConfigurableExecutionPolicy.java,v 1.3 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 23 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -31,6 +31,11 @@ public class ConfigurableExecutionPolicy extends DefaultExecutionPolicy implemen
     public void setDestroyPeriod(int destroyPeriod) {
         this.destroyPeriod = destroyPeriod;
     }
+    
+    
+    public void setMaxConcurrent(int njobs) {
+        this.maxConcurrent = njobs;
+    }
 
 
 }
@@ -38,6 +43,9 @@ public class ConfigurableExecutionPolicy extends DefaultExecutionPolicy implemen
 
 /*
  * $Log: ConfigurableExecutionPolicy.java,v $
+ * Revision 1.3  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:56  pah
  * result of merge of pah_cea_1611 branch
  *

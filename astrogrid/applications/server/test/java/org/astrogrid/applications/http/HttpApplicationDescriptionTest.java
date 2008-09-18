@@ -121,9 +121,10 @@ public class HttpApplicationDescriptionTest extends TestCase {
      */
     @Override
     public void setUp() {
-	       TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(new MockNonSpringConfiguredConfig());
+        try {    
+        TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(new MockNonSpringConfiguredConfig());
 	        //note that all the
-	        try {
+	    
 		    adderApplicationDescription = (HttpApplicationDescription) querier.getDescription("ivo://org.astrogrid.test/Adder");
 		} catch (ApplicationDescriptionNotFoundException e) {
 		    fail(e.getMessage());

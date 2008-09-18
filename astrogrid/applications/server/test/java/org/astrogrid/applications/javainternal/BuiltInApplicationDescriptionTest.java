@@ -1,5 +1,5 @@
 /*
- * $Id: BuiltInApplicationDescriptionTest.java,v 1.4 2008/09/13 09:51:05 pah Exp $
+ * $Id: BuiltInApplicationDescriptionTest.java,v 1.5 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 21 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,12 +13,6 @@
 package org.astrogrid.applications.javainternal;
 
 import static org.junit.Assert.*;
-
-import java.security.Principal;
-
-import javax.security.auth.Subject;
-
-import com.sun.security.auth.UnixPrincipal;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -69,10 +63,7 @@ public class BuiltInApplicationDescriptionTest {
 	conf = new MockNonSpringConfiguredConfig();
 	appDesc = new BuiltInApplicationDescription( conf);
 	assertNotNull(appDesc);
-	Principal principal = new UnixPrincipal("pah");//TODO think about this a little more...
-	Subject sub = new Subject();
-	sub.getPrincipals().add(principal);
-	user = new SecurityGuard(sub);
+	user = new SecurityGuard();
 
         history = new InMemoryExecutionHistory();
       
@@ -128,6 +119,9 @@ public class BuiltInApplicationDescriptionTest {
 
 /*
  * $Log: BuiltInApplicationDescriptionTest.java,v $
+ * Revision 1.5  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.4  2008/09/13 09:51:05  pah
  * code cleanup
  *

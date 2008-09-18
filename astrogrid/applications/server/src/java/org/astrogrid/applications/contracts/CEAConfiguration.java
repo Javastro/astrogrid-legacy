@@ -1,5 +1,5 @@
 /*
- * $Id: CEAConfiguration.java,v 1.3 2008/09/13 09:51:06 pah Exp $
+ * $Id: CEAConfiguration.java,v 1.4 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -22,6 +22,12 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
+/**
+ * Basic CEA configuration implementation.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 public class CEAConfiguration implements Configuration, ComponentDescriptor {
 
 
@@ -35,28 +41,6 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
     public URL applicationDescriptionUrl;
 
 
-
-    /**
-     * @return the baseDirectory
-     * @deprecated each of the configuration items should potentially be located anywhere, not in a fixed relation to the configuration directory
-     */
-    public File getBaseDirectory() {
-	return baseDirectory;
-    }
-
-    /**
-     * @param baseDirectory the baseDirectory to set
-     */
-    public void setBaseDirectory(File baseDirectory) {
-	this.baseDirectory = baseDirectory;
-    }
-
-    /**
-     * @return the configurationDirectory
-     */
-    public File getConfigurationDirectory() {
-	return configurationDirectory;
-    }
 
     /**
      * @param configurationDirectory the configurationDirectory to set
@@ -131,8 +115,6 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 	//      sb.append("Base directory: ");
 	//      sb.append(this.getBaseDirectory().getAbsolutePath());
 	//      sb.append("\n");
-	sb.append("Configuration directory: ");
-	sb.append(this.getConfigurationDirectory().getAbsolutePath());
 	sb.append("\n");
 	sb.append("Temporary-files directory: ");
 	sb.append(this.getTemporaryFilesDirectory().getAbsolutePath());
@@ -140,13 +122,13 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 	sb.append("Execution-records directory: ");
 	sb.append(this.getRecordsDirectory().getAbsolutePath());
 	sb.append("\n");
-	sb.append("Registration-template file: ");
+	sb.append("Registration-template URL: ");
 	sb.append(this.getRegistryTemplate().toString());
 	sb.append("\n");
 	sb.append("CEC endpoint: ");
 	sb.append(this.getServiceEndpoint().toString());
 	sb.append("\n");
-	sb.append("Application-description file: ");
+	sb.append("Application-description URL: ");
 	sb.append(this.applicationDescriptionUrl.toString());
 	sb.append("\n");
 
@@ -163,6 +145,12 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 	
     }
 
+    /**
+     * Installation test case for the configuration.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     public  class ConfigurationTest extends TestCase {
 	
 	public ConfigurationTest(String name) {
@@ -186,18 +174,8 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 	return "CEA Configuration";
     }
 
-    public URL getApplicationDescriptionUrl() throws IOException {
+    public URL getApplicationDescriptionUrl() {
 	return applicationDescriptionUrl;
-    }
-
-    /**
-     * @deprecated use the tmp directory
-     * @return
-     */
-    public File getWorkingDirectory() {
-	// TODO Auto-generated method stub
-	throw new UnsupportedOperationException(
-	"CEACmdLineConfiguration.getWorkingDirectory() deprecated");
     }
 
     /**
@@ -237,6 +215,9 @@ public class CEAConfiguration implements Configuration, ComponentDescriptor {
 
 /*
  * $Log: CEAConfiguration.java,v $
+ * Revision 1.4  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.3  2008/09/13 09:51:06  pah
  * code cleanup
  *

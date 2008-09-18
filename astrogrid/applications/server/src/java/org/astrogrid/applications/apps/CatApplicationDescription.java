@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.11 2008/09/13 09:51:02 pah Exp $
+/*$Id: CatApplicationDescription.java,v 1.12 2008/09/18 09:13:39 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,6 +102,12 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
         
     }
     
+    /**
+     * A simple concatenation appliction.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     public static class CatApplication extends JavaInternalApplication {
 
         /** Construct a new CatApplication
@@ -206,6 +212,9 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.12  2008/09/18 09:13:39  pah
+improved javadoc
+
 Revision 1.11  2008/09/13 09:51:02  pah
 code cleanup
 

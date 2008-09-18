@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistory.java,v 1.5 2008/09/13 09:51:02 pah Exp $
+/*$Id: InMemoryExecutionHistory.java,v 1.6 2008/09/18 09:13:39 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,7 +74,7 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
      * @see org.astrogrid.applications.manager.persist.ExecutionHistory#getApplicationFromCurrentSet(java.lang.String)
      */
     public Application getApplicationFromCurrentSet(String execID) throws ExecutionIDNotFoundException {
-        Application app = (Application)currentSet.get(execID);
+        final Application app = (Application)currentSet.get(execID);
         if (app == null) {
             throw new ExecutionIDNotFoundException(execID);
         }
@@ -90,7 +90,7 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
      * @see org.astrogrid.applications.manager.persist.ExecutionHistory#moveApplicationFromCurrentSetToArchive(java.lang.String)
      */
     public void moveApplicationFromCurrentSetToArchive(String execID) throws ExecutionIDNotFoundException, PersistenceException{
-        Application app = getApplicationFromCurrentSet(execID);
+        final Application app = getApplicationFromCurrentSet(execID);
         ExecutionSummaryType summary = SummaryHelper.summarize(execID, app);
         try {
             archive.put(execID,summary);
@@ -243,6 +243,9 @@ public class InMemoryExecutionHistory implements ExecutionHistory , ComponentDes
 
 /* 
 $Log: InMemoryExecutionHistory.java,v $
+Revision 1.6  2008/09/18 09:13:39  pah
+improved javadoc
+
 Revision 1.5  2008/09/13 09:51:02  pah
 code cleanup
 

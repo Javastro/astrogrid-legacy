@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionValidator.java,v 1.2 2008/09/03 14:18:56 pah Exp $
+ * $Id: DescriptionValidator.java,v 1.3 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -50,14 +50,14 @@ public class DescriptionValidator {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static boolean validate(Resource appdesc)
+    public static boolean validate(final Resource appdesc)
     {
 	JAXBElement jaxobj = new JAXBElement(new QName(Namespaces.RI.getNamespace(),"Resource"),Resource.class,appdesc);
         return validate(jaxobj);
     }
     
     @SuppressWarnings("unchecked")
-    public static boolean validate(ExecutionSummaryType execution){
+    public static boolean validate(final ExecutionSummaryType execution){
 	JAXBElement jaxobj = new JAXBElement(new QName(Namespaces.CEAT.getNamespace(),"ExecutionSummary"),ExecutionSummaryType.class,execution);
         return validate(jaxobj);
  
@@ -73,7 +73,7 @@ public class DescriptionValidator {
      * 
      * @return
      */
-    public static boolean validate(Object appdesc)
+    public static boolean validate(final Object appdesc)
     {
 	  String name = appdesc.getClass().getCanonicalName();
 	  try {
@@ -109,6 +109,9 @@ public class DescriptionValidator {
 
 /*
  * $Log: DescriptionValidator.java,v $
+ * Revision 1.3  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:56  pah
  * result of merge of pah_cea_1611 branch
  *

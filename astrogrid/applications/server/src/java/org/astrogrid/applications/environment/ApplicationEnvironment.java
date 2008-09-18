@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationEnvironment.java,v 1.3 2008/09/04 19:10:53 pah Exp $
+ * $Id: ApplicationEnvironment.java,v 1.4 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 11 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -50,11 +50,18 @@ public class ApplicationEnvironment {
     public static final String CEA_OUTPUT_LOG = "cea-output.log";
     public static final String CEA_ERROR_LOG = "cea-error.log";
 
+    /**
+     * Interface for working directory.
+     * @TODO is this still used?
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     public interface WorkingDir {
         File getDir();
     }
 
-    protected static org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory.getLog(
+    protected static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory.getLog(
              ApplicationEnvironment.class);
     protected final File errorLog;
     protected final String executionId;
@@ -151,6 +158,9 @@ public class ApplicationEnvironment {
 
 /*
  * $Log: ApplicationEnvironment.java,v $
+ * Revision 1.4  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.3  2008/09/04 19:10:53  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

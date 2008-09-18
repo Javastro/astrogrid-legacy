@@ -280,7 +280,7 @@ public class NanoHTTPD
 		logger.debug("main(String[]) - Now serving files in port " + port+" from "+new File("").getAbsolutePath());
 		logger.debug("main(String[]) - Hit Enter to stop.n");
 
-		try { System.in.read(); } catch( Throwable t ) {};
+		try { System.in.read(); } catch( Throwable t ) {}
 	}
 
 	/**

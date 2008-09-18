@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClient.java,v 1.2 2008/09/13 09:51:06 pah Exp $
+/* $Id: HttpServiceClient.java,v 1.3 2008/09/18 09:13:39 pah Exp $
  * Created on Jul 24, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -71,11 +71,11 @@ public class HttpServiceClient {
          */
         private static final Log log = LogFactory.getLog(HttpServiceType.class);
 
-        public static HttpServiceType GET = new HttpServiceType("get");
+        public static final HttpServiceType GET = new HttpServiceType("get");
 
-        public static HttpServiceType POST = new HttpServiceType("post");
+        public static final HttpServiceType POST = new HttpServiceType("post");
         
-        public static HttpServiceType TEST = new HttpServiceType("mock");
+        public static final HttpServiceType TEST = new HttpServiceType("mock");
 
         private String type;
 
@@ -224,7 +224,7 @@ public class HttpServiceClient {
       
       // If the response is encoded (e.g. gzip'd) return it as a byte array
       // whatever its type.
-      if (contentEncoding != null && contentEncoding.toString() != "") {
+      if (contentEncoding != null && contentEncoding.toString().length() == 0) {
         return method.getResponseBody();
       }
       
@@ -289,6 +289,9 @@ public class HttpServiceClient {
 
 /*
  * $Log: HttpServiceClient.java,v $
+ * Revision 1.3  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/13 09:51:06  pah
  * code cleanup
  *

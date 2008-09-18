@@ -119,7 +119,13 @@ public abstract class AbstractApplication extends Observable implements Applicat
    private Date destruction;
    
    
-   public static class ApplicationTask extends FutureTask<String> {
+   /**
+    * Class to define a run of application.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
+public static class ApplicationTask extends FutureTask<String> {
  //IMPL perhaps this is not necessary - can just cast directly.
     private Application app;
 

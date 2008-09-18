@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractProtocolTestCase.java,v 1.3 2008/09/13 09:51:04 pah Exp $
+ * $Id: AbstractProtocolTestCase.java,v 1.4 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 25 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -16,6 +16,12 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 import junit.framework.TestCase;
 
+/**
+ * The common functionaity of Tests involving protocols.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 public abstract class AbstractProtocolTestCase extends TestCase {
 
     public AbstractProtocolTestCase() {
@@ -36,6 +42,9 @@ public abstract class AbstractProtocolTestCase extends TestCase {
 
 /*
  * $Log: AbstractProtocolTestCase.java,v $
+ * Revision 1.4  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.3  2008/09/13 09:51:04  pah
  * code cleanup
  *

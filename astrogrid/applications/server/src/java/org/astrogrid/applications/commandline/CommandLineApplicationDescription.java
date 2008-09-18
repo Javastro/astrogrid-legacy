@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescription.java,v 1.4 2008/09/10 23:27:19 pah Exp $
+ * $Id: CommandLineApplicationDescription.java,v 1.5 2008/09/18 09:13:39 pah Exp $
  *
  * Created on 25 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -108,23 +108,26 @@ public String getExecutionPath() {
  * Returns the commandline. i.e. executable path along with any fixed parameters.
  * @return
  */
-public List<String> getExecutionCmdline()
-{
-    List<String> retval = new ArrayList<String>();
-    for (Iterator iterator = clapp.getExecutionPath().getContent().iterator(); iterator.hasNext();) {
-	Object thing = iterator.next();
-	if (thing instanceof String) {
-	    retval.add((String) thing);
-	    
-	} else {
-	    logger.error("programming error - do not know what to do with " + thing.getClass().getCanonicalName());
-	}
-	
+    public List<String> getExecutionCmdline() {
+        List<String> retval = new ArrayList<String>();
+        for (Iterator iterator = clapp.getExecutionPath().getContent()
+                .iterator(); iterator.hasNext();) {
+           
+            Object thing = iterator.next();
+            if (thing instanceof String) {
+                retval.add((String) thing);
+
+            } else {
+                logger.error("programming error - do not know what to do with "
+                        + thing.getClass().getCanonicalName());
+            }
+
+        }
+
+        return retval;
     }
-    ;
-    return retval;
-}
-public void setExecutionPath(String path) {
+
+    public void setExecutionPath(String path) {
     clapp.getExecutionPath().getContent().clear();
     clapp.getExecutionPath().getContent().add(path);
 }

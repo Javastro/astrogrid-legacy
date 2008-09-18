@@ -187,6 +187,12 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	return new InstallationTest("testGetRegistryEntry");
     }
 
+    /**
+     * The installation test for the Metadata service.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     public class InstallationTest extends TestCase {
 
 	public InstallationTest(String arg0) {

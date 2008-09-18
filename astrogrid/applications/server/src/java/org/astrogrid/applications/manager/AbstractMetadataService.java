@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractMetadataService.java,v 1.2 2008/09/03 14:18:56 pah Exp $
+ * $Id: AbstractMetadataService.java,v 1.3 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -23,6 +23,12 @@ import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.applications.description.jaxb.DescriptionValidator;
 import org.w3c.dom.Document;
 
+/**
+ * The common functionality of a {@link MetadataService}
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ * @since VOTech Stage 7
+ */
 public abstract class AbstractMetadataService implements MetadataService{
 
     
@@ -52,6 +58,9 @@ public abstract class AbstractMetadataService implements MetadataService{
 
 /*
  * $Log: AbstractMetadataService.java,v $
+ * Revision 1.3  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:56  pah
  * result of merge of pah_cea_1611 branch
  *

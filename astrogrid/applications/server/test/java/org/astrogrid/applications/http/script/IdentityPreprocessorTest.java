@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessorTest.java,v 1.1 2008/09/10 23:27:19 pah Exp $
+/* $Id: IdentityPreprocessorTest.java,v 1.2 2008/09/18 09:13:39 pah Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -9,6 +9,8 @@
  *
  */
 package org.astrogrid.applications.http.script;
+
+import java.io.IOException;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -50,7 +52,7 @@ public class IdentityPreprocessorTest extends TestCase {
     }
 
 
-    public final void testProcess() throws HttpParameterProcessingException, javax.xml.bind.MarshalException, javax.xml.bind.ValidationException, MetadataException, XMLStreamException, FactoryConfigurationError {
+    public final void testProcess() throws HttpParameterProcessingException, javax.xml.bind.MarshalException, javax.xml.bind.ValidationException, MetadataException, XMLStreamException, FactoryConfigurationError, IOException {
         TestHttpApplicationLibrary querier = new TestHttpApplicationLibrary(new MockNonSpringConfiguredConfig());
         CeaHttpApplicationDefinition app
             = (CeaHttpApplicationDefinition) querier.getDescription("ivo://org.astrogrid.test/Adder").getMetadataAdapter().getApplicationBase();

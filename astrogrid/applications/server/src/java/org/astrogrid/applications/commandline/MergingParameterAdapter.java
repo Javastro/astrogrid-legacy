@@ -1,5 +1,5 @@
 /*
- * $Id: MergingParameterAdapter.java,v 1.3 2008/09/13 09:51:04 pah Exp $
+ * $Id: MergingParameterAdapter.java,v 1.4 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -53,7 +53,13 @@ public class MergingParameterAdapter extends DefaultCommandLineParameterAdapter 
       this.concentrator = concentrator;
    }
 
-   public static class Concentrator {
+   /**
+    * The concentrator shared object.
+ * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @version $Name:  $
+ *
+ */
+public static class Concentrator {
 
       private List gatheredValues = new ArrayList();
 

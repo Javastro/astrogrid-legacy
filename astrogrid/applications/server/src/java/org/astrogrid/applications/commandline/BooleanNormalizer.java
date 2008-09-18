@@ -1,5 +1,5 @@
 /*
- * $Id: BooleanNormalizer.java,v 1.2 2008/09/03 14:18:53 pah Exp $
+ * $Id: BooleanNormalizer.java,v 1.3 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 28 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -34,6 +34,12 @@ public class BooleanNormalizer {
 	       new BoolPair("1","0"),
 	       new BoolPair("in","out")
 	   };
+    /**
+     * The class to represent a boolean pair.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     private static class BoolPair
     {
 	public String truestr;
@@ -100,6 +106,9 @@ public class BooleanNormalizer {
 
 /*
  * $Log: BooleanNormalizer.java,v $
+ * Revision 1.3  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.2  2008/09/03 14:18:53  pah
  * result of merge of pah_cea_1611 branch
  *

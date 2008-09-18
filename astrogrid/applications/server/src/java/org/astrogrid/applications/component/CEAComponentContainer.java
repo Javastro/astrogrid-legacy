@@ -1,5 +1,5 @@
 /*
- * $Id: CEAComponentContainer.java,v 1.4 2008/09/05 08:02:09 pah Exp $
+ * $Id: CEAComponentContainer.java,v 1.5 2008/09/18 09:13:39 pah Exp $
  * 
  * Created on 2 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -64,7 +64,7 @@ public final class CEAComponentContainer extends AbstractCEAComponentContainer i
      */
     public static CEAComponentContainer getInstance()
     {
-	CEAComponentContainer retval = null;;
+	CEAComponentContainer retval = null;
 	if(appCtx != null)
 	{
 	   retval = (CEAComponentContainer) appCtx.getBean("ComponentManager");
@@ -183,6 +183,9 @@ public TestSuite getSuite() {
 
 /*
  * $Log: CEAComponentContainer.java,v $
+ * Revision 1.5  2008/09/18 09:13:39  pah
+ * improved javadoc
+ *
  * Revision 1.4  2008/09/05 08:02:09  pah
  * correct refactoring
  *

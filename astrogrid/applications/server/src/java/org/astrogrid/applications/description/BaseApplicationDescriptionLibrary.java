@@ -110,6 +110,12 @@ public String toString() {
           return new InstallationTest("testApplicationsDefined");
     }
     
+    /**
+     * Installation test for the Description library. Tests that at least one application is defined.
+     * @author Paul Harrison (paul.harrison@manchester.ac.uk) 17 Sep 2008
+     * @version $Name:  $
+     * @since VOTech Stage 7
+     */
     public class InstallationTest extends TestCase {
        
        /**
