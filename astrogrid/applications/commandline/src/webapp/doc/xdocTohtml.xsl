@@ -22,9 +22,9 @@
          <xsl:apply-templates/>
    </div>
    </xsl:template>
-   <!-- change local http references to point to .jsp rather than .html -->
+   <!-- change local http references to point to .jsp rather than .html + take into account that the doc directory is one level down on webapp-->
    <xsl:template match="a/@href[not (starts-with(., 'http:') )]">
-      <xsl:attribute name="href" select="replace(., '\.html', '.jsp')"/>
+      <xsl:attribute name="href" select="replace(replace(., '\.html', '.jsp'),'^\./','../')"/>
    </xsl:template>
 	<!-- standard copy template -->
 	<xsl:template match="@*|node()">

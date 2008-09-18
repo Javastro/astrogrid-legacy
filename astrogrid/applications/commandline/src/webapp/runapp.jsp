@@ -53,7 +53,8 @@
 		ExecutionController cec = pcontainer.getExecutionController();
 		//JobIdentifierType jobstepid = new JobIdentifierType();
 		String	jobstepid = "foo";
-		executionId = cec.init(tool, jobstepid);
+		SecurityGuard sec = UWSUtils.createSecurityGuard(request);
+		executionId = cec.init(tool, jobstepid, sec);
 		
 		//out.print("Execution Id: "+executionId+"<br/>");
 		boolean started = cec.execute(executionId);
@@ -63,7 +64,9 @@
 		%>
 <%@page import="org.astrogrid.applications.description.execution.Tool"%>
 <%@page import="org.astrogrid.applications.description.execution.ListOfParameterValues"%>
-<%@page import="org.astrogrid.applications.description.execution.ParameterValue"%><html>
+<%@page import="org.astrogrid.applications.description.execution.ParameterValue"%>
+<%@page import="org.astrogrid.applications.uws.UWSUtils"%>
+<%@page import="org.astrogrid.security.SecurityGuard"%><html>
 <head>
 <title>Test Application</title>
 <script language="JavaScript">

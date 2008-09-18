@@ -20,7 +20,8 @@
  <context:component-scan base-package="org.astrogrid.applications" ></context:component-scan>  
  -->
  
- <!-- this bean looks up values in the JNDI to configure the container -->
+ <!-- this bean looks up values in the JNDI to configure the container. The entry keys are then used as substitution variables 
+  referred to with ${} in the declarations of other beans -->
  <bean id="configurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="properties">
          <bean class="java.util.Properties">
@@ -44,13 +45,17 @@
          </bean>
       </property>
  </bean>
- <!-- this represents the true configuration of the CEC - the definition as below follows the pattern of the previous Commandline CEC installations  -->
+ <!-- this represents the true configuration of the CEC - 
+     the definition as below follows the pattern of the previous Commandline CEC installations, and is set-up by default
+     for the CEC configuration and control files to be rooted off ${cea.base.dir}, which in turn is looked up in JNDI above
+     
+     It is possible to set each of the properties to any value desired - i.e. not following the scheme above - in particular the 
+     applicationDescriptionUrl may point at any arbitrary URL -->
  <bean id="config" class="org.astrogrid.applications.contracts.CEAConfiguration">
  	<property name="applicationDescriptionUrl" value="file:${cea.base.dir}/config/app-description.xml"/> 
-    <property name="configurationDirectory" value="${cea.base.dir}/config/" />
     <property name="recordsDirectory" value="${cea.base.dir}/records/" />
     <property name="registryTemplate" value="file:${cea.base.dir}/config/registration-template.xml" />
-    <property name="serviceEndpoint" value="${cea.webapp.url}/services/CommonExecutionConnectorService" />
+    <property name="serviceEndpoint" value="${cea.webapp.url}/services/CommonExecutionConnectorService" /> <!-- should refactor to the webapp root. -->
     <property name="temporaryFilesDirectory" value="${cea.base.dir}/temp/" />
 </bean>
 
@@ -63,11 +68,12 @@
 </bean>
 
 <bean id="ApplicationDescriptionLibrary" class="org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary" autowire="no" >
-<!-- this bean gathers together all of the different types -->
+<!-- this bean gathers together all of the different types of application description library-->
   <constructor-arg>
   <list>
   <!-- the commandline applications are read by this library -->
-  <bean class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary"></bean>
+  <bean class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary">
+   </bean>
   <!-- this library simply gathers those applications specified by the applications property  -->
   <bean class="org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary">
     <property name="applications">

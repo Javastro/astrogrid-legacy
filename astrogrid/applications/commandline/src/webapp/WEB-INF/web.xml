@@ -154,6 +154,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
         <servlet-name>SubmissionResponse</servlet-name>
         <servlet-class>org.astrogrid.applications.chiba.SubmissionResponseServlet</servlet-class>
     </servlet>
+    
+    <servlet>
+      <servlet-name>Delegation</servlet-name>
+      <servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class>
+    </servlet>
 
    <servlet-mapping>
         <servlet-name>Flux</servlet-name>
@@ -233,6 +238,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
         <servlet-name>VosiServlet</servlet-name>
         <url-pattern>/VOSI/availability</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Delegation</servlet-name>
+        <url-pattern>/delegation/*</url-pattern>
+    </servlet-mapping>
 <!--     <servlet-mapping>
         <servlet-name>AbortionServlet</servlet-name>
         <url-pattern>/abort</url-pattern>
@@ -270,7 +279,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.jws</welcome-file>
-  </welcome-file-list>
+  </welcome-file-list>  
 	
 	<env-entry>
 		<description>The full path to a directory where the CEC may build its configuration structure.</description>
@@ -283,7 +292,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
 		<description>The URL for this web-application; e.g. http://x.y.z:8080/astrogrid-cea-server.</description>
 		<env-entry-name>cea.webapp.url</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>http://localhost:8888/astrogrid-cea-commandline/</env-entry-value>
+        <env-entry-value>http://localhost:8888/astrogrid-cea-cec/</env-entry-value>
 	</env-entry>
    <env-entry>
       <description>The authority ID of any internally defined applications - REMOVE ME in future</description>
@@ -300,6 +309,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
 	</env-entry>
 	
 	<env-entry>
+   <!-- note that this application does not publish actively to the registry any longet - to be removed-->
 		<description>The web-service URL for the publishing resource-registry.</description>
 		<env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
@@ -313,7 +323,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
           <env-entry-type>java.lang.String</env-entry-type>
           <env-entry-value>org.astrogrid.security.authorization.OpenAccessPolicy</env-entry-value>
         </env-entry>
-        
+ 
+ <!-- this should really not be necessary - myspace misdesign. -->       
         <env-entry>
           <description>Whether HTTP 'chunking' is used when sending data to AstroGrid MySpace: set to 'enabled' or 'disabled'. 'Chunking' reduces the memory load on this service.</description>
           <env-entry-name>org.astrogrid.filestore.chunked.send</env-entry-name>

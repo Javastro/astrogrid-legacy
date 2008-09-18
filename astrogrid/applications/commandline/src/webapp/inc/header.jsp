@@ -4,30 +4,24 @@ perhaps do this via spring -->
 @import url("../style/maven-base.css");
  @import url("../style/maven-theme.css");
 </style>
-<link rel="stylesheet" href="../style/print.css" type="text/css" media="print">
-</link>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-</meta>
-<meta name="author" content="Paul Harrison">
-</meta>
-<meta name="email" content="pah@jb.man.ac.uk">
-</meta>
+<link rel="stylesheet" href="../style/print.css" type="text/css" media="print"/>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<meta name="author" content="Paul Harrison"/>
+<meta name="email" content="pah@jb.man.ac.uk"/>
 </head>
 <body class="composite">
-<div id="banner"><a href="http://www.astrogrid.org/" id="organizationLogo"><img alt="AstroGrid" src="http://www.astrogrid.org/images/AGlogo.png"></img></a><a href="/doc/index.jsp" id="projectLogo"><span>CEA command-line-application server</span></a>
+<div id="banner"><a href="http://www.astrogrid.org/" id="organizationLogo"><img alt="AstroGrid" src="http://www.astrogrid.org/images/AGlogo.png"></img></a>
+<a href="../doc/index.jsp" id="projectLogo"><span>CEA Common Execution Controller</span></a>
   <div class="clear">
-    <hr>
-    </hr>
+    <hr/>
   </div>
 </div>
 <div id="breadcrumbs">
 <!-- todo - need to get this updated -->
-  <div class="xleft"> Last published: @PUBLISHED@
-    | version 2008.2a2</div>
+  <div class="xleft"> <%@ include file="/about.txt" %></div>
   <div class="xright"></div>
   <div class="clear">
-    <hr>
-    </hr>
+    <hr/>
   </div>
 </div>
 <div id="leftColumn">
@@ -35,13 +29,13 @@ perhaps do this via spring -->
     <div id="menuAdministrator_documents">
       <h5>Administrator documents</h5>
       <ul>
-        <li class="none"><a href="../about.txt">About this component</a></li>
-        <li class="none"><a href="../doc/DOWNLOAD.html">Download</a></li>
+        <li class="none"><a href="../doc/index.jsp">About this component</a></li>
         <li class="none"><a href="../doc/INSTALL.jsp">Installation</a></li>
         <li class="none"><a href="../doc/CONFIGURE.jsp">Configuration</a></li>
         <li class="none"><a href="../doc/SELF-TEST.jsp">Self-testing</a></li>
         <li class="none"><a href="../doc/REGISTER.jsp">Registration</a></li>
         <li class="none"><a href="../doc/EXTTEST.jsp">External testing</a></li>
+        <li class="none"><a href="../doc/Use.jsp">Using the Server</a></li>
         <li class="none"><a href="../doc/UPGRADE.jsp">Upgrading</a></li>
         <li class="none"><a href="../doc/UNINSTALL.jsp">Uninstallation</a></li>
         <li class="none"><a href="../doc/REFERENCE.jsp">Reference manual</a></li>

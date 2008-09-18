@@ -3,6 +3,17 @@
     <title>Changes since previous release</title>
   </properties>
   <body>
+    <release version="2008.2" description="UWS, New Schema, Delegation" date="02/10/2008">
+       <action dev="pah" type="add" issue="1611">
+       The referenced bugzilla ticket and its dependencies detail the changes in this version - a summary of the more important changes are below.
+       </action>
+       <action dev="pah" type="update" issue="2740">
+          combine all the different types of CEC into one
+       </action>
+       <action dev="pah" type="add" issue="2825">
+          indirect parameters can be specified with the vos: VOSpace protocol.
+       </action>
+    </release>
     <release version="2007.2.01" description="VOSI, queuing, error reporting">
       <action dev="gtr" type="add" issue="2320">
         <p>
