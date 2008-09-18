@@ -9,13 +9,17 @@
 
 <section name="Administrator Reference">
 	<ul>
+        <li><a href="SECURITY.html">Setting up security</a></li>
 		<li><a href="installation-options.html">Alternative installations</a></li>
         <li><a href="ADVANCEDConfig.html">Advanced Configuration</a></li>
+        <li><a href="DOWNLOAD.html">Where to Download</a></li>
+        
 	</ul>
 </section>
 <section name="Application Configuration">
     <ul>
         <li><a href="ApplicationConfiguration.html">Application Configuration</a></li>
+        <li><a href="./config/">Example Application configurations</a></li>
         <li><a href="http://www.astrogrid.org/schema/">Schema</a></li>
     </ul>
 </section>

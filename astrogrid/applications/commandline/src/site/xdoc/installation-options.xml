@@ -10,13 +10,11 @@
 		<p>This document discusses alternatives to the the standard installation.</p>
 		
 	<subsection name="Alternative versions of SUN Java">
-          <p>Instead of SUN Java 5, you may use the JRE for SUN Java 1.4.2,
-          provided that you also switch to Jakarta-Tomcat 5.0. Tomcat 5.0.28 is
-          recommended.</p>
+   
 	<p>Versions of SUN Java older than 1.5 will not run the web-application
 	properly in all respects.</p>
 	<p>We expect SUN Java 6 to work as well as SUN Java 5 for this
-	web-application. We have not tested this configuration yet.</p>
+	web-application. We have not fully tested this configuration yet.</p>
 	</subsection>
 		<subsection name="Alternative implementations of Java">
 		<p>You may use another implementation of Java, provided that it

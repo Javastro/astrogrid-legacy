@@ -9,7 +9,7 @@
 
   <section name="Required registrations">
   	<p>
-	    To make your CEC useful in the IVO, you must register, in an
+	    To make your CEC useful in the Virtual Observatory, you must register, in an
 	    IVOA-compliant resource registry, the CEC as a service. 
     </p>
   	<p>
@@ -19,7 +19,7 @@
 		  in a machine-readable format.
 	  </p>
 	  <p>
-		  The CEC presents the possible registration documents at the "registration" side bar menu. 
+		  The CEC presents the possible registration documents at the "<a href="../uws/reg">Show registration documents</a>" side bar menu. 
 The resource documents have to be registered manually with a registry, the method of doing this with an Astrogrid registry below.
   	</p>
   </section>

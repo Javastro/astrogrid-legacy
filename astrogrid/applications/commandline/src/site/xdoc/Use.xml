@@ -34,12 +34,12 @@
                basic web interface for interacting with UWS built-in,
                and accessible via the side-menus.
                <dl>
-                  <dt>Test Run Application</dt>
+                  <dt><a href="../app/chooseapp.jsp">Test run of application</a></dt>
                   <dd>This allows the installed applications to be
                      run in a simple fashion via a web form. After the
                      application parameters are set a job is created in
                      the UWS system.</dd>
-                  <dt>UWS Root</dt>
+                  <dt><a href="../uws/jobs">UWS root</a></dt>
                   <dd>This is the root of the UWS system as defined
                      in the IVOA Standard. The initial URL gives a list
                      of jobs known to the CEC, which links to each job
@@ -60,8 +60,8 @@
                applications on the CEC, but also provides support for
                all of the interacting services that make up the Virtual
                Observatory - for example discovery and security are
-               handled seemlessly.</p>
-            <p>The VODesktop also provides a programatic interface to
+               handled seamlessly.</p>
+            <p>The VODesktop also provides a programmatic interface to
                access all aspects of the VO via the AstroRuntime.</p>
          </subsection>
          <subsection name="Java client">

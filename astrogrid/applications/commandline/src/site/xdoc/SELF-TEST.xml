@@ -14,7 +14,7 @@
                services. If Axis is not working, then the CEC does not
                work. You should test Axis as soon as you have the CEC
                installed.</p>
-            <p>Run the Axis tests using the "axis check" command from
+            <p>Run the Axis tests using the "<a href="../happyaxis.jsp">Axis test</a>" command from
                the left-hand side-bar. The test checks for the presence
                of JARs of code. You need all the core libraries to be
                present; the optional libraries are not required.</p>
@@ -28,7 +28,7 @@
                   web-application.</li>
                <li>Your copy of Java may be broken or may be
                   inapproriate for the CEC. Please make sure that you
-                  are using Java 1.4.x and not Java 1.5.x. Check for any
+                  are using Java 1.5.x. Check for any
                   JAR files added to the Java installation that may be
                   subverting the web-application.</li>
             </ul>
@@ -37,18 +37,18 @@
             <p>
                When you have the CEC configured you can test the
                configuration using the
-               <i>installation test</i>
+               <a href="../TestServlet?suite=org.astrogrid.applications.component.ContainerInstallationTestSuite">Installation test</a>
                command from the left-hand side-bar.
             </p>
             <p> If you get a test-failure here then either your
                configuration is not quite right (likely) or the WAR that
                you downloaded from AstroGrid has a bug (less likely but
                worth considering). If you can't see a problem in the
-               configuration then please contact AstroGrid for support.
+               configuration then please contact AstroGrid for support. In this case please include the information from running the "<a href="../fingerprint.jsp">Fingerprint</a>" sidebar menu, which shows the current configuration in detail.
             </p>
          </subsection>
          <subsection name="Test-running applications">
-            <p> When all is configured, use the "test run application"
+            <p> When all is configured, use the "<a href="../app/chooseapp.jsp">Test run of application</a>"
                link from the sidebar. This lets you invoke the
                configured applications locally. They should all work.
                However, any applications that produce big output-files

@@ -18,11 +18,14 @@
          <subsection name="Spring">
             <p>
                The CEC is constructed the
-               <a = href="http://www.springframework.org/">Spring Framework</a>
+               <a href="http://www.springframework.org/">Spring Framework</a>
                as the architectural "glue", and consequently advanced
                configuration does require some knowledge about the
                spring framework - in particular the configuration files
-               themselves are standard Spring configuration files.
+               themselves are standard Spring configuration files. These
+               files are XML and have declarations that should allow a
+               validating XML editor to validate the content, and if the
+               editor is capable context sensitive prompting.
             </p>
             <p>Because of this access to such low level of
                configurability it is possible to significantly alter and
@@ -35,11 +38,136 @@
       </section>
       <section name="Customizing existing components">
          <subsection name="Configuration Files">
+            <p> The main configuration file that is customizable is
+               located at</p>
+            <pre> WEB-INF/cec-spring.xml</pre>
+            <p>This file defines a number of "beans" that make up
+               some of the customizable aspects of the CEC. The file is
+               commented with some suggestions of how the configuration
+               may be altered. What follows should be read in
+               conjunction with those comments. Each bean as an
+               identifier which is the value of the "id" attribute -
+               these instructions will refer to the beans by this
+               identifier.</p>
+            <subsubsection name="config">
+               <p>The config bean defines the basic configuration
+                  parameters of the CEC. Each of these parameters is
+                  described in more detail below</p>
+               <dl>
+                  <dt>applicationDescriptionUrl
+                  </dt>
+                  <dd>
+                     This is a URL pointing to the
+                     <a href="ApplicationConfiguration.html">application description</a>
+                     location. This may be a http: or file: based URL
+                     and can thus be used to point to remote application
+                     definitions. In addition if the file: URL points to
+                     a directory then every file in that directory will
+                     be read as an application description.
+                  </dd>
+                  <dt>registryTemplate</dt>
+                  <dd>
+                     This is a URL (again file: or http:) to the
+                     <a href="REGISTER.html">registry description</a>
+                     of the CEC service itself.
+                  </dd>
+                  <dt>recordsDirectory</dt>
+                  <dd>This is a local file directory path to the
+                     directory where the CEC stores records of the jobs
+                     that it runs</dd>
+                  <dt>temporaryFilesDirectory
+                  </dt>
+                  <dd>This is a local file directory path to the
+                     directory where the CEC stores any temporary files
+                     for the jobs that it runs. Note that this directory
+                     can be required to store quite large volumes of
+                     data depending on the jobs that are run</dd>
+                  <dt>serviceEndpoint</dt>
+                  <dd>This is the service endpoint of the SOAP web
+                     service - this should not be changed</dd>
+               </dl>
+            </subsubsection>
+            <subsubsection name="ExecutionPolicy">
+               <p>The execution policy determines how the CEC behaves
+                  with respect to running and storing jobs - this
+                  behaviour is described in more detail in the IVOA UWS
+                  standard. The meanings of the bean properties are
+                  described below</p>
+               <dl>
+                  <dt>killPeriod</dt>
+                  <dd>The time period in seconds of the occasions
+                     when the CEC checks for jobs that might have
+                     exceeded their execution time. The CEC does not
+                     check continuously to save resources. This period
+                     should be less than the "maxRunTime" so that there
+                     is no possibility of a job grossly exceeding
+                     maxRunTime</dd>
+                  <dt>maxRunTime</dt>
+                  <dd>This is the maximum time in seconds that a
+                     particular job should be allowed to run - if it
+                     exceeds this time the job will be aborted. This
+                     time should be set to a value appropriate to the
+                     amount of CPU resource that is available to the
+                     CEC.</dd>
+                  <dt>defaultLifetime</dt>
+                  <dd>The time in seconds that records of the the job
+                     will be retained by the CEC. This should of course
+                     should be longer than maxRunTime, and as a service
+                     to clients, should be as long as is allowed by the
+                     disk space resources available to the CEC.</dd>
+                  <dt>destroyPeriod</dt>
+                  <dd>The time period in seconds at which the CEC
+                     checks for jobs that have exceeded their lifetime
+                     and deletes the resources associated with the jobs.
+                  </dd>
+                  <dt>maxConcurrent</dt>
+                  <dd>The maximum number of jobs that can be run
+                     simultaneously. By default this value is 4.</dd>
+               </dl>
+            </subsubsection>
+            <p>
+               Both of the above beans have their currently set
+               properties displayed by the
+               <a href="./admin/configuration-describe.jsp">Show current configuration</a>
+               sidebar menu.
+            </p>
          </subsection>
-         <subsection name="Adding new Applications">
+         <subsection name="Adding new Application Libraries">
+            <p>The applications that are run by the CEC are defined
+               by the contents of the bean
+               ApplicationDescriptionLibrary. This library is defined to
+               be union of all the applications defined in the list of
+               application libraries listed in its constructor. There
+               are a number of application libraries that can be used to
+               define the applications</p>
+            <dl>
+               <dt>org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary
+               </dt>
+               <dd>
+               <p>This is the core description library - in default configuration it reads descriptions from the "applicationDescriptionUrl" URL. 
+               However, it has an alternative constructor which allows the URL to be specified directly. If the bean is defined as below</p>
+               <pre>
+                 <bean class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary" autowire="no">
+                 <constructor-arg><ref local="config"/></constructor-arg>
+                 <constructor-arg type="java.net.URL"><value>file:/home/cea/conf/</value></constructor-arg>
+                 </bean>
+               
+               </pre>
+               Then the library will read configuration files from the <tt>/home/cea/conf/</tt> directory. In fact this bean definition can be repeated multiple times
+               with different locations for the configuration files.
+               </dd>
+               <dt>
+                  org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary
+               </dt>
+               <dd>This application description library expects a list of org.astrogrid.applications.description.ApplicationDescription as its constructor argument</dd>
+            </dl>
+            <p>To learn how to write an application, the CEA Library javadoc should be consulted.
+            </p>
          </subsection>
       </section>
       <section name="Writing new components">
+         <p>In general to write extensions to the CEC you should
+            consult the javadoc of the CEA common library component</p>
          <subsection name="Inversion of control">
             <p>
                The CEC has been written with the design aim that each of

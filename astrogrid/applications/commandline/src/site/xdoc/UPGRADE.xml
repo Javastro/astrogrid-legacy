@@ -61,7 +61,7 @@
                the app-description.xml file.</p>
          </subsection>
          <subsection name="Manual updating of the configuration files">
-         <p>If for some reason the automatic upgrade does not work, then there is an <a href="http://www.astrogrid.org/viewcvs/astrogrid/applications/commandline/config/CEA_UpdateConfigTo1.0.xsl?view=co">xsl script</a> that can be used to update an
+         <p>If for some reason the automatic upgrade does not work, then there is an <a href="../config/CEA_UpdateConfigTo1.0.xsl">xsl script</a> that can be used to update an
             existing configuration</p>
          <p>This script can be run using an standard XSLT transformation tool such as Saxon on the app-description.xml file with the location of the registration-template.xml file as a stylesheet parameter called "regtemplate"</p>
          </subsection >

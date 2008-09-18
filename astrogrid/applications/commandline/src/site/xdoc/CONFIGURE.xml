@@ -26,7 +26,7 @@
             application server.</p>
           <p>The method by which these environment entries are edited will depend on the application server that you are using.
           </p>
-          <p>The environment entries are described in <a href="./env-entry-reference.html">more detail here</a>.
+          <p>The environment entries are described in <a href="env-entry-reference.html">more detail here</a>.
           </p>
          
          <p> When you have saved the changes in the configuration. This
@@ -64,6 +64,7 @@
                </i>
                is the registration-template document.
             </p>
+            <p>It is always possible to check the the configuration with the <a href="../admin/configuration-describe.jsp">Show current configuration</a> sidebar menu.</p>
          </subsection>
       </section>
       <section name="Edit the registration template">
@@ -77,8 +78,9 @@
             link in the sidebar. You need to replace the copy at that
             location with a customized version.
          </p>
-         <p> The template initialized by the CEC has extensive comments
-            to tell you what to set; please read them. Note that this template is for the service registration, the applications are configured separately.</p>
+         <p>To create a new registration document use <a href="../config/registration-template.xml">this template</a>. The template initialized by the CEC has extensive comments
+            to tell you what to set; please read them. Note that this template
+             is for the service registration, the applications are configured separately.</p>
      
       <subsection name="Preview the registration document">
          <p> When you have the environment set, including the entry that
@@ -127,9 +129,9 @@
       </subsection>
        </section>
        <section name="Application Configuration">
-       <p>In order for the CEC to have a useful function at least one application needs to be configured - This is covered in detail in the <a href="ApplicationConfiguration.xml">Application Configuration page</a></p>
+       <p>In order for the CEC to have a useful function at least one application needs to be configured - This is covered in detail in the <a href="ApplicationConfiguration.html">Application Configuration page</a></p>
        
-       <p>In addition to this documentation there are also examples of previous <a href="../config/">example configurations</a> for a range of applications that can serve as a template for creating a suitable configuration for a new application.</p> 
+       <p>In addition to this documentation there are also examples of previous <a href="./config/">example configurations</a> for a range of applications that can serve as a template for creating a suitable configuration for a new application.</p> 
        </section>
       <section name="Restart the web application">
          <p> The CEC web-service needs to be restarted to pick up the
@@ -137,6 +139,9 @@
             the whole web-application. Either restart Tomcat itself, or
             use the Tomcat Manager application to restart the current
             web-application.</p>
+      </section>
+      <section name="Using the CEC">
+        <p>Once you have restarted the CEC you may start to <a href="Use.html">use</a>it, or in the event of failures try <a href="SELF-TEST.html">further testing</a>.</p>
       </section>
    </body>
 </document>
