@@ -20,20 +20,83 @@ radius = 0
 ifile = ''
 odir = ''
 
+##################################################################
+# A simple class to hold service specific data.
 #
-# Index into sources/services list...
-SI_SERVICE_TAG = 0
-SI_IVORN = 1
-SI_TABLE = 2
-SI_COLS = 3
-SI_STAR_ARGS = 4
-SI_GALAXY_ARGS = 5
-SI_CONE = 6
+class Service:
+
+	def __init__( self, name, ivorn, table, columns, searchFunctionName ):
+		self.name = name
+		self.ivorn = ivorn
+		self.table = table             # table can be None where service expects only one table!
+		self.columns = columns         # self.columns is a list!
+		self.searchFunctionName = searchFunctionName
+		self.coneSearch = None         # The conesearch itself is created later
+
+#	def __getattr__( self, attrName ):
+#		if attrName == 'name':
+#			return self.name
+#		elif attrName == 'ivorn':
+#			return self.ivorn
+#		elif attrName == 'table':
+#			return self.table
+#		elif attrName == 'columns':
+#			return self.columns          # Don't forget. This is a list!
+#		elif attrName == 'searchFunctionName':
+#			return self.searchFunctionName
+#		elif attrName == 'coneSearch':
+#			return self.coneSearch
+#		else:
+#			raise AttributeError, attrName
+### end of class Service ##########################################
+
+###################################################################
+# A class to hold thread safe collections of stars / galaxies
+# 
+class Hits:
+	
+	def __init__( self ):
+		self.lock = thread.allocate_lock()
+		self.list = []
+		self.finished = False
+
+	def push( self, serviceName, vot ):
+		self.lock.acquire()
+		if self.finished == True:
+			print 'Warning. Votable ignored for: ' + serviceName 
+		else:
+			dataRows = vot.getDataRows()	
+			for row in dataRows:
+				cols = [ serviceName ]
+				vals = vot.getData( row )
+				for val in vals:
+					cols.append( val )
+				self.list.append( cols )
+#			print 'Hits: ', self.list
+		self.lock.release()
+		return
+
+	#
+	# Note. Should only be called when all threads have finished.
+	#
+	def getHits( self ):
+		self.lock.acquire()
+		self.finished = True
+		self.lock.release()
+		return self.list
+### end of class Hits ############################################
 
 #
-# A simple local class to help manage thread termination 
+# Shared collections of stars and galaxies.
+# 
+stars = Hits()
+gals = Hits()
+
+
+########################################################
+# A simple class to help manage thread termination 
 #
-class Termination:
+class TerminateFlag:
 
 	def __init__( self ):
 		self.flag = [ False ]
@@ -50,6 +113,7 @@ class Termination:
 		self.flag[0] = True 
 		self.lock.release()
 		return
+### end of class TerminateFlag #########################
 
 #
 # Validate arguments passed. 
@@ -89,19 +153,19 @@ def validateArgs():
 #
 def processIvornFile( filePath ):
 	sources = []
-	ivorns = []
+	services = []
 	for line in open( filePath ).readlines():
 		l = line.strip()
-    # Comments lines are ignored...
+    # Comments lines and blank lines are ignored...
 		if len(l) > 0 and l.startswith( '#' ) == 0:
+			# Process the line containing the number of services...
 			if l.isdigit():
-				if len( ivorns ) > 0:
-					sources.append( ivorns )
-					ivorns = []
+				if len( services ) > 0:
+					sources.append( services )
+					services = []
+			# Process one information line...
 			else:
-				# For each service we make the name of the output directory
-				# and the ivorn itself a first item in a list.
-				# Subsequently we will add the service object itself.
+				# For each service we save the info from the control file.
 				lbrace = l.rfind( '[' )
 				rbrace = l.rfind( ']' )
 				if lbrace == -1 or rbrace == -1:
@@ -111,48 +175,108 @@ def processIvornFile( filePath ):
 #					print l
 					bits = l.split( '|' )
 					# save:
-					# 0: the name for this service 
+					# 0: short name for this service 
           # 1: its ivorn
 					# 2: table name, or nothing if only one table in the collection
 					# 3: space separated list of column names
-					# 4: stars flag, which is one of SOME, NONE or ALL
-					# 5: galaxies flag, which is one of SOME, NONE or ALL
-					service_tag = bits[0].strip()
+					# 4: name of function to execute search for this service
+					service_name = bits[0].strip()
 					ivorn = bits[1].strip()
 					table_name = bits[2].strip()
 					#
 					# Setting the table to None makes the cone object easier to invoke...
 					if len(table_name) == 0:
 						table_name = None 
-					col_names = bits[3].strip()
-					stars_flag = bits[4].strip()
-					gals_flag = bits[5].strip()
-					ivorns.append( [ service_tag, ivorn, table_name, col_names, stars_flag, gals_flag ] ) 
+					col_names = bits[3].strip().split() # col_names is a list!!!
+					search_function_name = bits[4].strip()
+					service = Service( service_name, ivorn, table_name, col_names, search_function_name ) 
+					services.append( service )
 	#
 	# Add the last one on if not zero...
-	if len( ivorns ) > 0:
-		sources.append( ivorns )
+	if len( services ) > 0:
+		sources.append( services )
 	print sources
 	return sources
 # end of processIvornFile( filePath )
 
 #
 # Search function to pass to thread pool.
-# ( service_tag, i[ SI_CONE ], i[SI_TABLE], ra, dec, radius, terminate )
-def searchAndRetrieve( service_tag, cone, table, ra, dec, radius, terminate ) :
-	if terminate.isSet():
-		print service_tag + ' has been terminated prematurely!'
+# ( service_tag, i[ SI_CONE ], i[SI_TABLE], ra, dec, radius, terminateFlag )
+def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
+	if terminateFlag.isSet():
+		print service.name + ' has been terminated prematurely!'
 		return 
 	try:
-		print 'searchAndRetrieve: ' + service_tag, cone, table, ra, dec, radius	
-		res = cone.execute( ra, dec, radius, dsatab=table )
-		print res
-		terminate.set()
-	except Exception, e:
-		print service_tag + ' cone Search failed: ', e	
-	return
-	
-# end of searchAndRetrieve( service_tag, cone, table, ra, dec, radius, terminate )
+		print 'searchAndRetrieve: ' + service.name, ra, dec, radius	
+		res = service.coneSearch.execute( ra, dec, radius, dsatab=service.table )
+		if res: 
+			try:
+#				print service.name + ' enters: utils.read_votable()'
+				vot = utils.read_votable( res, ofmt='votable' )
+#				print service.name + ' exits: utils.read_votable()'
+				raColIndex = vot.getColumnIdx ( 'POS_EQ_RA_MAIN' )
+				if raColIndex < 0 :
+					print service.name + ': no hits!'
+				elif len( vot.getDataRows() ) == 0 : 
+					print service.name + ': no hits!'
+				else:
+					if terminateFlag.isSet():
+						print service.name + ' has been terminated prematurely!'
+						return
+					eval( service.searchFunctionName + '( service, ra, dec, radius, vot, terminateFlag )' )
+			except Exception, e1:
+				print service.name + ': bad vot: ', e1
+		else:
+			print service.name + ': no result vot!'	
+	except Exception, e2:
+		print service.name + ' cone Search failed: ', e2	
+	terminateFlag.set()
+	return	
+# end of searchAndRetrieve( service, ra, dec, radius, terminateFlag )
+
+#
+#
+def searchSDSS( service, ra, dec, radius, vot, terminateFlag ):
+	global gals
+	print 'searchSDSS enter'
+	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	gals.push( service.name, vot )
+	print 'searchSDSS exit'
+
+def searchAPM( service, ra, dec, radius, vot, terminateFlag ):
+	global gals
+	print 'searchAPM enter'
+	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	gals.push( service.name, vot )
+	print 'searchAPM exit'
+
+def searchPSCz( service, ra, dec, radius, vot, terminateFlag ):
+	global gals
+	print 'searchPSCz enter'
+	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	gals.push( service.name, vot )
+	print 'searchPSCz exit'
+
+def searchUSNO( service, ra, dec, radius, vot, terminateFlag ):
+	global gals
+	print 'searchUSNO enter'
+	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	gals.push( service.name, vot )
+	print 'searchUSNO exit'
+
+def search6DF( service, ra, dec, radius, vot, terminateFlag ):
+	global gals
+	print 'search6DF enter'
+	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	gals.push( service.name, vot )
+	print 'search6DF exit'
+
+def search2MASS( service, ra, dec, radius, vot, terminateFlag ):
+	global stars
+	print 'search2MASS enter'
+	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	stars.push( service.name, vot )
+	print 'search2MASS exit'
 
 
 #####################################################
@@ -180,43 +304,38 @@ print( 'Output folder is called ' + odir )
 os.mkdir( odir )
 
 #
-#
-# We have a list of sources and a list of ivorns for each source.
-# Generate a service for each ivorn...
+# We have a list of sources and a list of services for each source.
+# Generate a cone search for each service...
 serviceCount = 0
-for s in sources:
-	# We have a list of ivorns for each source...
-	iIndex = 0
-	for i in s:
-		# Generate a service for each ivorn...
+for source in sources:
+	# We have a list of services for each source...
+	for service in source:
+		# Generate a cone search for each service...
 		try:
-			print 'Generating service for: ' + i[ SI_IVORN ] 
-			cone = ConeSearch( i[ SI_IVORN ] )
-			i.append( cone )
-			serviceCount += 1
-			print cone.info['content']['description']
+			print 'Generating service for: ' + service.name + ' ivorn: --->' + service.ivorn + '<---'
+			service.coneSearch = ConeSearch( service.ivorn )
+			serviceCount += 1 # The count gets incremented only if the service is kosher
+#			print service.coneSearch.info['content']['description']
 		except:
-			print 'ConeSearch() failed for ' + i[ SI_IVORN ]
-			i.append( None )
+			# A failure means we have to deal with a None value in the service!
+			print 'ConeSearch() failed for ' + service.name
 
 #
 # Define the command to execute and the pool size
 pool = easy_pool( searchAndRetrieve )
-#pool.start_threads( len(sources) )
 pool.start_threads( serviceCount )
 
-for s in sources:
-	# We have a list of ivorns for each source.
+for source in sources:
+	# We have a list of services for each source.
 	# Fill out the thread information...
 	iIndex = 0
-	terminate = Termination()
-	for i in s:
-		if isinstance( i[ SI_CONE ], ConeSearch ):
+	terminateFlag = TerminateFlag()
+	for service in source:
+		# This is where we deal with a None value within the service object
+		if isinstance( service.coneSearch, ConeSearch ):
 			#
-			# Form the output service tag name...
-			service_tag = odir + '/' + i[ SI_SERVICE_TAG ]
 			# Add the service and its inputs to the thread pool...
-			input = ( service_tag, i[ SI_CONE ], i[SI_TABLE], ra, dec, radius, terminate )
+			input = ( service, ra, dec, radius, terminateFlag )
 			pool.put( input )
 
 #print sources
@@ -234,4 +353,8 @@ while 1 :
 	if p[3]==serviceCount: break
     
 pool.stop_threads()
+print '========================================= stars ==========================================='
+print stars.getHits()
+print '======================================= galaxies =========================================='
+print gals.getHits()
 print( 'Finished at '  + time.strftime('%T') ) 
