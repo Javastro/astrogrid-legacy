@@ -65,6 +65,11 @@
             existing configuration</p>
          <p>This script can be run using an standard XSLT transformation tool such as Saxon on the app-description.xml file with the location of the registration-template.xml file as a stylesheet parameter called "regtemplate"</p>
          </subsection >
+         <subsection name="upgrading a HTTP or JavaClass CEC">
+         <p> If you are updgrading a 2007 or earlier version JavaClass or HTTP CEC then you should be aware that these specializations are now included in the universal CEC. Furthermore, if you are upgrading a HTTP CEC then the CEC is locally configured using the 
+         configuration file rather than reading its configuration from the Registry - in fact you will need to publish the local configuration to a registry just as will commandline or java class applications.
+         </p>
+         </subsection>
       </section>
    </body>
 </document>

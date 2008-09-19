@@ -14,108 +14,185 @@
    </properties>
    <body>
       <section name="Application Configuration">
-      <p>The CEC has a model of a CEC that</p>
-         <p>
-            The UML model for an application is shown in the diagram
-            below
-            <img
-               src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/ceaApplication.gif?rev=HEAD&amp;content-type=image/gif"
-               alt="application model" />
-         </p>
+         <p>This page gives brief guidance to writing an application
+            configuration file. This should be read in conjunction with
+            the <a href="http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/CommonExecutionArchitecture">IVOA notes on CEA</a></p>
+         <p>The CEC has a model of a CEC that</p>
+         <p> The UML model for an application is shown in the diagram
+            below</p>
+         <img
+            src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/ceaApplication.gif?rev=HEAD&amp;content-type=image/gif"
+            alt="application model" />
+         <p> The interpretation of this diagram is that an application
+            may have a set of parameters which might be organised into
+            one or more interfaces (effectively a subset of the total
+            parameter set), and that each interface has a set of input
+            parameters and a set of outputs.</p>
+         <p>The configuration of the application follows this pattern
+            in that the total set of parameters are defined first, and
+            then the set of interfaces, and each interface consists of a
+            set of references to the parameter definitions.</p>
          <subsection name="Parameters">
-            <subsubsection name="parameter types">
-               <dl>
-                  <dt>complex</dt>
-                  <dd>if a complex value is to be passed</dd>
-                  <dt>double</dt>
-                  <dd>a double precision floating number should be
-                     passed</dd>
-                  <dt>boolean</dt>
-                  <dd>a boolean value should be passed</dd>
-                  <dt>anyURI</dt>
-                  <dd>a URI should be passed</dd>
-                  <dt>anyXML</dt>
-                  <dd>this should probably not be here - too
-                     loose...do not use if possible</dd>
-                  <dt>VOTable</dt>
-                  <dd>A VOTable is passed</dd>
-                  <dt>RA</dt>
-                  <dd>A value to be interpreted as a right ascension is
-                     passed</dd>
-                  <dt>Dec</dt>
-                  <dd>A value to be interpreted as a declination is
-                     passed</dd>
-                  <dt>ADQL</dt>
-                  <dd>Standard Astromical Data Query Language is
-                     passed</dd>
-                  <dt>FITS</dt>
-                  <dd>A FITS file is passed</dd>
-                  <dt>text</dt>
-                  <dd>A general piece of alphanumeric data is passed -
-                     should generally be what unix considers to be a
-                     text file</dd>
-                  <dt>binary</dt>
-                  <dd>An arbitrary piece of binary data is passed</dd>
-               </dl>
-            </subsubsection>
-         </subsection>
+            <p>This section specifies the general properties associated with parameters for all application types - see below for properties related to Commandline application parameters.
+            </p>
+            <p>A parameter is characterised chiefly by its identifier (the id attribute) and its type (the type attribute). Each of the parameters should be given a
+                  particular type - The type assigned allows CEA clients
+                  to provide a suitable GUI representation and
+                  validation of the parameter. The following table lists
+                  the possible parameter types</p>
+                  <table border="1">
+                  <tr>
+                     <th scope="col">Type</th>
+                     <th scope="col">Description</th>
+                     <th scope="col">Notes</th>
+                  </tr>
+                  <tr>
+                     <td>integer</td>
+                     <td>an integer value</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                        <p>real</p>
+                     </td>
+                     <td>a real value (any precision)</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>complex</td>
+                     <td>a complex number pair</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>text</td>
+                     <td>any data that could be interpreted as human
+                        readable text in a well known encoding.</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>boolean</td>
+                     <td>a boolean value</td>
+                     <td>0/1 true/false yes/no on/off - style
+                        determined by the default value</td>
+                  </tr>
+                  <tr>
+                     <td>anyURI</td>
+                     <td>a string that could be interpreted as a URI.
+                     </td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>VOTable</td>
+                     <td>a VOTable conforming to the IVOA specification
+                     </td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>angle</td>
+                     <td>Angular measure on the sky</td>
+                     <td>sexagesimal allowed</td>
+                  </tr>
+                  <tr>
+                     <td>MJD</td>
+                     <td>Modified julian data</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>DateTime</td>
+                     <td>A date and time in ISO 8601 format</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>ADQL</td>
+                     <td>Astronomical Query Language</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>binary</td>
+                     <td>arbitrary data</td>
+                     <td>Data for which there is no specific well
+                        known type</td>
+                  </tr>
+                  <tr>
+                     <td>FITS</td>
+                     <td>a file conforming to the [FITS] standard</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>xml</td>
+                     <td>arbitrary xml</td>
+                     <td>
+                        <p>the schema for the xml is optionally
+                           indicated in the UType of the parameter</p>
+                        <p>
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>table</td>
+                     <td>some tablular data</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>image</td>
+                     <td>an astronomical image</td>
+                     <td>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>spectrum</td>
+                     <td>a spectrum</td>
+                     <td>
+                     </td>
+                  </tr>
+               </table>
+            <p>The generic elements (all of which are optional) that can occur within any
+               parameterDefinition are;</p>
+            <dl>
+               <dt>&lt;name/&gt;</dt> <dd>the name that will be used for display in the portal for the parameter</dd>
+<dt>&lt;description/&gt;</dt> <dd>a description of the parameter that will be used in the portal</dd>
+<dt>&lt;UCD/&gt;</dt> <dd>the ucd for the parameter if it has one - at the moment nothing uses this.</dd>
+<dt>&lt;DefaultValue/&gt;</dt><dd> can be used to display a default value in the portal</dd>
+<dt>&lt;unit/&gt;</dt> <dd>can be used to specify the units in the portal.</dd>
+<dt>&lt;UType/&gt;</dt> <dd>The UType associated with a parameter.</dd>
+<dt>&lt;mimeType/&gt;</dt> <dd>The mimeType of the parameter</dd>
+<dt>&lt;optionList/&gt;</dt> <dd>Allows the specification of a fixed set of possible values for the parameter.</dd>
+<dt>&lt;range/&gt;</dt> <dd>Allows a permissible range for the parameter to be set.</dd>
+</dl>
+          </subsection>
          <subsection name="Interfaces">
+         <p>An application must have at least one interface - even for an application with only possible interface this construct distinguishes the actual input and output parameters. 
+         The parameters are represented in the interface within either the input or output element with a pref element that points to the identifier of the parameter in question. Each interface can additionally have a constants element that defines parameters that have a fixed value for that particular interface.</p>
+         
+         <p><strong>Note</strong> although the schema supports the concept of grouping parameters with pgroup, rgroup and cgroupHead elements, this facility is not yet supported by software components that make up the astrogrid suite, so these constructs should not be used in this release.</p>
          </subsection>
          <subsection name="Configuration File">
+         <p>The configuration file should conform to the <a href="http://www.astrogrid.org/viewcvs/astrogrid/contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd?revision=1.2&amp;view=markup">CeaImplementation.xsd, 2.0</a> schema (with namespace
+         http://www.astrogrid.org/schema/CEAImplementation/v2.0)
+         </p>
             <p>
                This file should be of the same form as
                <a
-                  href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/commandline/config/CeaApplicationConfig.xml?rev=HEAD&amp;content-type=text/xml"
+                  href="./config/app-description.xml"
                >this example configuration file</a>
-               which has
-               <a
-                  href="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/workflow-objects/schema/AGApplicationBase.xsd?rev=HEAD&amp;content-type=text/plain"
-               >AGApplicationBase.xsd</a>
-               as its schema (with some automated documentation
-               <a
-                  href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGApplicationBase.html"
-               >here</a>
-               ).
+
             </p>
+            <p>To define more than one application in the single file then the CECConfig element should be used as a top-level element,
+             but if only a single application is to be defined then a CeaApplication element can be used.</p>
          </subsection>
-         <p> &lt;CommandLineExecutionControllerConfig&gt; that contains &lt;Application&gt; elements (you will have one for each of your scripts) - each of the &lt;Applications&gt; has a set of &lt;Parameters&gt; and one or more &lt;Interfaces&gt;.</p>
-
-    <p>
-For this type of CEC we need to define a series of &lt;CmdLineParameterDefn&gt; elements corresponding to each of the command line parameters that there are.
-For command line applications parameters are typically specified in one of 3 ways under unix
-and the CEC can cope with any of these (theoretically in any combination, but I have not exhaustively tested this, and I doubt that I have covered everything)
-</p>
-<p>Each &lt;CmdLineParameterDef&gt; has a set of attributes that specify which of the above categories the parameter falls under, as well as some subelements that further specify the parameter.
-</p>
-<dl>
-   
-<dt>name</dt><dd>this is the name of the parameter - the default behaviour is that this name is the same as the string that is used to denote the parameter on the command line (if there is one) - however you can give the parameter any name you like (as long as it is unique for a particular application as you can specify the name that is used on the command line  using the commandSwitch attribute. Alternatively you can specify the position of the parameter with the commandPosition attribute if there is no switch.
-</dd>
-<dt>type</dt><dd><p> this specifies what type the parameter. This value should be set to be as close as possible to what the application expects the type of the parameter to be to allow for possible type checking. Note that amongst the values there are several types that can effectively be used as "catchall" types, which can be used if the application does not have any strong typing. You should look in the <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameterTypes">schema</a> for the up to date list, but a description of the meaning of the types is given below.
-             </p>
-         </dd>
-  
-<dt>fileRef</dt><dd>This specifies whether the application expects the parameter to refer to a file or simply a value that is passed on the command line</dd>
-<dt>commandSwitch</dt><dd>This is the text of the command switch (without any hyphen or equals characters). If this is set to the special value "---" then it means that the parameter will not be added to the command line at all - this is useful sometimes in allowing a value to be passed to the java wrapper class.</dd>
-<dt>commandPosition</dt><dd>This is specified as an integer index position that the parameter will be specified on the command line - if a value is specified for this attribute, then the parameter will be presented "bare" with no switch</dd>
-<dt>switchType</dt><dd>this can be 'normal', in which case the switch will written in the -X val style or 'keyword' in which case the x=val style will be used.</dd>
-<dt>OptionList</dt><dd>this can be used to specify a parameter that takes its value from a fixed set. Each of the possible values is specified by an <code>OptionVal</code> element</dd>
-</dl>
-
-<subsection name="The elements that can occur within the &lt;CmdLineParameterDef/&gt;">
-<dl>
-<dt>&lt;UI_Name/&gt;</dt> <dd>the name that will be used for display in the portal for the parameter</dd>
-<dt>&lt;UI_Description/&gt;</dt> <dd>a description of the parameter that will be used in the portal</dd>
-<dt>&lt;UCD/&gt;</dt> <dd>the ucd for the parameter if it has one - at the moment nothing uses this.</dd>
-<dt>&lt;DefaultValue/&gt;</dt><dd> can be used to display a default value in the portal</dd>
-<dt>&lt;Units/&gt;</dt> <dd>can be used to specify the units in the portal.</dd>
-</dl>
-<p>
-An &lt;Interface&gt; is simply a collection of parameters - you might have a simple interface that consists of only one of the possible parameters and a complex one that consists of all the possible parameters. Each interface consists of a number of &lt;input&gt; and &lt;output&gt; parameters (designated by the pref element that points to the &lt;CmdLineParameterDef&gt; above) - This classification is particularly important in the case of parameters that specify MySpace file references, as this is how CEC knows whether to fetch the values of put them.
-</p>
-      
-   </subsection>
-
+ 
+ 
    </section>
       <section name="CommandLine Application Configuration">
          <p>The Command line Execution Controller is a component
@@ -146,17 +223,73 @@ An &lt;Interface&gt; is simply a collection of parameters - you might have a sim
             </ul>
             <p>It is possible that an application that does not quite
                meet these requirements in a small fashion could be
-               acommodated by writing an adapter class that extends the
+               accommodated by writing an adapter class that extends the
                standard
                org.astrogrid.applications.commandline.CommandLineApplication
                model.</p>
+         </subsection>
+         <subsection name="Extra Configuration for a commandline application">
+            <p>
+For this type of CEC the applicationDefinition element of the CeaApplication is defined to be of xsi:type "ceaimp:CeaCmdLineApplicationDefinition" 
+and each parameterDefinition to be of xsi:type "ceaimp:CommandLineParameterDefinition" - note that the type here is the schema type for the element, not to be confused with the type of the parameter itself. 
+</p>
+<p>The model that the cec uses for forming the command line parameters follows the typical style under unix, and uses the following attributes to control this;
+</p>
+
+<dl>    
+<dt>fileRef</dt><dd>This specifies whether the application expects the parameter to refer to a file or simply a value that is passed on the command line</dd>
+<dt>commandSwitch</dt><dd>This is the text of the command switch (without any hyphen or equals characters). If this is set to the special value "---" then it means that the parameter will not be added to the command line at all - this is useful sometimes in allowing a value to be passed to the java wrapper class.</dd>
+<dt>commandPosition</dt><dd>This is specified as an integer index position that the parameter will be specified on the command line - if a value is specified for this attribute, then the parameter will be presented "bare" with no switch</dd>
+<dt>switchType</dt><dd>This can be 'normal', in which case the switch will written in the -X val style or 'keyword' in which case the x=val style will be used.</dd>
+<dt>localFileName</dt><dd>If the parameter references a file and the application always </dd>
+</dl>
+
+<p>Finally the location of the commandline executable is specified with the executionPath element which can have commandpval child elements to specify fixed parameters that always need to be passed to the application, but are not part of the application parameters.
+ For example, running a java application might need a commandline <code>java -jar app.jar</code> which could be configured with</p>
+ <pre>
+   &lt;executionPath&gt;java&lt;commandpval&gt;-jar &lt;/commandpval&lt;&lt;commandpval&gt;app.jar&lt;/commandpval&lt;&gt;/executionPath&gt;
+ </pre>
+ <subsubsection name="hints and tips">
+ <ul>
+ <li>If the standard out fom the underlying commandline application is required as an output parameter then set the localFileName to "cea-output.log", as this is the file that CEA redirects standard out to.</li>
+ </ul>
+ </subsubsection>
+         </subsection>
+         <subsection name="HTTP Application">
+        <p> This component provides a Common Execution Connector web-service for HTTP
+				applications (HTTP-CEC for short). The HTTP-CEC makes astronomy applications available to the
+				virtual observatory; notably, it makes them visible to AstroGrid's web portal, desktop UI
+				and workflow system.</p><p> Suitable applications for this kind of CEC (there are other kinds) run on external web-servers
+				(i.e. they need not be co-located with the CEC) and can be invoked using the HTTP-get protocol;
+				the CEC does not work with HTTP-post services. The HTTP-CEC acts as a proxy for the HTTP application,
+				translating between the standards CEA protocols and the application's own protocol. This has 
+				two advantages.
+			</p><ul>
+				<li>Non-standard applications become accessible to the IVO.</li>
+				<li>IVO-standard HTTP-get services (e.g. SIAP), which are already accessible
+				to the IVO in a basic form, become accessible as CEA applications and can be
+				used from all AstroGrid UIs.</li>
+			</ul><p>
+				One HTTP-CEC can stand as proxy for any number of HTTP applications. Therefore, if
+				you have an HTTP application on your web-server you can use associate it with an
+				HTTP-CEC in two ways.
+			</p><ol>
+				<li>Run your own HTTP-CEC.</li>
+				<li>Have your application configured onto someone else's HTTP-CEC.</li>
+			</ol>
+         <subsubsection name="Extra configuration for the HTTP Applications">
+            <p>For HTTP applications the applicationDefinition should be of xsi:type="impl:CeaHttpApplicationDefinition" which allows a CeaHttpAdapterSetup element to be written after the interfaces element. This CeaHttpAdapterSetup element allows the location of the web application that is to be proxied to be specified.
+            </p>
+         </subsubsection>
+         </subsection>
+         <subsection name="JavaClass Application">
          </subsection>
       </section>
     	<section name="Modifying default application behaviour">
 		<p>It might be that it is necessary to modify the output of the commandline application in some fashion to make the application more "VO friendly", this can be done in two general ways</p>
         <ol>
-            <li>Wrapping the application in a shell script and specifying the script rather than the application directly in the <code>ExecutionPath</code> element. A description of this method of customization is outside the scope of this documentation, but it is a valuable, and often quick-to-implement way to slightly alter the behaviour of an appliction.</li>
-            <li>Writing a custom adapter class - it is possible to write a specific class to alter the way that an application is run and to specify the class name as the <code>instanceClass</code> attribute on an <code>Application</code> element. The <a href="AppProgGuide.html">CommandLine CEC Application Programmers Guide</a> contains information to aid in writing such a class.</li>
+            <li>Wrapping the application in a shell script and specifying the script rather than the application directly in the <code>ExecutionPath</code> element. A description of this method of customization is outside the scope of this documentation, but it is a valuable, and often quick-to-implement way to slightly alter the behaviour of an application.</li>
+            <li>Writing a custom adapter class - it is possible to write a specific class to alter the way that an application is run and to specify the class name as the <code>instanceClass</code> attribute on an <code>applicationDefinition</code> element. The <a href="AppProgGuide.html">CommandLine CEC Application Programmers Guide</a> contains information to aid in writing such a class.</li>
         </ol>
 	</section>
     

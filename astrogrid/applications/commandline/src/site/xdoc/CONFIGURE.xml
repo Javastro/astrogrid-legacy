@@ -29,12 +29,8 @@
           <p>The environment entries are described in <a href="env-entry-reference.html">more detail here</a>.
           </p>
          
-         <p> When you have saved the changes in the configuration. This
-            makes a safe copy of the environment but doesn't apply the
-            changes. The editor then applies the environment by copying
-            it into Tomcat's configuration directory. At this point,
-            Tomcat should detect the change and restart the web
-            application with the new environment.</p>
+         <p> When you have saved the changes in the configuration you will need to restart the web
+            application for tomcat to pick up the new environment.</p>
          <subsection
             name="The CEC's working directories and configuration files"
          >
