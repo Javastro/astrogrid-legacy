@@ -406,7 +406,8 @@ public class QueryHelper {
     		   maxInt = queryLimit + 1;
            
            String startCount = String.valueOf(startInt);
-           String returnCount = max == null ? String.valueOf((queryLimit+startInt)) : String.valueOf(maxInt + startInt);
+           //String returnCount = max == null ? String.valueOf((queryLimit+startInt)) : String.valueOf(maxInt + startInt);
+           String returnCount = max == null ? String.valueOf((queryLimit)) : String.valueOf(maxInt+1);
            
            //get the xquery expression.
            String xqlExpression = conf.getString("reg.custom.query.expression"); 

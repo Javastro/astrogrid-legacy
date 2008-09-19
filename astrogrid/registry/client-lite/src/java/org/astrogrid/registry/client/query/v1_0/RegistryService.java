@@ -83,7 +83,7 @@ public interface RegistryService extends org.astrogrid.registry.client.query.Reg
     * @return XML Document of all the Resources in the registry constrained by the adql query.
     * @throws RegistryException
     */   
-   public Document search(String xadql, int from, int to, boolean identifiersOnly) throws RegistryException;
+   public Document search(String xadql, int from, int max, boolean identifiersOnly) throws RegistryException;
    
    /**
     * Method: search
@@ -102,7 +102,7 @@ public interface RegistryService extends org.astrogrid.registry.client.query.Reg
     * @return XML Document of all the Resources in the registry constrained by the adql query.
     * @throws RegistryException
     */
-   public Document search(Document adql, int from, int to, boolean identifiersOnly) throws RegistryException;   
+   public Document search(Document adql, int from, int max, boolean identifiersOnly) throws RegistryException;   
 
    /**
     * Method: searchFromSADQL
@@ -121,7 +121,7 @@ public interface RegistryService extends org.astrogrid.registry.client.query.Reg
     * @return XML Document of all the Resources in the registry constrained by the adql query.
     * @throws RegistryException
     */      
-   public Document searchFromSADQL(String sadql, int from, int to, boolean identifiersOnly) throws RegistryException;
+   public Document searchFromSADQL(String sadql, int from, int max, boolean identifiersOnly) throws RegistryException;
 
    /**
     * Method: keywordSearch
@@ -146,7 +146,7 @@ public interface RegistryService extends org.astrogrid.registry.client.query.Reg
     * @return XML Document of all the Resources in the registry constrained by the keyword query.
     * @throws RegistryException
     */      
-   public Document keywordSearch(String keywords,boolean orValues, int from, int to, boolean identifiersOnly) throws RegistryException;   
+   public Document keywordSearch(String keywords,boolean orValues, int from, int max, boolean identifiersOnly) throws RegistryException;   
 
    
    /**
@@ -167,7 +167,7 @@ public interface RegistryService extends org.astrogrid.registry.client.query.Reg
     * @return XML Document of all the Resources in the registry constrained by the keyword query.
     * @throws RegistryException
     */   
-   public Document keywordSearch(String keywords, int from, int to, boolean identifiersOnly) throws RegistryException;
+   public Document keywordSearch(String keywords, int from, int max, boolean identifiersOnly) throws RegistryException;
    
 
    public String[] getEndpointsByIdentifier(String identifier, String capabilityStandardID) throws RegistryException;

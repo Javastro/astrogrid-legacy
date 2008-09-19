@@ -181,14 +181,14 @@ return <resources>{$idents}</resources>
     * @todo throw registry exception until this method is implemented.
     * @throws RegistryException problem during the query servor or client side.
     */
-   public Document searchFromSADQL(String adql, int from, int to, boolean identifiersOnly) throws RegistryException {
+   public Document searchFromSADQL(String adql, int from, int max, boolean identifiersOnly) throws RegistryException {
       //send to sadql->adql parser.
        try {
            Document doc = (Document)cache.get(adql);
            if(doc != null) return doc;
            logger.debug("not in cache");
            String adqlString = Sql2Adql.translateToAdql074(adql);
-           doc = search(DomHelper.newDocument(adqlString),from, to, identifiersOnly);
+           doc = search(DomHelper.newDocument(adqlString),from, max, identifiersOnly);
            if(useRefCache)
                cache.put(adqlString,doc);
            return doc;
@@ -216,10 +216,10 @@ return <resources>{$idents}</resources>
     * @return XML DOM of Resources queried from the registry.
     * @throws RegistryException problem during the query servor or client side.
     */   
-   public Document search(String xadql,int from, int to, boolean identifiersOnly) throws RegistryException {
+   public Document search(String xadql,int from, int max, boolean identifiersOnly) throws RegistryException {
       //search using adqlx. Catch any exceptions and throw them as RegistryExceptions
       try {
-         return search(DomHelper.newDocument(xadql), from, to,identifiersOnly);
+         return search(DomHelper.newDocument(xadql), from, max,identifiersOnly);
       } catch (ParserConfigurationException pce) {
          logger.error(pce);
          throw new RegistryException(pce);
@@ -244,14 +244,14 @@ return <resources>{$idents}</resources>
     * @return XML DOM of Resources queried from the registry.
     * @throws RegistryException problem during the query servor or client side.
     */   
-   public Document search(Document adql, int from, int to, boolean identifiersOnly) throws RegistryException {
+   public Document search(Document adql, int from, int max, boolean identifiersOnly) throws RegistryException {
       //wrap a Search element around the dom.
       //Element currentRoot = adql.getDocumentElement();
       Document resultDoc = null;
       adql = searchDOM(adql);
       addChildSoap(adql,"from",NAMESPACE_URI,java.lang.String.valueOf(from));
-      if(to != -1)
-          addChildSoap(adql,"to",NAMESPACE_URI,java.lang.String.valueOf(to));
+      if(max != -1)
+          addChildSoap(adql,"max",NAMESPACE_URI,java.lang.String.valueOf(max));
       if(identifiersOnly) 
           addChildSoap(adql,"identifiersOnly",NAMESPACE_URI,java.lang.String.valueOf(identifiersOnly));
       //return doQuery(adql,"Search", "Search");
@@ -305,8 +305,8 @@ return <resources>{$idents}</resources>
     * @return XML Document of all the Resources in the registry constrained by the keyword query.
     * @throws RegistryException
     */   
-   public Document keywordSearch(String keywords, int from, int to, boolean identifiersOnly) throws RegistryException { 
-       return keywordSearch(keywords, false, from, to, identifiersOnly);
+   public Document keywordSearch(String keywords, int from, int max, boolean identifiersOnly) throws RegistryException { 
+       return keywordSearch(keywords, false, from, max, identifiersOnly);
    }
    
    /**
@@ -319,7 +319,7 @@ return <resources>{$idents}</resources>
     * @return XML Document of all the Resources in the registry constrained by the keyword query.
     * @throws RegistryException
     */  
-   public Document keywordSearch(String keywords,boolean orValue, int from, int to, boolean identifiersOnly) throws RegistryException {    
+   public Document keywordSearch(String keywords,boolean orValue, int from, int max, boolean identifiersOnly) throws RegistryException {    
        Document doc = null;
        Document resultDoc = null;
        logger.debug("entered keywordSearch");
@@ -330,8 +330,8 @@ return <resources>{$idents}</resources>
            try {
                doc = keywordSearchDOM(keywords, orValue);
                addChildSoap(doc,"from",NAMESPACE_URI,java.lang.String.valueOf(from));
-               if(to != -1)
-                   addChildSoap(doc,"to",NAMESPACE_URI,java.lang.String.valueOf(to));
+               if(max != -1)
+                   addChildSoap(doc,"max",NAMESPACE_URI,java.lang.String.valueOf(max));
                if(identifiersOnly)
                    addChildSoap(doc,"identifiersOnly",NAMESPACE_URI,java.lang.String.valueOf(identifiersOnly));
                //resultDoc = doQuery(doc,"KeywordSearch","KeywordSearch");
