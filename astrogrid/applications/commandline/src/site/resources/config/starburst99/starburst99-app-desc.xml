@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>Starburst 99</title>
+        <shortName>Starburst 99</shortName>
+        <identifier>ivo://org.astrogrid/Starburst99</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>0.0001</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>Starburst99 is a web based software and data package designed to model spectrophotometric and related properties of star-forming galaxies.</description>
+            <referenceURL>http://www.stsci.edu/science/starburst99/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="NAME" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>NAME</name>
+                    <description>any identifier you want to assign to the model. You will find
+                 it in the header of each output file.</description>
+                    <ucd/>
+                    <defaultValue>standard</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ISF" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>CONTINUOUS STAR FORMATION (&gt;0) OR FIXED MASS (&lt;=0)</name>
+                    <description> if this is a negative integer, star formation is instantaneous, 
+       otherwise it is continuous.</description>
+                    <ucd/>
+                    <defaultValue>-1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TOMA" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>TOTAL STELLAR MASS [10^6 SOLAR MASSES] IF 'FIXED MASS' IS CHOSEN</name>
+                    <description>this is the total stellar mass (spread out between the upper and lower
+      cut-off masses). It is only used if an instantaneous burst is specified.</description>
+                    <ucd/>
+                    <defaultValue>1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SFR" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>SFR [SOLAR MASSES PER YEAR] IF 'CONT. SF' IS CHOSEN:</name>
+                    <description>the star formation rate (only used for a continuous rate). The total
+        accumulated mass is spread out between the upper and lower
+        cut-off masses. </description>
+                    <ucd/>
+                    <defaultValue>1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ALPHA" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>IMF EXPONENT </name>
+                    <description>IMF exponent. A power law is assumed.(2.35 = SALPETER):</description>
+                    <ucd/>
+                    <defaultValue>2.35</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="UPMA" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Upper Mass Limit</name>
+                    <description>upper mass limit for the IMF.</description>
+                    <ucd/>
+                    <defaultValue>100.</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="DOMA" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Lower mass limit</name>
+                    <description>lower mass limit for the IMF.</description>
+                    <ucd/>
+                    <defaultValue>1.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SNCUT" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Supernova cutoff mass</name>
+                    <description>stars with ZAMS masses of 8 M and higher form supernovae. This is the
+       suggested standard value but can be modified if desired.</description>
+                    <ucd/>
+                    <defaultValue>8.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="BHCUT" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Black Hole cut off mass</name>
+                    <description> stars with ZAMS masses of 120 M and lower form supernovae. An 
+        alternative scenario would be to let stars above a certain threshold
+        form a black hole. For instance, BHCUT=40. results in SNe only from the
+        mass range 40 to 8 M.</description>
+                    <ucd/>
+                    <defaultValue>120.</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IZ" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Mettalicity + tracks</name>
+                    <description>92-94 STD. MASS-LOSS: 11=0.001; 12=0.004; 13=0.008; 14=0.020; 15=0.040
+92-94 HIGH MASS-LOSS: 21=0.001; 22=0.004; 23=0.008; 24=0.020; 25=0.040
+24 -- this integer indicates the evolutionary tracks to be used. The 
+      choices are 11-15 or 21-25, where the former select one of five
+      metallicities with the standard tracks, and the latter do the same
+      for the high mass-loss tracks. Example: "23" selects 40% solar
+      metallicity with the high mass loss tracks.</description>
+                    <ucd/>
+                    <defaultValue>24</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IWIND" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Wind model</name>
+                    <description>(0=MAEDER; 1=EMP.; 2=THEOR.; 3=ELSON; 4=UCL):     [IWIND]
+2 -- this selects the wind model to be used for the calculation of the
+     wind power. The four models are discussed in ApJ, 401, 498 (1992) 
+     and in Smith et al. (2002). "2" is the suggested default parameter.</description>
+                    <ucd/>
+                    <defaultValue>2</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TIME1" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Initial time</name>
+                    <description>[1.E6 YEARS] the epoch of the onset of the star formation. In almost all cases you
+        want this to be close to 0. It should not be exactly 0 for numerical
+        reasons. 0.01 (i.e. 10e4 yr) is a good number.</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="STEP" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Time Step</name>
+                    <description>[1.e6 years] this is the timestep used for the calculations. It is a very important
+        parameter. On the one hand, the computing time scales with STEP, so
+        you want to avoid too high resolution, but on the other, short
+        evolutionary phases can be missed. 0.1 (i.e. 10e5 yr) is a good 
+        value if you use full isochrone synthesis. If full isochrone synthesis
+        is not used, 0.1 or larger is suggested only for tests --- be aware 
+        that WR or RSG numbers are no longer properly calculated for a STEP of 
+        0.1 unless full isochrone synthesis is selected!</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TMAX" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Last grid point</name>
+                    <description>[1.e6 YEARS]:   the oldest age of the model. </description>
+                    <ucd/>
+                    <defaultValue>20.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="JMG" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>SMALL (=0) OR LARGE (=1) MASS GRID;
+ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</name>
+                    <description>these are four options for the interpolation in mass. They are explained
+     in the code. Shortly: 0 -- evolutionary synthesis with a mass 
+     resolution of 5 M (only recommended for tests); 1 -- same as 0, but with
+     a resolution of 1 M. This method was used in Leitherer &amp; Heckman (1995); 
+     2 -- isochrone synthesis with a fixed mass resolution of 1 M; 
+     3 -- isochrone synthesis with a variable mass grid. This is the fanciest
+     method and is the recommended mode.</description>
+                    <ucd/>
+                    <defaultValue>3</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="LMIN" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>LMIN</name>
+                    <description> LMIN and LMAX are the indices of the evolutionary tracks, sorted by mass.
+     Normally you do not want to mess with the variable and leave it at 0. 
+     However, if you want to track down some peculiarity of the output, you
+     may want to compute the parameters for only one track. For instance, 
+     specifying 21,21 indicates that only a 100 M star should by used, and
+     everything else is suppressed. The cross-ID's between index and mass
+     are at the bottom of the input file. The example here refers to JMG=1 or
+     2. For JMG=0, you would have chosen 5,5. This does not apply to JMG=3
+     since the mass grid is variable and LMIN, LMAX are not used.</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="LMAX" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>LMAX</name>
+                    <description> LMIN and LMAX are the indices of the evolutionary tracks, sorted by mass.
+     Normally you do not want to mess with the variable and leave it at 0. 
+     However, if you want to track down some peculiarity of the output, you
+     may want to compute the parameters for only one track. For instance, 
+     specifying 21,21 indicates that only a 100 M star should by used, and
+     everything else is suppressed. The cross-ID's between index and mass
+     are at the bottom of the input file. The example here refers to JMG=1 or
+     2. For JMG=0, you would have chosen 5,5. This does not apply to JMG=3
+     since the mass grid is variable and LMIN, LMAX are not used.</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TDEL" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Time step to print spectra</name>
+                    <description>[1.e6YR] the file containing the output spectrum can be pretty big. This
+       parameter controls the time step to print out the spectrum. This is 
+       independent of the time resolution -- only the print out is affected!
+       1 Myr is usually a good value but if you compute the starburst up to
+       100 Myr, you may prefer TDEL=5 Myr unless you have many Gb of disk
+       space.</description>
+                    <ucd/>
+                    <defaultValue>1.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IATMOS" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>ATMOSPHERE FOR SYNTHETIC SPECTRUM:</name>
+                    <description>  1=PLA,2=LEJ,3=LEJ+SCH,4=LEJ+HIL,5=PAU+HIL   [IATMOS]
+5 -- this is the choice of the model atmosphere. 1 is a bare-bone version with
+     black bodies, good only for tests. 2 uses the Kurucz models as compiled
+     by Lejeune for all stars. 3 uses Lejeune for stars with plane-parallel
+     atmospheres and Schmutz for stars with strong winds. 4 uses Lejeune, but
+     replaces the Schmutz by the Hillier atmospheres. 5 is like 4, except 
+     for the O atmospheres, for which we use the Pauldrach models. 5 is the 
+     recommended value. 
+					
+				</description>
+                    <ucd/>
+                    <defaultValue>5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ILINE" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>METALLICITY OF THE UV LINE SPECTRUM: </name>
+                    <description>1=SOLAR, 2=LMC/SMC)    [ILINE]
+1 -- a switch for the choice of the UV spectral library. This switch applies
+     to both the FUSE and the HST/IUE libraries. It is independent
+     of the metallicity of the tracks/atmospheres. Normally one would use
+     ILINE=1 with IZ=24 and ILINE=2 with IZ=22.</description>
+                    <ucd/>
+                    <defaultValue>1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IVT" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>RSG FEATURE: MICROTURB. VEL (1-6)</name>
+                    <description>atmospheric parameters used for the spectral features in the near-IR.
+       Detailed explanations are in the sp-feature subroutine. Defaults are
+       3,0, i.e. microturbulent velocities of 3 km/sec and solar abundance
+       ratios for alpha-element/Fe
+ </description>
+                    <ucd/>
+                    <defaultValue>3</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="IRSG" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>SOL/NON-SOL ABUND (0,1)</name>
+                    <description>atmospheric parameters used for the spectral features in the near-IR.
+       Detailed explanations are in the sp-feature subroutine. Defaults are
+       3,0, i.e. microturbulent velocities of 3 km/sec and solar abundance
+       ratios for alpha-element/Fe
+ </description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <!-- now the output files --><parameterDefinition id="output" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.99">
+                    <name>output</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="quanta" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.98">
+                    <name>quanta</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="snr" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.97">
+                    <name>snr</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="hrd" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.96">
+                    <name>hrd</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="power" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.95">
+                    <name>power</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="sptyp1" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.94">
+                    <name>sptyp1</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="sptyp2" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.90">
+                    <name>sptyp12</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="yield" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.93">
+                    <name>yield</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="spectrum" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.92">
+                    <name>spectrum</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="uvline" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.91">
+                    <name>uvline</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="color" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.89">
+                    <name>color</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="ewidth" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.88">
+                    <name>ewidth</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="irfeature" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.87">
+                    <name>irfeature</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="ovi" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.86">
+                    <name>ovi</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="hires" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.85">
+                    <name>hires</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="wrlines" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="fort.84">
+                    <name>wrlines</name>
+                    <description>output file</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="full">
+                    <input>
+                        <pref ref="NAME"/>
+                        <pref ref="ISF"/>
+                        <pref ref="TOMA"/>
+                        <pref ref="SFR"/>
+                        <pref ref="ALPHA"/>
+                        <pref ref="UPMA"/>
+                        <pref ref="DOMA"/>
+                        <pref ref="SNCUT"/>
+                        <pref ref="BHCUT"/>
+                        <pref ref="IZ"/>
+                        <pref ref="IWIND"/>
+                        <pref ref="TIME1"/>
+                        <pref ref="STEP"/>
+                        <pref ref="TMAX"/>
+                        <pref ref="JMG"/>
+                        <pref ref="LMIN"/>
+                        <pref ref="LMAX"/>
+                        <pref ref="TDEL"/>
+                        <pref ref="IATMOS"/>
+                        <pref ref="ILINE"/>
+                        <pref ref="IVT"/>
+                        <pref ref="IRSG"/>
+                    </input>
+                    <output>
+                        <pref ref="output"/>
+                        <pref ref="quanta"/>
+                        <pref ref="snr"/>
+                        <pref ref="hrd"/>
+                        <pref ref="power"/>
+                        <pref ref="sptyp1"/>
+                        <pref ref="sptyp2"/>
+                        <pref ref="yield"/>
+                        <pref ref="spectrum"/>
+                        <pref ref="uvline"/>
+                        <pref ref="color"/>
+                        <pref ref="ewidth"/>
+                        <pref ref="irfeature"/>
+                        <pref ref="ovi"/>
+                        <pref ref="hires"/>
+                        <pref ref="wrlines"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+            <executionPath>/home/applications/tools/starburst99/starburst99_wrapper.sh</executionPath>
+        </applicationDefinition>
+    </ceaimp:CeaApplication>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>SWarp</title>
+        <shortName>SWarp</shortName>
+        <identifier>ivo://org.astrogrid/swarp</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>0.0001</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>SWarp is a program that resamples and co-adds together FITS images using any arbitrary astrometric projection defined in the WCS standard.</description>
+            <referenceURL>http://terapix.iap.fr/rubrique.php?id_rubrique=49</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="Image" xsi:type="ceaimp:CommandLineParameterDefinition" type="FITS"
+                                     commandPosition="1"
+                                     fileRef="file">
+                    <name>Detection Image</name>
+                    <description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="config_file" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     commandSwitch="c"
+                                     fileRef="file">
+                    <name>Configuration File</name>
+                    <description>File containing the main configuration parameters for Swarp</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="IMAGEOUT_NAME" xsi:type="ceaimp:CommandLineParameterDefinition" type="FITS"
+                                     fileRef="file">
+                    <name>Output Image</name>
+                    <description>The resampled and possibly coadded output image</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="Image"/>
+                        <pref ref="config_file"/>
+                    </input>
+                    <output>
+                        <pref ref="IMAGEOUT_NAME"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+            <executionPath>/home/applications/tools/swarp-2.10/bin/swarp</executionPath>
+        </applicationDefinition>
+    </ceaimp:CeaApplication>

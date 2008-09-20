@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+ created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>tskymatch2 from STILTS v1.4-2</title>
+        <shortName>tskymatch2</shortName>
+        <identifier>ivo://uk.ac.starlink/stilts/tskymatch2</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>1.4-2</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>
+Crossmatches 2 tables on sky position    </description>
+            <referenceURL>http://www.starlink.ac.uk/stilts/sun256/tskymatch2/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="TASK-tskymatch2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tskymatch2: Crossmatches 2 tables on sky position</description>
+                    <ucd/>
+                    <defaultValue>tskymatch2</defaultValue>
+                    <optionList>
+                        <optionVal>tskymatch2</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ifmt1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt1">
+                    <name>ifmt1 - Format name for input table</name>
+                    <description>Specifies the format of the first input table (one of the known formats
+listed in the manual). This flag can be used if you know what format your
+input table is in. If it has the special value (auto) (the default), then an
+attempt will be made to detect the format of the table automatically. This
+cannot always be done correctly however, in which case the program will exit
+with an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_in1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in1">
+                    <name>in1 - Location of first input table</name>
+                    <description>The location of the first input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ifmt2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt2">
+                    <name>ifmt2 - Format name for input table</name>
+                    <description>Specifies the format of the second input table (one of the known formats
+listed in the manual). This flag can be used if you know what format your
+input table is in. If it has the special value (auto) (the default), then an
+attempt will be made to detect the format of the table automatically. This
+cannot always be done correctly however, in which case the program will exit
+with an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_in2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in2">
+                    <name>in2 - Location of second input table</name>
+                    <description>The location of the second input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_out" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ra1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ra1">
+                    <name>ra1 - Expression for table 1 right ascension in degrees</name>
+                    <description>Value in degrees for the right ascension of positions in table 1 to be
+matched. This may simply be a column name, or it may be an algebraic
+expression calculated from columns as explained in the manual. If left
+blank, an attempt is made to guess from UCDs, column names and unit
+annotations what expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_dec1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="dec1">
+                    <name>dec1 - Expression for table 1 declination in degrees</name>
+                    <description>Value in degrees for the declination of positions in table 1 to be matched.
+This may simply be a column name, or it may be an algebraic expression
+calculated from columns as explained in the manual. If left blank, an
+attempt is made to guess from UCDs, column names and unit annotations what
+expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ra2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ra2">
+                    <name>ra2 - Expression for table 2 right ascension in degrees</name>
+                    <description>Value in degrees for the right ascension of positions in table 2 to be
+matched. This may simply be a column name, or it may be an algebraic
+expression calculated from columns as explained in the manual. If left
+blank, an attempt is made to guess from UCDs, column names and unit
+annotations what expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_dec2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="dec2">
+                    <name>dec2 - Expression for table 2 declination in degrees</name>
+                    <description>Value in degrees for the declination of positions in table 2 to be matched.
+This may simply be a column name, or it may be an algebraic expression
+calculated from columns as explained in the manual. If left blank, an
+attempt is made to guess from UCDs, column names and unit annotations what
+expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_error" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="real"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="error">
+                    <name>error - Maximum separation in arcsec</name>
+                    <description>The maximum separation permitted between two objects for them to count as a
+match. Units are arc seconds.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_join" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="join">
+                    <name>join - Selection criteria for output rows</name>
+                    <description>Determines which rows are included in the output table. The matching
+algorithm determines which of the rows from the first table correspond to
+which rows from the second. This parameter determines what to do with that
+information. Perhaps the most obvious thing is to write out a table
+containing only rows which correspond to a row in both of the two input
+tables. However, you may also want to see the unmatched rows from one or
+both input tables, or rows present in one table but unmatched in the other,
+or other possibilities. The options are:
+
+ * 1and2: An output row for each row represented in both input tables
+ * 1or2: An output row for each row represented in either or both of the
+      input tables
+ * all1: An output row for each matched or unmatched row in table 1
+ * all2: An output row for each matched or unmatched row in table 2
+ * 1not2: An output row only for rows which appear in the first table but
+      are not matched in the second table
+ * 2not1: An output row only for rows which appear in the second table but
+      are not matched in the first table
+ * 1xor2: An output row only for rows represented in one of the input tables
+      but not the other one</description>
+                    <ucd/>
+                    <defaultValue>1and2</defaultValue>
+                    <optionList>
+                        <optionVal>1and2</optionVal>
+                        <optionVal>1or2</optionVal>
+                        <optionVal>all1</optionVal>
+                        <optionVal>all2</optionVal>
+                        <optionVal>1not2</optionVal>
+                        <optionVal>2not1</optionVal>
+                        <optionVal>1xor2</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_find" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="find">
+                    <name>find - Type of match to perform</name>
+                    <description>Determines which matches are retained. If best is selected, then only the
+best match between the two tables will be retained; in this case the data
+from a row of either input table will appear in at most one row of the
+output table. If all is selected, then all pairs of rows from the two input
+tables which match the input criteria will be represented in the output
+table.</description>
+                    <ucd/>
+                    <defaultValue>best</defaultValue>
+                    <optionList>
+                        <optionVal>best</optionVal>
+                        <optionVal>all</optionVal>
+                    </optionList>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="tskymatch2">
+                    <input>
+                        <pref ref="TASK-tskymatch2"/>
+                        <pref ref="tskymatch2_ifmt1"/>
+                        <pref ref="tskymatch2_in1"/>
+                        <pref ref="tskymatch2_ifmt2"/>
+                        <pref ref="tskymatch2_in2"/>
+                        <pref ref="tskymatch2_ofmt"/>
+                        <pref ref="tskymatch2_ra1" minOccurs="0"/>
+                        <pref ref="tskymatch2_dec1" minOccurs="0"/>
+                        <pref ref="tskymatch2_ra2" minOccurs="0"/>
+                        <pref ref="tskymatch2_dec2" minOccurs="0"/>
+                        <pref ref="tskymatch2_error"/>
+                        <pref ref="tskymatch2_join"/>
+                        <pref ref="tskymatch2_find"/>
+                    </input>
+                    <output>
+                        <pref ref="tskymatch2_out"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+            <executionPath>/home/applications/tools/stilts/stilts.sh</executionPath>
+        </applicationDefinition>
+    </ceaimp:CeaApplication>

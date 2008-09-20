@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>BPZ</title>
+        <shortName>BPZ</shortName>
+        <identifier>ivo://org.astrogrid/BPZ</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>0.0001</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>The software below implements the Bayesian photometric redshift method described in Benitez 2000 . </description>
+            <referenceURL>http://acs.pha.jhu.edu/~txitxo/bayesian.html</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="DATA" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     commandPosition="1">
+                    <name>Input data</name>
+                    <description>File containing the input photometry</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="PARFILE" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     commandSwitch="P">
+                    <name>Parameter File</name>
+                    <description>File with all the parameter files defined</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="OUTPUT" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>Output File</name>
+                    <description>File with derived photo-Z</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="COLUMNS" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>Column Descriptions</name>
+                    <description>The file containing the descriptions of the columns in the input photometry file.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="SPECTRA" xsi:type="ceaimp:CommandLineParameterDefinition" type="text">
+                    <name>Spectra</name>
+                    <description>template list</description>
+                    <ucd/>
+                    <defaultValue>CWWSB.list</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PRIOR" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>PRIOR</name>
+                    <description>prior name</description>
+                    <ucd/>
+                    <defaultValue>hdfn</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="DZ" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>DZ</name>
+                    <description>redshift resolution</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ZMIN" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>ZMIN</name>
+                    <description>minimum redshift</description>
+                    <ucd/>
+                    <defaultValue>0.01</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ZMAX" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>ZMAX</name>
+                    <description>maximum redshift</description>
+                    <ucd/>
+                    <defaultValue>6.5</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="MAG" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>MAG</name>
+                    <description>Data in magnitudes?</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ODDS" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>ODDS</name>
+                    <description>Odds threshold: affects confidence limits definition</description>
+                    <ucd/>
+                    <defaultValue>0.95</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INTERP" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>INTERP</name>
+                    <description>Number of interpolated templates between each of the original ones</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="EXCLUDE" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>EXCLUDE</name>
+                    <description>Filters to be excluded from the estimation</description>
+                    <ucd/>
+                    <defaultValue>none</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="NEW_AB" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>NEW_AB</name>
+                    <description>If yes, generate new AB files even if they already exist</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="CHECK" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>CHECK</name>
+                    <description>Perform some checks, compare observed colors with templates, etc.</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="VERBOSE" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>VERBOSE</name>
+                    <description>Print estimated redshifts to the standard output</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PROBS" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>PROBS</name>
+                    <description>Save all the galaxy probability distributions (very large file created)</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="PROBS_LITE" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>PROBS_LITE</name>
+                    <description>Save only the final probability distribution</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GET_Z" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>GET_Z</name>
+                    <description>Actually obtain photo-z</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="ONLY_TYPE" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>ONLY_TYPE</name>
+                    <description>Use spectroscopic redshifts instead of photo-z</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="MADAU" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>MADAU</name>
+                    <description>Apply Madau correction to spectra</description>
+                    <ucd/>
+                    <defaultValue>yes</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="Z_THR" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Z_THR</name>
+                    <description>Integrate likelihood for z&gt;z_thr</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="COLOR" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>COLOR</name>
+                    <description>Use colors instead of fluxes</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="PLOTS" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>PLOTS</name>
+                    <description>produce plots</description>
+                    <ucd/>
+                    <defaultValue>no</defaultValue>
+                </parameterDefinition>
+            </parameters>
+            <interfaces><!--could have an interface that used a config file also--><interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="DATA"/>
+                        <pref ref="COLUMNS"/>
+                        <pref ref="PARFILE"/>
+                    </input>
+                    <output>
+                        <pref ref="OUTPUT"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+            <executionPath>/home/applications/tools/bpz/bpz.py</executionPath>
+        </applicationDefinition>
+    </ceaimp:CeaApplication>

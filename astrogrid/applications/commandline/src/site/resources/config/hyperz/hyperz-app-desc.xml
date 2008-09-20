@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+ created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>HyperZ</title>
+        <shortName>HyperZ</shortName>
+        <identifier>ivo://org.astrogrid/HyperZ</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>0.0001</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>We refer to the paper
+"Photometric Redshifts based on standard SED fitting procedures" 
+M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
+</description>
+            <referenceURL>http://webast.ast.obs-mip.fr/hyperz/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition"
+                               instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="config_file" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     commandPosition="1">
+                    <name>Configuration File</name>
+                    <description>A HyperZ configuration file</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="input_catalog" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="VOTable"
+                                     commandSwitch="CATALOG_FILE">
+                    <name>Magnitude Catalogue</name>
+                    <description>The input catalogue of measured magnitude</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="output_catalog" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="VOTable"
+                                     commandSwitch="OUTPUT_CATALOG">
+                    <name>Redshift Catalogue</name>
+                    <description>The catalogue of estimated redshifts</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="FILTERS_RES" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file">
+                    <name>filter res</name>
+                    <description>?</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="FILTERS_FILE" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="binary"
+                                     fileRef="file">
+                    <name>Filters file</name>
+                    <description>?</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="TEMPLATES_FILE" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="binary"
+                                     fileRef="file">
+                    <name>Templates file</name>
+                    <description>?</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="BAND_ORDER" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandSwitch="---">
+                    <name>Band ordering</name>
+                    <description>A string specifying the band ordering of the filter definitions</description>
+                    <ucd/>
+                    <defaultValue>UGRIZ</defaultValue>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="config_file"/>
+                        <pref ref="input_catalog"/>
+                        <pref ref="FILTERS_FILE"/>
+                        <pref ref="TEMPLATES_FILE"/>
+                        <pref ref="BAND_ORDER"/>
+                        <pref ref="FILTERS_RES" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="output_catalog"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+            <executionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</executionPath>
+        </applicationDefinition>
+    </ceaimp:CeaApplication>

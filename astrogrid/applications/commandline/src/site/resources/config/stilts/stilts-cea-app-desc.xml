@@ -1,0 +1,2454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+ created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>STILTS - Starlink Tables Infrastructure Library Tool Set</title>
+        <shortName>STILTS</shortName>
+        <identifier>ivo://uk.ac.starlink/stilts</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>1.4-1</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>
+STILTS is a package which provides a number of table manipulation functions.
+The following tasks (profiles) are provided: 
+   calc:
+      Evaluates expressions
+   coneskymatch:
+      Crossmatches table on sky position against Cone Search service
+   regquery:
+      Queries the VO registry
+   tcat:
+      Concatenates multiple similar tables
+   tcopy:
+      Converts between table formats
+   tcube:
+      Calculates N-dimensional histograms
+   tmatch1:
+      Performs a crossmatch internal to a single table
+   tmatch2:
+      Crossmatches 2 tables using flexible criteria
+   tpipe:
+      Performs pipeline processing on a table
+   tskymatch2:
+      Crossmatches 2 tables on sky position
+   votcopy:
+      Transforms between VOTable encodings
+   votlint:
+      Validates VOTable documents
+    </description>
+            <referenceURL>http://www.starlink.ac.uk/stilts/sun256/</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="TASK-calc" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>calc: Evaluates expressions</description>
+                    <ucd/>
+                    <defaultValue>calc</defaultValue>
+                    <optionList>
+                        <optionVal>calc</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="stdout" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="normal"
+                                     commandSwitch="---"
+                                     localFileName="cea-output.log">
+                    <name>std out</name>
+                    <description>The output from the commandline</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="calc_expression" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="expression">
+                    <name>expression - Expression to evaluate</name>
+                    <description>An expression to evaluate. The functions in the manual can be used.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="calc_table" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="table">
+                    <name>table - Table providing context for expression</name>
+                    <description>A table which provides the context within which expression is evaluated.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-coneskymatch" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>coneskymatch: Crossmatches table on sky position against Cone Search service</description>
+                    <ucd/>
+                    <defaultValue>coneskymatch</defaultValue>
+                    <optionList>
+                        <optionVal>coneskymatch</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_ifmt" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt">
+                    <name>ifmt - Format name for input table</name>
+                    <description>Specifies the format of the input table (one of the known formats listed in
+the manual). This flag can be used if you know what format your input table
+is in. If it has the special value (auto) (the default), then an attempt
+will be made to detect the format of the table automatically. This cannot
+always be done correctly however, in which case the program will exit with
+an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_istream" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="istream">
+                    <name>istream - null</name>
+                    <description>If set true, the in table will be read as a stream. It is necessary to give
+the ifmt parameter in this case. Depending on the required operations and
+processing mode, this may cause the read to fail (sometimes it is necessary
+to read the input table more than once). It is not normally necessary to set
+this flag; in most cases the data will be streamed automatically if that is
+the best thing to do. However it can sometimes result in less resource usage
+when processing large files in certain formats (such as VOTable).</description>
+                    <ucd/>
+                    <defaultValue>false</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_in" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in">
+                    <name>in - Location of input table</name>
+                    <description>The location of the input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_icmd" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="icmd">
+                    <name>icmd - Processing command(s) for input table</name>
+                    <description>Commands to operate on the input table, before any other processing takes
+place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "icmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_ocmd" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ocmd">
+                    <name>ocmd - Processing command(s) for output table</name>
+                    <description>Commands to operate on the output table, after all other processing has
+taken place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "ocmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_out" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_ra" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ra">
+                    <name>ra - Right Ascension expression in degrees (ICRS)</name>
+                    <description>Expression which evaluates to the right ascension in degrees in the ICRS
+coordinate system for the request at each row of the input table. This will
+usually be the name or ID of a column in the input table, or a function
+involving one.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_dec" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="dec">
+                    <name>dec - Declination expression in degrees (ICRS)</name>
+                    <description>Expression which evaluates to the declination in degrees in the ICRS
+coordinate system for the request at each row of the input table. This will
+usually be the name or ID of a column in the input table, or a function
+involving one.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_sr" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="sr">
+                    <name>sr - Search radius in degrees</name>
+                    <description>Expression which evaluates to the search radius in degrees for the request
+at each row of the input table. This will often be a constant numerical
+value, but may be the name or ID of a column in the input table, or a
+function involving one.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_find" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="find">
+                    <name>find - Type of match to perform</name>
+                    <description>Determines which matches are retained. If best is selected, then only the
+query table row which best matches the row from the input table will be
+output. If all is selected, then any rows in the query table which match the
+input table are output.</description>
+                    <ucd/>
+                    <defaultValue>all</defaultValue>
+                    <optionList>
+                        <optionVal>best</optionVal>
+                        <optionVal>all</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_copycols" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="copycols">
+                    <name>copycols - Columns to be copied from input table</name>
+                    <description>List of columns from the input table which are to be copied to the output
+table. Each column identified here will be prepended to the columns of the
+combined output table, and its value for each row taken from the input table
+row which provided the parameters of the query which produced it. See the
+manual for list syntax. The default setting is "*", which means that all
+columns from the input table are included in the output.</description>
+                    <ucd/>
+                    <defaultValue>*</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_scorecol" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="scorecol">
+                    <name>scorecol - Angular distance output column name</name>
+                    <description>Gives the name of a column in the output table to contain the distance
+between the requested central position and the actual position of the
+returned row. The distance returned is an angular distance in degrees. If a
+null value is chosen, no distance column will appear in the output table.</description>
+                    <ucd/>
+                    <defaultValue>Separation</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_parallel" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="parallel">
+                    <name>parallel - Number of queries to make in parallel</name>
+                    <description>Allows multiple cone searches to be performed concurrently. If set to the
+default value, 1, the cone query corresponding to the first row of the input
+table will be dispatched, when that is completed the query corresponding to
+the second row will be dispatched, and so on. If set to &lt;n&gt;, then queries
+will be overlapped in such a way that up to approximately &lt;n&gt; may be running
+at any one time. Whether this is a good idea, and what might be a sensible
+maximum value for &lt;n&gt;, depends on the characteristics of the service being
+queried.</description>
+                    <ucd/>
+                    <defaultValue>1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_erract" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="erract">
+                    <name>erract - Action on cone search failure</name>
+                    <description>Determines what will happen if any of the individual cone search requests
+fails. By default the task aborts. That may be the best thing to do, but for
+unreliable or poorly implemented services you may find that some searches
+fail and others succeed so it can be best to continue operation in the face
+of a few failures. The options are:
+
+ * abort: failure of any query terminates the task
+ * ignore: failure of a query is treated the same as a query which returns
+      no rows
+ * retry: failed queries are retried until they succeed; use with care - if
+      the failure is for some good, or at least reproducible reason this
+      could prevent the task from ever completing
+ * retry&lt;n&gt;: failed queries are retried at most a fixed number &lt;n&gt; of times
+      If they still fail the task terminates.</description>
+                    <ucd/>
+                    <defaultValue>abort</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_ostream" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ostream">
+                    <name>ostream - Whether output will be strictly streamed</name>
+                    <description>If set true, this will cause the operation to stream on output, so that the
+output table is built up as the results are obtained from the cone search
+service. The disadvantage of this is that some output modes and formats need
+multiple passes through the data to work, so depending on the output
+destination, the operation may fail if this is set. Use with care (or be
+prepared for the operation to fail).</description>
+                    <ucd/>
+                    <defaultValue>false</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_fixcols" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="fixcols">
+                    <name>fixcols - Whether and how to rename input columns</name>
+                    <description>Determines how input columns are renamed before use in the output table. The
+choices are:
+
+ * none: columns are not renamed
+ * dups: columns which would otherwise have duplicate names in the output
+      will be renamed to indicate which table they came from
+ * all: all columns will be renamed to indicate which table they came from
+
+If columns are renamed, the new ones are determined by suffix* parameters.</description>
+                    <ucd/>
+                    <defaultValue>dups</defaultValue>
+                    <optionList>
+                        <optionVal>none</optionVal>
+                        <optionVal>dups</optionVal>
+                        <optionVal>all</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_suffix0" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="suffix0">
+                    <name>suffix0 - Deduplicating suffix for columns in the input table</name>
+                    <description>If the fixcols parameter is set so that input columns are renamed for
+insertion into the output table, this parameter determines how the renaming
+is done. It gives a suffix which is appended to all renamed columns from the
+input table.</description>
+                    <ucd/>
+                    <defaultValue>_0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_suffix1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="suffix1">
+                    <name>suffix1 - Deduplicating suffix for columns in the cone result table</name>
+                    <description>If the fixcols parameter is set so that input columns are renamed for
+insertion into the output table, this parameter determines how the renaming
+is done. It gives a suffix which is appended to all renamed columns from the
+cone result table.</description>
+                    <ucd/>
+                    <defaultValue>_1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_serviceurl" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="serviceurl">
+                    <name>serviceurl - Base URL for query returning VOTable</name>
+                    <description>The base part of a URL which defines the queries to be made. Additional
+parameters will be appended to this using CGI syntax ("name=value",
+separated by '&amp;' characters). If this value does not end in either a '?' or
+a '&amp;', one will be added as appropriate.
+
+See the manual for discussion of how to locate service URLs corresponding to
+given datasets.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="coneskymatch_verb" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="verb">
+                    <name>verb - Verbosity level of search responses (1..3)</name>
+                    <description>Verbosity level of the tables returned by the query service. A value of 1
+indicates the bare minimum and 3 indicates all available information.</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>1</optionVal>
+                        <optionVal>2</optionVal>
+                        <optionVal>3</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-regquery" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>regquery: Queries the VO registry</description>
+                    <ucd/>
+                    <defaultValue>regquery</defaultValue>
+                    <optionList>
+                        <optionVal>regquery</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="regquery_query" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="query">
+                    <name>query - Text of registry query</name>
+                    <description>Text of an SQL WHERE clause defining which resource records you wish to
+retrieve from the registry. Some examples are:
+
+ * serviceType='CONE'
+ * title like '%2MASS%'
+ * publisher like 'CDS%' and title like '%galax%'
+
+The special value "ALL" will attempt to retrieve all the records in the
+registry (though this is not necessarily a sensible thing to do).
+
+A full description of SQL syntax is beyond the scope of this documentation,
+but in general you want to use &lt;field-name&gt; like '&lt;value&gt; where '%' is a
+wildcard character. Logical operators and and or and parentheses can be used
+to group and combine expressions. You can find the various &lt;field-name&gt;s by
+executing one of the queries above and looking at the column names in the
+returned table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="regquery_regurl" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="regurl">
+                    <name>regurl - URL of registry service</name>
+                    <description>The URL of a SOAP endpoint which provides suitable registry query services.</description>
+                    <ucd/>
+                    <defaultValue>http://voservices.net/registry/registry.asmx</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="regquery_ocmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ocmd">
+                    <name>ocmd - Processing command(s) for output table</name>
+                    <description>Commands to operate on the output table, after all other processing has
+taken place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "ocmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="regquery_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="regquery_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-tcat" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tcat: Concatenates multiple similar tables</description>
+                    <ucd/>
+                    <defaultValue>tcat</defaultValue>
+                    <optionList>
+                        <optionVal>tcat</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_in" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in">
+                    <name>in - Location of input table(s)</name>
+                    <description>Locations of the input tables.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_ifmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt">
+                    <name>ifmt - Format name for input table</name>
+                    <description>Specifies the format of the input table (one of the known formats listed in
+the manual). This flag can be used if you know what format your input table
+is in. If it has the special value (auto) (the default), then an attempt
+will be made to detect the format of the table automatically. This cannot
+always be done correctly however, in which case the program will exit with
+an error explaining which formats were attempted.
+
+The same format parameter applies to all the tables specified by in.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_istream" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="istream">
+                    <name>istream - null</name>
+                    <description>If set true, the in table will be read as a stream. It is necessary to give
+the ifmt parameter in this case. Depending on the required operations and
+processing mode, this may cause the read to fail (sometimes it is necessary
+to read the input table more than once). It is not normally necessary to set
+this flag; in most cases the data will be streamed automatically if that is
+the best thing to do. However it can sometimes result in less resource usage
+when processing large files in certain formats (such as VOTable).
+
+The same streaming flag applies to all the tables specified by in.</description>
+                    <ucd/>
+                    <defaultValue>false</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_icmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="icmd">
+                    <name>icmd - Processing command(s) for each input table</name>
+                    <description>Commands which will operate on each of the input tables, before any other
+processing takes place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "icmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_ocmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ocmd">
+                    <name>ocmd - Processing command(s) for output table</name>
+                    <description>Commands to operate on the output table, after all other processing has
+taken place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "ocmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_seqcol" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="seqcol">
+                    <name>seqcol - null</name>
+                    <description>Name of a column to be added to the output table which will contain the
+sequence number of the input table from which each row originated. This
+column will contain 1 for the rows from the first concatenated table, 2 for
+the second, and so on.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_loccol" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="loccol">
+                    <name>loccol - null</name>
+                    <description>Name of a column to be added to the output table which will contain the
+location (as specified in the input parameter(s)) of the input table from
+which each row originated.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_uloccol" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="uloccol">
+                    <name>uloccol - null</name>
+                    <description>Name of a column to be added to the output table which will contain the
+unique part of the location (as specified in the input parameter(s)) of the
+input table from which each row originated. If not null, parameters will
+also be added to the output table giving the pre- and post-fix string common
+to all the locations. For example, if the input tables are
+"/data/cat_a1.fits" and "/data/cat_b2.fits" then the output table will
+contain a new column &lt;colname&gt; which takes the value "a1" for rows from the
+first table and "b2" for rows from the second, and new parameters
+"&lt;colname&gt;_prefix" and "&lt;colname&gt;_postfix" with the values "/data/cat_" and
+".fits" respectively.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_lazy" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="lazy">
+                    <name>lazy - null</name>
+                    <description>Whether to perform table resolution lazily. If true, each table is only
+accessed when the time comes to add its rows to the output; if false, then
+all the tables are accessed up front. This is mostly a tuning parameter, and
+on the whole it doesn't matter much how it is set, but for joining an
+enormous number of tables setting it true may avoid running out of
+resources.</description>
+                    <ucd/>
+                    <defaultValue>false</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tcat_countrows" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="countrows">
+                    <name>countrows - null</name>
+                    <description>Whether to count the rows in the table before starting the output. This is
+essentially a tuning parameter - if writing to an output format which
+requires the number of rows up front (such as normal FITS) it may result in
+skipping the number of passes through the input files required for
+processing. Unless you have a good understanding of the internals of the
+software, your best bet for working out whether to set this true or false is
+to try it both ways</description>
+                    <ucd/>
+                    <defaultValue>false</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-tcopy" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tcopy: Converts between table formats</description>
+                    <ucd/>
+                    <defaultValue>tcopy</defaultValue>
+                    <optionList>
+                        <optionVal>tcopy</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcopy_in" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in">
+                    <name>in - Location of input table</name>
+                    <description>The location of the input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcopy_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcopy_ifmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt">
+                    <name>ifmt - Format of input table</name>
+                    <description>Specifies the format of the input table (one of the known formats listed in
+the manual). This flag can be used if you know what format your input table
+is in. If it has the special value (auto) (the default), then an attempt
+will be made to detect the format of the table automatically. This cannot
+always be done correctly however, in which case the program will exit with
+an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcopy_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format of output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-tcube" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tcube: Calculates N-dimensional histograms</description>
+                    <ucd/>
+                    <defaultValue>tcube</defaultValue>
+                    <optionList>
+                        <optionVal>tcube</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_cols" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="cols">
+                    <name>cols - Space-separated list of input columns</name>
+                    <description>Columns to use for this task. One or more &lt;col-id&gt; elements, separated by
+spaces, should be given. Each one represents a column in the table, using
+either its name or index.
+
+The number of columns listed in the value of this parameter defines the
+dimensionality of the output data cube.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_ifmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt">
+                    <name>ifmt - Format name for input table</name>
+                    <description>Specifies the format of the input table (one of the known formats listed in
+the manual). This flag can be used if you know what format your input table
+is in. If it has the special value (auto) (the default), then an attempt
+will be made to detect the format of the table automatically. This cannot
+always be done correctly however, in which case the program will exit with
+an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_istream" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="istream">
+                    <name>istream - null</name>
+                    <description>If set true, the in table will be read as a stream. It is necessary to give
+the ifmt parameter in this case. Depending on the required operations and
+processing mode, this may cause the read to fail (sometimes it is necessary
+to read the input table more than once). It is not normally necessary to set
+this flag; in most cases the data will be streamed automatically if that is
+the best thing to do. However it can sometimes result in less resource usage
+when processing large files in certain formats (such as VOTable).</description>
+                    <ucd/>
+                    <defaultValue>false</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_in" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in">
+                    <name>in - Location of input table</name>
+                    <description>The location of the input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_icmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="icmd">
+                    <name>icmd - Processing command(s) for input table</name>
+                    <description>Commands to operate on the input table, before any other processing takes
+place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "icmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_bounds" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="bounds">
+                    <name>bounds - Data bounds for each dimension</name>
+                    <description>Gives the bounds for each dimension of the cube in data coordinates. The
+form of the value is a space-separated list of words, each giving an
+optional lower bound, then a colon, then an optional upper bound, for
+instance "1:100 0:20" to represent a range for two-dimensional output
+between 1 and 100 of the first coordinate (table column) and between 0 and
+20 for the second. Either or both numbers may be omitted to indicate that
+the bounds should be determined automatically by assessing the range of the
+data in the table. A null value for the parameter indicates that all bounds
+should be determined automatically for all the dimensions.
+
+If any of the bounds need to be determined automatically in this way, two
+passes through the data will be required, the first to determine bounds and
+the second to populate the cube.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_binsizes" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="binsizes">
+                    <name>binsizes - Extent of bins in each dimension</name>
+                    <description>Gives the extent of of the data bins (cube pixels) in each dimension in data
+coordinates. The form of the value is a space-separated list of values,
+giving a list of extents for the first, second, ... dimension. Either this
+parameter or the nbins parameter must be supplied.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_nbins" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="nbins">
+                    <name>nbins - Number of bins in each dimension</name>
+                    <description>Gives the number of bins (cube pixels) in each dimension. The form of the
+value is a space-separated list of integers, giving the number of pixels for
+the output cube in the first, second, ... dimension. Either this parameter
+or the binsizes parameter must be supplied.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output FITS file</name>
+                    <description>The location of the output file.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_otype" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="otype">
+                    <name>otype - Type of output array elements</name>
+                    <description>The type of numeric value which will fill the output array. If no selection
+is made, the output type will be determined automatically as the shortest
+type required to hold all the values in the array. Currently, integers are
+always signed (no BSCALE/BZERO), so for instance the largest value that can
+be recorded in 8 bits is 127.</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>byte</optionVal>
+                        <optionVal>short</optionVal>
+                        <optionVal>int</optionVal>
+                        <optionVal>long</optionVal>
+                        <optionVal>float</optionVal>
+                        <optionVal>double</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tcube_scale" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="scale">
+                    <name>scale - Value by which to scale counts</name>
+                    <description>Optionally gives a value by which the count in each bin is scaled. If this
+value is null (the default) then for each row that falls within the bounds
+of a pixel, the pixel value will be incremented by 1. If a column ID is
+given, then instead of 1 being added, the value of that column for the row
+in question is added. The effect of this is that the output image contains
+the mean of the given column for the rows corresponding to each pixel rather
+than just a count of them.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-tmatch1" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tmatch1: Performs a crossmatch internal to a single table</description>
+                    <ucd/>
+                    <defaultValue>tmatch1</defaultValue>
+                    <optionList>
+                        <optionVal>tmatch1</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_matcher" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="matcher">
+                    <name>matcher - Name of matching algorithm</name>
+                    <description>Defines the nature of the matching that will be performed. Depending on the
+name supplied, this may be positional matching using celestial or Cartesian
+coordinates, exact matching on the value of a string column, or other
+things. A list and explanation of the available matching algorithms is given
+in the manual. The value supplied for this parameter determines the meanings
+of the values required by the params and values* parameter(s).</description>
+                    <ucd/>
+                    <defaultValue>sky</defaultValue>
+                    <optionList>
+                        <optionVal>sky</optionVal>
+                        <optionVal>skyerr</optionVal>
+                        <optionVal>sky3d</optionVal>
+                        <optionVal>exact</optionVal>
+                        <optionVal>1d</optionVal>
+                        <optionVal>2d</optionVal>
+                        <optionVal>3d</optionVal>
+                        <optionVal>2d_anisotropic</optionVal>
+                        <optionVal>3d_anisotropic</optionVal>
+                        <optionVal>sky+1d</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_params" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="params">
+                    <name>params - Match parameters</name>
+                    <description>Determines the parameters of this match. This is typically one or more
+tolerances such as error radii. It may contain zero or more values; the
+values that are required depend on the match type selected by the matcher
+parameter. If it contains multiple values, they must be separated by spaces;
+values which contain a space can be 'quoted' or "quoted".</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_values" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="values">
+                    <name>values - Expressions for match values</name>
+                    <description>Defines the values from the input table which are used to determine whether
+a match has occurred. These will typically be coordinate values such as RA
+and Dec and perhaps some per-row error values as well, though exactly what
+values are required is determined by the kind of match as determined by
+matcher. Depending on the kind of match, the number and type of the values
+required will be different. Multiple values should be separated by
+whitespace; if whitespace occurs within a single value it must be 'quoted'
+or "quoted". Elements of the expression list are commonly just column names,
+but may be algebraic expressions calculated from zero or more columns as
+explained in the manual.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_action" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="action">
+                    <name>action - Type of output table to generate from matching</name>
+                    <description>Determines the form of the table which will be output as a result of the
+internal match.
+
+ * identify: The output table is the same as the input table except that it
+      contains two additional columns, GroupID and GroupSize, following the
+      input columns. Each group of rows which matched is assigned a unique
+      integer, recorded in the GroupID column, and the size of each group is
+      recorded in the GroupSize column. Rows which don't match any others
+      (singles) have null values in both these columns.
+ * keep0: The result is a new table containing only "single" rows, that is
+      ones which don't match any other rows in the table. Any other rows are
+      thrown out.
+ * keep1: The result is a new table in which only one row (the first in the
+      input table order) from each group of matching ones is retained. A
+      subsequent intra-table match with the same criteria would therefore
+      show no matches.
+ * wideN: The result is a new "wide" table consisting of matched rows in the
+      input table stacked next to each other. Only groups of exactly N rows
+      in the input table are used to form the output table; each row of the
+      output table consists of the columns of the first group member,
+      followed by the columns of the second group member and so on. The
+      output table therefore has N times as many columns as the input table.
+      The column names in the new table have _1, _2, ... appended to them to
+      avoid duplication.</description>
+                    <ucd/>
+                    <defaultValue>identify</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_progress" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="progress">
+                    <name>progress - Report progress to screen</name>
+                    <description>Determines whether information on progress of the match should be output to
+the standard error stream as it progresses. For lengthy matches this is a
+useful reassurance and can give guidance about how much longer it will take.
+It can also be useful as a performance diagnostic.</description>
+                    <ucd/>
+                    <defaultValue>true</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_ifmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt">
+                    <name>ifmt - Format name for input table</name>
+                    <description>Specifies the format of the input table (one of the known formats listed in
+the manual). This flag can be used if you know what format your input table
+is in. If it has the special value (auto) (the default), then an attempt
+will be made to detect the format of the table automatically. This cannot
+always be done correctly however, in which case the program will exit with
+an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_istream" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="istream">
+                    <name>istream - null</name>
+                    <description>If set true, the in table will be read as a stream. It is necessary to give
+the ifmt parameter in this case. Depending on the required operations and
+processing mode, this may cause the read to fail (sometimes it is necessary
+to read the input table more than once). It is not normally necessary to set
+this flag; in most cases the data will be streamed automatically if that is
+the best thing to do. However it can sometimes result in less resource usage
+when processing large files in certain formats (such as VOTable).</description>
+                    <ucd/>
+                    <defaultValue>false</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_in" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in">
+                    <name>in - Location of input table</name>
+                    <description>The location of the input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_icmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="icmd">
+                    <name>icmd - Processing command(s) for input table</name>
+                    <description>Commands to operate on the input table, before any other processing takes
+place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "icmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_ocmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ocmd">
+                    <name>ocmd - Processing command(s) for output table</name>
+                    <description>Commands to operate on the output table, after all other processing has
+taken place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "ocmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch1_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-tmatch2" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tmatch2: Crossmatches 2 tables using flexible criteria</description>
+                    <ucd/>
+                    <defaultValue>tmatch2</defaultValue>
+                    <optionList>
+                        <optionVal>tmatch2</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_ifmt1" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt1">
+                    <name>ifmt1 - Format name for input table</name>
+                    <description>Specifies the format of the first input table (one of the known formats
+listed in the manual). This flag can be used if you know what format your
+input table is in. If it has the special value (auto) (the default), then an
+attempt will be made to detect the format of the table automatically. This
+cannot always be done correctly however, in which case the program will exit
+with an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_in1" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in1">
+                    <name>in1 - Location of first input table</name>
+                    <description>The location of the first input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_ifmt2" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt2">
+                    <name>ifmt2 - Format name for input table</name>
+                    <description>Specifies the format of the second input table (one of the known formats
+listed in the manual). This flag can be used if you know what format your
+input table is in. If it has the special value (auto) (the default), then an
+attempt will be made to detect the format of the table automatically. This
+cannot always be done correctly however, in which case the program will exit
+with an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_in2" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in2">
+                    <name>in2 - Location of second input table</name>
+                    <description>The location of the second input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_icmd1" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="icmd1">
+                    <name>icmd1 - Processing command(s) for input table 1</name>
+                    <description>Commands to operate on the first input table, before any other processing
+takes place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "icmd1=@filename" causes the file filename
+to be read for a list of filter commands to execute. The commands in the
+file may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_icmd2" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="icmd2">
+                    <name>icmd2 - Processing command(s) for input table 2</name>
+                    <description>Commands to operate on the second input table, before any other processing
+takes place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "icmd2=@filename" causes the file filename
+to be read for a list of filter commands to execute. The commands in the
+file may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_ocmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ocmd">
+                    <name>ocmd - Processing command(s) for output table</name>
+                    <description>Commands to operate on the output table, after all other processing has
+taken place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "ocmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_matcher" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="matcher">
+                    <name>matcher - Name of matching algorithm</name>
+                    <description>Defines the nature of the matching that will be performed. Depending on the
+name supplied, this may be positional matching using celestial or Cartesian
+coordinates, exact matching on the value of a string column, or other
+things. A list and explanation of the available matching algorithms is given
+in the manual. The value supplied for this parameter determines the meanings
+of the values required by the params and values* parameter(s).</description>
+                    <ucd/>
+                    <defaultValue>sky</defaultValue>
+                    <optionList>
+                        <optionVal>sky</optionVal>
+                        <optionVal>skyerr</optionVal>
+                        <optionVal>sky3d</optionVal>
+                        <optionVal>exact</optionVal>
+                        <optionVal>1d</optionVal>
+                        <optionVal>2d</optionVal>
+                        <optionVal>3d</optionVal>
+                        <optionVal>2d_anisotropic</optionVal>
+                        <optionVal>3d_anisotropic</optionVal>
+                        <optionVal>sky+1d</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_values1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="values1">
+                    <name>values1 - Expressions for match values from table 1</name>
+                    <description>Defines the values from table 1 which are used to determine whether a match
+has occurred. These will typically be coordinate values such as RA and Dec
+and perhaps some per-row error values as well, though exactly what values
+are required is determined by the kind of match as determined by matcher.
+Depending on the kind of match, the number and type of the values required
+will be different. Multiple values should be separated by whitespace; if
+whitespace occurs within a single value it must be 'quoted' or "quoted".
+Elements of the expression list are commonly just column names, but may be
+algebraic expressions calculated from zero or more columns as explained in
+the manual.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_values2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="values2">
+                    <name>values2 - Expressions for match values from table 2</name>
+                    <description>Defines the values from table 2 which are used to determine whether a match
+has occurred. These will typically be coordinate values such as RA and Dec
+and perhaps some per-row error values as well, though exactly what values
+are required is determined by the kind of match as determined by matcher.
+Depending on the kind of match, the number and type of the values required
+will be different. Multiple values should be separated by whitespace; if
+whitespace occurs within a single value it must be 'quoted' or "quoted".
+Elements of the expression list are commonly just column names, but may be
+algebraic expressions calculated from zero or more columns as explained in
+the manual.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_params" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="params">
+                    <name>params - Match parameters</name>
+                    <description>Determines the parameters of this match. This is typically one or more
+tolerances such as error radii. It may contain zero or more values; the
+values that are required depend on the match type selected by the matcher
+parameter. If it contains multiple values, they must be separated by spaces;
+values which contain a space can be 'quoted' or "quoted".</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_join" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="join">
+                    <name>join - Selection criteria for output rows</name>
+                    <description>Determines which rows are included in the output table. The matching
+algorithm determines which of the rows from the first table correspond to
+which rows from the second. This parameter determines what to do with that
+information. Perhaps the most obvious thing is to write out a table
+containing only rows which correspond to a row in both of the two input
+tables. However, you may also want to see the unmatched rows from one or
+both input tables, or rows present in one table but unmatched in the other,
+or other possibilities. The options are:
+
+ * 1and2: An output row for each row represented in both input tables
+ * 1or2: An output row for each row represented in either or both of the
+      input tables
+ * all1: An output row for each matched or unmatched row in table 1
+ * all2: An output row for each matched or unmatched row in table 2
+ * 1not2: An output row only for rows which appear in the first table but
+      are not matched in the second table
+ * 2not1: An output row only for rows which appear in the second table but
+      are not matched in the first table
+ * 1xor2: An output row only for rows represented in one of the input tables
+      but not the other one</description>
+                    <ucd/>
+                    <defaultValue>1and2</defaultValue>
+                    <optionList>
+                        <optionVal>1and2</optionVal>
+                        <optionVal>1or2</optionVal>
+                        <optionVal>all1</optionVal>
+                        <optionVal>all2</optionVal>
+                        <optionVal>1not2</optionVal>
+                        <optionVal>2not1</optionVal>
+                        <optionVal>1xor2</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_find" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="find">
+                    <name>find - Type of match to perform</name>
+                    <description>Determines which matches are retained. If best is selected, then only the
+best match between the two tables will be retained; in this case the data
+from a row of either input table will appear in at most one row of the
+output table. If all is selected, then all pairs of rows from the two input
+tables which match the input criteria will be represented in the output
+table.</description>
+                    <ucd/>
+                    <defaultValue>best</defaultValue>
+                    <optionList>
+                        <optionVal>best</optionVal>
+                        <optionVal>all</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_fixcols" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="fixcols">
+                    <name>fixcols - Whether and how to rename input columns</name>
+                    <description>Determines how input columns are renamed before use in the output table. The
+choices are:
+
+ * none: columns are not renamed
+ * dups: columns which would otherwise have duplicate names in the output
+      will be renamed to indicate which table they came from
+ * all: all columns will be renamed to indicate which table they came from
+
+If columns are renamed, the new ones are determined by suffix* parameters.</description>
+                    <ucd/>
+                    <defaultValue>dups</defaultValue>
+                    <optionList>
+                        <optionVal>none</optionVal>
+                        <optionVal>dups</optionVal>
+                        <optionVal>all</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_suffix1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="suffix1">
+                    <name>suffix1 - Deduplicating suffix for columns in table 1</name>
+                    <description>If the fixcols parameter is set so that input columns are renamed for
+insertion into the output table, this parameter determines how the renaming
+is done. It gives a suffix which is appended to all renamed columns from
+table 1.</description>
+                    <ucd/>
+                    <defaultValue>_1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_suffix2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="suffix2">
+                    <name>suffix2 - Deduplicating suffix for columns in table 2</name>
+                    <description>If the fixcols parameter is set so that input columns are renamed for
+insertion into the output table, this parameter determines how the renaming
+is done. It gives a suffix which is appended to all renamed columns from
+table 2.</description>
+                    <ucd/>
+                    <defaultValue>_2</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_scorecol" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="scorecol">
+                    <name>scorecol - Match score output column name</name>
+                    <description>Gives the name of a column in the output table to contain the "match score"
+for each pairwise match. The meaning of this column is dependent on the
+chosen matcher, but it typically represents a distance of some kind between
+the two matching points. If a null value is chosen, no score column will be
+inserted in the output table. The default value of this parameter depends on
+matcher.</description>
+                    <ucd/>
+                    <defaultValue>Score</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="tmatch2_progress" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="progress">
+                    <name>progress - Report progress to screen</name>
+                    <description>Determines whether information on progress of the match should be output to
+the standard error stream as it progresses. For lengthy matches this is a
+useful reassurance and can give guidance about how much longer it will take.
+It can also be useful as a performance diagnostic.</description>
+                    <ucd/>
+                    <defaultValue>true</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-tpipe" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tpipe: Performs pipeline processing on a table</description>
+                    <ucd/>
+                    <defaultValue>tpipe</defaultValue>
+                    <optionList>
+                        <optionVal>tpipe</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tpipe_ifmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt">
+                    <name>ifmt - Format name for input table</name>
+                    <description>Specifies the format of the input table (one of the known formats listed in
+the manual). This flag can be used if you know what format your input table
+is in. If it has the special value (auto) (the default), then an attempt
+will be made to detect the format of the table automatically. This cannot
+always be done correctly however, in which case the program will exit with
+an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tpipe_in" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in">
+                    <name>in - Location of input table</name>
+                    <description>The location of the input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tpipe_cmd" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="cmd">
+                    <name>cmd - Processing command(s) for input table</name>
+                    <description>Commands to operate on the input table, before any other processing takes
+place.
+
+The value of this parameter is one or more of the filter commands described
+in the manual. If more than one is given, they must be separated by
+semicolon characters (";"). This parameter can be repeated multiple times on
+the same command line to build up a list of processing steps. The sequence
+of commands given in this way defines the processing pipeline which is
+performed on the table.
+
+Commands may alteratively be supplied in an external file, by using the
+indirection character '@'. Thus "icmd=@filename" causes the file filename to
+be read for a list of filter commands to execute. The commands in the file
+may be separated by newline characters and/or semicolons.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tpipe_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tpipe_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-tskymatch2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>tskymatch2: Crossmatches 2 tables on sky position</description>
+                    <ucd/>
+                    <defaultValue>tskymatch2</defaultValue>
+                    <optionList>
+                        <optionVal>tskymatch2</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ifmt1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt1">
+                    <name>ifmt1 - Format name for input table</name>
+                    <description>Specifies the format of the first input table (one of the known formats
+listed in the manual). This flag can be used if you know what format your
+input table is in. If it has the special value (auto) (the default), then an
+attempt will be made to detect the format of the table automatically. This
+cannot always be done correctly however, in which case the program will exit
+with an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_in1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in1">
+                    <name>in1 - Location of first input table</name>
+                    <description>The location of the first input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ifmt2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ifmt2">
+                    <name>ifmt2 - Format name for input table</name>
+                    <description>Specifies the format of the second input table (one of the known formats
+listed in the manual). This flag can be used if you know what format your
+input table is in. If it has the special value (auto) (the default), then an
+attempt will be made to detect the format of the table automatically. This
+cannot always be done correctly however, in which case the program will exit
+with an error explaining which formats were attempted.</description>
+                    <ucd/>
+                    <defaultValue>(auto)</defaultValue>
+                    <optionList>
+                        <optionVal>(auto)</optionVal>
+                        <optionVal>FITS-plus</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>FITS</optionVal>
+                        <optionVal>VOTable</optionVal>
+                        <optionVal>ASCII</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>IPAC</optionVal>
+                        <optionVal>WDC</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_in2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="in2">
+                    <name>in2 - Location of second input table</name>
+                    <description>The location of the second input table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_out" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Location of output table</name>
+                    <description>The location of the output table.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ofmt" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ofmt">
+                    <name>ofmt - Format name for output table</name>
+                    <description>Specifies the format in which the output table will be written (one of the
+ones in the manual - matching is case-insensitive and you can use just the
+first few letters). If it has the special value "(auto)" (the default), then
+the output filename will be examined to try to guess what sort of file is
+required usually by looking at the extension. If it's not obvious from the
+filename what output format is intended, an error will result.
+
+This parameter must only be given if omode has its default value of "out".</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>fits</optionVal>
+                        <optionVal>fits-plus</optionVal>
+                        <optionVal>fits-basic</optionVal>
+                        <optionVal>colfits-plus</optionVal>
+                        <optionVal>colfits-basic</optionVal>
+                        <optionVal>votable-tabledata</optionVal>
+                        <optionVal>votable-binary-inline</optionVal>
+                        <optionVal>votable-fits-href</optionVal>
+                        <optionVal>votable-binary-href</optionVal>
+                        <optionVal>votable-fits-inline</optionVal>
+                        <optionVal>text</optionVal>
+                        <optionVal>ascii</optionVal>
+                        <optionVal>CSV</optionVal>
+                        <optionVal>CSV-noheader</optionVal>
+                        <optionVal>TST</optionVal>
+                        <optionVal>HTML</optionVal>
+                        <optionVal>HTML-element</optionVal>
+                        <optionVal>LaTeX</optionVal>
+                        <optionVal>LaTeX-document</optionVal>
+                        <optionVal>mirage</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ra1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ra1">
+                    <name>ra1 - Expression for table 1 right ascension in degrees</name>
+                    <description>Value in degrees for the right ascension of positions in table 1 to be
+matched. This may simply be a column name, or it may be an algebraic
+expression calculated from columns as explained in the manual. If left
+blank, an attempt is made to guess from UCDs, column names and unit
+annotations what expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_dec1" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="dec1">
+                    <name>dec1 - Expression for table 1 declination in degrees</name>
+                    <description>Value in degrees for the declination of positions in table 1 to be matched.
+This may simply be a column name, or it may be an algebraic expression
+calculated from columns as explained in the manual. If left blank, an
+attempt is made to guess from UCDs, column names and unit annotations what
+expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_ra2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="ra2">
+                    <name>ra2 - Expression for table 2 right ascension in degrees</name>
+                    <description>Value in degrees for the right ascension of positions in table 2 to be
+matched. This may simply be a column name, or it may be an algebraic
+expression calculated from columns as explained in the manual. If left
+blank, an attempt is made to guess from UCDs, column names and unit
+annotations what expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_dec2" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="dec2">
+                    <name>dec2 - Expression for table 2 declination in degrees</name>
+                    <description>Value in degrees for the declination of positions in table 2 to be matched.
+This may simply be a column name, or it may be an algebraic expression
+calculated from columns as explained in the manual. If left blank, an
+attempt is made to guess from UCDs, column names and unit annotations what
+expression to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_error" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="real"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="error">
+                    <name>error - Maximum separation in arcsec</name>
+                    <description>The maximum separation permitted between two objects for them to count as a
+match. Units are arc seconds.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_join" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="join">
+                    <name>join - Selection criteria for output rows</name>
+                    <description>Determines which rows are included in the output table. The matching
+algorithm determines which of the rows from the first table correspond to
+which rows from the second. This parameter determines what to do with that
+information. Perhaps the most obvious thing is to write out a table
+containing only rows which correspond to a row in both of the two input
+tables. However, you may also want to see the unmatched rows from one or
+both input tables, or rows present in one table but unmatched in the other,
+or other possibilities. The options are:
+
+ * 1and2: An output row for each row represented in both input tables
+ * 1or2: An output row for each row represented in either or both of the
+      input tables
+ * all1: An output row for each matched or unmatched row in table 1
+ * all2: An output row for each matched or unmatched row in table 2
+ * 1not2: An output row only for rows which appear in the first table but
+      are not matched in the second table
+ * 2not1: An output row only for rows which appear in the second table but
+      are not matched in the first table
+ * 1xor2: An output row only for rows represented in one of the input tables
+      but not the other one</description>
+                    <ucd/>
+                    <defaultValue>1and2</defaultValue>
+                    <optionList>
+                        <optionVal>1and2</optionVal>
+                        <optionVal>1or2</optionVal>
+                        <optionVal>all1</optionVal>
+                        <optionVal>all2</optionVal>
+                        <optionVal>1not2</optionVal>
+                        <optionVal>2not1</optionVal>
+                        <optionVal>1xor2</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="tskymatch2_find" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="find">
+                    <name>find - Type of match to perform</name>
+                    <description>Determines which matches are retained. If best is selected, then only the
+best match between the two tables will be retained; in this case the data
+from a row of either input table will appear in at most one row of the
+output table. If all is selected, then all pairs of rows from the two input
+tables which match the input criteria will be represented in the output
+table.</description>
+                    <ucd/>
+                    <defaultValue>best</defaultValue>
+                    <optionList>
+                        <optionVal>best</optionVal>
+                        <optionVal>all</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-votcopy" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>votcopy: Transforms between VOTable encodings</description>
+                    <ucd/>
+                    <defaultValue>votcopy</defaultValue>
+                    <optionList>
+                        <optionVal>votcopy</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="votcopy_in" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="in">
+                    <name>in - Input votable</name>
+                    <description>Location of the input VOTable. May be a URL, filename, or "-" to indicate
+standard input. The input table may be compressed using one of the known
+compression formats (Unix compress, gzip or bzip2).</description>
+                    <ucd/>
+                    <defaultValue>-</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="votcopy_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - Output votable</name>
+                    <description>Location of the output VOTable.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="votcopy_format" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="format">
+                    <name>format - Output votable format</name>
+                    <description>Determines the encoding format of the table data in the output document. If
+null is selected, then the tables will be data-less (will contain no DATA
+element), leaving only the document structure. Data-less tables are legal
+VOTable elements.</description>
+                    <ucd/>
+                    <defaultValue>tabledata</defaultValue>
+                    <optionList>
+                        <optionVal>TABLEDATA</optionVal>
+                        <optionVal>BINARY</optionVal>
+                        <optionVal>FITS</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="votcopy_charset" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="charset">
+                    <name>charset - null</name>
+                    <description>Selects the Unicode encoding used for the output XML. The available options
+and default are dependent on your JVM, but the default probably corresponds
+to UTF-8. Use help=charset for a full listing.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="votcopy_cache" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="cache">
+                    <name>cache - Read data into cache before copying?</name>
+                    <description>Determines whether the input tables are read into a cache prior to being
+written out. The default is selected automatically depending on the input
+table; so you should normally leave this flag alone.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="votcopy_href" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="href">
+                    <name>href - Output FITS/BINARY data external to output document?</name>
+                    <description>In the case of BINARY or FITS encoding, this determines whether the STREAM
+elements output will contain their data inline or externally. If set false,
+the output document will be self-contained, with STREAM data inline as
+base64-encoded characters. If true, then for each TABLE in the document the
+binary data will be written to a separate file and referenced by an href
+attribute on the corresponding STREAM element. The name of these files is
+usually determined by the name of the main output file; but see also the
+base flag.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="votcopy_base" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="base">
+                    <name>base - Base location for FITS/BINARY href data</name>
+                    <description>Determines the name of external output files written when the href flag is
+true. Normally these are given names based on the name of the output file.
+But if this flag is given, the names will be based on the &lt;location&gt; string.
+This flag is compulsory if href is true and out=- (output is to standard
+out), since in this case there is no default base name to use.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="TASK-votlint" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
+                                     commandPosition="3">
+                    <name>task</name>
+                    <description>votlint: Validates VOTable documents</description>
+                    <ucd/>
+                    <defaultValue>votlint</defaultValue>
+                    <optionList>
+                        <optionVal>votlint</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="votlint_votable" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="votable">
+                    <name>votable - VOTable location</name>
+                    <description>Location of the VOTable to be checked.</description>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="votlint_validate" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="validate">
+                    <name>validate - Validate against VOTable DTD?</name>
+                    <description>Whether to validate the input document aganist the VOTable DTD. If true (the
+default), then as well as votlint's own checks, it is validated against an
+appropriate version of the VOTable DTD which picks up such things as the
+presence of unknown elements and attributes, elements in the wrong place,
+and so on. Sometimes however, particularly when XML namespaces are involved,
+the validator can get confused and may produce a lot of spurious errors.
+Setting this flag false prevents this validation step so that only votlint
+'s own checks are performed. In this case many violations of the VOTable
+standard concerning document structure will go unnoticed.</description>
+                    <ucd/>
+                    <defaultValue>true</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="votlint_version" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
+                                     fileRef="no"
+                                     switchType="keyword"
+                                     commandSwitch="version">
+                    <name>version - VOTable standard version</name>
+                    <description>Selects the version of the VOTable standard which the input table is
+supposed to exemplify. Currently the version can be 1.0 or 1.1. The version
+may also be specified within the document using the "version" attribute of
+the document's VOTABLE element; if it is and it conflicts with the value
+specified by this flag, a warning is issued.</description>
+                    <ucd/>
+                    <optionList>
+                        <optionVal>1.0</optionVal>
+                        <optionVal>1.1</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="votlint_out" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="file"
+                                     switchType="keyword"
+                                     commandSwitch="out">
+                    <name>out - File for output messages</name>
+                    <description>Destination file for output messages.</description>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="calc">
+                    <input>
+                        <pref ref="TASK-calc"/>
+                        <pref ref="calc_expression"/>
+                        <pref ref="calc_table" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="stdout"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="coneskymatch">
+                    <input>
+                        <pref ref="TASK-coneskymatch"/>
+                        <pref ref="coneskymatch_ifmt"/>
+                        <pref ref="coneskymatch_istream"/>
+                        <pref ref="coneskymatch_in"/>
+                        <pref ref="coneskymatch_icmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="coneskymatch_ocmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="coneskymatch_ofmt"/>
+                        <pref ref="coneskymatch_ra"/>
+                        <pref ref="coneskymatch_dec"/>
+                        <pref ref="coneskymatch_sr"/>
+                        <pref ref="coneskymatch_find"/>
+                        <pref ref="coneskymatch_copycols" minOccurs="0"/>
+                        <pref ref="coneskymatch_scorecol" minOccurs="0"/>
+                        <pref ref="coneskymatch_parallel"/>
+                        <pref ref="coneskymatch_erract"/>
+                        <pref ref="coneskymatch_ostream"/>
+                        <pref ref="coneskymatch_fixcols"/>
+                        <pref ref="coneskymatch_suffix0" minOccurs="0"/>
+                        <pref ref="coneskymatch_suffix1" minOccurs="0"/>
+                        <pref ref="coneskymatch_serviceurl"/>
+                        <pref ref="coneskymatch_verb" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="coneskymatch_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="regquery">
+                    <input>
+                        <pref ref="TASK-regquery"/>
+                        <pref ref="regquery_query"/>
+                        <pref ref="regquery_regurl"/>
+                        <pref ref="regquery_ocmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="regquery_ofmt"/>
+                    </input>
+                    <output>
+                        <pref ref="regquery_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="tcat">
+                    <input>
+                        <pref ref="TASK-tcat"/>
+                        <pref ref="tcat_in" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tcat_ifmt"/>
+                        <pref ref="tcat_istream"/>
+                        <pref ref="tcat_icmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tcat_ocmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tcat_ofmt"/>
+                        <pref ref="tcat_seqcol" minOccurs="0"/>
+                        <pref ref="tcat_loccol" minOccurs="0"/>
+                        <pref ref="tcat_uloccol" minOccurs="0"/>
+                        <pref ref="tcat_lazy"/>
+                        <pref ref="tcat_countrows"/>
+                    </input>
+                    <output>
+                        <pref ref="tcat_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="tcopy">
+                    <input>
+                        <pref ref="TASK-tcopy"/>
+                        <pref ref="tcopy_in"/>
+                        <pref ref="tcopy_ifmt"/>
+                        <pref ref="tcopy_ofmt"/>
+                    </input>
+                    <output>
+                        <pref ref="tcopy_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="tcube">
+                    <input>
+                        <pref ref="TASK-tcube"/>
+                        <pref ref="tcube_cols"/>
+                        <pref ref="tcube_ifmt"/>
+                        <pref ref="tcube_istream"/>
+                        <pref ref="tcube_in"/>
+                        <pref ref="tcube_icmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tcube_bounds" minOccurs="0"/>
+                        <pref ref="tcube_binsizes"/>
+                        <pref ref="tcube_nbins" minOccurs="0"/>
+                        <pref ref="tcube_otype" minOccurs="0"/>
+                        <pref ref="tcube_scale" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="tcube_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="tmatch1">
+                    <input>
+                        <pref ref="TASK-tmatch1"/>
+                        <pref ref="tmatch1_matcher"/>
+                        <pref ref="tmatch1_params" minOccurs="0"/>
+                        <pref ref="tmatch1_values"/>
+                        <pref ref="tmatch1_action"/>
+                        <pref ref="tmatch1_progress"/>
+                        <pref ref="tmatch1_ifmt"/>
+                        <pref ref="tmatch1_istream"/>
+                        <pref ref="tmatch1_in"/>
+                        <pref ref="tmatch1_icmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tmatch1_ocmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tmatch1_ofmt"/>
+                    </input>
+                    <output>
+                        <pref ref="tmatch1_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="tmatch2">
+                    <input>
+                        <pref ref="TASK-tmatch2"/>
+                        <pref ref="tmatch2_ifmt1"/>
+                        <pref ref="tmatch2_in1"/>
+                        <pref ref="tmatch2_ifmt2"/>
+                        <pref ref="tmatch2_in2"/>
+                        <pref ref="tmatch2_icmd1" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tmatch2_icmd2" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tmatch2_ocmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tmatch2_ofmt"/>
+                        <pref ref="tmatch2_matcher"/>
+                        <pref ref="tmatch2_values1"/>
+                        <pref ref="tmatch2_values2"/>
+                        <pref ref="tmatch2_params" minOccurs="0"/>
+                        <pref ref="tmatch2_join"/>
+                        <pref ref="tmatch2_find"/>
+                        <pref ref="tmatch2_fixcols"/>
+                        <pref ref="tmatch2_suffix1" minOccurs="0"/>
+                        <pref ref="tmatch2_suffix2" minOccurs="0"/>
+                        <pref ref="tmatch2_scorecol" minOccurs="0"/>
+                        <pref ref="tmatch2_progress"/>
+                    </input>
+                    <output>
+                        <pref ref="tmatch2_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="tpipe">
+                    <input>
+                        <pref ref="TASK-tpipe"/>
+                        <pref ref="tpipe_ifmt"/>
+                        <pref ref="tpipe_in"/>
+                        <pref ref="tpipe_cmd" minOccurs="0" maxOccurs="0"/>
+                        <pref ref="tpipe_ofmt"/>
+                    </input>
+                    <output>
+                        <pref ref="tpipe_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="tskymatch2">
+                    <input>
+                        <pref ref="TASK-tskymatch2"/>
+                        <pref ref="tskymatch2_ifmt1"/>
+                        <pref ref="tskymatch2_in1"/>
+                        <pref ref="tskymatch2_ifmt2"/>
+                        <pref ref="tskymatch2_in2"/>
+                        <pref ref="tskymatch2_ofmt"/>
+                        <pref ref="tskymatch2_ra1" minOccurs="0"/>
+                        <pref ref="tskymatch2_dec1" minOccurs="0"/>
+                        <pref ref="tskymatch2_ra2" minOccurs="0"/>
+                        <pref ref="tskymatch2_dec2" minOccurs="0"/>
+                        <pref ref="tskymatch2_error"/>
+                        <pref ref="tskymatch2_join"/>
+                        <pref ref="tskymatch2_find"/>
+                    </input>
+                    <output>
+                        <pref ref="tskymatch2_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="votcopy">
+                    <input>
+                        <pref ref="TASK-votcopy"/>
+                        <pref ref="votcopy_in"/>
+                        <pref ref="votcopy_format" minOccurs="0"/>
+                        <pref ref="votcopy_charset" minOccurs="0"/>
+                        <pref ref="votcopy_cache"/>
+                        <pref ref="votcopy_href"/>
+                        <pref ref="votcopy_base" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="votcopy_out"/>
+                    </output>
+                </interfaceDefinition>
+                <interfaceDefinition id="votlint">
+                    <input>
+                        <pref ref="TASK-votlint"/>
+                        <pref ref="votlint_votable"/>
+                        <pref ref="votlint_validate"/>
+                        <pref ref="votlint_version" minOccurs="0"/>
+                    </input>
+                    <output>
+                        <pref ref="votlint_out"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+            <executionPath>/home/applications/tools/stilts/stilts.sh</executionPath>
+        </applicationDefinition>
+    </ceaimp:CeaApplication>

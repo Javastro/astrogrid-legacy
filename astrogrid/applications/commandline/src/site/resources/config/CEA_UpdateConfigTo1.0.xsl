@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: CEA_UpdateConfigTo1.0.xsl,v 1.1 2008/09/15 16:58:59 pah Exp $
+<!-- $Id: CEA_UpdateConfigTo1.0.xsl,v 1.2 2008/09/20 15:56:32 pah Exp $
 Stylesheet to transform CEA implementation configuration instances from v.10 to CEA implementation v2.0
 Paul Harrison pharriso@eso.org.
  N.B this is not yet exhaustively tested - works for instances from the wrapping produced by a v.10 Astrogrid registry only.
@@ -35,7 +35,7 @@ Paul Harrison pharriso@eso.org.
      
       <ceaimp:CECConfig>
  
-      <xsl:attribute name="xsi:schemaLocation">http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd</xsl:attribute>
+      <xsl:attribute name="xsi:schemaLocation">http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd</xsl:attribute>
            <xsl:apply-templates select="//impl.old:Application" />  
            <xsl:comment>reg=<xsl:value-of select="$regtemplate"/></xsl:comment>      
       </ceaimp:CECConfig>
@@ -248,6 +248,9 @@ Paul Harrison pharriso@eso.org.
    
 <!--
  $Log: CEA_UpdateConfigTo1.0.xsl,v $
+ Revision 1.2  2008/09/20 15:56:32  pah
+ separate configs into per app files
+
  Revision 1.1  2008/09/15 16:58:59  pah
  new home for config
 

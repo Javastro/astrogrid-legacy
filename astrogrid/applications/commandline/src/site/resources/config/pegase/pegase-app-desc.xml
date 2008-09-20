@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+ created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>Pegase</title>
+        <shortName>Pegase</shortName>
+        <identifier>ivo://org.astrogrid/Pegase</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>0.0001</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>PEGASE is a code which computes the spectral evolution of galaxies. The evolution of the stars, gas and metals is computed according to user selected star formation laws and initial stellar mass function.  The stellar evolutionary tracks extend from the main sequence to the white dwarf stage. The emission of the gas in HII regions is also taken into account. The effect of extinction by dust is also modelled using a radiative transfer code.</description>
+            <referenceURL>http://www2.iap.fr/users/fioc/PEGASE.html</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="IMF" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Initial Mass Function</name>
+                    <description>
+   1: IMF_Kennicutt.dat                                                       
+   2: IMF_Kroupa.dat                                                          
+   3: IMF_MillerScalo.dat                                                     
+   4: IMF_Salpeter.dat                                                        
+   5: IMF_Scalo86.dat                                                         
+   6: IMF_Scalo98.dat                                                         
+   7: lognormal IMF
+   8: Rana &amp; Basu (1992)
+   9: Ferrini (1991)
+
+               
+            </description>
+                    <ucd/>
+                    <defaultValue>4</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="LMASS" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Lower mass</name>
+                    <description>Lower mass</description>
+                    <unit>Solar Masses</unit>
+                    <ucd/>
+                    <defaultValue>0.1</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="UMASS" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Upper mass</name>
+                    <description>Upper mass</description>
+                    <unit>Solar Masses</unit>
+                    <ucd/>
+                    <defaultValue>120.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SNMODEL" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no">
+                    <name>SN Model (A/B/C)</name>
+                    <description> model A, B or C of Woosley &amp; Weaver </description>
+                    <ucd/>
+                    <defaultValue>B</defaultValue>
+                    <optionList>
+                        <optionVal>A</optionVal>
+                        <optionVal>B</optionVal>
+                        <optionVal>C</optionVal>
+                    </optionList>
+                </parameterDefinition>
+                <parameterDefinition id="WINDS" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Stellar Winds</name>
+                    <description/>
+                    <ucd/>
+                    <defaultValue>Y</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="BINFRAC" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>binary fraction</name>
+                    <description>Fraction of close binary systems</description>
+                    <ucd/>
+                    <defaultValue>0.05</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="METALICITY" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Metalicity</name>
+                    <description>Metallicity (mass fraction) of the ISM at t=0 (real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0.0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INFALL" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Infall</name>
+                    <ucd/>
+                    <defaultValue>n</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INFALLTIME" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Infall Timescale</name>
+                    <description>Infall timescale (Myr, real)</description>
+                    <ucd/>
+                    <defaultValue>0.10000E+04</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="INFALLMETAL" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Infall Metalicity</name>
+                    <description>Metallicity of the infalling gas (mass fraction, real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SFSCENARIO" xsi:type="ceaimp:CommandLineParameterDefinition" type="integer"
+                                     fileRef="no">
+                    <name>Star formation scenario</name>
+                    <description> 
+   Type of star formation scenario?
+ -2: file giving the SFR and the metallicity
+ -1: file giving the SFR
+  0: instantaneous burst
+  1: SFR=p1 from t=0 to p2
+  2: SFR=p2*exp(-t/p1)/p1
+  3: SFR=(Mgas^p1)/p2
+ 10 or more: code of the SFR law you have implemented in "spectra.f"
+               
+            </description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="CONEVOL" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Consistent Evolution</name>
+                    <description> Consistent evolution of the stellar metallicity (y/n)?</description>
+                    <ucd/>
+                    <defaultValue>y</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="SMETAL" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Stellar metallicity</name>
+                    <description>(real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0.02</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="FRACSUB" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>SubStellar fraction</name>
+                    <description>Mass fraction of substellar objects formed (real in [0.,1.])</description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GALWIND" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Galactic winds</name>
+                    <description/>
+                    <ucd/>
+                    <defaultValue>n</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GALWINDAGE" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no">
+                    <name>Galactic wind age</name>
+                    <description>Age of the galactic winds (Myr, real)</description>
+                    <ucd/>
+                    <defaultValue>0.20001E+05</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="NEBEMISS" xsi:type="ceaimp:CommandLineParameterDefinition" type="boolean"
+                                     fileRef="no">
+                    <name>Nebular Emission</name>
+                    <description/>
+                    <ucd/>
+                    <defaultValue>n</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="GLOBALEXTINCTION" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="integer"
+                                     fileRef="no">
+                    <name>Global Extinction?</name>
+                    <description>
+ 0: No extinction
+ 1: Extinction for a spheroidal geometry
+ 2: Extinction for a disk geometry: inclination-averaged
+ 3: Extinction for a disk geometry: specific inclination
+               
+            </description>
+                    <ucd/>
+                    <defaultValue>0</defaultValue>
+                </parameterDefinition>
+                <!-- raw output files --><parameterDefinition id="SPECTRA" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="spectra1.dat">
+                    <name>Synthesized spectra</name>
+                    <ucd/>
+                </parameterDefinition>
+                <parameterDefinition id="COLOURS" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
+                                     fileRef="file"
+                                     localFileName="colours1.dat">
+                    <name>Synthesized colours</name>
+                    <ucd/>
+                </parameterDefinition>
+            </parameters>
+            <interfaces>
+                <interfaceDefinition id="simple">
+                    <input>
+                        <pref ref="IMF"/>
+                        <pref ref="LMASS"/>
+                        <pref ref="UMASS"/>
+                        <pref ref="SNMODEL"/>
+                        <pref ref="WINDS"/>
+                        <pref ref="BINFRAC"/>
+                        <pref ref="METALICITY"/>
+                        <pref ref="INFALL"/>
+                        <pref ref="INFALLTIME" minOccurs="0"/>
+                        <pref ref="INFALLMETAL" minOccurs="0"/>
+                        <pref ref="SFSCENARIO"/>
+                        <pref ref="CONEVOL"/>
+                        <pref ref="SMETAL" minOccurs="0"/>
+                        <pref ref="FRACSUB"/>
+                        <pref ref="GALWIND"/>
+                        <pref ref="GALWINDAGE" minOccurs="0"/>
+                        <pref ref="NEBEMISS"/>
+                        <pref ref="GLOBALEXTINCTION"/>
+                    </input>
+                    <output>
+                        <pref ref="SPECTRA"/>
+                        <pref ref="COLOURS"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+            <executionPath>/home/applications/tools/PEGASE.2/runpegase.sh</executionPath>
+        </applicationDefinition>
+    </ceaimp:CeaApplication>

@@ -1,237 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<impl:CECConfig xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
-   xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
-   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
-   xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CeaImplementation/v2.0/CEAImplementation.xsd"
->
-   <impl:CeaApplication created="1999-01-01T00:00:00"
-      status="active" updated="2008-03-12T18:15:21.03Z"
-   >
-      <title>Test Application</title>
-      <shortName>Test Application</shortName>
-      <identifier>ivo://org.testit/testapp</identifier>
-      <curation>
-         <publisher>Astrogrid</publisher>
-         <creator>
-            <name>Astrogrid</name>
-            <logo>??</logo>
-         </creator>
-         <date role="representative">2004-03-26</date>
-         <version>1.0</version>
-         <contact>
-            <name>Paul Harrison</name>
-            <email>pah@jb.man.ac.uk</email>
-         </contact>
-      </curation>
-      <content>
-         <subject>???</subject>
-         <description>testapp is just for testing</description>
-         <referenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications</referenceURL>
-         <type>Other</type>
-      </content>
-      <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
-         <applicationType>processing</applicationType>
-         <parameters>
-            <parameterDefinition id="P1"
-               xsi:type="impl:CommandLineParameterDefinition" type="integer"
-               commandPosition="1" fileRef="no"
-            >
-               <name>Pause Time</name>
-               <description>Text 
-                  <!--
-                     <b>bold bit</b> Castor cannot cope with the any
-                     schema element
-                  -->
-                  this is the time tha the application will pause in
-                  seconds before continuing to give the appearance of
-                  doing something... 
-               </description>
-               <unit>seconds</unit>
-               <ucd>UCD</ucd>
-               <defaultValue>0</defaultValue>
-            </parameterDefinition>
-            <parameterDefinition id="P2"
-               xsi:type="impl:CommandLineParameterDefinition" type="binary"
-               commandPosition="2" fileRef="file"
-            >
-               <name>Param Values</name>
-               <description>This is the file to which the parameters
-                  will be written </description>
-               <unit />
-               <ucd>String</ucd>
-               <defaultValue />
-            </parameterDefinition>
-            <parameterDefinition id="P3"
-               xsi:type="impl:CommandLineParameterDefinition" type="text"
-               fileRef="file"
-            >
-               <name />
-               <description />
-               <ucd />
-            </parameterDefinition>
-            <parameterDefinition id="P4"
-               xsi:type="impl:CommandLineParameterDefinition" type="text"
-               commandSwitch="Parameter4" switchType="keyword" fileRef="no"
-            >
-               <name />
-               <description />
-               <ucd />
-               <optionList>
-                  <optionVal>HTML</optionVal>
-                  <optionVal>VOTable</optionVal>
-                  <optionVal>ASCII</optionVal>
-               </optionList>
-            </parameterDefinition>
-            <parameterDefinition id="P5"
-               xsi:type="impl:CommandLineParameterDefinition" type="VOTable"
-            >
-               <name />
-               <description />
-               <ucd />
-            </parameterDefinition>
-            <parameterDefinition id="P6"
-               xsi:type="impl:CommandLineParameterDefinition" type="angle"
-               fileRef="no"
-            >
-               <name />
-               <description />
-               <ucd>pos.eq.ra</ucd>
-            </parameterDefinition>
-            <parameterDefinition id="P7"
-               xsi:type="impl:CommandLineParameterDefinition" type="angle"
-               fileRef="no"
-            >
-               <name />
-               <description />
-               <ucd>pos.eq.dec</ucd>
-            </parameterDefinition>
-            <parameterDefinition id="P8"
-               xsi:type="impl:CommandLineParameterDefinition" type="ADQL"
-            >
-               <name />
-               <description />
-               <ucd />
-            </parameterDefinition>
-            <parameterDefinition id="P9"
-               xsi:type="impl:CommandLineParameterDefinition" type="text"
-               fileRef="file"
-            >
-               <name>Dup file</name>
-               <description>The contents of this file will be copied
-                  to the output when run</description>
-               <ucd />
-            </parameterDefinition>
-            <parameterDefinition id="P10"
-               xsi:type="impl:CommandLineParameterDefinition" type="boolean"
-               fileRef="no"
-            >
-               <ucd />
-               <defaultValue>y</defaultValue>
-            </parameterDefinition>
-            <parameterDefinition id="P11"
-               xsi:type="impl:CommandLineParameterDefinition" type="anyURI"
-            >
-               <ucd />
-            </parameterDefinition>
-            <parameterDefinition id="P12"
-               xsi:type="impl:CommandLineParameterDefinition" type="text"
-               switchType="normal"
-            >
-               <name />
-               <description />
-               <ucd />
-            </parameterDefinition>
-            <parameterDefinition id="P13"
-               xsi:type="impl:CommandLineParameterDefinition" type="real"
-               fileRef="no"
-            >
-               <ucd />
-            </parameterDefinition>
-            <parameterDefinition id="P14"
-               xsi:type="impl:CommandLineParameterDefinition" type="text"
-               fileRef="file" localFileName="testlocalfile"
-            >
-               <description>the test application will write a message
-                  to this file</description>
-               <ucd />
-            </parameterDefinition>
-         </parameters>
-         <interfaces>
-            <interfaceDefinition id="I1">
-               <input>
-                  <pref ref="P1" />
-                  <pref ref="P4" />
-                  <pref ref="P9" maxOccurs="0" />
-                  <pref ref="P10" />
-                        <!-- the testapp will only pick up the last one passed -->
-                  <!--
-                     put this in to test that the interface does not
-                     check about it missing from the parameter list -
-                     not passed in any of the standard tests
-                  -->
-                  <pref ref="P6" minOccurs="0" />
-               </input>
-               <output>
-                  <pref ref="P3" />
-                  <pref ref="P2" />
-                  <pref ref="P14" />
-               </output>
-            </interfaceDefinition>
-            <interfaceDefinition id="Ilocal">
-               <input>
-                  <pref ref="P1" />
-                  <pref ref="P2" />
-                  <pref ref="P4" />
-               </input>
-               <output>
-                  <pref ref="P3" />
-               </output>
-            </interfaceDefinition>
-            <interfaceDefinition id="I2">
-               <input>
-                  <pref ref="P9" />
-               </input>
-               <output>
-                  <pref ref="P3" />
-               </output>
-            </interfaceDefinition>
-         </interfaces>
-         <executionPath>/Users/pharriso/Work/ag/src/applications/server/test/java/app/testapp.sh</executionPath>
-      </applicationDefinition>
-        
-    </impl:CeaApplication>
-   <impl:CeaApplication created="1999-01-01T00:00:00"
-      status="active" updated="2008-03-26T16:42:03.517Z"
-   >
-      <title>Galexev</title>
-      <shortName>Galexev</shortName>
-      <identifier>ivo://org.astrogrid/Galaxev</identifier>
-      <curation>
-         <publisher>Astrogrid</publisher>
-         <creator>
-            <name>Astrogrid</name>
-            <logo>??</logo>
-         </creator>
-         <date role="representative">2004-03-26</date>
-         <version>1.0</version>
-         <contact>
-            <name>Paul Harrison</name>
-            <email>pah@jb.man.ac.uk</email>
-         </contact>
-      </curation>
-      <content>
-         <subject>???</subject>
-         <description>GALAXEV is a library of evolutionary
-            stellar population synthesis models computed using the new
-            isochrone synthesis code of Bruzual &amp;Charlot (2003). This code allows one to computes the spectral evolution of stellar populations in wide ranges of ages and metallicities at a resolution of 3 ? across the whole wavelength range from 3200 ? to 9500 ?, and at lower resolution outside this range. </description>
+<ceaimp:CeaApplication xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+ created="1999-01-01T00:00:00" status="active"
+                           updated="2008-09-18T15:19:20.512+01:00">
+        <title>Galexev</title>
+        <shortName>Galexev</shortName>
+        <identifier>ivo://org.astrogrid/Galaxev</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date>2004-03-26</date>
+            <version>2003</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>GALAXEV is a library of evolutionary stellar population synthesis models computed using the new isochrone synthesis code of Bruzual &amp;Charlot (2003). This code allows one to computes the spectral evolution of stellar populations in wide ranges of ages and metallicities at a resolution of 3 ? across the whole wavelength range from 3200 ? to 9500 ?, and at lower resolution outside this range. </description>
             <referenceURL>http://www.cida.ve/~bruzual/bc2003</referenceURL>
             <type>Other</type>
         </content>
-        <applicationDefinition xsi:type="impl:CeaCmdLineApplicationDefinition">
+        <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
             <applicationType>processing</applicationType>
             <parameters>
-                <parameterDefinition id="IMF" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="IMF" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="IMF">
@@ -244,7 +46,7 @@
                         <optionVal>chabrier</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="RESOLUTION" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="RESOLUTION" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="RESOLUTION">
@@ -257,7 +59,7 @@
                         <optionVal>hr</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="TRACKS" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="TRACKS" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TRACKS">
@@ -271,7 +73,7 @@
                         <optionVal>Padova2000</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="Padova1994Metallicity" xsi:type="impl:CommandLineParameterDefinition"
+                <parameterDefinition id="Padova1994Metallicity" xsi:type="ceaimp:CommandLineParameterDefinition"
                                      type="text"
                                      fileRef="no"
                                      switchType="keyword"
@@ -289,7 +91,7 @@
                         <optionVal>0.05</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="Padova2000Metallicity" xsi:type="impl:CommandLineParameterDefinition"
+                <parameterDefinition id="Padova2000Metallicity" xsi:type="ceaimp:CommandLineParameterDefinition"
                                      type="text"
                                      fileRef="no"
                                      switchType="keyword"
@@ -307,7 +109,7 @@
                         <optionVal>0.03</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="DUST" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="DUST" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="DUST">
@@ -320,7 +122,7 @@
                         <optionVal>Y</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="TAU_V" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="TAU_V" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TAU_V">
@@ -329,7 +131,8 @@
                     <ucd/>
                     <defaultValue>1.0</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="MU" xsi:type="impl:CommandLineParameterDefinition" type="text" fileRef="no"
+                <parameterDefinition id="MU" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="MU">
                     <name>Dust mu</name>
@@ -337,7 +140,7 @@
                     <ucd/>
                     <defaultValue>0.3</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="SFRTYPE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="SFRTYPE" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="SFRTYPE">
@@ -355,7 +158,8 @@
                         <optionVal>linear_decr</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="exponential_TAU" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="exponential_TAU" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TAU">
@@ -365,7 +169,7 @@
                     <ucd/>
                     <defaultValue>1.0</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="exponential_gas_recycle" xsi:type="impl:CommandLineParameterDefinition"
+                <parameterDefinition id="exponential_gas_recycle" xsi:type="ceaimp:CommandLineParameterDefinition"
                                      type="text"
                                      fileRef="no"
                                      switchType="keyword"
@@ -380,7 +184,7 @@
                         <optionVal>Y</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="exponential_epsilon" xsi:type="impl:CommandLineParameterDefinition"
+                <parameterDefinition id="exponential_epsilon" xsi:type="ceaimp:CommandLineParameterDefinition"
                                      type="text"
                                      fileRef="no"
                                      switchType="keyword"
@@ -391,7 +195,7 @@
                     <ucd/>
                     <defaultValue>0.5</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="exponential_tcut" xsi:type="impl:CommandLineParameterDefinition"
+                <parameterDefinition id="exponential_tcut" xsi:type="ceaimp:CommandLineParameterDefinition"
                                      type="text"
                                      fileRef="no"
                                      switchType="keyword"
@@ -402,7 +206,8 @@
                     <ucd/>
                     <defaultValue>20</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="singleburst_TAU" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="singleburst_TAU" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TAU">
@@ -412,7 +217,7 @@
                     <ucd/>
                     <defaultValue>0.05</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="constant_SFR" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="constant_SFR" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="SFR">
@@ -422,7 +227,7 @@
                     <ucd/>
                     <defaultValue>1.0</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="constant_TCUT" xsi:type="impl:CommandLineParameterDefinition"
+                <parameterDefinition id="constant_TCUT" xsi:type="ceaimp:CommandLineParameterDefinition"
                                      type="boolean"
                                      fileRef="no"
                                      switchType="keyword"
@@ -433,7 +238,7 @@
                     <ucd/>
                     <defaultValue>20</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="delayed_TAU" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="delayed_TAU" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TAU">
@@ -443,7 +248,8 @@
                     <ucd/>
                     <defaultValue>1</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="delayed_TCUT" xsi:type="impl:CommandLineParameterDefinition" type="boolean"
+                <parameterDefinition id="delayed_TCUT" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="boolean"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TCUT">
@@ -453,7 +259,8 @@
                     <ucd/>
                     <defaultValue>20</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="linear_decr_TAU" xsi:type="impl:CommandLineParameterDefinition" type="real"
+                <parameterDefinition id="linear_decr_TAU" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                     type="real"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TAU">
@@ -463,7 +270,7 @@
                     <ucd/>
                     <defaultValue>1</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="linear_decr_TCUT" xsi:type="impl:CommandLineParameterDefinition"
+                <parameterDefinition id="linear_decr_TCUT" xsi:type="ceaimp:CommandLineParameterDefinition"
                                      type="real"
                                      fileRef="no"
                                      switchType="keyword"
@@ -474,7 +281,8 @@
                     <ucd/>
                     <defaultValue>20</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="W1" xsi:type="impl:CommandLineParameterDefinition" type="real" fileRef="no"
+                <parameterDefinition id="W1" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="W1">
                     <name>Lower wavelength W1</name>
@@ -483,7 +291,8 @@
                     <ucd/>
                     <defaultValue>100</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="W2" xsi:type="impl:CommandLineParameterDefinition" type="real" fileRef="no"
+                <parameterDefinition id="W2" xsi:type="ceaimp:CommandLineParameterDefinition" type="real"
+                                     fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="W2">
                     <name>Upper wavelength W2</name>
@@ -492,7 +301,7 @@
                     <ucd/>
                     <defaultValue>1.2E+06</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="UNITS" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="UNITS" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="UNITS">
@@ -505,7 +314,7 @@
                         <optionVal>perHz</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="NORMALISATION" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="NORMALISATION" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="NORMALISATION">
@@ -520,7 +329,7 @@
                         <optionVal>Fz</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="WAVE_F0" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="WAVE_F0" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="F0">
@@ -530,7 +339,7 @@
                     <ucd/>
                     <defaultValue>1</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="WAVE_W0" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="WAVE_W0" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="W0">
@@ -540,7 +349,7 @@
                     <ucd/>
                     <defaultValue>5000</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="Fz_F0" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="Fz_F0" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="F0">
@@ -550,7 +359,7 @@
                     <ucd/>
                     <defaultValue>1</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="Fz_z" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="Fz_z" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="z">
@@ -559,7 +368,7 @@
                     <ucd/>
                     <defaultValue>1</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="Fz_FILTER" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="Fz_FILTER" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="FILTER">
@@ -694,7 +503,7 @@
                         <optionVal> 78 2MASS Ks </optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="AGE" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="AGE" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="AGE">
@@ -704,7 +513,7 @@
                     <ucd/>
                     <defaultValue>5,10,15,20</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="COSMO_EVO" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="COSMO_EVO" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="COSMO_EVO">
@@ -718,7 +527,8 @@
                         <optionVal>Y</optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="H0" xsi:type="impl:CommandLineParameterDefinition" type="text" fileRef="no"
+                <parameterDefinition id="H0" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="H0">
                     <name>H0</name>
@@ -727,7 +537,7 @@
                     <ucd/>
                     <defaultValue>70</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="Omega" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="Omega" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="Omega">
@@ -736,7 +546,7 @@
                     <ucd/>
                     <defaultValue>0.7</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="Omega_lambda" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="Omega_lambda" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="Omega_lambda">
@@ -745,7 +555,8 @@
                     <ucd/>
                     <defaultValue>0.3</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="TG" xsi:type="impl:CommandLineParameterDefinition" type="text" fileRef="no"
+                <parameterDefinition id="TG" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
+                                     fileRef="no"
                                      switchType="keyword"
                                      commandSwitch="TG">
                     <name>Galaxy Age</name>
@@ -754,7 +565,7 @@
                     <ucd/>
                     <defaultValue>13.0</defaultValue>
                 </parameterDefinition>
-                <parameterDefinition id="FILTER1" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="FILTER1" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="file"
                                      switchType="keyword"
                                      commandSwitch="FILTER1">
@@ -889,7 +700,7 @@
                         <optionVal> 78 2MASS Ks </optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="FILTER2" xsi:type="impl:CommandLineParameterDefinition" type="text"
+                <parameterDefinition id="FILTER2" xsi:type="ceaimp:CommandLineParameterDefinition" type="text"
                                      fileRef="file"
                                      switchType="keyword"
                                      commandSwitch="FILTER2">
@@ -1024,7 +835,7 @@
                         <optionVal> 78 2MASS Ks </optionVal>
                     </optionList>
                 </parameterDefinition>
-                <parameterDefinition id="ABMAG" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                <parameterDefinition id="ABMAG" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
                                      fileRef="file"
                                      localFileName="GalaxevOut.1ABmag">
                     <name>AB Magnitudes</name>
@@ -1032,7 +843,7 @@
 SDSS filters as function of galaxy Age</description>
                     <ucd/>
                 </parameterDefinition>
-                <parameterDefinition id="VEGAMAGS" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                <parameterDefinition id="VEGAMAGS" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
                                      fileRef="file"
                                      localFileName="GalaxevOut.1color">
                     <name>Vega Colours</name>
@@ -1040,14 +851,14 @@ SDSS filters as function of galaxy Age</description>
 (Vega) as function of galaxy Age in standard filters</description>
                     <ucd/>
                 </parameterDefinition>
-                <parameterDefinition id="OTHERMAGS" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                <parameterDefinition id="OTHERMAGS" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
                                      fileRef="file"
                                      localFileName="GalaxevOut.2color">
                     <name>Other Magnitudes</name>
                     <description>mags and colours with more filter sets</description>
                     <ucd/>
                 </parameterDefinition>
-                <parameterDefinition id="SPECTRA" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                <parameterDefinition id="SPECTRA" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
                                      fileRef="file"
                                      localFileName="GalaxevOut.161">
                     <name>Spectra at Ages</name>
@@ -1055,7 +866,7 @@ SDSS filters as function of galaxy Age</description>
 &amp; fluxes at chosen ages).</description>
                     <ucd/>
                 </parameterDefinition>
-                <parameterDefinition id="MAGZF1" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                <parameterDefinition id="MAGZF1" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
                                      fileRef="file"
                                      localFileName="GalaxevOut.magnitude_FILTER1">
                     <name>Magnitudes Filter 1</name>
@@ -1063,7 +874,7 @@ SDSS filters as function of galaxy Age</description>
 redshift evolution in FILTER1</description>
                     <ucd/>
                 </parameterDefinition>
-                <parameterDefinition id="MAGZF2" xsi:type="impl:CommandLineParameterDefinition" type="binary"
+                <parameterDefinition id="MAGZF2" xsi:type="ceaimp:CommandLineParameterDefinition" type="binary"
                                      fileRef="file"
                                      localFileName="GalaxevOut.magnitude_FILTER2">
                     <name>Magnitudes Filter 2</name>
@@ -1118,11 +929,11 @@ redshift evolution in FILTER2</description>
                         <pref ref="VEGAMAGS" minOccurs="0"/>
                         <pref ref="OTHERMAGS" minOccurs="0"/>
                         <pref ref="MAGZF1" minOccurs="0"/>
+                        <pref ref="MAGZF2" minOccurs="0"/>
                         <pref ref="SPECTRA" minOccurs="0"/>
                     </output>
                 </interfaceDefinition>
             </interfaces>
-        <executionPath>/Users/pharriso/Work/tools/bc03/rungalaxev.py</executionPath>
+            <executionPath>/home/applications//tools/bc03/rungalaxev.py</executionPath>
         </applicationDefinition>
-    </impl:CeaApplication>
-</impl:CECConfig>
+    </ceaimp:CeaApplication>
