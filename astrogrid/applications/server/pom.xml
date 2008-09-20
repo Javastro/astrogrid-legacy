@@ -8,12 +8,18 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-server</artifactId><!--  would be better to rename to astrogrid-cea-common -->
   <name>CEA common library</name>
-  <version>2008.2-SNAPSHOT</version>
+  <version>2008.2</version>
   <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2008.2-SNAPSHOT</version>
+      <version>2008.2</version>
   </parent>
+  <scm>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/server/</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/applications/server/</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/applications/server/</url>
+      <tag>2008_2</tag>
+  </scm>
   
   <packaging>jar</packaging>
   <description>A class library from which CEA services may be made.</description>
@@ -61,6 +67,10 @@
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-common</artifactId>
+       <version>2009.1-SNAPSHOT</version>
+       <exclusions>
+          <exclusion><artifactId>picocontainer</artifactId><groupId>picocontainer</groupId></exclusion>
+       </exclusions>
     </dependency>
     <dependency>
        <groupId>org.astrogrid</groupId>
@@ -138,7 +148,7 @@
     <dependency>
        <groupId>org.astrogrid</groupId><!-- do I need this -->
        <artifactId>astrogrid-base-ws</artifactId>
-       <version>1.4</version>
+       <version>2008.2</version>
        <type>pom</type>
     </dependency>
     <dependency>
@@ -165,12 +175,12 @@
        <version>2.5.2</version>
        <scope>test</scope>
     </dependency>
-    <dependency>
+ <!--  seem to need this for the security to work - this must be a bug-->  <dependency>
        <groupId>xerces</groupId>
        <artifactId>xercesImpl</artifactId>
        <version>2.8.1</version>
        <type>jar</type>
-    </dependency>
+    </dependency> 
     <dependency>
        <groupId>regexp</groupId>
        <artifactId>regexp</artifactId>
@@ -226,6 +236,12 @@
        <groupId>net.sourceforge.junitee</groupId>
        <artifactId>junite2</artifactId>
        <version>2.0.0</version>
+       <exclusions>
+          <exclusion>
+             <artifactId>ant</artifactId>
+             <groupId>ant</groupId>
+          </exclusion>
+       </exclusions>
     </dependency>
     <dependency>
        <groupId>javax.servlet</groupId>
@@ -269,19 +285,22 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.6</version>
         </dependency>
+          <dependency>
+          	<groupId>commons-httpclient</groupId>
+          	<artifactId>commons-httpclient</artifactId>
+          	<version>3.0.1</version>
+          </dependency>
     
    
  </dependencies>
  <profiles>
      <profile > <!--  profile needed only because junitee for junit4 is not in the main repos -->
         <id>junitee</id>
-        
         <repositories>
            <repository >
            <id>juniteerepo</id>
            <name>repository for junitee</name>
            <url>http://junitee.sourceforge.net/repository/</url>
-           
            </repository>
         </repositories>
      </profile>
