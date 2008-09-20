@@ -13,12 +13,18 @@
       <version>2008.2</version>  
     </parent>
   <name>CEA CEC web server</name>
-  <version>2008.2-SNAPSHOT</version>
+  <version>2008.2</version>
   <description>A CEA application-server for running applications. The service provides
     CEA's standard SOAP interface, "CommonExecutionController" and a UWS interface.</description>
   <properties>
    <astrogrid.name>applications/commandline</astrogrid.name>
   </properties>
+  <scm>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/commandline/</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/applications/commandline/</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/applications/commandline/</url>
+      <tag>2008_2</tag>
+  </scm>
     
   <build>
     <sourceDirectory>src/java</sourceDirectory>
@@ -132,13 +138,13 @@
      <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-cea-server</artifactId>
-        <version>2008.2-SNAPSHOT</version>
+        <version>2008.2</version>
      </dependency>
  
      <dependency><!-- these are the test classes - needed for the self tests -->
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-cea-server</artifactId>
-        <version>2008.2-SNAPSHOT</version>
+        <version>2008.2</version>
         <classifier>tests</classifier>
      </dependency>
      
