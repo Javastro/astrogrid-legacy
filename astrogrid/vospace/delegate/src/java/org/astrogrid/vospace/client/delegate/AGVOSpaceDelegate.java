@@ -15,6 +15,7 @@
  */
 package org.astrogrid.vospace.client.delegate ;
 
+import org.astrogrid.vospace.v11.client.system.SystemDelegate;
 import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
 
 /**
@@ -22,7 +23,7 @@ import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
  *
  */
 public interface AGVOSpaceDelegate
-extends StreamingDelegate
+extends SystemDelegate, StreamingDelegate
     {
 
     }

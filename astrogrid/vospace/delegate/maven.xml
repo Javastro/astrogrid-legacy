@@ -121,7 +121,7 @@
         <!--+
             | Create our artifact jar.
             +-->
-        <attainGoal name="astrogrid-install-artifact"/>
+        <attainGoal name="install-artifact"/>
         <!--+
             | Deploy our artifact jar.
             +-->

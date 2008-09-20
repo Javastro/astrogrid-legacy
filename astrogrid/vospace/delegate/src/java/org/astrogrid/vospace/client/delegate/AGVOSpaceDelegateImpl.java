@@ -21,9 +21,7 @@ import org.apache.commons.logging.LogFactory ;
 import org.astrogrid.security.SecurityGuard;
 
 import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolver;
-import org.astrogrid.vospace.v11.client.service.ServiceDelegateResolverImpl;
 
-import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
 import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateImpl;
 
 /**

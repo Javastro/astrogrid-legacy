@@ -15,12 +15,8 @@
  */
 package org.astrogrid.vospace.client.delegate ;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.astrogrid.security.SecurityGuard;
 
-import org.astrogrid.vospace.v11.client.streaming.StreamingDelegate;
 import org.astrogrid.vospace.v11.client.streaming.StreamingDelegateResolver;
 
 /**
