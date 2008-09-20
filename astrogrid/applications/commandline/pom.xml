@@ -23,7 +23,7 @@
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/commandline/</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/applications/commandline/</developerConnection>
       <url>http://www.astrogrid.org/viewcvs/astrogrid/applications/commandline/</url>
-      <tag>2008_2</tag>
+      <tag>cea_2008_2</tag>
   </scm>
     
   <build>
