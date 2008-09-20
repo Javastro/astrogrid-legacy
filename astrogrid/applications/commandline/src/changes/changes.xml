@@ -14,7 +14,7 @@
           indirect parameters can be specified with the vos: VOSpace protocol.
        </action>
     </release>
-    <release version="2007.2.01" description="VOSI, queuing, error reporting">
+    <release version="2007.2.01" description="VOSI, error reporting">
       <action dev="gtr" type="add" issue="2320">
         <p>
           If an application ends in the ERROR phase, a result (like an output
@@ -25,14 +25,6 @@
       <action dev="gtr" type="update" issue="2305">
         <p>
           Many dependencies have been updated.
-        </p>
-      </action>
-      <action dev="gtr" type="add" issue="2211">
-        <p>
-          Queuing of jobs is implemented, with a time-out imposed on
-          individual jobs. By default, up to five jobs execute in parallel,
-          with the rest queued, and jobs time out one day after start of
-          execution. Both parameters are configurable.
         </p>
       </action>
       

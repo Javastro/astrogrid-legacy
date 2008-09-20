@@ -9,10 +9,10 @@
          <p>This is a significant upgrade of the CEA server to include UWS support and to update the schema - see the bugzilla ticket (and dependencies for more detail)
          Some other important changes include</p>
          <ul>
-            <li>build with maven 2</li>
+            <li>build with maven 2 with centralized base project again.</li>
             <li>Java 1.5 is the minimum supported version</li>
             <li>Spring used as the IOC container</li>
-            <li>project reorganized so that there is only single CEC</li>
+            <li>project reorganized so that there is only single CEC - it can be configured to be serve commandline, http and javaclass applications simultaneously</li>
          </ul>
       </action>
     </release>

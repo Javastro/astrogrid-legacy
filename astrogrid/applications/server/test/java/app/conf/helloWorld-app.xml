@@ -3,8 +3,8 @@
  xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
  xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
- xsi:schemaLocation="http://www.ivoa.net/xml/RegistryInterface/v1.0 http://www.ivoa.net/xml/RegistryInterface/RegistryInterface-v1.0.xsd
- http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd">
+ xsi:schemaLocation=" http://www.astrogrid.org/schema/CEAImplementation/v2.0 
+     ../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd">
     <title>An http-get HelloWorld App</title>
     <shortName>HelloWorld</shortName>
     <identifier>ivo://org.astrogrid.test/HelloWorld</identifier>
