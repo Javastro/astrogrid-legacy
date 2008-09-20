@@ -59,12 +59,12 @@
     <property name="temporaryFilesDirectory" value="${cea.base.dir}/temp/" />
 </bean>
 
-<!-- this execution policy needs to be set to have longer times in a production environment -->
+<!-- this execution policy needs to be reviewed in a production environment -->
 <bean id="ExecutionPolicy" class="org.astrogrid.applications.manager.ConfigurableExecutionPolicy">
-<property name="killPeriod" value="10" />
-<property name="maxRunTime" value="20" />   
-<property name="defaultLifetime" value="400" />
-<property name="destroyPeriod" value="60" />
+<property name="killPeriod" value="3600" /> <!-- 1 hr -->
+<property name="maxRunTime" value="86400" /> <!-- 1 day -->  
+<property name="defaultLifetime" value="8640000" /> <!-- 100 days -->
+<property name="destroyPeriod" value="3600" /> <!-- 1 hr -->
 </bean>
 
 <bean id="ApplicationDescriptionLibrary" class="org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary" autowire="no" >
@@ -74,7 +74,7 @@
   <!-- the commandline applications are read by this library -->
   <bean class="org.astrogrid.applications.description.ConfigFileReadingDescriptionLibrary">
    </bean>
-  <!-- this library simply gathers those applications specified by the applications property  -->
+  <!-- this library simply gathers those applications specified by the applications property  
   <bean class="org.astrogrid.applications.description.SimpleApplicationDescriptionLibrary">
     <property name="applications">
        <list>
@@ -83,7 +83,7 @@
          </bean>
        </list>
     </property>
-  </bean>
+  </bean>-->
    
   </list>
   </constructor-arg>   
