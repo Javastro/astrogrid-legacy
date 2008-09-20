@@ -1,5 +1,5 @@
 /*
- * $Id: UWSUtils.java,v 1.5 2008/09/18 08:46:45 pah Exp $
+ * $Id: UWSUtils.java,v 1.6 2008/09/20 15:54:01 pah Exp $
  * 
  * Created on 28 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -15,7 +15,6 @@ package org.astrogrid.applications.uws;
 import java.net.MalformedURLException;
 import java.security.cert.CertificateException;
 
-import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -48,8 +47,9 @@ public class UWSUtils {
 	    throws MalformedURLException {
 	StringBuffer redirectURL = new StringBuffer(request.getContextPath());
 	redirectURL.append(request.getServletPath());
-	redirectURL.append("/jobs/");
+	redirectURL.append("/jobs");
 	if (jobid != null) {
+	    redirectURL.append("/");
 	    redirectURL.append(jobid);
 	}
 	java.net.URL rURL = new java.net.URL("http", request.getServerName(),
@@ -70,6 +70,9 @@ public class UWSUtils {
 
 /*
  * $Log: UWSUtils.java,v $
+ * Revision 1.6  2008/09/20 15:54:01  pah
+ * clean up jobs redirect to not have trailing slash
+ *
  * Revision 1.5  2008/09/18 08:46:45  pah
  * improved javadoc
  *
