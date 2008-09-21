@@ -60,19 +60,19 @@ class Hits:
 		self.list = []
 		self.finished = False
 
-	def push( self, serviceName, vot ):
+	def push( self, serviceName, builtRows ):
 		self.lock.acquire()
 		if self.finished == True:
-			print 'Warning. Votable ignored for: ' + serviceName 
+			print 'Warning. Results ignored for: ' + serviceName 
 		else:
-			dataRows = vot.getDataRows()	
-			for row in dataRows:
-				cols = [ serviceName ]
-				vals = vot.getData( row )
-				for val in vals:
-					cols.append( val )
-				self.list.append( cols )
-#			print 'Hits: ', self.list
+#			dataRows = vot.getDataRows()	
+#			for row in dataRows:
+#				cols = [ serviceName ]
+#				vals = vot.getData( row )
+#				for val in vals:
+#					cols.append( val )
+#				self.list.append( cols )
+			self.list.append( builtRows )
 		self.lock.release()
 		return
 
@@ -148,7 +148,7 @@ def validateArgs():
 # two alternative services providing images for each source, that would
 # make 6 ivorns altogether.
 #
-# Returns a two-dimensional list of service information
+# Returns a list of service objects
 #
 #
 def processIvornFile( filePath ):
@@ -201,7 +201,7 @@ def processIvornFile( filePath ):
 
 #
 # Search function to pass to thread pool.
-# ( service_tag, i[ SI_CONE ], i[SI_TABLE], ra, dec, radius, terminateFlag )
+#
 def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 	if terminateFlag.isSet():
 		print service.name + ' has been terminated prematurely!'
@@ -214,15 +214,15 @@ def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 #				print service.name + ' enters: utils.read_votable()'
 				vot = utils.read_votable( res, ofmt='votable' )
 #				print service.name + ' exits: utils.read_votable()'
-				raColIndex = vot.getColumnIdx ( 'POS_EQ_RA_MAIN' )
-				if raColIndex < 0 :
+#				raColIndex = vot.getColumnIdx ( 'POS_EQ_RA_MAIN' )
+#				if raColIndex < 0 :
+#					print service.name + ': no hits!'
+				if len( vot.getDataRows() ) == 0 : 
 					print service.name + ': no hits!'
-				elif len( vot.getDataRows() ) == 0 : 
-					print service.name + ': no hits!'
+				elif terminateFlag.isSet():
+					print service.name + ' has been terminated prematurely!'
+					return
 				else:
-					if terminateFlag.isSet():
-						print service.name + ' has been terminated prematurely!'
-						return
 					eval( service.searchFunctionName + '( service, ra, dec, radius, vot, terminateFlag )' )
 			except Exception, e1:
 				print service.name + ': bad vot: ', e1
@@ -236,46 +236,130 @@ def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 
 #
 #
+# Returned values: RAJ2000 DEJ2000 umag gmag rmag imag zmag
+# Columns needed for criteria: cl == 6 for stars, 3 for galaxies
 def searchSDSS( service, ra, dec, radius, vot, terminateFlag ):
-	global gals
 	print 'searchSDSS enter'
+	global stars, gals
 	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
-	gals.push( service.name, vot )
+	#
+	# We decide between stars and galaxies by using the class column
+	clColIndex = vot.getColumnIdx( 'cl' )
+	#
+	# Here are the rest of the indices
+	raColIndex = vot.getColumnIdx( 'RAJ2000' )
+	decColIndex = vot.getColumnIdx( 'DEJ2000' )
+	umagColIndex = vot.getColumnIdx( 'umag' )
+	gmagColIndex = vot.getColumnIdx( 'gmag' )
+	rmagColIndex = vot.getColumnIdx( 'rmag' )
+	imagColIndex = vot.getColumnIdx( 'imag' )
+	zmagColIndex = vot.getColumnIdx( 'zmag' )
+	#
+	# Form local lists of stars and galaxies
+	starList = []
+	galList = []
+	#
+	# Locate the data rows
+	dataRows = vot.getDataRows()
+	for row in dataRows:
+		cells = vot.getData(row)
+		rc = cells[ clColIndex ]
+		#
+		# Only proceed if a star or galaxy...
+		if rc != '3' and rc != '6':
+			continue
+		# Extract the requested data
+		# and add the service name to each row...
+		subRow = [ service.name, \
+               str( cells[ raColIndex ] ), \
+               str( cells[ decColIndex ] ), \
+               str( cells[ umagColIndex ] ), \
+               str( cells[ gmagColIndex ] ), \
+               str( cells[ rmagColIndex ] ), \
+               str( cells[ imagColIndex ] ), \
+               str( cells[ zmagColIndex ] ) ]
+		if rc == '3':
+			galList.append( subRow )
+		else:
+			starList.append( subRow )
+	#
+	# Now append found data to the overall collections....
+	if len( starList ) > 0:
+		stars.push( service.name, starList )
+	if len( galList ) > 0:
+		gals.push( service.name, galList )
 	print 'searchSDSS exit'
+	return
 
+#
+# RAJ2000 DEJ2000 rmag rDiam bmag bDiam rClass bClass APM-ID
 def searchAPM( service, ra, dec, radius, vot, terminateFlag ):
 	global gals
 	print 'searchAPM enter'
 	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
-	gals.push( service.name, vot )
+	#
+	# Here are the column indices
+	raColIndex = vot.getColumnIdx( 'RAJ2000' )
+	decColIndex = vot.getColumnIdx( 'DEJ2000' )
+	rmagColIndex = vot.getColumnIdx( 'rmag' )
+	rDiamColIndex = vot.getColumnIdx( 'rDiam' )
+	bmagColIndex = vot.getColumnIdx( 'bmag' )
+	bDiamColIndex = vot.getColumnIdx( 'bDiam' )
+	rClassColIndex = vot.getColumnIdx( 'rClass' )
+	bClassColIndex = vot.getColumnIdx( 'bClass' )
+	APMIDColIndex = vot.getColumnIdx( 'APM-ID' )
+	#
+	# Form local lists of galaxies
+	galList = []
+	#
+	# Locate the data rows
+	dataRows = vot.getDataRows()
+	for row in dataRows:
+		cells = vot.getData(row)
+		# Extract the requested data
+		# and add the service name to each row...
+		subRow = [ service.name, \
+               str( cells[ raColIndex ] ), \
+               str( cells[ decColIndex ] ), \
+               str( cells[ rmagColIndex ] ), \
+               str( cells[ rDiamColIndex ] ), \
+               str( cells[ bmagColIndex ] ), \
+               str( cells[ rClassColIndex ] ), \
+               str( cells[ bClassColIndex ] ) ]
+		galList.append( subRow )
+	#
+	# Now append found data to the overall collections....
+	if len( galList ) > 0:
+		gals.push( service.name, galList )
 	print 'searchAPM exit'
+	return
+
 
 def searchPSCz( service, ra, dec, radius, vot, terminateFlag ):
 	global gals
 	print 'searchPSCz enter'
 	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
-	gals.push( service.name, vot )
+
+
+
 	print 'searchPSCz exit'
 
 def searchUSNO( service, ra, dec, radius, vot, terminateFlag ):
 	global gals
 	print 'searchUSNO enter'
 	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
-	gals.push( service.name, vot )
 	print 'searchUSNO exit'
 
 def search6DF( service, ra, dec, radius, vot, terminateFlag ):
 	global gals
 	print 'search6DF enter'
 	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
-	gals.push( service.name, vot )
 	print 'search6DF exit'
 
 def search2MASS( service, ra, dec, radius, vot, terminateFlag ):
 	global stars
 	print 'search2MASS enter'
 	print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
-	stars.push( service.name, vot )
 	print 'search2MASS exit'
 
 
@@ -353,8 +437,8 @@ while 1 :
 	if p[3]==serviceCount: break
     
 pool.stop_threads()
-print '========================================= stars ==========================================='
-print stars.getHits()
-print '======================================= galaxies =========================================='
-print gals.getHits()
+#print '========================================= stars ==========================================='
+#print stars.getHits()
+#print '======================================= galaxies =========================================='
+#print gals.getHits()
 print( 'Finished at '  + time.strftime('%T') ) 
