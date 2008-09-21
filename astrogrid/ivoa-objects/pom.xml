@@ -11,8 +11,8 @@
    <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/ivoa/ivoa-objects/</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:ivoa/ivoa-objects/</developerConnection>
-      <url>http://www.astrogrid.org/viewcvs/astrogrid/</url>
-      <tag>2008_2</tag>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/ivoa/ivoa-objects/</url>
+      <tag>ivoa_2008_2</tag>
    </scm>
    
    <packaging>jar</packaging>
@@ -42,12 +42,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-             <dependency>
+    <!--     <dependency>
          <groupId>org.codehaus.xfire</groupId>
          <artifactId>xfire-generator</artifactId>
          <version>1.2.6</version>
          <scope>provided</scope>
-       </dependency>
+       </dependency>-->
        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
