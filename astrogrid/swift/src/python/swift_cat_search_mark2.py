@@ -232,7 +232,7 @@ def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 #
 # Returned values: RAJ2000 DEJ2000 umag gmag rmag imag zmag
 # Columns needed for criteria: cl == 6 for stars, 3 for galaxies
-def _searchSDSS( service, ra, dec, radius, vot ):
+def searchSDSS( service, ra, dec, radius, vot ):
 	global log, stars, gals
 	if log: print 'searchSDSS enter'
 	if log: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
@@ -279,46 +279,107 @@ def _searchSDSS( service, ra, dec, radius, vot ):
 	if log: print 'searchSDSS exit'
 	return
 
-#
-# Returned values: RAJ2000 DEJ2000 umag gmag rmag imag zmag
-# Columns needed for criteria: cl == 6 for stars, 3 for galaxies
-def searchSDSS( service, ra, dec, radius, vot ):
+def searchUSNO( service, ra, dec, radius, vot ):
 	global log, stars, gals
-	if log: print 'searchSDSS enter'
+	if log: print 'searchUSNO enter'
+	if log: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
-	# Retrieve generic data:
-	hitList = genericRetrieval( service, ra, dec, radius, vot )
+	# We need to decide between stars and galaxies.
+	# These are just the indices for the criteria...
+	b1cIndex = vot.getColumnIdx( 'B1s/g' ) 
+	b2cIndex = vot.getColumnIdx( 'B2s/g' ) 
+	r1cIndex = vot.getColumnIdx( 'R1s/g' ) 
+	r2cIndex = vot.getColumnIdx( 'R2s/g' ) 
+	icIndex = vot.getColumnIdx( 'Is/g' ) 
 	#
-	# And a filtered list:
+	# Here are the rest of the indices, found
+	# using the votable and the column names 
+	# passed to us in the control file...	
+	colIndices = []
+	for column in service.columns:
+		colIndices.append( vot.getColumnIdx( column ) )
+	#
+	# Form local lists of stars and galaxies
 	starList = []
 	galList = []
 	#
-	# We decide between stars and galaxies by using the class column
-	clColIndex = vot.getColumnIdx( 'cl' ) + 1
-	for row in hitList:
-		rc = row[ clColIndex ]
+	# Locate the data rows
+	dataRows = vot.getDataRows()
+	for row in dataRows:
+		cells = vot.getData(row)
+		#
+		# Get data to decide between stars and galaxies
+		# and test for both stars and galaxies!
+		b1c = cells[ b1cIndex ] 
+		b2c = cells[ b2cIndex ] 
+		r1c = cells[ r1cIndex ] 
+		r2c = cells[ r2cIndex ] 
+		ic = cells[ icIndex ] 
+		bStars = testForStarsSDSS( b1c, b2c, r1c, r2c, ic )
+		bGalaxies = testForGalsSDSS( b1c, b2c, r1c, r2c, ic )
 		#
 		# Only proceed if a star or galaxy...
-		if rc != '3' and rc != '6':
+		if bStars == False and bGalaxies == False :
 			continue
 		# Begin each constructed row with the service name 
 		# and then append all the data requested to each row...
-		
-		if rc == '3':
-			galList.append( row )
+		subRow = [ service.name ]
+		for index in colIndices:
+			subRow.append( cells[ index ] )
+		#
+		# Are stars and galaxies mutually exclusive,
+		# or can there be an element of doubt?
+		if bGalaxies:
+			galList.append( subRow )
+		elif bStars:
+			starList.append( subRow )
 		else:
-			starList.append( row )
+			if log: print'Warning. An SDSS hit does not fall into the star or galaxy class.'
 	#
 	# Now append found data to the overall collections....
 	if len( starList ) > 0:
 		stars.push( service.name, starList )
 	if len( galList ) > 0:
 		gals.push( service.name, galList )
-	if log: print 'searchSDSS exit'
+	if log: print 'searchUSNO exit'
 	return
 
 #
 #
+def testForStarsSDSS( b1c, b2c, r1c, r2c, ic ):
+	if log: print 'testForStarsSDSS() enter'
+	#
+	# If either no s/g are set, OR any of them are >= 6, call it a star
+	# NOTE. There is ambiguity in the original script regarding star selection!!!
+	clist = [ b1c, b2c, r1c, r2c, ic ]
+	set = False
+	for c in clist:
+		if c != None:
+			if c >= 6:
+				set = True
+				break
+	if log: print 'testForStarsSDSS() exit'
+	return set
+
+def testForGalsSDSS( b1c, b2c, r1c, r2c, ic ):
+	if log: print 'testForGalsSDSS() enter'
+	#
+  # If at least 1 s/g is set, and all those which are set are <6, call it gal
+	clist = [ b1c, b2c, r1c, r2c, ic ]
+	set = False
+	for c in clist:
+		if c != None:
+			if c < 6:
+				set = True
+			else:
+				set = False
+				break
+	if log: print 'testForGalsSDSS() exit'
+	return set
+
+
+#
+# Searches for unfiltered stars.
 def searchStars( service, ra, dec, radius, vot ):
 	global log, stars
 	if log: print 'searchStars enter'
@@ -326,19 +387,12 @@ def searchStars( service, ra, dec, radius, vot ):
 	if log: print 'searchStars exit'
 	return
 #
-# 
+# Searches for unfiltered galaxies.
 def searchGalaxies( service, ra, dec, radius, vot ):
 	global log, gals
 	if log: print 'searchGalaxies enter'
 	gals.push( service.name, genericRetrieval( service, ra, dec, radius, vot ) )
 	if log: print 'searchGalaxies exit'
-	return
-
-def searchUSNO( service, ra, dec, radius, vot ):
-	global gals
-	if log: print 'searchUSNO enter'
-	if log: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
-	if log: print 'searchUSNO exit'
 	return
 
 def genericRetrieval( service, ra, dec, radius, vot ):
