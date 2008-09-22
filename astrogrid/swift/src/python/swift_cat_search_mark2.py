@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import string, sys, os, time, thread
+from math import *
 from astrogrid import acr
 from astrogrid import ConeSearch
 from astrogrid import utils
@@ -36,6 +37,14 @@ class Service:
 		self.coneSearch = None         # The conesearch itself is created later
 ### end of class Service ##########################################
 
+def cmpOnSphericalDistance( x, y ):
+	if x[1] > y[1] :
+		return 1
+	elif x[1] < y[1] :
+		return -1
+	else:
+		return 0
+
 ###################################################################
 # A class to hold thread safe collections of stars / galaxies
 # 
@@ -51,7 +60,8 @@ class Hits:
 		if self.finished == True:
 			print 'Warning. Results ignored for: ' + serviceName 
 		else:
-			self.list.append( builtRows )
+			for row in builtRows:
+				self.list.append( row )
 		self.lock.release()
 		return
 
@@ -64,6 +74,7 @@ class Hits:
 		self.lock.release()
 		#
 		# Good place to sort would be here!
+		self.list.sort( cmpOnSphericalDistance )
 		return self.list
 
 	#
@@ -76,9 +87,8 @@ class Hits:
 			print '========================================= '\
             + myDesignation\
             + ' ==========================================='
-			for collection in self.list:
-				for row in collection:
-					print row
+			for row in self.list:
+				print row
 ### end of class Hits ############################################
 
 #
@@ -263,6 +273,7 @@ def searchSDSS( service, ra, dec, radius, vot ):
 		# Begin each constructed row with the service name 
 		# and then append all the data requested to each row...
 		subRow = [ service.name ]
+		subRow.append( sphericalDistance( ra, dec, cells[0], cells[1] ) )
 		for index in colIndices:
 			subRow.append( cells[ index ] )
 
@@ -324,6 +335,7 @@ def searchUSNO( service, ra, dec, radius, vot ):
 		# Begin each constructed row with the service name 
 		# and then append all the data requested to each row...
 		subRow = [ service.name ]
+		subRow.append( sphericalDistance( ra, dec, cells[0], cells[1] ) )
 		for index in colIndices:
 			subRow.append( cells[ index ] )
 		#
@@ -347,7 +359,7 @@ def searchUSNO( service, ra, dec, radius, vot ):
 #
 #
 def testForStarsSDSS( b1c, b2c, r1c, r2c, ic ):
-	if log: print 'testForStarsSDSS() enter'
+#	if log: print 'testForStarsSDSS() enter'
 	#
 	# If either no s/g are set, OR any of them are >= 6, call it a star
 	# NOTE. There is ambiguity in the original script regarding star selection!!!
@@ -358,11 +370,11 @@ def testForStarsSDSS( b1c, b2c, r1c, r2c, ic ):
 			if c >= 6:
 				set = True
 				break
-	if log: print 'testForStarsSDSS() exit'
+#	if log: print 'testForStarsSDSS() exit'
 	return set
 
 def testForGalsSDSS( b1c, b2c, r1c, r2c, ic ):
-	if log: print 'testForGalsSDSS() enter'
+#	if log: print 'testForGalsSDSS() enter'
 	#
   # If at least 1 s/g is set, and all those which are set are <6, call it gal
 	clist = [ b1c, b2c, r1c, r2c, ic ]
@@ -374,7 +386,7 @@ def testForGalsSDSS( b1c, b2c, r1c, r2c, ic ):
 			else:
 				set = False
 				break
-	if log: print 'testForGalsSDSS() exit'
+#	if log: print 'testForGalsSDSS() exit'
 	return set
 
 
@@ -417,6 +429,7 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 		# Begin each constructed row with the service name 
 		# and then append all the data requested to each row...
 		subRow = [ service.name ]
+		subRow.append( sphericalDistance( ra, dec, cells[0], cells[1] ) )
 		for index in colIndices:
 			subRow.append( cells[ index ] )
 		hitList.append( subRow )
@@ -446,7 +459,26 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 #
 #Convert this angle to degrees.
 def sphericalDistance( ra, dec, hitRa, hitDec ):
-	return
+	fRA = float( ra )
+	fDEC = float( dec )
+	fHitRA = float( hitRa )
+	fHitDEC = float( hitDec )
+	sineDistanceAngle = \
+	( sin( radians(fDEC) ) * sin( radians(fHitDEC) ) ) + \
+	( cos( radians(fDEC) ) * cos( radians(fHitDEC) ) * cos( radians(fRA - fHitRA) ) )
+	sd = degrees( asin( sineDistanceAngle ) ) 
+	return sd/10
+
+def sphericalDistance2( ra, dec, hitRa, hitDec ):
+	fRA = float( ra )
+	fDEC = float( dec )
+	fHitRA = float( hitRa )
+	fHitDEC = float( hitDec )
+	cosineDistanceAngle = \
+	( cos( radians(90 - fDEC) ) * cos( radians(90 - fHitDEC) ) ) + \
+	( sin( radians(90 - fDEC) ) * cos( radians(90 - fHitDEC) ) * cos( radians(fRA - fHitRA) ) )
+	sd = degrees( acos( cosineDistanceAngle ) ) 
+	return sd
 
 #####################################################
 #    Mainline                                       #
@@ -519,6 +551,8 @@ while 1 :
 	if p[3]==serviceCount: break
     
 pool.stop_threads()
+stars.getHits()
 stars.debug( 'stars' )
+gals.getHits()
 gals.debug( 'galaxies' )
 print( 'Finished at '  + time.strftime('%T') ) 
