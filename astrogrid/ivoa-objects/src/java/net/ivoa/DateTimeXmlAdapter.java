@@ -1,5 +1,5 @@
 /*
- * $Id: DateTimeXmlAdapter.java,v 1.1 2008/09/17 13:36:20 pah Exp $
+ * $Id: DateTimeXmlAdapter.java,v 1.2 2008/09/22 22:16:56 pah Exp $
  * 
  * Created on 14 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -27,7 +27,12 @@ public class DateTimeXmlAdapter extends XmlAdapter<Date	, DateTime> {
 
     @Override
     public DateTime unmarshal(Date date) throws Exception {
+        if(date != null){
         return new DateTime(date.getTime());
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -45,6 +50,9 @@ public class DateTimeXmlAdapter extends XmlAdapter<Date	, DateTime> {
 
 /*
  * $Log: DateTimeXmlAdapter.java,v $
+ * Revision 1.2  2008/09/22 22:16:56  pah
+ * make deal with nulls
+ *
  * Revision 1.1  2008/09/17 13:36:20  pah
  * first version of JAXB objects generated from schema
  *
