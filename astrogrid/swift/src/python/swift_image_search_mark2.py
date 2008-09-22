@@ -54,7 +54,6 @@ class Termination:
 
 	def isSet( self ):
 		self.lock.acquire()
-		flagValue = False # Am I being neurotic here?
 		flagValue = self.flag[0]
 		self.lock.release()
 		return flagValue
@@ -169,11 +168,11 @@ def retrieveImages( image_directory, vot, maximages, terminate ) :
 	formatIdx = vot.getColumnIdx ('VOX:Image_Format')
 	if urlColIdx < 0:
 		print "No access reference found"
-		return
+		return 0
 	
+	# Examine this. There's something lax here...
 	dataRows = vot.getDataRows ()
 	getData = vot.getData
-
 	countImages = len( dataRows )
 	print "Number of records: ", countImages
 	if countImages > 0:

@@ -226,6 +226,7 @@ def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 					return
 				else:
 					if log: print 'About to eval'
+					vot.printAllNodes()
 					eval( service.searchFunctionName + '( service, ra, dec, radius, vot )' )
 			except Exception, e1:
 				print service.name + ': bad vot: ', e1
@@ -295,6 +296,9 @@ def searchUSNO( service, ra, dec, radius, vot ):
 	if log: print 'searchUSNO enter'
 	if log: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
+	# Get index for spherical distance
+	_rIndex = vot.getColumnIdx( '_r' )
+	#
 	# We need to decide between stars and galaxies.
 	# These are just the indices for the criteria...
 	b1cIndex = vot.getColumnIdx( 'B1s/g' ) 
@@ -308,7 +312,11 @@ def searchUSNO( service, ra, dec, radius, vot ):
 	# passed to us in the control file...	
 	colIndices = []
 	for column in service.columns:
-		colIndices.append( vot.getColumnIdx( column ) )
+		i = vot.getColumnIdx( column )
+		if log:
+			print 'column name: ' + column, 'column index: ' + str( i )
+		colIndices.append( i )
+
 	#
 	# Form local lists of stars and galaxies
 	starList = []
@@ -326,8 +334,8 @@ def searchUSNO( service, ra, dec, radius, vot ):
 		r1c = cells[ r1cIndex ] 
 		r2c = cells[ r2cIndex ] 
 		ic = cells[ icIndex ] 
-		bStars = testForStarsSDSS( b1c, b2c, r1c, r2c, ic )
-		bGalaxies = testForGalsSDSS( b1c, b2c, r1c, r2c, ic )
+		bStars = testForStarsUSNO( b1c, b2c, r1c, r2c, ic )
+		bGalaxies = testForGalsUSNO( b1c, b2c, r1c, r2c, ic )
 		#
 		# Only proceed if a star or galaxy...
 		if bStars == False and bGalaxies == False :
@@ -335,7 +343,7 @@ def searchUSNO( service, ra, dec, radius, vot ):
 		# Begin each constructed row with the service name 
 		# and then append all the data requested to each row...
 		subRow = [ service.name ]
-		subRow.append( sphericalDistance( ra, dec, cells[0], cells[1] ) )
+		subRow.append( cells[ _rIndex ] )
 		for index in colIndices:
 			subRow.append( cells[ index ] )
 		#
@@ -358,23 +366,24 @@ def searchUSNO( service, ra, dec, radius, vot ):
 
 #
 #
-def testForStarsSDSS( b1c, b2c, r1c, r2c, ic ):
-#	if log: print 'testForStarsSDSS() enter'
+def testForStarsUSNO( b1c, b2c, r1c, r2c, ic ):
+#	if log: print 'testForStarsUSNO() enter'
 	#
 	# If either no s/g are set, OR any of them are >= 6, call it a star
 	# NOTE. There is ambiguity in the original script regarding star selection!!!
 	clist = [ b1c, b2c, r1c, r2c, ic ]
+#	if log: print 'clist', clist
 	set = False
 	for c in clist:
 		if c != None:
 			if c >= 6:
 				set = True
 				break
-#	if log: print 'testForStarsSDSS() exit'
+#	if log: print 'testForStarsUSNO() exit'
 	return set
 
-def testForGalsSDSS( b1c, b2c, r1c, r2c, ic ):
-#	if log: print 'testForGalsSDSS() enter'
+def testForGalsUSNO( b1c, b2c, r1c, r2c, ic ):
+#	if log: print 'testForGalsUSNO() enter'
 	#
   # If at least 1 s/g is set, and all those which are set are <6, call it gal
 	clist = [ b1c, b2c, r1c, r2c, ic ]
@@ -386,7 +395,7 @@ def testForGalsSDSS( b1c, b2c, r1c, r2c, ic ):
 			else:
 				set = False
 				break
-#	if log: print 'testForGalsSDSS() exit'
+#	if log: print 'testForGalsUSNO() exit'
 	return set
 
 
@@ -480,6 +489,25 @@ def sphericalDistance2( ra, dec, hitRa, hitDec ):
 	sd = degrees( acos( cosineDistanceAngle ) ) 
 	return sd
 
+def outputResults( directoryPathString, fileName, results ) :
+	try:
+		outfile = file( directoryPathString + '/' + fileName, "w" )
+		# Convert all values to strings...
+#		for row in results:
+#			i = 0
+#			for col in row:
+#				row[i] = str( col )
+#				i += 1
+		# Write each row as one line...
+		for row in results:
+			# Yes, this is code! It produces a comma separated string from the column values
+			line = ','.join( row ) + '\n' 
+			outfile.write( line )
+	except Exception, e:
+		print "Failed to write results for file: ", fileName, e
+	outfile.close()
+	return
+
 #####################################################
 #    Mainline                                       #
 #####################################################
@@ -500,9 +528,6 @@ sources = processIvornFile( ifile )
 #acr.login() 				
 #print 'Logged in at ' + time.strftime('%T') 
 #
-# Create the overall search output directory...
-if log: print( 'Output folder is called ' + odir )
-os.mkdir( odir )
 
 #
 # We have a list of sources and a list of services for each source.
@@ -551,8 +576,19 @@ while 1 :
 	if p[3]==serviceCount: break
     
 pool.stop_threads()
-stars.getHits()
-stars.debug( 'stars' )
-gals.getHits()
-gals.debug( 'galaxies' )
+starHits = stars.getHits()
+galHits = gals.getHits()
+stars.debug( 'STARS' )
+#
+# Create the overall search output directory...
+if len(starHits) > 0 or len(galHits) > 0:
+	if log: print( 'Output folder is called ' + odir )
+	os.mkdir( odir )
+#
+# Write the files...
+if len( starHits ) > 0:
+	outputResults( odir, 'starHits.csv', starHits )
+if len( galHits ) > 0:
+	outputResults( odir, 'galaxyHits.csv', galHits )
+
 print( 'Finished at '  + time.strftime('%T') ) 
