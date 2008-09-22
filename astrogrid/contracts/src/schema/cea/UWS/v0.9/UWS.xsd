@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: UWS.xsd,v 1.2 2008/09/03 15:10:37 pah Exp $ -->
+<!-- $Id: UWS.xsd,v 1.3 2008/09/22 22:17:58 pah Exp $ -->
 <!-- proposal for basic UWS schema - Paul Harrison May 2008 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
    targetNamespace="http://www.ivoa.net/xml/UWS/v0.9.1" xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.1"
@@ -106,8 +106,8 @@
          <xs:element name="jobId" type="uws:JobIdentifier" />
          <xs:element ref="uws:phase" />
          <xs:element ref="uws:quote" maxOccurs="1" minOccurs="0"/>
-         <xs:element name="startTime" type="xs:dateTime" />
-         <xs:element name="endTime" type="xs:dateTime" />
+         <xs:element name="startTime" type="xs:dateTime" nillable="true"/>
+         <xs:element name="endTime" type="xs:dateTime" nillable="true"/>
          <xs:element ref="uws:termination" />
          <xs:element ref="uws:destruction" />
          <xs:element name="errorSummary" type="uws:ErrorSummary" maxOccurs="1" minOccurs="0"></xs:element>
@@ -135,21 +135,21 @@
             the execution phase - returned at /(jobs)/(jobid)/phase
          </xs:documentation>
       </xs:annotation></xs:element>
-   <xs:element name="quote" type="xs:dateTime">
+   <xs:element name="quote" type="xs:dateTime" nillable="true">
       <xs:annotation>
          <xs:documentation>
             A Quote predicts when the job is likely to complete - returned at /(jobs)/(jobid)/quote
             TODO - how to encode "don't know"
          </xs:documentation>
       </xs:annotation></xs:element>
-   <xs:element name="termination" type="xs:dateTime">
+   <xs:element name="termination" type="xs:dateTime" nillable="true">
       <xs:annotation>
          <xs:documentation>
             The time at which the job should be aborted if it is still
             running - returned at /(jobs)/(jobid)/termination
          </xs:documentation>
       </xs:annotation></xs:element>
-   <xs:element name="destruction" type="xs:dateTime">
+   <xs:element name="destruction" type="xs:dateTime" nillable="true">
       <xs:annotation>
          <xs:documentation>
             The time at which the whole job + records + results will be destroyed. returned at /(jobs)/(jobid)/destruction
