@@ -73,6 +73,32 @@ implements AGVOSpaceDelegateResolver
         };
 
     /**
+     * Public constructor, using the default RegistryService (from local AstroGrid config).
+     *
+     */
+    public AGVOSpaceDelegateResolverImpl()
+        {
+        this(
+            inporters,
+            exporters
+            );
+        }
+
+    /**
+     * Public constructor, using the default RegistryService (from local AstroGrid config).
+     * @param inporters An iterable list of InportHandlers.
+     * @param exporters An iterable list of ExportHandlers.
+     *
+     */
+    public AGVOSpaceDelegateResolverImpl(Iterable<InportHandler> inporters, Iterable<ExportHandler> exporters)
+        {
+        super(
+            inporters,
+            exporters
+            );
+        }
+
+    /**
      * Public constructor.
      * @param registry The registry endpoint URL.
      *
@@ -138,7 +164,7 @@ implements AGVOSpaceDelegateResolver
      */
     public AGVOSpaceDelegate resolve()
         {
-        log.debug("AGVOSpaceDelegateResolverImpl.create()");
+        log.debug("AGVOSpaceDelegateResolverImpl.resolve()");
         return new AGVOSpaceDelegateImpl(
             this.resolver()
             );
@@ -151,8 +177,8 @@ implements AGVOSpaceDelegateResolver
      */
     public AGVOSpaceDelegate resolve(SecurityGuard guard)
         {
-        log.debug("AGVOSpaceDelegateResolverImpl.create(SecurityGuard)");
-        log.debug("  Guard [" + guard + "]");
+        log.debug("AGVOSpaceDelegateResolverImpl.resolve(SecurityGuard)");
+        log.debug("  Guard [" + ((null != guard) ? guard.getX500Principal() : null) + "]");
         return new AGVOSpaceDelegateImpl(
             this.resolver(),
             guard

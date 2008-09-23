@@ -16,6 +16,7 @@
 package org.astrogrid.vospace.client.delegate ;
 
 import java.net.URL;
+import java.net.URI;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -30,6 +31,14 @@ import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.workflow.beans.v1.Tool;
+
+import org.astrogrid.config.SimpleConfig;
+
+import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.security.delegation.DelegationClient;
+
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import org.astrogrid.vospace.v02.junit.TestBase ;
 
@@ -65,13 +74,29 @@ extends TestBase
      * The direct VOSpace location to write to.
      *
      */
-    public static final String DIRECT_VOSPACE_LOCATION = "vos://org.astrogrid.test!vospace-service/kona-000/file-006" ;
+    public static final String DIRECT_VOSPACE_LOCATION = "vos://org.astrogrid.test!vospace-service/kona-000/.auto" ;
+
+    /**
+     * Setup the test.
+     *
+     */
+    public void setUp()
+        {
+        //
+        // Setup the test registry URL.
+        SimpleConfig.getSingleton().setProperty(
+            "org.astrogrid.registry.query.endpoint",
+             getTestProperty(
+                "registry.query.endpoint"                
+                )
+            );
+        }
 
     /**
      * Check we can send the results to MySpace.
      *
      */
-    public void testMySpaceUserLocation()
+    public void XtestMySpaceUserLocation()
     throws Exception
         {
         execute(
@@ -84,7 +109,7 @@ extends TestBase
      * Check we can send the results to MySpace.
      *
      */
-    public void testMySpaceDirectLocation()
+    public void XtestMySpaceDirectLocation()
     throws Exception
         {
         execute(
@@ -97,7 +122,7 @@ extends TestBase
      * Check we can send the results to VOSpace.
      *
      */
-    public void testVOSpaceDirectLocation()
+    public void XtestVOSpaceDirectLocation()
     throws Exception
         {
         execute(
@@ -105,16 +130,34 @@ extends TestBase
             DIRECT_VOSPACE_LOCATION
             );
         }
-  
+
     /**
-     * Check we can send the results to MySpace.
+     * Execute an ADQL query.
      *
      */
     public void execute(String location, String expected)
     throws Exception
         {
+        execute(
+            location,
+            expected,
+            null
+            );
+        }  
+
+    /**
+     * Execute an ADQL query.
+     *
+     */
+    public void execute(String location, String expected, SecurityGuard guard)
+    throws Exception
+        {
+        log.debug("Executing query");
+        log.debug("  Principal [" + ((null != guard) ? guard.getX500Principal() : null) + "]");
+        log.debug("  Location  [" + location + "]");
+
         //
-        // Create our CEA delegate.
+        // Create our CEC delegate to the DSA.
         log.debug("Creating delegate");
         CommonExecutionConnectorClient delegate =
             DelegateFactory.createDelegate(
@@ -122,6 +165,15 @@ extends TestBase
                     "dsa.adql.endpoint"
                     ).toString()
                 );
+        //
+        // Add our SecurityGuard.
+        if (null != guard)
+            {
+            log.debug("Adding credentials");
+            delegate.setCredentials(
+                guard
+                );
+            }
         //
         // Create our tool document.    
         log.debug("Creating tool document");
@@ -131,7 +183,6 @@ extends TestBase
         //
         // Set the job identifier.
         JobIdentifierType ident = new JobIdentifierType("foo");
-    
         //
         // Initialize the job on the service.
         log.debug("Sending tool document");
@@ -140,12 +191,11 @@ extends TestBase
             ident
             );
         assertNotNull("Execution ID is not null", job);
-    
         //
         // Start the job running.
         log.debug("Executing job");
         delegate.execute(job);
-
+/*
         //    
         // Poll for completion.
         MessageType status = null ;
@@ -155,7 +205,6 @@ extends TestBase
             log.debug("    Phase [" + status.getPhase() + "]");
             }
         while (status.getPhase() == ExecutionPhase.PENDING || status.getPhase() == ExecutionPhase.INITIALIZING || status.getPhase() == ExecutionPhase.RUNNING);
-    
         //
         // Check the results.
         if (status.getPhase() == ExecutionPhase.ERROR)
@@ -171,6 +220,7 @@ log.debug("  Result [" + result + "]");
                 location
                 );
             }
+*/
         }
   
     /**
@@ -189,7 +239,17 @@ log.debug("  Result [" + result + "]");
         // Add the ADQL query param.    
         ParameterValue in1 = new ParameterValue();
         in1.setName("Query");
-        in1.setValue("<Select xsi:type='selectType' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://www.ivoa.net/xml/ADQL/v1.0'><Restrict xsi:type='selectionLimitType' Top='100'/><SelectionList xsi:type='selectionListType'><Item xsi:type='allSelectionItemType'/></SelectionList><From><Table xsi:type='tableType' Alias='a' Name='TabNameSecond_catalogue' Archive='CatName_SECOND'/></From></Select>");
+        in1.setValue(
+              "<Select xsi:type='selectType' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://www.ivoa.net/xml/ADQL/v1.0'>"
+            + "  <Restrict xsi:type='selectionLimitType' Top='10000'/>"
+            + "  <SelectionList xsi:type='selectionListType'>"
+            + "    <Item xsi:type='allSelectionItemType'/>"
+            + "  </SelectionList>"
+            + "  <From>"
+            + "    <Table xsi:type='tableType' Alias='a' Name='TabNameSecond_catalogue' Archive='CatName_SECOND'/>"
+            + "  </From>"
+            + "</Select>"
+            );
 
         //
         // Set the format param.    
@@ -219,4 +279,142 @@ log.debug("  Result [" + result + "]");
 
         return tool;
         }
+
+    /**
+     * Login to our community and get a certificate.
+     * Looks for the account ivorn and password in the test properties.
+     #
+     # Community credentials.
+     # These should be added to build.properties in your home directory.
+     #org.astrogrid.junit.community.account=ivo://name@community
+     #org.astrogrid.junit.community.password=########
+     *
+     */
+    public SecurityGuard login()
+    throws Exception
+        {
+        log.debug("Login to community");
+        String account = getTestProperty(
+            "community.account"                
+            );
+        assertNotNull(
+            "Community account ivorn required",
+            account
+            );
+        String password = getTestProperty(
+            "community.password"
+            );
+        assertNotNull(
+            "Community account password required",
+            password
+            );
+        return login(
+            account,
+            password
+            );
+        }
+
+    /**
+     * Login to our community and get a certificate.
+     *
+     */
+    public SecurityGuard login(String account, String password)
+    throws Exception
+        {
+        log.debug("Login to community");
+        log.debug("  Account [" + account + "]");
+        //
+        // Initialise the security provider.
+        Security.addProvider(
+            new BouncyCastleProvider()
+            );
+        //
+        // Create our SecurityGuard.
+        SecurityGuard guard = new SecurityGuard();
+        //
+        // Login to our community.
+        guard.signOn(
+            account,
+            password,
+            3600
+            );
+
+        log.debug("Logged in");
+        log.debug("  Principal [" + guard.getX500Principal() + "]");
+
+        //
+        // Return the SecurityGuard with credentials.
+        return guard ;
+        }
+
+    /**
+     * Test the community login.
+     *
+     */
+    public void XtestLogin()
+    throws Exception
+        {
+        assertNotNull(
+            this.login()
+            );
+        }
+
+    /**
+     * Delegate our credentials to the DSA service.
+     *
+     */
+    public void delegation(SecurityGuard guard, URI endpoint)
+    throws Exception
+        {
+        log.debug("Delegating credentials");
+        log.debug("  Principal [" + guard.getX500Principal() + "]");
+        log.debug("  Endpoint  [" + endpoint + "]");
+
+        DelegationClient delegator = new DelegationClient(endpoint, guard);
+        delegator.delegate();
+
+        }
+
+    /**
+     * Test the DSA delegation.
+     *
+     */
+    public void XtestDelegation()
+    throws Exception
+        {
+        delegation(
+            this.login(),
+            getTestURI(
+                "dsa.cert.endpoint"
+                )
+            );
+        }
+
+    /**
+     * Check we can send the results to VOSpace using our credentials.
+     *
+     */
+    public void testVOSpaceDelegated()
+    throws Exception
+        {
+        //
+        // Login and get our credentials.
+        SecurityGuard guard = this.login();
+        //
+        // Setup our delegated credentials.
+        this.delegation(
+            guard,
+            getTestURI(
+                "dsa.cert.endpoint"
+                )
+            );
+        //
+        // Execute the query.
+        this.execute(
+            DIRECT_VOSPACE_LOCATION,
+            DIRECT_VOSPACE_LOCATION,
+            guard
+            );
+        }
+
     }

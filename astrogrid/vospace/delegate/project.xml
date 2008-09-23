@@ -227,7 +227,7 @@
             <groupId>bouncycastle</groupId>
             <type>jar</type>
             <artifactId>bcprov-jdk15</artifactId>
-            <version>139</version>
+            <version>140</version>
         </dependency>
         <dependency>
             <groupId>globus</groupId>
@@ -353,8 +353,8 @@
                 | Which tests to include.
                 +-->
             <includes>
-                <include>**/AGVOSpaceDelegateTestCase.java</include>
-                <!--include>**/DSAQueryTestCase.java</include-->
+                <!--include>**/AGVOSpaceDelegateTestCase.java</include-->
+                <include>**/DSAQueryTestCase.java</include>
                 <!--include>**/*TestCase.java</include-->
 
             </includes>
