@@ -177,7 +177,10 @@ public static class ApplicationTask extends FutureTask<String> {
     public boolean attemptAbort(boolean external) {
 	//TODO remember the distinction between the external and internal abort somewhere
 	logger.info("attempting to abort job="+getId());
-        boolean aborted = this.task.cancel(true);
+	boolean aborted = true;
+	if(task != null){// only try to kill the task if the job is running...
+         aborted = this.task.cancel(true);
+	}
 
         if(aborted) {
             setStatus(Status.ABORTED);
