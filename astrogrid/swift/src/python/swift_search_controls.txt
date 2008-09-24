@@ -1,0 +1,70 @@
+SWIFT SEARCH CONTROLS
+######################################################################################
+# Continuation lines are supported by the backslash convention...
+#      line one \
+#      line two
+#
+IMAGE SECTION:
+######################################################################################
+# The Image Section contains service ivorns for SIAP searches.
+# The first line contains the minimum and maximum number of images to retrieve 
+# from a given source of images, or its mirrors. If the minimum is achieved, 
+# any siblings will be terminated.
+[ 4 5 ]
+#
+# The following lines obey this format...
+# integer
+# [ short name for service | ivorn of service ]
+#
+# where integer is the number of services to use as mirrors for a given source.
+######################################################################################
+# DSS Image:
+2
+[ESO_DSS | ivo://archive.eso.org/dss]
+[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
+#
+# 2Mass Image:
+2
+[IRSA2 | ivo://irsa.ipac/2MASS-QL]
+[NED | ivo://ned.ipac/Image]
+
+
+CATALOGUE SECTION:
+######################################################################################
+# The Catalogue Section contains service ivorns and associated data for cone searches.
+#
+# The format is...
+# integer
+# [ short name for service | service ivorn | table name | column names | search function name ]
+#
+# where:
+#  . integer is the number of services to use as alternatives for a given source.
+#  . table name (if required, but leave blank for the moment!)
+#  . column names are a set of pair mappings of column name to variables name 
+#    eg:  Bmag:B where Bmag is column name and B is variable name  
+#  . The search function name is a real function name in the code, so beware!
+#    There are three sorts: two generic functions (searchStars and searchGalaxies)
+#    and one where code has to be hand crafted to decide between stars and galaxies.
+#    Look at the comments below and the associated function names.   
+#####################################################################################
+# SDSS for stars and galaxies:
+1
+[SDSS | ivo://CDS.VizieR/II/276 |  | _r:Dist RAJ2000:RA DEJ2000:Dec umag:u gmag:g rmag:R imag:i zmag:z | searchSDSS ]
+#
+# APM for galaxies:
+1
+[APM-N | ivo://CDS.VizieR/I/267 |  | _r:Dist RAJ2000:RA DEJ2000:Dec rmag:R rDiam:RDiam bmag:B \ 
+  bDiam:BDiam APM-ID:id | searchGalaxies ]
+#
+# PSCz for galaxies:
+1
+[PSCz | ivo://CDS.VizieR/VII/221 |  | _r:Dist _RAJ2000:RA _DEJ2000:Dec Bmag:B MajAxiO:Maj MinAxiO:Min recno:recno | searchGalaxies  ]
+#
+# USNO for stars and galaxies:
+1
+[USNO-B1 | ivo://CDS.VizieR/I/284 |  | _r:Dist RAJ2000:RA DEJ2000:Dec B1mag:B1 B1s/g:clb1 \
+  R1mag:R1 R1s/g:clr1 B2mag:B2 B2s/g:clb2 R2mag:R2 R2s/g:clr2 Imag:I Is/g:cli USNO-B1.0:id | searchUSNO ]
+#
+# 2MASS for stars:
+1
+[2MASS | ivo://CDS.VizieR/II/246 |  | _r:Dist RAJ2000:RA DEJ2000:Dec Jmag:j Hmag:h Kmag:k | searchStars  ]
