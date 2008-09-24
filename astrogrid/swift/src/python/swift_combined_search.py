@@ -74,6 +74,7 @@ class ConeSearch( Service ):
 		self.table = table             # table can be None where service expects only one table!
 		self.columns = columns         # self.columns is a list!
 		self.searchFunctionName = searchFunctionName
+		return
 	#
 	# Not sure what to make of the dsatab keyword.
 	# What happens normally where a service has more than one table?
@@ -93,6 +94,26 @@ def cmpOnSphericalDistance( x, y ):
 		return -1
 	else:
 		return 0
+
+##################################################################
+# SiapSearch class to substitute for the standard one,
+# With this one I can switch options on/off.
+#
+class SiapSearch( Service ):
+
+	def __init__( self, name, ivorn ):
+		Service.__init__( self, name, ivorn )
+		return
+	#
+	#
+	def execute( self, ra, dec, radius ):	
+		global FORMAT
+		# use AR to build the query URL       
+		query = Service.ar.ivoa.siap.constructQuery( self.ivorn, ra, dec, radius )
+		fullURL = Service.ar.ivoa.cone.addOption( query, "FORMAT", FORMAT )
+		doc = Service.tables.convertFromFile( fullURL, "votable", "votable" )
+		return doc
+
 
 ###################################################################
 # A class to hold thread safe collections of stars / galaxies
@@ -241,6 +262,58 @@ def validateArgs():
 # end of validateArgs()
 
 #
+# Strip the brackets from a control file line,
+# or throw a wobbly
+#
+def stripBrackets( line ):
+	lbrace = line.rfind( '[' )
+	rbrace = line.rfind( ']' )
+	if lbrace == -1 or rbrace == -1:
+		print 'Malformed line in control file'
+		sys.exit()
+	else:
+		line = line[lbrace+1:rbrace]
+	return line
+
+def processCatalogueLine( line ):
+	l = stripBrackets( line )
+	bits = l.split( '|' )
+	# save:
+	# 0: short name for this service 
+  # 1: its ivorn
+	# 2: table name, or nothing if only one table in the collection
+	# 3: space separated list of column name / display name pairs
+	# 4: name of function to execute search for this service
+	service_name = bits[0].strip()
+	ivorn = bits[1].strip()
+	table_name = bits[2].strip()
+	#
+	# Setting the table to None makes the cone object easier to invoke...
+	if len(table_name) == 0:
+		table_name = None 
+	col_names = bits[3].strip().split() # col_names is a list!!!
+	for c in col_names:
+		if c.index( ':' ) >= 0:
+			continue
+		else:
+			print 'Malformed column names in control file: ' + c
+			sys.exit()
+	search_function_name = bits[4].strip()
+	service = ConeSearch( service_name, ivorn, table_name, col_names, search_function_name ) 
+	return service
+
+def processImageLine( line ):
+	l = stripBrackets( line )
+	bits = l.split( '|' )
+	# save:
+	# 0: short name for this service 
+  # 1: its ivorn
+	service_name = bits[0].strip()
+	ivorn = bits[1].strip()
+	service = SiapSearch( service_name, ivorn )
+	return service
+
+#
 # Process the input file of service ivorns.
 #
 # For each image source we wish to search, there is a list of alternative ivorns.
@@ -251,52 +324,88 @@ def validateArgs():
 # Returns a list of service objects
 #
 #
-def processIvornFile( filePath ):
-	global TRACE, DEBUG
+def processControlFile( filePath ):
+	if TRACE: print( 'processControlFile() enter' )
+	global TRACE, DEBUG, minimages, maximages
+	bControlFile = False
+	bImageSection = False
+	bCatalogueSection = False
 	sources = []
 	services = []
+	bLine = ''
 	for line in open( filePath ).readlines():
 		l = line.strip()
-    # Comments lines and blank lines are ignored...
-		if len(l) > 0 and l.startswith( '#' ) == 0:
-			# Process the line containing the number of services...
-			if l.isdigit():
-				if len( services ) > 0:
-					sources.append( services )
-					services = []
-			# Process one information line...
+		if DEBUG: print l
+		#
+		# First line must be the control file heading line...
+		if bControlFile == False:
+			if l == 'SWIFT SEARCH CONTROL FILE':
+				bControlFile = True				
+				if DEBUG: print 'Found control file heading.'
+				continue
 			else:
-				# For each service we save the info from the control file.
-				lbrace = l.rfind( '[' )
-				rbrace = l.rfind( ']' )
-				if lbrace == -1 or rbrace == -1:
-					print 'Malformed line in ivorn file'
-				else:
-					l = l[lbrace+1:rbrace]
-#					print l
-					bits = l.split( '|' )
-					# save:
-					# 0: short name for this service 
-          # 1: its ivorn
-					# 2: table name, or nothing if only one table in the collection
-					# 3: space separated list of column names
-					# 4: name of function to execute search for this service
-					service_name = bits[0].strip()
-					ivorn = bits[1].strip()
-					table_name = bits[2].strip()
-					#
-					# Setting the table to None makes the cone object easier to invoke...
-					if len(table_name) == 0:
-						table_name = None 
-					col_names = bits[3].strip().split() # col_names is a list!!!
-					search_function_name = bits[4].strip()
-					service = ConeSearch( service_name, ivorn, table_name, col_names, search_function_name ) 
-					services.append( service )
+				print 'Malformed control file: Heading missing.'
+				sys.exit(0)
+		#
+    # Comments lines and blank lines are ignored...
+		if len(l) == 0 or l.startswith( '#' ) == True :
+			continue
+
+		#
+		# Section triggers...
+		if bCatalogueSection == False and l == 'CATALOGUE SECTION:':
+			if DEBUG: print 'Found catalogue section'
+			bCatalogueSection = True
+			bImageSection = False
+			continue
+		elif bImageSection == False and l == 'IMAGE SECTION:':
+			if DEBUG: print 'Found image section'
+			bImageSection = True
+			bCatalogueSection = False
+			continue
+		#
+		# Buffer any continuation lines...
+		if l.endswith( '\\' ):
+			bLine += l[0:len(l)-1]
+			continue
+		#
+		# Or process continuation lines...
+		elif len( bLine ) > 0:
+			bLine += l
+			l = bLine
+			bLine = ''
+		#
+		# Completed continuation lines 
+		# and singleton lines
+		# are processed here...			
+		#
+		# Process the line containing the number of services...
+		if l.isdigit():
+			if len( services ) > 0:
+				sources.append( services )
+				services = []
+			continue
+		#
+		# Process one information line...
+		if bCatalogueSection == True:
+			services.append( processCatalogueLine( l ) )
+		elif bImageSection == True:
+			if minimages == None and maximages == None:
+				l = stripBrackets( l )
+				bits = l.split()
+				minimages = int( bits[0] )
+				maximages = int( bits[1] )	
+			else:
+				services.append( processImageLine( l ) )
+		else:
+			print 'Warning! Malformed line in control file.', l
+			
 	#
 	# Add the last one on if not zero...
 	if len( services ) > 0:
 		sources.append( services )
 	print sources
+	if TRACE: print( 'processControlFile() exit' )
 	return sources
 # end of processIvornFile( filePath )
 
@@ -583,7 +692,9 @@ print ra, dec, radius, ifile, odir
 
 #
 # Retrieve ivorns for the sources we wish to search...
-sources = processIvornFile( ifile )
+sources = processControlFile( ifile )
+sys.exit()
+
 serviceCount = 0 
 for source in sources:
 	for service in source:
