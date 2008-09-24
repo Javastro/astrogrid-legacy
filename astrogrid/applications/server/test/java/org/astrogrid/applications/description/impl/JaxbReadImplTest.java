@@ -1,5 +1,5 @@
 /*
- * $Id: JaxbReadImplTest.java,v 1.5 2008/09/13 09:51:06 pah Exp $
+ * $Id: JaxbReadImplTest.java,v 1.6 2008/09/24 13:40:50 pah Exp $
  * 
  * Created on 11 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -26,8 +26,8 @@ import javax.xml.validation.SchemaFactory;
 
 import junit.framework.TestCase;
 import net.ivoa.resource.Resource;
-import net.ivoa.resource.cea.CeaApplication;
 
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -88,6 +88,9 @@ public class JaxbReadImplTest extends TestCase {
 
 /*
  * $Log: JaxbReadImplTest.java,v $
+ * Revision 1.6  2008/09/24 13:40:50  pah
+ * package naming changes
+ *
  * Revision 1.5  2008/09/13 09:51:06  pah
  * code cleanup
  *

@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.9 2008/09/13 09:51:02 pah Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.10 2008/09/24 13:40:49 pah Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,6 @@ import javax.naming.NamingException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +38,7 @@ import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.javainternal.JavaInternalApplication;
@@ -188,6 +188,9 @@ public class SendMailApplicationDescription extends InternallyConfiguredApplicat
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.10  2008/09/24 13:40:49  pah
+package naming changes
+
 Revision 1.9  2008/09/13 09:51:02  pah
 code cleanup
 

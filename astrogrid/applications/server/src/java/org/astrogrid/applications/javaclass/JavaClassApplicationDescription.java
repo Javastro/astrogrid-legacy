@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.8 2008/09/13 09:51:03 pah Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.9 2008/09/24 13:40:49 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,13 @@ package org.astrogrid.applications.javaclass;
 
 import java.lang.reflect.Method;
 
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.AppMetadataAdapter;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.security.SecurityGuard;
@@ -63,6 +63,9 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.9  2008/09/24 13:40:49  pah
+package naming changes
+
 Revision 1.8  2008/09/13 09:51:03  pah
 code cleanup
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AppMetadataAdapter.java,v 1.3 2008/09/10 23:27:17 pah Exp $
+ * $Id: AppMetadataAdapter.java,v 1.4 2008/09/24 13:40:49 pah Exp $
  * 
  * Created on 26 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,9 +13,9 @@
 package org.astrogrid.applications.description;
 
 import net.ivoa.resource.Resource;
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.description.base.ApplicationBase;
+import org.astrogrid.applications.description.cea.CeaApplication;
 
 /**
  * Return the appropriate metadata from what is saved.
@@ -51,6 +51,9 @@ public class AppMetadataAdapter extends AbstractMetadataAdapter implements Metad
 
 /*
  * $Log: AppMetadataAdapter.java,v $
+ * Revision 1.4  2008/09/24 13:40:49  pah
+ * package naming changes
+ *
  * Revision 1.3  2008/09/10 23:27:17  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

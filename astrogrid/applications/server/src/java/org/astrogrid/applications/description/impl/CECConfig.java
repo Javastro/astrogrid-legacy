@@ -16,7 +16,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import net.ivoa.resource.cea.CeaApplication;
+
+import org.astrogrid.applications.description.cea.CeaApplication;
 
 
 /**

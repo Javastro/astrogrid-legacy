@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.15 2008/09/13 09:51:02 pah Exp $
+/*$Id: JavaClassProviderTest.java,v 1.16 2008/09/24 13:40:49 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.applications.javaclass;
 import junit.framework.TestCase;
 
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.component.InternalCeaComponentFactory;
+import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
@@ -56,8 +58,8 @@ public class JavaClassProviderTest extends TestCase {
         ProtocolLibrary protocolLib = new DefaultProtocolLibrary(new Protocol[]{new FileProtocol()});
         monitor = new MockMonitor();
         AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
-        ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,aresolver);
-	lib = new JavaClassApplicationDescriptionLibrary(new BuiltInJavaClassConfiguration(), new TestServiceDefinition());
+        InternalCeaComponentFactory cf = new InternalCeaComponentFactory(protocolLib,idgen, aresolver);
+	lib = new JavaClassApplicationDescriptionLibrary(new MockNonSpringConfiguredConfig(), new TestServiceDefinition());
         assertNotNull(lib);
     }
     protected ApplicationDescriptionLibrary lib;
@@ -67,7 +69,7 @@ public class JavaClassProviderTest extends TestCase {
     public void testLibrary() throws Exception {
         String[] names = lib.getApplicationNames();
         assertNotNull(names);
-        assertEquals(6,names.length); // 5 from provider + 1 built in to core       
+        assertEquals(5,names.length); // 5 from provider       
     }
     
     public void testHelloWorld() throws Exception {
@@ -177,6 +179,9 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.16  2008/09/24 13:40:49  pah
+package naming changes
+
 Revision 1.15  2008/09/13 09:51:02  pah
 code cleanup
 

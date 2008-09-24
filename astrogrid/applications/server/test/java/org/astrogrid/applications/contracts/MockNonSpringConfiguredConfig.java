@@ -1,5 +1,5 @@
 /*
- * $Id: MockNonSpringConfiguredConfig.java,v 1.2 2008/09/03 14:19:05 pah Exp $
+ * $Id: MockNonSpringConfiguredConfig.java,v 1.3 2008/09/24 13:40:50 pah Exp $
  * 
  * Created on 3 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -18,6 +18,7 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.javaclass.JavaClassConfiguration;
 
 /**
  * A configuration that can be used in unit tests that are not using the full
@@ -27,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Name:  $
  * @since VOTech Stage 7
  */
-public class MockNonSpringConfiguredConfig extends CEAConfiguration {
+public class MockNonSpringConfiguredConfig extends CEAConfiguration implements JavaClassConfiguration {
     /**
      * Logger for this class
      */
@@ -56,9 +57,16 @@ public class MockNonSpringConfiguredConfig extends CEAConfiguration {
 
     }
 
+    public Class getApplicationClass() throws ClassNotFoundException {
+       return Class.forName("org.astrogrid.applications.javaclass.SampleJavaClassApplications");
+    }
+
 }
 /*
  * $Log: MockNonSpringConfiguredConfig.java,v $
+ * Revision 1.3  2008/09/24 13:40:50  pah
+ * package naming changes
+ *
  * Revision 1.2  2008/09/03 14:19:05  pah
  * result of merge of pah_cea_1611 branch
  *

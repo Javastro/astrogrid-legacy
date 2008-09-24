@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.12 2008/09/18 09:13:39 pah Exp $
+/*$Id: CatApplicationDescription.java,v 1.13 2008/09/24 13:40:49 pah Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import junit.framework.Test;
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +32,7 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
@@ -212,6 +212,9 @@ public class CatApplicationDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.13  2008/09/24 13:40:49  pah
+package naming changes
+
 Revision 1.12  2008/09/18 09:13:39  pah
 improved javadoc
 

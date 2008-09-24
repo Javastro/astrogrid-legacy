@@ -30,11 +30,14 @@ import junit.framework.TestCase;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
+import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Sandbox to play around with xslt ideas
@@ -43,13 +46,13 @@ import org.w3c.dom.Document;
  */
 public class XSLTTest extends TestCase {
     public void testMarshall() throws  ParserConfigurationException, IOException,
-            TransformerException, JAXBException {
+            TransformerException, JAXBException, MetadataException, SAXException {
 	JAXBContext jc = CEAJAXBContextFactory.newInstance();
         Unmarshaller unmarshaller = jc.createUnmarshaller();
         //load up test docs
         InputStream toolFileStream = this.getClass().getResourceAsStream("tool-eg.xml");
         Reader reader = new InputStreamReader(toolFileStream);
-        Tool tool = (Tool) unmarshaller.unmarshal(reader);
+        Tool tool = CEAJAXBUtils.unmarshall(reader, Tool.class);
 
         InputStream appFileStream = this.getClass().getResourceAsStream("webapp-eg.xml");
         Reader reader2 = new InputStreamReader(appFileStream);

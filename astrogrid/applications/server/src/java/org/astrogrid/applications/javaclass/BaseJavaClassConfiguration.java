@@ -15,6 +15,7 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
  * This class uses SimpleConfig to get the information.
  *
  * @author Guy Rixon
+ * @deprecated this is too tightly bound to configuration - use spring config instead - there does not really need to be 
  */
 public class BaseJavaClassConfiguration 
     extends CEAConfiguration 

@@ -12,7 +12,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
-import net.ivoa.resource.cea.CeaApplication;
+
+import org.astrogrid.applications.description.cea.CeaApplication;
 
 
 /**

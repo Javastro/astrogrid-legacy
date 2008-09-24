@@ -22,8 +22,6 @@ import net.ivoa.resource.Interface;
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.Service;
 import net.ivoa.resource.WebService;
-import net.ivoa.resource.cea.CeaCapability;
-import net.ivoa.resource.cea.ManagedApplications;
 import net.ivoa.resource.registry.iface.VOResources;
 
 import org.apache.axis.utils.XMLUtils;
@@ -34,6 +32,8 @@ import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.MetadataAdapter;
 import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.ServiceDefinitionFactory;
+import org.astrogrid.applications.description.cea.CeaCapability;
+import org.astrogrid.applications.description.cea.ManagedApplications;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.contracts.Namespaces;

@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataAdapter.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: MetadataAdapter.java,v 1.3 2008/09/24 13:40:48 pah Exp $
  * 
  * Created on 19 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,10 +13,10 @@
 package org.astrogrid.applications.description;
 
 import org.astrogrid.applications.description.base.ApplicationBase;
+import org.astrogrid.applications.description.cea.CeaApplication;
 
 import net.ivoa.resource.Resource;
 import net.ivoa.resource.Service;
-import net.ivoa.resource.cea.CeaApplication;
 import net.ivoa.resource.dataservice.DataService;
 
 /**
@@ -58,6 +58,9 @@ public interface MetadataAdapter {
 
 /*
  * $Log: MetadataAdapter.java,v $
+ * Revision 1.3  2008/09/24 13:40:48  pah
+ * package naming changes
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

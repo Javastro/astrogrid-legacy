@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{http://www.ivoa.net/xml/CEA/types/v1.1}tool"/>
- *         &lt;element name="externalId" type="{http://www.ivoa.net/xml/UWS/v0.9.1}JobIdentifier"/>
+ *         &lt;element name="externalId" type="{http://www.ivoa.net/xml/UWS/v0.9.2}JobIdentifier"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>

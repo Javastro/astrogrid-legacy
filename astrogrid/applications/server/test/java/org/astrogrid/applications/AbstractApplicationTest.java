@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.9 2008/09/04 19:10:53 pah Exp $
+/*$Id: AbstractApplicationTest.java,v 1.10 2008/09/24 13:40:50 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
@@ -27,6 +26,7 @@ import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.LogLevel;
@@ -339,6 +339,9 @@ public class AbstractApplicationTest  {
 
 /*
  * $Log: AbstractApplicationTest.java,v $
+ * Revision 1.10  2008/09/24 13:40:50  pah
+ * package naming changes
+ *
  * Revision 1.9  2008/09/04 19:10:53  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

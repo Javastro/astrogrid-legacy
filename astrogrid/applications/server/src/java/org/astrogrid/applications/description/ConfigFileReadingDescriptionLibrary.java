@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.5 2008/09/18 09:02:32 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibrary.java,v 1.6 2008/09/24 13:40:49 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -32,13 +32,13 @@ import javax.xml.validation.SchemaFactory;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import net.ivoa.resource.Resource;
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.commandline.CommandLineApplicationDescription;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.base.ApplicationBase;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.impl.CEADALService;
 import org.astrogrid.applications.description.impl.CECConfig;
 import org.astrogrid.applications.description.impl.CeaCmdLineApplicationDefinition;
@@ -295,6 +295,9 @@ public class ConfigFileReadingDescriptionLibrary extends
 
 /*
  * $Log: ConfigFileReadingDescriptionLibrary.java,v $
+ * Revision 1.6  2008/09/24 13:40:49  pah
+ * package naming changes
+ *
  * Revision 1.5  2008/09/18 09:02:32  pah
  * add capability to read files from a directory
  * Revision 1.4 2008/09/13

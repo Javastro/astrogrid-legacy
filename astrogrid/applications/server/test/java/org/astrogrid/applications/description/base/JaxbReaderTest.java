@@ -1,5 +1,5 @@
 /*
- * $Id: JaxbReaderTest.java,v 1.3 2008/09/13 09:51:04 pah Exp $
+ * $Id: JaxbReaderTest.java,v 1.4 2008/09/24 13:40:50 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
 import org.astrogrid.contracts.Namespaces;
@@ -36,7 +37,6 @@ import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
 import net.ivoa.resource.Resource;
-import net.ivoa.resource.cea.CeaApplication;
 
 import junit.framework.TestCase;
 
@@ -96,6 +96,9 @@ public class JaxbReaderTest extends TestCase {
 
 /*
  * $Log: JaxbReaderTest.java,v $
+ * Revision 1.4  2008/09/24 13:40:50  pah
+ * package naming changes
+ *
  * Revision 1.3  2008/09/13 09:51:04  pah
  * code cleanup
  *

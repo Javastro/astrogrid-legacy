@@ -1,6 +1,5 @@
 package org.astrogrid.applications.description;
 
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -9,6 +8,7 @@ import org.astrogrid.applications.description.base.ApplicationKind;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
 import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.environment.ApplicationEnvironment;

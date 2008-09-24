@@ -32,7 +32,7 @@ import org.joda.time.DateTime;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;all>
- *         &lt;element name="phase" type="{http://www.ivoa.net/xml/UWS/v0.9.1}ExecutionPhase"/>
+ *         &lt;element name="phase" type="{http://www.ivoa.net/xml/UWS/v0.9.2}ExecutionPhase"/>
  *         &lt;element name="content" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="source" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="timestamp" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>

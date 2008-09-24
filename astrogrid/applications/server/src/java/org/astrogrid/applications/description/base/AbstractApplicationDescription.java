@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationDescription.java,v 1.9 2008/09/13 09:51:04 pah Exp $
+ * $Id: AbstractApplicationDescription.java,v 1.10 2008/09/24 13:40:49 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,7 +14,6 @@
 package org.astrogrid.applications.description.base;
 
 import net.ivoa.resource.Resource;
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +24,7 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.MetadataAdapter;
 import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.Tool;

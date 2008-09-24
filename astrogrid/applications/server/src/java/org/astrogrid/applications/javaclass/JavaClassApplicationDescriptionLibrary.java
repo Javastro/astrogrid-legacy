@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.14 2008/09/13 09:51:03 pah Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.15 2008/09/24 13:40:49 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,10 +54,22 @@ public class JavaClassApplicationDescriptionLibrary
      */
     public JavaClassApplicationDescriptionLibrary(JavaClassConfiguration config, 
                                                  ServiceDefinitionFactory servDefFac) throws ServiceDescriptionException {
-        super( config);
-        this.implClass = config.getApplicationClass();
+        super(config);
         this.sf = servDefFac;
-        populate(implClass, InternalCeaComponentFactory.getInstance().getAuthIDResolver());
+        Class theClass = null;
+        
+        try {
+            theClass = config.getApplicationClass();
+            populate(theClass, InternalCeaComponentFactory.getInstance().getAuthIDResolver());
+        } catch (ClassNotFoundException e) {
+            logger.fatal("cannot populate library ", e);
+            
+        }
+        finally{
+         implClass = theClass;   
+        }
+        
+
     }
     
     protected final Class implClass;
@@ -100,6 +112,9 @@ public class JavaClassApplicationDescriptionLibrary
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.15  2008/09/24 13:40:49  pah
+package naming changes
+
 Revision 1.14  2008/09/13 09:51:03  pah
 code cleanup
 

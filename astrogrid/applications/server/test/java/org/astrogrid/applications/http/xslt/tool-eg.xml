@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--example tool document-->
-<tool name="Adder" interface="TheOneAndOnlyInterface"
+<tool id="ivo://org.test/Adder" interface="TheOneAndOnlyInterface"
    xmlns="http://www.ivoa.net/xml/CEA/types/v1.1"
 >
    <input>
-      <parameter name="x">
+      <parameter id="x">
          <value>3</value>
       </parameter>
-      <parameter name="y">
+      <parameter id="y">
          <value>5</value>
       </parameter>
    </input>
    <output>
-      <parameter name="sum">
+      <parameter id="sum">
          <value></value>
       </parameter>
    </output>

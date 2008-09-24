@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.6 2008/09/10 23:27:19 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.7 2008/09/24 13:40:49 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,13 @@
 **/
 package org.astrogrid.applications.description.base;
 
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.MockCeaConfiguration;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.AppMetadataAdapter;
+import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.Tool;
@@ -92,6 +92,9 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.7  2008/09/24 13:40:49  pah
+package naming changes
+
 Revision 1.6  2008/09/10 23:27:19  pah
 moved all of http CEC and most of javaclass CEC code here into common library
 

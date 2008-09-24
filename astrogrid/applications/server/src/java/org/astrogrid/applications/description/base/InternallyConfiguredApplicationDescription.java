@@ -1,5 +1,5 @@
 /*
- * $Id: InternallyConfiguredApplicationDescription.java,v 1.3 2008/09/10 23:27:16 pah Exp $
+ * $Id: InternallyConfiguredApplicationDescription.java,v 1.4 2008/09/24 13:40:49 pah Exp $
  * 
  * Created on 13 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -12,10 +12,10 @@
 
 package org.astrogrid.applications.description.base;
 
-import net.ivoa.resource.cea.CeaApplication;
 
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.AppMetadataAdapter;
+import org.astrogrid.applications.description.cea.CeaApplication;
 
 /**
  * Adds helper methods for static creation of application definitions.
@@ -56,6 +56,9 @@ public abstract class InternallyConfiguredApplicationDescription extends
 
 /*
  * $Log: InternallyConfiguredApplicationDescription.java,v $
+ * Revision 1.4  2008/09/24 13:40:49  pah
+ * package naming changes
+ *
  * Revision 1.3  2008/09/10 23:27:16  pah
  * moved all of http CEC and most of javaclass CEC code here into common library
  *

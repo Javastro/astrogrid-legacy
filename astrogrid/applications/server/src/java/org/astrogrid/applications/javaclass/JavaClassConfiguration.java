@@ -1,6 +1,7 @@
 package org.astrogrid.applications.javaclass;
 
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 
 /**
  * A configuration interface specialized for the JC-CEC.
@@ -8,6 +9,7 @@ import org.astrogrid.applications.contracts.Configuration;
  * class implementing the applications.
  *
  * @author Guy Rixon
+ * @deprecated any application class such as this should be a direct parameter of the {@link ApplicationDescriptionLibrary}- this ties the class to tightly with other configuration parameters - now we have the possibility of multiple libraries in the same CEC.
  */
 public interface JavaClassConfiguration extends Configuration {
   
@@ -18,6 +20,7 @@ public interface JavaClassConfiguration extends Configuration {
    * the class.
    *
    * @return The class.
+ * @throws ClassNotFoundException 
    */
-  public Class getApplicationClass();
+  public Class getApplicationClass() throws ClassNotFoundException;
 }

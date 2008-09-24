@@ -1,5 +1,5 @@
 /*
- * $Id: DummyVODescriptionProvider.java,v 1.12 2008/09/13 09:51:04 pah Exp $
+ * $Id: DummyVODescriptionProvider.java,v 1.13 2008/09/24 13:40:50 pah Exp $
  * Created on 02-Jun-2004
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,11 +28,11 @@ import net.ivoa.resource.Service;
 import net.ivoa.resource.Source;
 import net.ivoa.resource.Type;
 import net.ivoa.resource.WebService;
-import net.ivoa.resource.cea.CeaApplication;
-import net.ivoa.resource.cea.CeaCapability;
 import net.ivoa.resource.registry.iface.VOResources;
 
 import org.astrogrid.applications.description.MetadataException;
+import org.astrogrid.applications.description.cea.CeaApplication;
+import org.astrogrid.applications.description.cea.CeaCapability;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.AbstractMetadataService;
 import org.astrogrid.applications.manager.MetadataService;
@@ -193,6 +193,9 @@ public class DummyVODescriptionProvider extends AbstractMetadataService
 
 /*
  * $Log: DummyVODescriptionProvider.java,v $
+ * Revision 1.13  2008/09/24 13:40:50  pah
+ * package naming changes
+ *
  * Revision 1.12  2008/09/13 09:51:04  pah
  * code cleanup
  *

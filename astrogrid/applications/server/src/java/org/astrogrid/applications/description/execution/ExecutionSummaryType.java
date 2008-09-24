@@ -24,7 +24,7 @@ import net.ivoa.uws.JobSummary;
  * <pre>
  * &lt;complexType name="execution-summary-type">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.ivoa.net/xml/UWS/v0.9.1}JobSummary">
+ *     &lt;extension base="{http://www.ivoa.net/xml/UWS/v0.9.2}JobSummary">
  *       &lt;sequence>
  *         &lt;element name="application-name" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="input-list" type="{http://www.ivoa.net/xml/CEA/types/v1.1}input-list-type"/>
