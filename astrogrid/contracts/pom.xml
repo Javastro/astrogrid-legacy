@@ -10,10 +10,10 @@
    <parent>
       <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2008.2-SNAPSHOT</version>
+      <version>2008.2</version>
    </parent>
    <name>Astrogrid sub-system contracts</name>
-   <version>2008.2</version>
+   <version>2009.1-SNAPSHOT</version>
    <description>
       Contracts for interfaces to major components of AstroGrid. The
       contracts contain the XML schemata for the interfaces plus textual
