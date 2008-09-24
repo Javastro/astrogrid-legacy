@@ -5,7 +5,7 @@ TODO needs to be factored out into CEATypes and UWS so that nothing is left here
 <xsd:schema
    targetNamespace="http://www.astrogrid.org/schema/CEAExecutionRecord/v1.1"
    xmlns:er="http://www.astrogrid.org/schema/CEAExecutionRecord/v1.1"
-   xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.1"
+   xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.2"
    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
    elementFormDefault="qualified" attributeFormDefault="unqualified"
    xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1"
@@ -14,7 +14,7 @@ TODO needs to be factored out into CEATypes and UWS so that nothing is left here
       schemaLocation="../../CEATypes/v1.1/CEATypes.xsd"
    >
    </xsd:import>
-   <xsd:import namespace="http://www.ivoa.net/xml/UWS/v0.9.1" schemaLocation="../../UWS/v0.9/UWS.xsd"></xsd:import>
+   <xsd:import namespace="http://www.ivoa.net/xml/UWS/v0.9.2" schemaLocation="../../UWS/v0.9/UWS.xsd"></xsd:import>
    <xsd:element name="job-execution-record">
       <xsd:annotation>
          <xsd:documentation>
