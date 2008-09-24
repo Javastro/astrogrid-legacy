@@ -1,5 +1,5 @@
 /*
- * $Id: JobCreationController.java,v 1.3 2008/09/04 21:20:02 pah Exp $
+ * $Id: JobCreationController.java,v 1.4 2008/09/24 13:43:09 pah Exp $
  * 
  * Created on 9 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -14,20 +14,13 @@ package org.astrogrid.applications.uws;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,13 +28,10 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.CEAComponents;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.contracts.Namespaces;
-import org.astrogrid.contracts.SchemaMap;
 import org.astrogrid.security.SecurityGuard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -76,6 +66,7 @@ public class JobCreationController {
     {
 	ExecutionController cec = manager.getExecutionController();
 	PrintWriter pw = response.getWriter();
+	String accept = request.getHeader("Accept");
 	ValidationEventCollector handler = new ValidationEventCollector();
 	try {
 	Tool tool;
@@ -116,7 +107,13 @@ public class JobCreationController {
     {
 	ExecutionHistory eh = manager.getExecutionHistoryService();
 	QueryService qs = manager.getQueryService();
-	ModelAndView modelAndView = new ModelAndView("listjobs");
+	ModelAndView modelAndView;
+	if (UWSUtils.needsxml(request)) {
+	    modelAndView = new ModelAndView("listjobs-xml");
+        } else {
+            modelAndView = new ModelAndView("listjobs");
+        }
+	 
 	List<ExecutionSummaryType> jobs = new ArrayList<ExecutionSummaryType>();
 	String[] jobids = eh.getExecutionIDs();
 	for (int i = 0; i < jobids.length; i++) {
@@ -133,6 +130,9 @@ public class JobCreationController {
 
 /*
  * $Log: JobCreationController.java,v $
+ * Revision 1.4  2008/09/24 13:43:09  pah
+ * add xml output
+ *
  * Revision 1.3  2008/09/04 21:20:02  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
