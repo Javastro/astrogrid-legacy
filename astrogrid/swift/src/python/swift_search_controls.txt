@@ -3,6 +3,7 @@ SWIFT SEARCH CONTROLS
 # Continuation lines are supported by the backslash convention...
 #      line one \
 #      line two
+# Be careful! Continuation lines are horrid if you make a mistake.
 #
 IMAGE SECTION:
 ######################################################################################
