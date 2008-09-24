@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBContextFactory.java,v 1.2 2008/09/03 14:18:56 pah Exp $
+ * $Id: CEAJAXBContextFactory.java,v 1.3 2008/09/24 13:39:42 pah Exp $
  * 
  * Created on 12 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -32,7 +32,8 @@ public class CEAJAXBContextFactory {
 	  jc = JAXBContext.newInstance("org.astrogrid.applications.description.impl:" +
 		        "org.astrogrid.applications.description.execution:" +
 	  		"org.astrogrid.applications.description.base:"+
-	  		"net.ivoa.resource.cea:"+
+	  		"org.astrogrid.applications.description.cea:"+
+	  		"net.ivoa.uws:"+
 	  		"net.ivoa.resource.registry.iface");
 	return jc;
 
@@ -42,6 +43,9 @@ public class CEAJAXBContextFactory {
 
 /*
  * $Log: CEAJAXBContextFactory.java,v $
+ * Revision 1.3  2008/09/24 13:39:42  pah
+ * include the uws types in the context
+ *
  * Revision 1.2  2008/09/03 14:18:56  pah
  * result of merge of pah_cea_1611 branch
  *
