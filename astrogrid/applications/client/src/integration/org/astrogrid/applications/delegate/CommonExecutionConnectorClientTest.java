@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorClientTest.java,v 1.2 2008/09/03 14:19:08 pah Exp $
+ * $Id: CommonExecutionConnectorClientTest.java,v 1.3 2008/09/24 13:47:18 pah Exp $
  * 
  * Created on 17 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -31,7 +31,7 @@ public class CommonExecutionConnectorClientTest extends TestCase {
 
     protected void setUp() throws Exception {
 	super.setUp();
-        cea = DelegateFactory.createDelegate("http://localhost:8888/astrogrid-cea-commandline/services/CommonExecutionConnectorService");
+        cea = DelegateFactory.createDelegate("http://localhost:8888/astrogrid-cea-cec/services/CommonExecutionConnectorService");
         assertNotNull(cea);
 	tool = new Tool();
 	tool.setName("ivo://org.astrogrid.unregistered/default");
@@ -118,6 +118,9 @@ public class CommonExecutionConnectorClientTest extends TestCase {
 
 /*
  * $Log: CommonExecutionConnectorClientTest.java,v $
+ * Revision 1.3  2008/09/24 13:47:18  pah
+ * added generic UWS client code
+ *
  * Revision 1.2  2008/09/03 14:19:08  pah
  * result of merge of pah_cea_1611 branch
  *
