@@ -1,5 +1,5 @@
 /*
- * $Id: UWSController.java,v 1.3 2008/09/18 08:46:45 pah Exp $
+ * $Id: UWSController.java,v 1.4 2008/09/24 13:43:41 pah Exp $
  * 
  * Created on 8 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.ivoa.uws.ExecutionPhase;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -65,16 +64,6 @@ import org.springframework.web.util.UrlPathHelper;
  * @since VOTech Stage 7
  * @TODO when returning just the xml version of the various enties
  * @TODO there is an issue with requesting a resource with or without the trailing / makes sense in some cases not in others - need to find some consistency...views need to cooperate as well otherwise relative links do not work properly...
- */
-/**
- * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
- * @version $Name:  $
- * @since VOTech Stage 7
- */
-/**
- * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
- * @version $Name:  $
- * @since VOTech Stage 7
  */
 @Controller
 @RequestMapping("/jobs/**")
@@ -220,7 +209,7 @@ public class UWSController  {
     @RequestMapping(value="termination", method=RequestMethod.POST)
     public void settermination(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
-	String dateStr = request.getParameter("TIME");
+	String dateStr = request.getParameter("termination");
 	DateTime termination = new DateTime(dateStr);
 	DateTime now = new DateTime();
 
@@ -244,7 +233,7 @@ public class UWSController  {
     @RequestMapping(value="destruction", method=RequestMethod.POST)
     public void setdestruction(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
-	String dateStr = request.getParameter("TIME");
+	String dateStr = request.getParameter("destruction");
 	DateTime termination = new DateTime(dateStr);
 
 	if(manager.getExecutionHistoryService().isApplicationInCurrentSet(jobId))
@@ -272,7 +261,13 @@ public class UWSController  {
     @RequestMapping(value="results",method=RequestMethod.GET)
     public ModelAndView results(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws ExecutionIDNotFoundException, PersistenceException, ApplicationDescriptionNotFoundException, ParameterDescriptionNotFoundException
     {
-	ModelAndView modelAndView = new ModelAndView("results");
+        ModelAndView modelAndView;
+        if(UWSUtils.needsxml(request)){
+	    modelAndView = new ModelAndView("results-xml");
+        }
+        else {
+            modelAndView = new ModelAndView("results");
+        }
 	ExecutionHistory eh  = manager.getExecutionHistoryService();
 	List<ResultInfo> results = new ArrayList<ResultInfo>();
 	if (eh.isApplicationInCurrentSet(jobId))
@@ -343,7 +338,12 @@ public class UWSController  {
     {
 	logger.info("showing JobId=" + jobId);
 	//FIXME Need to check the path to only respond to exact matches...
-	ModelAndView modelAndView = new ModelAndView("jobdetail");
+	ModelAndView modelAndView;
+	if(UWSUtils.needsxml(request)){
+	    modelAndView = new ModelAndView("jobdetail-xml");
+	}else {
+	    modelAndView = new ModelAndView("jobdetail");
+	}	   
 	ExecutionHistory eh = manager.getExecutionHistoryService();
 	QueryService qs = manager.getQueryService();
 	ExecutionSummaryType jobSummary = qs.getSummary(jobId);
@@ -351,6 +351,8 @@ public class UWSController  {
 	return modelAndView;
     }
 
+
+ 
     @RequestMapping(value="",method=RequestMethod.POST ) 
     public void delJobByPOST(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
     {
@@ -548,6 +550,9 @@ public class UWSController  {
 
 /*
  * $Log: UWSController.java,v $
+ * Revision 1.4  2008/09/24 13:43:41  pah
+ * add xml output + other updates to bring UWS behaviour up to date
+ *
  * Revision 1.3  2008/09/18 08:46:45  pah
  * improved javadoc
  *
