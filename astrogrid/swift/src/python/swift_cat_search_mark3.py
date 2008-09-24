@@ -335,6 +335,10 @@ def searchSDSS( service, ra, dec, radius, vot ):
 	# We decide between stars and galaxies by using the class column
 	clColIndex = vot.getColumnIdx( 'cl' )
 	#
+	# Form a map for those columns that can return a null value...
+	nullsMap = formNullValuesMap( vot )
+	print nullsMap
+	#
 	# Here are the rest of the indices, found
 	# using the votable and the column names 
 	# passed to us in the control file...	
@@ -350,18 +354,21 @@ def searchSDSS( service, ra, dec, radius, vot ):
 	dataRows = vot.getDataRows()
 	for row in dataRows:
 		cells = vot.getData(row)
-		rc = cells[ clColIndex ]
+		cl = testAndSetNull( cells[ clColIndex ], clColIndex, nullsMap )
+		if cl == None:
+			continue
 		#
 		# Only proceed if a star or galaxy...
-		if rc != '3' and rc != '6':
+		cl = int(cl)
+		if cl != 3 and cl != 6:
 			continue
 		# Begin each constructed row with the service name 
 		# and then append all the data requested to each row...
 		subRow = [ service.name ]
 		for index in colIndices:
-			subRow.append( cells[ index ] )
+			subRow.append( testAndSetEmpty( testAndSetNull( cells[ index ], index, nullsMap ) ) )
 
-		if rc == '3':
+		if cl == 3:
 			galList.append( subRow )
 		else:
 			starList.append( subRow )
@@ -369,8 +376,12 @@ def searchSDSS( service, ra, dec, radius, vot ):
 	# Now append found data to the overall collections....
 	if len( starList ) > 0:
 		stars.push( service.name, starList )
+	else:
+		print 'SDSS found no stars'
 	if len( galList ) > 0:
 		gals.push( service.name, galList )
+	else:
+		print 'SDSS found no galaxies'
 	if log: print 'searchSDSS exit'
 	return
 
@@ -387,8 +398,7 @@ def searchUSNO( service, ra, dec, radius, vot ):
 	r2cIndex = vot.getColumnIdx( 'R2s/g' ) 
 	icIndex = vot.getColumnIdx( 'Is/g' ) 
 	#
-	#
-	#
+	# Form a map for those columns that can return a null value...
 	nullsMap = formNullValuesMap( vot )
 	#
 	# Here are the rest of the indices, found
@@ -400,7 +410,6 @@ def searchUSNO( service, ra, dec, radius, vot ):
 		if log:
 			print 'column name: ' + column, 'column index: ' + str( i )
 		colIndices.append( i )
-
 	#
 	# Form local lists of stars and galaxies
 	starList = []
@@ -512,6 +521,9 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 	for column in service.columns:
 		colIndices.append( vot.getColumnIdx( column ) )
 	#
+	# Form a map for those columns that can return a null value...
+	nullsMap = formNullValuesMap( vot )
+	#
 	# Form local list of hits
 	hitList = []
 	#
@@ -523,7 +535,7 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 		# and then append all the data requested to each row...
 		subRow = [ service.name ]
 		for index in colIndices:
-			subRow.append( cells[ index ] )
+			subRow.append( testAndSetEmpty( testAndSetNull( cells[ index ], index, nullsMap ) ) )
 		hitList.append( subRow )
 	if log: print 'genericRetrieval for ' + service.name + ' exit'
 	return hitList
