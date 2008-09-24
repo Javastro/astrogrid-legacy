@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBUtils.java,v 1.2 2008/09/03 14:18:56 pah Exp $
+ * $Id: CEAJAXBUtils.java,v 1.3 2008/09/24 13:39:17 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -120,7 +120,7 @@ public class CEAJAXBUtils {
     /**
      * @param element
      * @param stylesheet
-     * @param schema if non-nul then this schema is used to validate
+     * @param schema if non-null then this schema is used to validate
      * @return
      * @throws MetadataException
      * @TODO - create a family of functions that marshall to other outputs...
@@ -176,7 +176,9 @@ public class CEAJAXBUtils {
     }
 
     public static <T> T unmarshall(InputStream is, Class<T> clazz) throws JAXBException, IOException, SAXException, MetadataException {
-       return unmarshall(new StreamSource(is), clazz);
+      StreamSource s = new StreamSource(is);
+      T umObj = unmarshall(s, clazz);
+      return umObj;
     }
     
     public static <T> T unmarshall(Document doc, Class<T> clazz) throws JAXBException, IOException, SAXException, MetadataException {
@@ -201,8 +203,13 @@ public class CEAJAXBUtils {
 	JAXBElement<T> el = um.unmarshal(s, clazz);
 	retval = el.getValue();
 	    if (validationEventCollector.hasEvents()) {
-		logger.error(validationEventCollector.toString());
-		throw new MetadataException("xml invalid for " + validationEventCollector.toString());
+	        StringBuffer errmsg = new StringBuffer();
+	        for (ValidationEvent err : validationEventCollector.getEvents()) {
+                    errmsg.append(err.toString());
+                    errmsg.append("\n");
+                }
+		logger.error(errmsg.toString());
+		throw new MetadataException("xml invalid for " + errmsg.toString());
 	    }
 
 	
@@ -258,6 +265,9 @@ public class CEAJAXBUtils {
 
 /*
  * $Log: CEAJAXBUtils.java,v $
+ * Revision 1.3  2008/09/24 13:39:17  pah
+ * slightly better error reporting
+ *
  * Revision 1.2  2008/09/03 14:18:56  pah
  * result of merge of pah_cea_1611 branch
  *
