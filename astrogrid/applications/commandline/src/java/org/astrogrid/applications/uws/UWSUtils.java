@@ -1,5 +1,5 @@
 /*
- * $Id: UWSUtils.java,v 1.6 2008/09/20 15:54:01 pah Exp $
+ * $Id: UWSUtils.java,v 1.7 2008/09/24 13:42:29 pah Exp $
  * 
  * Created on 28 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -66,10 +66,42 @@ public class UWSUtils {
 	return retval ;
 
     }
+    
+    /**
+     * Returns true is the Accept string prefers XML over HTML. Uses very crude decision logic, not compatible with all the possibilities that are defined for Accept. If in doubt prefer xml.
+     * @param request
+     * @return
+     * 
+     */
+    public static boolean needsxml(HttpServletRequest request) {
+        String accept = request.getHeader("Accept");
+        if(accept == null) return true;//if there is no accept header just do xml.
+        int appxmlidx = accept.indexOf("application/xml");
+        int txtxmlidx = accept.indexOf("text/xml");
+        int htmlidx = accept.indexOf("html");
+        
+        if(htmlidx > 0)
+        {
+            
+                return false;
+           
+        } else
+        {
+           if(appxmlidx != -1 || txtxmlidx != -1){
+               return true;
+           } else {
+               return false; //do not return xml unless explicitly asked for....
+        }
+        }
+    }
+
 }
 
 /*
  * $Log: UWSUtils.java,v $
+ * Revision 1.7  2008/09/24 13:42:29  pah
+ * add parser for accept header
+ *
  * Revision 1.6  2008/09/20 15:54:01  pah
  * clean up jobs redirect to not have trailing slash
  *
