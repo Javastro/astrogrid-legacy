@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowser.java,v 1.8 2007/01/24 14:04:45 nw Exp $
+/*$Id: RegistryBrowser.java,v 1.9 2008/09/25 16:02:09 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,30 +12,42 @@ package org.astrogrid.acr.ui;
 
 import java.net.URI;
 
+import org.astrogrid.acr.dialogs.RegistryGoogle;
 
-/** Control the registry browser UI.
+
+/** AR Service: Launch a new VOExplorer GUI
  * 
- * <img src="doc-files/registry.png"/>
  * @service userInterface.registryBrowser
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
- *@see org.astrogrid.acr.astrogrid.Registry
+ *@see org.astrogrid.acr.ivoa.Registry
+ *@see RegistryGoogle Registry Dialogue
  */
 public interface RegistryBrowser {
-    /**show a new instance of registry browser ui*/
+    /**show a new instance of VOExplorer*/
     public void show();
-    /** hide the registry browser ui
+    /** Not implmented
+     * @exclude 
      * @deprecated.*/
     public void hide();
     
-    /** show an new instance of the registry browser, and perform the requiested search (keywords) */
-    public  void search(String s) ;
+    /** show an new instance of the VOExplorer, and populate it using an xquery 
+     * @param xquery an xquery to populate the resource chooser with. Same format as in an xquery list in voexplorer UI - which is convenient for
+     * constructing these queries.
+     */
+    public  void search(String xquery) ;
     
-    /** display a particular record in a new instacne of the browser */
+    /** Show a new instance of VOExplorer, and display a single resource record in it 
+     * 
+     * @param uri the resource ID of the record to display
+     */
     public void open(URI uri);
 }
 
 /* 
  $Log: RegistryBrowser.java,v $
+ Revision 1.9  2008/09/25 16:02:09  nw
+ documentation overhaul
+
  Revision 1.8  2007/01/24 14:04:45  nw
  updated my email address
 

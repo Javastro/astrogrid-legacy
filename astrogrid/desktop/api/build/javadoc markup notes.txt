@@ -1,0 +1,109 @@
+description of additional javadoc markup
+=========================================
+
+Uses many different @tags - some defined by ourselves, and others defined by external taglet libraries.
+
+Defined by Ourselves
+====================
+@service
+    marker tag that marks an interface as an AR component
+    This tag is vital, and is used within the AR implementation
+        
+@bean
+    marker tag that marks a java bean as a datastructure that is returned by the AR
+    Think this tag is vital to the implementation too.
+    
+@xmlrpc
+    documentation specific to xml-rpc access method
+    
+TODO: should I have other access-specific tags too?
+    @rmi
+    @c
+    or even language specific tags - @python?
+      
+Only for development use: not presented in final documentation
+--------------------------------------------------------------
+@todo @modified
+
+To replace:
+    @example
+
+Standard Doclet tags to remember
+=================================
+As well as the obvious ones, there's 
+{@literal} - displays text without interpreting html tag
+{@code} - equivalent to <code>{@literal}</code>. Consider {@example} or {@source} for
+larger examples.
+
+Code Exclusion
+==============
+Provided by a custom doclet filter (org.astrogrid.util.ExcludeDoclet)
+@exclude - will exclude this item (field, method, or even class) from the final documentation
+
+Presentation
+==============
+Provided by the Taglets collection  - http://taglets.sourceforge.net
+
+Block Tags
+----------
+@note
+@warning
+@equivalence - equivalent to (used for describing convenience fns, etc)
+
+Inline Tags
+-----------
+{@example } - preformatted, literal, and colured
+{@markupExample} - preformatted, but not literal (so can contain other tags}
+{@source} - preformatted, literal, coloured, but, unlike example, with no title.
+{@stickyError}, {@stickyInfo}, {@stickyNote}, {@stickyWarning} - postit with icon.
+
+Diagramming
+============
+Provided by the TextDiagramTaglet - http://ditaa.sourceforge.net/
+
+{@textdiagram <unique name>
+
+<diagram>
+ }
+
+e.g.
+
+{@textdiagram testDiagram
+ *   +--------+   +-------+    +-------+
+ *   |        | --+ ditaa +--> |       |
+ *   |  Text  |   +-------+    |diagram|
+ *   |Document|   |!magic!|    |       |
+ *   |     {d}|   |       |    |       |
+ *   +---+----+   +-------+    +-------+
+ *       :                         ^
+ *       |       Lots of work      |
+ *       +-------------------------+
+ * }
+ * 
+ 
+ Diagram Syntax: - http://ditaa.sourceforge.net/
+ in brief.
+ square with rounded corners - 
+/--+
+|  |
++--/
+
+color:
+/----\ /----\
+|c33F| |cRED|
+|    | |    |
+\----/ \----/
+
+tags:
+place within a square to change how it's rendered.
+{d} - as a document
+{s} - as a storage cylinder
+{io} - as a rhombus
+
+dashed lines:
+make one item in the line a '=' (horizontal) or ':' (vertical) to make the whole line dashed.
+
+text in boxes:
+itmized list - wiki like markup - starts with <space>o<space>
+
+  

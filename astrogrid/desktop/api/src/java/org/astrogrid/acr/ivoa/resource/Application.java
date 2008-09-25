@@ -5,16 +5,22 @@ package org.astrogrid.acr.ivoa.resource;
 
 import java.net.URI;
 
-/** Abstract concept of an application
- * schema is fluid at the moment - and poorly thought out IMHO - so only 
- * partially implemented at present. Will wait for standard to settle and see what parts of it are used in practice
+import org.astrogrid.acr.astrogrid.CeaApplication;
+
+/** An abstract notion of 'Application'.
+ * 
+ * The IVOA schema is still in flux at the moment, so only partially 
+ * implemented at present. Will wait for standard to settle and see what elements of it are used in practice
+ * @see CeaApplication CeaApplication - useful subtype of Application.
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Jan 20, 200811:44:39 AM
  */
 public interface Application extends Resource {
 
-    /**enumerate which standards this application is
-                        compliant with*/
+    /**Enumerate which standards this application is compliant with
+     * 
+     * @return an array of standard IDs.
+     */
+                        
     public URI[] getApplicationCapabilities();
 
 }

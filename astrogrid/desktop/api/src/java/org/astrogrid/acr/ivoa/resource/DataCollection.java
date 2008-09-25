@@ -3,17 +3,18 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/**  A logical grouping of data which, in general, is composed of one 
+/**  A logical grouping of data.
+ * <p />
+ * In general, this is composed of one 
            or more accessible datasets.  A collection can contain any
            combination of images, spectra, catalogs, or other data.   
  * @author Noel Winstanley
- * @since Aug 5, 20069:41:46 PM
  */
 public interface DataCollection extends Resource, HasCoverage {//should this extend organization?
 	/** the observatories or facilities used to collect the data contained or managed by this resource */
 	ResourceName[] getFacilities();
 	
-	/** the instruments used to collect the data contained or managed by this resource */
+	/** instruments used to collect the data contained or managed by this resource */
 	ResourceName[] getInstruments();
 	
 	/**  Information about rights held in and over the resource. */
@@ -24,7 +25,7 @@ public interface DataCollection extends Resource, HasCoverage {//should this ext
 	/** Extent of the content of the resource over space, time, 
                      and frequency. */
 	public Coverage getCoverage();
-	/** the description of the catalogues in this collection */
+	/** The catalogues held in this collection */
 	public Catalog[] getCatalogues();
 	
 	/**  The URL that can be used to download the data contained in 

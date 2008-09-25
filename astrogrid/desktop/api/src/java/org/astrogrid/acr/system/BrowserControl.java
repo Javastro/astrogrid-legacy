@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.6 2007/11/12 13:36:27 pah Exp $
+/*$Id: BrowserControl.java,v 1.7 2008/09/25 16:02:03 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,33 +10,50 @@
 **/
 package org.astrogrid.acr.system;
 
+import java.net.URL;
+
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 
-import java.net.URL;
-
-/** Control the desktop webbrowser.
+/** AR Service: Control the desktop webbrowser.
  * 
- * Trivial interface to display a URL in the desktop's webbrowser (relies on this being correclty configured in java web start 
- * console - mostly fine for windows, sometimes needs to be configured by hand on unixes.)
+ * Trivial interface to display a URL in the desktop's webbrowser.
  * @service system.browser
 
 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
- *
+ * @see #openURL Example of use
  */
 public interface BrowserControl {
-    /**Display a page in the system webbrowser
+    /**Display a page in the system webbrowser.
+     * 
+     * {@example "Python Example"
+     *  # connect to the AR
+     * from xmlrpclib import Server
+     * from os.path import expanduser
+     * ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+     *  #call this function
+     * ar.system.browser.openURL('http://www.ivoa.net')
+     * } 
+     * 
+     * {@example "Java Example"   
+     * // connect to the AR
+     * ACR ar = new Finder().find();
+     * // find this component   
+     * BrowserControl bc = (BrowserControl) ar.getService(BrowserControl.class);
+     *  // call this function
+     * bc.openURL(new URL("http://www.ivoa.net"));
+     * }
  * @param url URL of the resource to display
- * @throws ACRException if the system webbrowser cannot be launched. Will not throw if the webbrowser then fails to 
+ * @throws ACRException if the system webbrowser cannot be launched. Will not throw if after launch the  webbrowser then fails to 
  * display the page
  */
 
     
     void openURL(URL url) throws ACRException;
 
-    /** Display a page from the internal ACR webserver in the system webbrowser
-     * @param relativeURL relative url from root of ACR webserver context
+    /** Display a page from the internal AR webserver in the system webbrowser
+     * @param relativeURL relative url from root of AR webserver context
      * @throws ACRException if the system webbrowser cannot be launched. Will not throw if the webbrowser then fails to 
  * display the page
      * @throws InvalidArgumentException if valid URL can't be build from parameter <tt>relativeURL</tt>
@@ -48,6 +65,9 @@ public interface BrowserControl {
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.7  2008/09/25 16:02:03  nw
+documentation overhaul
+
 Revision 1.6  2007/11/12 13:36:27  pah
 change parameter name to structure
 

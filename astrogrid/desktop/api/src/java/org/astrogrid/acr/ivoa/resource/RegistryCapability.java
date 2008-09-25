@@ -5,9 +5,9 @@ package org.astrogrid.acr.ivoa.resource;
 
 import java.net.URI;
 
-/** Abstract capability type for all Registry capabilities.
+/** Abstract baseclass for all Registry capabilities.
+ * @see RegistryService
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Jan 20, 20081:03:01 PM
  */
 public abstract class RegistryCapability extends Capability {
     public RegistryCapability() {

@@ -7,19 +7,21 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.Arrays;
 
-/**    a description of what the service does (in terms of 
-            context-specific behavior), and how to use it (in terms of
-            an interface)
+/**  Describes part of what a service does.
+ * 
+ *  A {@link Service} can contain one or more capabilities. Each capability
+ *  describes something that the service does, and how to access that functionality.
  * @author Noel Winstanley
- * @since Jul 31, 20064:25:09 PM
+ * @see Service
  */
 public class Capability implements Serializable {
 
-	
-	private static int hashCode(Object[] array) {
+	/** @exclude */
+	private static int hashCode(final Object[] array) {
 		final int PRIME = 31;
-		if (array == null)
-			return 0;
+		if (array == null) {
+            return 0;
+        }
 		int result = 1;
 		for (int index = 0; index < array.length; index++) {
 			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -44,46 +46,56 @@ public class Capability implements Serializable {
 	public String getDescription() {
 		return this.description;
 	}
-	/** 
-                  a description of how to call the service to access
-                  this capability */
+	/**Get the interfaces to this capability.
+	 * 
+	 * Each interface describes a way of calling the service to access the functionality of this capability */
 	public Interface[] getInterfaces() {
 		return this.interfaces;
 	}
-	/**         A URI identifier for a standard service.  */
+	/**         An identifier that can be used to denote which standard this capability conforms to
+	 *   */
 	public URI getStandardID() {
 		return this.standardID;
 	}
 
-
-	public void setDescription(String description) {
+	/** @exclude */
+	public void setDescription(final String description) {
 		this.description = description;
 	}
-	public void setInterfaces(Interface[] interfaces) {
+    /** @exclude */	
+	public void setInterfaces(final Interface[] interfaces) {
 		this.interfaces = interfaces;
 	}
-	public void setStandardID(URI standardID) {
+    /** @exclude */	
+	public void setStandardID(final URI standardID) {
 		this.standardID = standardID;
 	}
-	public void setValidationLevel(Validation[] validationLevel) {
+    /** @exclude */	
+	public void setValidationLevel(final Validation[] validationLevel) {
 		this.validationLevel = validationLevel;
 	}
 	/**          A numeric grade describing the quality of the
-                  capability description and interface, when applicable, 
-                  to be used to indicate the confidence an end-user
+                  capability description and interface.
+                  
+                  It is  used to indicate the confidence an end-user
                   can put in the resource as part of a VO application
                   or research study. 
                 */
 	public Validation[] getValidationLevel() {
 		return this.validationLevel;
 	}
-	/** access the xsi:type of this element */
+	/** Access the xsi:type of this capability.
+	 * 
+	 *  This is another method of determining what kind of capability is being described, but prefer {@link #getStandardID()},
+	 *  or even just checking what subtype of Capability this instance is.*/
 	public String getType() {
 		return this.type;
 	}
-	public void setType(String type) {
+    /** @exclude */	
+	public void setType(final String type) {
 		this.type = type;
 	}
+    /** @exclude */	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -94,38 +106,50 @@ public class Capability implements Serializable {
 		result = PRIME * result + Capability.hashCode(this.validationLevel);
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Capability))
-			return false;
+    /** @exclude */	
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (!(obj instanceof Capability)) {
+            return false;
+        }
 		final Capability other = (Capability) obj;
 		if (this.description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!this.description.equals(other.description))
-			return false;
-		if (!Arrays.equals(this.interfaces, other.interfaces))
-			return false;
+			if (other.description != null) {
+                return false;
+            }
+		} else if (!this.description.equals(other.description)) {
+            return false;
+        }
+		if (!Arrays.equals(this.interfaces, other.interfaces)) {
+            return false;
+        }
 		if (this.standardID == null) {
-			if (other.standardID != null)
-				return false;
-		} else if (!this.standardID.equals(other.standardID))
-			return false;
+			if (other.standardID != null) {
+                return false;
+            }
+		} else if (!this.standardID.equals(other.standardID)) {
+            return false;
+        }
 		if (this.type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!this.type.equals(other.type))
-			return false;
-		if (!Arrays.equals(this.validationLevel, other.validationLevel))
-			return false;
+			if (other.type != null) {
+                return false;
+            }
+		} else if (!this.type.equals(other.type)) {
+            return false;
+        }
+		if (!Arrays.equals(this.validationLevel, other.validationLevel)) {
+            return false;
+        }
 		return true;
 	}
-
+    /** @exclude */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Capability[");
 			if (validationLevel == null) {
 				buffer.append(", validationLevel = ").append("null");

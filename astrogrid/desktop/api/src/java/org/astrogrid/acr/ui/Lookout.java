@@ -1,4 +1,4 @@
-/*$Id: Lookout.java,v 1.6 2007/06/27 11:08:36 nw Exp $
+/*$Id: Lookout.java,v 1.7 2008/09/25 16:02:09 nw Exp $
  * Created on 27-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,15 @@
 package org.astrogrid.acr.ui;
 
 
-/** Control the Lookout UI.
- * 
- * <img src="doc-files/lookout.png"/>
- * @deprecated
+/** Control the Lookout UI. (Unimplemented)
+
+ * @exclude
+ *  @deprecated
  * @service userInterface.lookout
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Oct-2005
  *
  */
+@Deprecated
 public interface Lookout  {
     public void show();
     public void hide();
@@ -27,6 +28,9 @@ public interface Lookout  {
 
 /* 
  $Log: Lookout.java,v $
+ Revision 1.7  2008/09/25 16:02:09  nw
+ documentation overhaul
+
  Revision 1.6  2007/06/27 11:08:36  nw
  public apis for new ui components.
 

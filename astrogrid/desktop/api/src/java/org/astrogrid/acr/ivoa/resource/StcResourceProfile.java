@@ -6,16 +6,14 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
-/** Model of a STC resource profile.
- * 
- * At the moment STC is left unparsed - there's a lot of it to get at.
- * we just provide access to a Node object representing the STC - from this, you're on your
- * own.
- * 
+/** Spatial Coverage.
+
+ * Described using STC, which is too complex to usefully parse into arbitrary datastructures. 
+
+ * @see <a href='http://www.ivoa.net/Documents/latest/STC.html'>IVOA STC specification</a>
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Jan 20, 20081:16:26 PM
+ * @see Coverage
  */
 public class StcResourceProfile implements Serializable{
     /**
@@ -25,28 +23,33 @@ public class StcResourceProfile implements Serializable{
     private Document stcNode;
     private boolean allSky;
     
-    /** returns true if, to a first reckoning, this coverage is 'allSky'
-     * implemented by ignoring almost all of STC and just looking for an 'allSky' element anywhere in the STC document
+    /** Heuristic: is this coverage 'AllSky'
      * 
-     * @return
+     * @warning implemented by ignoring almost all of STC and just looking for an 'allSky' element anywhere in the STC document. Use with caution.
+     * 
+     * @return boolean if all sky
      */
     public final boolean isAllSky() {
         return this.allSky;
     }
-
-    public final void setAllSky(boolean allSky) {
+    /** @exclude */
+    public final void setAllSky(final boolean allSky) {
         this.allSky = allSky;
     }
 
-    /** access the root of the STC document */
+    /** access the original STC document
+     * @return an xml Document that conforms to the STC specification
+     * 
+ * @see <a href='http://www.ivoa.net/Documents/latest/STC.html'>IVOA STC specification</a>    
+     *  */
     public Document getStcDocument() {
         return stcNode;
     }
-
-    public final void setStcDocument(Document stcNode) {
+    /** @exclude */
+    public final void setStcDocument(final Document stcNode) {
         this.stcNode = stcNode;
     }
-
+    /** @exclude */
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -55,22 +58,28 @@ public class StcResourceProfile implements Serializable{
                 + ((this.stcNode == null) ? 0 : this.stcNode.hashCode());
         return result;
     }
-
-    public boolean equals(Object obj) {
-        if (this == obj)
+    /** @exclude */
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final StcResourceProfile other = (StcResourceProfile) obj;
-        if (this.allSky != other.allSky)
+        if (this.allSky != other.allSky) {
             return false;
+        }
         if (this.stcNode == null) {
-            if (other.stcNode != null)
+            if (other.stcNode != null) {
                 return false;
-        } else if (!this.stcNode.equals(other.stcNode))
+            }
+        } else if (!this.stcNode.equals(other.stcNode)) {
             return false;
+        }
         return true;
     }
     

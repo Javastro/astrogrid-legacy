@@ -8,7 +8,6 @@ import java.net.URI;
 
 /** Description of a service's availabiltiy.
  * @author Noel Winstanley
- * @since Dec 11, 20063:51:24 PM
  */
 public class VoMonBean implements Serializable{
 /** code representing 'up' / 'available'*/
@@ -22,33 +21,44 @@ public class VoMonBean implements Serializable{
 	long millis = -1;
 	String status = "unknown";
 	String timestamp = "1970-01-01 00:59:59.999";
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final VoMonBean other = (VoMonBean) obj;
-		if (this.code != other.code)
-			return false;
+		if (this.code != other.code) {
+            return false;
+        }
 		if (this.id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!this.id.equals(other.id))
-			return false;
-		if (this.millis != other.millis)
-			return false;
+			if (other.id != null) {
+                return false;
+            }
+		} else if (!this.id.equals(other.id)) {
+            return false;
+        }
+		if (this.millis != other.millis) {
+            return false;
+        }
 		if (this.status == null) {
-			if (other.status != null)
-				return false;
-		} else if (!this.status.equals(other.status))
-			return false;
+			if (other.status != null) {
+                return false;
+            }
+		} else if (!this.status.equals(other.status)) {
+            return false;
+        }
 		if (this.timestamp == null) {
-			if (other.timestamp != null)
-				return false;
-		} else if (!this.timestamp.equals(other.timestamp))
-			return false;
+			if (other.timestamp != null) {
+                return false;
+            }
+		} else if (!this.timestamp.equals(other.timestamp)) {
+            return false;
+        }
 		return true;
 	}
 	/** the status code of the service 
@@ -85,19 +95,19 @@ public class VoMonBean implements Serializable{
 		result = PRIME * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
 		return result;
 	}
-	public void setCode(int code) {
+	public void setCode(final int code) {
 		this.code = code;
 	}
-	public void setId(URI id) {
+	public void setId(final URI id) {
 		this.id = id;
 	}
-	public void setMillis(long millis) {
+	public void setMillis(final long millis) {
 		this.millis = millis;
 	}
-	public void setStatus(String status) {
+	public void setStatus(final String status) {
 		this.status = status;
 	}
-	public void setTimestamp(String timestamp) {
+	public void setTimestamp(final String timestamp) {
 		this.timestamp = timestamp;
 	}
 	/**
@@ -107,7 +117,7 @@ public class VoMonBean implements Serializable{
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("VoMonBean[");
 			buffer.append(" id = ").append(id);
 			buffer.append(", status = ").append(status);

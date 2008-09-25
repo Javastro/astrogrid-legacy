@@ -1,4 +1,4 @@
-/*$Id: ACRException.java,v 1.8 2008/08/21 11:33:50 nw Exp $
+/*$Id: ACRException.java,v 1.9 2008/09/25 16:02:09 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,13 +24,14 @@ public class ACRException extends Exception {
     static final long serialVersionUID = 5881837879200706288L;
 
     /** Construct a new ACRException
-     * 
+     * @exclude
      */
     public ACRException() {
         super();
     }
 
     /** Construct a new ACRException
+     * @exclude
      * @param message
      */
     public ACRException(final String message) {
@@ -38,6 +39,7 @@ public class ACRException extends Exception {
     }
 
     /** Construct a new ACRException
+     * @exclude      
      * @param cause - if cause is a standard exception (i.e. package is java.*), the embed it.
      * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard {@link Exception}, whille still preserving the text
      */
@@ -47,6 +49,7 @@ public class ACRException extends Exception {
     }
 
     /** Construct a new ACRException
+     * @exclude
      * @param message
    * @param cause - if cause is a standard exception (i.e. package is java.*), the embed it.
      * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard {@link Exception}, whille still preserving the text
@@ -93,6 +96,9 @@ public class ACRException extends Exception {
 
 /* 
 $Log: ACRException.java,v $
+Revision 1.9  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.8  2008/08/21 11:33:50  nw
 doc tweaks.
 

@@ -6,11 +6,8 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 import java.net.URI;
 
-/**
-         the name of a potentially registered resource.  That is, the entity
-         referred to may have an associated identifier.
+/** The name of a potentially registered resource.
  * @author Noel Winstanley
- * @since Jul 31, 20063:59:02 PM
  */
 public class ResourceName implements Serializable {
 
@@ -19,9 +16,10 @@ public class ResourceName implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4766263637652231454L;
-	public String value;
-	public URI id;
-	/**          The URI form of the IVOA identifier for the resource refered to */
+	private String value;
+	private URI id;
+	/**          The IVOA identifier of the resource
+	 * @note may be null, if no resource ID is available */
 	public URI getId() {
 		return this.id;
 	}
@@ -29,12 +27,15 @@ public class ResourceName implements Serializable {
 	public String getValue() {
 		return this.value;
 	}
-	public void setId(URI id) {
+	   /** @exclude */
+	public void setId(final URI id) {
 		this.id = id;
 	}
-	public void setValue(String name) {
+	   /** @exclude */
+	public void setValue(final String name) {
 		this.value = name;
 	}
+	   /** @exclude */
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -42,28 +43,37 @@ public class ResourceName implements Serializable {
 		result = PRIME * result + ((this.value == null) ? 0 : this.value.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (! (obj instanceof ResourceName))
-			return false;
+	   /** @exclude */
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (! (obj instanceof ResourceName)) {
+            return false;
+        }
 		final ResourceName other = (ResourceName) obj;
 		if (this.id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!this.id.equals(other.id))
-			return false;
+			if (other.id != null) {
+                return false;
+            }
+		} else if (!this.id.equals(other.id)) {
+            return false;
+        }
 		if (this.value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!this.value.equals(other.value))
-			return false;
+			if (other.value != null) {
+                return false;
+            }
+		} else if (!this.value.equals(other.value)) {
+            return false;
+        }
 		return true;
 	}
+	   /** @exclude */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("ResourceName[");
 			buffer.append(", value = ").append(value);
 			buffer.append(", id = ").append(id);

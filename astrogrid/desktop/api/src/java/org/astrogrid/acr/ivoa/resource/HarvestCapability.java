@@ -3,11 +3,10 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-import java.net.URI;
 
-/** Capability of registries that can be harvested.
+/** Capability of harvesting a registry.
  * @author Noel Winstanley
- * @since Aug 5, 200610:22:56 PM
+ * @see RegistryService
  */
 public class HarvestCapability extends RegistryCapability {
 
@@ -24,33 +23,37 @@ public class HarvestCapability extends RegistryCapability {
 	public int getMaxRecords() {
 		return this.maxRecords;
 	}
-
-	public void setMaxRecords(int maxRecords) {
+    /** @exclude */
+	public void setMaxRecords(final int maxRecords) {
 		this.maxRecords = maxRecords;
 	}
-
+    /** @exclude */
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
 		result = PRIME * result + this.maxRecords;
 		return result;
 	}
-
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (! (obj instanceof HarvestCapability))
-			return false;
+    /** @exclude */
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (!super.equals(obj)) {
+            return false;
+        }
+		if (! (obj instanceof HarvestCapability)) {
+            return false;
+        }
 		final HarvestCapability other = (HarvestCapability) obj;
-		if (this.maxRecords != other.maxRecords)
-			return false;
+		if (this.maxRecords != other.maxRecords) {
+            return false;
+        }
 		return true;
 	}
-
+    /** @exclude */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("HarvestCapability[");
 			buffer.append("maxRecords = ").append(maxRecords);
 			buffer.append("]");

@@ -1,4 +1,4 @@
-/*$Id: DatabaseBean.java,v 1.6 2007/03/08 17:46:56 nw Exp $
+/*$Id: DatabaseBean.java,v 1.7 2008/09/25 16:02:04 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,13 +13,14 @@ package org.astrogrid.acr.astrogrid;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 
 /** describes a  single database in a TablularDB registry entry
+ * @exclude 
  * @deprecated prefer the 'Catalog' type instead.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
- *@since 1.2
  */
+@Deprecated
 public class DatabaseBean extends Catalog{
 
-    public DatabaseBean(String name,String description, TableBean[] tables) {
+    public DatabaseBean(final String name,final String description, final TableBean[] tables) {
         super();
         this.name = name;
         this.description = description;
@@ -33,6 +34,9 @@ public class DatabaseBean extends Catalog{
 
 /* 
 $Log: DatabaseBean.java,v $
+Revision 1.7  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.6  2007/03/08 17:46:56  nw
 removed deprecated interfaces.
 

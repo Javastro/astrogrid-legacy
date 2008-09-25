@@ -1,4 +1,4 @@
-/*$Id: Cone.java,v 1.7 2007/03/20 09:57:09 nw Exp $
+/*$Id: Cone.java,v 1.8 2008/09/25 16:02:10 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,24 @@
 **/
 package org.astrogrid.acr.nvo;
 
+import java.net.URI;
+import java.net.URL;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-
 import org.w3c.dom.Document;
-
-import java.net.URI;
-import java.net.URL;
 
 /** Query  catalogs using Cone-search services
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  * @service nvo.cone
- * @since 1.3
- * @deprecated use the ivoa.cone interface instead.
+
+ * @exclude
+ *  @deprecated use the ivoa.cone interface instead.
  * 
  */
+@Deprecated
 public interface Cone {
     /** construct a query on RA, DEC, SR
      * 
@@ -74,21 +75,24 @@ public interface Cone {
      *
      * Can be used as a starting point for building filters, etc
      * @return an adql query string
-     * @deprecated use getRegistryAdqlQuery()
+     * @exclude @deprecated use getRegistryAdqlQuery()
      */
     String getRegistryQuery();
     
     /** returns an ADQL/s query that should be passed to a registry to list all available cone services
-     * @since 2006.03*/
+     */
     String getRegistryAdqlQuery();
     /** returns an xquery that should be passed to a registry to list all available cone services 
-     * @since 2006.03*/
+    */
     String getRegistryXQuery();
 }
 
 
 /* 
 $Log: Cone.java,v $
+Revision 1.8  2008/09/25 16:02:10  nw
+documentation overhaul
+
 Revision 1.7  2007/03/20 09:57:09  nw
 revived nvo cone for now.
 

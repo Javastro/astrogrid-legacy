@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManager.java,v 1.8 2007/07/16 12:19:16 nw Exp $
+/*$Id: RemoteProcessManager.java,v 1.9 2008/09/25 16:02:04 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,13 +19,16 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.w3c.dom.Document;
 
-/** a general manager for the execution , monitoring, and control of all remote processes.
+/** AR Service: A general manager for the execution , monitoring, and control of all remote processes.
  *
  * RemoteProcessManager unifies the  functionality in {@link org.astrogrid.acr.astrogrid.Jobs} and {@link org.astrogrid.acr.astrogrid.Applications}
  * and provides additional features - notably ability to register callbacks for progress notifications. It is still valid to use the <tt>Jobs</tt> or <tt>Applications</tt>, 
  * however, this interface also knows how to invoke other kinds of service, and provides a uniform interface to cea, cone, siap, ssap services.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
- *@since 1.3
+ * 
+ * @note As JES is no longer supported, and we no longer provide cea-style querying of cone and siap, 
+ * maybe this interface should be retired?
+
  * @service astrogrid.processManager
  */
 public interface RemoteProcessManager {
@@ -95,7 +98,7 @@ public interface RemoteProcessManager {
 
     /** delete all record of a process
      * 
-     * @param jobURN identifier of the process to delete 
+     * @param executionId identifier of the process to delete 
      * @throws NotFoundException if the process could not be found
      * @throws ServiceException if an error occurs while connecting to the server
      * @throws SecurityException if the user is not permitted to access this job.
@@ -166,6 +169,9 @@ public interface RemoteProcessManager {
 
 /* 
 $Log: RemoteProcessManager.java,v $
+Revision 1.9  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.8  2007/07/16 12:19:16  nw
 Complete - task 91: make remoteprocessmanager a full fledged ar member
 

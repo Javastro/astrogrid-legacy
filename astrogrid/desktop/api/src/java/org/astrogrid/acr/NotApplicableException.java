@@ -1,4 +1,4 @@
-/*$Id: NotApplicableException.java,v 1.7 2008/08/21 11:34:18 nw Exp $
+/*$Id: NotApplicableException.java,v 1.8 2008/09/25 16:02:09 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr;
 
 /**An operation was attempted with invalid parameters or state.
  * 
- * <p/>
+ * 
  * For example, attempting to list the children of a file, instead of a directory.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 29-Jul-2005
  *
@@ -22,13 +22,14 @@ public class NotApplicableException extends ACRException {
     static final long serialVersionUID = 6698250597517398250L;
 
     /** Construct a new NotApplicableException
-     * 
+     * @exclude
      */
     public NotApplicableException() {
         super();
     }
 
     /** Construct a new NotApplicableException
+     * @exclude
      * @param message
      */
     public NotApplicableException(final String message) {
@@ -36,6 +37,7 @@ public class NotApplicableException extends ACRException {
     }
 
     /** Construct a new NotApplicableException
+     * @exclude
      * @param cause
      */
     public NotApplicableException(final Throwable cause) {
@@ -43,6 +45,7 @@ public class NotApplicableException extends ACRException {
     }
 
     /** Construct a new NotApplicableException
+     * @exclude
      * @param message
      * @param cause
      */
@@ -55,6 +58,9 @@ public class NotApplicableException extends ACRException {
 
 /* 
 $Log: NotApplicableException.java,v $
+Revision 1.8  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.7  2008/08/21 11:34:18  nw
 doc tweaks
 

@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.10 2008/04/14 09:39:45 nw Exp $
+/*$Id: Jobs.java,v 1.11 2008/09/25 16:02:04 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,8 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.w3c.dom.Document;
 
-/** Execute and control workflows on remote job servers.
- *
+/** AR Service: Execute and control workflows on remote job servers.
+ *@exclude
  *
  * For now, an interface to a single JES server  - which is configured in the system properties for the ACR.
  * In future, JES servers should be registered, and a default server associated with a user in a community .
@@ -48,7 +48,7 @@ import org.w3c.dom.Document;
  * @see org.astrogrid.acr.astrogrid.ExecutionInformation
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.jobs
- * @deprecated JES is no longer supported, and this interface is no longer provided by AR
+ * @exclude @deprecated JES is no longer supported, and this interface is no longer provided by AR
  */
 public interface Jobs {
     /**
@@ -71,7 +71,6 @@ public interface Jobs {
      * 
      * @return a workflow document - a <tt>workflow</tt> document in the the <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
      * @throws ServiceException if an inavoidable error ocurs.
-     * @since 1.2
      */
     Document createJob() throws ServiceException;
     
@@ -80,7 +79,6 @@ public interface Jobs {
      * @param taskDocument - a task document in the <tt> http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
      *  @return a workflow document with a single step that executes the parameter task - a <tt>workflow</tt> document in the the <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
      * @throws ServiceException if an inavoidable error ocurs.
-     * @since 1.3    
      */
     Document wrapTask(Document taskDocument) throws ServiceException;
     /** retrieve the execution transcript for a job.
@@ -156,6 +154,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.11  2008/09/25 16:02:04  nw
+ documentation overhaul
+
  Revision 1.10  2008/04/14 09:39:45  nw
  removed obsolete interface.
 

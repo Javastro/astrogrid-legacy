@@ -17,13 +17,14 @@ import net.ladypleaser.rmilite.impl.RemoteInvocationHandler;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
 
 
-/** Part of the internal implementation
- *<p/>
+/** Part of the internal implementation.
+ * @exclude
+ *
  * rewriting of rmilite.Client that adds support for session information.
  * protocol compliant with existing client - and would have liked to 
  * just extend that class - but it was not really suitable for extension.
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Mar 21, 20072:03:53 PM
+
  */
 class SessionAwareClient {
 

@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.17 2008/08/21 11:34:03 nw Exp $
+/*$Id: Finder.java,v 1.18 2008/09/25 16:02:09 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,32 +33,35 @@ import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.ApiHelp;
 
-/** Find or create an Astro Runtime instance, and return an interface to it.
+/** Connect to an AstroRuntime Instance using RMI.
  * 
  * The Astro Runtime instance is found by 
  * <ol>
-      <li> First attempting to connect to a running instance using RMI, on a port defined in the file <tt>~/.acr-rmi-port</tt> (this file is written by a running AR instance)</li>
-     <li> failing that, tries to create an external instance (will only work if running under java web start), and then connect to that using RMI</li>
-     <li> failing that, tries to create an instance internally (will only work if implementation classes are on classpath),</li>
+      <li> First attempting to connect to a running instance using RMI, on a port defined in the file <tt>~/.acr-rmi-port</tt> 
+      (this file is written by a running AR instance)</li>
+     <li> failing that, tries to create an instance internally (which will only work if implementation classes are on classpath),</li>
+     <li> failing that, will prompt the user to start an instance of the AR</li>
  * </ol>
      The interface returned will either be a  RMI stub or direct instance, depending on how the AR was found.
      * No matter how the AR is found, the ACR interface returned is a singleton - it is stored in this class for simple access the next time
- * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
- * @example
- * <pre>
+ * {@example "Connecting to AstroRuntime"
  * import org.astrogrid.acr.builtin.ACR;
  * import org.astrogrid.acr.Finder;
  * Finder f = new Finder();
  * ACR acr = f.find(); // find the AR 
- * </pre>
+ * }
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
  *@see org.astrogrid.acr.builtin.ACR How to retrieve services from the ACR interface
+ *@note This class can also be used for direct-java connection to an AstroRuntime, if the AR is running in the same JVM as the calling code.
+ *@xmlrpc This class is not used for XML-RPC connections to AstroRuntime. For Python, Perl, C, etc see the examples elsewhere (TODO)
  */
 public class Finder {
     /** Part of the internal implementation
+     * @exclude
      * <p/>
      *  rmi stub that connects to a remote acr instance.
 	 * @author Noel.Winstanley@manchester.ac.uk
-	 * @since Mar 21, 20071:41:34 PM
+
 	 */
 	public static final class RmiAcr implements ACR {
 		// used to connect to the remote acr
@@ -133,11 +136,12 @@ public class Finder {
 	}
 
 	/**Part of the internal implementation 
+	 * @exclude
      * <p />
      * Refactored as an static public class - previously was an anonymous class, and RmiLite seemed to be unable to call it
      *  - producing a nice stack trace on shutdown. Same code, but as a named public static class works fine.
 	 * @author Noel Winstanley
-	 * @since Jun 12, 200611:03:25 AM
+
 	 */
 	public static final class FinderCleanupShutdownListener implements ShutdownListener {
 		public FinderCleanupShutdownListener(final Finder f) {
@@ -154,10 +158,12 @@ public class Finder {
 		}
 	}
 
-	/** Webstart URL for the ACR */
+	/** Webstart URL for the ACR
+	 * @exclude */
     public static final String ACR_JNLP_URL = "http://software.astrogrid.org/jnlp/astro-runtime/astro-runtime.jnlp";
     /**
      * Commons Logger for this class
+     * @exclude
      */
     protected static final Log logger = LogFactory.getLog(Finder.class);
 
@@ -168,14 +174,14 @@ public class Finder {
         super();
     }
     
-    /** Find or create an Astro Runtime (AR) instance
+    /** Find or create an Astro Runtime (AR) instance.
      * @return an interface to the Astro Runtime - depending on how connected will either 
      * be a direct instance or a remote stub - although this makes no difference to the 
      * consumer.
-     * The instance returned is a singleton - i.e. all subsequent calls to  this method
+     * @note The instance returned is a singleton - i.e. all subsequent calls to  this method
      * will return the same object.
      * @throws ACRException if all options fail
-     * 
+     * @equivalence findSession(true,false)
      * */
     public synchronized ACR find()  throws ACRException{
     	final boolean tryToStartIfNotRunning = true;
@@ -185,11 +191,11 @@ public class Finder {
 
     }
     
-    /** Find an Astro Runtime instance for a specific session 
+    /** Find an Astro Runtime instance for a specific session. 
      * 
-     * unlike {@link find()} this method will not start the Astro Runtime service if it is 
+     * Unlike {@link #find()} this method will not start the Astro Runtime service if it is 
      * not already running - the Astro Runtime must be running first.
-     * 
+     * @warning Still Experimental.
      * @param sessionId the identifier of a current session
      * @return an AR instance that is connected to the specified session
 	 * @throws InvalidArgumentException if the sessionId is invalid.
@@ -226,11 +232,11 @@ public class Finder {
     }
 
     /**
-     * Find or create an Astro Runtime (AR) instance
+     * Find or create an Astro Runtime (AR) instance.
      * @see #find()
      * @param tryToStartIfNotRunning if false, will not attempt to start an AR, but instead will return NULL if there isn't an instance already running
-     * @param warnUserBeforeStarting if true, will warn the user before attempting start an AR, giving him the chance to start one manually
-     * @return
+     * @param warnUserBeforeStarting if true, will warn the user before attempting to start an AR, giving them the chance to start one manually
+     * @return an instance of the Astro Runtime
      * @throws ACRException
      */
 	public ACR find(final boolean tryToStartIfNotRunning, final boolean warnUserBeforeStarting) throws ACRException {
@@ -350,7 +356,7 @@ public class Finder {
     }
 
     /** connect to an external AR.
-     * @return
+
      * @throws FileNotFoundException
      * @throws NumberFormatException
      * @throws IOException
@@ -376,7 +382,7 @@ public class Finder {
     }
 
 	/**
-	 * @return
+
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -407,7 +413,9 @@ public class Finder {
     
     private ACR acr;
     
-    /** returns the File object that represents the AR RMI connection file. */
+    /** The AR RMI connection file.
+     * <p/>
+     * This is <tt>~/.acr-rmi-port</tt> */
     public static final File configurationFile() {
         final File homeDir = new File(System.getProperty("user.home"));
         return new File(homeDir,".acr-rmi-port");
@@ -422,7 +430,7 @@ public class Finder {
      * for now, only create an external acr if running under javaws.
      * @todo add browser control lib to do this in other circumstances.
 
-     * @return
+ 
      * @throws NoSuchMethodException
      * @throws SecurityException
      * @throws MalformedURLException
@@ -466,11 +474,11 @@ public class Finder {
             final Class buildClass = Class.forName("org.astrogrid.desktop.BuildInprocessACR");
             final Object o = buildClass.newInstance();
             // start the acr.
-            Method m = buildClass.getMethod("start",null);
-            m.invoke(o,null);
+            Method m = buildClass.getMethod("start",(Class[])null);
+            m.invoke(o,(Object[])null);
             // return the acr instance
-            m = buildClass.getMethod("getACR",null);
-            return (ACR)m.invoke(o,null);
+            m = buildClass.getMethod("getACR",(Class[])null);
+            return (ACR)m.invoke(o,(Object[])null);
         } catch (final ClassNotFoundException e) {            
             logger.info("ACR implementation classes not available - must connect to a remote acr",e);
         } 
@@ -481,6 +489,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.18  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.17  2008/08/21 11:34:03  nw
 doc tweaks.
 

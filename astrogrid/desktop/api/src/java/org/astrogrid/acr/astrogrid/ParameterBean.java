@@ -1,4 +1,4 @@
-/*$Id: ParameterBean.java,v 1.7 2008/01/25 07:33:24 nw Exp $
+/*$Id: ParameterBean.java,v 1.8 2008/09/25 16:02:04 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,53 +10,62 @@
 **/
 package org.astrogrid.acr.astrogrid;
 
-import java.io.Serializable;
-
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.BaseParam;
 
-/** description of a single parameter for a remote application.
+/** An input or output parameter of a remote application (CEA).
  * 
- * NB - all fields, apart from <tt>name</tt> and <tt>type</tt> may be null
- * <p />
- * <b>Design Note</b> - in previous schema, the element now called <i>name</i>
- * was called <i>UiName</i>, while the element now called <i>id</i> was called <i>name</i>.
- * Because of this overlapping name shift, it's impossble to just deprecate the previous methods.
- * So, to ensure backwards compatability, this bean provides access to elements in the new schema as follows
+ * @note Most fields are inherited from the parent class - {@link BaseParam}, 
+ * @note All fields, apart from <tt>name</tt> and <tt>type</tt> may be null
+ * 
+ * @note In previous schema, the element now called {@code name}
+ * was called {@code UiName}, while the element now called {@code id} was called {@code name}.
+ * Because of this overlapping name shift, it's impossible to just deprecate the previous methods.
+ * So, to ensure backwards compatibility, this bean provides access to elements in the new schema as follows
  * <table>
  * <tr>
- * <th>element</th><th>getter</th><th>setter</th></tr>
+ * <th>element</th><th>getter</th></tr>
  * <tr>
- * <td><tt>id</tt></td><td>{@link #getId()}, <br/>{@link #getName()} (deprecated)</td><td>{@link #setId()}</td>
+ * <td>{@code id}</td><td>{@link #getId()}, <br/>{@link #getName()} (deprecated)</td>
  * </tr>
  * <tr>
- * <td><tt>name</tt></td><td>{@link #getUiName()}</td><td>{@link #setName()}</td>
+ * <td>{@code name}</td><td>{@link #getUiName()}</td>
  * </tr>
  * </table>
  * <br/>
- * unimplemented - Range.
+ * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
- *
+ * @bean
+ * @see CeaApplication
+ * @see Applications Executing remote applications
+ * @see Registry Querying for registry resources
+ * @see <a href='http://www.ivoa.net/Documents/latest/CEA.html'>CEA Specification</a>
  */
 public class ParameterBean extends BaseParam{
-
+    /*
+    * unimplemented - Range.
+    */
     /**
      * 
      */
     private static final long serialVersionUID = 2983698574593000414L;
 
 /**
- * 
+ * @exclude
  */
 public ParameterBean() {
 }
     /** Construct a new ParameterInformation
+     * @exclude
      * @param name
      * @param id
+     * @exclude 
      * @deprecated use setters instead
      * 
      */
-    public ParameterBean(String name, String uiname, String description,
-            String ucd,String defaultValue,String units,String type,String subType,String[] options){
+    @Deprecated
+    public ParameterBean(final String name, final String uiname, final String description,
+            final String ucd,final String defaultValue,final String units,final String type,final String subType,final String[] options){
        this.id = name;
     this.defaultValues = new String[]{defaultValue};
     this.type = type;
@@ -77,7 +86,9 @@ public ParameterBean() {
     
 
     /** default value for the parameter
+     * @exclude 
      * @deprecated use {@link #getDefaultValues()} */
+    @Deprecated
     public String getDefaultValue() {
         if (defaultValues == null || defaultValues.length == 0) {
             return null;
@@ -86,15 +97,19 @@ public ParameterBean() {
     }
  
     /** the identifier for the parameter
+     * @exclude 
      * @deprecated use {@link #getId()} */
+    @Deprecated
     public String getName() {
         return this.getId();
     }
-    /** @deprecated - use getUnit() */
+    /** @exclude 
+     * @deprecated - use getUnit() */
+    @Deprecated
     public String getUnits() {
         return super.getUnit();
     }
-    /** the identifier for the parameter */
+    /** the unique identifier for the parameter */
     public String getId() {
         return id;
     }
@@ -103,87 +118,99 @@ public ParameterBean() {
         return this.options;
     }
     /** some further description of the type of this parameter - e.g. acceptable ranges 
+     * @exclude 
      * @deprecated unused.
      * @return null*/
+    @Deprecated
     public String getSubType() {
         return null;
     }
     /** type of ths parameter
-     * @return 'integer','real','complex','text','boolean','anyURI','VOTable','RA','Dec','MJD','DateTime','ADQL','ADQL-S','STC-S','binary','FITS','XML' */
+     * @return A type defined in the CEA specification. One of {@code integer}, {@code real}, {@code complex}
+     * ,{@code text},{@code boolean}, {@code anyURI}, {@code VOTable},
+     * {@code RA}, {@code Dec}, {@code MJD}, {@code DateTime},
+     * {@code ADQL}, {@code ADQL-S},{@code STC-S},{@code binary},{@code FITS},{@code XML} */
+    
     public String getType() {
         return this.type;
     }
 
-    /** user-readable name for this parameter
-     * <br />
-     * <b>warning</b> Once the deprecated method {@link #getName()} has been retired
+    /** user-readable name for this parameter.
+     * 
+     * @warning Once the deprecated method {@link #getName()} has been retired
      * this method will be deprecated in favour of getName */
     public String getUiName() {
         return super.getName();
     }
 
     
-
+    /** @exclude */
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         return result;
     }
-
-    public boolean equals(Object obj) {
-        if (this == obj)
+    /** @exclude */
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final ParameterBean other = (ParameterBean) obj;
         if (this.id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!this.id.equals(other.id))
+            }
+        } else if (!this.id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 
     /** a possible default for this type of parameter
-                        this is repeateable for the case of array
+                        this is array-valued for the case of array
                         parameters.*/
     public final String[] getDefaultValues() {
         return this.defaultValues;
     }
-
-    public final void setDefaultValues(String[] defaultValues) {
+    /** @exclude */
+    public final void setDefaultValues(final String[] defaultValues) {
         this.defaultValues = defaultValues;
     }
-
-    public final void setId(String id) {
+    /** @exclude */
+    public final void setId(final String id) {
         this.id = id;
     }
-
-    public final void setType(String type) {
+    /** @exclude */
+    public final void setType(final String type) {
         this.type = type;
     }
-
-    public final void setOptions(String[] options) {
+    /** @exclude */
+    public final void setOptions(final String[] options) {
         this.options = options;
     }
-/** possibly a uType for this parameter */
+/** possibly access uType for this parameter
+ *  @return may be null */
     public final String getUType() {
         return this.uType;
     }
-
-    public final void setUType(String type) {
+    /** @exclude */
+    public final void setUType(final String type) {
         this.uType = type;
     }
-/** possibly a mime type for this parameter */
+/** possibly a mime type for this parameter 
+ * @return may be null*/
     public final String getMimeType() {
         return this.mimeType;
     }
-
-    public final void setMimeType(String mimeType) {
+    /** @exclude */
+    public final void setMimeType(final String mimeType) {
         this.mimeType = mimeType;
     }
-    /**                     the shape of the array that constitutes the value
+    /**                     the shape of the array that constitutes the value.
      * <p/>
      *             An expression of a the shape of a multi-dimensional array
             of the form LxNxM... where each value between gives the
@@ -197,8 +224,8 @@ public ParameterBean() {
     public final String getArraysize() {
         return this.arraysize;
     }
-
-    public final void setArraysize(String array) {
+    /** @exclude */
+    public final void setArraysize(final String array) {
         this.arraysize = array;
     }
 }
@@ -206,6 +233,9 @@ public ParameterBean() {
 
 /* 
 $Log: ParameterBean.java,v $
+Revision 1.8  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.7  2008/01/25 07:33:24  nw
 final api changes for reg1.0 upgrade
 

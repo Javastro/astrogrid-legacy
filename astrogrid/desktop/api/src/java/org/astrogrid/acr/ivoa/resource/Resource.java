@@ -6,30 +6,40 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 import java.net.URI;
 
-/**    Any entity or component of a VO application that is
-           describable and identifiable by a IVOA Identifier. 
-  * @see http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html         
+import org.astrogrid.acr.ivoa.Registry;
+
+/**  Base class for all resources returned from an IVOA Registry.
+ * 
+ *   
+ *   An instance of this class can represent any entity or component of a VO application that is
+           describable and identifiable by a IVOA Identifier.
+ @note Most resouces will be represented by an object that implements <b>one or more</b> subclasses of this class. 
+* @see <a href="http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html">IVOA Registry Metadata Document</a>
+   @see Registry
  * @author Noel Winstanley
- * @since Jul 31, 20063:43:25 PM
  */
 public interface Resource extends Serializable {
-	/**       A numeric grade describing the quality of the
-                  resource description, when applicable, 
-                  to be used to indicate the confidence an end-user
+	/**       A description of the quality of the
+                  resource description.
+                  It can tbe used to indicate the confidence an end-user
                   can put in the resource as part of a VO application
                   or research study.  */
 	Validation[] getValidationLevel();
 	
-	/**  the full name given to the resource */
+	/**  the Full name given to the resource 
+	 * @note expected to always be provided*/
 	String getTitle();
-	/**      Unambiguous reference to the resource conforming to the IVOA
+	/**      The unique ID for this resource.
+	 * 
+	 * @return Unambiguous and unique reference to the resource conforming to the IVOA
                  standard for identifiers */
 	URI getId();
-	/**     a short name or abbreviation given to the resource. */
+	/**     A short name or abbreviation given to the resource.
+	 * @note this is not guaranteed to be unique, and often is not available */
 	String getShortName();
-	/**      Information regarding the general curation of the resource */
+	/**      Curation information about the resource */
 	Curation getCuration();
-	/**   Information regarding the general content of the resource */
+	/**   Description of the content of the resource */
 	Content getContent();
 	/** a tag indicating whether this resource is believed to be still
               actively maintained. */
@@ -41,6 +51,8 @@ public interface Resource extends Serializable {
 	/**        The UTC date this resource metadata description was last updated. */
 	String getUpdated();
 
-	/** the xsi:type attribute of this resource */
+	/** the xsi:type attribute of this resource.
+	 * @note This is one method of distinguishing between different kinds of resource. However, it's often easier to 
+	 * just check what sub-interfaces of Resource a particular instance implements. */
 	String getType();
 }

@@ -7,9 +7,8 @@ import java.net.URI;
 
 
 
-/**
+/** Constants for messages sent by a PLASTIC Hub.
  * @author jdt@roe.ac.uk
- * @date 01-Nov-2005
  */
 public interface HubMessageConstants {
 

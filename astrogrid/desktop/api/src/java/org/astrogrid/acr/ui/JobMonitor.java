@@ -1,4 +1,4 @@
-/*$Id: JobMonitor.java,v 1.6 2007/01/24 14:04:45 nw Exp $
+/*$Id: JobMonitor.java,v 1.7 2008/09/25 16:02:09 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,15 @@ package org.astrogrid.acr.ui;
 
 import java.net.URI;
 
-/** Control the Job Monitor GUI.
+/** Control the Job Monitor GUI. (Unimplemented)
  * 
  * @service userInterface.jobMonitor
+ * @exclude 
  * @deprecated replaced by {@link Lookout} 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Mar-2005
  *@see org.astrogrid.acr.astrogrid.Jobs
  */
+@Deprecated
 public interface JobMonitor {
     /** show the job monitor window */
     public void show();
@@ -43,6 +45,9 @@ public interface JobMonitor {
 
 /* 
  $Log: JobMonitor.java,v $
+ Revision 1.7  2008/09/25 16:02:09  nw
+ documentation overhaul
+
  Revision 1.6  2007/01/24 14:04:45  nw
  updated my email address
 

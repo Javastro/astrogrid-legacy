@@ -1,4 +1,4 @@
-/*$Id: TableBean.java,v 1.7 2008/01/21 09:47:26 nw Exp $
+/*$Id: TableBean.java,v 1.8 2008/09/25 16:02:04 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,15 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.util.Arrays;
 
-/** descripition of a  single table in a  registry entry
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Catalog;
+
+/** Registry description of a table in a Catalog
+ * @see Catalog
+ * @see Registry Examples of querying for registry resources
+ * @bean
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
- * @since 1.2
+
  */
 public class TableBean implements Serializable {
 
@@ -25,16 +31,18 @@ public class TableBean implements Serializable {
      */
     private static final long serialVersionUID = -7541183831696468598L;
 
-    private static int hashCode(Object[] array) {
+    private static int hashCode(final Object[] array) {
 		final int PRIME = 31;
-		if (array == null)
-			return 0;
+		if (array == null) {
+            return 0;
+        }
 		int result = 1;
 		for (int index = 0; index < array.length; index++) {
 			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
 		}
 		return result;
 	}
+    /** @exclude */
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -44,41 +52,54 @@ public class TableBean implements Serializable {
 		result = PRIME * result + ((this.role == null) ? 0 : this.role.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	/** @exclude */
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final TableBean other = (TableBean) obj;
-		if (!Arrays.equals(this.columns, other.columns))
-			return false;
+		if (!Arrays.equals(this.columns, other.columns)) {
+            return false;
+        }
 		if (this.description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!this.description.equals(other.description))
-			return false;
+			if (other.description != null) {
+                return false;
+            }
+		} else if (!this.description.equals(other.description)) {
+            return false;
+        }
 		if (this.name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!this.name.equals(other.name))
-			return false;
+			if (other.name != null) {
+                return false;
+            }
+		} else if (!this.name.equals(other.name)) {
+            return false;
+        }
 		if (this.role == null) {
-			if (other.role != null)
-				return false;
-		} else if (!this.role.equals(other.role))
-			return false;
+			if (other.role != null) {
+                return false;
+            }
+		} else if (!this.role.equals(other.role)) {
+            return false;
+        }
 		return true;
 	}
-	public TableBean(String name,String description, ColumnBean[] columns) {
+	/** @exclude */
+	public TableBean(final String name,final String description, final ColumnBean[] columns) {
         super();
         this.name = name;
         this.description = description;
         this.columns  = columns;
         this.role = null;
     }
-    public TableBean(String name,String description, ColumnBean[] columns, String role) {
+	/** @exclude */
+    public TableBean(final String name,final String description, final ColumnBean[] columns, final String role) {
         super();
         this.name = name;
         this.description = description;
@@ -90,11 +111,11 @@ public class TableBean implements Serializable {
     protected final String description;
     protected final ColumnBean[] columns;
 
-    /** list descriptions of the columns in this table */
+    /** metadata for the columns in this table */
     public ColumnBean[] getColumns() {
         return this.columns;
     }
-    /** human redable description for this table */
+    /** human redable description of this table */
     public String getDescription() {
         return this.description;
     }
@@ -102,14 +123,14 @@ public class TableBean implements Serializable {
     public String getName() {
         return this.name;
     }
-	/**
+	/** @exclude
 		 * toString methode: creates a String representation of the object
 		 * @return the String representation
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("TableBean[");
 			buffer.append("role = ").append(role);
 			buffer.append(", name = ").append(name);
@@ -123,7 +144,9 @@ public class TableBean implements Serializable {
 			buffer.append("]");
 			return buffer.toString();
 		}
-		/**               a name for the role this table plays.  Recognized
+		/** the role that this table plays.
+		 * 
+		 *   Recognized
                values include "out", indicating this table is output 
                from a query.*/
     public final String getRole() {
@@ -135,6 +158,9 @@ public class TableBean implements Serializable {
 
 /* 
 $Log: TableBean.java,v $
+Revision 1.8  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.7  2008/01/21 09:47:26  nw
 Incomplete - task 134: Upgrade to reg v1.0
 

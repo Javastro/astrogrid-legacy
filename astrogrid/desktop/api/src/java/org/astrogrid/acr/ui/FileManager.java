@@ -3,12 +3,14 @@
  */
 package org.astrogrid.acr.ui;
 
-/**
+/** AR Service: Launch a new FileManager GUI
  * @service userInterface.fileManager
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Jun 20, 20071:18:49 PM
+
  */
 public interface FileManager {
+    //* @todo add method to open at particular location
+    /**Display a new instance of FileManager */
 	public void show();
 
 }

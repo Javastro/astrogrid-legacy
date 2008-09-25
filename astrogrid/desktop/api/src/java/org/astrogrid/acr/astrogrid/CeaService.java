@@ -3,16 +3,19 @@
  */
 package org.astrogrid.acr.astrogrid;
 
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
 
-/** Registry record for a CEA server.
+/** Registry description of a CEA server.
  * @author Noel Winstanley
- * @since Aug 5, 200610:15:52 PM
+ * @see Applications Executing remote applications
+ * @see Registry Querying for registry resources
  */
 public interface CeaService extends Service {
-	/** access a descirption of the capabilities of this cea server
+	/** the capabilities of this CEA server
 	 * 
-	 * @return an item in the list of <tt>Service.getCapabilities()</tt> that describes what this CEA server can do. 
+	 * @return the {@link CeaServerCapability} object that describes what this CEA Server can do.
+	 * This will be one of the items in the list of {@link Service#getCapabilities()} 
 	 */
 	public CeaServerCapability findCeaServerCapability();
 }

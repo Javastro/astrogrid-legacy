@@ -4,10 +4,12 @@
 package org.astrogrid.acr.ivoa;
 
 
-/** data cache.
+/**
+ * @exclude 
+ * not very interesting
+ *  data cache - registry resources, and other stuff.
  * @service ivoa.cache 
  * @author Noel Winstanley
- * @since 2007.1
  */
 public interface CacheFactory {
 	

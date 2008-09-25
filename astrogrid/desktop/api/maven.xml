@@ -19,32 +19,30 @@
 
 	<!-- add  dependent libs into distro -->
 	<postGoal name="dist:prepare-bin-filesystem">
-		<mkdir dir="${maven.dist.bin.assembly.dir}/rmi"/>
+		<mkdir dir="${maven.dist.bin.assembly.dir}/rmi-lib"/>
 		<move file="${maven.dist.bin.assembly.dir}/${maven.final.name}.jar"
-			todir="${maven.dist.bin.assembly.dir}/rmi" />
+			todir="${maven.dist.bin.assembly.dir}/rmi-lib" />
 		<j:forEach var="lib" items="${pom.artifacts}">
 			<j:set var="dep" value="${lib.dependency}"/>			
 			<j:if test="${dep.getProperty('rmi.bundle')=='true'}">
 				<j:choose>
-					<copy todir="${maven.dist.bin.assembly.dir}/rmi" 
+					<copy todir="${maven.dist.bin.assembly.dir}/rmi-lib" 
 					      file="${lib.path}"/>			
 				</j:choose>
 			</j:if>
          </j:forEach>	
-		<mkdir dir="${maven.dist.bin.assembly.dir}/xmlrpc"/>
+		<mkdir dir="${maven.dist.bin.assembly.dir}/xmlrpc-lib"/>
 		<j:forEach var="lib" items="${pom.artifacts}">
 			<j:set var="dep" value="${lib.dependency}"/>			
 			<j:if test="${dep.getProperty('xmlrpc.bundle')=='true'}">
 				<j:choose>
-					<copy todir="${maven.dist.bin.assembly.dir}/xmlrpc" 
+					<copy todir="${maven.dist.bin.assembly.dir}/xmlrpc-lib" 
 					      file="${lib.path}"/>			
 				</j:choose>
 			</j:if>
-         </j:forEach>	         
+         </j:forEach>	                  
          <copy todir="${maven.dist.bin.assembly.dir}">
          	<fileset dir="${basedir}">
-         		<include name="examples/**" />
-         		<include name="contrib/**" />
          		<include name="README" />
          	</fileset>
         </copy>	
@@ -63,44 +61,52 @@
   -->
 	
 	<preGoal name="jar:jar">
-		<attainGoal name="xmlrpcdoc"/>
+		<attainGoal name="xmldescriptors"/>
 	</preGoal>	
 <!-- hack for xsl purposes -->
    ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
 
 	
 	<!-- generate xmlrpc documentation and descriptiors -->
-	<goal name="xmlrpcdoc" description="extract xml description of api, then process into module descriptors and xmlrpc documentation">		
+	<goal name="xmldescriptors" description="extract xml description of api, then process into module descriptors">
+        <!--  take a copy of the default (documentation-producing) configuration, 
+        before we zap it. -->
+        <j:set var="maven.javadoc.doclet.orig" value="${maven.javadoc.doclet}" />
+        <j:set var="maven.javadoc.docletpath.orig" value="${maven.javadoc.docletpath}" />
+        <j:set var="maven.javadoc.additionalparam.orig" value="${maven.javadoc.additionalparam}" />
+        <j:set var="maven.javadoc.excludepackagenames.orig" value="${maven.javadoc.excludepackagenames}" />
+        
+        <!-- configure for the jel doclet. -->		
 		<j:set var="maven.javadoc.doclet" value="com.jeldoclet.JELDoclet" />
-		<mkdir dir="${basedir}/target/xmlrpcdoc" />
-		<j:set var="maven.javadoc.additionalparam" value="-d ${basedir}/target/xmlrpcdoc" />
 		<j:set var="maven.javadoc.docletpath" value="${pom.getDependencyPath('jeldoclet')}" />
+		<j:set var="maven.javadoc.additionalparam" value="-d ${basedir}/target/jel" />
+        <j:set var="maven.javadoc.excludepackagenames" value="" />
+        <!--  run javadoc -->
+		<mkdir dir="${basedir}/target/jel" />
 		<attainGoal name="javadoc" />
-        <!--  run the stylesheet -->			
-		<xslt style="${basedir}/xmlrpcdoc.xsl" 
-		      in="${basedir}/target/xmlrpcdoc/jel.xml"
-		      out="${basedir}/target/generated-xdocs/xmlrpc.xml" 
-		      force="true"
-		      >          
-			<outputproperty name="method" value="xml"/>			
-			<outputproperty name="standalone" value="yes"/>
-  			<outputproperty name="indent" value="yes"/>
-		</xslt>
-		
-		
+        
 		<!-- splitting stylesheet. -->
 		<mkdir dir="${basedir}/target/classes/org/astrogrid/desktop/hivemind" />
-		<xslt style="${basedir}/split.xsl"
-		      in="${basedir}/target/xmlrpcdoc/jel.xml"
+		<xslt style="${basedir}/build/split.xsl"
+		      in="${basedir}/target/jel/jel.xml"
 		      out="${basedir}/target/dummy"
 		      >
 			<param name="outputDir" expression="${basedir}/target/classes/org/astrogrid/desktop/hivemind/"/>
 		</xslt>
-		<!-- reset doclet values - as later standard doclet will be run. - can't find a nicer way to set back to null. -->
-		${context.setVariable('maven.javadoc.doclet',null)}
-		${context.setVariable('maven.javadoc.docletpath',null)}
-		${context.setVariable('maven.javadoc.additionalparam',null)}
+		<!-- restore doclet values - as later documentation-producing doclet can run -->
+        <j:set var="maven.javadoc.doclet" value="${maven.javadoc.doclet.orig}" />
+        <j:set var="maven.javadoc.docletpath" value="${maven.javadoc.docletpath.orig}" />
+        <j:set var="maven.javadoc.additionalparam" value="${maven.javadoc.additionalparam.orig}" />
+        <j:set var="maven.javadoc.excludepackagenames" value="${maven.javadoc.excludepackagenames.orig}" />
+         
+        <!--  hack - we know this needs to be set to true for javaodc -->
+        <j:set var="maven.javadoc.usestandardparameters" value="true" />
+        
 	</goal>
-	
+
+<goal name="foo">
+<echo>${pom.getDependencyPath('taglets')}:${pom.getDependencyPath('ditaa:TextDiagramTaglet')}</echo>
+</goal>
+
 </project>
 

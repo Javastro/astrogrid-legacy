@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.4 2007/11/12 13:36:27 pah Exp $
+/*$Id: ModuleDescriptor.java,v 1.5 2008/09/25 16:02:04 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,15 +14,20 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** Representation of a module of the AR.
+import org.astrogrid.acr.system.ApiHelp;
+
+/** Describes a module of the AstroRuntime.
+ * <br />
+ * Modules gather together related AR Services.
+ * @see ApiHelp 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 
- * @since 2.2
+
  *
  */
 public class ModuleDescriptor  extends Descriptor {
 
     /** Construct a new ModuleDescriptor
-     * 
+     * @exclude
      */
     public ModuleDescriptor() {
         super();
@@ -31,20 +36,21 @@ public class ModuleDescriptor  extends Descriptor {
     /** components in this module */
     protected final Map components = new LinkedHashMap();
     	//new ListOrderedMap(); - don't think this is necessary anymore.
-  /** retreive a named component descriptor */
-   public ComponentDescriptor getComponent(String name) {
-       return (ComponentDescriptor)components.get(name);
+  /** Retrieve the description of a named component (service) */
+   public ComponentDescriptor getComponent(final String serviceName) {
+       return (ComponentDescriptor)components.get(serviceName);
    }
    /** list all components in this module */
    public ComponentDescriptor[] getComponents() {
 	   return (ComponentDescriptor[])components.values().toArray(new ComponentDescriptor[]{});
    }
    
-   /** used internally - not useful for clients */
-   public void addComponent(ComponentDescriptor desc) {
+   /** used internally - not useful for clients 
+    * @exclude */
+   public void addComponent(final ComponentDescriptor desc) {
        components.put(desc.getName(),desc);
    }
-   /**
+   /** list all components in this module.
     * 
     * @return an iterator over {@link ComponentDescriptor} objects
     */
@@ -53,8 +59,9 @@ public class ModuleDescriptor  extends Descriptor {
    }   
     
 
+   /** @exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[ModuleDescriptor:");
         buffer.append(" components: ");
         buffer.append(components);
@@ -68,6 +75,9 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.5  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.4  2007/11/12 13:36:27  pah
 change parameter name to structure
 

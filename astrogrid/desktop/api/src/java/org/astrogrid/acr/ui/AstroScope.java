@@ -1,4 +1,4 @@
-/*$Id: AstroScope.java,v 1.3 2006/02/02 14:19:48 nw Exp $
+/*$Id: AstroScope.java,v 1.4 2008/09/25 16:02:09 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,24 @@
 **/
 package org.astrogrid.acr.ui;
 
-/**Control  AstroScope.
+/**AR Servuce: Launch a new AstroScope GUI
  * 
- * <img src="doc-files/astroscope.png"/>
  * @service userInterface.astroscope
  * @author Kevin Benson
  */
 public interface AstroScope {
-    /** display a new instance of astroscope */
+//    * @todo add show(XQuery) and show(ResourceList)
+//    * @todo also add hook into helioscope too?
+    /** Display a new instance of All-VO Astroscope */
     public void show() ;
 }
 
 
 /* 
 $Log: AstroScope.java,v $
+Revision 1.4  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.3  2006/02/02 14:19:48  nw
 fixed up documentation.
 

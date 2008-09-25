@@ -1,4 +1,4 @@
-/*$Id: HelpServer.java,v 1.7 2007/11/12 13:36:27 pah Exp $
+/*$Id: HelpServer.java,v 1.8 2008/09/25 16:02:03 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
  **/
 package org.astrogrid.acr.system;
 
-/**Control the workbench help viewer.
- *
+/**AR Service: Control the workbench help viewer.
+ * @exclude not interesting to user.
  * @service system.help
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Jun-2005
  * 
@@ -29,6 +29,9 @@ public interface HelpServer {
 
 /* 
  $Log: HelpServer.java,v $
+ Revision 1.8  2008/09/25 16:02:03  nw
+ documentation overhaul
+
  Revision 1.7  2007/11/12 13:36:27  pah
  change parameter name to structure
 

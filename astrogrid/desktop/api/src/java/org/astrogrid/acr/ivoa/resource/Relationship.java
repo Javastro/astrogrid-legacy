@@ -6,16 +6,17 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 import java.util.Arrays;
 
-/**      A description of the relationship between one resource and one or
+/**      A relationship between one resource and one or
            more other resources.
  * @author Noel Winstanley
- * @since Jul 31, 20064:11:03 PM
+ * @see Content
  */
 public class Relationship implements Serializable {
-	private static int hashCode(Object[] array) {
+	private static int hashCode(final Object[] array) {
 		final int PRIME = 31;
-		if (array == null)
-			return 0;
+		if (array == null) {
+            return 0;
+        }
 		int result = 1;
 		for (int index = 0; index < array.length; index++) {
 			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -28,20 +29,23 @@ public class Relationship implements Serializable {
 	private static final long serialVersionUID = 5440894019888381310L;
 	private String relationshipType;
 	private ResourceName[] relatedResources = new ResourceName[0];
-	/** the name of resource that this resource is related to.*/
+	/** Resources that this resource is related to.*/
 	public ResourceName[] getRelatedResources() {
 		return this.relatedResources;
 	}
-	/**   the named type of relationship */
+	/**   the type of relationship */
 	public String getRelationshipType() {
 		return this.relationshipType;
 	}
-	public void setRelatedResources(ResourceName[] relatedResources) {
+	/** @exclude */
+	public void setRelatedResources(final ResourceName[] relatedResources) {
 		this.relatedResources = relatedResources;
 	}
-	public void setRelationshipType(String relationshipType) {
+    /** @exclude */	
+	public void setRelationshipType(final String relationshipType) {
 		this.relationshipType = relationshipType;
 	}
+    /** @exclude */	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -49,26 +53,33 @@ public class Relationship implements Serializable {
 		result = PRIME * result + ((this.relationshipType == null) ? 0 : this.relationshipType.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (! (obj instanceof Relationship))
-			return false;
+    /** @exclude */	
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (! (obj instanceof Relationship)) {
+            return false;
+        }
 		final Relationship other = (Relationship) obj;
-		if (!Arrays.equals(this.relatedResources, other.relatedResources))
-			return false;
+		if (!Arrays.equals(this.relatedResources, other.relatedResources)) {
+            return false;
+        }
 		if (this.relationshipType == null) {
-			if (other.relationshipType != null)
-				return false;
-		} else if (!this.relationshipType.equals(other.relationshipType))
-			return false;
+			if (other.relationshipType != null) {
+                return false;
+            }
+		} else if (!this.relationshipType.equals(other.relationshipType)) {
+            return false;
+        }
 		return true;
 	}
-
+    /** @exclude */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Relationship[");
 			buffer.append(", relationshipType = ").append(relationshipType);
 			if (relatedResources == null) {

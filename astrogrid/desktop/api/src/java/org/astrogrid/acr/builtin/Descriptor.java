@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.2 2007/01/24 14:04:45 nw Exp $
+/*$Id: Descriptor.java,v 1.3 2008/09/25 16:02:04 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,15 +12,15 @@ package org.astrogrid.acr.builtin;
 
 import java.io.Serializable;
 
-/** Base class for all descriptors.
+/** Abstract datastructure: Describes some portion of the AstroRuntime
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk
- * @since 2.2
+
  *
  */
 public abstract class Descriptor implements Serializable {
 
     /** Construct a new Descriptor
-     * 
+     * @exclude
      */
     public Descriptor() {
         super();
@@ -30,12 +30,12 @@ public abstract class Descriptor implements Serializable {
     /** description of hte entity */
     protected String description = "none given";
     
-    /** the description*/
+    /** the description */
     public String getDescription() {
         return this.description;
     }
-    /** used internally */
-    public void setDescription(String description) {
+    /** @exclude */
+    public void setDescription(final String description) {
         this.description = description;
     }
     /** the name */
@@ -43,16 +43,16 @@ public abstract class Descriptor implements Serializable {
         return this.name;
     }
 
-    /** used internally */
-    public void setName(String name) {
+    /** @exclude */
+    public void setName(final String name) {
         this.name = name;
     }
     
 
         
-        
+    /** @exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append(" name: ");
         buffer.append(name);
         buffer.append('\n');
@@ -62,9 +62,10 @@ public abstract class Descriptor implements Serializable {
         return buffer.toString();
     }
     /**
+     * @exclude
      * Returns true if other object is a descriptor of the same class, with the same name.
      */
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -74,7 +75,7 @@ public abstract class Descriptor implements Serializable {
         if (o.getClass() != getClass()) {
             return false;
         }
-        Descriptor castedObj = (Descriptor) o;
+        final Descriptor castedObj = (Descriptor) o;
         return this.name == null ? castedObj.name == null : this.name.equals(castedObj.name);
          
     }
@@ -83,6 +84,9 @@ public abstract class Descriptor implements Serializable {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.3  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.2  2007/01/24 14:04:45  nw
 updated my email address
 

@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessListener.java,v 1.5 2007/07/17 17:04:58 nw Exp $
+/*$Id: RemoteProcessListener.java,v 1.6 2008/09/25 16:02:04 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import java.util.Map;
 /** Listener interface to execution of remote processes,
  *
  * Can be used over javarmi by clients that wish to be notified of progress of remote processes
- * @since 1.3 
+
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  * @xmlrpc not accessible. - can't support callbacks / listener interfaces.
  *
@@ -46,6 +46,9 @@ public interface RemoteProcessListener extends EventListener{
 
 /* 
 $Log: RemoteProcessListener.java,v $
+Revision 1.6  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.5  2007/07/17 17:04:58  nw
 altered so that it extends the listener marker interface.
 

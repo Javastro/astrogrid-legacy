@@ -1,4 +1,4 @@
-/*$Id: Shutdown.java,v 1.6 2007/01/24 14:04:45 nw Exp $
+/*$Id: Shutdown.java,v 1.7 2008/09/25 16:02:04 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,31 @@
 **/
 package org.astrogrid.acr.builtin;
 
-/** Component that shutsdown the AR.
+/** AR Service: Halts the Astro Runtime
  * @service builtin.shutdown
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Mar-2005
  
  */
 public interface Shutdown {
     
-    /** bring the whole AR system to a graceful halt. 
+    /** Bring the AstroRuntime to a graceful halt. 
      * 
-     * notifies all listeners, and if there's any objections displays a prompt for the user to acknowledge
+     * @note notifies all listeners, and if there's any objections displays a prompt for the user to acknowledge
      * then calls {@link #reallyHalt}
      * @see ShutdownListener#lastChance()
      * */
     public void halt();
     
     
-    /** bring the ACR to a graceful halt, not giving clients chance to object.
-     * Use this method with care - prefer {@link #halt} when theres a chance that the ACR has other clients (i.e. always).
-     *
+    /** Bring the AstroRuntime to a graceful halt, ignoring any objections from clients.
      * still notifies all listeners that the system is shutting down
+     * @warning Use this method with care - prefer {@link #halt} when there's a chance that the ACR has other clients
+     *
      * @see ShutdownListener#halting()
      */
     public void reallyHalt();
     
-    /** register a listerner for shutdown events
+    /** register a listener for shutdown events
      * @param l
      */
     public void addShutdownListener(ShutdownListener l) ;
@@ -49,6 +49,9 @@ public interface Shutdown {
 
 /* 
 $Log: Shutdown.java,v $
+Revision 1.7  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.6  2007/01/24 14:04:45  nw
 updated my email address
 

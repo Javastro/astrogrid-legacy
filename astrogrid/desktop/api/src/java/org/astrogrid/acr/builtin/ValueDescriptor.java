@@ -1,4 +1,4 @@
-/*$Id: ValueDescriptor.java,v 1.2 2007/01/24 14:04:46 nw Exp $
+/*$Id: ValueDescriptor.java,v 1.3 2008/09/25 16:02:04 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,18 @@
 **/
 package org.astrogrid.acr.builtin;
 
-/** Descriptor for a value
+import org.astrogrid.acr.system.ApiHelp;
+
+/**Describes an input parameter or result of an AR Method
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk
- * @since 2.2
+
+ * @see ApiHelp
  *
  */
 public class ValueDescriptor extends Descriptor {
 
     /** Construct a new ValueDescriptor
-     * 
+     * @exclude
      */
     public ValueDescriptor() {
         super();
@@ -31,13 +34,15 @@ public class ValueDescriptor extends Descriptor {
         return this.uitype;
     }
 
-    /** used internally */
-    public void setUitype(String uitype) {
+    /** used internally
+     * @exclude */
+    public void setUitype(final String uitype) {
         this.uitype = uitype;
     }
 
+    /** @exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[ValueDescriptor:");
         buffer.append("\nuitype: ");
         buffer.append(uitype);
@@ -54,8 +59,9 @@ public class ValueDescriptor extends Descriptor {
         return this.type;
     }
 
-    /** used internally */
-    public void setType(Class type) {
+    /** used internally
+     * @exclude */
+    public void setType(final Class type) {
         this.type = type;
     }
 }
@@ -63,6 +69,9 @@ public class ValueDescriptor extends Descriptor {
 
 /* 
 $Log: ValueDescriptor.java,v $
+Revision 1.3  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.2  2007/01/24 14:04:46  nw
 updated my email address
 

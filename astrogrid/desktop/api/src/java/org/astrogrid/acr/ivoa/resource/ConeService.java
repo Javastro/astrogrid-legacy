@@ -3,14 +3,16 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/** Registry description of a cone-search service
+import org.astrogrid.acr.ivoa.Cone;
+
+/** A service that can perform a cone search
+ * @see Cone
  * @author Noel Winstanley
- * @since Aug 5, 200610:17:29 PM
  */
 public interface ConeService extends Service {
-	/** access the capability that describes this cone search service
+	/** Access the capability that describes how to perform a cone search.
 	 * 
-	 * @return one of the items within <tt>Service.getCapabilities()</tt>
+	 * @return one of the items within {@link #getCapabilities()}
 	 */
 	public ConeCapability findConeCapability();
 }

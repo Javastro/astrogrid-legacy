@@ -6,17 +6,20 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 import java.net.URI;
 
-/** Describes the capabilities of a cone search service.
+import org.astrogrid.acr.ivoa.Cone;
+
+/** The capability to perform an IVOA Cone Search
  * @bean
  * @author Noel Winstanley
- * @since Aug 5, 20069:52:40 PM
+ * @see ConeService
+ * @see Cone
  */
 public class ConeCapability extends Capability {
     /**
      * 
      */
     private static final long serialVersionUID = -5142255759957380546L;
-
+    /** @exclude */
     public ConeCapability() {
         setStandardID(CAPABILITY_ID);
     }
@@ -33,29 +36,32 @@ public class ConeCapability extends Capability {
     protected boolean verbosity;
     protected Query testQuery;
 	
-	/** details the maximum number of records this service will return */
+	/** the maximum number of records this service will return for a cone search.*/
 	public int getMaxRecords() {
 		return this.maxRecords;
 	}
-	public void setMaxRecords(int maxRecords) {
+	/** @exclude */
+	public void setMaxRecords(final int maxRecords) {
 		this.maxRecords = maxRecords;
 	}
 	/** the maximum search radius accepted by this service */
 	public float getMaxSR() {
 		return this.maxSR;
 	}
-	public void setMaxSR(float maxSR) {
+    /** @exclude */	
+	public void setMaxSR(final float maxSR) {
 		this.maxSR = maxSR;
 	}
 	
-	/** determines whether this service accepts the VERB parameter */
+	/** Determines whether this service accepts the VERB parameter */
 	public boolean isVerbosity() {
 		return this.verbosity;
 	}
-	public void setVerbosity(boolean verbosity) {
+    /** @exclude */	
+	public void setVerbosity(final boolean verbosity) {
 		this.verbosity = verbosity;
 	}
-	/** description of a test query for a cone service 
+	/** A test query for a cone search service. 
 	 * @bean */
 	public static class Query implements Serializable{
 		/**
@@ -75,7 +81,8 @@ public class ConeCapability extends Capability {
 		public String getCatalog() {
 			return this.catalog;
 		}
-		public void setCatalog(String catalog) {
+	    /** @exclude */		
+		public void setCatalog(final String catalog) {
 			this.catalog = catalog;
 		}
 		/** the declination of the search cone's center in
@@ -83,7 +90,8 @@ public class ConeCapability extends Capability {
 		public double getDec() {
 			return this.dec;
 		}
-		public void setDec(double dec) {
+	    /** @exclude */		
+		public void setDec(final double dec) {
 			this.dec = dec;
 		}
 		/**   any extra (non-standard) parameters that must be 
@@ -92,7 +100,8 @@ public class ConeCapability extends Capability {
 		public String getExtras() {
 			return this.extras;
 		}
-		public void setExtras(String extras) {
+	    /** @exclude */		
+		public void setExtras(final String extras) {
 			this.extras = extras;
 		}
 		/** the right ascension of the search cone's center in
@@ -100,14 +109,16 @@ public class ConeCapability extends Capability {
 		public double getRa() {
 			return this.ra;
 		}
-		public void setRa(double ra) {
+	    /** @exclude */		
+		public void setRa(final double ra) {
 			this.ra = ra;
 		}
 		/** the radius of the search cone in decimal degrees. */
 		public double getSr() {
 			return this.sr;
 		}
-		public void setSr(double sr) {
+	    /** @exclude */		
+		public void setSr(final double sr) {
 			this.sr = sr;
 		}
 		/** the verbosity level to use where 1 means the bare
@@ -116,9 +127,11 @@ public class ConeCapability extends Capability {
 		public int getVerb() {
 			return this.verb;
 		}
-		public void setVerb(int verb) {
+	    /** @exclude */		
+		public void setVerb(final int verb) {
 			this.verb = verb;
 		}
+	    /** @exclude */		
 		public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
@@ -134,42 +147,55 @@ public class ConeCapability extends Capability {
 			result = PRIME * result + this.verb;
 			return result;
 		}
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (!(obj instanceof Query))
-				return false;
+	    /** @exclude */		
+		public boolean equals(final Object obj) {
+			if (this == obj) {
+                return true;
+            }
+			if (obj == null) {
+                return false;
+            }
+			if (!(obj instanceof Query)) {
+                return false;
+            }
 			final Query other = (Query) obj;
 			if (this.catalog == null) {
-				if (other.catalog != null)
-					return false;
-			} else if (!this.catalog.equals(other.catalog))
-				return false;
-			if (Double.doubleToLongBits(this.dec) != Double.doubleToLongBits(other.dec))
-				return false;
+				if (other.catalog != null) {
+                    return false;
+                }
+			} else if (!this.catalog.equals(other.catalog)) {
+                return false;
+            }
+			if (Double.doubleToLongBits(this.dec) != Double.doubleToLongBits(other.dec)) {
+                return false;
+            }
 			if (this.extras == null) {
-				if (other.extras != null)
-					return false;
-			} else if (!this.extras.equals(other.extras))
-				return false;
-			if (Double.doubleToLongBits(this.ra) != Double.doubleToLongBits(other.ra))
-				return false;
-			if (Double.doubleToLongBits(this.sr) != Double.doubleToLongBits(other.sr))
-				return false;
-			if (this.verb != other.verb)
-				return false;
+				if (other.extras != null) {
+                    return false;
+                }
+			} else if (!this.extras.equals(other.extras)) {
+                return false;
+            }
+			if (Double.doubleToLongBits(this.ra) != Double.doubleToLongBits(other.ra)) {
+                return false;
+            }
+			if (Double.doubleToLongBits(this.sr) != Double.doubleToLongBits(other.sr)) {
+                return false;
+            }
+			if (this.verb != other.verb) {
+                return false;
+            }
 			return true;
 		}
 		/**
+		 * @exclude
 			 * toString methode: creates a String representation of the object
 			 * @return the String representation
 			 * @author info.vancauwenberge.tostring plugin
 		
 			 */
 			public String toString() {
-				StringBuffer buffer = new StringBuffer();
+				final StringBuffer buffer = new StringBuffer();
 				buffer.append("Query[");
 				buffer.append("ra = ").append(ra);
 				buffer.append(", dec = ").append(dec);
@@ -181,15 +207,16 @@ public class ConeCapability extends Capability {
 				return buffer.toString();
 			}
 	}
-	/** A query that will result in at least on
-                        matched record that can be used to test the
-                        service.  */
+	/** A query that can be used to test the service - it will result in at least one
+                        matched record  */
 	public Query getTestQuery() {
 		return this.testQuery;
 	}
-	public void setTestQuery(Query testQuery) {
+    /** @exclude */	
+	public void setTestQuery(final Query testQuery) {
 		this.testQuery = testQuery;
 	}
+    /** @exclude */	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
@@ -199,35 +226,44 @@ public class ConeCapability extends Capability {
 		result = PRIME * result + (this.verbosity ? 1231 : 1237);
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof ConeCapability))
-			return false;
+    /** @exclude */	
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (!super.equals(obj)) {
+            return false;
+        }
+		if (!(obj instanceof ConeCapability)) {
+            return false;
+        }
 		final ConeCapability other = (ConeCapability) obj;
-		if (this.maxRecords != other.maxRecords)
-			return false;
-		if (Float.floatToIntBits(this.maxSR) != Float.floatToIntBits(other.maxSR))
-			return false;
+		if (this.maxRecords != other.maxRecords) {
+            return false;
+        }
+		if (Float.floatToIntBits(this.maxSR) != Float.floatToIntBits(other.maxSR)) {
+            return false;
+        }
 		if (this.testQuery == null) {
-			if (other.testQuery != null)
-				return false;
-		} else if (!this.testQuery.equals(other.testQuery))
-			return false;
-		if (this.verbosity != other.verbosity)
-			return false;
+			if (other.testQuery != null) {
+                return false;
+            }
+		} else if (!this.testQuery.equals(other.testQuery)) {
+            return false;
+        }
+		if (this.verbosity != other.verbosity) {
+            return false;
+        }
 		return true;
 	}
-	/**
+	/** @exclude
 		 * toString methode: creates a String representation of the object
 		 * @return the String representation
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("ConeCapability[");
 			buffer.append("maxSR = ").append(maxSR);
 			buffer.append(", maxRecords = ").append(maxRecords);

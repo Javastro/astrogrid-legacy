@@ -1,4 +1,4 @@
-/*$Id: InterfaceBean.java,v 1.7 2008/01/21 09:47:26 nw Exp $
+/*$Id: InterfaceBean.java,v 1.8 2008/09/25 16:02:04 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,29 +13,29 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.util.Arrays;
 
-/** Description of  an interface to a remote application.
- * <br />
- * omits InterfaceConstants at the moment - as these don't seem to be settled in the specification yet.
- * <br/>
- * likewise, parameter groups and conditional groups are omitted - need to see a real-world example of their use before spending effort implementing this.
+/** Registry description of a parameter-set supported by a remote (CEA) application.
+ *@see CeaApplication
+ *@bean
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
- *@see org.astrogrid.acr.astrogrid.ParameterBean
- *@see org.astrogrid.acr.astrogrid.ParameterReferenceBean
- *
  */
 public class InterfaceBean implements Serializable {
 
-
+    /* <br />
+    * omits InterfaceConstants at the moment - as these don't seem to be settled in the specification yet.
+    * <br/>
+    * likewise, parameter groups and conditional groups are omitted - need to see a real-world example of their use before spending effort implementing this.
+    */
 	/**
      * 
      */
     private static final long serialVersionUID = -2556943626640025802L;
 
 
-    private static int hashCode(Object[] array) {
+    private static int hashCode(final Object[] array) {
         final int prime = 31;
-        if (array == null)
+        if (array == null) {
             return 0;
+        }
         int result = 1;
         for (int index = 0; index < array.length; index++) {
             result = prime * result
@@ -43,7 +43,7 @@ public class InterfaceBean implements Serializable {
         }
         return result;
     }
-
+/** @exclude */
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -56,44 +56,55 @@ public class InterfaceBean implements Serializable {
         result = prime * result + InterfaceBean.hashCode(this.outputs);
         return result;
     }
-
-    public boolean equals(Object obj) {
-        if (this == obj)
+/** @exclude */
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final InterfaceBean other = (InterfaceBean) obj;
         if (this.description == null) {
-            if (other.description != null)
+            if (other.description != null) {
                 return false;
-        } else if (!this.description.equals(other.description))
+            }
+        } else if (!this.description.equals(other.description)) {
             return false;
-        if (!Arrays.equals(this.inputs, other.inputs))
+        }
+        if (!Arrays.equals(this.inputs, other.inputs)) {
             return false;
+        }
         if (this.name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!this.name.equals(other.name))
+            }
+        } else if (!this.name.equals(other.name)) {
             return false;
-        if (!Arrays.equals(this.outputs, other.outputs))
+        }
+        if (!Arrays.equals(this.outputs, other.outputs)) {
             return false;
+        }
         return true;
     }
 
     /** Construct a new InterfaceInformation
+     * @exclude 
      * @deprecated
      */
-    public InterfaceBean(String name,ParameterReferenceBean[] inputs, ParameterReferenceBean[] outputs) {
+    @Deprecated
+    public InterfaceBean(final String name,final ParameterReferenceBean[] inputs, final ParameterReferenceBean[] outputs) {
         super();
         this.name =name;
         this.inputs = inputs;
         this.outputs = outputs;
         this.description = null;
     }
-    
-    public InterfaceBean(String name,String description,ParameterReferenceBean[] inputs, ParameterReferenceBean[] outputs) {
+    /** @exclude */
+    public InterfaceBean(final String name,final String description,final ParameterReferenceBean[] inputs, final ParameterReferenceBean[] outputs) {
         super();
         this.name =name;
         this.inputs = inputs;
@@ -107,11 +118,12 @@ public class InterfaceBean implements Serializable {
     protected ParameterReferenceBean[] outputs = new ParameterReferenceBean[0];
     
 
-    /**  list of input parameters */
+    /**  list of input parameters 
+     * */
     public ParameterReferenceBean[] getInputs() {
         return this.inputs;
     }
-    /** the name of the interface */
+    /** the name of this interface */
     public String getName() {
         return this.name;
     }
@@ -119,8 +131,9 @@ public class InterfaceBean implements Serializable {
     public ParameterReferenceBean[] getOutputs() {
         return this.outputs;
     }
+    /** @exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[InterfaceBean:");
         buffer.append(" name: ");
         buffer.append(name);
@@ -139,8 +152,7 @@ public class InterfaceBean implements Serializable {
         buffer.append("]");
         return buffer.toString();
     }
-    /**A description of the interface suitable for
-                  presentation in a UI*/
+    /**A human-readable description of this parameter set.*/
     public final String getDescription() {
         return this.description;
     }
@@ -150,6 +162,9 @@ public class InterfaceBean implements Serializable {
 
 /* 
 $Log: InterfaceBean.java,v $
+Revision 1.8  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.7  2008/01/21 09:47:26  nw
 Incomplete - task 134: Upgrade to reg v1.0
 

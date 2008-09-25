@@ -6,21 +6,21 @@ package org.astrogrid.acr.ivoa;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.w3c.dom.Document;
 
-/** Support for working with ADQL queries.
+/** AR Service: Support for working with ADQL queries.
+ * @exclude 
+ * not much use to coders - as adql/x isn't a standard format any more.
  * @service ivoa.adql
  * @author Noel.Winstanley@manchester.ac.uk
- * @since 2007.2
  */
 public interface Adql {
 	
-	/** convert an adq/s string to an adql/x document 
-	 * 
+	/** convert an adql/s string to an adql/x document 	 
 	 * @param s
-	 * @return
+	 * @return xml equivalent of the adql/s input
 	 * @throws InvalidArgumentException if document cannot be parsed.
 	 */
 	public Document s2x(String s) throws InvalidArgumentException;
-	/** convert an adql/x document to an adql/s string 
+	/* convert an adql/x document to an adql/s string 
 	 * 
 	 * @param d
 	 * @return

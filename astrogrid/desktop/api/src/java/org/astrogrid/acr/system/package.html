@@ -1,31 +1,8 @@
 <html>
 <body>
-<h1>System Module</h1>
-Service Interfaces for components in the <tt>system</tt> modules of the ACR -
-components that provide basic services, but don't do anything astronomically interesting.
-The services are shown below
-<p/>
-<img src="doc-files/system.png"/>
+@serial exclude
+<h1>Miscellaneous system services</h1>
+This module provides some miscellaneous AR services that are useful, but don't do anything astronomically interesting.
 
-The system services split into 4 groups
-<dl>
-	<dt>ACR Management</dt>
-	<dd>{@link org.astrogrid.acr.builtin.Shutdown} halts the ACR. {@link org.astrogrid.acr.system.Configuration} 
-		allows the configuration of the ACR to be inspected and changed.
-	</dd>
-	<dt>User Interface</dt>
-	<dd>{@link org.astrogrid.acr.system.UI}, {@link org.astrogrid.acr.system.SystemTray}, {@link org.astrogrid.acr.system.BrowserControl}
-		allow aspects of the user interface to be controlled.
-	</dd>
-	<dt>Programming Interface</dt>
-	<dd>{@link org.astrogrid.acr.system.RmiServer} and {@link org.astrogrid.system.WebServer} provides information
-		on how to connect to the ACR via http / xmlrpc / web
-	</dd>
-	<dt>Help</dt>
-	<dd>
-		{@link org.astrogrid.acr.system.HelpServer} displays context-help for GUI users. {@link org.astrogrid.acr.system.ApiHelp}
-		provides api information for scripters and programmers.
-	</dd>
-	</dl>
 </body>
 </html>

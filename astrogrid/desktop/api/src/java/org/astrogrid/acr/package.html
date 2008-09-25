@@ -1,17 +1,60 @@
 <html>
 <body>
-<h1>Find and connect to  the Astro Runtime instance</h1>
+@serial exclude
+<h1>Connect to  the Astro Runtime </h1>
 
 Start by creating an instance of the  {@link org.astrogrid.acr.Finder} class. This takes care of locating a
 running Astro Runtime service (possibly creating one if necessary) and returns an instance of {@link org.astrogrid.acr.builtin.ACR} that is 
-connected to the running service. The <tt>ACR</tt> object can then be used to access  all other service interfaces.
-<p/>
-	<img src="doc-files/finder.png"/>
+connected to the running service. The <tt>ACR</tt> object can then be used to access AR services.
 
+{@textdiagram finder
+       +--------------+
+       |    Finder    |
+       |--------------|
+       | find()       |
+       +--------------+
+              :
+              |
+              v
+  +----------------------------+
+  |            ACR             |
+  |----------------------------|
+  | getService(interfaceClass) |
+  | getService(serviceName)    |
+  +----------------------------+
+
+  }
+  
+  
 <h2>Exceptions</h2>
 The Astro Runtime interface deliberately defines a very small and simple set of exceptions. No other checked (or unchecked) exceptions are expected
 to be thrown from any methods in the interface. The inheritance hierarchy is as follows
-<p/>
-	<img src="doc-files/exceptions.png"/>
+
+{@textdiagram exceptions
+    +-------------------+
+    |   ACRException    |
+    +-------------------+
+      ^   ^   ^   ^   ^
+      |   |   |   |   |
+      |   |   |   | +-------------------+
+      |   |   |   | | SecurityException |
+      |   |   |   | +-------------------+
+      |   |   |   |  
+      |   |   | +------------------+  
+      |   |   | | ServiceException |                               
+      |   |   | +------------------+  
+      |   |   |         
+      |   | +------------------------+
+      |   | | NotApplicableException |
+      |   | +------------------------+
+      |   |
+      | +-------------------+
+      | | NotFoundException |
+      | +-------------------+
+      |
+    +------------------+
+    | ServiceException |
+    +------------------+
+}
 </body>
 </html>

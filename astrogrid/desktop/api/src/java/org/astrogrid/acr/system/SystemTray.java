@@ -1,4 +1,4 @@
-/*$Id: SystemTray.java,v 1.5 2007/01/24 14:04:44 nw Exp $
+/*$Id: SystemTray.java,v 1.6 2008/09/25 16:02:03 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,43 +10,46 @@
  **/
 package org.astrogrid.acr.system;
 
-/** Control the  ACR icon in the Desktop system tray. 
- * 
+/** AR Service: Control the AstroRuntime icon in the desktop system tray. 
+ * <p />
  * Can display popup alert messages in the notification area, and control the progress indicator.
- * <br/>
- * Only supported on some operating systems - windows and some flavours of unix. If not supported on the current OS,
- * {@link org.astrogrid.acr.builtin.ACR#getService(Class)} will throw a {@link org.astrogrid.acr.NotFoundException} when attempting to retreive this service.
+ * 
+ * @warning Not all operating systems provide a system tray. On those that don't, a best effort will be made to support popup
+ * messages in some way
  * @service system.systray
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Jun-2005
  *
  */
 public interface SystemTray {
     
-    /** Display a popup message with the os-local 'error' presentation
+    /** Display a popup message with an 'error' presentation.
      * @param caption popup title
      * @param message text of the message
      */
     void displayErrorMessage(String caption,String message);
-    /** Display a popup message with the os-local 'info' presentation
+    /** Display a popup message with an 'info' presentation.
      * @param caption popup title
      * @param message text of the message
      */
     void displayInfoMessage(String caption, String message);
-    /** Display a popup message with the os-local 'warning' presentation
+    /** Display a popup message with a 'warning' presentation.
      * @param caption popup title
      * @param message text of the message
      */    
     void displayWarningMessage(String caption,String message);
     
-    /** change the tray icon to indicate ' communication in progress' */
+    /** change the tray icon to indicate 'something in progress' */
     public void startThrobbing();
-    /** change the tray icon to indicate 'communication finished' */
+    /** change the tray icon to indicate 'something finished' */
     public void stopThrobbing();
 
 }
 
 /* 
  $Log: SystemTray.java,v $
+ Revision 1.6  2008/09/25 16:02:03  nw
+ documentation overhaul
+
  Revision 1.5  2007/01/24 14:04:44  nw
  updated my email address
 

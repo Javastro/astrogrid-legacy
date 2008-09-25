@@ -9,21 +9,22 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 
-/**    Information regarding the general content of a resource
- * @see http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html
+/**   Metadata about the general content of a resource.
+ * @see <a href="http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html">Registry Metadata document</a>
  * @author Noel Winstanley
- * @since Jul 31, 20064:04:51 PM
+ * @see Resource
  */
 public class Content implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8759669056738166514L;
-
-	private static int hashCode(Object[] array) {
+	/** @exclude */ 	
+	private static int hashCode(final Object[] array) {
 		final int PRIME = 31;
-		if (array == null)
-			return 0;
+		if (array == null) {
+            return 0;
+        }
 		int result = 1;
 		for (int index = 0; index < array.length; index++) {
 			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -42,7 +43,7 @@ public class Content implements Serializable {
 	private  String[] contentLevel = new String[0];
 	private  Relationship[] relationships = new Relationship[0];
 	
-	/**     Description of the content level or intended audience */
+	/**     Description of the content level (intended audience) for this rsource */
 	public String[] getContentLevel() {
 		return this.contentLevel;
 	}
@@ -52,19 +53,20 @@ public class Content implements Serializable {
 	}
 	/**               URL pointing to a human-readable document describing this 
                 resource.  
-                	 * warning: will return null for an url with an unknown scheme, or
-	 * which is invalid. To access the value then, use {@link getReferenceURI}
+     @warning will return null for an url with an unknown scheme, or
+	 * which is invalid. To access the value then, use {@link #getReferenceURI}
 	 * @deprecated use {@link #getReferenceURI}
                   *
                   */
-	public URL getReferenceURL() {
+	@Deprecated
+    public URL getReferenceURL() {
 		try {
 			return this.referenceURI == null ? null : this.referenceURI.toURL();
-		} catch (MalformedURLException x) {
+		} catch (final MalformedURLException x) {
 			return null;
 		}
 	}
-	
+	/** URI pointing to a human-readable document describing this resource */
 	public URI getReferenceURI() {
 			return this.referenceURI;
 	}
@@ -82,8 +84,7 @@ public class Content implements Serializable {
 		return this.subject;
 	}
 	/**     Nature or genre of the content of the resource 
-	 * 
-	 * @return one of an enumeration of 
+	 *  
 	 */
 	public String[] getType() {
 		return this.type;
@@ -93,27 +94,35 @@ public class Content implements Serializable {
 	public Source getSource() {
 		return this.source;
 	}
-public void setContentLevel(String[] contentLevel) {
+	/** @exclude */ 	
+public void setContentLevel(final String[] contentLevel) {
 	this.contentLevel = contentLevel;
 }
-public void setDescription(String description) {
+/** @exclude */ 
+public void setDescription(final String description) {
 	this.description = description;
 }
-public void setReferenceURI(URI referenceURL) {
+/** @exclude */ 
+public void setReferenceURI(final URI referenceURL) {
 	this.referenceURI = referenceURL;
 }
-public void setRelationships(Relationship[] relationships) {
+/** @exclude */ 
+public void setRelationships(final Relationship[] relationships) {
 	this.relationships = relationships;
 }
-public void setSource(Source source) {
+/** @exclude */ 
+public void setSource(final Source source) {
 	this.source = source;
 }
-public void setSubject(String[] subject) {
+/** @exclude */ 
+public void setSubject(final String[] subject) {
 	this.subject = subject;
 }
-public void setType(String[] type) {
+/** @exclude */ 
+public void setType(final String[] type) {
 	this.type = type;
 }
+/** @exclude */ 
 public int hashCode() {
 	final int PRIME = 31;
 	int result = 1;
@@ -126,42 +135,56 @@ public int hashCode() {
 	result = PRIME * result + Content.hashCode(this.type);
 	return result;
 }
-public boolean equals(Object obj) {
-	if (this == obj)
-		return true;
-	if (obj == null)
-		return false;
-	if (! (obj instanceof Content))
-		return false;
+/** @exclude */ 
+public boolean equals(final Object obj) {
+	if (this == obj) {
+        return true;
+    }
+	if (obj == null) {
+        return false;
+    }
+	if (! (obj instanceof Content)) {
+        return false;
+    }
 	final Content other = (Content) obj;
-	if (!Arrays.equals(this.contentLevel, other.contentLevel))
-		return false;
+	if (!Arrays.equals(this.contentLevel, other.contentLevel)) {
+        return false;
+    }
 	if (this.description == null) {
-		if (other.description != null)
-			return false;
-	} else if (!this.description.equals(other.description))
-		return false;
+		if (other.description != null) {
+            return false;
+        }
+	} else if (!this.description.equals(other.description)) {
+        return false;
+    }
 	if (this.referenceURI == null) {
-		if (other.referenceURI != null)
-			return false;
-	} else if (!this.referenceURI.equals(other.referenceURI))
-		return false;
-	if (!Arrays.equals(this.relationships, other.relationships))
-		return false;
+		if (other.referenceURI != null) {
+            return false;
+        }
+	} else if (!this.referenceURI.equals(other.referenceURI)) {
+        return false;
+    }
+	if (!Arrays.equals(this.relationships, other.relationships)) {
+        return false;
+    }
 	if (this.source == null) {
-		if (other.source != null)
-			return false;
-	} else if (!this.source.equals(other.source))
-		return false;
-	if (!Arrays.equals(this.subject, other.subject))
-		return false;
-	if (!Arrays.equals(this.type, other.type))
-		return false;
+		if (other.source != null) {
+            return false;
+        }
+	} else if (!this.source.equals(other.source)) {
+        return false;
+    }
+	if (!Arrays.equals(this.subject, other.subject)) {
+        return false;
+    }
+	if (!Arrays.equals(this.type, other.type)) {
+        return false;
+    }
 	return true;
 }
-
+/** @exclude */ 
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append("Content[");
 		buffer.append(", source = ").append(source);
 		if (subject == null) {

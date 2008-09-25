@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.8 2007/03/08 17:46:56 nw Exp $
+/*$Id: NodeInformation.java,v 1.9 2008/09/25 16:02:04 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,18 +16,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/** descripiton of the properties of a myspace resource (a file or folder).
- * 
- * <tt>getId()</tt> will return a myspace resouce locator - an ivorn of form 
+/** Metadata for a myspace 'node' - a file or folder.
+ * <p/>
+ * {@link #getId()} will return a myspace resouce locator - an ivorn of form 
  * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Aug-2005
-  * @xmlrpc returned as a struct, with keys corresponding to bean names
-  * @see org.astrogrid.acr.astrogrid.Myspace
+ * @bean
+  * @see Myspace
  *
  */
 public class NodeInformation extends AbstractInformation {
 
-
+    /** @exclude */
     public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
@@ -39,41 +39,56 @@ public class NodeInformation extends AbstractInformation {
 		result = PRIME * result + (int) (this.size ^ (this.size >>> 32));
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+    /**@exclude */
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (!super.equals(obj)) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final NodeInformation other = (NodeInformation) obj;
 		if (this.attributes == null) {
-			if (other.attributes != null)
-				return false;
-		} else if (!this.attributes.equals(other.attributes))
-			return false;
+			if (other.attributes != null) {
+                return false;
+            }
+		} else if (!this.attributes.equals(other.attributes)) {
+            return false;
+        }
 		if (this.contentLocation == null) {
-			if (other.contentLocation != null)
-				return false;
-		} else if (!this.contentLocation.equals(other.contentLocation))
-			return false;
+			if (other.contentLocation != null) {
+                return false;
+            }
+		} else if (!this.contentLocation.equals(other.contentLocation)) {
+            return false;
+        }
 		if (this.createDate == null) {
-			if (other.createDate != null)
-				return false;
-		} else if (!this.createDate.equals(other.createDate))
-			return false;
-		if (this.file != other.file)
-			return false;
+			if (other.createDate != null) {
+                return false;
+            }
+		} else if (!this.createDate.equals(other.createDate)) {
+            return false;
+        }
+		if (this.file != other.file) {
+            return false;
+        }
 		if (this.modifyDate == null) {
-			if (other.modifyDate != null)
-				return false;
-		} else if (!this.modifyDate.equals(other.modifyDate))
-			return false;
-		if (this.size != other.size)
-			return false;
+			if (other.modifyDate != null) {
+                return false;
+            }
+		} else if (!this.modifyDate.equals(other.modifyDate)) {
+            return false;
+        }
+		if (this.size != other.size) {
+            return false;
+        }
 		return true;
 	}
-	public NodeInformation(String name,URI node,Long size,Calendar createDate,Calendar modifyDate, Map attributes, boolean file, URI contentLocation) {
+	/** @exclude */
+	public NodeInformation(final String name,final URI node,final Long size,final Calendar createDate,final Calendar modifyDate, final Map attributes, final boolean file, final URI contentLocation) {
         super(name,node);
         this.size = size == null ? 0 : size.longValue();
         this.createDate = createDate;
@@ -91,7 +106,7 @@ public class NodeInformation extends AbstractInformation {
     private final Map attributes;
     private final URI contentLocation;
 
-    /** other metadata attributes of this node 
+    /** Access any other metadata attributes of this node 
      * @return a map containing key-value pairs of other metadata about this resource
      * @xmlrpc key will be 'attributes', type will be 'struct'*/
     public Map getAttributes() {
@@ -119,28 +134,33 @@ public class NodeInformation extends AbstractInformation {
     
     /**  determines whether this resource is a file
      * @return true if this resource is a file 
-     * @xmlrpc key will be <tt>file</tt>, type will be 'boolean'*/
+     * @xmlrpc key will be <tt>file</tt>, type will be 'boolean'
+     * @equivalence ! isFolder()
+     * */
     public boolean isFile() {
         return file;
     }
     
     /** determines whether this resource is a folder
      * @return true if this resource is a folder 
-     * @xmlrpc key will be <tt>folder</tt>, type will be 'boolean'*/
+     * @xmlrpc key will be <tt>folder</tt>, type will be 'boolean'
+     * @equivalence ! isFile()
+     * */     
     public boolean isFolder() {
         return !file;
     }
     
-    /** the name of the filestore that holds the data of this resource.
+    /** the ID of the filestore that holds the data of this resource.
      * 
-     * @return a registy identifier - ivorn - may be null in case of a folder, or a file with no content.
+     * @return a registy identifier - may be null in case of a folder, or a file with no content.
      * @xmlrpc key will be <tt>contentLocation</tt>, type will be 'string'
      */
     public URI getContentLocation() {
         return contentLocation;
     }
+    /**@exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[NodeInformation:");
         buffer.append(" id: ");
         buffer.append(id);        
@@ -164,6 +184,9 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.9  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.8  2007/03/08 17:46:56  nw
 removed deprecated interfaces.
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogle.java,v 1.5 2008/08/21 11:35:00 nw Exp $
+/*$Id: RegistryGoogle.java,v 1.6 2008/09/25 16:02:02 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,15 @@ package org.astrogrid.acr.dialogs;
 
 import java.net.URI;
 
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
-/**prompt the user to select a registry resource 
+/** AR Service: Dialogue that prompts the user to select a registry resource 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
  * @service dialogs.registryGoogle
+ * @see #selectResourcesFromList(String, boolean, URI[]) Example 1
+ * @see #selectResourcesXQueryFilter(String, boolean, String) Example 2
+ * @see Registry
  */
 public interface RegistryGoogle {
   
@@ -25,6 +29,7 @@ public interface RegistryGoogle {
      * @param prompt message to prompt user for input.
      * @param multiple if true, allow multiple selections.
      * @return 0 or more selected resources. never null.
+     * @exclude 
      * @deprecated unimplemented
      */
     @Deprecated
@@ -37,25 +42,64 @@ public interface RegistryGoogle {
      * @param multiple if true, allow multiple selections.
      * @param adqlFilter adql-like 'where' clause.
      * @return 0 or more selected resources. never null.
-     * @deprecated unimplemented
+     * @exclude
+     *  @deprecated unimplemented
      */
     @Deprecated
     Resource[] selectResourcesAdqlFilter(String prompt, boolean multiple, String adqlFilter);
     
-    /** display the resource chooser dialogue, enabling only resources which match a filter
+    /** Display the resource chooser dialogue, populated with resources from an xquery.
+     * 
+     * {@example "Python Example"
+     *  # connect to the AR
+     * from xmlrpc import Server
+     * from os.path import expanduser
+     * ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+     *  #call this function
+     * xquery = """
+     * for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] 
+     * where $r/@xsi:type  &=  '*DataCollection' 
+     * return $r
+     * """
+     * rs = ar.dialogs.registryGoogle.selectResourcesXQueryFilter("Choose a DataCollection",True,xquery)
+     * #list the selected identifiers
+     * for r in rs:
+     *  print r['id']
+     *  }
+     * 
      * 
      * @param prompt message to prompt user for input.
      * @param multiple if true, allow multiple selections.
-     * @param xqueryFilter an xquery to populate the resource chooser with.
+     * @param xqueryFilter a xquery to populate the resource chooser with. Same format as in an xquery list in voexplorer UI - which is convenient for
+     * constructing these queries.
      * @return 0 or more selected resources. never null.
      */    
     Resource[] selectResourcesXQueryFilter(String prompt, boolean multiple, String xqueryFilter);
     
-    /** display the resource chooser dialogue, displaying only a list of resources 
+    /** Display the resource chooser dialogue, populated with a list of resources.
+     * 
+     * {@example "Python Example"
+     *  # connect to the AR
+     * from xmlrpc import Server
+     * from os.path import expanduser
+     * ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+     *  #call this function
+     * ids = ['ivo://irsa.ipac/2MASS-PSC'
+     *         ,'ivo://mast.stsci/siap-cutout/goods.hst'
+     *         ,'ivo://stecf.euro-vo/SSA/HST/FOS'
+     *         ,'ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR'
+     *         ,'ivo://uk.ac.cam.ast/IPHAS/images/SIAP'
+     *         ]
+     * rs = ar.dialogs.registryGoogle.selectResourcesFromList("Choose a DataCollection",True,ids)
+     * #list the selected identifiers
+     * for r in rs:
+     *  print r['id']
+     *  }
+     * 
      * 
      * @param prompt message to prompt user for input
      * @param multiple if true, allow multiple selections.
-     * @param identifier an array of resource identifiers.
+     * @param identifiers an array of resource identifiers that will be retrieved from registry and displayed in the dialogue.
      * @return 0 or more selected resources. never null.
      */
     Resource[] selectResourcesFromList(String prompt, boolean multiple, URI[] identifiers);
@@ -64,6 +108,9 @@ public interface RegistryGoogle {
 
 /* 
 $Log: RegistryGoogle.java,v $
+Revision 1.6  2008/09/25 16:02:02  nw
+documentation overhaul
+
 Revision 1.5  2008/08/21 11:35:00  nw
 Complete - task 4: RegistryGoogle dialogue
 

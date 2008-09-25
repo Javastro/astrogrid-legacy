@@ -1,13 +1,47 @@
 <html>
 <body>
-<h1>Object Model for Registry Resources</h1>
+@serial exclude
+<h1>Datastructures for IVOA Registry Resources</h1>
 
 The classes in this package represent resources registered in an IVOA standard registry.
- The base class is {@link org.astrogrid.acr.ivoa.resouce.Resource}.
+ The base class is {@link org.astrogrid.acr.ivoa.resource.Resource}.
  See {@link org.astrogrid.acr.ivoa.Registry} for how to query a registry.
-
+ 
+ description of multi-inheritance.
+ 
+ 
+ See <a href="http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html">IVOA Registry Metadata Document</a>
 <br />
-TODO - add in a class and structure diagram here.
+{@textdiagram resources
+                +-------------+    +----------------+
+     /----------+ Application |<---+ CeaApplication |
+     |          +-------------+    +----------------+
+     |
+     |          +--------------+     +----------------+
+     |   /------+ Organisation |   /-+ RegistryService|
+     |   |      +--------------+   | +----------------+
+     v   v                         | +--------------+
++----------+    +-----------+      |-+ TableService |
+| Resource |<---+ Authority |      | +--------------+
++----------+    +-----------+      | +-------------+    +----------------+
+     ^   ^                         |-+ DataService |<---+ CatalogService |
+     |   |      +---------+        | +-------------+    +----------------+
+     |   \------+ Service |<-------+ /------------\
+     |          +---------+        |-+ CeaService |
+     |                             | +------------+
+     |          +----------------+ | /-------------\
+     \----------+ DataCollection | |-+ SiapService |
+                +----------------+ | +-------------+
+                                   | /-------------\
+                                   |-+ SsapService |
+                                   | +-------------+
+                                   | /-------------\
+                                   |-+ StapService |
+                                   | +-------------+
+                                   | /-------------\
+                                   \-+ ConeService |
+                                     +-------------+
+}
 
 </body>
 </html>

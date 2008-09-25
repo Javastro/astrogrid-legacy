@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.11 2007/11/12 13:36:28 pah Exp $
+/*$Id: Applications.java,v 1.12 2008/09/25 16:02:04 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,18 +11,17 @@
 package org.astrogrid.acr.astrogrid;
 
 
+import java.net.URI;
+import java.util.Map;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Service;
-
 import org.w3c.dom.Document;
 
-import java.net.URI;
-import java.util.Map;
-
-/**  Work with remote applications -  Compute and Data Query services.
+/** AR Service: Query remote databases and execute remote applications.
  * 
  * 
  * The Common Execution Architecture (CEA) provides a uniform way to describe and execute astronomical applications and data services on the VO.
@@ -49,7 +48,6 @@ import java.util.Map;
  * @see <a href="../dialogs/doc-files/example-tool.xml"> Example Tool Document</a>
  * <br/> 
  * @see org.astrogrid.acr.ui.ApplicationLauncher
- * @see org.astrogrid.acr.astrogrid.ApplicationInformation
  * @see org.astrogrid.acr.dialogs.ToolEditor
  * @see org.astrogrid.acr.astrogrid.ExecutionInformation
  * @service astrogrid.applications
@@ -58,16 +56,14 @@ public interface Applications {
     /** list remote applications available in the registry. 
      * @return a list of the registry identifiers of available applications
      * @throws ServiceException if error occurs while talking to server 
-     * @see Registry#getRecord(URI)  
-     * @see Registry#getResourceInformation(URI)
-     * @see #getApplicationInformation(URI)
+     * @see #getCeaApplication
      * 
      * */
     URI[] list() throws ServiceException;
     
 
 
-    /** @deprecated - use {@link #getRegistryQuery} */
+    /** @exclude @deprecated - use {@link #getRegistryQuery} */
     String getQueryToListApplications(); 
     
     /** helper method - returns the ADQL/s query that should be passed to the registry to
@@ -76,8 +72,7 @@ public interface Applications {
      * can be used as a starting point to build up filters, etc.
      * @return an adql query string.
      * @see Registry
-     * @since 1.3
-     * @deprecated use getRegistryAdqlQuery
+     * @exclude @deprecated use getRegistryAdqlQuery
      */ 
     String getRegistryQuery();
     
@@ -87,8 +82,7 @@ public interface Applications {
      * 
      * can be used as a starting point to build up filters, etc.
      * @return an adql query string.
-     * @see Registry
-     * @since 2006.3
+     * @see org.astrogrid.acr.ivoa.Registry
      */ 
     String getRegistryAdqlQuery();    
     
@@ -97,8 +91,7 @@ public interface Applications {
      * 
      * can be used as a starting point to build up filters, etc.
      * @return an xquery string.
-     * @see Registry
-     * @since 2006.3
+     * @see org.astrogrid.acr.ivoa.Registry
      */ 
     String getRegistryXQuery();       
        
@@ -190,7 +183,6 @@ public interface Applications {
 
     /** Validate an invocation document (referenced by url) against 
                 an application description 
-     * @param applicationName name of the application to validate against.
      * @param documentLocation location of a resource containing the tool document to validate
      * @throws ServiceException if fails to communicate with server.
      * @throws InvalidArgumentException if  document is invalid in some way
@@ -295,6 +287,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.12  2008/09/25 16:02:04  nw
+ documentation overhaul
+
  Revision 1.11  2007/11/12 13:36:28  pah
  change parameter name to structure
 

@@ -13,8 +13,7 @@ import java.util.Map;
  * @author jdt@roe.ac.uk
  * @version 0.3
  * @service plastic.hub
- * @since 1.3
- * @date 11-Oct-2005
+
  */
 public interface PlasticHubListener {
     /**

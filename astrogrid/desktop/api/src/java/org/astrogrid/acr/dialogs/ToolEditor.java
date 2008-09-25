@@ -1,4 +1,4 @@
-/*$Id: ToolEditor.java,v 1.8 2007/03/08 17:47:12 nw Exp $
+/*$Id: ToolEditor.java,v 1.9 2008/09/25 16:02:00 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,32 +14,23 @@ import java.net.URI;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Applications;
 import org.w3c.dom.Document;
 
-/** Display the remote invocation document editor as a dialogue.
- * 
- * Can be used to construct calls to Remote applications, such as data processor and catalogues.
+/** AR Service: Dialogue that allows user to select a remote application or database and fill in invocation parameters.
  *
- * <br />
- * Displays the content of a invocation document, augmented with data about this application loaded from
- * the registry. Enables user to edit input ad output parameters (including using the {@link org.astrogrid.acr.dialogs.ResourceChooser}
- * dialogue to select indirect parameters.
- * <br />
- * <img src="doc-files/pw-params.png"/>
+ *The output of the dialogue is a <i>Tool Document</i>, suitable for passing to the {@link Applications} service for execution.
+
  * @service dialogs.toolEditor
- * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html#element_tool">Tool Document Schema-Documentation</a>
- * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameter">Value Parameter Element Schema-Documentation</a>
- * @see <a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schemas</a>
- * @see <a href="doc-files/example-tool.xml"> Example Tool Document</a>
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-May-2005
  * @todo add options later to just display tool document, without ability to edit.
  * @see org.astrogrid.acr.astrogrid.Applications
  *
  */
 public interface ToolEditor {
-    /** Prompt the user to edit a tool document
+    /** Prompt the user to edit a tool document.
      * @param t document conforming to Tool schema
-     * @return an edited copy of this document
+     * @return an edited copy of this document, or null if the user pressed cancel.
      * @throws InvalidArgumentException if the document passed in is not schema-valid
      * @throws ServiceException if any other failure occurs during editing.
      * @xmlrpc takes a xml document string as a parameter, and returns another xml document string
@@ -47,16 +38,16 @@ public interface ToolEditor {
     Document   edit(Document t) throws InvalidArgumentException, ServiceException;
 
 
-    /** prompt the user to edit a tool document stored elsewhere
+    /** Prompt the user to edit a tool document.
      * @param documentLocation location the tool document is stored at (http://, ftp://, ivo://)
      * 
-     * @return edited copy of this document
+     * @return edited copy of this document, or null if the user pressed cancel.
      * @throws InvalidArgumentException if the document location cannot be accessed, or does not contain a document
      * @throws ServiceException if any other exception occurs during editing (e.g. failure to communicate with registry)
      */
     Document editStored(URI documentLocation) throws InvalidArgumentException, ServiceException;
     
-    /** prompt the user to select a VO service (application, datacenter, or something else) and construct a query against it.
+    /** prompt the user to select a remote application or database and construct an invocation/query against it.
      * @return a new tool document
      * @throws ServiceException if any exception occurs during editng.
      */
@@ -68,6 +59,9 @@ public interface ToolEditor {
 
 /* 
 $Log: ToolEditor.java,v $
+Revision 1.9  2008/09/25 16:02:00  nw
+documentation overhaul
+
 Revision 1.8  2007/03/08 17:47:12  nw
 updated interfaces.
 

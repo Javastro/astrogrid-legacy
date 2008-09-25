@@ -1,11 +1,30 @@
 <html>
 <body>
-<h1>Interface to IVOA services and standards</h1>
+@serial exclude
+<h1>IVOA Webservices</h1>
 
-Of most interest are  the interfaces to DAL Services -- 
-{@link org.astrogrid.acr.ivoa.Cone}, {@link org.astrogrid.acr.ivoa.Siap}, {@link org.astrogrid.acr.ivoa.Ssap}. These 
-all inherit common functionality from the {@link org.astrogrid.acr.ivoa.Dal}. <br />
+This module provides access to <b>IVOA Registries</b> - <i>which list services and other resources available in the virtual observatory</i>,
+ and <b>Data Access (DAL) services</b> - <i>which provide searchable catalog, image, spectra and time-series archives</i>.
+ 
+ <h2>Registries</h2>
+ 
+ Astro-Runtime is pre-configured to connect to a <i>system registry</i> webservice. This service can be queried for metadata using the 
+ {@link org.astrogrid.acr.ivoa.Registry} component.
+ 
+ <p/>
+ Any other registry service can be queried using the {@link org.astrogrid.acr.ivoa.ExternalRegistry} component.
+ 
+ <h2>DAL Services</h2>
 
-For accessing IVOA Resource Registries see {@link org.astrogrid.acr.ivoa.Registry} and {@link org.astrogrid.acr.ivoa.ExternalRegistry}
+Whether searching for catalogs, images, spectra or time-series data, interacting with any DAL service follows a similar pattern.
+This commonality is captured in the {@link org.astrogrid.acr.ivoa.Dal} abstract class, which should be studied first.
+The DAL components for accesing different kinds of data all inherit from the {@code Dal} class. They are:
+  <dl>
+   <dt>{@link org.astrogrid.acr.ivoa.Cone}</dt><dd>for catalogs</dd>
+   <dt>{@link org.astrogrid.acr.ivoa.Siap}</dt><dd>for images</dd>
+   <dt>{@link org.astrogrid.acr.ivoa.Ssap}</dt><dd>for spectra</dd>
+   <dt>{@link org.astrogrid.acr.astrogrid.Stap}</dt><dd>for time-series data</dd>
+  </dl>  
+
 </body>
 </html>

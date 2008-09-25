@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.9 2008/02/12 17:35:24 pah Exp $
+/*$Id: ExecutionInformation.java,v 1.10 2008/09/25 16:02:04 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.astrogrid;
 import java.net.URI;
 import java.util.Date;
 
-/**  description of  the progress of a remote process - e.g. a workflow job, or CEA application.
+/**  Description of  the progress of a remote process - e.g. a workflow job, or CEA application.
  *  
  * <tt>getId()</tt> will return the execution identifier - either a job urn (for workfows) or an execution ivorn (for cea and other remote appilications).
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
@@ -24,9 +24,9 @@ import java.util.Date;
 public class ExecutionInformation extends AbstractInformation {
 
     /** Construct a new JobInformation
-     * 
+     * @xmlrpc test
      */
-    public ExecutionInformation(URI id, String name, String description, String status, Date startTime,Date finishTime) {
+    public ExecutionInformation(final URI id, final String name, final String description, final String status, final Date startTime,final Date finishTime) {
         super(name,id);
         this.description = description;
         this.status = status;
@@ -82,7 +82,7 @@ public class ExecutionInformation extends AbstractInformation {
         return this.status;
     }
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[ExecutionInformation:");
         buffer.append(" id: ");
         buffer.append(id);
@@ -110,34 +110,45 @@ public class ExecutionInformation extends AbstractInformation {
 		return result;
 	}
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (!super.equals(obj)) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final ExecutionInformation other = (ExecutionInformation) obj;
 		if (this.description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!this.description.equals(other.description))
-			return false;
+			if (other.description != null) {
+                return false;
+            }
+		} else if (!this.description.equals(other.description)) {
+            return false;
+        }
 		if (this.finishTime == null) {
-			if (other.finishTime != null)
-				return false;
-		} else if (!this.finishTime.equals(other.finishTime))
-			return false;
+			if (other.finishTime != null) {
+                return false;
+            }
+		} else if (!this.finishTime.equals(other.finishTime)) {
+            return false;
+        }
 		if (this.startTime == null) {
-			if (other.startTime != null)
-				return false;
-		} else if (!this.startTime.equals(other.startTime))
-			return false;
+			if (other.startTime != null) {
+                return false;
+            }
+		} else if (!this.startTime.equals(other.startTime)) {
+            return false;
+        }
 		if (this.status == null) {
-			if (other.status != null)
-				return false;
-		} else if (!this.status.equals(other.status))
-			return false;
+			if (other.status != null) {
+                return false;
+            }
+		} else if (!this.status.equals(other.status)) {
+            return false;
+        }
 		return true;
 	}
 }
@@ -145,6 +156,9 @@ public class ExecutionInformation extends AbstractInformation {
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.10  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.9  2008/02/12 17:35:24  pah
 added bean annotation
 

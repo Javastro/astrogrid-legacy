@@ -100,7 +100,7 @@ else:
 
 #fill in the execution details. from the commandline options and args
 #todo - should verify that the  service arg atually is an ADQL 
-tool = apps.createTemplateStruct(opts.service,'adql')
+tool = apps.createTemplateStruct(opts.service,'ADQL')
 tool['input']['Query']['value'] = query
 tool['input']['Format']['value'] = formatDict[opts.format] 
 
@@ -134,7 +134,6 @@ progress = apps.getExecutionInformation(execId)
 # loop round until the query completes.  
 while progress['status'] not in ['ERROR','COMPLETED','UNKNOWN'] :
     sys.stderr.write('.')
-    ar.ui.lookout.refresh() #bit of a cheat - forces the monitor to refresh - makes the query finish faster
     time.sleep(10)
     progress = apps.getExecutionInformation(execId)
 

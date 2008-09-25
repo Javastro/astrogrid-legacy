@@ -1,4 +1,4 @@
-/*$Id: Coordinate.java,v 1.3 2006/02/02 14:19:48 nw Exp $
+/*$Id: Coordinate.java,v 1.4 2008/09/25 16:02:04 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,9 @@ package org.astrogrid.acr.cds;
 
 import org.astrogrid.acr.ServiceException;
 
-/** Astronomical Coordinate Web Service, from CDS
+/** AR Service: Astronomical Coordinate Web Service, from CDS
  * @author CDS
- * @see http://cdsweb.u-strasbg.fr/cdsws/astroCoo.gml
+ * @see <a href='http://cdsweb.u-strasbg.fr/cdsws/astroCoo.gml'>Webservice Description</a>
  * @service cds.coordinate
  *
  */
@@ -68,7 +68,6 @@ public interface Coordinate {
      * @param equinox1 (Julian Years or Besselian, unused for GAL, SGAL, ICRS)
 
      * @param equinox2 (Julian Years or Besselian, unused for GAL, SGAL, ICRS)
-     * @return
 
      * @throws ServiceException if fails to communicate with web service.
      */
@@ -79,6 +78,9 @@ public interface Coordinate {
 
 /* 
 $Log: Coordinate.java,v $
+Revision 1.4  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.3  2006/02/02 14:19:48  nw
 fixed up documentation.
 

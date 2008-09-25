@@ -8,9 +8,8 @@ import java.net.URI;
 import org.astrogrid.acr.ServiceException;
 
 /** Monitor service availability using the VoMon service
- * @see vomon.sourceforge.net
+ * @see <a href="http://vomon.sourceforge.net">VoMon project page</a>
  * @author Noel Winstanley
- * @since Dec 11, 20063:49:22 PM
  * @service votech.vomon
  */
 public interface VoMon {

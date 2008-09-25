@@ -6,11 +6,11 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 import java.net.URI;
 
-/**    a validation stamp combining a validation level and the ID of 
+/**    A validation stamp for a resouce.
+ * It combinines a validation level and the ID of 
          the validator.
        
  * @author Noel Winstanley
- * @since Jul 31, 20064:50:05 PM
  */
 public class Validation implements Serializable {
 	/**
@@ -27,12 +27,15 @@ public class Validation implements Serializable {
 	public int getValidationLevel() {
 		return this.validationLevel;
 	}
-	public void setValidatedBy(URI validatedBy) {
+    /** @exclude */
+	public void setValidatedBy(final URI validatedBy) {
 		this.validatedBy = validatedBy;
 	}
-	public void setValidationLevel(int validationLevel) {
+    /** @exclude */
+	public void setValidationLevel(final int validationLevel) {
 		this.validationLevel = validationLevel;
 	}
+    /** @exclude */
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -40,25 +43,33 @@ public class Validation implements Serializable {
 		result = PRIME * result + this.validationLevel;
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (! (obj instanceof Validation))
-			return false;
+    /** @exclude */
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (! (obj instanceof Validation)) {
+            return false;
+        }
 		final Validation other = (Validation) obj;
 		if (this.validatedBy == null) {
-			if (other.validatedBy != null)
-				return false;
-		} else if (!this.validatedBy.equals(other.validatedBy))
-			return false;
-		if (this.validationLevel != other.validationLevel)
-			return false;
+			if (other.validatedBy != null) {
+                return false;
+            }
+		} else if (!this.validatedBy.equals(other.validatedBy)) {
+            return false;
+        }
+		if (this.validationLevel != other.validationLevel) {
+            return false;
+        }
 		return true;
 	}
+    /** @exclude */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Validation[");
 			buffer.append(", validatedBy = ").append(validatedBy);
 			buffer.append(", validationLevel = ").append(validationLevel);

@@ -3,11 +3,15 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/** Registrion description for a Simple Image Access Service.
+import org.astrogrid.acr.ivoa.Siap;
+
+/** An Image Access Service (SIAP)
+ * @see Siap
  * @author Noel Winstanley
- * @since Aug 5, 200610:26:36 PM
  */
 public interface SiapService extends Service{
-	/** returns the capability that describes this siap service */
+	/** returns the capability that describes this siap service 
+    * @return one of the items within {@link #getCapabilities()}
+    * */
 	public SiapCapability findSiapCapability();
 }

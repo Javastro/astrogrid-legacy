@@ -12,9 +12,9 @@ import org.astrogrid.acr.ServiceException;
 
 /** Utility functions for working with tables.
  * Exposes some of the functionality of STIL
- * @see http://www.star.bris.ac.uk/~mbt/stil/
+ * @see <a href="http://www.star.bris.ac.uk/~mbt/stil/">Stil Documentation</a>
  * @author Noel Winstanley
- * @since 2006.03
+
  * @service util.tables
  */
 public interface Tables {
@@ -55,8 +55,10 @@ public interface Tables {
 			, URI outLocation, String outFormat) throws InvalidArgumentException, ServiceException, NotFoundException, SecurityException ;
 	
     /** 
-     * Reads a table in a file into an in-memory table, converting between supported formats
-     * Will only give good results for text-based table formats.
+     * Reads a table in a file into an in-memory table, converting between supported formats.
+     * 
+     * {@stickyNote Will only give good results for text-based table formats.}
+     * 
      * @param  inLocation  input location: may be a http://, file://, ivo:// , ftp://
      *                     compressed using unix compress, gzip or bzip2 
      * @param  inFormat    input handler name: generally one of  
@@ -75,7 +77,8 @@ public interface Tables {
 	
     /** 
      * Converts an in-memory table between supported formats. 
-     * Will only give good results for text-based table formats.
+     * 
+     * {@stickyNote Will only give good results for text-based table formats.}
      * @param  input the input table.
      * @param  inFormat    input handler name: generally one of  
      *                     fits, votable, ascii, csv, ipac, wdc or null 
@@ -92,10 +95,10 @@ public interface Tables {
     
     
     
-    /** list the names of the table formats this module can write out as */
+    /** list the table formats this component can write out to */
 	public String[] listOutputFormats();
 	
-	/** list the names of the table formats this module can read in from */
+	/** list the table formats this component can read in from */
 	public String[] listInputFormats()	;
     
 

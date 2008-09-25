@@ -1,4 +1,4 @@
-/*$Id: WebServer.java,v 1.5 2007/03/22 18:54:10 nw Exp $
+/*$Id: WebServer.java,v 1.6 2008/09/25 16:02:03 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,11 +13,11 @@ package org.astrogrid.acr.system;
 import java.net.URL;
 
 
-/** Access information about he web-server component of ACR.
+/** AR System Service: Information about the web-server running with the AstroRuntime.
  * 
- * The web-server provides the HTML and XMLRPC interfaces into the ACR.
+ * The web-server provides the HTML and XMLRPC interfaces into the AR
  * This interface provides only informational methods, useful for working out how to connect to the webserver. 
- * It provides no way of administering the server or deploying new servlets.
+ * It provides no way of administering the server or deploying new servlets. (although such operations are possible via startup commandline parameters)
  * @service system.webserver
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  *
@@ -31,15 +31,22 @@ public interface WebServer  {
     /** get the root url of the the HTML interface.
      * 
      * Append <tt>xmlrpc</tt> to this root url to access the XMLRPC interface 
-     * @return a url of form <tt>http://<i>machine</i>:<i>getPort()</i>/<i>getKey</i>/</tt>*/
+     * @return a url of form <tt>http://<i>machine</i>:<i>getPort()</i>/<i>getKey()</i>/</tt>
+     * */
     public URL getRoot();
     
-    /** @deprecated usee {@link #getRoot} */
+    /** @exclude 
+     * @deprecated usee {@link #getRoot} */
+    @Deprecated
     public abstract String getUrlRoot();   
-    /** @see #getUrlRoot */
+    /**
+     * Access the obfuscated key that the main session of the AstroRuntime is running on.
+     *  @see #getUrlRoot */
     public abstract String getKey();
 
-    /** @see #getUrlRoot() */
+    /**
+     * Access the number of the port the AR webserver is running on.
+     *  @see #getUrlRoot() */
     public abstract int getPort();
     
  
@@ -47,6 +54,9 @@ public interface WebServer  {
 
 /* 
  $Log: WebServer.java,v $
+ Revision 1.6  2008/09/25 16:02:03  nw
+ documentation overhaul
+
  Revision 1.5  2007/03/22 18:54:10  nw
  added support for sessions.
 

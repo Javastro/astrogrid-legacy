@@ -1,14 +1,16 @@
 <html>
 <body>
-<h1>Access components of the Astro Runtime API</h1>
+@serial exclude
+<h1>Access components of the Astro Runtime</h1>
 
-The {@link org.astrogrid.acr.builtin.ACR} class provides access to all the ciomponents available in the AR API.
+Start by getting an instance of {@link org.astrogrid.acr.builtin.ACR}. This class provides access to all the services available in the Astro Runtime.
 
 <p />
+<hr />
 {@link org.astrogrid.acr.builtin.Shutdown} allows a client of the Astro Runtime to shut down a running AR daemon.
 <p />
-This package also contains descriptor objects for the modules, services and methods that make up the AR API. 
-These descrptions can be accessed from the {@link org.astrogrid.acr.system.ApiHelp} component.
+This package also contains datastructures to describe the modules, services and methods that are available from the Astro Runtime. 
+This data can be accessed from the {@link org.astrogrid.acr.system.ApiHelp} component.
 
 </body>
 </html>

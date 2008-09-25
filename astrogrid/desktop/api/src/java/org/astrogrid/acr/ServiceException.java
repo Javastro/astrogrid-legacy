@@ -1,4 +1,4 @@
-/*$Id: ServiceException.java,v 1.7 2008/08/21 11:34:18 nw Exp $
+/*$Id: ServiceException.java,v 1.8 2008/09/25 16:02:09 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.acr;
 
 /** A low-level failure of service or network.
- * <p/>
+ * 
  * For example, a socket connection times out because a server is down.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 29-Jul-2005
  *
@@ -21,7 +21,7 @@ public class ServiceException extends ACRException {
     static final long serialVersionUID = -8406921231044186670L;
 
     /** Construct a new ServiceException
-     * 
+     * @exclude
      */
     public ServiceException() {
         super();
@@ -29,6 +29,7 @@ public class ServiceException extends ACRException {
 
     /** Construct a new ServiceException
      * @param message
+     * @exclude
      */
     public ServiceException(final String message) {
         super(message);
@@ -36,6 +37,7 @@ public class ServiceException extends ACRException {
 
     /** Construct a new ServiceException
      * @param cause
+     * @exclude
      */
     public ServiceException(final Throwable cause) {
         super(cause);
@@ -44,6 +46,7 @@ public class ServiceException extends ACRException {
     /** Construct a new ServiceException
      * @param message
      * @param cause
+     * @exclude
      */
     public ServiceException(final String message, final Throwable cause) {
         super(message, cause);
@@ -54,6 +57,9 @@ public class ServiceException extends ACRException {
 
 /* 
 $Log: ServiceException.java,v $
+Revision 1.8  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.7  2008/08/21 11:34:18  nw
 doc tweaks
 

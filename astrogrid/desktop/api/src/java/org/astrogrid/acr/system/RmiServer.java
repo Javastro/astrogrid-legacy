@@ -1,4 +1,4 @@
-/*$Id: RmiServer.java,v 1.4 2007/01/24 14:04:44 nw Exp $
+/*$Id: RmiServer.java,v 1.5 2008/09/25 16:02:03 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.acr.system;
 
-/**Access information about the JavaRMI interface to the ACR.
+/**AR System Service: Information about the RMI interface to the AstroRuntime.
  * 
  * No management functions - just query methods.
  * @service system.rmi
@@ -28,6 +28,9 @@ public interface RmiServer {
 
 /* 
 $Log: RmiServer.java,v $
+Revision 1.5  2008/09/25 16:02:03  nw
+documentation overhaul
+
 Revision 1.4  2007/01/24 14:04:44  nw
 updated my email address
 

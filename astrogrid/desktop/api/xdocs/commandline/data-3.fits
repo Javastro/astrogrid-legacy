@@ -1,0 +1,32 @@
+<html>
+<head>
+<title> ADIL: Downloading Message  </title>
+<link rev="made" href="mailto:rplante@ncsa.uiuc.edu (Ray Plante)">
+<base href="http://adil.ncsa.uiuc.edu/download/95.SU.01.02?-u">
+</head>
+
+<H1><img src=http://adil.ncsa.uiuc.edu/images/ADILlogo_btn.gif> 
+    Image Transfer In Progress </H1>
+
+The FITS image you requested for downloading (codename 95.SU.01.02) is
+being transferred from long term storage.  This can take anywhere
+between a few seconds and a few minutes.  At anytime, you may continue
+the downloading process by clicking on one of the following links: <p>
+
+<ul>
+<li> <a href="http://adil.ncsa.uiuc.edu/download/95.SU.01.02?-u">
+     Download image if ready, return this message otherwise</a> <p>
+<li> <a href="http://adil.ncsa.uiuc.edu/download/95.SU.01.02?-wu">
+     Download image, waiting until image is received</a> <p>
+</ul>
+
+Or you may re-initiate the downloading from any other document
+containing a download link for this image.  <p> 
+
+</body>
+<HR>
+<address>
+NCSA Astronomy Digital Image Library / 
+<a href="mailto:adil@ncsa.uiuc.edu">adil@ncsa.uiuc.edu</a>
+</address>
+</html>

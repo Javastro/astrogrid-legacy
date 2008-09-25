@@ -193,7 +193,6 @@ progress = apps.getExecutionInformation(execId)
 # loop round until the query completes.  
 while progress['status'] not in ['ERROR','COMPLETED','UNKNOWN'] :
     sys.stderr.write('.')
-    ar.ui.lookout.refresh() #bit of a cheat - forces the monitor to refresh - makes the query finish faster
     time.sleep(60)
     progress = apps.getExecutionInformation(execId)
 

@@ -1,4 +1,4 @@
-/*$Id: FunctionBean.java,v 1.5 2007/03/08 17:48:06 nw Exp $
+/*$Id: FunctionBean.java,v 1.6 2008/09/25 16:02:04 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,18 +15,20 @@ import java.util.Arrays;
 
 import org.astrogrid.acr.astrogrid.ParameterBean;
 
-/**
+/** @exclude
+ * doesn't seem to be used anywhere. - thinkn it's a hang over from attempt at skynode support.
  * description of one ADQL function
- * @since 1.9
+
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
 public class FunctionBean implements Serializable{
 
-    private static int hashCode(Object[] array) {
+    private static int hashCode(final Object[] array) {
 		final int PRIME = 31;
-		if (array == null)
-			return 0;
+		if (array == null) {
+            return 0;
+        }
 		int result = 1;
 		for (int index = 0; index < array.length; index++) {
 			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -38,7 +40,7 @@ public class FunctionBean implements Serializable{
      * @param description
      * @param parameters
      */
-    public FunctionBean(String name, String description, ParameterBean[] parameters) {
+    public FunctionBean(final String name, final String description, final ParameterBean[] parameters) {
         super();
         this.name = name;
         this.description = description;
@@ -66,7 +68,7 @@ public class FunctionBean implements Serializable{
     }
     
     public String toString() {
-        StringBuffer sb = new StringBuffer("FunctionBean[");
+        final StringBuffer sb = new StringBuffer("FunctionBean[");
         sb.append("name: ");
         sb.append(name);
         sb.append(", description: ");
@@ -86,26 +88,34 @@ public class FunctionBean implements Serializable{
 		result = PRIME * result + FunctionBean.hashCode(this.parameters);
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final FunctionBean other = (FunctionBean) obj;
 		if (this.description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!this.description.equals(other.description))
-			return false;
+			if (other.description != null) {
+                return false;
+            }
+		} else if (!this.description.equals(other.description)) {
+            return false;
+        }
 		if (this.name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!this.name.equals(other.name))
-			return false;
-		if (!Arrays.equals(this.parameters, other.parameters))
-			return false;
+			if (other.name != null) {
+                return false;
+            }
+		} else if (!this.name.equals(other.name)) {
+            return false;
+        }
+		if (!Arrays.equals(this.parameters, other.parameters)) {
+            return false;
+        }
 		return true;
 	}
 
@@ -114,6 +124,9 @@ public class FunctionBean implements Serializable{
 
 /* 
 $Log: FunctionBean.java,v $
+Revision 1.6  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.5  2007/03/08 17:48:06  nw
 tidied.
 

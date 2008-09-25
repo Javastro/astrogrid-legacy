@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.7 2007/06/18 16:00:51 nw Exp $
+/*$Id: Configuration.java,v 1.8 2008/09/25 16:02:03 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,15 @@
  **/
 package org.astrogrid.acr.system;
 
+import java.util.Map;
+
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
 
-import java.util.Map;
-
-/**Inspect and alter the configuration of the workbench and ACR.
+/**AR System Service: Inspect and alter the configuration of the AstroRuntime.
  * 
- * Allows the user / applications to set key-value pairs,  which are automatically persisted between executions.
- * As well as alteriing configuration settings, this is also 
+ * Allows the setting of key-value pairs,  which are automatically persisted between executions.
+ * As well as altering configuration settings, this is also 
  * useful for storing bits of state that should persist between script invocations (e.g. preferences, window positions and sizes), plus configuration information (e.g. username, service endpoints)
  * @service system.configuration
  * 
@@ -28,7 +28,7 @@ import java.util.Map;
 public interface Configuration {
     
 
-    /** Set the value of a new or existing key
+    /** Set the value of a new or existing key.
      * 
      * @param key name of key
      * @param value new value of key
@@ -36,22 +36,43 @@ public interface Configuration {
      */
     public abstract boolean setKey(String key, String value);
     
-    /** get the value of a key
+    /** get the value of a key.
      * 
      * @param key the name of the key
      * @return the associated value, or null
      */
     public abstract String getKey(String key);
 
-   /** list the keys present in the store
+   /** list the keys present in the store.
     * 
     * @return an array of key names
  * @throws ACRException in unlikely case of the backing store being unreadable.
     */
     public abstract String[] listKeys() throws ACRException;
 
-    /** list the contents of the store
+    /** list the contents of the store.
      * 
+     * {@example "List all configuration keys (python)
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc') 
+for (i, j) in  ar.system.configuration.list().iteritems():
+        print i, ":", j     
+     * }
+     * And this script returns
+     * <pre>
+performance.showProgressDialogueAfter : 5
+org.astrogrid.registry.query.endpoint : http://registry.astrogrid.org/astrogrid-registry/services/RegistryQueryv1_0
+votech.jackdaw.endpoint : http://thor.roe.ac.uk/jackdaw/like
+cds.vizier.endpoint : http://cdsws.u-strasbg.fr/axis/services/VizieR
+votech.vomon.endpoint : http://vomon.roe.ac.uk/status.xml
+system.rmi.endScanPort : 2099
+system.webserver.endScanPort : 8800
+last.upgraded.to : unreleased
+network.proxyPort : 80
+...
+     * </pre>
      * @return a map of key-value pairs.
      * @throws ACRException in unlikely case of the backing store being unreadable
      */
@@ -62,7 +83,7 @@ public interface Configuration {
      */
     public abstract void removeKey(String string);
     
-    /** reset the configuration back to factory settings. 
+    /** Reset the configuration back to factory settings. 
      * All user configuration will be lost 
      * @throws ServiceException*/
     public void reset() throws ServiceException;
@@ -70,6 +91,9 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.8  2008/09/25 16:02:03  nw
+ documentation overhaul
+
  Revision 1.7  2007/06/18 16:00:51  nw
  added 'resetConfioguraiton' to the public interface.
 

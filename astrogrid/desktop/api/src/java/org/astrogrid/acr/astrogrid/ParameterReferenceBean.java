@@ -1,4 +1,4 @@
-/*$Id: ParameterReferenceBean.java,v 1.5 2007/01/24 14:04:45 nw Exp $
+/*$Id: ParameterReferenceBean.java,v 1.6 2008/09/25 16:02:04 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,17 +12,23 @@ package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
 
-/** Description of a parameter occuring in an interface to a remote application
+/** A reference to parameter of a remote application (CEA).
+ * 
+ * This class is used to to allow an {@link InterfaceBean interface} of a CEA application
+ * to refer to one of it's {@link ParameterBean parameters}.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
- *@see org.astrogrid.acr.astrogrid.InterfaceBean;
+ *@see org.astrogrid.acr.astrogrid.InterfaceBean
  *@see org.astrogrid.acr.astrogrid.ParameterBean
+ *@see CeaApplication
+ * @see Applications Executing remote applications
+ *@bean
  */
 public class ParameterReferenceBean implements Serializable {
 
     /** Construct a new ParameterReferenceBean
-     * 
+     * @exclude
      */
-    public ParameterReferenceBean(String ref, int max,int min) {
+    public ParameterReferenceBean(final String ref, final int max,final int min) {
         this.ref = ref;
         this.max = max;
         this.min = min;                
@@ -34,7 +40,8 @@ public class ParameterReferenceBean implements Serializable {
     protected final int min;
     
     
-    /** maximum number of times this parameter is permitted to occur */
+    /** maximum number of times this parameter is permitted to occur
+     * @note {@code 0} denotes unlimited number of times. */
     public int getMax() {
         return this.max;
     }
@@ -42,12 +49,15 @@ public class ParameterReferenceBean implements Serializable {
     public int getMin() {
         return this.min;
     }
-    /** name of the parameter - should be used as a reference  of the corresponding parameterBean */
+    /** name of the parameter.
+     * 
+     *  Can be used as a key to find the corresponding parameterBean */
     public String getRef() {
         return this.ref;
     }
+    /** @exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[ParameterReferenceBean:");
         buffer.append(" ref: ");
         buffer.append(ref);
@@ -58,6 +68,7 @@ public class ParameterReferenceBean implements Serializable {
         buffer.append("]");
         return buffer.toString();
     }
+    /**@exclude */
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -66,23 +77,31 @@ public class ParameterReferenceBean implements Serializable {
 		result = PRIME * result + ((this.ref == null) ? 0 : this.ref.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	/** @exclude */
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final ParameterReferenceBean other = (ParameterReferenceBean) obj;
-		if (this.max != other.max)
-			return false;
-		if (this.min != other.min)
-			return false;
+		if (this.max != other.max) {
+            return false;
+        }
+		if (this.min != other.min) {
+            return false;
+        }
 		if (this.ref == null) {
-			if (other.ref != null)
-				return false;
-		} else if (!this.ref.equals(other.ref))
-			return false;
+			if (other.ref != null) {
+                return false;
+            }
+		} else if (!this.ref.equals(other.ref)) {
+            return false;
+        }
 		return true;
 	}
 }
@@ -90,6 +109,9 @@ public class ParameterReferenceBean implements Serializable {
 
 /* 
 $Log: ParameterReferenceBean.java,v $
+Revision 1.6  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.5  2007/01/24 14:04:45  nw
 updated my email address
 

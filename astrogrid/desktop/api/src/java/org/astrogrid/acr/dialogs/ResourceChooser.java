@@ -1,4 +1,4 @@
-/*$Id: ResourceChooser.java,v 1.5 2007/08/31 00:01:50 nw Exp $
+/*$Id: ResourceChooser.java,v 1.6 2008/09/25 16:02:02 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,9 @@ package org.astrogrid.acr.dialogs;
 
 import java.net.URI;
 
-/** Prompt the user to select a local file / myspace resource / url by displaying a resource chooser dialogue.
- *  
- * This is a  generalisation of the 'open/save file' browser that also allows local and  remote ( myspace / vospace / URL) resources to be selected.
+/** AR Service: Dialogue that prompts the user to select a local file, vospace resource or URL. 
+ *  <p />
+ * This is a  generalisation of the typical filechooser dialogue that allows local and  remote ( myspace / vospace / URL) resources to be selected.
 
  * @service  dialogs.resourceChooser
  * @see org.astrogrid.acr.astrogrid.Myspace
@@ -23,22 +23,29 @@ import java.net.URI;
  */
 public interface ResourceChooser {
 
-    /** show the resource chooser, and block until user selects a file
+    /** Prompt the user to select a file.
      * 
-     * @param title title for the dialogue - e.g.'choose file to open'
+     * Blocks until a file is selected, or user presses cancel.
+     * 
+     * @param title title for the dialogue - e.g.{@code choose file to open}
      * @param enableRemote - if true,allow selection of a remote resource (myspace / vospace / URL). Selection of local resources is enabled always.
-     * @return URI of the selected resource, or null if the user cancelled.
+     * @return URI of the selected resource, or null if the user pressed cancel
+     * @equivalence fullChooseResource(title,enableRemote,true,enableRemote)
      */
     URI chooseResource(String title, boolean enableRemote);
     
-    /** show the resource chooser, and block untiil user selects a folder.
-     * @param title title for the dialogue - e.g.'choose file to open'
+    /** Prompt the user to select a folder.
+     * 
+     * Blocks until a folder is selected, or user presses cancel.
+     * 
+     * @param title title for the dialogue - e.g.{@code choose file to open}
      * @param enableRemote - if true,allow selection of a remote resource (myspace / vospace / URL). Selection of local resources is enabled always.
-     * @return URI of the selected folder, or null if the user cancelled.
+     * @return URI of the selected folder, or null if the user pressed cancel.
+     * @equivalence fullChooseFolder(title,enableRemote,true,enableRemote)     
      */
     URI chooseFolder(String title, boolean enableRemote);
 
-    /** fully-configurable resource chooser - a generalization of {@link #chooseResource}
+    /** Fully-configurable resource chooser - a generalization of {@link #chooseResource}.
      * @param title title for the dialogue
      * @param enableVospace if true,allow selection of a remote myspace / vospace resource.
      * @param enableLocal if true, allow selection of local files
@@ -48,11 +55,12 @@ public interface ResourceChooser {
     URI fullChooseResource(String title, boolean enableVospace, boolean enableLocal, boolean enableURL);
     
     
-    /** fully-configurable resource chooser - a generalization of {@link #chooseFolder}
+    /** Fully-configurable resource chooser - a generalization of {@link #chooseFolder}.
      * @param title title for the dialogue
      * @param enableVospace if true,allow selection of a remote myspace / vospace folder
      * @param enableLocal if true, allow selection of local folders
-     * @param enableURL if true, enable the 'enter a URL' tab, so an arbitrary URL can be entered. No verification that this _is_ a folder in some sense is performed.
+     * @param enableURL if true, enable the 'enter a URL' tab, so an arbitrary URL can be entered. 
+     * {@stickyWarning No verification that an entered URL <i>is</i> a folder is performed.}
      * @return the URI of the selected folder, or null if the user cancelled
      */
     URI fullChooseFolder(String title, boolean enableVospace, boolean enableLocal, boolean enableURL);    
@@ -60,6 +68,9 @@ public interface ResourceChooser {
 
 /* 
  $Log: ResourceChooser.java,v $
+ Revision 1.6  2008/09/25 16:02:02  nw
+ documentation overhaul
+
  Revision 1.5  2007/08/31 00:01:50  nw
  Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncher.java,v 1.5 2007/07/17 17:05:28 nw Exp $
+/*$Id: ApplicationLauncher.java,v 1.6 2008/09/25 16:02:09 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,24 +10,28 @@
 **/
 package org.astrogrid.acr.ui;
 
-/**Control the  Application Launcher GUI.
+/**AR Service: Launch a new Task Runner / Query Builder GUI
  * 
- * <img src="doc-files/applauncher.png"/>
  * @service userInterface.applicationLauncher
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-May-2005
  *@see org.astrogrid.acr.astrogrid.Applications
  */
 public interface ApplicationLauncher {
-    /** display a  application launcher UI */
+    /** display a new TaskRunner */
     public void show() ;
-    /** hide the application launcher window
+    /** Not implemented
+     * @exclude 
      * @deprecated not implemented */
+    @Deprecated
     public void hide();
 }
 
 
 /* 
 $Log: ApplicationLauncher.java,v $
+Revision 1.6  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.5  2007/07/17 17:05:28  nw
 documentation fix.
 

@@ -1,4 +1,4 @@
-/*$Id: UserLoginEvent.java,v 1.4 2007/01/24 14:04:44 nw Exp $
+/*$Id: UserLoginEvent.java,v 1.5 2008/09/25 16:02:04 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.astrogrid;
 import java.util.EventObject;
 
 /** Event Object passed when the user logs in or out.
- * @see org.astrogrid.acr.astrogrid.UserLoginListener
+ * @see UserLoginListener
  * @see org.astrogrid.acr.astrogrid.Community#addUserLoginListener(UserLoginListener)
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2005
  *
@@ -21,9 +21,10 @@ import java.util.EventObject;
 public class UserLoginEvent extends EventObject {
 
     /** Construct a new UserLoginEvent
+     * @exclude
      * @param source
      */
-    public UserLoginEvent(boolean loggedIn,Object source) {
+    public UserLoginEvent(final boolean loggedIn,final Object source) {
         super(source);
         this.loggedIn = loggedIn;
     }
@@ -41,6 +42,9 @@ public class UserLoginEvent extends EventObject {
 
 /* 
 $Log: UserLoginEvent.java,v $
+Revision 1.5  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.4  2007/01/24 14:04:44  nw
 updated my email address
 

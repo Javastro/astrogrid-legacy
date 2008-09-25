@@ -1,4 +1,4 @@
-/*$Id: HelioScope.java,v 1.3 2007/06/27 11:08:35 nw Exp $
+/*$Id: HelioScope.java,v 1.4 2008/09/25 16:02:09 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,12 @@
 package org.astrogrid.acr.ui;
 
 /**Control  HelioScope.
- *@deprecated
- * <img src="doc-files/astroscope.png"/>
+ * 
+ *@exclude
+ * @deprecated
  * @author Kevin Benson
  */
+@Deprecated
 public interface HelioScope {
     /** display a new instance of helioscope */
     public void show() ;
@@ -23,6 +25,9 @@ public interface HelioScope {
 
 /* 
 $Log: HelioScope.java,v $
+Revision 1.4  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.3  2007/06/27 11:08:35  nw
 public apis for new ui components.
 

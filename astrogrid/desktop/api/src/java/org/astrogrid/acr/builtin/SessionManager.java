@@ -10,30 +10,29 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.SecurityException;
 
-/** Service that creates new user sessions.
+/** AR Service: manage user sessions.
  * 
  * There's one default user session - this is the one who's connection 
- * properties are described in ~/.astrogrid-properties  (for XMLRPC & HTTP) 
+ * properties are described in {@code ~/.astrogrid-properties}  (for XMLRPC & HTTP) 
  * and to which RMI clients connect to automatically using the Finder.
  * 
- * However, this service allows a client connected to the default user session to 
+ * This SessionManager service allows a client connected to the default user session to 
  * create a new session - which will not share state such as authentication,
  * login information, etc with the default session. This is useful in a multi-user 
  * or server-side settings.
  * 
  * Once a session has been created, call the {@link #findHttpSession(String)}, {@link #findXmlRpcSession(String)}
- * or {@link Finder#findSession(String)}
+ * or {@link Finder#findSession(String)} to access the information required to connect to that session.
  * 
- * Note however, that this session manager does not make any strong guarantees about
+ * {@stickyWarning This session manager does not make any strong guarantees about
  * security - the purpose of this feature is to enable multiple user identities within the same AR -
  * not to enforce strict isolation between users of the same AR. In particular, all 
- * clients of the AR must first use the default user session to create a new one, 
+ * clients of the AR must first use the default user session to create a new session, 
  * and it may also be possible to determine how to connect to other sessions - hence
  * it is recommended that all clients connecting to the AR are mutually trusting.
- * 
+ * }
  * @service builtin.sessionManager
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Mar 20, 200710:43:02 PM
  */
 public interface SessionManager {
 
@@ -41,7 +40,7 @@ public interface SessionManager {
 	 * 
 	 * Create a new session that will be available for at least the specified 
 	 * number of minutes, after which it will be disposed and inaccessible.
-	 * @param lease number of minutes that this session will be available for. 
+	 * @param leaseMinutes number of minutes that this session will be available for. 
 	 * @return a sessionId - an identifier for the newly created session.
 	 * @throws NotApplicableException if this AR does not support creating new sessions.
 	 * @throws SecurityException if the current user or client is not permitted to create new sessions.
@@ -51,9 +50,9 @@ public interface SessionManager {
 	/** check whether a session exists and is accessible */
 	boolean exists(String sessionId);
 	
-	/** dispose of a session
+	/** dispose of a session.
 	 * 
-	 * Once disposed of, a session cannot be connected to.
+	 * @note Once disposed of, a session cannot be connected to.
 	 * @param sessionId a sessionId that currently exists.
 	 */
 	void dispose(String sessionId);

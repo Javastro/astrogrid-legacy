@@ -1,4 +1,4 @@
-/*$Id: NotFoundException.java,v 1.7 2008/08/21 11:34:18 nw Exp $
+/*$Id: NotFoundException.java,v 1.8 2008/09/25 16:02:09 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr;
 
 /** A required resource or service was not found.
  * 
- * </p>
+ * 
  * For example, a missing registry resource, or a non-existent vospace file..
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Jul-2005
  *
@@ -22,13 +22,14 @@ public class NotFoundException extends ACRException {
     static final long serialVersionUID = -6549541128563442242L;
 
     /** Construct a new NotFoundException
-     * 
+     * @exclude
      */
     public NotFoundException() {
         super();
     }
 
     /** Construct a new NotFoundException
+     * @exclude
      * @param message
      */
     public NotFoundException(final String message) {
@@ -36,6 +37,7 @@ public class NotFoundException extends ACRException {
     }
 
     /** Construct a new NotFoundException
+     * @exclude
      * @param cause
      */
     public NotFoundException(final Throwable cause) {
@@ -43,6 +45,7 @@ public class NotFoundException extends ACRException {
     }
 
     /** Construct a new NotFoundException
+     * @exclude
      * @param message
      * @param cause
      */
@@ -55,6 +58,9 @@ public class NotFoundException extends ACRException {
 
 /* 
 $Log: NotFoundException.java,v $
+Revision 1.8  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.7  2008/08/21 11:34:18  nw
 doc tweaks
 

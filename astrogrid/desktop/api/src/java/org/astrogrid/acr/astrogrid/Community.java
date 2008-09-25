@@ -1,4 +1,4 @@
-/*$Id: Community.java,v 1.5 2007/01/24 14:04:44 nw Exp $
+/*$Id: Community.java,v 1.6 2008/09/25 16:02:04 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,20 +13,20 @@ package org.astrogrid.acr.astrogrid;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 
-/** astogrid identity and authentication.
+/** AR Service: Single sign-on and authentication.
  * 
- * At the moment provides login ability. Later will provide access to permissioning and quota information for the current user.
- * <img src="doc-files/login.png"/>
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.community
+ * @see <a href='http://www.ivoa.net/Documents/latest/SSOAuthMech.html'>IVOA Single-Sign On Specification</a>
  */
 public interface Community {
 
-    /** login to astrogrid - identify yourself
+    /** login to virtual observatory.
      * 
-     * @param username user name (e.g. <tt>fredbloggs</tt>)
+     * {@example login("EdwardWoodward","ewarwoowar","uk.ac.le.star") }
+     * @param username user name (e.g. {@code fredbloggs})
      * @param password password for this user
-     * @param community community the user is registered with (e.g. <tt>uk.ac.astogrid</tt> )
+     * @param community community the user is registered with (e.g. {@code uk.ac.astogrid} )
      * @throws SecurityException if login fails due to incorrect credentials
      * @throws ServiceException if error occurs while communicating with server.
      */
@@ -34,31 +34,30 @@ public interface Community {
             throws SecurityException, ServiceException;
 
     
-    /** access information about the currently logged in user.
-     * 
-     * <b>This method forces login if not already logged in.</b>
+    /** Access information about who the AR is currently logged in as.
+     * @note This method forces login if not already logged in
      * @return information about the current user.
      */
     public UserInformation getUserInformation();
     
-    /** log current user out of astrogrid */
+    /** logout of the virtual observatory */
     public abstract void logout();
 
-    /** verify user is currently logged in.
+    /** check whether AR is currently logged in.
      * 
      * @return true if the user is logged in
      */
     public abstract boolean isLoggedIn();
 
-    /** display the login dialogue to prompt the user for input, and then log in */
+    /** display the login dialogue to prompt the user for input, and then log in. */
     public abstract void guiLogin();
     
     /** register a listener, that will be notified when the user logs in or out 
-     * @xmlrpc method unavailable - callbacks not technically possible*/
+     * @xmlrpc method unavailable - callbacks are not technically possible*/
     public void addUserLoginListener(UserLoginListener l) ;
     
     /** remove a previously registered listener
-     * @xmlrpc method unavailable - callbacks not technically possible */
+     * @xmlrpc method unavailable - callbacks are not technically possible */
     public void removeUserLoginListener(UserLoginListener l);
 
 
@@ -66,6 +65,9 @@ public interface Community {
 
 /* 
  $Log: Community.java,v $
+ Revision 1.6  2008/09/25 16:02:04  nw
+ documentation overhaul
+
  Revision 1.5  2007/01/24 14:04:44  nw
  updated my email address
 

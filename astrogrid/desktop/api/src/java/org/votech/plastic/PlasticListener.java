@@ -9,9 +9,7 @@ import java.util.List;
  * 
  * @see <a href="http://plastic.sourceforge.net/">http://plastic.sourceforge.net</a>
  * @author jdt@roe.ac.uk
- * @date 11-Oct-2005
- * @version 0.2
- * @since 1.3
+
  */
 public interface PlasticListener {
     /**

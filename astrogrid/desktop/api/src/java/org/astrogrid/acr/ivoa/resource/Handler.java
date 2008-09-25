@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * Implementation object that backs Resource instances. Only used internally.
  * @author Noel Winstanley
- * @since Aug 2, 200612:06:55 PM
+ * @exclude
  */
 public class Handler implements InvocationHandler, Serializable {
 	/**
@@ -23,8 +23,8 @@ public class Handler implements InvocationHandler, Serializable {
 		super();
 		this.m = m;
 	}
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		String name = method.getName();
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+		final String name = method.getName();
 		if (name.equals("toString")) {
 			return m.toString();
 		} else if (name.equals("equals")) {

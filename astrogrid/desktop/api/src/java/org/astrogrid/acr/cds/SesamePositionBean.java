@@ -7,10 +7,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /** 
- * Datastructure representing the position of an object known to Sesame.
+ * Object resolution information provided by Sesame
  * @see Sesame
  * @author Noel Winstanley
- * @since 2006.3.rc4
+
  */
 public class SesamePositionBean implements Serializable {
 	/**
@@ -18,10 +18,11 @@ public class SesamePositionBean implements Serializable {
 	 */
 	private static final long serialVersionUID = -7521201935481185321L;
 
-	private static int hashCode(Object[] array) {
+	private static int hashCode(final Object[] array) {
 		final int PRIME = 31;
-		if (array == null)
-			return 0;
+		if (array == null) {
+            return 0;
+        }
 		int result = 1;
 		for (int index = 0; index < array.length; index++) {
 			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -41,68 +42,87 @@ public class SesamePositionBean implements Serializable {
 	protected double raErr;
 	protected double decErr;
 	protected String[] aliases;
-
+	/** the declination of the object */
 	public double getDec() {
 		return this.dec;
 	}
-	public void setDec(double dec) {
+	/** @exclude */
+	public void setDec(final double dec) {
 		this.dec = dec;
 	}
-
+	/** the error in declination */
 	public double getDecErr() {
 		return this.decErr;
 	}
-	public void setDecErr(double decErr) {
+	/** @exclude */
+	public void setDecErr(final double decErr) {
 		this.decErr = decErr;
 	}
+	/** the object name */
 	public String getOName() {
 		return this.oName;
 	}
-	public void setOName(String name) {
+	/** @exclude */
+	public void setOName(final String name) {
 		this.oName = name;
 	}
+	/** the object type */
 	public String getOType() {
 		return this.oType;
 	}
-	public void setOType(String type) {
+	/**@exclude */
+	public void setOType(final String type) {
 		this.oType = type;
 	}
+	/** full position, as a string */
 	public String getPosStr() {
 		return this.posStr;
 	}
-	public void setPosStr(String posStr) {
+	/** @exclude */
+	public void setPosStr(final String posStr) {
 		this.posStr = posStr;
 	}
+	/** the right ascension of the object */
 	public double getRa() {
 		return this.ra;
 	}
-	public void setRa(double ra) {
+	/** @exclude */
+	public void setRa(final double ra) {
 		this.ra = ra;
 	}
+	/** the error in right ascension */
 	public double getRaErr() {
 		return this.raErr;
 	}
-	public void setRaErr(double raErr) {
+	/** @exclude */
+	public void setRaErr(final double raErr) {
 		this.raErr = raErr;
 	}
+	/** the target object name */
 	public String getTarget() {
 		return this.target;
 	}
-	public void setTarget(String target) {
+	/** @exclude */
+	public void setTarget(final String target) {
 		this.target = target;
 	}
+	/** the service that resolved this object */
 	public String getService() {
 		return this.service;
 	}
-	public void setService(String service) {
+	/** @exclude */
+	public void setService(final String service) {
 		this.service = service;
 	}
+	/** aliases for this object name */
 	public String[] getAliases() {
 		return this.aliases;
 	}
-	public void setAliases(String[] aliases) {
+	/** @exclude */
+	public void setAliases(final String[] aliases) {
 		this.aliases = aliases;
 	}
+	/** @exclude */
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -123,59 +143,78 @@ public class SesamePositionBean implements Serializable {
 		result = PRIME * result + ((this.target == null) ? 0 : this.target.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	/** @exclude */
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final SesamePositionBean other = (SesamePositionBean) obj;
-		if (!Arrays.equals(this.aliases, other.aliases))
-			return false;
-		if (Double.doubleToLongBits(this.dec) != Double.doubleToLongBits(other.dec))
-			return false;
-		if (Double.doubleToLongBits(this.decErr) != Double.doubleToLongBits(other.decErr))
-			return false;
+		if (!Arrays.equals(this.aliases, other.aliases)) {
+            return false;
+        }
+		if (Double.doubleToLongBits(this.dec) != Double.doubleToLongBits(other.dec)) {
+            return false;
+        }
+		if (Double.doubleToLongBits(this.decErr) != Double.doubleToLongBits(other.decErr)) {
+            return false;
+        }
 		if (this.oName == null) {
-			if (other.oName != null)
-				return false;
-		} else if (!this.oName.equals(other.oName))
-			return false;
+			if (other.oName != null) {
+                return false;
+            }
+		} else if (!this.oName.equals(other.oName)) {
+            return false;
+        }
 		if (this.oType == null) {
-			if (other.oType != null)
-				return false;
-		} else if (!this.oType.equals(other.oType))
-			return false;
+			if (other.oType != null) {
+                return false;
+            }
+		} else if (!this.oType.equals(other.oType)) {
+            return false;
+        }
 		if (this.posStr == null) {
-			if (other.posStr != null)
-				return false;
-		} else if (!this.posStr.equals(other.posStr))
-			return false;
-		if (Double.doubleToLongBits(this.ra) != Double.doubleToLongBits(other.ra))
-			return false;
-		if (Double.doubleToLongBits(this.raErr) != Double.doubleToLongBits(other.raErr))
-			return false;
+			if (other.posStr != null) {
+                return false;
+            }
+		} else if (!this.posStr.equals(other.posStr)) {
+            return false;
+        }
+		if (Double.doubleToLongBits(this.ra) != Double.doubleToLongBits(other.ra)) {
+            return false;
+        }
+		if (Double.doubleToLongBits(this.raErr) != Double.doubleToLongBits(other.raErr)) {
+            return false;
+        }
 		if (this.service == null) {
-			if (other.service != null)
-				return false;
-		} else if (!this.service.equals(other.service))
-			return false;
+			if (other.service != null) {
+                return false;
+            }
+		} else if (!this.service.equals(other.service)) {
+            return false;
+        }
 		if (this.target == null) {
-			if (other.target != null)
-				return false;
-		} else if (!this.target.equals(other.target))
-			return false;
+			if (other.target != null) {
+                return false;
+            }
+		} else if (!this.target.equals(other.target)) {
+            return false;
+        }
 		return true;
 	}
-	/**
+	/** @exclude
 		 * toString methode: creates a String representation of the object
 		 * @return the String representation
 		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("SesamePositionBean[");
 			buffer.append("target = ").append(target);
 			buffer.append(", service = ").append(service);

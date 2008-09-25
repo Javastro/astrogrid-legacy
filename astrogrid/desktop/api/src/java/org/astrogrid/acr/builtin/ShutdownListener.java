@@ -1,4 +1,4 @@
-/*$Id: ShutdownListener.java,v 1.3 2007/01/24 14:04:46 nw Exp $
+/*$Id: ShutdownListener.java,v 1.4 2008/09/25 16:02:04 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,17 +12,18 @@ package org.astrogrid.acr.builtin;
 
 import java.util.EventListener;
 
-/** Listener interface for things that want to be notified of proposed or real shutdowns of the acr
+/** Listener interface for AR lifecycle.
  * @see org.astrogrid.acr.builtin.Shutdown
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
  *
  */
 public interface ShutdownListener extends EventListener {
-    /** called on listeners when acr is shutting down - too late to do anything about it */
+    /** called on listeners when AR is shutting down - too late to do anything about it */
     void halting();
-    /** called on listeners when acr intends to shut down - gives listeners chance to object to this 
+    /** called on listeners when AR intends to shut down - gives listeners chance to object to this 
      * 
-     * @return a string message why the acr should keep running. <tt>null</tt> means that this client hasn't got a problem with the acr shutting down.
+     * @return a string message why the AR should keep running (which will be returned to the user). 
+     * <tt>null</tt> means that this client hasn't got a problem with the AR shutting down.
      */
     String lastChance();
 }
@@ -30,6 +31,9 @@ public interface ShutdownListener extends EventListener {
 
 /* 
 $Log: ShutdownListener.java,v $
+Revision 1.4  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.3  2007/01/24 14:04:46  nw
 updated my email address
 

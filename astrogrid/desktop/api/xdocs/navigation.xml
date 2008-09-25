@@ -5,8 +5,10 @@
 
   <body>
     <links>
+       <!-- TODO add links to AR and vodesktop
        <item name="Astro Runtime" href="http://www.astrogrid.org/desktop/astro-runtime" />
        <item name="Workbench" href="http://www.astrogrid.org/desktop" />
+        -->
        <item name="IVOA" href="http://www.ivoa.net" />
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
     </links>
@@ -14,16 +16,14 @@
     <menu name="Navigation">
 	    <item name="Overview" href="/index.html" />
 	    <item name="2 Minute Introduction" href="/two-minute-intro.html" />
-	    <item name="AR and PLASTIC" href="/plastic.html"/>
 	    <item name="10 Minute Tutorial" href="/ten-minute-tutorial.html" />
-	    <item name="API: Javadoc" href="/apidocs/index.html" />
+	    <item name="API Documentation" href="/apidocs/index.html" />
+        <!-- 
+	    <item name="AR and PLASTIC" href="/plastic.html"/>
 	    <item name="API: XML-RPC" href="xmlrpc.html" />
+         -->
     </menu>
-    
-    <menu name="Links">
-    	<item name="Download Astro Runtime" href="http://www.astrogrid.org/desktop/astro-runtime" />
-    	<item name="Mailing Lists" href="mail-lists.html" />
-     </menu>
+
 
     
     

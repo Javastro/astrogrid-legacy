@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.5 2007/11/12 13:36:27 pah Exp $
+/*$Id: ComponentDescriptor.java,v 1.6 2008/09/25 16:02:04 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,38 +14,42 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.astrogrid.acr.system.ApiHelp;
 
-/** Descriptor for a component (service) of the AR
+
+/** Describes an AR Service
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 
- * @since 2.2
+
+ * @see ApiHelp
  *
  */
 public class ComponentDescriptor extends Descriptor{
 
     /** Construct a new ComponentDescriptor
-     * 
+     * @exclude
      */
     public ComponentDescriptor() {
         super();
     }
     protected final Map methods = new LinkedHashMap();
     	//new ListOrderedMap();
-    /** retrieve the descriptor for a named method */
-    public MethodDescriptor getMethod(String name) {
-        return (MethodDescriptor)methods.get(name);
+    /** retrieve the descriptor for a  method */
+    public MethodDescriptor getMethod(final String methodName) {
+        return (MethodDescriptor)methods.get(methodName);
     }
     
-    /** list the methods of this component */
+    /** list the methods of this service */
     public MethodDescriptor[] getMethods() {
     	return (MethodDescriptor[])methods.values().toArray(new MethodDescriptor[]{});
     }
     
-    /** add a method to the descriptor - used internally. */
-    public void addMethod(MethodDescriptor m) {
+    /** add a method to the descriptor - used internally. 
+     * @exclude*/
+    public void addMethod(final MethodDescriptor m) {
         methods.put(m.getName(),m);
     }
     
-    /** iterate over the method descriptors in this component 
+    /** iterate over the method descriptors in this service 
      * 
      * @return iterator over {@link MethodDescriptor} objects
      */
@@ -58,18 +62,18 @@ public class ComponentDescriptor extends Descriptor{
 
 
 
-   /** return the interface class for this component */   
+   /** return the interface class for this service */   
     public Class getInterfaceClass() {
         return this.interfaceClass;
     }
-    /** used internally */
-    public void setInterfaceClass(Class interfaceClass) {
+    /** @exclude */
+    public void setInterfaceClass(final Class interfaceClass) {
         this.interfaceClass = interfaceClass;
     }
 
-
+    /**@exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[ComponentDescriptor:");
         buffer.append(" methods: ");
         buffer.append(methods);
@@ -86,6 +90,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.6  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.5  2007/11/12 13:36:27  pah
 change parameter name to structure
 

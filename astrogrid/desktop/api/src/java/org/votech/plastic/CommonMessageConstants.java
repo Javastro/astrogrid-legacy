@@ -8,9 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Just a struct of common constants.  
+ * Common constants 
  * @author jdt@roe.ac.uk
- * @date 01-Nov-2005
  */
 public interface CommonMessageConstants {
 

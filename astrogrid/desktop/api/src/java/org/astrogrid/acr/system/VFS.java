@@ -6,9 +6,10 @@ package org.astrogrid.acr.system;
 import java.net.URI;
 
 /**
- * Uniform file access and management API. 
+ * Uniform file access and management API.
+ * @exclude not impelemnted 
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Apr 5, 20075:02:26 PM
+
  * @service system.vfs
  */
 public interface VFS {

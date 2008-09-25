@@ -1,4 +1,4 @@
-/*$Id: SecurityException.java,v 1.7 2008/08/21 11:34:18 nw Exp $
+/*$Id: SecurityException.java,v 1.8 2008/09/25 16:02:09 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,13 +21,14 @@ public class SecurityException extends ACRException {
     static final long serialVersionUID = -6623514730873587267L;
 
     /** Construct a new SecurityException
-     * 
+     * @exclude
      */
     public SecurityException() {
         super();
     }
 
     /** Construct a new SecurityException
+     * @exclude
      * @param message
      */
     public SecurityException(final String message) {
@@ -35,6 +36,7 @@ public class SecurityException extends ACRException {
     }
 
     /** Construct a new SecurityException
+     * @exclude
      * @param cause
      */
     public SecurityException(final Throwable cause) {
@@ -42,6 +44,7 @@ public class SecurityException extends ACRException {
     }
 
     /** Construct a new SecurityException
+     * @exclude
      * @param message
      * @param cause
      */
@@ -54,6 +57,9 @@ public class SecurityException extends ACRException {
 
 /* 
 $Log: SecurityException.java,v $
+Revision 1.8  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.7  2008/08/21 11:34:18  nw
 doc tweaks
 

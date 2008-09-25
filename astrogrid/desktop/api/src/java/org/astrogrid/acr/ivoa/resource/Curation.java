@@ -6,17 +6,18 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 import java.util.Arrays;
 
-/**     Information regarding the general curation of a resource
- * @see http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html
+/**     Information regarding the general curation of a resource.
+ * @see <a href="http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html">IVOA Registry Metadata Document</a>
  * @author Noel Winstanley
- * @since Jul 31, 20063:51:47 PM
+ * @see Resource
  */
 public class Curation implements Serializable {
 
-	private static int hashCode(Object[] array) {
+	private static int hashCode(final Object[] array) {
 		final int PRIME = 31;
-		if (array == null)
-			return 0;
+		if (array == null) {
+            return 0;
+        }
 		int result = 1;
 		for (int index = 0; index < array.length; index++) {
 			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
@@ -35,8 +36,7 @@ public class Curation implements Serializable {
 	private Date[] dates = new Date[0];
 	
 	/**  
-               Information that can be used for contacting someone with
-               regard to this resource.
+              People who can be contacted about this resource.
               */
 	public Contact[] getContacts() {
 		return this.contacts;
@@ -47,12 +47,12 @@ public class Curation implements Serializable {
 		return this.contributors;
 	}
 	/** 
-                The entity (e.g. person or organisation) primarily responsible 
+                The entity ( person or organisation) primarily responsible 
                 for creating the content or constitution of the resource. */
 	public Creator[] getCreators() {
 		return this.creators;
 	}
-	/**                Entity (e.g. person or organisation) responsible for making the 
+	/**                The Entity (person or organisation) responsible for making the 
                resource available */
 	public ResourceName getPublisher() {
 		return this.publisher;
@@ -63,31 +63,38 @@ public class Curation implements Serializable {
 	public String getVersion() {
 		return this.version;
 	}
-	public void setContacts(Contact[] contacts) {
+	/** @exclude */
+	public void setContacts(final Contact[] contacts) {
 		this.contacts = contacts;
 	}
-	public void setContributors(ResourceName[] contributors) {
+    /** @exclude */	
+	public void setContributors(final ResourceName[] contributors) {
 		this.contributors = contributors;
 	}
-	public void setCreators(Creator[] creators) {
+    /** @exclude */	
+	public void setCreators(final Creator[] creators) {
 		this.creators = creators;
 	}
-	public void setPublisher(ResourceName publisher) {
+    /** @exclude */	
+	public void setPublisher(final ResourceName publisher) {
 		this.publisher = publisher;
 	}
-	public void setVersion(String version) {
+    /** @exclude */	
+	public void setVersion(final String version) {
 		this.version = version;
 	}
 
-	/**           Date associated with an event in the life cycle of the
+	/**           Datse associated with an event in the life cycle of the
                resource.  
              */
 	public Date[] getDates() {
 		return this.dates;
 	}
-	public void setDates(Date[] dates) {
+    /** @exclude */	
+	public void setDates(final Date[] dates) {
 		this.dates = dates;
 	}
+    /** @exclude */	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -99,37 +106,49 @@ public class Curation implements Serializable {
 		result = PRIME * result + ((this.version == null) ? 0 : this.version.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (! (obj instanceof Curation))
-			return false;
+    /** @exclude */	
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (! (obj instanceof Curation)) {
+            return false;
+        }
 		final Curation other = (Curation) obj;
-		if (!Arrays.equals(this.contacts, other.contacts))
-			return false;
-		if (!Arrays.equals(this.contributors, other.contributors))
-			return false;
-		if (!Arrays.equals(this.creators, other.creators))
-			return false;
-		if (!Arrays.equals(this.dates, other.dates))
-			return false;
+		if (!Arrays.equals(this.contacts, other.contacts)) {
+            return false;
+        }
+		if (!Arrays.equals(this.contributors, other.contributors)) {
+            return false;
+        }
+		if (!Arrays.equals(this.creators, other.creators)) {
+            return false;
+        }
+		if (!Arrays.equals(this.dates, other.dates)) {
+            return false;
+        }
 		if (this.publisher == null) {
-			if (other.publisher != null)
-				return false;
-		} else if (!this.publisher.equals(other.publisher))
-			return false;
+			if (other.publisher != null) {
+                return false;
+            }
+		} else if (!this.publisher.equals(other.publisher)) {
+            return false;
+        }
 		if (this.version == null) {
-			if (other.version != null)
-				return false;
-		} else if (!this.version.equals(other.version))
-			return false;
+			if (other.version != null) {
+                return false;
+            }
+		} else if (!this.version.equals(other.version)) {
+            return false;
+        }
 		return true;
 	}
-
+    /** @exclude */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Curation[");
 			buffer.append(", publisher = ").append(publisher);
 			if (creators == null) {

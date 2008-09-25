@@ -1,4 +1,4 @@
-/*$Id: UserInformation.java,v 1.5 2007/10/23 07:48:57 nw Exp $
+/*$Id: UserInformation.java,v 1.6 2008/09/25 16:02:04 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,22 +12,22 @@ package org.astrogrid.acr.astrogrid;
 
 import java.net.URI;
 
-/** Information about the currently logged in user.
- * 
+/** Metadata about the currently logged in user.
+ * <p/>
+ * Behaviour of superclass methods:
  * <ul>
- * <li><tt>id</tt></li> - will be the user ivorn
- * <li><tt>name</tt></li> - will be the user's name.
+ * <li>{@link #getId()} will return the user's ivorn</li>
+ * <li>{@link #getName()} will return be the user's name.</li>
  * </ul>
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
- *@see org.astrogrid.acr.astrogrid.Community
+ *@see Community
  */
 public class UserInformation extends AbstractInformation {
 
     /** Construct a new UserInformation
-     * @param name
-     * @param id
+    @exclude
      */
-    public UserInformation(URI id, String username, String password, String community) {
+    public UserInformation(final URI id, final String username, final String password, final String community) {
         super(username, id);
         this.password = password;
         this.community = community;
@@ -38,13 +38,12 @@ public class UserInformation extends AbstractInformation {
     protected final String community;
     
     
-    /** access the name of the community the logged in user belongs to */
+    /** the community the logged in user belongs to */
     public String getCommunity() {
         return this.community;
     }
     
     /** access the password for the current user
-     * @return
      */
     public String getPassword() {
         return this.password;
@@ -57,6 +56,9 @@ public class UserInformation extends AbstractInformation {
 
 /* 
 $Log: UserInformation.java,v $
+Revision 1.6  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.5  2007/10/23 07:48:57  nw
 doc fix.
 

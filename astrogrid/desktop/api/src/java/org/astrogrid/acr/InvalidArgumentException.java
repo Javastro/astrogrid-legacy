@@ -1,4 +1,4 @@
-/*$Id: InvalidArgumentException.java,v 1.8 2008/08/21 11:34:18 nw Exp $
+/*$Id: InvalidArgumentException.java,v 1.9 2008/09/25 16:02:09 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.acr;
 
-/**An incorrect / malformed value was passed as an input parameter.
- * <p/>
+/**An incorrect or malformed value was passed as an input parameter.
+ * 
  * For example, an unrecognized URI scheme was used
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Aug-2005
  *
@@ -21,13 +21,14 @@ public class InvalidArgumentException extends ACRException {
     static final long serialVersionUID = 3710373580318214188L;
 
     /** Construct a new InvalidArgumentException.
-     * 
+     * @exclude
      */
     public InvalidArgumentException() {
         super();
     }
 
     /** Construct a new InvalidArgumentException.
+     * @exclude
      * @param message
      */
     public InvalidArgumentException(final String message) {
@@ -35,6 +36,7 @@ public class InvalidArgumentException extends ACRException {
     }
 
     /** Construct a new InvalidArgumentException.
+     * @exclude
      * @param cause
      */
     public InvalidArgumentException(final Throwable cause) {
@@ -42,6 +44,7 @@ public class InvalidArgumentException extends ACRException {
     }
 
     /** Construct a new InvalidArgumentException.
+     * @exclude
      * @param message
      * @param cause
      */
@@ -54,6 +57,9 @@ public class InvalidArgumentException extends ACRException {
 
 /* 
 $Log: InvalidArgumentException.java,v $
+Revision 1.9  2008/09/25 16:02:09  nw
+documentation overhaul
+
 Revision 1.8  2008/08/21 11:34:18  nw
 doc tweaks
 

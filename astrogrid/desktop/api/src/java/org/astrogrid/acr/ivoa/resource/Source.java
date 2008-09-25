@@ -6,10 +6,9 @@ package org.astrogrid.acr.ivoa.resource;
 import java.io.Serializable;
 
 /** 
-                a bibliographic reference from which the present resource is 
-                derived or extracted.  
+                A bibliographic reference.
+@see Content                
  * @author Noel Winstanley
- * @since Jul 31, 20064:55:55 PM
  */
 public class Source implements Serializable {
 	
@@ -21,7 +20,7 @@ public class Source implements Serializable {
 	private String value;
 	/**     The reference format.  Recognized values include "bibcode", 
                  referring to a standard astronomical bibcode 
-                 (http://cdsweb.u-strasbg.fr/simbad/refcode.html).   */
+                 @see <a href='http://cdsweb.u-strasbg.fr/simbad/refcode.html'>Bibcode Format Description</a>   */
 	public String getFormat() {
 		return this.format;
 	}
@@ -29,12 +28,15 @@ public class Source implements Serializable {
 	public String getValue() {
 		return this.value;
 	}
-	public void setFormat(String format) {
+	/** @exclude */
+	public void setFormat(final String format) {
 		this.format = format;
 	}
-	public void setValue(String reference) {
+    /** @exclude */	
+	public void setValue(final String reference) {
 		this.value = reference;
 	}
+    /** @exclude */	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -42,29 +44,37 @@ public class Source implements Serializable {
 		result = PRIME * result + ((this.value == null) ? 0 : this.value.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (! (obj instanceof Source))
-			return false;
+    /** @exclude */	
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (! (obj instanceof Source)) {
+            return false;
+        }
 		final Source other = (Source) obj;
 		if (this.format == null) {
-			if (other.format != null)
-				return false;
-		} else if (!this.format.equals(other.format))
-			return false;
+			if (other.format != null) {
+                return false;
+            }
+		} else if (!this.format.equals(other.format)) {
+            return false;
+        }
 		if (this.value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!this.value.equals(other.value))
-			return false;
+			if (other.value != null) {
+                return false;
+            }
+		} else if (!this.value.equals(other.value)) {
+            return false;
+        }
 		return true;
 	}
-
+    /** @exclude */
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			buffer.append("Source[");
 			buffer.append(", format = ").append(format);
 			buffer.append(", value = ").append(value);

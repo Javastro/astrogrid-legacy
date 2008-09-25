@@ -1,4 +1,4 @@
-/*$Id: AbstractInformation.java,v 1.7 2008/08/21 11:34:35 nw Exp $
+/*$Id: AbstractInformation.java,v 1.8 2008/09/25 16:02:04 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,15 +13,15 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.net.URI;
 
-/** Base class - all 'information' structures returned by AR extend this class.
- * @xmlrpc returned as a struct, with keys corresponding to bean names
+/** Abstract datastructure: Provides metadata for some sort of resource.
+ * @bean
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
  *
  */
 public abstract class AbstractInformation implements Serializable {
 
     /** Construct a new AbstractInformation
-     * 
+     *@exclude  
      */
     protected AbstractInformation(final String name,final URI id) {
         super();
@@ -32,9 +32,9 @@ public abstract class AbstractInformation implements Serializable {
     static final long serialVersionUID = 6860597279255333361L;
     protected final URI id;
     protected final String name;
-    /** The unique identifier for the resource this bean provides information about. 
-     * @return some form of URI - for example an <tt>ivo://</tt> scheme URI
-     * @xmlrpc structure key will be <tt>id</tt>
+    /** The identifier of the resource that this object provides information about. 
+     * @return some form of URI - for example an {@code ivo://} scheme URI
+     * @xmlrpc map key will be {@code tt}
      */
     public final URI getId() {
         return this.id;
@@ -42,15 +42,17 @@ public abstract class AbstractInformation implements Serializable {
     
     /**The name of this resource.
      * 
-     * @return some kind of human-friendly name. - unlike the machine-friendly {@link #getId()}
-     * @xmlrpc structure key will be <tt>name</tt>
+     * @return some kind of human-friendly name. - unlike the machine-friendly {@link #getId()} this may not be unique
+     * @xmlrpc map key will be {@code name}
      */
     public final String getName() {
         return this.name;
     }
 
     /**
-     * tests two information beans for equality - determined by equality of {@link #getId()}
+     * tests two information beans for equality.
+     * 
+     * implemented by testing equality of {@link #getId()}
         */
     @Override
     public boolean equals(final Object o) {
@@ -68,7 +70,7 @@ public abstract class AbstractInformation implements Serializable {
     }
     /**
      * Override hashCode.
-     *
+     * @exclude
      * @return the Objects hashcode.
      */
     @Override
@@ -83,6 +85,9 @@ public abstract class AbstractInformation implements Serializable {
 
 /* 
 $Log: AbstractInformation.java,v $
+Revision 1.8  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.7  2008/08/21 11:34:35  nw
 doc tweaks
 

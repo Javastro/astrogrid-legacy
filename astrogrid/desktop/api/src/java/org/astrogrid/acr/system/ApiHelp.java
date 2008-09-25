@@ -1,4 +1,4 @@
-/*$Id: ApiHelp.java,v 1.5 2007/01/24 14:04:44 nw Exp $
+/*$Id: ApiHelp.java,v 1.6 2008/09/25 16:02:03 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,27 +16,57 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ModuleDescriptor;
 
 
-/** Documents and provides access to functions of AR.
- * This service provides methods to get XMLRPC-specific type information, and more general metadata.
- * It also provides a technique for dynamically calling AR methods
+/** AR Service: Documents and provides access to component and functions of AstroRuntime.
  * 
+ * This service provides methods to get general metadata and XMLRPC-specific type information.
+ * It also provides a technique for dynamically calling AR methods, which is useful in some situations.
+ * <p />
+ * The diagram below shows the structure of metadata returned from the {@link #listModuleDescriptors()} function - which returns a 
+ * tree of metadata that describes all modules, components and functions provided by the AstroRuntime.
+ * <br />
+ * {@textdiagram apihelp 
+   +-----------+
+   |           |
+   |  ApiHelp  |-------+
+   |           |       :listModuleDecriptors()
+   +-----------+       |
+                       v
+              +------------------+
+              | ModuleDescriptor |------------------+
+              +--------+---------+                  |
+                       | 1..*                       v
+            +----------+----------+           +--------------+
+            | ComponentDescriptor +---------->|              |
+            +----------+----------+           |  (Abstract)  |
+                       | 1..*            +--->|  Descriptor  |
+              +--------+---------+       |    |              |
+              | MethodDescriptor |-------+    +--------------+
+              +--------+---------+                  ^
+                       | 1..*                       |
+              +--------+--------+                   |
+              | ValueDescriptor |-------------------+
+              +-----------------+
+
+ * 
+ * }
  * @service system.apihelp
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Jun-2005
  *
  */
 public interface ApiHelp {
 	
-	/** List all the module descriptors available in the acr 
-	 * @since 2.2*/
+	/** List all the module descriptors available in the AstroRuntime. 
+
+	 * */
 	ModuleDescriptor[] listModuleDescriptors();
 	
 	
-    /**List all methods available in the acr
+    /**List all methods available in the AstroRuntime.
      * @return array of method names in form <tt><i>module</i>.<i>component</i>.<i>method</i></tt>
      */
     String[] listMethods();
 
-    /** List all modules available in the acr
+    /** List all modules available in the AstroRuntime.
      * @return array of module names
      */
     String[] listModules();
@@ -48,45 +78,45 @@ public interface ApiHelp {
      */
     String[] listComponentsOfModule(String moduleName) throws NotFoundException;
 
-    /** Lst the methods of a service
+    /** Lst the methods (functions) of a service.
      * @param componentName  name of the service in form <tt><i>module</i>.<i>component</i></tt>
      * @return list of method names  in form <tt><i>module</i>.<i>component</i>.<i>method</i></tt>
      * @throws NotFoundException if the service does not exist.
      */
     String[] listMethodsOfComponent(String componentName) throws NotFoundException;
 
-    /** Access the XMLRPC type for this signature
+    /** Access the XMLRPC type of an AstroRuntime method (function).
      * @param methodName  name of the method in form <tt><i>module</i>.<i>component</i>.<i>method</i></tt>
      * @return an array of signatures for this method (allows for overloading of method name).
-     * Overloading never occurs in ACR, but this form is necessary for compatability with XMLRPC standard.
+     * {@stickyNote Overloading never occurs in ACR, but this form is necessary for compatability with XMLRPC standard.
      * So result will always be an array of length 1. First item in the array is an array of strings - first item in <i>this</i>
-     * array is the return type; any following items are parameter types.
+     * array is the return type; any following items are parameter types.}
      * @throws NotFoundException if the method does not exist.
      */
     String[][] methodSignature(String methodName) throws NotFoundException;
 
-    /** Access help for a module
+    /** Access help for a module.
      * @param moduleName      
      * @return documentation for this module
      * @throws NotFoundException if this module does not exist.
      */
     String moduleHelp(String moduleName) throws NotFoundException;
 
-    /** Acccess help for a component / service
+    /** Acccess help for a component / service.
      * @param componentName name of the service in form <tt><i>module</i>.<i>component</i></tt>
      * @return documentation for this component
      * @throws NotFoundException if this component does not exist
      */
     String componentHelp(String componentName) throws NotFoundException;
 
-    /** Access help for a method
+    /** Access help for a method.
      * @param methodName - name of the method in form <tt><i>module</i>.<i>component</i>.<i>method</i></tt>
      * @return documentation for this method
      * @throws NotFoundException if this method does not exist
      */
     String methodHelp(String methodName) throws NotFoundException;
     
-    /** Return the class name of the service iterface for a particular component
+    /** Return the class name of the service interface for a particular component
      * @param componentName - service name of form <tt><i>module</i>.<i>component</i></tt>
      * @return class name of associated service interface
      * @throws NotFoundException if the componentName is not a service in this acr.
@@ -95,11 +125,12 @@ public interface ApiHelp {
     
 
     /** Directly call a function on an AR service.
+     * 
      * The recommended method of working is to get an instance of a service interface, and call it's strongly-typed methods,
      * However, <tt>callFunction</tt> can be useful if working with loosely-typed parameters (e.g. inputs from scripts). This method will 
      * convert string parameters to the correct types as needed, and can return the result in a variety of forms
      * @param functionName fully qualified name of the function to call - e.g. <tt>system.configuration.getValue</tt>
-     * @param returnKind. An enumeration that controls what kind of object is returned as the result
+     * @param returnKind An enumeration that controls what kind of object is returned as the result
      * <ul>
      * <li>ORIGINAL - the original return type</li>
      * <li>DATASTRUCTURE - datastructure view of the return type</li>
@@ -110,7 +141,7 @@ public interface ApiHelp {
      * @throws ACRException if an exception was thrown when invoking the function
      * @throws InvalidArgumentException if the arguments are incorrect (wrong number, inconvertable types) for the specified function.
      * @throws NotFoundException if the function does not exist
-     * @since 2.2
+
      */
     public Object callFunction(String functionName,int returnKind, Object[] args) throws ACRException, InvalidArgumentException, NotFoundException;
     
@@ -121,6 +152,9 @@ public interface ApiHelp {
 
 /* 
  $Log: ApiHelp.java,v $
+ Revision 1.6  2008/09/25 16:02:03  nw
+ documentation overhaul
+
  Revision 1.5  2007/01/24 14:04:44  nw
  updated my email address
 

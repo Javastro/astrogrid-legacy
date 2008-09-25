@@ -15,29 +15,21 @@
 
 <packageGroups>
     <packageGroup>
-    	<title>Connecting to the astro runtime</title>
+    	<title>Connecting to the Astro Runtime</title>
     	<packages>org.astrogrid.acr:org.astrogrid.acr.builtin</packages>
-    </packageGroup>
+    </packageGroup>         
     <packageGroup>
-    	<title>Access to IVOA standard services</title>
-    	<packages>org.astrogrid.acr.ivoa*:uk.ac.estar.voevent</packages>
+    	<title>Access to Virtual Observatory services</title>
+    	<packages>org.astrogrid.acr.ivoa*:org.astrogrid.acr.astrogrid:org.astrogrid.acr.cds:org.votech</packages>
     </packageGroup>    
     <packageGroup>
-    	<title>Access to other virtual observatory services</title>
-    	<packages>org.astrogrid.acr.astrogrid:org.astrogrid.acr.cds:org.astrogrid.acr.nvo</packages>
-    </packageGroup>
-    <packageGroup>
-    	<title>Desktop and user interface components</title>
+    	<title>User Interface and Desktop Integration</title>
     	<packages>org.votech.plastic:org.astrogrid.acr.dialogs:org.astrogrid.acr.ui</packages>
     </packageGroup>
     <packageGroup>
-    	<title>Utiltiy components</title>
-    	<packages>org.astrogrid.acr.util</packages>
+    	<title>Utilities</title>
+    	<packages>org.astrogrid.acr.system:org.astrogrid.acr.util</packages>
     </packageGroup>    
-    <packageGroup>
-    	<title>Framework components</title>
-    	<packages>org.astrogrid.acr.system:org.astrogrid.acr.test</packages>
-    </packageGroup>            
    </packageGroups>        
         <mailingLists>
           <mailingList>
@@ -270,6 +262,57 @@
 			<comment>only used within build</comment>
 		</properties>
 	</dependency>
+    <!-- 
+    <dependency>
+        <groupId>ktsdoclet</groupId>
+        <artifactId>ktsdoclet</artifactId>
+        <url>http://www.kpht.com/doclet.html</url>
+        <version>1.0</version>
+        <type>jar</type>
+        <properties>
+            <comment>only used within build</comment>
+        </properties>
+    </dependency>
+     -->
+     <!-- Latest version of the javadoc plugin. -->
+    <dependency>
+        <groupId>maven</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>1.9</version>
+        <type>plugin</type>
+    </dependency>
+    <!-- nice set of custom taglets -->
+    <dependency>
+        <groupId>taglets</groupId>
+        <artifactId>taglets</artifactId>
+        <version>2.0.3</version>
+        <type>jar</type>
+        <url>http://taglets.sourceforge.net</url>
+        <properties>
+            <comment>only used within build</comment>
+        </properties>
+</dependency>                
+    <!--  diagram drawing taglet -->
+    <dependency>
+        <groupId>ditaa</groupId>
+        <artifactId>ditaa</artifactId>
+        <version>0_6b</version>
+        <type>jar</type>
+        <url>http://ditaa.sourceforge.net/</url>
+        <properties>
+            <comment>only used within build</comment>
+        </properties>
+</dependency>   
+    <dependency>
+        <groupId>ditaa</groupId>
+        <artifactId>TextDiagramTaglet</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
+        <url>http://ditaa-addons.sourceforge.net/</url>
+        <properties>
+            <comment>only used within build</comment>
+        </properties>
+</dependency>   
   
     </dependencies>
 </project>

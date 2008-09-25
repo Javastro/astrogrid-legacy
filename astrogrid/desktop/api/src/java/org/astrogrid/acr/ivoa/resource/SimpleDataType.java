@@ -5,9 +5,10 @@ package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
 
-/**      a simple data type that does not imply a size nor precise format.
+/**   A datatype for an InputParam.
+ * These types do not imply a size nor precise format.
+ * @see InputParam
  * @author Noel.Winstanley@manchester.ac.uk
- * @since Jan 19, 20083:17:53 PM
  */
 public class SimpleDataType implements Serializable{
     /**
@@ -18,15 +19,16 @@ public class SimpleDataType implements Serializable{
     private String arraysize = "1";
 
     
-    /**  a scalar data type name taken from a small controlled set
-            that does not imply a size nor precise format.
-            @return 'integer','real','complex','boolean','char','string' */
+    /**  The name of the type.
+            @return one of {@code integer},{@code real}, {@code complex},{@code boolean},{@code char},{@code string} */
     public final String getType() {
         return this.type;
     }
-    public final void setType(String type) {
+    /** @exclude */
+    public final void setType(final String type) {
         this.type = type;
     }
+    /** @exclude */    
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -36,42 +38,50 @@ public class SimpleDataType implements Serializable{
                 + ((this.type == null) ? 0 : this.type.hashCode());
         return result;
     }
-    public boolean equals(Object obj) {
-        if (this == obj)
+    /** @exclude */    
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final SimpleDataType other = (SimpleDataType) obj;
         if (this.arraysize == null) {
-            if (other.arraysize != null)
+            if (other.arraysize != null) {
                 return false;
-        } else if (!this.arraysize.equals(other.arraysize))
+            }
+        } else if (!this.arraysize.equals(other.arraysize)) {
             return false;
+        }
         if (this.type == null) {
-            if (other.type != null)
+            if (other.type != null) {
                 return false;
-        } else if (!this.type.equals(other.type))
+            }
+        } else if (!this.type.equals(other.type)) {
             return false;
+        }
         return true;
     }
-    /**                     the shape of the array that constitutes the value
-     * <p/>
-     *             An expression of a the shape of a multi-dimensional array
-            of the form LxNxM... where each value between gives the
+    /**                     The shape of the array that constitutes the value.
+     * 
+     *     @return An expression of the shape of a multi-dimensional array
+            of the form {@code LxNxM}, where each value between gives the
             integer length of the array along a dimension.  An
             asterisk (*) as the last dimension of the shape indicates 
             that the length of the last axis is variable or
             undetermined. 
-            <p />
-     *                      the default is "1"; i.e. the value is a scalar.
+           
+     * @note the default return value is "1"; i.e. the value is a scalar.
      * */
     public final String getArraysize() {
         return this.arraysize;
     }
-
-    public final void setArraysize(String arraysize) {
+    /** @exclude */
+    public final void setArraysize(final String arraysize) {
         this.arraysize = arraysize;
     }
     

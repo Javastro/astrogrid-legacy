@@ -1,4 +1,4 @@
-/*$Id: MethodDescriptor.java,v 1.2 2007/01/24 14:04:46 nw Exp $
+/*$Id: MethodDescriptor.java,v 1.3 2008/09/25 16:02:04 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,15 +14,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/** Description of a method (function) belonging to a component of AR.
+import org.astrogrid.acr.system.ApiHelp;
+
+/** Describes a method (function) belonging to an AR Service
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 
- * @since 2.2
+
+ * @see ApiHelp
  *
  */
 public class MethodDescriptor extends Descriptor {
 
     /** Construct a new MethodDescriptor
-     * 
+     * @exclude
      */
     public MethodDescriptor() {
         super();
@@ -39,17 +42,17 @@ public class MethodDescriptor extends Descriptor {
     }
     
     
-    /** used internally */
-    public void setReturnValue(ValueDescriptor returnValue) {
+    /** @exclude*/
+    public void setReturnValue(final ValueDescriptor returnValue) {
         this.returnValue = returnValue;
     }
     
-    /** used internally */
-    public void addParameter(ValueDescriptor desc) {
+    /** @exclude */
+    public void addParameter(final ValueDescriptor desc) {
         parameterValues.add(desc);
     }
     
-    /** iterate over parameter descriptors  
+    /** iterate over descriptions of the parameters of this method 
      * 
      * @return an iterator over {@link ValueDescriptor} objects
      */
@@ -62,9 +65,9 @@ public class MethodDescriptor extends Descriptor {
     	return (ValueDescriptor[])parameterValues.toArray(new ValueDescriptor[]{});
     }
     	
-
+    /** @exclude */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("[MethodDescriptor:");
         buffer.append(" returnValue: ");
         buffer.append(returnValue);
@@ -81,6 +84,9 @@ public class MethodDescriptor extends Descriptor {
 
 /* 
 $Log: MethodDescriptor.java,v $
+Revision 1.3  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.2  2007/01/24 14:04:46  nw
 updated my email address
 

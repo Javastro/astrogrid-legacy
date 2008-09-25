@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.6 2007/03/08 17:48:06 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.7 2008/09/25 16:02:04 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,10 @@ package org.astrogrid.acr.ivoa;
 
 import java.io.Serializable;
 
-/**
+/** @exclude 
+ * not provided by any service - yet.
  * Description of the availability of a server
- * @since 1.9
- * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
+  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
 public class AvailabilityBean implements Serializable {
@@ -39,44 +39,59 @@ public class AvailabilityBean implements Serializable {
 		result = PRIME * result + ((this.validTo == null) ? 0 : this.validTo.hashCode());
 		return result;
 	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		final AvailabilityBean other = (AvailabilityBean) obj;
 		if (this.location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!this.location.equals(other.location))
-			return false;
+			if (other.location != null) {
+                return false;
+            }
+		} else if (!this.location.equals(other.location)) {
+            return false;
+        }
 		if (this.message == null) {
-			if (other.message != null)
-				return false;
-		} else if (!this.message.equals(other.message))
-			return false;
+			if (other.message != null) {
+                return false;
+            }
+		} else if (!this.message.equals(other.message)) {
+            return false;
+        }
 		if (this.serverName == null) {
-			if (other.serverName != null)
-				return false;
-		} else if (!this.serverName.equals(other.serverName))
-			return false;
+			if (other.serverName != null) {
+                return false;
+            }
+		} else if (!this.serverName.equals(other.serverName)) {
+            return false;
+        }
 		if (this.timeOnServer == null) {
-			if (other.timeOnServer != null)
-				return false;
-		} else if (!this.timeOnServer.equals(other.timeOnServer))
-			return false;
+			if (other.timeOnServer != null) {
+                return false;
+            }
+		} else if (!this.timeOnServer.equals(other.timeOnServer)) {
+            return false;
+        }
 		if (this.upTime == null) {
-			if (other.upTime != null)
-				return false;
-		} else if (!this.upTime.equals(other.upTime))
-			return false;
+			if (other.upTime != null) {
+                return false;
+            }
+		} else if (!this.upTime.equals(other.upTime)) {
+            return false;
+        }
 		if (this.validTo == null) {
-			if (other.validTo != null)
-				return false;
-		} else if (!this.validTo.equals(other.validTo))
-			return false;
+			if (other.validTo != null) {
+                return false;
+            }
+		} else if (!this.validTo.equals(other.validTo)) {
+            return false;
+        }
 		return true;
 	}
 	/** Construct a new AvailabilityBean
@@ -87,7 +102,7 @@ public class AvailabilityBean implements Serializable {
      * @param upTime
      * @param timeOnServer
      */
-    public AvailabilityBean(String serverName, String location, String message, String validTo, String upTime, String timeOnServer) {
+    public AvailabilityBean(final String serverName, final String location, final String message, final String validTo, final String upTime, final String timeOnServer) {
         super();
         this.location = location;
         this.message = message;
@@ -122,7 +137,7 @@ public class AvailabilityBean implements Serializable {
     }
    
     public String toString() {
-        StringBuffer sb = new StringBuffer("AvailabilityBean[");
+        final StringBuffer sb = new StringBuffer("AvailabilityBean[");
         sb.append("ServerName: ");
         sb.append(serverName);
         sb.append(", Location: ");
@@ -144,6 +159,9 @@ public class AvailabilityBean implements Serializable {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.7  2008/09/25 16:02:04  nw
+documentation overhaul
+
 Revision 1.6  2007/03/08 17:48:06  nw
 tidied.
 

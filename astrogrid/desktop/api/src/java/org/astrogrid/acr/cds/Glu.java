@@ -10,11 +10,13 @@ package org.astrogrid.acr.cds;
 import org.astrogrid.acr.ServiceException;
 
 /** Webservice to resolve  GLU  (Generateur de Liens Uniformes).tags.
- * @see http://cdsweb.u-strasbg.fr/cdsws/glu_resolver.gml
+ * @see <a href='http://cdsweb.u-strasbg.fr/cdsws/glu_resolver.gml'>Webservice Descritption</a>
  * @author CDS
  *@service cds.glu
+ *@exclude 
  *@deprecated the webservice interface at CDS this client calls doesn't seem to be maintained, and this component of AR is no longer provided
  */
+@Deprecated
 public interface Glu {
     /** Resolve a tag.
      * @param id  a tag to resolve (example : VizieR.MetaCat)
