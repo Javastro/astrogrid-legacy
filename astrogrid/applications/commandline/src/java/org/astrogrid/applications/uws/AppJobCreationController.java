@@ -1,5 +1,5 @@
 /*
- * $Id: AppJobCreationController.java,v 1.4 2008/09/15 17:19:05 pah Exp $
+ * $Id: AppJobCreationController.java,v 1.5 2008/09/25 23:13:45 pah Exp $
  * 
  * Created on 9 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -55,7 +55,7 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
 	String jobid = manager.getExecutionController().init(tool,
 		"job from simple post interface", secGuard);
 	manager.getExecutionController().execute(jobid);
-	UWSUtils.redirect(request, response, jobid);
+	UWSUtils.redirectToJobSummary(request, response, jobid);
 //	response.sendRedirect(rURL.toString());
 //	response.setContentType("text/plain");
 //	PrintWriter pw = response.getWriter();
@@ -68,6 +68,9 @@ public class AppJobCreationController extends AbstractAccessProtocolController {
 
 /*
  * $Log: AppJobCreationController.java,v $
+ * Revision 1.5  2008/09/25 23:13:45  pah
+ * new redirect functions
+ *
  * Revision 1.4  2008/09/15 17:19:05  pah
  * get securityguard into UWS chain
  *

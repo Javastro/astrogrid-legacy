@@ -1,5 +1,5 @@
 /*
- * $Id: JobCreationController.java,v 1.4 2008/09/24 13:43:09 pah Exp $
+ * $Id: JobCreationController.java,v 1.5 2008/09/25 23:14:18 pah Exp $
  * 
  * Created on 9 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -81,7 +81,7 @@ public class JobCreationController {
 		cec.execute(jobid);
 		Thread.sleep(300);
 	    }
-	    UWSUtils.redirect(request, response, jobid);
+	    UWSUtils.redirectToJobSummary(request, response, jobid);
 	    
 	} catch (CeaException e) { // This is probably an error starting the job
 	    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -130,6 +130,9 @@ public class JobCreationController {
 
 /*
  * $Log: JobCreationController.java,v $
+ * Revision 1.5  2008/09/25 23:14:18  pah
+ * new redirect functions
+ *
  * Revision 1.4  2008/09/24 13:43:09  pah
  * add xml output
  *

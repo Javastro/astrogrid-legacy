@@ -1,5 +1,5 @@
 /*
- * $Id: UWSController.java,v 1.5 2008/09/25 00:18:55 pah Exp $
+ * $Id: UWSController.java,v 1.6 2008/09/25 23:14:45 pah Exp $
  * 
  * Created on 8 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -128,7 +128,7 @@ public class UWSController  {
     {
 	String newPhaseStr = request.getParameter("phase");
 	changeApplicationPhase(jobId, request, response, newPhaseStr);
-	UWSUtils.redirect(request, response, jobId);
+	UWSUtils.redirectToJobSummary(request, response, jobId);
     }
     @RequestMapping(value="quote", method=RequestMethod.POST)
     public void acceptQuote( @ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws CeaException, IOException
@@ -158,7 +158,7 @@ public class UWSController  {
 			// just continue
 		    }
 		}
-		UWSUtils.redirect(request, response, jobId);
+		UWSUtils.redirectToJobSummary(request, response, jobId);
 		return;
 	    }
 	    else
@@ -175,7 +175,7 @@ public class UWSController  {
 	    case QUEUED:
 	    case SUSPENDED:
 		manager.getExecutionController().abort(jobId);	
-		UWSUtils.redirect(request, response, jobId);
+		UWSUtils.redirectToJobSummary(request, response, jobId);
 		return;
 
 	    default:
@@ -219,7 +219,7 @@ public class UWSController  {
 	} else {
 	    logger.warn("attempt to set execution duration for finished job="+jobId);
 	}
-	UWSUtils.redirect(request, response, jobId);
+	UWSUtils.redirectToJobSummary(request, response, jobId);
 	return;
 
     }
@@ -244,7 +244,7 @@ public class UWSController  {
 	else {
 	    manager.getExecutionHistoryService().setDestructionTime(jobId, termination.toDate());
 	}
-	UWSUtils.redirect(request, response, jobId);
+	UWSUtils.redirectToJobSummary(request, response, jobId);
 	return;
 
     }
@@ -359,11 +359,11 @@ public class UWSController  {
 	if(request.getParameter("ACTION") != null && request.getParameter("ACTION").equalsIgnoreCase("delete"))
 	{
 	    deleteJob(jobId);
-	    UWSUtils.redirect(request, response, null);
+	    UWSUtils.redirectToJobSummary(request, response, null);
 	}
 	else
 	{
-	    UWSUtils.redirect(request, response, jobId);
+	    UWSUtils.redirectToJobSummary(request, response, jobId);
 	}
 
     }
@@ -372,7 +372,7 @@ public class UWSController  {
     {
 
 	deleteJob(jobId);
-	UWSUtils.redirect(request, response, null);
+	UWSUtils.redirectToJobSummary(request, response, null);
 
     }
 
@@ -550,6 +550,9 @@ public class UWSController  {
 
 /*
  * $Log: UWSController.java,v $
+ * Revision 1.6  2008/09/25 23:14:45  pah
+ * new redirect functions
+ *
  * Revision 1.5  2008/09/25 00:18:55  pah
  * change termination time to execution duration
  *

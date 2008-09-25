@@ -1,5 +1,5 @@
 /*
- * $Id: UWSUtils.java,v 1.7 2008/09/24 13:42:29 pah Exp $
+ * $Id: UWSUtils.java,v 1.8 2008/09/25 23:13:44 pah Exp $
  * 
  * Created on 28 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -20,6 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.astrogrid.security.HttpsServiceSecurityGuard;
 import org.astrogrid.security.SecurityGuard;
+
+import net.ivoa.uws.ExecutionPhase;
+
 
 /**
  * Useful utilities for UWS.
@@ -42,20 +45,27 @@ public class UWSUtils {
      * @param jobid
      * @throws MalformedURLException
      */
-    static public void redirect(HttpServletRequest request,
+    static public void redirectToJobSummary(HttpServletRequest request,
 	    HttpServletResponse response, String jobid)
 	    throws MalformedURLException {
-	StringBuffer redirectURL = new StringBuffer(request.getContextPath());
-	redirectURL.append(request.getServletPath());
-	redirectURL.append("/jobs");
-	if (jobid != null) {
-	    redirectURL.append("/");
-	    redirectURL.append(jobid);
-	}
-	java.net.URL rURL = new java.net.URL("http", request.getServerName(),
-		request.getServerPort(), redirectURL.toString());
-	response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-	response.setHeader("Location", rURL.toString());
+        StringBuffer redirectURL = new StringBuffer("/jobs");
+        if (jobid != null) {
+            redirectURL.append("/");
+            redirectURL.append(jobid);
+        }
+       redirectTo(request, response, redirectURL.toString());
+
+    }
+    
+    static public void redirectTo(HttpServletRequest request,
+            HttpServletResponse response, String root) throws MalformedURLException{
+        StringBuffer redirectURL = new StringBuffer(request.getContextPath());
+        redirectURL.append(request.getServletPath());
+        redirectURL.append(root);
+        java.net.URL rURL = new java.net.URL("http", request.getServerName(),
+                request.getServerPort(), redirectURL.toString());
+        response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+        response.setHeader("Location", rURL.toString());
 
     }
 
@@ -94,11 +104,30 @@ public class UWSUtils {
         }
         }
     }
+    
+    public static boolean notFinished(ExecutionPhase phase){
+    
+        switch (phase) {
+        case ABORTED :
+        case COMPLETED:
+        case ERROR:
+        case UNKNOWN:
+            return false;
+            
+
+        default:
+            
+            return true;
+        }
+    }
 
 }
 
 /*
  * $Log: UWSUtils.java,v $
+ * Revision 1.8  2008/09/25 23:13:44  pah
+ * new redirect functions
+ *
  * Revision 1.7  2008/09/24 13:42:29  pah
  * add parser for accept header
  *
