@@ -1,4 +1,4 @@
-/*$Id: ACRInternal.java,v 1.5 2007/01/29 11:11:37 nw Exp $
+/*$Id: ACRInternal.java,v 1.6 2008/09/25 16:04:19 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,14 +21,14 @@ import org.astrogrid.acr.builtin.ModuleDescriptor;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  *
  */
-public interface ACRInternal extends ACR {
+public interface ACRInternal extends ACR{
 
     /** get a map of  descriptors for all modules 
      * 
      * @return a map of <tt>module-name</tt> -- <tt>module descriptor</tt>
      * @see ModuleDescriptor
      */
-    public Map getDescriptors();
+    public Map<String, ModuleDescriptor> getDescriptors();
     /** get the named module
      * @param name
      * @return the module
@@ -37,12 +37,15 @@ public interface ACRInternal extends ACR {
     /** iterate through all available modules. 
      * @return an iterator over the module.
      */
-    public Iterator moduleIterator();
+    public Iterator<? extends Module> moduleIterator();
 }
 
 
 /* 
 $Log: ACRInternal.java,v $
+Revision 1.6  2008/09/25 16:04:19  nw
+code improvements.
+
 Revision 1.5  2007/01/29 11:11:37  nw
 updated contact details.
 

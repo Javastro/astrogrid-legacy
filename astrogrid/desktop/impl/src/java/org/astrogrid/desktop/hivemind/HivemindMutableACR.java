@@ -1,4 +1,4 @@
-/*$Id: HivemindMutableACR.java,v 1.8 2008/03/05 10:55:50 nw Exp $
+/*$Id: HivemindMutableACR.java,v 1.9 2008/09/25 16:04:04 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,39 +39,37 @@ public class HivemindMutableACR implements ACRInternal {
     private static final Log logger = LogFactory.getLog(HivemindMutableACR.class);
 
     
-    public HivemindMutableACR(Map services,Map descriptors) {
+    public HivemindMutableACR(final Map<String,ServiceBean> services,final Map<String,ModuleDescriptor> descriptors) {
         super();
         SplashWindow.reportProgress("Starting Astro Runtime background software...");
         this.servicesByName = services;
-        this.servicesByClass = createInterfaceClassIndex(services);
-        this.modules = createModules(services); 
+        this.servicesByClass = createInterfaceClassIndex(servicesByName);
+        this.modules = createModules(servicesByName); 
         removeUnavailableComponents(descriptors); //necessary to copy dscriptors to a map implementation that is serializable.
-        this.descriptors = new HashMap(descriptors);
-
+        this.descriptors = new HashMap<String,ModuleDescriptor>(descriptors);
+        
     }
     /** map between String and ServiceBean */
-    protected final Map servicesByName;
+    protected final Map<String,ServiceBean> servicesByName;
     /** map between Class and service bean */
-    protected final Map servicesByClass;
+    protected final Map<Class, ServiceBean> servicesByClass;
     /** map between string and module descriptor */
-    protected final Map descriptors;
+    protected final Map<String,ModuleDescriptor> descriptors;
     /** map between string and module object */
-    protected final Map modules;
+    protected final Map<String, HivemindModuleAdapter> modules;
 
-    private final  Map createInterfaceClassIndex(final Map services) {
-        Map result = new HashMap(services.size());
-        for (Iterator i = services.values().iterator(); i.hasNext(); ) {
-            ServiceBean sb = (ServiceBean)i.next();
+    private final  Map<Class, ServiceBean> createInterfaceClassIndex(final Map<String,ServiceBean> services) {
+        final Map<Class, ServiceBean> result = new HashMap<Class, ServiceBean>(services.size());
+        for (final ServiceBean sb : services.values()) {            
             result.put(sb.getInterface(), sb);
         }
         return result;
     }
     
-    private final Map createModules(final Map services) {
-        Map result = new HashMap();
-        for (Iterator i = services.values().iterator(); i.hasNext(); ) {
-            ServiceBean sb = (ServiceBean)i.next();
-            String moduleName = sb.getModule().getModuleId();
+    private final Map<String, HivemindModuleAdapter> createModules(final Map<String,ServiceBean> services) {
+        final Map<String, HivemindModuleAdapter> result = new HashMap<String, HivemindModuleAdapter>();
+        for (final ServiceBean sb : services.values()) {
+            final String moduleName = sb.getModule().getModuleId();
             if (! result.containsKey(moduleName)) {
                 result.put(moduleName,new HivemindModuleAdapter(moduleName));
             }
@@ -81,21 +79,20 @@ public class HivemindMutableACR implements ACRInternal {
 
     
     /** filters descriptors, to only those with components avalable */
-    private final void removeUnavailableComponents(Map m) {
-        for (Iterator i = m.values().iterator(); i.hasNext();) {
-            ModuleDescriptor d = (ModuleDescriptor)i.next();
-            Module module = this.getModule(d.getName());
+    private final void removeUnavailableComponents(final Map<String, ModuleDescriptor> m) {
+        for (final ModuleDescriptor d : m.values()) {
+            final Module module = this.getModule(d.getName());
            
             inner:
-            for (Iterator j = d.componentIterator(); j.hasNext(); ) {
-                ComponentDescriptor c = (ComponentDescriptor)j.next();
+            for (final Iterator j = d.componentIterator(); j.hasNext(); ) {
+                final ComponentDescriptor c = (ComponentDescriptor)j.next();
                 try {
-                    Object instance =module.getComponent(c.getInterfaceClass());
+                    final Object instance =module.getComponent(c.getInterfaceClass());
                     // if an implementation is present, and isn't a 'mock', then all is ok.
                     if (instance != null && ! Boolean.getBoolean(d.getName() + "." + c.getName() + ".disabled")) {
                         continue inner;
                     }
-                } catch (ACRException e) {
+                } catch (final ACRException e) {
                     // not worried.
                 	logger.debug("Failed when accessing component: " + c.getName(),e);
                 }
@@ -120,60 +117,62 @@ public class HivemindMutableACR implements ACRInternal {
 		 */
 		private static final long serialVersionUID = -8775877307037598162L;
 
-		public HivemindModuleAdapter(String moduleName) {
+		public HivemindModuleAdapter(final String moduleName) {
             this.moduleName= moduleName;
         }
         private final String moduleName;
         
-        public Object getComponent(String name) throws ACRException {
+        public Object getComponent(final String name) throws ACRException {
             return HivemindMutableACR.this.getService(moduleName + "." + name);
         }
 
-        public Object getComponent(Class iface) throws ACRException {
+        public Object getComponent(final Class iface) throws ACRException {
             return HivemindMutableACR.this.getService(iface);           
         }
 
         public ModuleDescriptor getDescriptor() {
-            return (ModuleDescriptor)HivemindMutableACR.this.descriptors.get(moduleName);
+            return HivemindMutableACR.this.descriptors.get(moduleName);
         }
     }
 
-    public Map getDescriptors() {
+    public Map<String, ModuleDescriptor> getDescriptors() {
         return descriptors;
     }
 
-    public Module getModule(String name) {
-        return (Module)modules.get(name);
+    public Module getModule(final String name) {
+        return modules.get(name);
     }
 
-    public Iterator moduleIterator() {
+    public Iterator<? extends Module> moduleIterator() {
         return modules.values().iterator();
     }
     
-    public Object getService(Class arg0) throws ACRException,NotFoundException {
+
+    
+    public Object getService(final Class arg0) throws ACRException,NotFoundException {
         if (!arg0.isInterface()) {
             throw new NotFoundException("Not a service interface: " + arg0.getName());
         }
         if (! servicesByClass.containsKey(arg0)) {
             throw new NotFoundException(arg0.getName());
         }
-        ServiceBean sb = (ServiceBean)servicesByClass.get(arg0);
+        final ServiceBean sb = servicesByClass.get(arg0);
         try {
         return sb.getModule().getService(sb.getId(),arg0);
-        } catch (ApplicationRuntimeException e) {
+        } catch (final ApplicationRuntimeException e) {
             throw new ACRException(e);
         }
     }
 
-    public Object getService(String arg0) throws ACRException, InvalidArgumentException,
+    public Object getService(final String arg0) throws ACRException, InvalidArgumentException,
             NotFoundException {
        if (! servicesByName.containsKey(arg0)) {
            throw new NotFoundException(arg0);
        }
-       ServiceBean sb = (ServiceBean)servicesByName.get(arg0);
+       final ServiceBean sb = servicesByName.get(arg0);
        try {
        return sb.getModule().getService(arg0,sb.getInterface());
-       } catch (ApplicationRuntimeException e) {
+       } catch (final ApplicationRuntimeException e) {
            throw new ACRException(e);
        }       
     }
@@ -184,6 +183,9 @@ public class HivemindMutableACR implements ACRInternal {
 
 /* 
 $Log: HivemindMutableACR.java,v $
+Revision 1.9  2008/09/25 16:04:04  nw
+code improvements.
+
 Revision 1.8  2008/03/05 10:55:50  nw
 added progress reporting to splashscreen
 

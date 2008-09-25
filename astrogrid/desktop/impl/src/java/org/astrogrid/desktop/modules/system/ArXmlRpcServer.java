@@ -275,6 +275,12 @@ public class ArXmlRpcServer extends XmlRpcServletServer implements XmlRpcHandler
 /** handler for one component */
     private class ComponentXmlRpcHandler implements XmlRpcHandler {
         public ComponentXmlRpcHandler(final Module m, final ComponentDescriptor cd){
+            if (m == null) {
+                throw new IllegalArgumentException("Null module provided");                
+            }
+            if (cd == null) {
+                throw new IllegalArgumentException("Null component descriptor provided");
+            }
             this.m = m;
             this.cd = cd;         
         }
@@ -288,7 +294,9 @@ public class ArXmlRpcServer extends XmlRpcServletServer implements XmlRpcHandler
                 service = m.getComponent(cd.getName());
                 method = ReflectionHelper.getMethodByName(service.getClass(),methodName);
             } catch (final Exception e) {
-                throw new XmlRpcNoSuchHandlerException(request.getMethodName() + " is not available:");
+                final XmlRpcNoSuchHandlerException exception = new XmlRpcNoSuchHandlerException(request.getMethodName() + " is not available:");
+                exception.initCause(e);
+                throw exception;
             }
             final MethodDescriptor md = cd.getMethod(methodName);
             if (md == null) {

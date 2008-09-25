@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.17 2008/08/19 12:47:09 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.18 2008/09/25 16:03:30 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -156,8 +156,8 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
       //  need to shut down the rmi registry.
         try {
             final Registry reg= LocateRegistry.getRegistry(getPort());
-            for (final Iterator i = acr.moduleIterator(); i.hasNext(); ) {
-                final Module m = (Module)i.next();
+            for (final Iterator<? extends Module> i = acr.moduleIterator(); i.hasNext(); ) {
+                final Module m = i.next();
                 for (final Iterator j = m.getDescriptor().componentIterator(); j.hasNext(); ) {
                     final ComponentDescriptor cd = (ComponentDescriptor)j.next();
                     final String regKey = cd.getInterfaceClass().getName();
@@ -311,6 +311,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.18  2008/09/25 16:03:30  nw
+code improvements.
+
 Revision 1.17  2008/08/19 12:47:09  nw
 findbugs fixes and improvements.
 
