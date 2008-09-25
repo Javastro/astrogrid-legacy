@@ -46,7 +46,7 @@
 </td></tr>
 <tr><td>Start</td><td><c:out value="${theJob.startTime}"/></td></tr>
 <tr><td>End</td><td><c:out value="${theJob.endTime}"/></td></tr>
-<tr><td>ExecutionDuration</td><td><a href="${base}/executionDuration"><c:out value="${theJob.termination}"/></a></td></tr>
+<tr><td>ExecutionDuration</td><td><a href="${base}/executionDuration"><c:out value="${theJob.executionDuration}"/></a></td></tr>
 <tr><td>Destruction</td><td><a href="${base}/destruction"><c:out value="${theJob.destruction}"/></a></td></tr>
 <tr><td colspan="2"><b> PA details</b></td></tr>
 <tr><td>Application</td><td><c:out value="${theJob.applicationName}"/></td></tr>
