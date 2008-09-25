@@ -701,7 +701,7 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 
 def outputResults( directoryPathString, fileName, results ) :
 	try:
-		outfile = file( directoryPathString + '/' + fileName, "w" )
+		outfile = file( directoryPathString + os.sep + fileName, "w" )
 		# Write each row as one line...
 		for row in results:
 			# Yes, this is code! It produces a comma separated string from the column values
@@ -794,7 +794,7 @@ def retrieveOneImage( url, fname ) :
 	global odir
 	infile = urlopen( url )
 	try:
-		outfile = file( odir + '/' + fname, "wb" )
+		outfile = file( odir + os.sep + fname, "wb" )
 		outfile.write( infile.read () )
 	except Exception, e:
 		print "Failed to retrieve image from ", url, e
