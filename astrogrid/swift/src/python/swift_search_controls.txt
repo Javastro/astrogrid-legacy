@@ -11,7 +11,7 @@ IMAGE SECTION:
 # The first line contains the minimum and maximum number of images to retrieve 
 # from a given source of images, or its mirrors. If the minimum is achieved, 
 # any siblings will be terminated.
-[ 4 5 ]
+[ 2 4 ]
 #
 # The following lines obey this format...
 # integer
@@ -20,13 +20,13 @@ IMAGE SECTION:
 # where integer is the number of services to use as mirrors for a given source.
 ######################################################################################
 # DSS Image:
-2
+1
 [ESO_DSS | ivo://archive.eso.org/dss]
-[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
+#[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
 #
 # 2Mass Image:
-2
-[IRSA2 | ivo://irsa.ipac/2MASS-QL]
+1
+#[IRSA2 | ivo://irsa.ipac/2MASS-QL]
 [NED | ivo://ned.ipac/Image]
 
 
@@ -64,8 +64,8 @@ CATALOGUE SECTION:
 #
 # USNO for stars and galaxies:
 1
-[USNO-B1 | ivo://CDS.VizieR/I/284 |  | _r:Dist RAJ2000:RA DEJ2000:Dec B1mag:B1 B1s/g:clb1 \
-  R1mag:R1 R1s/g:clr1 B2mag:B2 B2s/g:clb2 R2mag:R2 R2s/g:clr2 Imag:I Is/g:cli USNO-B1.0:id | searchUSNO ]
+[USNO-B1 | ivo://CDS.VizieR/I/284 |  | _r:Dist RAJ2000:RA DEJ2000:Dec B1mag:B1 R1mag:R1 B2mag:B2 \
+  R2mag:R2 Imag:I USNO-B1.0:id | searchUSNO ]
 #
 # 2MASS for stars:
 1
