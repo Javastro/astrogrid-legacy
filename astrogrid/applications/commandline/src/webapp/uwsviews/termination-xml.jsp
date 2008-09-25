@@ -3,4 +3,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<uws:termination xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.2"><c:out value="${termination}"/></uws:termination>
+<uws:executionDuration xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.2"><c:out value="${termination}"/></uws:executionDuration>

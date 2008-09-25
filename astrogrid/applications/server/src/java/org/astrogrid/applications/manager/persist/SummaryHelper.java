@@ -1,4 +1,4 @@
-/*$Id: SummaryHelper.java,v 1.5 2008/09/13 09:51:02 pah Exp $
+/*$Id: SummaryHelper.java,v 1.6 2008/09/25 00:19:50 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,9 +66,9 @@ public class SummaryHelper {
         if(app.getDestruction() != null){
             summary.setDestruction(new DateTime(app.getDestruction()));
             }
-        if(app.getDeadline() != null){
-            summary.setTermination(new DateTime(app.getDeadline()));
-            }
+        
+            summary.setExecutionDuration((int)(app.getRunTimeLimit()/1000));//IMPL possibly unsafe int cast
+           
         InputListType inputlist = new InputListType(); 
         summary.setInputList(inputlist );
         //IMPL the summary contains only the list of input and results - not taking into account any of the grouping - note the jaxb style of assigning...
@@ -85,6 +85,9 @@ public class SummaryHelper {
 
 /* 
 $Log: SummaryHelper.java,v $
+Revision 1.6  2008/09/25 00:19:50  pah
+change termination time to execution duration
+
 Revision 1.5  2008/09/13 09:51:02  pah
 code cleanup
 

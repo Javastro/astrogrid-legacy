@@ -10,7 +10,7 @@
 	<ns7:phase>COMPLETED</ns7:phase>
 	<ns7:startTime  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">2008-08-28T19:03:50.283+01:00</ns7:startTime>
 	<ns7:endTime  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">2008-08-28T19:03:50.588+01:00</ns7:endTime>
-	<ns7:termination  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">2008-08-28T19:04:10.283+01:00</ns7:termination>
+ 	<ns7:executionDuration  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">300</ns7:executionDuration>
 	<ns7:destruction  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema">2008-08-28T19:09:55.479+01:00</ns7:destruction>
 	<ns6:application-name>ivo://org.testit/testapp</ns6:application-name>
 	<ns6:input-list>

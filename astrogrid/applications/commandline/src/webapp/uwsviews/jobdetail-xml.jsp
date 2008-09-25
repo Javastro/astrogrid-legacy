@@ -25,11 +25,11 @@
   </c:otherwise>
   </c:choose>
   <c:choose>
-  <c:when test="${empty theJob.termination}" >
-    <uws:termination xsi:nil="true"></uws:termination>
+  <c:when test="${empty theJob.executionDuration}" >
+    <uws:executionDuration xsi:nil="true"></uws:executionDuration>
   </c:when>
   <c:otherwise>
-    <uws:termination>${theJob.termination}</uws:termination>
+    <uws:executionDuration>${theJob.executionDuration}</uws:executionDuration>
   </c:otherwise>
   </c:choose>
   <c:choose>

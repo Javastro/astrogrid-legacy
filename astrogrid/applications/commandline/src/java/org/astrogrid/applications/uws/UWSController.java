@@ -1,5 +1,5 @@
 /*
- * $Id: UWSController.java,v 1.4 2008/09/24 13:43:41 pah Exp $
+ * $Id: UWSController.java,v 1.5 2008/09/25 00:18:55 pah Exp $
  * 
  * Created on 8 Apr 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -199,25 +199,25 @@ public class UWSController  {
 	return modelAndView;
     }
 
-    @RequestMapping(value="termination", method=RequestMethod.GET)
+    @RequestMapping(value="executionduration", method=RequestMethod.GET)
     public ModelAndView termination(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
 	ModelAndView mav = new ModelAndView("termination-xml");
-	mav.addObject("termination",manager.getQueryService().getSummary(jobId).getTermination());
+	mav.addObject("termination",manager.getQueryService().getSummary(jobId).getExecutionDuration());
 	return mav;
     }
-    @RequestMapping(value="termination", method=RequestMethod.POST)
+    @RequestMapping(value="executionduration", method=RequestMethod.POST)
     public void settermination(@ModelAttribute("JobId") String jobId, HttpServletRequest request, HttpServletResponse response) throws IOException, CeaException
     {
-	String dateStr = request.getParameter("termination");
-	DateTime termination = new DateTime(dateStr);
-	DateTime now = new DateTime();
+	String durationStr = request.getParameter("executionduration");
+	int duration = Integer.parseInt(durationStr);
 
 	if(manager.getExecutionHistoryService().isApplicationInCurrentSet(jobId))
 	{
 	    Application app = manager.getExecutionHistoryService().getApplicationFromCurrentSet(jobId);
-	    Period diff = new Period(now,termination);
-	    app.setRunTimeLimit(diff.getMillis());
+	    app.setRunTimeLimit(duration*1000);
+	} else {
+	    logger.warn("attempt to set execution duration for finished job="+jobId);
 	}
 	UWSUtils.redirect(request, response, jobId);
 	return;
@@ -550,6 +550,9 @@ public class UWSController  {
 
 /*
  * $Log: UWSController.java,v $
+ * Revision 1.5  2008/09/25 00:18:55  pah
+ * change termination time to execution duration
+ *
  * Revision 1.4  2008/09/24 13:43:41  pah
  * add xml output + other updates to bring UWS behaviour up to date
  *
