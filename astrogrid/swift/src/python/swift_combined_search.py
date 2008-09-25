@@ -36,6 +36,16 @@ maximages = None
 # Global variables to control logging:
 DEBUG = True
 TRACE = True
+#
+# Global variable for controlling the image format returned.
+# Can be a coma-delimited string:
+# FORMAT = 'image/fits,image/png,image/jpeg,image/gif'
+#
+# Can be set to 'ALL', but you must be prepared to filter.
+# Some services provide lots of bumf, eg: html with requests.
+#
+FORMAT = 'image/fits'
+
 
 class Service:
 	
@@ -72,7 +82,7 @@ class ConeSearch( Service ):
 	def __init__( self, name, ivorn, table, columns, searchFunctionName ):
 		Service.__init__( self, name, ivorn )
 		self.table = table             # table can be None where service expects only one table!
-		self.columns = columns         # self.columns is a list!
+		self.columns = columns         # self.columns is a list of column / variable name pairs!
 		self.searchFunctionName = searchFunctionName
 		return
 	#
@@ -86,6 +96,11 @@ class ConeSearch( Service ):
 		doc = Service.tables.convertFromFile( fullURL, "votable", "votable" )
 		return doc
 
+	def getColumnList( self ):
+		columnList = []
+		for column in self.columns:
+			columnList.append( column.split( ':' ) )
+		return columnList
 
 def cmpOnSphericalDistance( x, y ):
 	if x[1] > y[1] :
@@ -412,9 +427,9 @@ def processControlFile( filePath ):
 #
 # Search function to pass to thread pool.
 #
-def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
+def coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 	global TRACE, DEBUG
-	if TRACE: print 'searchAndRetrieve for ' + service.name + ' enter'
+	if TRACE: print 'coneSearchAndRetrieve for ' + service.name + ' enter'
 	if terminateFlag.isSet():
 		print service.name + ' has been terminated prematurely!'
 		return 
@@ -439,9 +454,9 @@ def searchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 	except Exception, e2:
 		print service.name + ' cone Search failed: ', e2	
 	terminateFlag.set()
-	if TRACE: print 'searchAndRetrieve for ' + service.name + ' exit'
+	if TRACE: print 'coneSearchAndRetrieve for ' + service.name + ' exit'
 	return	
-# end of searchAndRetrieve( service, ra, dec, radius, terminateFlag )
+# end of coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag )
 
 #
 #
@@ -463,8 +478,8 @@ def searchSDSS( service, ra, dec, radius, vot ):
 	# using the votable and the column names 
 	# passed to us in the control file...	
 	colIndices = []
-	for column in service.columns:
-		colIndices.append( vot.getColumnIdx( column ) )
+	for column in service.getColumnList():
+		colIndices.append( vot.getColumnIdx( column[0] ) )
 	#
 	# Form local lists of stars and galaxies
 	starList = []
@@ -525,10 +540,10 @@ def searchUSNO( service, ra, dec, radius, vot ):
 	# using the votable and the column names 
 	# passed to us in the control file...	
 	colIndices = []
-	for column in service.columns:
-		i = vot.getColumnIdx( column )
+	for column in service.getColumnList():
+		i = vot.getColumnIdx( column[0] )
 		if DEBUG:
-			print 'column name: ' + column, 'column index: ' + str( i )
+			print 'column name: ' + column[0], 'column index: ' + str( i )
 		colIndices.append( i )
 	#
 	# Form local lists of stars and galaxies
@@ -640,8 +655,8 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 	# using the votable and the column names 
 	# passed to us from the control file...	
 	colIndices = []
-	for column in service.columns:
-		colIndices.append( vot.getColumnIdx( column ) )
+	for column in service.getColumnList():
+		colIndices.append( vot.getColumnIdx( column[0] ) )
 	#
 	# Form a map for those columns that can return a null value...
 	nullsMap = formNullValuesMap( vot )
@@ -665,12 +680,6 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 def outputResults( directoryPathString, fileName, results ) :
 	try:
 		outfile = file( directoryPathString + '/' + fileName, "w" )
-		# Convert all values to strings...
-#		for row in results:
-#			i = 0
-#			for col in row:
-#				row[i] = str( col )
-#				i += 1
 		# Write each row as one line...
 		for row in results:
 			# Yes, this is code! It produces a comma separated string from the column values
@@ -681,6 +690,120 @@ def outputResults( directoryPathString, fileName, results ) :
 	outfile.close()
 	return
 
+
+#
+# Search function to pass to thread pool.
+#
+def imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, terminate ) :
+	global FORMAT
+	if terminate.isSet():
+		print service.name + ' has been terminated prematurely!'
+		return 
+	try:
+		if DEBUG: print 'About to image search: ' + service.name, ra, dec, radius	
+		res = service.execute( ra, dec, radius )
+		if res: 
+			try:
+				vot = utils.read_votable( res, ofmt='votable' )
+				countImages = retrieveImages( service, vot, maximages, terminate )
+				if countImages >= minimages :
+					terminate.set()
+			except:
+				print service.name + ': bad vot!'
+		else:
+			print service.name + ': no result!'
+	except Exception, e2:
+		print service.name + ' image Search failed: ', e2	
+	return
+# end of imageSearchAndRetrieve()
+
+#
+# Download function (retrieves images).
+# 
+def retrieveImages( service, vot, maximages, terminate ) :
+	# Get column index for access url
+	urlColIdx = vot.getColumnIdx ('VOX:Image_AccessReference')
+	formatIdx = vot.getColumnIdx ('VOX:Image_Format')
+	if urlColIdx < 0:
+		print "No access reference found"
+		return 0
+	
+	# Examine this. There's something lax here...
+	dataRows = vot.getDataRows ()
+	getData = vot.getData
+	countImages = len( dataRows )
+	print "Number of records: ", countImages
+#	if countImages > 0:
+#		print( 'Making image directory: ' + image_directory )
+#		os.mkdir( image_directory )
+	cnt = 0
+	for row in dataRows:
+		if terminate.isSet():
+			print service.name + ' has been terminated prematurely!'
+			break 
+		cells = getData (row)
+		url = cells[urlColIdx]
+		fmt = cells[formatIdx]
+		ext = '.'
+		if 'jpeg' in fmt:
+			ext += 'jpg'
+		elif 'fits' in fmt:
+			ext += 'fits'
+		elif 'gif' in fmt:
+			ext += 'gif'
+		else:
+			ext = ''
+		
+		iname = "%s_image%d%s" % ( service.name, cnt, ext )
+		print "Saving image %d as %s" % (cnt, iname) 
+		retrieveOneImage( url, iname )	
+		cnt += 1	
+		if cnt >= maximages:
+			cnt -= 1
+			break
+	return cnt
+# end of retrieveImages( image_directory, vot, maximages )
+
+#
+# Retrieve one image 
+#
+def retrieveOneImage( url, fname ) :
+	global odir
+	infile = urlopen( url )
+	try:
+		outfile = file( odir + '/' + fname, "wb" )
+		outfile.write( infile.read () )
+	except Exception, e:
+		print "Failed to retrieve image from ", url, e
+	infile.close()
+	outfile.close()
+	return
+# end of retrieveOneImage( image_directory, url, fname )
+
+
+
+
+
+
+
+#
+# This is the function triggered on each thread.
+# As we are running two different types of search,
+# this effectively discriminates between the two,
+# and is obviously threadsafe...
+#
+def searchDriver( service, ra, dec, radius, terminateFlag ):
+	global TRACE, minimages, maximages
+	if TRACE: print 'searchDriver(): enter'
+	if isinstance( service, SiapSearch ):
+		imageSearchAndRetrieve(  service, ra, dec, radius, minimages, maximages, terminateFlag )
+	elif isinstance( service, ConeSearch ):
+		coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag )
+	else:
+		if DEBUG: print 'One service did not build.'
+	if TRACE: print 'searchDriver(): exit'
+	return
+
 #####################################################
 #    Mainline                                       #
 #####################################################
@@ -688,33 +811,37 @@ print 'Started at: ' + time.strftime('%T')
 #
 # Validate the input arguments passed to us...
 validateArgs()
-print ra, dec, radius, ifile, odir
-
+if DEBUG: print ra, dec, radius, ifile, odir
 #
 # Retrieve ivorns for the sources we wish to search...
 sources = processControlFile( ifile )
-sys.exit()
-
-serviceCount = 0 
+#
+# Create the overall search output directory...
+if DEBUG: print( 'Output folder is called ' + odir )
+os.mkdir( odir )
+#
+# Count number of threads required
+serviceCount = 0
 for source in sources:
 	for service in source:
-		serviceCount += 1
-
+		if isinstance( service, SiapSearch ) or isinstance( service, ConeSearch ):
+			serviceCount += 1
 #
 # Define the command to execute and the pool size
-pool = easy_pool( searchAndRetrieve )
+pool = easy_pool( searchDriver )
 pool.start_threads( serviceCount )
-
+#
+# 
 for source in sources:
 	# We have a list of services for each source.
 	# Fill out the thread information...
-	iIndex = 0
 	terminateFlag = TerminateFlag()
 	for service in source:
 		#
-		# Add the service and its inputs to the thread pool...
+		# Add the service and its inputs to the thread pools...
 		input = ( service, ra, dec, radius, terminateFlag )
-		pool.put( input )
+		if isinstance( service, SiapSearch ) or isinstance( service, ConeSearch ):
+			pool.put( input )
 #
 # Now observe the real work:
 # Print information while executing...
@@ -728,20 +855,17 @@ while 1 :
 	if p[3]==serviceCount: break
     
 pool.stop_threads()
+#
+# We have to wait for threads to end to process the catalogue
+# search results, as these need to be sorted on offset distance.
+# The getHits() method does the sorting too...
 starHits = stars.getHits()
 galHits = gals.getHits()
-#stars.debug( 'STARS' )
-#gals.debug( 'GALAXIES' )
 #
-# Create the overall search output directory...
-if len(starHits) > 0 or len(galHits) > 0:
-	if DEBUG: print( 'Output folder is called ' + odir )
-	os.mkdir( odir )
-
 # Write the files...
 if len( starHits ) > 0:
 	outputResults( odir, 'starHits.csv', starHits )
 if len( galHits ) > 0:
 	outputResults( odir, 'galaxyHits.csv', galHits )
-
+#
 print( 'Finished at '  + time.strftime('%T') ) 

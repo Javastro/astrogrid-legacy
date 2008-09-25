@@ -1,4 +1,4 @@
-SWIFT SEARCH CONTROLS
+SWIFT SEARCH CONTROL FILE
 ######################################################################################
 # Continuation lines are supported by the backslash convention...
 #      line one \
@@ -41,7 +41,7 @@ CATALOGUE SECTION:
 # where:
 #  . integer is the number of services to use as alternatives for a given source.
 #  . table name (if required, but leave blank for the moment!)
-#  . column names are a set of pair mappings of column name to variables name 
+#  . column names are a set of paired mappings of column name to variables name 
 #    eg:  Bmag:B where Bmag is column name and B is variable name  
 #  . The search function name is a real function name in the code, so beware!
 #    There are three sorts: two generic functions (searchStars and searchGalaxies)
@@ -59,7 +59,8 @@ CATALOGUE SECTION:
 #
 # PSCz for galaxies:
 1
-[PSCz | ivo://CDS.VizieR/VII/221 |  | _r:Dist _RAJ2000:RA _DEJ2000:Dec Bmag:B MajAxiO:Maj MinAxiO:Min recno:recno | searchGalaxies  ]
+[PSCz | ivo://CDS.VizieR/VII/221 |  | _r:Dist _RAJ2000:RA _DEJ2000:Dec Bmag:B MajAxiO:Maj \
+  MinAxiO:Min recno:recno | searchGalaxies  ]
 #
 # USNO for stars and galaxies:
 1
