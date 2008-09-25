@@ -34,8 +34,9 @@ minimages = None
 maximages = None
 #
 # Global variables to control logging:
-DEBUG = True
-TRACE = True
+DEBUG = False
+TRACE = False
+FEEDBACK = True
 #
 # Global variable for controlling the image format returned.
 # Can be a coma-delimited string:
@@ -340,8 +341,8 @@ def processImageLine( line ):
 #
 #
 def processControlFile( filePath ):
-	if TRACE: print( 'processControlFile() enter' )
 	global TRACE, DEBUG, minimages, maximages
+	if TRACE: print( 'processControlFile() enter' )
 	bControlFile = False
 	bImageSection = False
 	bCatalogueSection = False
@@ -419,7 +420,7 @@ def processControlFile( filePath ):
 	# Add the last one on if not zero...
 	if len( services ) > 0:
 		sources.append( services )
-	print sources
+	if DEBUG: print sources
 	if TRACE: print( 'processControlFile() exit' )
 	return sources
 # end of processIvornFile( filePath )
@@ -452,7 +453,8 @@ def coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 		else:
 			print service.name + ': no result vot!'	
 	except Exception, e2:
-		print service.name + ' cone Search failed: ', e2	
+		if DEBUG: print service.name + ' cone Search failed: ', e2
+		if FEEDBACK: print service.name + ' returned this number of rows: 0'	
 	terminateFlag.set()
 	if TRACE: print 'coneSearchAndRetrieve for ' + service.name + ' exit'
 	return	
@@ -463,9 +465,9 @@ def coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 # Returned values: RAJ2000 DEJ2000 umag gmag rmag imag zmag
 # Columns needed for criteria: cl == 6 for stars, 3 for galaxies
 def searchSDSS( service, ra, dec, radius, vot ):
-	global TRACE, DEBUG, stars, gals
+	global TRACE, DEBUG, FEEDBACK, stars, gals
 	if TRACE: print 'searchSDSS enter'
-	if DEBUG: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	if FEEDBACK: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
 	# We decide between stars and galaxies by using the class column
 	clColIndex = vot.getColumnIdx( 'cl' )
@@ -521,9 +523,9 @@ def searchSDSS( service, ra, dec, radius, vot ):
 	return
 
 def searchUSNO( service, ra, dec, radius, vot ):
-	global TRACE, DEBUG, stars, gals
+	global TRACE, DEBUG, FEEDBACK, stars, gals
 	if TRACE: print 'searchUSNO enter'
-	if DEBUG: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	if FEEDBACK: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
 	# We need to decide between stars and galaxies.
 	# These are just the indices for the criteria...
@@ -647,9 +649,9 @@ def searchGalaxies( service, ra, dec, radius, vot ):
 	return
 
 def genericRetrieval( service, ra, dec, radius, vot ):
-	global TRACE, DEBUG
+	global TRACE, DEBUG, FEEDBACK
 	if TRACE: print 'genericRetrieval for ' + service.name + ' enter'
-	if DEBUG: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
+	if FEEDBACK: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
 	# Here are the column indices, found
 	# using the votable and the column names 
@@ -721,6 +723,7 @@ def imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, term
 # Download function (retrieves images).
 # 
 def retrieveImages( service, vot, maximages, terminate ) :
+	global DEBUG, TRACE, FEEDBACK
 	# Get column index for access url
 	urlColIdx = vot.getColumnIdx ('VOX:Image_AccessReference')
 	formatIdx = vot.getColumnIdx ('VOX:Image_Format')
@@ -732,7 +735,7 @@ def retrieveImages( service, vot, maximages, terminate ) :
 	dataRows = vot.getDataRows ()
 	getData = vot.getData
 	countImages = len( dataRows )
-	print "Number of records: ", countImages
+	if FEEDBACK: print service.name + ' returned this number of images: ' + str( countImages )
 #	if countImages > 0:
 #		print( 'Making image directory: ' + image_directory )
 #		os.mkdir( image_directory )
@@ -755,7 +758,7 @@ def retrieveImages( service, vot, maximages, terminate ) :
 			ext = ''
 		
 		iname = "%s_image%d%s" % ( service.name, cnt, ext )
-		print "Saving image %d as %s" % (cnt, iname) 
+		if DEBUG: print "Saving image %d as %s" % (cnt, iname) 
 		retrieveOneImage( url, iname )	
 		cnt += 1	
 		if cnt >= maximages:
