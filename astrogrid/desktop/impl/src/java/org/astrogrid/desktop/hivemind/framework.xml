@@ -190,7 +190,7 @@ FUNDAMENTAL CONFIGURATION POINTS
 	<configuration-point id="descriptors">
 		Module Descriptors - contain documentation about all the components and
 		methods of the ACR. Content for this configuration is generated
-		in the api project from original Javadoc, using JEX and XSLT
+		in the api project from original Javadoc, using JEL and XSLT
 		<schema>			
 			<element name="acr-module" key-attribute="name">
 					<attribute name="name" required="true" unique="true" />
