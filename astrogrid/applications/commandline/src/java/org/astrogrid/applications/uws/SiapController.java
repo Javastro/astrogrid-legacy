@@ -1,5 +1,5 @@
 /*
- * $Id: SiapController.java,v 1.3 2008/09/04 21:20:02 pah Exp $
+ * $Id: SiapController.java,v 1.4 2008/09/25 23:14:28 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -56,7 +56,8 @@ public class SiapController extends AbstractAccessProtocolController {
 	    Tool tool = configureTool(request);
 	    if(request.getParameterMap().containsKey("FORMAT") && 
 		    request.getParameter("FORMAT").equals("METADATA")){
-		sendMetadata(appdesc, response.getWriter());
+		sendMetadata(manager.getApplicationDescriptionLibrary()
+	                    .getDescriptionByShortName(parsAppName(request)), response.getWriter());
 		return;
 	    }
 	    
@@ -132,6 +133,9 @@ public class SiapController extends AbstractAccessProtocolController {
 
 /*
  * $Log: SiapController.java,v $
+ * Revision 1.4  2008/09/25 23:14:28  pah
+ * do not store appdesc - cannot be used in multi threaded environment anyway
+ *
  * Revision 1.3  2008/09/04 21:20:02  pah
  * ASSIGNED - bug 2825: support VOSpace
  * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825

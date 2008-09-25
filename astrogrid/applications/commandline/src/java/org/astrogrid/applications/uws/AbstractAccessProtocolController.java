@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractAccessProtocolController.java,v 1.3 2008/09/04 21:20:02 pah Exp $
+ * $Id: AbstractAccessProtocolController.java,v 1.4 2008/09/25 23:12:50 pah Exp $
  * 
  * Created on 14 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -8,7 +8,7 @@
  * Software License, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */ 
+ */
 
 package org.astrogrid.applications.uws;
 
@@ -40,102 +40,113 @@ public class AbstractAccessProtocolController {
 
     /** logger for this class */
     protected static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
-	    .getLog(AbstractAccessProtocolController.class);
+            .getLog(AbstractAccessProtocolController.class);
     protected final CEAComponents manager;
+
     public AbstractAccessProtocolController(CEAComponents manager) {
-	this(manager, "/s[sit]ap/+([^/\\?#]+)[/\\?#]?");
+        this(manager, "/s[sit]ap/+([^/\\?#]+)[/\\?#]?");
 
     }
-    public AbstractAccessProtocolController(CEAComponents manager, String appregexp)
-    {
-	this.appRegexp = appregexp;
-	this.manager = manager;
-	appPattern = Pattern.compile(appRegexp);
+
+    public AbstractAccessProtocolController(CEAComponents manager,
+            String appregexp) {
+        this.appRegexp = appregexp;
+        this.manager = manager;
+        appPattern = Pattern.compile(appRegexp);
     }
-    private final String appRegexp ;
+
+    private final String appRegexp;
     protected final Pattern appPattern;
-    protected ApplicationDescription appdesc;
     protected SecurityGuard secGuard;
+
+    protected String parsAppName(HttpServletRequest request) {
+        String reqURL = new UrlPathHelper()
+                .getPathWithinServletMapping(request);
+        Matcher matcher = appPattern.matcher(reqURL);
+        if (matcher.find()) {
+            String appShortname = matcher.group(1);
+            return appShortname;
+        } else {
+            return null;
+        }
+
+    }
+
     /**
      * Configure a tool from the input parameters.
      * 
      * @param request
      * @return The tool document filled in, or null if the application was not
      *         found.
-     *         @see AbstractAccessProtocolController#appdesc which is set by this method.
+     * @see AbstractAccessProtocolController#appdesc which is set by this
+     *      method.
      * @throws ApplicationDescriptionNotFoundException
      * @throws CeaException
      * @throws IOException
      * 
      */
     protected Tool configureTool(HttpServletRequest request)
-	    throws ApplicationDescriptionNotFoundException, CeaException,
-	    IOException {
-	        String reqURL = new UrlPathHelper()
-	        	.getPathWithinServletMapping(request);
-	        appdesc = null;
-	        Matcher matcher = appPattern.matcher(reqURL);
-	        if (matcher.find()) {
-	            String appShortname = matcher.group(1);
-	            appdesc = manager
-	        	    .getApplicationDescriptionLibrary()
-	        	    .getDescriptionByShortName(appShortname);
-		    ApplicationInterface intf = appdesc.getInterfaces()[0];
-	            Tool tool = new Tool();
-	            tool.setId(appdesc.getId());
-	            tool.setInterface(intf.getId());
-	            ListOfParameterValues pvals = new ListOfParameterValues();
-	            Enumeration en = request.getParameterNames();
-	    
-	            // TODO - perhaps check for outputs in the input pars
-	            while (en.hasMoreElements()) {
-	        	String parname = (String) en.nextElement();
-	        	String[] parameterValues = request.getParameterValues(parname);
-	        	for (int i = 0; i < parameterValues.length; i++) {
-	        	    ParameterValue pval = new ParameterValue(parname,
-	        		    parameterValues[i]);
-	        	    pvals.addParameter(pval);
-	        	}
-	    
-	            }
-	            tool.setInput(pvals);
-	            ListOfParameterValues outvals = new ListOfParameterValues();
-	            String[] outnames = intf.getArrayofOutputs();
-	            for (int i = 0; i < outnames.length; i++) {
-	        	ParameterValue pval = new ParameterValue();
-	        	pval.setId(outnames[i]);
-	        	outvals.addParameter(pval);
-	            }
-	            tool.setOutput(outvals);
-	            return tool;
-	    
-	        }
-	    
-	        else {
-	            throw new ApplicationDescriptionNotFoundException(
-	        	    "no application found in request");
-	    
-	        }
-	    }
+            throws ApplicationDescriptionNotFoundException, CeaException,
+            IOException {
+            String appShortname = parsAppName(request);
+            if(appShortname != null){
+                ApplicationDescription appdesc;    
+            appdesc = manager.getApplicationDescriptionLibrary()
+                    .getDescriptionByShortName(appShortname);
+            ApplicationInterface intf = appdesc.getInterfaces()[0];
+            Tool tool = new Tool();
+            tool.setId(appdesc.getId());
+            tool.setInterface(intf.getId());
+            ListOfParameterValues pvals = new ListOfParameterValues();
+            Enumeration en = request.getParameterNames();
 
-    
+            // TODO - perhaps check for outputs in the input pars
+            while (en.hasMoreElements()) {
+                String parname = (String) en.nextElement();
+                String[] parameterValues = request.getParameterValues(parname);
+                for (int i = 0; i < parameterValues.length; i++) {
+                    ParameterValue pval = new ParameterValue(parname,
+                            parameterValues[i]);
+                    pvals.addParameter(pval);
+                }
+
+            }
+            tool.setInput(pvals);
+            ListOfParameterValues outvals = new ListOfParameterValues();
+            String[] outnames = intf.getArrayofOutputs();
+            for (int i = 0; i < outnames.length; i++) {
+                ParameterValue pval = new ParameterValue();
+                pval.setId(outnames[i]);
+                outvals.addParameter(pval);
+            }
+            tool.setOutput(outvals);
+            return tool;
+
+        }
+
+        else {
+            throw new ApplicationDescriptionNotFoundException(
+                    "no application found in request");
+
+        }
+    }
+
 }
-
 
 /*
  * $Log: AbstractAccessProtocolController.java,v $
- * Revision 1.3  2008/09/04 21:20:02  pah
- * ASSIGNED - bug 2825: support VOSpace
- * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825
- * Added the basic implementation to support VOSpace  - however essentially untested on real deployement - also UWS security will not be functional
- *
- * Revision 1.2  2008/09/03 14:18:34  pah
- * result of merge of pah_cea_1611 branch
- *
- * Revision 1.1.2.2  2008/06/10 20:10:49  pah
- * moved ParameterValue and friends to CEATypes.xsd
- *
- * Revision 1.1.2.1  2008/05/17 16:41:49  pah
- * refactor into abstract common class
- *
+ * Revision 1.4  2008/09/25 23:12:50  pah
+ * do not store appdesc - cannot be used in multi threaded environment anyway
+ * Revision 1.3 2008/09/04
+ * 21:20:02 pah ASSIGNED - bug 2825: support VOSpace
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2825 Added the basic
+ * implementation to support VOSpace - however essentially untested on real
+ * deployement - also UWS security will not be functional
+ * 
+ * Revision 1.2 2008/09/03 14:18:34 pah result of merge of pah_cea_1611 branch
+ * 
+ * Revision 1.1.2.2 2008/06/10 20:10:49 pah moved ParameterValue and friends to
+ * CEATypes.xsd
+ * 
+ * Revision 1.1.2.1 2008/05/17 16:41:49 pah refactor into abstract common class
  */
