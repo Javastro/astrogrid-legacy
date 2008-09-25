@@ -1,5 +1,5 @@
 /*
- * $Id: UWSClientTest.java,v 1.1 2008/09/24 13:47:18 pah Exp $
+ * $Id: UWSClientTest.java,v 1.2 2008/09/25 00:16:27 pah Exp $
  * 
  * Created on 22 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -25,6 +25,7 @@ import net.ivoa.uws.ResultList;
 import net.ivoa.uws.ResultReference;
 
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -175,10 +176,14 @@ public class UWSClientTest {
 
     /**
      * Test method for {@link org.astrogrid.uws.client.UWSClient#setTermination(java.lang.String, org.joda.time.Period)}.
+     * @throws Exception 
      */
     @Test
-    public void testSetTermination() {
-        fail("Not yet implemented");
+    public void testSetExecutionDuration() throws Exception {
+        testCreateJob();
+        Period req = new Period(1,0,0,0);
+        Period set = client.setExecutionDuration(job.getJobId(), req );
+        assertEquals("executionDuration", req.toStandardSeconds(), set.toStandardSeconds()); // the actual UWS REST interface deals in seconds.
 
     }
 
@@ -196,6 +201,9 @@ public class UWSClientTest {
 
 /*
  * $Log: UWSClientTest.java,v $
+ * Revision 1.2  2008/09/25 00:16:27  pah
+ * change termination time to execution duration
+ *
  * Revision 1.1  2008/09/24 13:47:18  pah
  * added generic UWS client code
  *

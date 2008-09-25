@@ -1,5 +1,5 @@
 /*
- * $Id: UWSClient.java,v 1.1 2008/09/24 13:47:18 pah Exp $
+ * $Id: UWSClient.java,v 1.2 2008/09/25 00:16:27 pah Exp $
  * 
  * Created on 21 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -206,15 +206,14 @@ public class UWSClient implements UWS {
         return retval;
     }
 
-    public Period setTermination(String jobId, Period time) throws UWSException {
+    public Period setExecutionDuration(String jobId, Period time) throws UWSException {
         try {
-            JobSummary job = postObject(jobId, "termination", time.toString());
+            JobSummary job = postObject(jobId, "executionduration", Integer.toString(time.toStandardSeconds().getSeconds()));
+            return new Period(0,0,job.getExecutionDuration(),0);
         } catch (Exception e) {
             throw new UWSException("cannot set termination time", e);
         }
-        throw new UnsupportedOperationException(
-                "UWSClient.setTermination() not implemented");
-
+ 
     }
 
     public void abortJob(String jobId) throws UWSException {
@@ -229,6 +228,9 @@ public class UWSClient implements UWS {
 
 /*
  * $Log: UWSClient.java,v $
+ * Revision 1.2  2008/09/25 00:16:27  pah
+ * change termination time to execution duration
+ *
  * Revision 1.1  2008/09/24 13:47:18  pah
  * added generic UWS client code
  *

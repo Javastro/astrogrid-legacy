@@ -1,5 +1,5 @@
 /*
- * $Id: UWS.java,v 1.1 2008/09/24 13:47:17 pah Exp $
+ * $Id: UWS.java,v 1.2 2008/09/25 00:16:27 pah Exp $
  * 
  * Created on 19 Sep 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -73,7 +73,7 @@ public interface UWS {
      * @return
      * @throws UWSException 
      */
-    Period setTermination(String jobId, Period time) throws UWSException;
+    Period setExecutionDuration(String jobId, Period time) throws UWSException;
     
     
     /**
@@ -118,6 +118,9 @@ public interface UWS {
 
 /*
  * $Log: UWS.java,v $
+ * Revision 1.2  2008/09/25 00:16:27  pah
+ * change termination time to execution duration
+ *
  * Revision 1.1  2008/09/24 13:47:17  pah
  * added generic UWS client code
  *
