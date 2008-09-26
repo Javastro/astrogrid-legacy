@@ -17,6 +17,8 @@ from urlparse import *
 #     The standard python ConeSearch seems to imply that this can
 #     be the case for dsa; it has the dsatab keyword on the 
 #     execute function.
+# (3) We have a windows problem with VOTables.
+#	    I think it is within the utils module...
 #=================================================================
 
 #
@@ -34,8 +36,8 @@ minimages = None
 maximages = None
 #
 # Global variables to control logging:
-DEBUG = False
-TRACE = False
+DEBUG = True
+TRACE = True
 FEEDBACK = True
 #
 # Global variable for controlling the image format returned.
@@ -726,6 +728,10 @@ def imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, term
 		res = service.execute( ra, dec, radius )
 		if res: 
 			try:
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# We have a windows problem with VOTables.
+#	I think it is here within the utils module...
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				vot = utils.read_votable( res, ofmt='votable' )
 				countImages = retrieveImages( service, vot, maximages, terminate )
 				if countImages >= minimages :
@@ -756,9 +762,6 @@ def retrieveImages( service, vot, maximages, terminate ) :
 	getData = vot.getData
 	countImages = len( dataRows )
 	if FEEDBACK: print service.name + ' returned this number of images: ' + str( countImages )
-#	if countImages > 0:
-#		print( 'Making image directory: ' + image_directory )
-#		os.mkdir( image_directory )
 	cnt = 0
 	for row in dataRows:
 		if terminate.isSet():
@@ -779,34 +782,72 @@ def retrieveImages( service, vot, maximages, terminate ) :
 		
 		iname = "%s_image%d%s" % ( service.name, cnt, ext )
 		if DEBUG: print "Saving image %d as %s" % (cnt, iname) 
-		retrieveOneImage( url, iname )	
-		cnt += 1	
-		if cnt >= maximages:
-			cnt -= 1
-			break
+		fileOK = retrieveOneImage( url, iname )	
+		if fileOK == True:
+			cnt += 1	
+			if cnt >= maximages:
+				cnt -= 1
+				break
+
 	return cnt
 # end of retrieveImages( image_directory, vot, maximages )
 
 #
 # Retrieve one image 
 #
+#
+#
 def retrieveOneImage( url, fname ) :
-	global odir
-	infile = urlopen( url )
+	global DEBUG, odir
+	fileOK = False
+	infile = None
+	outfile = None
+	filePath = None
 	try:
-		outfile = file( odir + os.sep + fname, "wb" )
+		filePath = odir + os.sep + fname
+		infile = urlopen( url )
+		outfile = file( filePath, "wb" )
 		outfile.write( infile.read () )
+		fileOK = True	
 	except Exception, e:
-		print "Failed to retrieve image from ", url, e
-	infile.close()
-	outfile.close()
-	return
+		if DEBUG: print "Failed to retrieve image from ", url, e
+
+	if infile != None:
+		try: infile.close() 
+		except: 1
+	if outfile != None:
+		try: outfile.close() 
+		except: 1
+
+	if fileOK == True:
+		fileSize = os.stat( filePath )[6]
+		if DEBUG: print 'file size:', fileSize
+		if fileSize <= 1024:
+			if fileSize < 32:
+				os.remove( filePath )
+				if DEBUG: 'Removed image file due to incorrect format. Size less than 32: ' + fname
+				fileOK = False
+			else:
+				potentialFileToDelete = None
+				try:
+					potentialFileToDelete = file( filePath )
+					line = potentialFileToDelete.readline()
+					sample = line[:32].strip()
+					if DEBUG: print sample
+					if sample.startswith( '<HTML' ):
+						potentialFileToDelete.close()
+						potentialFileToDelete = None
+						os.remove( filePath )	
+						if DEBUG: print 'Removed image file due to incorrect format. HTML file: ' + fname	
+						fileOK = False			
+				except Exception, e:	
+					if DEBUG: print 'Failed to delete outfile: ' + fname, e
+					if potentialFileToDelete != None:
+						try: potentialFileToDelete.close() 
+						except: 1
+	
+	return fileOK
 # end of retrieveOneImage( image_directory, url, fname )
-
-
-
-
-
 
 
 #
