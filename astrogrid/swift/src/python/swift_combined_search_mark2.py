@@ -36,9 +36,14 @@ minimages = None
 maximages = None
 #
 # Global variables to control logging:
+FEEDBACK = True
+ERROR = True
+WARN = True
 DEBUG = True
 TRACE = True
-FEEDBACK = True
+EXTREME_DEBUG = False
+EXTREME_TRACE = False
+
 #
 # Global variable for controlling the image format returned.
 # Can be a coma-delimited string:
@@ -49,7 +54,11 @@ FEEDBACK = True
 #
 FORMAT = 'image/fits'
 
-
+##################################################################
+# Base class for services.
+# 
+#	
+#
 class Service:
 	
 	ar = None
@@ -99,6 +108,13 @@ class ConeSearch( Service ):
 		doc = Service.tables.convertFromFile( fullURL, "votable", "votable" )
 		return doc
 
+	#
+	# The columns list is in fact a list of "pairs", with each pair consisting of 
+  # database column name and program variable name, separated by a colon. For example:
+	# B1mag:B1
+	# where B1mag is the database column name and B1 the program variable name.
+	# This routine returns these column entities as a list of lists. For example:
+	# [ [_r,Dist],[RAJ2000,RA],[DEJ2000,Dec],[rmag,R],[rDiam,RDiam],[bmag,B],[bDiam,BDiam],[APM-ID,id] ]
 	def getColumnList( self ):
 		columnList = []
 		for column in self.columns:
@@ -151,7 +167,7 @@ class Hits:
 	def push( self, service, builtRows ):
 		self.lock.acquire()
 		if self.finished == True:
-			print 'Warning. Results ignored for: ' + service.name 
+			if WARN: print 'Warning. Results ignored for: ' + service.name 
 		else:
 			self.list.append( [service, builtRows ] )
 		self.lock.release()
@@ -179,14 +195,16 @@ class Hits:
 				i=0
 				for value in row:
 					if i==0:
+						# The first entry in the formatted row is the source designation:
 						formattedRow.append( 'Source=' + value )
 					else:
+						# The rest are driven by the columns list variable name:
 						varName = colvarNames[i-1][1]
 						formattedRow.append( varName + '=' + str(value) )
 					i += 1
 				sortedList.append( formattedRow )
 		#
-		# Good place to sort would be here!
+		# We sort the combined lists on spherical offset...
 		sortedList.sort( cmpOnSphericalDistance )
 		return sortedList
 
@@ -237,31 +255,32 @@ class TerminateFlag:
 #
 #
 def formNullValuesMap( vot ):
-	global TRACE, DEBUG
-#	if TRACE: print 'formNullValuesMap() enter'
+	global EXTREME_TRACE, EXTREME_DEBUG
+	if EXTREME_TRACE: print 'formNullValuesMap() enter'
 	nullVals = {}
 	fields = vot.getFields()
 	for field in fields:
 		vals = field.getNodesByName( 'VALUES' )
 		name = field.getAttributes()['name']
-		#print 'name type: ', type(name)
+		if EXTREME_DEBUG: print 'name type: ', type(name)
 		for val in vals:
 			attrs = val.getAttributes()
-			#print '=====attrs====='
-			#print attrs
+			if EXTREME_DEBUG: 
+				print '=====attrs=====\n', attrs
 			nullValue = attrs[ 'null' ]
 			nullVals[ vot.getColumnIdx( name ) ] = nullValue
-	#print '=====nullVals====='
-#	print nullVals
-#	if TRACE: print 'formNullValuesMap() exit'
+	if EXTREME_DEBUG: 
+		print '=====nullVals=====\n', nullVals
+	if EXTREME_TRACE: print 'formNullValuesMap() exit'
 	return nullVals
 
 def testAndSetNull( x, index, nullsMap ):
-	global TRACE, DEBUG
-#	if TRACE: print 'testAndSetNull() enter'
-#	print 'x: ', x, 'index: ', index
-#	print type(x)
-#	print str(x)
+	global EXTREME_TRACE, EXTREME_DEBUG
+	if EXTREME_TRACE: print 'testAndSetNull() enter'
+	if EXTREME_DEBUG: 
+		print 'x: ', x, 'index: ', index
+		print type(x)
+		print str(x)
 	retVal = None
 	if x != None:
 		if str(x) != 'NaN':
@@ -270,8 +289,8 @@ def testAndSetNull( x, index, nullsMap ):
 					retVal = x
 			else:
 				retVal = x
-#	print retVal
-#	if TRACE: print 'testAndSetNull() exit'
+	if EXTREME_DEBUG: print retVal
+	if EXTREME_TRACE: print 'testAndSetNull() exit'
 	return retVal
 
 def testAndSetEmpty( x ):
@@ -290,10 +309,10 @@ def testAndSetEmpty( x ):
 # arg5: unique name for the overall search directory to hold results.
 #
 def validateArgs():
-	global ra, dec, radius, ifile, odir
+	global ra, dec, radius, ifile, odir, ERROR
 	# If no arguments were given, print a helpful message
 	if len(sys.argv)!=6:
-		print 'Usage: ra dec radius file_of_ivorns results_directory'
+		if ERROR: print 'Usage: ra dec radius file_of_ivorns results_directory'
 		sys.exit(0)
 	else:
 		ra = float( sys.argv[1] )
@@ -309,16 +328,18 @@ def validateArgs():
 # or throw a wobbly
 #
 def stripBrackets( line ):
+	global ERROR
 	lbrace = line.rfind( '[' )
 	rbrace = line.rfind( ']' )
 	if lbrace == -1 or rbrace == -1:
-		print 'Malformed line in control file'
+		if ERROR: print 'Malformed line in control file'
 		sys.exit()
 	else:
 		line = line[lbrace+1:rbrace]
 	return line
 
 def processCatalogueLine( line ):
+	global ERROR
 	l = stripBrackets( line )
 	bits = l.split( '|' )
 	# save:
@@ -339,7 +360,7 @@ def processCatalogueLine( line ):
 		if c.index( ':' ) >= 0:
 			continue
 		else:
-			print 'Malformed column names in control file: ' + c
+			if ERROR: print 'Malformed column names in control file: ' + c
 			sys.exit()
 	search_function_name = bits[4].strip()
 	service = ConeSearch( service_name, ivorn, table_name, col_names, search_function_name ) 
@@ -368,7 +389,7 @@ def processImageLine( line ):
 #
 #
 def processControlFile( filePath ):
-	global TRACE, DEBUG, minimages, maximages
+	global TRACE, DEBUG, ERROR, minimages, maximages
 	if TRACE: print( 'processControlFile() enter' )
 	bControlFile = False
 	bImageSection = False
@@ -387,7 +408,7 @@ def processControlFile( filePath ):
 				if DEBUG: print 'Found control file heading.'
 				continue
 			else:
-				print 'Malformed control file: Heading missing.'
+				if ERROR: print 'Malformed control file: Heading missing.'
 				sys.exit(0)
 		#
     # Comments lines and blank lines are ignored...
@@ -441,7 +462,7 @@ def processControlFile( filePath ):
 			else:
 				services.append( processImageLine( l ) )
 		else:
-			print 'Warning! Malformed line in control file.', l
+			if ERROR: print 'Malformed line in control file.', l
 			
 	#
 	# Add the last one on if not zero...
@@ -456,10 +477,10 @@ def processControlFile( filePath ):
 # Search function to pass to thread pool.
 #
 def coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
-	global TRACE, DEBUG
-	if TRACE: print 'coneSearchAndRetrieve for ' + service.name + ' enter'
+	global TRACE, DEBUG, FEEDBACK, ERROR, WARN
+	if TRACE: print 'enter: coneSearchAndRetrieve() for ' + service.name
 	if terminateFlag.isSet():
-		print service.name + ' has been terminated prematurely!'
+		if FEEDBACK: print service.name + ' has been terminated prematurely!'
 		return 
 	try:
 		if DEBUG: print 'About to coneSearch: ' + service.name, ra, dec, radius	
@@ -468,22 +489,22 @@ def coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 			try:
 				vot = utils.read_votable( res, ofmt='votable' )
 				if len( vot.getDataRows() ) == 0 : 
-					print service.name + ': no hits!'
+					if DEBUG: print service.name + ': no hits!'
 				elif terminateFlag.isSet():
-					print service.name + ' has been terminated prematurely!'
+					if FEEDBACK: print service.name + ' has been terminated prematurely!'
 					return
 				else:
 					if DEBUG: print 'About to eval'
 					eval( service.searchFunctionName + '( service, ra, dec, radius, vot )' )
 			except Exception, e1:
-				print service.name + ': bad vot: ', e1
+				if ERROR: print service.name + ': bad vot: ', e1
 		else:
-			print service.name + ': no result vot!'	
+			if DEBUG: print service.name + ': no result vot!'	
 	except Exception, e2:
 		if DEBUG: print service.name + ' cone Search failed: ', e2
 		if FEEDBACK: print service.name + ' returned this number of rows: 0'	
 	terminateFlag.set()
-	if TRACE: print 'coneSearchAndRetrieve for ' + service.name + ' exit'
+	if TRACE: print 'exit: coneSearchAndRetrieve() for ' + service.name
 	return	
 # end of coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag )
 
@@ -493,7 +514,7 @@ def coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag ) :
 # Columns needed for criteria: cl == 6 for stars, 3 for galaxies
 def searchSDSS( service, ra, dec, radius, vot ):
 	global TRACE, DEBUG, FEEDBACK, stars, gals
-	if TRACE: print 'searchSDSS enter'
+	if TRACE: print 'enter: searchSDSS()'
 	if FEEDBACK: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
 	# We decide between stars and galaxies by using the class column
@@ -501,7 +522,7 @@ def searchSDSS( service, ra, dec, radius, vot ):
 	#
 	# Form a map for those columns that can return a null value...
 	nullsMap = formNullValuesMap( vot )
-	print nullsMap
+	if DEBUG: print nullsMap
 	#
 	# Here are the rest of the indices, found
 	# using the votable and the column names 
@@ -541,17 +562,17 @@ def searchSDSS( service, ra, dec, radius, vot ):
 	if len( starList ) > 0:
 		stars.push( service, starList )
 	else:
-		print 'SDSS found no stars'
+		if DEBUG: print 'SDSS found no stars'
 	if len( galList ) > 0:
 		gals.push( service, galList )
 	else:
-		print 'SDSS found no galaxies'
-	if TRACE: print 'searchSDSS exit'
+		if DEBUG: print 'SDSS found no galaxies'
+	if TRACE: print 'enter: searchSDSS()'
 	return
 
 def searchUSNO( service, ra, dec, radius, vot ):
 	global TRACE, DEBUG, FEEDBACK, stars, gals
-	if TRACE: print 'searchUSNO enter'
+	if TRACE: print 'enter: searchUSNO()'
 	if FEEDBACK: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
 	# We need to decide between stars and galaxies.
@@ -607,38 +628,38 @@ def searchUSNO( service, ra, dec, radius, vot ):
 		elif bStars:
 			starList.append( subRow )
 		else:
-			if DEBUG: print'Warning. An SDSS hit does not fall into the star or galaxy class.'
+			if DEBUG: print'An SDSS hit does not fall into the star or galaxy class.'
 	#
 	# Now append found data to the overall collections....
 	if len( starList ) > 0:
 		stars.push( service, starList )
 	if len( galList ) > 0:
 		gals.push( service, galList )
-	if TRACE: print 'searchUSNO exit'
+	if TRACE: print 'exit: searchUSNO()'
 	return
 
 #
 #
 def testForStarsUSNO( b1c, b2c, r1c, r2c, ic ):
-	global TRACE, DEBUG
-#	if TRACE: print 'testForStarsUSNO() enter'
+	global EXTREME_TRACE, EXTREME_DEBUG
+	if EXTREME_TRACE: print 'enter: testForStarsUSNO()'
 	#
 	# If either no s/g are set, OR any of them are >= 6, call it a star
 	# NOTE. There is ambiguity in the original script regarding star selection!!!
 	clist = [ b1c, b2c, r1c, r2c, ic ]
-#	if DEBUG: print 'clist', clist
+	if EXTREME_DEBUG: print 'clist: ', clist
 	set = False
 	for c in clist:
 		if c != None:
 			if int(c) >= 6:
 				set = True
 				break
-#	if TRACE: print 'testForStarsUSNO() exit'
+	if EXTREME_TRACE: print 'testForStarsUSNO() exit'
 	return set
 
 def testForGalsUSNO( b1c, b2c, r1c, r2c, ic ):
-	global TRACE, DEBUG
-#	if TRACE: print 'testForGalsUSNO() enter'
+	global EXTREME_TRACE, EXTREME_DEBUG
+	if EXTREME_TRACE: print 'testForGalsUSNO() enter'
 	#
   # If at least 1 s/g is set, and all those which are set are <6, call it gal
 	clist = [ b1c, b2c, r1c, r2c, ic ]
@@ -650,29 +671,29 @@ def testForGalsUSNO( b1c, b2c, r1c, r2c, ic ):
 			else:
 				set = False
 				break
-#	if TRACE: print 'testForGalsUSNO() exit'
+	if EXTREME_TRACE: print 'testForGalsUSNO() exit'
 	return set
 
 #
 # Searches for unfiltered stars.
 def searchStars( service, ra, dec, radius, vot ):
 	global TRACE, DEBUG, stars
-	if TRACE: print 'searchStars enter'
+	if TRACE: print 'enter: searchStars() for: ' + service.name
 	stars.push( service, genericRetrieval( service, ra, dec, radius, vot ) )
-	if TRACE: print 'searchStars exit'
+	if TRACE: print 'exit: searchStars() for: ' + service.name
 	return
 #
 # Searches for unfiltered galaxies.
 def searchGalaxies( service, ra, dec, radius, vot ):
 	global TRACE, DEBUG, gals
-	if TRACE: print 'searchGalaxies enter'
+	if TRACE: print 'enter: searchGalaxies() for: ' + service.name
 	gals.push( service, genericRetrieval( service, ra, dec, radius, vot ) )
-	if TRACE: print 'searchGalaxies exit'
+	if TRACE: print 'exit: searchGalaxies() for: ' + service.name
 	return
 
 def genericRetrieval( service, ra, dec, radius, vot ):
 	global TRACE, DEBUG, FEEDBACK
-	if TRACE: print 'genericRetrieval for ' + service.name + ' enter'
+	if TRACE: print 'enter: genericRetrieval() for ' + service.name
 	if FEEDBACK: print service.name + ' returned this number of rows: ' + str( len( vot.getDataRows() ) )
 	#
 	# Here are the column indices, found
@@ -698,10 +719,13 @@ def genericRetrieval( service, ra, dec, radius, vot ):
 		for index in colIndices:
 			subRow.append( testAndSetEmpty( testAndSetNull( cells[ index ], index, nullsMap ) ) )
 		hitList.append( subRow )
-	if TRACE: print 'genericRetrieval for ' + service.name + ' exit'
+	if TRACE: print 'enter: genericRetrieval() for ' + service.name 
 	return hitList
 
 def outputResults( directoryPathString, fileName, results ) :
+	global TRACE, DEBUG, FEEDBACK, ERROR
+	if TRACE: print 'enter: outputResults() for: ' + fileName
+	outfile = None
 	try:
 		outfile = file( directoryPathString + os.sep + fileName, "w" )
 		# Write each row as one line...
@@ -710,8 +734,11 @@ def outputResults( directoryPathString, fileName, results ) :
 			line = ','.join( row ) + '\n' 
 			outfile.write( line )
 	except Exception, e:
-		print "Failed to write results for file: ", fileName, e
-	outfile.close()
+		if ERROR: print "Failed to write results for file: ", fileName, e
+	if outfile != None:
+		try: outfile.close()
+		except: 1
+	if TRACE: print 'exit: outputResults() for: ' + fileName
 	return
 
 
@@ -719,9 +746,10 @@ def outputResults( directoryPathString, fileName, results ) :
 # Search function to pass to thread pool.
 #
 def imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, terminate ) :
-	global FORMAT
+	global FORMAT, FEEDBACK, DEBUG, TRACE, ERROR
+	if TRACE: print 'enter: imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, terminate )'
 	if terminate.isSet():
-		print service.name + ' has been terminated prematurely!'
+		if DEBUG: print service.name + ' has been terminated prematurely!'
 		return 
 	try:
 		if DEBUG: print 'About to image search: ' + service.name, ra, dec, radius	
@@ -737,11 +765,12 @@ def imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, term
 				if countImages >= minimages :
 					terminate.set()
 			except:
-				print service.name + ': bad vot!'
+				if FEEDBACKL: print service.name + ': bad vot!'
 		else:
-			print service.name + ': no result!'
+			if FEEDBACK: print service.name + ': no result!'
 	except Exception, e2:
-		print service.name + ' image Search failed: ', e2	
+		if ERROR: print service.name + ' image Search failed: ', e2	
+	if TRACE: print 'exit: imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, terminate )'
 	return
 # end of imageSearchAndRetrieve()
 
@@ -750,45 +779,45 @@ def imageSearchAndRetrieve( service, ra, dec, radius, minimages, maximages, term
 # 
 def retrieveImages( service, vot, maximages, terminate ) :
 	global DEBUG, TRACE, FEEDBACK
+	if TRACE: print 'enter: retrieveImages( service, vot, maximages, terminate )'
 	# Get column index for access url
 	urlColIdx = vot.getColumnIdx ('VOX:Image_AccessReference')
 	formatIdx = vot.getColumnIdx ('VOX:Image_Format')
 	if urlColIdx < 0:
-		print "No access reference found"
-		return 0
-	
-	# Examine this. There's something lax here...
-	dataRows = vot.getDataRows ()
-	getData = vot.getData
-	countImages = len( dataRows )
-	if FEEDBACK: print service.name + ' returned this number of images: ' + str( countImages )
-	cnt = 0
-	for row in dataRows:
-		if terminate.isSet():
-			print service.name + ' has been terminated prematurely!'
-			break 
-		cells = getData (row)
-		url = cells[urlColIdx]
-		fmt = cells[formatIdx]
-		ext = '.'
-		if 'jpeg' in fmt:
-			ext += 'jpg'
-		elif 'fits' in fmt:
-			ext += 'fits'
-		elif 'gif' in fmt:
-			ext += 'gif'
-		else:
-			ext = ''
+		if DEBUG: print "No access reference found in VOTable."
+	else:
+		# NB: Examine this. There's something lax here...
+		dataRows = vot.getDataRows ()
+		getData = vot.getData
+		countImages = len( dataRows )
+		if FEEDBACK: print service.name + ' returned this number of images: ' + str( countImages )
+		cnt = 0
+		for row in dataRows:
+			if terminate.isSet():
+				if FEEDBACK: print service.name + ' has been terminated prematurely!'
+				break 
+			cells = getData (row)
+			url = cells[urlColIdx]
+			fmt = cells[formatIdx]
+			ext = '.'
+			if 'jpeg' in fmt:
+				ext += 'jpg'
+			elif 'fits' in fmt:
+				ext += 'fits'
+			elif 'gif' in fmt:
+				ext += 'gif'
+			else:
+				ext = ''
 		
-		iname = "%s_image%d%s" % ( service.name, cnt, ext )
-		if DEBUG: print "Saving image %d as %s" % (cnt, iname) 
-		fileOK = retrieveOneImage( url, iname )	
-		if fileOK == True:
-			cnt += 1	
-			if cnt >= maximages:
-				cnt -= 1
-				break
-
+			iname = "%s_image%d%s" % ( service.name, cnt, ext )
+			if DEBUG: print "Saving image %d as %s" % (cnt, iname) 
+			fileOK = retrieveOneImage( url, iname )	
+			if fileOK == True:
+				cnt += 1	
+				if cnt >= maximages:
+					cnt -= 1
+					break
+	if TRACE: print 'exit: retrieveImages( service, vot, maximages, terminate )'
 	return cnt
 # end of retrieveImages( image_directory, vot, maximages )
 
@@ -798,7 +827,8 @@ def retrieveImages( service, vot, maximages, terminate ) :
 #
 #
 def retrieveOneImage( url, fname ) :
-	global DEBUG, odir
+	global TRACE, DEBUG, odir
+	if TRACE: print 'enter: retrieveOneImage( url, fname ) for:', url, fname 
 	fileOK = False
 	infile = None
 	outfile = None
@@ -825,7 +855,7 @@ def retrieveOneImage( url, fname ) :
 		if fileSize <= 1024:
 			if fileSize < 32:
 				os.remove( filePath )
-				if DEBUG: 'Removed image file due to incorrect format. Size less than 32: ' + fname
+				if DEBUG: print 'Removed image file due to incorrect format. Size less than 32: ' + fname
 				fileOK = False
 			else:
 				potentialFileToDelete = None
@@ -845,9 +875,9 @@ def retrieveOneImage( url, fname ) :
 					if potentialFileToDelete != None:
 						try: potentialFileToDelete.close() 
 						except: 1
-	
+	if TRACE: print 'exit: retrieveOneImage( url, fname ) for:', url, fname
 	return fileOK
-# end of retrieveOneImage( image_directory, url, fname )
+# end of retrieveOneImage( url, fname )
 
 
 #
@@ -858,20 +888,20 @@ def retrieveOneImage( url, fname ) :
 #
 def searchDriver( service, ra, dec, radius, terminateFlag ):
 	global TRACE, minimages, maximages
-	if TRACE: print 'searchDriver(): enter'
+	if TRACE: print 'enter: searchDriver()'
 	if isinstance( service, SiapSearch ):
 		imageSearchAndRetrieve(  service, ra, dec, radius, minimages, maximages, terminateFlag )
 	elif isinstance( service, ConeSearch ):
 		coneSearchAndRetrieve( service, ra, dec, radius, terminateFlag )
 	else:
-		if DEBUG: print 'One service did not build.'
-	if TRACE: print 'searchDriver(): exit'
+		if DEBUG: print 'A service did not build.'
+	if TRACE: print 'exit: searchDriver()'
 	return
 
 #####################################################
 #    Mainline                                       #
 #####################################################
-print 'Started at: ' + time.strftime('%T') 
+if FEEDBACK: print 'Started at: ' + time.strftime('%T') 
 #
 # Validate the input arguments passed to us...
 validateArgs()
@@ -912,16 +942,16 @@ for source in sources:
 i=0
 while 1 :
 	p = pool.qinfo()
-	print "Time: %3d sec    Queued: %2d    Running: %2d    Finished: %2d" % \
-                                        (i, p[1], serviceCount-p[1]-p[3], p[3])
+	if FEEDBACK:
+		print "Time: %3d sec    Queued: %2d    Running: %2d    Finished: %2d" % \
+                                    (i, p[1], serviceCount-p[1]-p[3], p[3])
 	time.sleep(1)
 	i=i+1
-	if p[3]==serviceCount: break
-    
+	if p[3]==serviceCount: break    
 pool.stop_threads()
 #
-# We have to wait for threads to end to process the catalogue
-# search results, as these need to be sorted on offset distance.
+# We have to wait for threads to end to process the catalogue search results, 
+# as the combined results have to be sorted on offset distance.
 # The getHits() method does the sorting too...
 starHits = stars.getHits()
 galHits = gals.getHits()
@@ -932,4 +962,4 @@ if len( starHits ) > 0:
 if len( galHits ) > 0:
 	outputResults( odir, 'galaxyHits.csv', galHits )
 #
-print( 'Finished at '  + time.strftime('%T') ) 
+if FEEDBACK: print( 'Finished at '  + time.strftime('%T') ) 
