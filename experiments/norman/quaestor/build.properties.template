@@ -15,14 +15,13 @@ catalina.home=<CATALINA.HOME>
 
 # Jena library directory.
 # This is the directory which contains the jena.jar file and friends.
+# If you want to support SDB or TDB, this should be the lib file in
+# the SDB or TDB distribution.
 jena.lib=<JENA.LIB>
 
-# SDB distribution's .../lib directory
-sdb.lib=<SDB.LIB>
-#
-# ...and the location of the JDBC connector jar which you will use with
-# the SDB support
-jdbc.support.jar=<JDBC.SUPPORT.JAR>
+# If you use SDB, you will need to set the location of the JDBC
+# connector jar which you will use with the SDB support
+#jdbc.support.jar=<JDBC.SUPPORT.JAR>
 
 # Location of the Jetty home (${jetty.home}/lib is where the jars are)
 # See http://www.mortbay.org

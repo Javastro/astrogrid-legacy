@@ -39,7 +39,7 @@
                   "text/rdf+n3"))
           (kb (kb:new (java-new <uri> (->jstring "urn:sparql-test-kb"))
                       (rdf:new-empty-model)))) ;no metadata
-      (kb 'add-abox "abox" model)       ;just abox
+      (kb 'add-abox! "abox" model)       ;just abox
       kb)))
 
 (define test-kb-empty
@@ -69,7 +69,7 @@
                       "text/rdf+n3"))
            (kb (kb:new (java-new <uri> (->jstring "urn:sparql-test-kb-delegating"))
                        metadata)))
-      (kb 'add-abox "abox" model)       ;just abox
+      (kb 'add-abox! "abox" model)       ;just abox
       kb)))
 
 ;; it is no longer a failure to run a query against a model with no TBox
@@ -78,7 +78,7 @@
 ;;                                           ask-query
 ;;                                           '("text/plain")))
 
-(test-kb 'add-tbox
+(test-kb 'add-tbox!
          "tbox"
          (let ()
            (import* jena rdf:ingest-from-stream/language)

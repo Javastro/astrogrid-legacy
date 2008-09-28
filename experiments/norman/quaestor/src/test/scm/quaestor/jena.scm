@@ -4,12 +4,17 @@
 (import jena)
 
 (require-library 'quaestor/utils)
-(import* utils jobject->list)
+(import* utils
+         jobject->list
+         java-class-present)
 
 (require-library 'util/misc)
 (import* misc sort-list)
 
 (import s2j)
+
+;(import debugging)                      ;for suppressed-stack-trace-source-kinds
+
 (define-java-classes (<uri> |java.net.URI|))
 
 
@@ -118,20 +123,23 @@
   (define (node->string n)
     (->string (to-string n)))
   (let ((res  (create-resource test-model norman-jstring))
-        (class-resource
-         (create-resource
-          test-model
-          (->jstring "http://www.w3.org/2000/01/rdf-schema#Class")))
-        (name
-         (create-property test-model
-                          (->jstring "http://purl.org/dc/elements/1.1/name")))
-        (norman (create-typed-literal test-model
-                                      (->jstring "Norman")))
+        (class-resource (create-resource test-model (->jstring "http://www.w3.org/2000/01/rdf-schema#Class")))
+        (name (create-property test-model (->jstring "http://purl.org/dc/elements/1.1/name")))
+        (norman (create-typed-literal test-model (->jstring "Norman")))
         (norman-uri (java-new <uri> norman-jstring)))
 
-    (expect-failure select-failure      ;error: no #f slot
-                    (rdf:select-statements test-model res name norman))
+    ;; Test-true calls, with no slots wildcarded
+    (expect select-ask-1
+            #f
+            (null? (rdf:select-statements test-model res name norman)))
+    (expect select-ask-2
+            #t
+            (null? (rdf:select-statements test-model
+                                          res
+                                          name
+                                          (create-typed-literal test-model (->jstring "Aloysius")))))
 
+    ;; Calls with a single #f argument
     (expect select-subjects
             (list norman-string) ; '("http://example.org#norman")
             (map node->string
@@ -245,12 +253,14 @@
               (map format-statement
                    (rdf:select-statements test-model norman-string #f #f)))
       (expect select-multiple-4
-              (append
-               (list "http://example.org#MyClass http://www.w3.org/2000/01/rdf-schema#subClassOf http://example.org#MySuperClass"
-                     "http://example.org#MyClass http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2000/01/rdf-schema#Class")
-               one-stmt)
-              (map format-statement
-                   (rdf:select-statements test-model #f #f #f))))
+              (sort-list (append
+                          (list "http://example.org#MyClass http://www.w3.org/2000/01/rdf-schema#subClassOf http://example.org#MySuperClass"
+                                "http://example.org#MyClass http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2000/01/rdf-schema#Class")
+                          one-stmt)
+                         string<=?)
+              (sort-list (map format-statement
+                              (rdf:select-statements test-model #f #f #f))
+                         string<=?)))
 
 
     ;; now a couple of similar queries using rdf:select-object/string
@@ -269,6 +279,11 @@
             (rdf:select-object/string test-model
                                       norman-string
                                       "http://purl.org/dc/elements/1.1/wibble"))
+    (expect select-object-string-any    ;wildcard subject
+            "Norman"
+            (rdf:select-object/string test-model
+                                      #f
+                                      "http://purl.org/dc/elements/1.1/name"))
 
     (expect select-properties-property  ;predicate is Property
             '("Norman")
@@ -290,3 +305,83 @@
     (expect select-property-none        ;object is string
             #f
             (rdf:get-property-on-resource res "http://example.org/wibble"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Tests of TDB factory.  This is a bit complicated, because we need more
+;; set-up and tear-down.  Specifically, we need to make a temporary directory,
+;; and create various configuration models.  And we need to skip the whole thing if
+;; class com.hp.hpl.jena.tdb.TDBFactory isn't present.
+
+;; DELETE-FILE-OR-DIRECTORY-TREE : <java.io.file> -> void
+;; Delete the FILE, whether it is a file or a directory tree. 
+(define (delete-file-or-directory-tree file)
+  (define-java-classes <java.io.file>)
+  (define-generic-java-methods delete list-files directory?)
+  (if (->boolean (directory? file))
+      (for-each delete-file-or-directory-tree (->list (list-files file))))
+  (delete file))
+
+;; MAKE-TEMPORARY-DIRECTORY : -> <java.io.file>
+;; Like java.io.File.createTempFile, except creating a directory.
+;; There's a potential race condition between deleting one and creating the other
+(define (make-temporary-directory)
+  (define-java-classes <java.io.file>)
+  (define-generic-java-methods delete mkdirs create-temp-file)
+  (let ((tempfile (create-temp-file (java-null <java.io.file>) (->jstring "quaestor-test") (->jstring ".workdir"))))
+    (delete tempfile)
+    (mkdirs tempfile)
+    tempfile))
+
+;; If the TDB support is present, then check we can create a persistent model,
+;; and read it.
+
+(if (java-class-present '|com.hp.hpl.jena.tdb.TDBFactory|)
+    (let* ((persistence-dir (make-temporary-directory))
+           (persistence-factory
+            (rdf:create-persistent-model-factory
+             (turtle->model (format #f "[] <~a> \"~a\"."
+                                    (rdf:make-quaestor-resource "persistenceDirectory")
+                                    (->string persistence-dir)))))
+;;            (persistence-metadata
+;;             (turtle->model (format #f "@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
+;; @base <http://example.org/>.
+;; <persistent> quaestor:XXXpersistenceDirectory \"~a\";
+;;   quaestor:persistentSubmodel <persistent/p1>, <persistent/p2>.
+;; " (->string persistence-dir))))
+           )
+      (define-generic-java-methods create-resource create-property add-literal get-string close)
+      (dynamic-wind
+          (lambda () (chatter "Test persistence directory ~s" persistence-dir))
+          (lambda ()
+            (let ((m (persistence-factory "http://example.org/persistent/p1")))
+              (add-literal m
+                           (create-resource m (->jstring "http://example.org/persistent/p1"))
+                           (create-property m (->jstring "http://purl.org/dc/elements/1.1/") (->jstring "description"))
+                           (->jstring "A persistent model"))
+              (close m))
+            ;; now open a different instance of the same model,
+            ;; which should have this information already in it
+            (let ((m2 (persistence-factory "http://example.org/persistent/p1")))
+              (add-literal m2
+                           (create-resource m2 (->jstring "http://example.org/persistent/p1"))
+                           (create-property m2 (->jstring "http://purl.org/dc/elements/1.1/") (->jstring "description"))
+                           (->jstring "Another persistent model"))
+              (expect persistent-persistence
+                      '("A persistent model" "Another persistent model")
+                      (map (lambda (node) (->string (get-string node)))
+                           (rdf:select-statements m2
+                                                  "http://example.org/persistent/p1"
+                                                  "http://purl.org/dc/elements/1.1/description"
+                                                  #f)))
+              (close m2)
+;;               (expect persistent-persistence
+;;                       "A persistent model^^http://www.w3.org/2001/XMLSchema#string"
+;;                       (rdf:select-object/string m2
+;;                                                 "http://example.org/persistent/p1"
+;;                                                 "http://purl.org/dc/elements/1.1/description"))
+              ))
+          (lambda ()
+            (delete-file-or-directory-tree persistence-dir))))
+    (format #t "TDBFactory not found -- persistence tests skipped~%"))

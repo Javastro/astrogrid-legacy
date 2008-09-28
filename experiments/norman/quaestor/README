@@ -1,17 +1,22 @@
 
 Quaestor: a generic SPARQL endpoint.
 
-To build, it requires Tomcat, Jena, SISC, Jetty and JUnit.  If you want to
-set up a triple store with the Jena SDB back-end, then you will need
-that distribution, too, along with a JDBC jar file for the database
-you want SDB to sit on top of (this SDB support is supposed to be
-optional, but I'm not positive that it is so in fact).
+To build, it requires Tomcat, Jena, SISC, Jetty and JUnit.  If you
+want to set up a triple store with the Jena SDB back-end, then you
+will need that distribution, too, along with a JDBC jar file for the
+database you want SDB to sit on top of.  If you want to use TDB for
+persistence (and you probably should, since it's easier than TDB to
+set up, even though it's still more experimental).
 
-It works with both Java 1.4 and 1.5, and with Tomcat 5.0.x and 5.5.x.
+It works with Java 1.5 and 1.6 (possibly 1.4, though that's not tested),
+and with Tomcat 5.0.x and 5.5.x.
 
 It works with Jena 2.5.6 (it might work with 2.5.x).  See
-<http://jena.sourceforge.net>.  SDB is available at
-<http://jena.sourceforge.net/SDB/>; the system works with SDB-1.0
+<http://jena.sourceforge.net>.
+
+SDB is available at <http://jena.sourceforge.net/SDB/>; the system works with SDB-1.0.
+
+TDB requires Java 1.6.
 
 SISC is available from <http://sisc.sourceforge.net>.  Quaestor works
 with sisc-1.16.x at least, and probably later versions also.  It
@@ -38,6 +43,9 @@ Building Quaestor
 
 Copy build.properties.template to build.properties and fill in the
 property values as described in the comments there.
+
+Note that, if you use SDB or TDB, it is best (and indeed it may be
+necessary) to use the Jena jars within the SDB or TDB distribution.
 
 Then 'ant && ant dist' to make the .war file.  'ant install' installs
 it in a local Tomcat.  'ant jetty' builds the Jetty version of Quaestor.
@@ -81,6 +89,17 @@ start it up with build/start-jetty.sh
   * 'ant test' invokes both tests, with the default Quaestor URL,
     though that can be overridden the same way.
 
+Using TDB
+---------
+
+This is pretty simple.  See the storage.html file for notes on setting
+this up on the client side.
+
+On the server side, you will need to edit web.xml to change the
+'persistence-directory' init-param to a useful value (the default is
+in /tmp, which ... isn't very persistent; the analogous Jetty variable
+is set in JettySchemeServer.properties).  If this parameter isn't
+present, the server will not persist models.
 
 Using SDB
 ---------

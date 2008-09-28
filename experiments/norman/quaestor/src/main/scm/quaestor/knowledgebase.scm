@@ -1,6 +1,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Support for the `knowledgebase' for Quaestor
+;;
+;; Procedures defined here:
+;;
+;; kb:new            : create a new knowledgebase
+;; kb:get            : retrieve a knowledgebase by name
+;; kb:discard        : forget about a knowledgebase
+;; kb:get-names      : returns the list of available knowledgebases
+;; kb:knowledgebase? : tests whether something is a knowledgebase
+;;
+;; See below for more detailed documentation.
+;;
+;; A knowledgebase is a procedure which takes a subcommand argument, and further arguments.
+;; These subcommands manipulate the knowledgebase.  See the documentation for (internal) procedure
+;; MAKE-KB below.
+
 
 (import s2j)
 
@@ -10,10 +25,15 @@
          jobject->list)
 (require-library 'util/lambda-contract)
 
+(require-library 'org/eurovotech/quaestor/scheme-wrapper-support)
+
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
          filter
          remove!)
+
+(import record)                         ;for define-struct
+(import hashtable)
 
 ;; brain-dead assert macro
 (define-syntax assert
@@ -21,6 +41,34 @@
     ((_ expr)
      (if (not expr)
          (error "assertion failed: ~s" (quote expr))))))
+
+;; (EVAL-WITH args -> (arg1 arg2 ...) body...)
+;; Evaluate BODY with the elements of list ARGS assigned to argN.
+;; Arguments (arg1 ...) can include the syntax of lambda/contract, eg ((arg test?) -> result?)
+;; Use with: (put 'eval-with 'scheme-indent-function 3) to get good Emacs indentation
+(define-syntax eval-with
+  (syntax-rules (->)
+    ((_ args -> (argn ...) form . forms)
+     (if (let loop ((n (length args))
+                    (l '(argn ...)))
+           (cond ((= n 0) (or (= (length l) 0)
+                              (eq? (car l) '->)))
+                 (else (loop (- n 1) (cdr l)))))
+         (apply (lambda/contract (argn ...) form . forms) args)
+         (error 'knowledgebase
+                "bad call to knowledgebase with args ~s (expecting ~s)"
+                args '(argn ...))))
+    ((_ args -> () form . forms)
+     (if (= (length args) 0)
+         ((lambda () form . forms))
+         (error 'knowledgebase
+                "bad call to knowledgebase with args ~s (expecting no args)"
+                args)))))
+
+(define (violated-contract fmt . args)
+  (error (apply format (string-append "error calling knowledgebase function: " fmt) args)))
+
+
 
 (module knowledgebase
   (kb:new
@@ -33,13 +81,13 @@
   (import* utils
            is-java-type?
            jobject->list)
-
-  (define (in-quaestor-namespace fragment)
-    (let ((ns "http://ns.eurovotech.org/quaestor#"))
-      (string-append ns fragment)))
+  (import* quaestor-support chatter)
 
   (define (jena-model? x)
     (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
+  (define (jena-model-or-false? x)
+    (or (not x)
+        (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|)))
   (define (alist? x)
     (and (list? x)
          (let loop ((l x))
@@ -59,55 +107,40 @@
   ;; The knowledgebase object that is returned is a function which takes
   ;; a number of subcommands.
 
-  ;; Manage the set of known knowledgebases with the MODEL-LIST function,
-  ;; which is a wrapper round java.util.HashMap
-  (define model-list
-    (let ((model-list (java-new (java-class '|java.util.HashMap|))))
+  ;; Manage the set of known knowledgebases with the KNOWLEDGEBASE-LIST function,
+  ;; which is a wrapper round java.util.HashMap.  (Hmm: wouldn't this more sensibly
+  ;; be a SISC hashtable?)
+  (define knowledgebase-list
+    (let ((knowledgebase-list (java-new (java-class '|java.util.HashMap|))))
 
       (lambda (cmd . args)
-
-        ;; (call-with-args (arg arg ...) body...)
-        (define-syntax call-with-args
-          (syntax-rules ()
-            ((_ (arg1 . moreargs) form . forms)
-             (if (= (length args) (length '(arg1 . moreargs)))
-                 (apply (lambda (arg1 . moreargs) form . forms) args)
-                 (error 'knowledgebase
-                        "bad call to knowledgebase with args ~s (expecting ~s)"
-                        args (cons (car args) '(arg1 . moreargs)))))
-            ((_ () form . forms)
-             (if (= (length args) 0)
-                 ((lambda () form . forms))
-                 (error 'knowledgebase
-                        "bad call to knowledgebase with args ~s (expecting no args)"
-                        args)))))
 
         (define-generic-java-methods get put remove key-set iterator)
 
         (case cmd
           ((get)                        ; uri -> kb-or-false
-           (call-with-args (uri)
-                           (let ((kb (get model-list uri)))
-                             (and (not (java-null? kb))
+           (eval-with args -> (uri)
+             (let ((kb (get knowledgebase-list uri)))
+               (and (not (java-null? kb))
                                   (java-unwrap kb)))))
           ((put)                        ; uri kb -> kb
-           (call-with-args (uri kb)
-                           (java-synchronized model-list
-                             (lambda ()
-                               (put model-list uri (java-wrap kb))
-                               kb))))
+           (eval-with args -> (uri kb)
+             (java-synchronized knowledgebase-list
+               (lambda ()
+                 (put knowledgebase-list uri (java-wrap kb))
+                 kb))))
           ((remove)                     ; uri -> kb
-           (call-with-args (uri)
-                           (java-synchronized model-list
-                             (lambda ()
-                               (let ((prev-kb (remove model-list uri)))
-                                 (and (not (java-null? prev-kb))
-                                      (java-unwrap prev-kb)))))))
+           (eval-with args -> (uri)
+             (java-synchronized knowledgebase-list
+               (lambda ()
+                 (let ((prev-kb (remove knowledgebase-list uri)))
+                   (and (not (java-null? prev-kb))
+                        (java-unwrap prev-kb)))))))
           ((get-keys)                   ; -> list-of-uris
-           (call-with-args ()
-                           (jobject->list (iterator (key-set model-list)))))
+           (eval-with args -> ()
+             (jobject->list (iterator (key-set knowledgebase-list)))))
           (else
-           (error 'model-list "Bad call: (~s ~s)" cmd args))))))
+           (error 'knowledgebase-list "Bad call: (~s ~s)" cmd args))))))
 
   ;; KB:GET : Java-URI -> knowledgebase or false
   ;; Retrieve the knowledgebase with the given name, which is
@@ -116,7 +149,7 @@
                            -> (lambda (x)
                                 (or (not x)
                                     (kb:knowledgebase? x))))
-    (model-list 'get kb-name))
+    (knowledgebase-list 'get kb-name))
 
   ;; KB:NEW : uri jena-model -> knowledgebase
   ;;
@@ -127,14 +160,14 @@
     (if (kb:get kb-name)
         (error 'kb:new
                "bad call to kb:new: knowledgebase ~a already exists" kb-name))
-    (model-list 'put kb-name (make-kb kb-name kb-metadata)))
+    (knowledgebase-list 'put kb-name (make-kb kb-name kb-metadata)))
 
   ;; KB:GET-NAMES : -> list-of-uris
   ;;
   ;; Returns a list of available knowledgebases.  Returns the names
   ;; as a list of URIs, or a null list if there are none.
   (define (kb:get-names)
-    (model-list 'get-keys))
+    (knowledgebase-list 'get-keys))
 
   ;; KB:DISCARD : string -> knowledgebase/#f
   ;;
@@ -144,29 +177,13 @@
                                -> (lambda (x)
                                     (or (not x)
                                         (kb:knowledgebase? x))))
-    (model-list 'remove kb-name))
+    (knowledgebase-list 'remove kb-name))
 
-  ;; ADD-SUBMODEL : list symbol jena-model boolean -> list
-  ;; Add a new submodel to the model.  Returns the original or an updated
-  ;; submodel list, or #f on any errors (there's nothing which triggers #f
-  ;; at present, but it's documented to do this just in case)
-  (define/contract (add-submodel (submodel-list      list?)
-                                 (new-submodel-name  string?)
-                                 (new-submodel-model jena-model?)
-                                 (tbox?              boolean?)
-                                 -> list?)
-    (java-synchronized (java-wrap submodel-list) ;_model-list-lock-object
-      (lambda ()
-        (cond ((assoc new-submodel-name submodel-list)
-               => (lambda (sm-list)     ;already exists
-                    (set-cdr! sm-list
-                              (cons tbox? new-submodel-model))
-                    submodel-list))
-              (else                     ;create a new one by consing
-                                        ;an entry to the front
-               (cons `(,new-submodel-name ,tbox? . ,new-submodel-model)
-                     submodel-list))))))
-
+  ;; Define a structure for abstracting submodels
+  (define-struct submodel (name         ;string
+                           tbox?        ;boolean
+                           model        ;jena model
+                           metadata))   ;jena model or #f
 
   ;; MAKE-KB : uri model -> knowledgebase
   ;;
@@ -174,7 +191,7 @@
   ;; The model and submodels may be retrieved, and new ones added, by
   ;; calling the procedure with a command as the second argument.
   ;;
-  ;;    (kb 'add-abox/tbox SUBMODEL-NAME SUBMODEL)
+  ;;    (kb 'add-abox!/tbox SUBMODEL-NAME SUBMODEL)
   ;;        Add or update a abox/tbox with the given name.
   ;;        SUBMODEL-NAME may be a string or a symbol.  Return #t on success
   ;;    (kb 'get-query-model)
@@ -185,10 +202,18 @@
   ;;    (kb 'get-model SUBMODEL-NAME)
   ;;        Return the named submodel, or #f if none exists.
   ;;        SUBMODEL-NAME may be a symbol or a string.
+  ;;    (kb 'append-to-submodel! SUBMODEL-NAME MODEL)
+  ;;        Append the given MODEL to the named SUBMODEL.
+  ;;        SUBMODEL-NAME may be a symbol or a string.
+  ;;    (kb 'remove-from-submodel! SUBMODEL-NAME STMT-LIST)
+  ;;        Remove the list of statements from the named submodel
+  ;;    (kb 'replace-submodel! SUBMODEL-NAME NEW-MODEL)
+  ;;        Replace the named submodel with the statements from the NEW-MODEL.
   ;;    (kb 'get-model-abox/tbox)
   ;;        Return the merged abox/tbox submodels, or #f if there are none.
-  ;;    (kb 'get-metadata)
-  ;;        Return the model's metadata, as a Jena Model.
+  ;;    (kb 'get-metadata [SUBMODEL-NAME])
+  ;;        With an argument, returns the submodel metadata or #f
+  ;;        Without an argument, returns the model metadata
   ;;    (kb 'get-name-as-uri)
   ;;        Return the knowledgebase's name, as a Java URI
   ;;    (kb 'get-name-as-resource)
@@ -198,19 +223,21 @@
   ;;    (kb 'has-model [SUBMODEL-NAME])
   ;;        Return true if the named (sub)model exists, that is, if
   ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
-  ;;    (kb 'drop-submodel SUBMODEL-NAME)
-  ;;        Forget about the named submodel
+  ;;    (kb 'drop-submodel! SUBMODEL-NAME)
+  ;;        Forget about the named submodel.  
+  ;;        Return the model, or #f if the model didn't exist
   ;;    ;(kb 'set-metadata jstream base-uri content-type)
   ;;    ;    Set the metadata to the arbitrary string INFO.
   ;;    (kb 'info)
   ;;        Return alist with info
   (define (make-kb kb-name metadata)
-    (let ((submodels '()) ;a list of (name tbox? . submodel) pseudo-lists
+    (let (;(submodels '()) ;a list of (name tbox? . submodel) pseudo-lists
+          (submodels (make-hashtable))
           (merged-model #f)             ;memo
           (merged-tbox #f)              ;memo
           (merged-abox #f)              ;memo
           (query-model #f)              ;memo
-          (sync-object (->jstring ""))) ;a dummy Java object
+          (sync-object (->jstring "SYNC"))) ;a dummy Java object
 
       (define-syntax kb-synchronized
         (syntax-rules ()
@@ -240,33 +267,39 @@
       (define (get-box boxname)
         (kb-synchronized
          (let* ((tbox? (eq? boxname 'tbox))
-                (models (filter (if tbox?
-                                    (lambda (x) (cadr x))
-                                    (lambda (x) (not (cadr x))))
-                                submodels)))
+                (models (filter (lambda (x) x)
+                                (hashtable/map (lambda (k el)
+                                                 (and (if tbox? (submodel-tbox? el) (not (submodel-tbox? el)))
+                                                      (submodel-model el)))
+                                               submodels))))
            (cond ((null? models)
                   #f)
                  (tbox?
                   (memoized (if (= (length models) 1)
-                                (cddar models)
-                                (rdf:merge-models (map cddr models)))
+                                (car models)
+                                (rdf:merge-models models))
                             merged-tbox))
                  (else
                   (memoized (if (= (length models) 1)
-                                (cddar models)
-                                (rdf:merge-models (map cddr models)))
+                                (car models)
+                                (rdf:merge-models models))
                             merged-abox))))))
 
       (define (sdb-description->model model-or-resource)
-        (define-generic-java-methods create connect-default-model read)
-        (define-java-classes
-          (<store-factory> |com.hp.hpl.jena.sdb.store.StoreFactory|)
-          <com.hp.hpl.jena.sdb.store-desc>
-          (<sdb-factory> |com.hp.hpl.jena.sdb.SDBFactory|))
-        (connect-default-model (java-null <sdb-factory>)
-                       (create (java-null <store-factory>)
-                               (read (java-null <com.hp.hpl.jena.sdb.store-desc>)
-                                     model-or-resource))))
+        (with/fc (lambda (m e)
+                   ;; No SDB class found.
+                   ;; Rethrow this error with an explanation.
+                   (error "Cannot create SDB model -- no SDB support available in the classpath"))
+          (lambda ()
+            (define-generic-java-methods create connect-default-model read)
+            (define-java-classes
+              (<store-factory> |com.hp.hpl.jena.sdb.store.StoreFactory|)
+              <com.hp.hpl.jena.sdb.store-desc>
+              (<sdb-factory> |com.hp.hpl.jena.sdb.SDBFactory|))
+            (connect-default-model (java-null <sdb-factory>)
+                                   (create (java-null <store-factory>)
+                                           (read (java-null <com.hp.hpl.jena.sdb.store-desc>)
+                                                 model-or-resource))))))
 
       ;; Add the given submodel to the model.  BOXNAME is either 'tbox or 'abox.
       ;; If the model is actually a description of an SDB store, then instead
@@ -274,27 +307,29 @@
       ;; any tests).
       (define (add-box name submodel boxname)
         (let ((store-resources (rdf:select-statements submodel #f "a" "http://jena.hpl.hp.com/2007/sdb#Store")))
-          (let ((new-model
-                 (cond ((not (null? store-resources))
-                        (sdb-description->model submodel ;(car store-resources)
-                                                ))
-                       (else submodel))))
+          (let ((new-model (cond ((not (null? store-resources))
+                                  (sdb-description->model submodel))
+                                 (else submodel))))
             (kb-synchronized
-             (set! submodels
-                   (add-submodel submodels
-                                 name
-                                 new-model
-                                 (eq? boxname 'tbox)))
+             (hashtable/put! submodels
+                             name
+                             (make-submodel name (eq? boxname 'tbox) new-model #f))
              (clear-memos!)))))
+
+      ;; Find the named submodel in the list of submodels.
+      ;; Return the submodel, or #f if it's not present
+      (define (get-submodel-from-list name)
+        (cond ((hashtable/get submodels name)
+               => submodel-model)
+              (else
+               #f)))
 
       ;; Return the merger of the submodels, performing and memoizing the merge if necessary
       (define (get-merged-model)
         (kb-synchronized
-         (if (null? submodels)
+         (if (= (hashtable/size submodels) 0)
              #f
-             (memoized (if (= (length submodels) 1)
-                           (cddar submodels)
-                           (rdf:merge-models (map cddr submodels)))
+             (memoized (rdf:merge-models (hashtable/map (lambda (k v) (submodel-model v)) submodels))
                        merged-model))))
 
       ;; Return the model which is to be queried, using the settings in METADATA.
@@ -311,11 +346,11 @@
           (assert (and metadata kb-name))
           (let* ((levelres (rdf:select-statements metadata
                                                   kb-name
-                                                  (in-quaestor-namespace "requiredReasoner")
+                                                  (rdf:make-quaestor-resource "requiredReasoner")
                                                   #f))
                  (level (cond ((and (not (null? levelres))
                                     (rdf:get-property-on-resource (car levelres)
-                                                                  (in-quaestor-namespace "level")))
+                                                                  (rdf:make-quaestor-resource "level")))
                                => (lambda (levelp)
                                     (->string (to-string levelp))))
                               (else
@@ -344,23 +379,6 @@
 
       (lambda (cmd . args)
 
-        ;; First, some helpful syntax...
-
-        ;; (call-with-args (arg arg ...) body...)
-        (define-syntax call-with-args
-          (syntax-rules ()
-            ((_ (arg1 . moreargs) form . forms)
-             (if (= (length args) (length '(arg1 . moreargs)))
-                 (apply (lambda (arg1 . moreargs) form . forms) args)
-                 (error 'knowledgebase
-                        "bad call to knowledgebase with args ~s (expecting ~s)"
-                        args (cons (car args) '(arg1 . moreargs)))))
-            ((_ () form . forms)
-             (if (= (length args) 0)
-                 ((lambda () form . forms))
-                 (error 'knowledgebase
-                        "bad call to knowledgebase with args ~s (expecting no args)"
-                        args)))))
         (define-syntax unless
           (syntax-rules ()
             ((_ test expr)
@@ -372,52 +390,103 @@
           ;;;;;;;;;;
           ;; Commands which explicitly mutate the knowledgebase
           
-          ((add-abox add-tbox)
-           ;; (kb 'add-abox/tbox SUBMODEL-NAME SUBMODEL)
-           (call-with-args
-            (submodel-name submodel)
-            (unless (string? submodel-name)
-                    (error 'make-kb
-                           "Bad call to add-abox/tbox: submodel name ~s is not a string"
-                           submodel-name))
-            (add-box submodel-name
-                     submodel
-                     (if (eq? cmd 'add-tbox)
-                         'tbox
-                         'abox))
-            #t))
+          ((add-abox! add-tbox!)
+           ;; (kb 'add-abox!/add-tbox! SUBMODEL-NAME SUBMODEL)
+           (eval-with args -> ((submodel-name string?) (submodel jena-model?))
+             (add-box submodel-name
+                      submodel
+                      (if (eq? cmd 'add-tbox!)
+                          'tbox
+                          'abox))
+             #t))
 
-          ((drop-submodel)
-           ;; (kb 'drop-submodel SUBMODEL-NAME) -> boolean
-           (call-with-args
-            (submodel-name)
+          ((drop-submodel!)
+           ;; (kb 'drop-submodel! SUBMODEL-NAME) -> submodel-or-false
+           ;; Note that this does not close the submodel -- that must be done separately
+           (eval-with args -> ((submodel-name string?) -> jena-model-or-false?)
             (unless (string? submodel-name)
                     (error 'make-kb
                            "bad call to drop-submodel: submodel name ~s is not a string"
                            submodel-name))
-            (cond ((assoc submodel-name submodels)
-                   (kb-synchronized
-                    (set! submodels
-                          (remove! (lambda (sm)
-                                     (string=? submodel-name (car sm)))
-                                   submodels))
-                    (clear-memos!))
-                   #t)
+            (cond ((get-submodel-from-list submodel-name)
+                   => (lambda (sm)
+                        (kb-synchronized
+                         (hashtable/remove! submodels submodel-name)
+                         (clear-memos!)
+                         sm)))
                   (else
                    #f))))
 
-;;           ((set-metadata)
-;;            ;; (kb 'set-metadata jinput-stream base-uri content-type-string)
-;;            ;; (kb 'set-metadata jstring base-uri <anything>)
-;;            ;; Set model metadata to the Model read from the given reader.
-;;            ;; If the first argument is a string, then create a model with
-;;            ;; this as a dc:description.
-;;            (call-with-args
-;;             (input base-uri content-type)
-;;             (let ((m (get-metadata-from-source input base-uri content-type)))
-;;               (kb-synchronized
-;;                (set! myuri base-uri)
-;;                (set! metadata m)))))
+          ((append-to-submodel!)
+           ;; (kb 'append-to-submodel! SUBMODEL-NAME MODEL) -> jena-model-or-false
+           ;; Append the given MODEL to the named submodel.
+           ;; Return the model, or #f if no such model exists.
+           (eval-with args -> ((submodel-name string?) (new-model jena-model?) -> jena-model-or-false?)
+             (cond ((get-submodel-from-list submodel-name)
+                    => (lambda (submodel)
+                         (define-generic-java-methods add)
+                         (kb-synchronized
+                          (add submodel new-model)
+                          (clear-memos!)
+                          submodel)))
+                   (else                ;no such submodel
+                    #f))))
+
+          ((remove-from-submodel!)
+           ;; (kb 'remove-from-submodel! SUBMODEL-NAME STMT-LIST)
+           ;; Remove the list of statements from the named submodel
+           (eval-with args -> ((submodel-name string?)
+                               (stmt-list (and (list? stmt-list)
+                                               (not (null? stmt-list))
+                                               (is-java-type? (car stmt-list) '|com.hp.hpl.jena.rdf.model.Statement|))))
+             (define-generic-java-methods remove)
+             (define-java-classes <com.hp.hpl.jena.rdf.model.statement>)
+             (cond ((get-submodel-from-list submodel-name)
+                    => (lambda (sm)
+                         (kb-synchronized
+                          (remove sm (->jarray stmt-list <com.hp.hpl.jena.rdf.model.statement>))
+                          (clear-memos!))))
+                   (else #f))))
+
+          ((replace-submodel!)
+           ;; (kb 'replace-submodel! SUBMODEL-NAME NEW-MODEL)
+           ;; Replace the named submodel with [the statements from] the NEW-MODEL.
+           ;; Return the (new) model, or #f if it does not exist
+           (eval-with args -> ((submodel-name string?) (new-model jena-model?) -> jena-model-or-false?)
+             (cond
+                  ((get-submodel-from-list submodel-name)
+                    => (lambda (sm)
+                         ;; The following is the most natural way to do this,
+                         ;; but unfortunately it doesn't work for TDB models: removeAll throws an
+                         ;; UnsupportedOperationException: remove not supported for this iterator
+                         ;; (in TDB-0.5 at least)
+;;                          (define-generic-java-methods add remove-all)
+;;                          (kb-synchronized
+;;                           (remove-all sm)
+;;                           (add sm new-model)
+;;                           (clear-memos!)
+;;                           sm)
+                         ;; ...but the following is barely more roundabout
+                         (define-generic-java-methods add remove list-statements)
+                         (define-java-classes <com.hp.hpl.jena.rdf.model.statement>)
+                         (kb-synchronized
+                          (remove sm
+                                  (->jarray (jobject->list (list-statements sm))
+                                            <com.hp.hpl.jena.rdf.model.statement>))
+                          (add sm new-model)
+                          (clear-memos!)
+                          sm)))
+                   (else                ;no such submodel
+                    #f))))
+
+          ((set-metadata!)
+           ;; (kb 'set-metadata! submodel-name metadata-model)
+           (eval-with args -> ((submodel-name string?) (metadata-model jena-model?))
+             (let ((submodel (hashtable/get submodels submodel-name)))
+               (if submodel
+                   (set-submodel-metadata! submodel metadata-model)
+                   (error 'set-metadata!
+                          (format #f "Can't set metadata on a non-existent submodel ~a" submodel-name))))))
 
           ;;;;;;;;;;
           ;; Commands which implicitly mutate the knowledgebase, via memoisation
@@ -429,8 +498,7 @@
              ((0)
               (get-merged-model))
              ((1)
-              (let ((sm (assoc (car args) submodels)))
-                (and sm (cddr sm))))
+              (get-submodel-from-list (car args)))
              (else
               (error 'make-kb
                      "Bad call to get: wrong number of args in ~a"
@@ -438,8 +506,7 @@
 
           ((get-query-model)
            ;; return #f on error
-           (call-with-args 
-            ()
+           (eval-with args -> ()
             (kb-synchronized
              (memoized (get-query-model)
                        query-model))))
@@ -447,8 +514,7 @@
           ((get-model-tbox get-model-abox)
            ;; (kb 'get-model-tbox/abox)
            ;; return merged models or #f if none
-           (call-with-args
-            ()
+           (eval-with args -> ()
             (get-box (if (eq? cmd 'get-model-tbox)
                          'tbox
                          'abox))))
@@ -460,43 +526,53 @@
            ;; (kb 'has-model [SUBMODEL-NAME])
            ;; With an argument, returns true if the named submodel exists.
            ;; Without an argument, it returns true if any submodels exist.
-           (cond ((= (length args) 0)
-                  (not (null? submodels)))
-                 ((= (length args) 1)
-                  (assoc (car args) submodels))
-                 (else
-                  (error 'make-kb
-                         "Bad call to has-model: wrong no. args ~s" args))))
+           (case (length args)
+             ((0)
+              (> (hashtable/size submodels) 0))
+             ((1)
+              (get-submodel-from-list (car args)))
+             (else
+              (error 'make-kb
+                     "Bad call to has-model: wrong number of arguments ~s" args))))
 
           ((get-metadata)
-           (call-with-args () metadata))
+           ;; (kb 'get-metadata [SUBMODEL-NAME])
+           ;; With an argument, returns the submodel metadata or #f
+           ;; Without an argument, returns the model metadata
+           (case (length args)
+             ((0) metadata)
+             ((1) (cond ((hashtable/get submodels (car args))
+                         => submodel-metadata)
+                        (else
+                         #f)))
+             (else
+              (error 'get-metadata
+                     "Bad call to get-metadata: wrong number of arguments ~s" args))))
 
           ((get-name-as-uri)
-           (call-with-args () kb-name))
+           (eval-with args -> (-> uri?)
+             kb-name))
 
           ((get-name-as-string)
-           (call-with-args ()
-                           (define-generic-java-methods to-string)
-                           (->string (to-string kb-name))))
+           (eval-with args -> (-> string?)
+             (define-generic-java-methods to-string)
+             (->string (to-string kb-name))))
 
           ((get-name-as-resource)
-           (call-with-args
-            ()
+           (eval-with args -> ()
             (define-generic-java-methods create-resource to-string)
             (define-java-class <com.hp.hpl.jena.rdf.model.resource-factory>)
             (create-resource (java-null <com.hp.hpl.jena.rdf.model.resource-factory>)
                              (to-string kb-name))))
 
           ((info)
-           (call-with-args
-            ()
-            (list (cons 'submodels
-                        (map (lambda (sm)
-                               `((name . ,(car sm))
-                                 (tbox . ,(cadr sm))
-                                 (namespaces
-                                  . ,(get-model-namespaces (cddr sm)))))
-                             submodels)))))
+           (eval-with args -> (-> list?)
+             (list (cons 'submodels
+                         (hashtable/map (lambda (k sm)
+                                          `((name . ,(submodel-name sm))
+                                            (tbox . ,(submodel-tbox? sm))
+                                            (namespaces . ,(get-model-namespaces (submodel-model sm)))))
+                                        submodels)))))
 
           (else
            (error 'make-kb "impossible command for knowledgebase: ~s" cmd))))))

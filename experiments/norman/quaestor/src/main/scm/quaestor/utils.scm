@@ -16,6 +16,7 @@
  (jobject->list
   java-retrieve-static-object
   is-java-type?
+  java-class-present
   url-decode-to-jstring
   reader->jstring
   input-stream->jstring
@@ -23,12 +24,13 @@
   acceptable-mime
   parse-query-string
   string-split
+  sort-list
 
   ;; Transaction support functions.  Should these perhaps be moved
   ;; wholesale into scheme-wrapper-support.scm ?
   ;; (these functions currently have no test coverage)
-  checked-service-http-call
-  unchecked-service-http-call
+  service-http-call/checking
+  service-http-call
   request->path-list
   request->query-string
   request->content-type
@@ -36,7 +38,6 @@
   content-headers-ok?
   request->header-alist
   request->accept-mime-types
-  ;response->lazy-output-stream
   no-can-do
   tabulate-request-information
   response-page
@@ -168,6 +169,14 @@
                             (error "Bad class in is-java-type?: ~s" class)))
                      jobject)))
         (else #f)))
+
+;; JAVA-CLASS-PRESENT : symbol -> boolean
+;; Return #t if the named class is present in the classpath, and #f otherwise
+(define (java-class-present class-name)
+  (with/fc (lambda (m e) #f)
+    (lambda ()
+      (java-class class-name) ;throws an exception if this isn't in the classpath
+      #t)))
 
 ;; ->STRING-OR-EMPTY : jstring -> string
 ;; Like ->STRING, except that it returns "" if the input string is null
@@ -450,7 +459,7 @@
 ;;                            headers:alist
 ;;                            -> void
 ;; which takes the details about to be returned and throws an error if they're not appropriate.
-(define (checked-service-http-call request response method-handler response-matches-wadl?)
+(define (service-http-call/checking request response method-handler response-matches-wadl?)
   (define (set-http-response-status! status)
     (define-generic-java-methods set-status)
     (set-status response (java-retrieve-static-object '|javax.servlet.http.HttpServletResponse| status)))
@@ -559,7 +568,7 @@
         (sexp-xml:sexp->xml
          (response-page request
                         "Ooops"
-                        `((p "Error in checked-service-http-call.  That wasn't supposed to happen")
+                        `((p "Error in service-http-call/checking.  That wasn't supposed to happen")
                           (p "Error was " (em ,(format-error-record error-record)))
                           (p "Recent chatter:")
                           (ul ,@(map (lambda (x) `(li ,(sexp-xml:escape-string-for-xml x)))
@@ -590,7 +599,7 @@
                                                 (else #f))))
                 (unless (response-matches-wadl? method request-path
                                                 status-number content-type handler-output headers)
-                        (error 'checked-service-http-call
+                        (error 'service-http-call
                                "Request ~a ~a produced undocumented response: status=~a content-type=~a"
                                method
                                request-path
@@ -617,7 +626,7 @@
 
 ;; the same, except that it doesn't call the checking routine,
 ;; and (consequently) has a simpler loop
-(define (unchecked-service-http-call request response method-handler)
+(define (service-http-call request response method-handler)
   (define set-http-response-status!
     (let ((http-servlet-response (java-null (java-class '|javax.servlet.http.HttpServletResponse|))))
       (define-generic-java-methods set-status)

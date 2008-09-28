@@ -31,15 +31,20 @@
          string-index)
 
 (define (ident)
-  (define-java-classes
-    <sisc.util.version>
-    (<SDB> |com.hp.hpl.jena.sdb.SDB|))
+  (define-java-classes <sisc.util.version>)
   (define-generic-java-field-accessor :version |VERSION|)
+  (define (get-sdb-version)
+    (and (java-class-present '|com.hp.hol.jena.sdb.SDB|)
+         (->string (:version (java-null (java-class '|com.hp.hpl.jena.sdb.SDB|))))))
+  (define (get-tdb-version)
+    (and (java-class-present '|com.hp.hol.jena.tdb.TDB|)
+         (->string (:version (java-null (java-class '|com.hp.hpl.jena.tdb.TDB|))))))
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
-    (sdb.version . ,(->string (:version (java-null <SDB>))))
+    (sdb.version . ,(get-sdb-version))
+    (tdb.version . ,(get-tdb-version))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.56 $ $Date: 2008/08/15 17:42:04 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.57 $ $Date: 2008/09/28 22:35:45 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -65,6 +70,10 @@
        (lambda formals
          body ...)))))
 
+;; The PERSISTENCE-FACTORY is used to generate persistent models.
+;; If available, this will be set up in hte initialiser.
+(define persistence-factory #f)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Implementation
@@ -80,15 +89,26 @@
     (let ((val (get-init-parameter scheme-servlet (->jstring s))))
       (and (not (java-null? val))
            val)))
+
+  (let ((persistence-directory (get-param "persistence-directory")))
+    (if persistence-directory
+        (set! persistence-factory
+              (rdf:create-persistent-model-factory
+               (rdf:ingest-from-string/turtle
+                (format #f "[] <~a> \"~a\"."
+                        (rdf:make-quaestor-resource "persistenceDirectory")
+                        (->string persistence-directory)))))))
+
   (let ((kb (get-param "kb-context"))
         (xmlrpc (get-param "xmlrpc-context"))
-        (pickup (get-param "pickup-context")))
+        (pickup (get-param "pickup-context"))
+        (config (get-param "config-context")))
     (define (reg method context proc)
       (register-handler scheme-servlet
                         (->jstring method)
                         context
                         (java-wrap (lambda (request response)
-                                     (unchecked-service-http-call request response proc)))))
+                                     (service-http-call request response proc)))))
     (if (not (and kb xmlrpc pickup))
         (let ()
           (define-java-class <javax.servlet.servlet-exception>)
@@ -104,6 +124,7 @@
     (reg "DELETE" kb http-delete)
     (reg "POST" xmlrpc xmlrpc-handler)
     (reg "GET" pickup pickup-dispatcher)
+    (reg "GET" config config-handler)
 
     ;; initialise the logging, by passing the Servlet to (CHATTER),
     ;; which relies on this object having a log(String) method on it.
@@ -112,7 +133,7 @@
                (equal? (->string verbosity) "verbose"))
           (chatter scheme-servlet)))
     (chatter "Initialised quaestor")))
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; GET support
@@ -281,13 +302,13 @@
   (chatter "get-model: path-info-list=~s, query-string=~s" path-info-list query-string)
   (case (length path-info-list)
     ((1 2)
-     (let ((kb-name (request->kb-uri request))
-           (submodel-name (if (null? (cdr path-info-list))
-                               #f       ;no submodel
-                               (cadr path-info-list))))
+     (let ((kb-name (request->kb-uri request)))
        (let ((kb (kb:get kb-name))
              (mime-and-lang (find-acceptable-rdf-language request))
-             (query (string->symbol (or query-string "model"))))
+             (query (string->symbol (or query-string "model")))
+             (submodel-name (if (null? (cdr path-info-list))
+                                #f       ;no submodel
+                                (cadr path-info-list))))
          (chatter "get-model: kb-name=~s  submodel-name=~s  mime-and-lang=~s  query=~s"
                   kb-name submodel-name mime-and-lang query)
          (cond ((and kb
@@ -318,12 +339,23 @@
                ((and kb
                      (eq? query 'metadata)
                      mime-and-lang)
-                (list '|SC_OK|
-                      (lambda (stream set-mime-type)
-                        (set-mime-type (car mime-and-lang))
-                        (write (kb 'get-metadata)
-                               stream
-                               (->jstring (cdr mime-and-lang))))))
+                (cond ((not submodel-name) ;want knowledgebase metadata
+                       (list '|SC_OK|
+                             (lambda (stream set-mime-type)
+                               (set-mime-type (car mime-and-lang))
+                               (write (kb 'get-metadata)
+                                      stream
+                                      (->jstring (cdr mime-and-lang))))))
+                      ((kb 'get-metadata submodel-name)
+                       => (lambda (model)
+                            (list '|SC_OK|
+                                  (lambda (stream set-mime-type)
+                                    (set-mime-type (car mime-and-lang))
+                                    (write model stream (->jstring (cdr mime-and-lang)))))))
+                      (else
+                       (no-can-do request
+                                  '|SC_NOT_FOUND|
+                                  "The submodel ~a has no metadata" submodel-name))))
 
                ((and kb (eq? query 'metadata))
                 (no-can-do request 
@@ -379,7 +411,7 @@
                 '(|SC_NOT_FOUND|)))))
       (else
        '(|SC_NOT_FOUND|)))))
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; PUT support
@@ -389,120 +421,236 @@
 ;; one element in the path), or creates or updates a submodel (if there
 ;; are two elements in the path).  It is an error to create a
 ;; knowledgebase where one of that name exists already.
-(define/contract (http-put (request  request?) -> list?)
+(define/contract (http-put (request request?) -> list?)
+  (let ((path-list (request->path-list request)))
+    (cond ((not (content-headers-ok? request))
+           (no-can-do request '|SC_NOT_IMPLEMENTED|
+                      "Found unexpected content-* header; allowed ones are ~a"
+                      (content-headers-ok?)))
+          (else
+           (let loop ((h put-handlers))
+             (cond ((null? h)
+                    (no-can-do request '|SC_BAD_REQUEST|
+                               "I don't know what to do with that URL: ~a" (request->kb-uri request)))
+                   (((car h) path-list request))
+                   (else (loop (cdr h)))))))))
 
-  ;; Create a new KB, or manage an existing one.  The knowledgebase is
-  ;; called kb-name (a symbol), and the content of the request is read
-  ;; from the given reader.
-  (define (manage-knowledgebase kb-name query)
-     (define-generic-java-methods
-       get-reader
-       get-input-stream)
-    (let ((kb (kb:get kb-name))
-          (content-type (request->content-type request)))
-      (cond
-       ;; at one time there was a (and kb query (string=? query "metadata"))
-       ;; condition here, to update the metadata -- I no longer support this.
+;; Create a new KB, or manage an existing one.  The knowledgebase is
+;; called kb-name (a symbol), and the content of the request is read
+;; from the given reader.
+(define/contract (handle-manage-knowledgebase (path-list list?) (request request?) -> list-or-false?)
+  (define-generic-java-methods get-reader get-input-stream)
+  (and (= (length path-list) 1)
+       (let ((kb (kb:get (request->kb-uri request)))
+             (content-type (request->content-type request))
+             (query (request->query-string request)))
+         (cond
+          ((and kb query)               ;unrecognised query
+           (no-can-do request '|SC_BAD_REQUEST|
+                      "Unrecognised query ~a?~a"
+                      (kb 'get-name-as-string) query))
 
-       ((and kb query)                  ;unrecognised query
-        (no-can-do request '|SC_BAD_REQUEST|
-                   "Unrecognised query ~a?~a"
-                   kb-name query))
+          (kb                           ;already exists
+           (no-can-do request
+                      '|SC_FORBIDDEN|   ;correct? or SC_CONFLICT?
+                      "Knowledgebase ~a already exists (~s)"
+                      (kb 'get-name-as-string) kb))
 
-       (kb                              ;already exists
-        (no-can-do request
-                   '|SC_FORBIDDEN|      ;correct? or SC_CONFLICT?
-                   "Knowledgebase ~a already exists (~s)"
-                   kb-name kb))
+          (query               ;no knowledgebase, but there is a query
+           (no-can-do request '|SC_BAD_REQUEST|
+                      "Knowledgebase ~a does not exist, so query ~a is not allowed"
+                      (kb 'get-name-as-string) query))
 
-       (query                  ;no knowledgebase, but there is a query
-        (no-can-do request '|SC_BAD_REQUEST|
-                   "Knowledgebase ~a does not exist, so query ~a is not allowed"
-                   kb-name query))
+          ((not content-type)
+           (no-can-do request
+                      '|SC_BAD_REQUEST|
+                      "Can't post metadata without a content-type"))
 
-       ((not content-type)
-        (no-can-do request
-                   '|SC_BAD_REQUEST|
-                   "Can't post metadata without a content-type"))
+          (else                        ;normal case -- create a new KB
+           (let* ((new-kb-name (request->kb-uri request))
+                  (md (get-metadata-from-source (if (string=? content-type "text/plain")
+                                                    (reader->jstring (get-reader request))
+                                                    (get-input-stream request))
+                                                new-kb-name
+                                                content-type))
+                  (persistent-submodels
+                   (rdf:select-statements md new-kb-name (rdf:make-quaestor-resource "persistentSubmodel") #f)))
+             (chatter "persistent-submodels=~s" persistent-submodels)
+             (cond ((not (null? persistent-submodels))
+                    (let ((pkb (kb:new new-kb-name md)))
+                      (define-generic-java-methods (get-uri |getURI|))
+                      (for-each (lambda (sm) ;SM is a RDFNode which is a Resource
+                                  (chatter "SM=~s" sm)
+                                  (pkb 'add-abox! (->string (get-uri sm)) (rdf:new-persistent-model (get-uri sm) md)))
+                                persistent-submodels)))
+                   (else (kb:new new-kb-name md)))
+             '(|SC_NO_CONTENT|)))
 
-       (else                           ;normal case -- create a new KB
-        (kb:new kb-name
-                (get-metadata-from-source (if (string=? content-type "text/plain")
-                                              (reader->jstring (get-reader request))
-                                              (get-input-stream request))
-                                          kb-name
-                                          content-type))
-        '(|SC_NO_CONTENT|)))))
+;;           (else                        ;normal case -- create a new KB
+;;            (let ((new-kb-name (request->kb-uri request)))
+;;              (kb:new new-kb-name
+;;                      (get-metadata-from-source (if (string=? content-type "text/plain")
+;;                                                    (reader->jstring (get-reader request))
+;;                                                    (get-input-stream request))
+;;                                                new-kb-name
+;;                                                content-type)))
+;;            '(|SC_NO_CONTENT|))
+          ))))
 
-  ;; Given a knowledgebase called KB-NAME, upload a RDF/XML submodel called
-  ;; KB-NAME which is available from the given STREAM.  The RDF-MIME is
-  ;; the MIME type of the incoming stream.
-  (define (update-submodel kb-name
-                           submodel-name
-                           tbox?
-                           rdf-mime
-                           stream)
+;; Given a knowledgebase called KB-NAME, upload a RDF/XML submodel called
+;; KB-NAME which is available from the given STREAM.  The RDF-MIME is
+;; the MIME type of the incoming stream.
+(define/contract (handle-update-submodel (path-list list?) (request request?) -> list-or-false?)
+  (define-generic-java-methods get-input-stream)
+  (define (do-update-submodel kb-name
+                              submodel-name
+                              tbox?
+                              metadata?
+                              rdf-mime
+                              stream)
     (define-generic-java-methods concat to-string)
     (let ((kb (kb:get kb-name))
           (ok-headers '(type length))
-          (submodel-uri
-           ;; this is a rather clumsy way of constructing a sub-URI
-           ;; -- isn't there a better way?
-           (java-new <uri> (concat (to-string kb-name)
-                                                (->jstring (string-append "/" submodel-name))))))
+          (submodel-uri (request->submodel-uri request)))
       (if kb
           (with/fc
               (make-fc '|SC_BAD_REQUEST|)
             (lambda ()
               (chatter "update-submodel: about to read ~s (base=~s)" submodel-name submodel-uri)
               (let ((m (rdf:ingest-from-stream/language stream submodel-uri rdf-mime)))
-                (chatter "update-submodel: kb=~s submodel=~s"
-                         kb submodel-name)
-                (if (kb (if tbox? 'add-tbox 'add-abox)
-                        submodel-name
-                        m)
-                    ;(set-response-status! response '|SC_NO_CONTENT|)
-                    (list '|SC_NO_CONTENT|)
-                    (no-can-do request
-                               '|SC_INTERNAL_SERVER_ERROR| ;correct?
-                               "Unable to update model!")))))
+                (chatter "update-submodel: kb=~s submodel=~s" kb submodel-name)
+
+                (cond ((and metadata?
+                            (not (null? (rdf:select-statements m submodel-uri "a"
+                                                               (rdf:make-quaestor-resource "PersistentModel")))))
+                       (if persistence-factory
+                           (let ((persistent-model (persistence-factory submodel-uri)))
+                             (chatter "Created persistent submodel with URI ~a" submodel-uri)
+                             (kb 'add-abox! submodel-name persistent-model)
+                             (kb 'set-metadata! submodel-name m)
+                             (list '|SC_NO_CONTENT|))
+                           (no-can-do request '|SC_NOT_IMPLEMENTED| "No persistence configured in Quaestor")))
+                      (metadata?
+                       (kb 'set-metadata! submodel-name m)
+                       '(|SC_NO_CONTENT|))
+                      ((kb 'replace-submodel! submodel-name m)
+                       ;; This submodel already exists.
+                       ;; Remove all the statements from it, and add the new ones.
+                       ;; Do this, rather than simply calling add-[at]box! with the new model M,
+                       ;; so that if the submodel is a persistent one, for example,
+                       ;; it stays that way.
+                       (chatter "Replaced model at URI ~a" submodel-uri)
+                       '(|SC_NO_CONTENT|))
+                      ((kb (if tbox? 'add-tbox! 'add-abox!) submodel-name m)
+                       (chatter "Created transient submodel with URI ~a" submodel-uri)
+                       '(|SC_NO_CONTENT|))
+                      (else
+                       (no-can-do request '|SC_INTERNAL_SERVER_ERROR| ;correct?
+                                  "Unable to update model!"))))))
           (no-can-do request '|SC_BAD_REQUEST|
                      "No such knowledgebase ~a" kb-name))))
 
+  (and (= (length path-list) 2)
+       (let ((query-string (request->query-string request)))
+         (do-update-submodel (request->kb-uri request)
+                             (cadr path-list)
+                             (or (not query-string)
+                                 (string=? query-string "tbox"))
+                             (and query-string (string=? query-string "metadata"))
+                             (request->content-type request)
+                             (get-input-stream request)))))
 
-  (define-generic-java-methods get-input-stream)
-  (let ((path-list (request->path-list request))
-        (query-string (request->query-string request)))
-    (cond ((not (content-headers-ok? request))
-           (no-can-do request '|SC_NOT_IMPLEMENTED|
-                      "Found unexpected content-* header; allowed ones are ~a"
-                      (content-headers-ok?)))
-
-          ((= (length path-list) 1)
-           (manage-knowledgebase (request->kb-uri request)
-                                 query-string))
-
-          ((= (length path-list) 2)
-           (update-submodel (request->kb-uri request)
-                            (cadr path-list)
-                            (or (not query-string)
-                                (string=? query-string "tbox"))
-                            (request->content-type request)
-                            (get-input-stream request)))
-
-          (else                         ;ooops
-           (let ()
-             (define-generic-java-method get-path-info)
-             (no-can-do request '|SC_BAD_REQUEST|
-                        "The request path ~a has the wrong number of elements (1 or 2)"
-                        (->string (get-path-info request))))))))
-
+(define put-handlers (list handle-manage-knowledgebase handle-update-submodel))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; POST support
 
+(define/contract (http-post (request request?) -> list?)
+  (let ((path-list (request->path-list request)))
+    (cond ((not (content-headers-ok? request))
+           (no-can-do request '|SC_NOT_IMPLEMENTED|
+                      "Found unexpected content-* header; allowed ones are ~a"
+                      (content-headers-ok?)))
+          (else
+           (let loop ((h post-handlers))
+             (cond ((null? h)
+                    (no-can-do request '|SC_BAD_REQUEST|
+                               "I don't know how to respond to a POST to that URL: ~a" (request->kb-uri request)))
+                   (((car h) path-list request))
+                   (else (loop (cdr h)))))))))
+
+;; Handle a POST of a SPARQL query.  Must have content-type APPLICATION/SPARQL-QUERY
+(define/contract (handle-post-sparql-query (path-list list?) (request request?) -> list-or-false?)
+  (define-generic-java-methods get-reader)
+  (and (= (length path-list) 1)
+       (not (request->query-string request))
+       (string=? (request->content-type request) "application/sparql-query")
+;;        (let ((content-type (request->content-type request)))
+;;          (or (not content-type)
+;;              (string=? content-type "application/sparql-query")))
+       (let ((kb (kb:get (request->kb-uri request))))
+         (or kb
+             (report-exception 'http-post
+                               '|SC_BAD_REQUEST|
+                               "don't know about knowledgebase ~a" (car path-list)))
+         (list
+          '|SC_OK|
+          (sparql:make-query-runner kb
+                                    (reader->jstring (get-reader request))
+                                    (request->accept-mime-types request))))))
+
+;; Handle a POST of RDF to a submodel URL
+(define/contract (handle-post-appended-rdf (path-list list?) (request request?) -> list-or-false?)
+  (define-generic-java-methods get-input-stream add size to-string)
+  (define (print-model-statements model); XXX DEBUG
+    (let ((pu (java-null (java-class '|com.hp.hpl.jena.util.PrintUtil|))))
+      (define-generic-java-methods
+        list-statements
+        print)
+      (sort-list
+       (map (lambda (stmt)
+              (->string (print pu stmt)))
+            (jobject->list (list-statements model)))
+       string<=?)))
+  (let ((mime-type (request->content-type request))
+        (kb (kb:get (request->kb-uri request))))
+    (and (= (length path-list) 2)
+         (not (request->query-string request))
+         mime-type
+         kb
+         (cond ((rdf:mime-type->language mime-type)
+                => (lambda (rdf-language)
+                     (let ((submodel (kb 'get-model (cadr path-list)))
+                           (new-model (rdf:ingest-from-stream/language (get-input-stream request)
+                                                                       (request->submodel-uri request)
+                                                                       mime-type)))
+                       (cond (submodel
+                              (kb 'append-to-submodel! (cadr path-list) new-model)
+                              (list '|SC_OK|
+                                    (response-page request
+                                                   "Quaestor"
+                                                   `((p ,(format #f "Added ~a statements to submodel ~a"
+                                                                 (->number (size new-model))
+                                                                 (->string (to-string (request->submodel-uri request)))))
+                                                     ;;(p "Model now is...")
+                                                     ;;(pre ,@(print-model-statements (kb 'get-model (cadr path-list))))
+                                                     ;;(p "Model metadata is...")
+                                                     ;;(pre ,@(print-model-statements (kb 'get-metadata (cadr path-list))))
+                                                     ))))
+                             (else
+                              (no-can-do request
+                                         '|SC_NOT_FOUND|
+                                         "I can't find submodel ~a" path-list))))))
+               (else
+                (no-can-do request
+                           '|SC_BAD_REQUEST|
+                           "MIME type ~a is not an RDF type I recognise" mime-type))))))
+
+(define post-handlers (list handle-post-sparql-query handle-post-appended-rdf))
+
 ;; Handle POST requests.  Return #t on success, or a string response
-(define/contract (http-post (request  request?) -> list?)
+(define/contract (xxx-http-post (request  request?) -> list?)
   (define-generic-java-methods get-reader set-content-type)
   (let ((path-list (request->path-list request))
         (query-string (request->query-string request))
@@ -530,8 +678,7 @@
                    '|SC_BAD_REQUEST|
                    "POST SPARQL request must have one path element, no query, and content-type application/sparql-query~%(path=~s, query=~a, content-type=~a)"
                    path-list query-string content-type))))
-
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; DELETE support
@@ -553,12 +700,15 @@
        (let ((submodel (cadr path-list)))
          (cond ((kb:get kb-name)
                 => (lambda (kb)
-                     (if (kb 'drop-submodel submodel)
-                         '(|SC_NO_CONTENT|)
-                         (no-can-do request
-                                    '|SC_BAD_REQUEST|
-                                    "No such submodel \"~a\""
-                                    submodel))))
+                     (cond ((kb 'drop-submodel! submodel)
+                            => (lambda (sm)
+                                 (define-generic-java-methods close)
+                                 ;(close sm)
+                                 '(|SC_NO_CONTENT|)))
+                           (else
+                            (no-can-do request
+                                       '|SC_BAD_REQUEST|
+                                       "No such submodel \"~a\"" submodel)))))
                (else
                 (no-can-do request
                            '|SC_BAD_REQUEST|
@@ -568,7 +718,7 @@
                   '|SC_BAD_REQUEST|
                   "The request path has too many elements: ~s"
                   path-list)))))
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Helpers specific to this module
@@ -584,6 +734,20 @@
                     (string-append (webapp-base-from-request request #t)
                                    "/"
                                    (car path-list)))))))
+
+;; REQUEST->SUBMODEL-URI : request -> uri-or-false
+;; Return a URI which is used as the name of a KB submodel.
+;; Return #f if there is no path, or it doesn't have enough elements.
+(define (request->submodel-uri request)
+  (let ((path-list (request->path-list request)))
+    (and (= (length path-list) 2)
+         (java-new <uri>
+                   (->jstring
+                    (string-append (webapp-base-from-request request #t)
+                                   "/"
+                                   (car path-list)
+                                   "/"
+                                   (cadr path-list)))))))
 
 ;; GET-METADATA-FROM-SOURCE : jinput-stream base-uri content-type -> jena-model
 ;; GET-METADATA-FROM-SOURCE : jstring base-uri <ignored> -> jena-model
@@ -636,7 +800,7 @@
               (and f (hashtable/remove! fmap ftoken))))
           f)
         #f)))
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; XML-RPC support
@@ -845,7 +1009,7 @@
                                  "<null>"))))))))
   (set! xmlrpc-handler _xmlrpc-handler)
 )                                     ;end of module xmlrpc-support
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Pickup
@@ -880,6 +1044,26 @@
                       "can't find callback for token ~a (have you called this more than once?)"
                       (car path-list))))))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Config handling.  Simply display a status page.
+
+(define/contract (config-handler (request request?) -> list?)
+  (list '|SC_OK|
+        (response-page request
+                       "Quaestor config"
+                       `((p "Quaestor configuration and versions")
+                         (table (@ (border 1))
+                                ,@(map (lambda (pair)
+                                         `(tr (td ,(symbol->string (car pair)))
+                                              (td ,(or (cdr pair) "not available"))))
+                                       (ident)))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Really miscellaneous stuff
 
 ;; Return true if debugging is on; false otherwise.
 ;; If given an argument, set the debugging state to that value and return the

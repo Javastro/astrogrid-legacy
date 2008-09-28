@@ -69,7 +69,7 @@
 ;; The last two are for logging.  In each case, use the object to log to;
 ;; the java-object must be something which has a log(String) method on it.
 (define make-fc
-  (let ((show-stack-trace-on-error? #f)
+  (let ((show-stack-trace-on-error? #t)
         (logger (lambda (fmt . args) (apply format `(#t ,fmt . ,args)))))
     (lambda (fc-arg)
       (cond ((symbol? fc-arg)
@@ -77,7 +77,11 @@
              (lambda (error-record cont)
                (let* ((msg-or-pair (error-message error-record))
                       (show-debugging? (not (pair? msg-or-pair)))
-                      (msg (if (pair? msg-or-pair) (cdr msg-or-pair) msg-or-pair))
+                      ;(msg (if (pair? msg-or-pair) (cdr msg-or-pair) msg-or-pair))
+                      (msg (cond ((pair? msg-or-pair)
+                                  (cdr msg-or-pair))
+                                 (msg-or-pair)
+                                 (else (format-error-record error-record)))) ;getting desperate now...
                       ;; I'm not convinced this extra debugging info is helpful
                       (full-msg
                        (and show-stack-trace-on-error?
@@ -95,6 +99,7 @@
                                                      "[Can't happen: (chatter) produced ~s]" c))))
                                     (with-output-to-string
                                       (lambda () (print-stack-trace cont)))))))
+                 ;(logger "MAKE-FC: ~a~%full message: ~a [[[record=~s]]]~%" msg (or full-msg "") error-record)
                  (logger "MAKE-FC: ~a~%~a~%" msg (or full-msg ""))
                  (list (if (pair? msg-or-pair)
                            (car msg-or-pair)
@@ -104,7 +109,7 @@
                          (pre (@ (class error))
                               ,(format #f "~%Error~a: ~a~%"
                                        (cond ((error-location error-record)
-                                              => (cut format #f "at ~a" <>))
+                                              => (cut format #f " at ~a" <>))
                                              (else ""))
                                        msg))
                          (p "For further information, see the server logs")
@@ -153,7 +158,10 @@
                   parent-msg)
                  ((not loc)
                   (format #f "Error: ~a~a"
-                          msg (if parent-msg (format #f "~%Caused by: ~a" parent-msg) "")))
+                          (if (java-object? msg)
+                              (->string (to-string msg))
+                              msg)
+                          (if parent-msg (format #f "~%Caused by: ~a" parent-msg) "")))
                  ((and (eq? loc 'java/invoke-method) parent-msg)
                   ;; this error record is uninteresting -- it seems to wrap
                   ;; all scheme exceptions; so skip it

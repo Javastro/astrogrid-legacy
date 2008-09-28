@@ -3,6 +3,13 @@
 // Control the Quaestor servlet which is tested by setting the quaestor.url
 // property (which means setting -Dquaestor.url=http://.../quaestor/. 
 // in the call to ant).
+//
+// Note that the tests below are NOT independent!  Various of the
+// tests depend on the state generated in preceding tests.  This is
+// certainly unfortunate, not least because I don't think that the
+// order the tests are run in is actually defined to be the same as
+// their order in the file.  However it seems to work OK for the
+// moment, so there isn't a pressing need to change it.
 
 package org.eurovotech.quaestor;
 
@@ -37,6 +44,13 @@ public class QuaestorTest
     private static final String testKB = "testing";
 
     private static final String quaestorNamespace = "http://ns.eurovotech.org/quaestor#";
+
+    private static final String sparqlSelectC1 = "SELECT ?i where { ?i a <urn:example#c1> }";
+    String[] sparqlQueryHeaders = new String[] {
+        "Accept", "text/csv",
+        "Content-Type", "application/sparql-query", 
+    };
+                                                   
 
     public QuaestorTest(String name)
             throws Exception {
@@ -171,17 +185,13 @@ public class QuaestorTest
         }
     }
 
+
     /* ******************** Other test methods ******************** */
 
     public void testQueryEmptyKB()
             throws Exception {
         // Query the empty KB.  This should produce no results, but shouldn't fail
-        HttpResult r = QuaestorConnection.httpPost(makeKbUrl(),
-                                                   "SELECT ?i where { ?i a <urn:example#c1> }",
-                                                   new String[] {
-                                                       "Accept", "text/csv",
-                                                       "Content-Type", "application/sparql-query",
-                                                   });
+        HttpResult r = QuaestorConnection.httpPost(makeKbUrl(), sparqlSelectC1, sparqlQueryHeaders);
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
         assertEquals(new String[] { "i" }, r.getContentAsStringList());
@@ -218,46 +228,121 @@ public class QuaestorTest
     
     public void testAddInstances ()
             throws Exception {
-        HttpResult r = QuaestorConnection.httpPut
-                (makeKbUrl("instances"),
-                 "<urn:example#i2> a <urn:example#c2>.",
-                 "text/rdf+n3");
+        HttpResult r = QuaestorConnection.httpPut(makeKbUrl("instances"),
+                                                  "<urn:example#i2> a <urn:example#c1>.",
+                                                  "text/rdf+n3");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
         assertNull(r.getContentAsString());
+
+        r = QuaestorConnection.httpPost(makeKbUrl(), sparqlSelectC1, sparqlQueryHeaders);
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/csv");
+        assertEquals(new String[] { "i", "urn:example#i2" }, r.getContentAsStringList());
 
         // Test the deprecated, but admissable, application/n3 MIME type.
         // Note that we must leave the 'instances' KB holding this triple,
         // for the following test to work.
-        r = QuaestorConnection.httpPut
-                (makeKbUrl("instances"),
-                 "<urn:example#i1> a <urn:example#c1>.",
-                 "application/n3");
+        r = QuaestorConnection.httpPut(makeKbUrl("instances"),
+                                       "<urn:example#i1> a <urn:example#c1>.",
+                                       "application/n3");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
         assertNull(r.getContentAsString());
+
+        // Now do the query again -- the above RDF (describing <#i1>) should have
+        // replaced what was there before
+        r = QuaestorConnection.httpPost(makeKbUrl(), sparqlSelectC1, sparqlQueryHeaders);
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/csv");
+        assertEquals(new String[] { "i", "urn:example#i1" }, r.getContentAsStringList());
     }
+
+    public void testAddSubmodelMetadata ()
+            throws Exception {
+        URL instancesURL = makeKbUrl("instances");
+        URL instancesMetadataURL = makeKbUrl("instances?metadata");
+        
+        HttpResult r = QuaestorConnection.httpPut(instancesMetadataURL,
+                                                  "<> <http://purl.org/dc/elements/1.1/description> \"Instance submodel metadata\".",
+                                                  "text/turtle");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+
+        // and retrieve it
+        r = QuaestorConnection.httpGet(instancesMetadataURL, "text/turtle");
+        // remove all spaces in both strings below, to avoid spurious mismatches
+        assertEquals("<" + instancesURL + "><http://purl.org/dc/elements/1.1/description>\"Instancesubmodelmetadata\".", 
+                     r.getContentAsString().replaceAll("\\s+", ""));
+    }
+
+    public void testAppendRdf ()
+            throws Exception {
+        HttpResult r;
+
+        r = QuaestorConnection.httpGet(makeKbUrl("instances"), "text/turtle");
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        String currentContents = r.getContentAsString();
+
+        // POST RDF to the submodel -- should append
+        r = QuaestorConnection.httpPost(makeKbUrl("instances"),
+                                        "<urn:example#i3> a <urn:example#c1>.",
+                                        "text/turtle");
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/html");
+
+        // The following should fail:
+
+        // append with a bad MIME-type
+        r = QuaestorConnection.httpPost(makeKbUrl("instances"),
+                                        "<urn:example#i4> a <urn:example#c1>.",
+                                        "text/wibble");
+        assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
+        assertContentType(r, "text/html");
+
+        // append to a non-existent submodel
+        r = QuaestorConnection.httpPost(makeKbUrl("bogus-instances"),
+                                        "<urn:example#i5> a <urn:example#c1>.",
+                                        "text/turtle");
+        assertStatus(r, HttpURLConnection.HTTP_NOT_FOUND);
+        assertContentType(r, "text/html");
+
+        // now append malformed RDF
+        r = QuaestorConnection.httpPost(makeKbUrl("instances"),
+                                        "This is not RDF",
+                                        "text/turtle");
+        assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
+
+        // query again -- the successful POST above, and nothing else,
+        // should have appended to what's there
+        r = QuaestorConnection.httpPost(makeKbUrl(), sparqlSelectC1, sparqlQueryHeaders);
+        assertStatus(r, HttpURLConnection.HTTP_OK);
+        assertContentType(r, "text/csv");
+        assertEquals(new String[] { "i", "urn:example#i3", "urn:example#i1" }, r.getContentAsStringList());
+
+        // ...and replace what was initially there
+        r = QuaestorConnection.httpPut(makeKbUrl("instances"), currentContents, "text/turtle");
+    }
+
+
+    /* ******************** SPARQL tests ******************** */
 
     public void testSparqlQueriesSelect() 
             throws Exception {
-        // note: this query depends on the previous test making it satisfiable
-        String query = "SELECT ?i where { ?i a <urn:example#c1>}";
+        // note: the sparqlSelectC1 query depends on the previous test making it satisfiable
         HttpResult r;
 
         // Make a successful query. and check XML response
-        r = QuaestorConnection.httpPost(makeKbUrl(), query, "application/sparql-query");
+        r = QuaestorConnection.httpPost(makeKbUrl(), sparqlSelectC1, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/sparql-results+xml");
         assertNotNull(r.getContentAsString());
         // don't check actual content string -- it's a bunch of XML
 
         // try making a query against a submodel -- should fail
-        r = QuaestorConnection.httpPost(makeKbUrl("ontology"),
-                     query,
-                     "application/sparql-query");
+        r = QuaestorConnection.httpPost(makeKbUrl("ontology"), sparqlSelectC1, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
         assertNotNull(r.getContentAsString()); // error message
 
         // POST a query with the wrong content-type
-        r = QuaestorConnection.httpPost(makeKbUrl(), query, "wibble/w00t");
+        r = QuaestorConnection.httpPost(makeKbUrl(), sparqlSelectC1, "wibble/w00t");
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
         assertNotNull(r.getContentAsString()); // error message
 
@@ -265,7 +350,7 @@ public class QuaestorTest
         // XXX this isn't actually correct yet, in that this still
         // returns a tabular-style query rather than n-triples.
         r = QuaestorConnection.httpPost(makeKbUrl(),
-                                        query,
+                                        sparqlSelectC1,
                                         new String[] {
                                             "Accept", "text/plain",
                                             "Content-Type", "application/sparql-query",
@@ -276,7 +361,7 @@ public class QuaestorTest
         // don't check actual content
 
         // Query through the GET interface
-        String encodedQuery = java.net.URLEncoder.encode(query, "UTF-8");
+        String encodedQuery = java.net.URLEncoder.encode(sparqlSelectC1, "UTF-8");
         r = QuaestorConnection.httpGet(makeKbUrl("?query="+encodedQuery));
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/sparql-results+xml");
@@ -297,8 +382,8 @@ public class QuaestorTest
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
         assertEquals("header=present", r.getContentTypeParameters());
-        String[] correctResponses = { "i", "urn:example#i1" };
-        assertEquals(correctResponses, r.getContentAsStringList());
+        assertEquals(new String[] { "i", "urn:example#i1" },
+                     r.getContentAsStringList());
     }
 
     public void testSparqlQueriesAsk()
@@ -371,6 +456,7 @@ public class QuaestorTest
         assertNotNull(r.getContentAsString());
     }
 
+
     /* ******************** Delegation tests ******************** */
 
     public void testLocalDelegation()
@@ -422,15 +508,10 @@ public class QuaestorTest
                                        "text/rdf+n3");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
 
-        String query = "SELECT ?i where { ?i a <urn:example#c1>}";
+        //String query = "SELECT ?i where { ?i a <urn:example#c1>}";
 
         // Make a successful query. and check XML response
-        r = QuaestorConnection.httpPost(kb_d3,
-                                        query,
-                                        new String[] {
-                                            "Content-type", "application/sparql-query",
-                                            "Accept", "text/csv",
-                                        });
+        r = QuaestorConnection.httpPost(kb_d3, sparqlSelectC1, sparqlQueryHeaders);
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
         // the order of the following isn't important, but this seems to be consistent
@@ -447,7 +528,7 @@ public class QuaestorTest
         deleteKbIfPresent(kb_d2);
         deleteKbIfPresent(kb_d3);
     }
-
+
     /* ******************** /code tests ******************** */
     /* These tests don't examine documented functionality, but
      * it's functionality I've broken before, and it's reassuring to
@@ -464,8 +545,8 @@ public class QuaestorTest
         assertContentType(r, "text/plain");
         assertNotNull(r.getContentAsString());
     }
-
-    /* ******************** XML-RPC tests ******************** */
+
+/* ******************** XML-RPC tests ******************** */
 
     public void testRpcGetSimple()
             throws Exception {
@@ -502,10 +583,8 @@ public class QuaestorTest
 
     public void testRpcQuery()
             throws Exception {
-        String query = "SELECT ?i where { ?i a <urn:example#c1>}";
         String askQuery = "ASK { <urn:example#i1> a <urn:example#c1>}";
-        String call = makeXmlRpcCall("query-model",
-                                     new Object[] {testKB, query});
+        String call = makeXmlRpcCall("query-model", new Object[] {testKB, sparqlSelectC1});
         ParsedRpcResponse rpc
                 = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
@@ -524,7 +603,7 @@ public class QuaestorTest
 
         // test requesting different MIME type
         rpc = performXmlRpcCall("query-model",
-                                new Object[] {testKB, query, "text/plain"});
+                                new Object[] {testKB, sparqlSelectC1, "text/plain"});
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
         assertNotNull(rpc.getResponseString());
@@ -536,13 +615,13 @@ public class QuaestorTest
 
         // test requesting bad MIME type
         rpc = performXmlRpcCall("query-model",
-                                new Object[] {testKB, query, "wibble/woot"});
+                                new Object[] {testKB, sparqlSelectC1, "wibble/woot"});
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(20, rpc.getFaultCode());
 
         // request OK mime type for SELECT, bad for ASK
         rpc = performXmlRpcCall("query-model",
-                                new Object[] {testKB, query, "text/csv"});
+                                new Object[] {testKB, sparqlSelectC1, "text/csv"});
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
         assertNotNull(rpc.getResponseString());
@@ -648,23 +727,135 @@ public class QuaestorTest
         assertContentType(r, "text/xml");
         return parseXmlRpcResponse(r.getContentAsString());
     }
-    
-    /* ******************** deletion of knowledgebases ******************** */
+
+    /* ******************** Persistence tests ******************** */
+
+    /* This is slightly difficult to test.
+     *
+     * It'd be nice to test the SDB support, but that really requires
+     * an external SDB database to be set up (using MySQL, PostgreSQL,
+     * or whatever), which is complicated.  As well, that support is
+     * arguably slightly peripheral.
+     *
+     * Testing TDB is easier, because the store is self-contained
+     * within Java, but it still requires some configuration of the
+     * Quaestor server.  Thus the tests below have to be skipped if
+     * that support isn't configured in.
+     */
+    public void testTDBKnowledgebase()
+            throws Exception {
+        HttpResult r;
+        URL tdbKb = new URL(contextURL, "kb/test-tdbkb/");
+        URL transientSubmodel = new URL(tdbKb, "transient");
+        URL persistentSubmodel = new URL(tdbKb, "persistent");
+        URL persistentSubmodelMetadata = new URL(tdbKb, "persistent?metadata");
+
+        // delete the KB first, in case it's hanging on from a
+        // previous run
+        deleteKbIfPresent(tdbKb);
+
+        r = QuaestorConnection.httpPut(tdbKb, "TDB knowledgebase", "text/plain");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+
+        // now add a transient submodel
+        r = QuaestorConnection.httpPut(transientSubmodel,
+                                       "<urn:example#t1> a <urn:example#c1>.",
+                                       "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+
+        // ...and a persistent one
+        r = QuaestorConnection.httpPut(persistentSubmodelMetadata,
+                                       "<> a <" + quaestorNamespace + "PersistentModel>; <http://purl.org/dc/elements/1.1/description> \"My description\".",
+                                       "text/turtle");
+        // if this doesn't work, we assume that it's because the TDB
+        // support isn't available
+
+        boolean doTests;
+        if (r.getStatus() == 204) {
+            // persistent submodel created
+            doTests = true;
+        } else if (r.getStatus() == 501) {
+            // persistence is not implemented in this Quaestor
+            System.err.println("No persistence implemented in this Quaestor; response=" + r);
+            doTests = false;
+        } else {
+            throw new AssertionFailedError("Unexpected response " + r.getStatus() 
+                                           + " when creating persistent submodel (response=" + r + ")");
+        }
+
+        if (doTests) {
+            // set the persistent submodel's contents to have one
+            // statement in it (don't POST, since that might include
+            // the results of the last time this test suite was run)
+            r = QuaestorConnection.httpPut(persistentSubmodel,
+                                           "<urn:example#p1> a <urn:example#c1>.",
+                                           "text/turtle");
+            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+
+            // check that was added OK
+            r = QuaestorConnection.httpPost(tdbKb, sparqlSelectC1, sparqlQueryHeaders);
+            assertStatus(r, HttpURLConnection.HTTP_OK);
+            assertContentType(r, "text/csv");
+            String[] resultStringList = r.getContentAsStringList();
+            java.util.Arrays.sort(resultStringList);
+            assertEquals(new String[] { "i", "urn:example#p1", "urn:example#t1"}, resultStringList);
+
+            // now delete the knowledgebase
+            r = QuaestorConnection.httpDelete(persistentSubmodel);
+            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+            r = QuaestorConnection.httpDelete(tdbKb);
+            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+
+            // Recreate the KB, recreate the persistent submodel, add
+            // new RDF, and query again.  We should find the new RDF,
+            // the old stuff in the persistent model, but not the
+            // stuff in the transient model.
+            r = QuaestorConnection.httpPut(tdbKb, "TDB knowledgebase again", "text/plain");
+            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+
+            r = QuaestorConnection.httpPut(persistentSubmodelMetadata,
+                                           "<> a <" + quaestorNamespace + "PersistentModel>.",
+                                           "text/turtle");
+
+            // add another statement to the model
+            r = QuaestorConnection.httpPost(persistentSubmodel,
+                                            "<urn:example#p2> a <urn:example#c1>.",
+                                            "text/turtle");
+            assertStatus(r, HttpURLConnection.HTTP_OK);
+
+            r = QuaestorConnection.httpPost(tdbKb, sparqlSelectC1, sparqlQueryHeaders);
+            assertStatus(r, HttpURLConnection.HTTP_OK);
+            assertContentType(r, "text/csv");
+            resultStringList = r.getContentAsStringList();
+            java.util.Arrays.sort(resultStringList);
+            // the order is not mandated here, but this happens to be correct
+            assertEquals(new String[] { "i", "urn:example#p1", "urn:example#p2", }, resultStringList);
+
+            // tidy up by deleting the submodel and the model
+            // (though this won't actually get rid of the persistence
+            // structures on disk)
+            r = QuaestorConnection.httpDelete(persistentSubmodel);
+            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+            r = QuaestorConnection.httpDelete(tdbKb);
+            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        }
+    }
+    
+/* ******************** deletion of knowledgebases ******************** */
 
     public void testDeleteKnowledgebase()
             throws Exception {
         HttpResult r;
 
-        // first add a new submodel, which we will momently delete
-        r = QuaestorConnection.httpPut
-                (makeKbUrl("tempsubmodel"),
-                 "<urn:example#test1> a <urn:example#testclass1>.",
-                 "text/rdf+n3");
+        // first add a new submodel, which we will very shortly delete
+        r = QuaestorConnection.httpPut(makeKbUrl("tempsubmodel"),
+                                       "<urn:example#test1> a <urn:example#testclass1>.",
+                                       "text/rdf+n3");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
         assertNull(r.getContentAsString());
 
         // now delete it with the wrong name
-        r = QuaestorConnection.httpDelete(makeKbUrl("tempxx"));
+        r = QuaestorConnection.httpDelete(makeKbUrl("bogusxxx"));
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
 
         // ...and with the correct name
@@ -680,9 +871,8 @@ public class QuaestorTest
         // should fail when done a second time
         r = QuaestorConnection.httpDelete(makeKbUrl());
         assertEquals(4, r.getStatus()/100);
-        //assertEquals("", r.getContentAsString());
     }
-
+
     /* ********** Helper methods ********** */
 
     private URL makeKbUrl() 
@@ -784,13 +974,13 @@ public class QuaestorTest
             for (int i=0; i<slcorrect.length; i++)
                 assertEquals(slcorrect[i], sltest[i]);
         } catch (AssertionFailedError e) {
-            System.err.println("assertEquals[StringList](");
+            System.err.println("assertEquals[StringList]:");
+            System.err.println("  expected:");
             for (int i=0; i<slcorrect.length; i++)
-                System.err.println("  " + slcorrect[i]);
-            System.err.println("  ,");
+                System.err.println("    " + slcorrect[i]);
+            System.err.println("  got:");
             for (int i=0; i<sltest.length; i++)
-                System.err.println("  " + sltest[i]);
-            System.err.println("  )");
+                System.err.println("    " + sltest[i]);
 
             // and rethrow the error
             throw e;
@@ -1014,6 +1204,8 @@ public class QuaestorTest
         }
         return ret;
     }
+
+    /* ******************** Helper class -- manage RPC ******************** */
 
     public static class ParsedRpcResponse {
         boolean isValidResponse;

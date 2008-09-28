@@ -15,11 +15,37 @@ persistent model (or, in Quaestor’s terms, a persistent submodel
 within a ‘knowledgebase’), backed by a database, which will persist
 between Quaestor invocations.</p>
 
+<h2>Jena TDB</h2>
+
+<p>The preferred persistence mechanism – certainly the simpler to set
+up – uses the <a href='http://jena.sourceforge.net/TDB/' >Jena TDB library</a>.</p>
+
+<p>To configure a persistent submodel, you must create the submodel by
+PUTting appropriate metadata to a submodel's metadata URL.  You must
+do this when creating the submodel – you cannot convert an existing
+model to a persistent one by altering its metadata.  You declare that
+the submodel, named by its URI, is of type
+<code>quaestor:PersistentModel</code>, by PUTting RDF like the
+following:</p>
+<pre>
+@prefix quaestor: &lt;http://ns.eurovotech.org/quaestor#&gt;.
+&lt;&gt; a quaestor:PersistentModel.
+</pre>
+<p>Note that, since this RDF is parsed with the submodel's URI as its
+base URI, you can most conveniently refer to the submodel as just
+<code>&lt;&gt;</code> (or <code>rdf:about=""</code> when using
+RDF/XML).</p>
+
+<p>This will only work if the Quaestor server has been configured to
+permit persistent models.</p>
+
 <h2>Jena SDB</h2>
 
-<p>The only persistence mechanism currently implemented in Quaestor is
+<p>The other persistence mechanism currently implemented in Quaestor is
 one which uses the <a href='http://jena.sourceforge.net/SDB/'>Jena SDB
-interface</a>.</p>
+interface</a>.  This is more fully developed than TDB, and is probably
+currently preferable for storing large volumes of data, although with
+increasing maturity, TDB should take over this role, too.</p>
 
 <p>To use this persistence mechanism, you must set up and initialise
 your SDB database, as discussed at <a

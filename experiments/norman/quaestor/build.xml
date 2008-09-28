@@ -76,10 +76,8 @@
 
   <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
-  <!-- Versions: make odd-numbered versions stable (-ish), and even-numbered
-       ones intermediate beta releases. -->
-  <property name="app.version"   value="0.4.10"/>
-  <property name='release.date'  value='2008 August 20'/>
+  <property name="app.version"   value="0.5"/>
+  <property name='release.date'  value='2008 September 28'/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.client"  value="${build.home}/client"/>
@@ -128,6 +126,7 @@
    !                          which you have chosen to use with SDB
    ! -->
 
+  <property name='tdb.jar' value=''/>
 
   <!-- ================= Custom Ant Task Definitions ====================== -->
   <!-- See also <http://localhost:8080/tomcat-docs/manager-howto.html> -->
@@ -235,7 +234,10 @@
     <include name='*.jar'/>
   </fileset>
 
+  <!--
   <filelist id='sdb.support' dir='${sdb.lib}' files='sdb.jar'/>
+  <fileset id='tdb.support' file='${tdb.jar}'/>
+  -->
 
   <fileset id='jetty.support' dir='${jetty.home}/lib'>
     <include name='*.jar'/>
@@ -256,11 +258,13 @@
     <fail unless="jena.present"
           message="Must have Jena to build: see jena.sourceforge.net"/>
 
+    <!--
     <available property='sdb.present'
                filepath='${sdb.lib}'
                file='sdb.jar'/>
     <fail unless='sdb.present'
           message='Must have SDB; version at least SVN XXX'/>
+    -->
 
     <available property='jetty.present'
                filepath='${jetty.home}'
@@ -522,7 +526,7 @@
     <unjar dest="${build.home}/quaestorlib">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
-      <filelist refid="sdb.support"/>
+      <!--<filelist refid="sdb.support"/>-->
       <fileset file="${jdbc.support.jar}"/>
       <!-- jetty.support shouldn't be here, since the presence of
            javax.servlet.Servlet.class here violates the servlet spec
@@ -745,7 +749,8 @@
     <copy todir="${build.lib}">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
-      <filelist refid="sdb.support"/>
+      <!--<filelist refid="sdb.support"/>-->
+      <!--<fileset refid='tdb.support'/>                           <!- -may be missing-->
       <fileset file='${jdbc.support.jar}'/>
       <!--<fileset refid='jetty.support'/>-->
     </copy>

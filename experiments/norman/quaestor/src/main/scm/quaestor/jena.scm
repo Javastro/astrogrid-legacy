@@ -8,11 +8,13 @@
 (require-library 'sisc/libs/srfi/srfi-26)
 
 (require-library 'quaestor/utils)
+(require-library 'org/eurovotech/quaestor/scheme-wrapper-support)
 
 (require-library 'util/lambda-contract)
 
 (module jena
 ( rdf:new-empty-model
+  rdf:create-persistent-model-factory
   rdf:ingest-from-stream/language
   rdf:ingest-from-string/turtle
   rdf:merge-models
@@ -23,7 +25,8 @@
   rdf:get-property-on-resource
   rdf:get-properties-on-resource
   rdf:select-statements
-  rdf:select-object/string)
+  rdf:select-object/string
+  rdf:make-quaestor-resource)
 
 (import* srfi-1
          fold)
@@ -34,7 +37,12 @@
          cut)
 (import* utils
          is-java-type?
-         jobject->list)
+         jobject->list
+         java-class-present)
+(import* quaestor-support
+         chatter
+         format-error-record
+         report-exception)
 
 ;; heavily used classes
 (define-java-classes
@@ -77,11 +85,94 @@
 ;;
 ;; Start the implementation
 
-;; Return a new empty model
+;; Return a new empty model, which is not backed by anything
 (define/contract (rdf:new-empty-model -> jena-model?)
   (define-java-class <com.hp.hpl.jena.rdf.model.model-factory>)
   ((generic-java-method '|createDefaultModel|)
    (java-null <com.hp.hpl.jena.rdf.model.model-factory>)))
+
+(define (as-jstring s) ; convert a string to a jstring, as long as it's not #f
+  (and s (->jstring s)))
+
+;; RDF:CREATE-PERSISTENT-MODEL-FACTORY : model -> procedure-or-false
+;; Given a Jena model, return a procedure which will create persistent models.
+;; The CONFIG model must include a resource which has a string-valued
+;; property quaestor:persistenceDirectory.  This names an existing directory
+;; which will be used to hold persistent models.
+;;
+;; The resulting procedure has the contract
+;;   ((uri (or (jstring? uri)
+;;             (string? uri)
+;;             (is-java-type? uri '|java.net.URI|)))
+;;    -> jena-model?)
+;; Given a URI which names the model to be constructed or retrieved,
+;; it returns a persistent model.
+;;
+;; If persistent models cannot be created (because the TDBFactory support is
+;; not available), return #f
+(define/contract (rdf:create-persistent-model-factory (config jena-model?)
+                                                      -> (lambda (x) (or (not x) (procedure? x))))
+  (define-java-classes <java.io.file>)
+  (define-generic-java-methods exists)
+  (if (java-class-present '|com.hp.hpl.jena.tdb.TDBFactory|)
+      (let ((persistence-directory
+             (as-jstring
+              (rdf:select-object/string config #f (rdf:make-quaestor-resource "persistenceDirectory")))))
+        (cond ((and persistence-directory
+                    (->boolean (exists (java-new <java.io.file> persistence-directory))))
+               (lambda/contract ((uri (or (jstring? uri)
+                                          (string? uri)
+                                          (is-java-type? uri '|java.net.URI|)))
+                                 -> jena-model?)
+                 (define-java-classes (<tdb-factory> |com.hp.hpl.jena.tdb.TDBFactory|) <java.io.file>)
+                 (define-generic-java-methods assemble-model to-string replace-all)
+
+                 (define (make-persistence-file directory key)
+                   ;; jstring? jstring? -> <java.io.File>
+                   (define-java-classes <java.io.file-output-stream>)
+                   (define-generic-java-methods
+                     write concat close delete-on-exit
+                     create-temp-file create-resource create-property add add-literal)
+                   (let ((m (rdf:new-empty-model))
+                         (tfile (create-temp-file (java-null <java.io.file>) key (->jstring ".rdf")))
+                         (ja-ns  (lambda (x) (->jstring (string-append "http://jena.hpl.hp.com/2005/11/Assembler#" x))))
+                         (tdb-ns (lambda (x) (->jstring (string-append "http://jena.hpl.hp.com/2008/tdb#" x))))
+                         (rdf-ns (lambda (x) (->jstring (string-append "http://www.w3.org/1999/02/22-rdf-syntax-ns#" x))))
+                         (null-string (->jstring "")))
+                     (delete-on-exit tfile)
+                     (chatter "make-persistence-file: directory=~a  key=~a  tfile=~a"
+                              directory key (to-string tfile))
+                     (let ((r (create-resource m))
+                           (graphspec (create-resource m))
+                           (type-property (create-property m (rdf-ns "type") null-string)))
+                       (add-literal m r
+                                    (create-property m (ja-ns "loadClass") null-string)
+                                    (->jstring "com.hp.hpl.jena.tdb.TDB"))
+                       (add m r
+                            type-property
+                            (create-resource m (ja-ns "RDFDataset")))
+                       (add m r (create-property m (ja-ns "defaultGraph") null-string) graphspec)
+                       (add m graphspec type-property (create-resource m (tdb-ns "GraphTDB")))
+                       (add-literal m graphspec
+                                    (create-property m (tdb-ns "location") null-string)
+                                    (concat (concat directory (->jstring "/")) key))
+                       (let ((fos (java-new <java.io.file-output-stream> tfile)))
+                         (write m fos)
+                         (close fos))
+                       tfile)))
+
+                 (assemble-model (java-null <tdb-factory>)
+                                 (to-string (make-persistence-file persistence-directory
+                                                                   (replace-all (cond ((jstring? uri) uri)
+                                                                                      ((string? uri) (->jstring uri))
+                                                                                      (else (to-string uri)))
+                                                                                (->jstring "[^A-Za-z0-9]")
+                                                                                (->jstring "-")))))))
+              (persistence-directory
+               (error "Can't make persistent model handler: the persistence-directory ~s does not exist" persistence-directory))
+              (else
+               (error "Can't make persistent model handler: the persistence info does not indicate a quaestor:persistenceDirectory"))))
+      #f))                              ;no TDBFactory present
 
 ;; rdf:ingest-from-uri : string -> model
 ;; Given a URI, this reads in the RDF within it, and returns the
@@ -427,9 +518,10 @@
 
 ;; RDF:SELECT-OBJECT/STRING : model resource-or-string property-or-string -> string-or-false
 ;; Equivalent to (->string (to-string (car (rdf:select-statements model resource property #f)))),
-;; but returning #f if there are no matches
+;; but returning #f if there are no matches.
 (define/contract (rdf:select-object/string (model jena-model?)
-                                           (subject   (or (jena-resource? subject)
+                                           (subject   (or (not subject)
+                                                          (jena-resource? subject)
                                                           (string? subject)
                                                           (jstring? subject)))
                                            (predicate (or (jena-property? predicate)
@@ -438,12 +530,15 @@
                                            -> (lambda (x)
                                                 (or (not x)
                                                     (string? x))))
-  (define-generic-java-method to-string)
+  (define-generic-java-methods to-string get-object)
   (let ((result-nodes (rdf:select-statements model subject predicate #f)))
-    (and (not (null? result-nodes))
-         (->string (to-string (car result-nodes))))))
+    (if subject
+        (and (not (null? result-nodes))
+             (->string (to-string (car result-nodes))))
+        (and (not (null? result-nodes)) ;result-nodes is a list of <Statement>
+             (->string (to-string (get-object (car result-nodes))))))))
 
-;; RDF:SELECT-STATEMENTS : model subject predicate object -> list-of-rdfnode
+;; RDF:SELECT-STATEMENTS : model subject predicate object -> list
 ;;
 ;; Query a model, matching the specified patterns.
 ;;
@@ -463,8 +558,11 @@
 ;; URL; otherwise (it's a scheme string), it's transformed into an RDF
 ;; literal of string type.
 ;;
+;; If none of SUBJECT, PREDICATE or OBJECT is #f, we return a list which is non-null if the
+;; corresponding statement appears in the model.
 ;; If precisely one of SUBJECT, PREDICATE and OBJECT is #f, we return a list
-;; of RDFNode objects, one for each of the statements which matches the pattern.
+;; of RDFNode objects corresponding to the slot indicated with #f,
+;; one for each of the statements which matches the pattern.
 ;; If more than one of SUBJECT, PREDICATE and OBJECT is #f, we return a list of Statements.
 (define/contract (rdf:select-statements (model     jena-model?)
                                         (subject   (or (not subject)
@@ -475,7 +573,7 @@
                                         (predicate (or (not predicate)
                                                        (jena-property? predicate)
                                                        (string? predicate)
-                                                       (is-java-type? subject <uri>)
+                                                       (is-java-type? predicate <uri>)
                                                        (jstring? predicate)))
                                         (object    (or (not object)
                                                        (jena-rdfnode? object)
@@ -495,8 +593,10 @@
     (<resource> |com.hp.hpl.jena.rdf.model.Resource|)
     (<property> |com.hp.hpl.jena.rdf.model.Property|)
     (<rdf-node> |com.hp.hpl.jena.rdf.model.RDFNode|))
-  (let ((accessor ;get accessor for result, checking precisely one #f.
-                                        ;Throw error if none, accessor => #f if more than one.
+  (let ((accessor ;get accessor for result:
+         ; no #f: accessor <= 'test-only
+         ; precisely one #f: accessor <= procedure
+         ; more than one #f: accessor <= #f
          (cond ((not subject)   (and predicate object
                                      get-subject))
                ((not predicate) (and subject object
@@ -504,7 +604,7 @@
                ((not object)    (and subject predicate
                                      get-object))
                (else
-                (error 'rdf:select-statements "Bad call: no #f slot"))))
+                'test-only)))
         (qsubject                      ;subject, as a resource or null
          (cond ((not subject)
                 (java-null <resource>))
@@ -521,10 +621,9 @@
                 predicate)
                ((and (string? predicate)
                      (string=? predicate "a"))
-                (create-property
-                 model
-                 (->jstring "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-                 (->jstring "")))
+                (create-property model
+                                 (->jstring "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                                 (->jstring "")))
                ((is-java-type? predicate <uri>)
                 (create-property model (to-string predicate)))
                (else                    ; string
@@ -533,24 +632,28 @@
         (qobject              ;object, as a resource, literal, or null
          (cond ((not object)            ;#f
                 (java-null <rdf-node>))
-               ((is-java-type? object <rdf-node>)
-                                        ;already a RDFNode
+               ((is-java-type? object <rdf-node>) ;already a RDFNode
                 object)
-               ((java-object? object)
-                                        ;some other Java obj
-                (create-typed-literal model
-                                      object))
-               ((string-prefix? "http://" object)
-                                        ;string naming resource
+               ((java-object? object)   ;some other Java obj
+                (create-typed-literal model  object))
+               ((string-prefix? "http://" object) ;string naming resource
                 (create-resource model
                                  (->jstring object)))
                (else                    ;literal string
                 (create-typed-literal model
                                       (->jstring object))))))
-    (if accessor
-        (map accessor
-             (jobject->list (list-statements model qsubject qpredicate qobject)))
-        (jobject->list (list-statements model qsubject qpredicate qobject)))))
+    (cond ((eq? accessor 'test-only)
+           (jobject->list (list-statements model qsubject qpredicate qobject)))
+          (accessor
+           (map accessor
+                (jobject->list (list-statements model qsubject qpredicate qobject))))
+          (else
+           (jobject->list (list-statements model qsubject qpredicate qobject))))))
+
+;; RDF:MAKE-QUAESTOR-RESOURCE : string -> string
+;; Given a fragment, return it prefixed by the Quaestor namespace
+(define/contract (rdf:make-quaestor-resource (fragment string?) -> string?)
+  (string-append "http://ns.eurovotech.org/quaestor#" fragment))
 
 ;; RDF:GET-REASONER : string -> reasoner
 ;;

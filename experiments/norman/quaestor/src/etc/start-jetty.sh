@@ -13,6 +13,10 @@ PATHTOHERE=`dirname $0`
 D=`cd $PATHTOHERE; pwd`
 cd $D
 
+if test -n "$JAVA_HOME"; then
+    PATH=$JAVA_HOME/bin:$PATH
+fi
+
 echo "Start Quaestor jetty server, v@VERSION@, @RELEASEDATE@"
 
 CP=

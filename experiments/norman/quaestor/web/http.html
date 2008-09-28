@@ -27,6 +27,8 @@ href='index.html' >front page</a> points to a demo/walkthrough.</p>
 
 <h2>The HTTP verbs</h2>
 
+<h3>GET methods</h3>
+
 <dl>
 <dt><code>GET http://hostport/quaestor/kb</code></dt>
 <dd>Retrieve an information page, reporting on the knowledgebases
@@ -61,17 +63,11 @@ error.</p></dd>
 <em>query</em>.  This has the same response codes and
 <code>accept</code> headers as the <code>POST</code> method below.</dd>
 
-<dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
-<dd><p>Takes a SPARQL query as the request body, which should be
-posted with the <code>Content-Type</code> set to
-<code>application/sparql-query</code> (if there is no
-<code>Content-Type</code>, then this type is assumed).  The request may be
-accompanied by an <code>Accept</code> header to control the format of
-the returned data; the MIME types recognised are the same as for the
-GET request above.</p>
+</dl>
 
-<p>Returns status 200 (OK) on success, and 4xx otherwise.</p>
-</dd>
+<h3>PUT methods</h3>
+
+<dl>
 
 <dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
 <dd><p>Create a new knowledgebase named `<em>kb-name</em>'.  The
@@ -96,12 +92,12 @@ there is some other error.</p>
 
 <dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/<em>sm-name</em></code></dt>
 <dd><p>Upload the request body as the content of the submodel named
-<em>sm-name</em>.  The
+<em>sm-name</em>, replacing any pre-existing content.  The
 request may have a <code>Content-Type</code> header indicating the
 format of the body, which, if it is present, <em>must</em> be one of
 the following MIME types (see <a href='mime.html' >note</a>):</p>
 <ul>
-  <li><code>text/rdf+n3</code> : Notation3.</li>
+  <li><code>text/rdf+n3</code> or <code>text/turtle</code> : Notation3 or Turtle.</li>
   <li><code>application/rdf+xml</code> : RDF/XML</li>
   <li><code>text/plain</code> : N-Triples</li>
 </ul>
@@ -117,10 +113,37 @@ might change).</p>
 <code>application/n3</code>.</p>
 </dd>
 
+<dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/<em>sm-name</em>?metadata</code></dt>
+<dd>Set the metadata for a submodel.</dd>
+
+</dl>
+
+<h3>POST methods</h3>
+<dl>
+<dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
+<dd><p>Takes a SPARQL query as the request body, which should be
+posted with the <code>Content-Type</code> set to
+<code>application/sparql-query</code>.  The request may be
+accompanied by an <code>Accept</code> header to control the format of
+the returned data; the MIME types recognised are the same as for the
+GET request above.</p>
+
+<p>Returns status 200 (OK) on success, and 4xx otherwise.</p>
+</dd>
+
+<dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em>/<em>sm-name</em></code></dt>
+<dd>The content must be one of the <a href='mime.html'>RDF MIME
+types</a> as noted above.  The RDF content is added to the named submodel.</dd>
+
 <dt><code>POST http://hostport/quaestor/code</code></dt>
 <dd>Eval the request body as Scheme code.  This is only possible if
 the server has been configured to permit it.</dd>
 
+</dl>
+
+<h3>DELETE methods</h3>
+
+<dl>
 <dt><code>DELETE http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
 <dd>Remove the named knowledgebase.  Returns status 204 (No Content)
 if it successfully removed the knowledgebase, or a 4xx response if
