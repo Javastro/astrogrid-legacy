@@ -76,16 +76,29 @@ void AR::refresh()
 
 
 }
+
+
 /*
  * The main C callable function for initializing the system.
  */
+
 extern "C" {
 int init_ar() {
 
 	myAR = new astrogrid::AR();
-  	XmlRpcValue noArgs, result;
 
 
 }
 }
 extern astrogrid::AR* myAR = NULL; //declaration to actually cause storage to be allowcated
+/*
+ * convenience method for execution - ensures that the AR object is initialized if necessary.
+ */
+bool ARexecute(const string& command, XmlRpcValue& args, XmlRpcValue& result){
+
+	if(myAR == NULL)
+	{
+		init_ar();
+	}
+	return myAR->execute(command,args,result);
+}

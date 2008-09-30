@@ -35,7 +35,7 @@ public:
 	/**
 	 * Executes a command
 	 */
-	 
+
 	bool execute(const string& command, XmlRpcValue& args, XmlRpcValue& result);
 private:
 	XmlRpcClient* server;
@@ -43,6 +43,8 @@ private:
 };
 
 }
+//execute even if the AR object has not yet been initialized.
+bool ARexecute(const string& command, XmlRpcValue& args, XmlRpcValue& result);
 
 // globally scoped variable - note dummy initializer in AR.cpp to allocate storage
 extern astrogrid::AR* myAR;
