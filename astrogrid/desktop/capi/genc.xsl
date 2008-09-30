@@ -885,7 +885,7 @@ struct  </xsl:text>
        IDL_VPTR idl_retval;
 </xsl:text>
       </xsl:if>
-      <xsl:text>if (myAR->execute("</xsl:text>
+      <xsl:text>if (ARexecute("</xsl:text>
          <xsl:value-of select="concat($f/@serviceName,'.',$f/@name)"></xsl:value-of>
       <xsl:text>", _args, _result))
        {
