@@ -606,13 +606,23 @@ class SiapSearch( Service ):
 #
 class ServiceGroup:
 
-	def __init__( self, services ):
-		self.services = services
-		self.terminateFlag = TerminateFlag()
-		for service in services:
-			service.terminateFlag = self.terminateFlag
+	serviceCount = 0 
+	#
+	# This is the function triggered on each thread.
+	def dispatchSearch( service ):
+		service.searchAndRetrieve()
 		return
 
+	def __init__( self ):
+		self.services = None
+		self.terminateFlag = TerminateFlag()
+		return
+
+	def put( self, service ):
+		service.terminateFlag = self.terminateFlag
+		self.services.append( service )
+		serviceCount += 1
+		return
 	#
 	#
 	# 
@@ -621,12 +631,7 @@ class ServiceGroup:
 			if service.dispatched = False:
 				service.dispatched = True	# We assume it gets dispatched.
 				return service
-		return
-
-
-
-
-
+		return None
 
 
 ###################################################################
@@ -830,9 +835,9 @@ def processImageLine( line ):
 # For each image source we wish to search, there is a list of alternative ivorns.
 # For example, if we wished to search three image sources and there were
 # two alternative services providing images for each source, that would
-# make 6 ivorns altogether.
+# make 6 ivorns altogether. We would return 3 ServiceGroups
 #
-# Returns a list of service objects
+# Returns a list of ServiceGroups
 #
 #
 def processControlFile( filePath ):
@@ -841,7 +846,7 @@ def processControlFile( filePath ):
 	bControlFile = False
 	bImageSection = False
 	bCatalogueSection = False
-	sources = []
+	serviceGroups = []
 	services = []
 	bLine = ''
 	for line in open( filePath ).readlines():
@@ -894,7 +899,6 @@ def processControlFile( filePath ):
 		if l.isdigit():
 			if len( services ) > 0:
 				sources.append( services )
-				services = []
 			continue
 		#
 		# Process one information line...
@@ -920,11 +924,10 @@ def processControlFile( filePath ):
 	return sources
 # end of processIvornFile( filePath )
 
-#
-# Search function to pass to thread pool.
-#
 
-
+#
+# Outputs the merged catalogue results as a comma separated file
+#
 def outputResults( directoryPathString, fileName, results ) :
 	global TRACE, DEBUG, FEEDBACK, ERROR
 	if TRACE: print 'enter: outputResults() for: ' + fileName
@@ -945,17 +948,6 @@ def outputResults( directoryPathString, fileName, results ) :
 	return
 
 
-
-
-
-
-
-#
-# This is the function triggered on each thread.
-def dispatchSearch( service ):
-	service.searchAndRetrieve()
-	return
-
 #####################################################
 #    Mainline                                       #
 #####################################################
@@ -966,32 +958,22 @@ validateArgs()
 if DEBUG: print ra, dec, radius, ifile, odir
 #
 # Retrieve ivorns for the sources we wish to search...
-sources = processControlFile( ifile )
+serviceGroups = processControlFile( ifile )
 #
 # Create the overall search output directory...
 if DEBUG: print( 'Output folder is called ' + odir )
 os.mkdir( odir )
 #
-# Count number of threads required
-serviceCount = 0
-for serviceGroup in sources:
-	for service in serviceGroup:
-		if isinstance( service, Service ):
-			serviceCount += 1
-#
 # Define the command to execute and the pool size
-pool = easy_pool( dispatchSearch )
-pool.start_threads( serviceCount )
+pool = easy_pool( ServiceGroup.dispatchSearch )
+pool.start_threads( ServiceGroup.serviceCount )
 #
-# 
-for serviceGroup in sources:
-	# We have a list of services for each source.
-	# Fill out the thread information...
-	service = serviceGroup.getDispatchableService()
-	if service:
-		#
-		# Dispatch the service ...
-		pool.put( service )
+# We have a list of ServiceGroups.
+# Set up all the services for dispatching...
+service = serviceGroup[0].getDispatchableService()
+while( service != None ) :
+	for serviceGroup in serviceGroups:
+		pool.put( serviceGroup.getDispatchableService() )
 #
 # Now observe the real work:
 # Print information while executing...
@@ -1000,10 +982,10 @@ while 1 :
 	p = pool.qinfo()
 	if FEEDBACK:
 		print "Time: %3d sec    Queued: %2d    Running: %2d    Finished: %2d" % \
-                                    (i, p[1], serviceCount-p[1]-p[3], p[3])
+                                    (i, p[1], ServiceGroups.serviceCount-p[1]-p[3], p[3])
 	time.sleep(1)
 	i=i+1
-	if p[3]==serviceCount: break    
+	if p[3]==ServiceGroups.serviceCount: break    
 pool.stop_threads()
 #
 # We have to wait for threads to end to process the catalogue search results, 
