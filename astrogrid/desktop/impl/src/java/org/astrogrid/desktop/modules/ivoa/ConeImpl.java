@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.14 2008/05/09 11:32:21 nw Exp $
+/*$Id: ConeImpl.java,v 1.15 2008/10/01 09:53:43 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,19 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Interface;
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.contracts.StandardIds;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -39,14 +36,14 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
     /** Construct a new ConeImpl
      * 
      */
-    public ConeImpl(Registry reg, MyspaceInternal ms) {
+    public ConeImpl(final Registry reg, final MyspaceInternal ms) {
         super(reg,ms);
     }
 
     /**
      * @see org.astrogrid.acr.nvo.Cone#constructQuery(java.net.URI, double, double, double)
      */
-    public URL constructQuery(URI arg0, double arg1, double arg2, double arg3)
+    public URL constructQuery(final URI arg0, final double arg1, final double arg2, final double arg3)
             throws InvalidArgumentException, NotFoundException {
         URL endpoint = resolveEndpoint(arg0);
 
@@ -60,10 +57,10 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
       
     }
 
-    protected final URL findAccessURL(Service s) throws InvalidArgumentException {
+    protected final URL findAccessURL(final Service s) throws InvalidArgumentException {
         if (s instanceof ConeService) {
-            ConeCapability cap = ((ConeService)s).findConeCapability();
-            Interface[] interfaces = cap.getInterfaces();
+            final ConeCapability cap = ((ConeService)s).findConeCapability();
+            final Interface[] interfaces = cap.getInterfaces();
             Interface std = null;
             switch (interfaces.length) {
                 case 0: throw new InvalidArgumentException(s.getId() + " does not provide an interface in it's cone capability");
@@ -72,7 +69,7 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
                     break;
                 default:    
                     for (int i = 0; i < interfaces.length; i++) {
-                        Interface cand = interfaces[i];
+                        final Interface cand = interfaces[i];
                         if ("std".equals(cand.getRole())) {
                             std = cand;
                         }
@@ -111,11 +108,32 @@ public class ConeImpl extends DALImpl implements Cone, org.astrogrid.acr.nvo.Con
 	                +"(capability/@standardID = '" + StandardIds.CONE_SEARCH_1_0 + "')"             
 	                + ") and ( not ( @status = 'inactive' or @status='deleted'))]";
 	    }
+	   
+	   
+	   /** overridden to prevent use - doesn't apply to cone */
+	   @Override
+	public final int saveDatasets(final URL query, final URI root)
+	        throws SecurityException, ServiceException,
+	        InvalidArgumentException {
+	    throw new ServiceException("Cone search results do not point to datasets");
+	}
+
+       /** overridden to prevent use - doesn't apply to cone */	   
+	   @Override
+	public final int saveDatasetsSubset(final URL query, final URI root, final List rows)
+	        throws SecurityException, ServiceException,
+	        InvalidArgumentException {
+	        throw new ServiceException("Cone search results do not point to datasets");
+	}
+	   
 }
 
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.15  2008/10/01 09:53:43  nw
+overridden non-sensical parent messages.
+
 Revision 1.14  2008/05/09 11:32:21  nw
 Complete - task 394: process reg query results in a stream.
 
