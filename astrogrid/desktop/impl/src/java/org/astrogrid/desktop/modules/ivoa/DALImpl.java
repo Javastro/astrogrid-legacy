@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.21 2008/08/19 12:47:10 nw Exp $
+/*$Id: DALImpl.java,v 1.22 2008/10/01 09:53:43 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -251,7 +251,7 @@ public abstract class DALImpl implements Dal{
         }
     }
 
-	public final int saveDatasets(final URL query, final URI root) throws SecurityException, ServiceException, InvalidArgumentException {
+	public int saveDatasets(final URL query, final URI root) throws SecurityException, ServiceException, InvalidArgumentException {
 		try {
 			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
 			newInstance.setValidating(false);
@@ -339,7 +339,7 @@ public abstract class DALImpl implements Dal{
 		return os;
 	}
 
-	public final int saveDatasetsSubset(final URL query, final URI root, final List rows) throws SecurityException, ServiceException, InvalidArgumentException {
+	public int saveDatasetsSubset(final URL query, final URI root, final List rows) throws SecurityException, ServiceException, InvalidArgumentException {
 		try {
 			final SAXParserFactory newInstance = SAXParserFactory.newInstance();
 			newInstance.setValidating(false);
@@ -481,6 +481,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.22  2008/10/01 09:53:43  nw
+removed final modifier to allow override.
+
 Revision 1.21  2008/08/19 12:47:10  nw
 findbugs fixes and improvements.
 
