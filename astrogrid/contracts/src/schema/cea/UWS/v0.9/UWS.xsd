@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: UWS.xsd,v 1.5 2008/09/25 00:22:35 pah Exp $ -->
+<!-- $Id: UWS.xsd,v 1.6 2008/10/01 11:54:02 pah Exp $ -->
 <!-- proposal for basic UWS schema - Paul Harrison May 2008 -->
-<!-- $Log: UWS.xsd,v $
-<!-- Revision 1.5  2008/09/25 00:22:35  pah
-<!-- change termination time to execution duration
-<!-- -->
+<!-- 
+
+$Log: UWS.xsd,v $
+Revision 1.6  2008/10/01 11:54:02  pah
+fix up cvs header
+
+Revision 1.5  2008/09/25 00:22:35  pah
+change termination time to execution duration
+
+ -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
    targetNamespace="http://www.ivoa.net/xml/UWS/v0.9.2" xmlns:uws="http://www.ivoa.net/xml/UWS/v0.9.2"
    xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified" attributeFormDefault="unqualified">
