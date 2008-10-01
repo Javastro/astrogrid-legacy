@@ -336,5 +336,22 @@ RESULT CACHE
             </construct>
         </invoke-factory>
      </service-point>
+     
+     <!--  VOSPace VFS provider
+     ===========================
+      -->
+    <service-point id="vospacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+        <invoke-factory model="primitive"><!--  has to be primitive, as vfs implementation casts it to implementation type. -->
+            <construct class="org.astrogrid.desktop.modules.ivoa.vfs.vospace.VospaceProvider">
+                <service>astrogrid.community</service>
+                <service>registry</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+    
+    <contribution configuration-id="system.vfsProviders">
+        <provider scheme="vos"
+            implementation="service:vospacevfs" />
+    </contribution>     
  </module>
  
