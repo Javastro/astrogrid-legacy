@@ -20,7 +20,6 @@ from urlparse import *
 # (3) We have a windows problem with VOTables.
 #	    I think it is within the utils module...
 #=================================================================
-
 #
 # Global arguments passed in...
 ra = None
@@ -29,21 +28,14 @@ radius = None
 ifile = None
 odir = None
 #
-# Global arguments raised from the control file,
-# giving the minimum images considered satisfactory from a given source
-# and the maximum images desired
-minimages = None
-maximages = None
-#
 # Global variables to control logging:
 FEEDBACK = True
 ERROR = True
 WARN = True
-DEBUG = False
-TRACE = False
+DEBUG = True
+TRACE = True
 EXTREME_DEBUG = False
 EXTREME_TRACE = False
-
 #
 # Global variable for controlling the image format returned.
 # Can be a coma-delimited string:
@@ -53,6 +45,10 @@ EXTREME_TRACE = False
 # Some services provide lots of bumf, eg: html with requests.
 #
 FORMAT = 'image/fits'
+
+class Callable:
+	def __init__(self, anycallable):
+		self.__call__ = anycallable
 
 ##################################################################
 # Base class for services.
@@ -425,16 +421,6 @@ class ConeSearch( Service ):
 
 
 
-
-
-
-
-
-
-
-
-
-
 ##################################################################
 # SiapSearch class to substitute for the standard one,
 # With this one I can switch options on/off.
@@ -461,9 +447,9 @@ class SiapSearch( Service ):
 	#
 	# Search function to pass to thread pool.
 	#
-	def imageSearchAndRetrieve( self ) :
+	def searchAndRetrieve( self ) :
 		global FORMAT, FEEDBACK, DEBUG, TRACE, ERROR
-		if TRACE: print 'enter: imageSearchAndRetrieve()'
+		if TRACE: print 'enter: searchAndRetrieve()'
 		if self.terminate.isSet():
 			if DEBUG: print self.name + ' has been terminated prematurely!'
 			return 
@@ -486,9 +472,9 @@ class SiapSearch( Service ):
 				if FEEDBACK: print self.name + ': no result!'
 		except Exception, e2:
 			if ERROR: print self.name + ' image Search failed: ', e2	
-		if TRACE: print 'exit: imageSearchAndRetrieve()'
+		if TRACE: print 'exit: searchAndRetrieve()'
 		return
-	# end of imageSearchAndRetrieve()
+	# end of searchAndRetrieve()
 
 
 
@@ -605,33 +591,52 @@ class SiapSearch( Service ):
 #	
 #
 class ServiceGroup:
-
-	serviceCount = 0 
+	
+	serviceGroups = []
+	totalServiceCount = 0 
 	#
 	# This is the function triggered on each thread.
 	def dispatchSearch( service ):
 		service.searchAndRetrieve()
 		return
+	dispatchSearch = Callable( dispatchSearch )
 
 	def __init__( self ):
-		self.services = None
+		self.services = []
 		self.terminateFlag = TerminateFlag()
+		ServiceGroup.serviceGroups.append( self )
 		return
 
 	def put( self, service ):
 		service.terminateFlag = self.terminateFlag
 		self.services.append( service )
-		serviceCount += 1
+		ServiceGroup.totalServiceCount += 1
 		return
 	#
 	#
 	# 
 	def getDispatchableService( self ):	
 		for service in self.services:
-			if service.dispatched = False:
+			if service.dispatched == False:
 				service.dispatched = True	# We assume it gets dispatched.
 				return service
 		return None
+	#
+	#
+	#
+	def getLargestGroupCount():
+		max = 0
+		for serviceGroup in ServiceGroup.serviceGroups:
+			count = len( serviceGroup.services )
+			if count > max:
+				max = count
+		return max
+	getLargestGroupCount = Callable( getLargestGroupCount )
+
+
+
+
+
 
 
 ###################################################################
@@ -791,12 +796,14 @@ def stripBrackets( line ):
 	return line
 
 def processCatalogueLine( line ):
+	# Don't like the use of global arguments here.
+	global ra, dec, radius
 	global ERROR
 	l = stripBrackets( line )
 	bits = l.split( '|' )
 	# save:
 	# 0: short name for this service 
-  	# 1: its ivorn
+  # 1: its ivorn
 	# 2: table name, or nothing if only one table in the collection
 	# 3: space separated list of column name / display name pairs
 	# 4: name of function to execute search for this service
@@ -815,10 +822,11 @@ def processCatalogueLine( line ):
 			if ERROR: print 'Malformed column names in control file: ' + c
 			sys.exit(1)
 	search_function_name = bits[4].strip()
-	service = ConeSearch( service_name, ivorn, table_name, col_names, search_function_name ) 
+	service = ConeSearch( service_name, ivorn, ra, dec, radius, table_name, col_names, search_function_name ) 
 	return service
 
-def processImageLine( line ):
+def processImageLine( line, minimages, maximages ):
+	global FORMAT
 	l = stripBrackets( line )
 	bits = l.split( '|' )
 	# save:
@@ -826,7 +834,7 @@ def processImageLine( line ):
   # 1: its ivorn
 	service_name = bits[0].strip()
 	ivorn = bits[1].strip()
-	service = SiapSearch( service_name, ivorn )
+	service = SiapSearch( service_name, ivorn, ra, dec, radius, minimages, maximages, FORMAT )
 	return service
 
 #
@@ -841,14 +849,17 @@ def processImageLine( line ):
 #
 #
 def processControlFile( filePath ):
-	global TRACE, DEBUG, ERROR, minimages, maximages
+	global TRACE, DEBUG, ERROR
 	if TRACE: print( 'processControlFile() enter' )
 	bControlFile = False
 	bImageSection = False
 	bCatalogueSection = False
+	minimages = None
+	maximages = None
+	serviceGroup = None
 	serviceGroups = []
-	services = []
-	bLine = ''
+	bLine = '' # buffer line used for buffering continuation lines
+
 	for line in open( filePath ).readlines():
 		l = line.strip()
 		if DEBUG: print l
@@ -863,7 +874,7 @@ def processControlFile( filePath ):
 				if ERROR: print 'Malformed control file: Heading missing.'
 				sys.exit(1)
 		#
-    	# Comments lines and blank lines are ignored...
+    # Comments lines and blank lines are ignored...
 		if len(l) == 0 or l.startswith( '#' ) == True :
 			continue
 
@@ -897,13 +908,17 @@ def processControlFile( filePath ):
 		#
 		# Process the line containing the number of services...
 		if l.isdigit():
-			if len( services ) > 0:
-				sources.append( services )
+			# New service group required, but first save the previous...
+			if serviceGroup != None:
+				serviceGroups.append( serviceGroup )
+			#
+			# New service group for each new source triggered by the numeric...
+			serviceGroup = ServiceGroup()
 			continue
 		#
 		# Process one information line...
 		if bCatalogueSection == True:
-			services.append( processCatalogueLine( l ) )
+			serviceGroup.put( processCatalogueLine( l ) )
 		elif bImageSection == True:
 			if minimages == None and maximages == None:
 				l = stripBrackets( l )
@@ -911,17 +926,14 @@ def processControlFile( filePath ):
 				minimages = int( bits[0] )
 				maximages = int( bits[1] )	
 			else:
-				services.append( processImageLine( l ) )
+				serviceGroup.put( processImageLine( l, minimages, maximages ) )
 		else:
 			if ERROR: print 'Malformed line in control file.', l
-			
-	#
-	# Add the last one on if not zero...
-	if len( services ) > 0:
-		sources.append( services )
-	if DEBUG: print sources
+	# Save the last service group...
+	serviceGroups.append( serviceGroup )			
+#	if DEBUG: print serviceGroups
 	if TRACE: print( 'processControlFile() exit' )
-	return sources
+	return serviceGroups
 # end of processIvornFile( filePath )
 
 
@@ -948,9 +960,19 @@ def outputResults( directoryPathString, fileName, results ) :
 	return
 
 
-#####################################################
-#    Mainline                                       #
-#####################################################
+######################################################
+# Mainline                                           #
+#                                                    #
+# The dispatching algorithm means all service groups #
+# have one service dispatched at a time. That is...  #
+# service group A: dispatch 1st service              #
+# service group B: dispatch 1st service              #
+# service group C: dispatch 1st service              #
+# service group A: dispatch 2nd service              #
+# service group B: dispatch 2nd service              #
+# service group C: dispatch 2nd service              #
+# and so on.                                         #
+######################################################
 if FEEDBACK: print 'Started at: ' + time.strftime('%T') 
 #
 # Validate the input arguments passed to us...
@@ -966,14 +988,18 @@ os.mkdir( odir )
 #
 # Define the command to execute and the pool size
 pool = easy_pool( ServiceGroup.dispatchSearch )
-pool.start_threads( ServiceGroup.serviceCount )
+pool.start_threads( ServiceGroup.totalServiceCount )
 #
 # We have a list of ServiceGroups.
+# (See dispatching algorithm above).
 # Set up all the services for dispatching...
-service = serviceGroup[0].getDispatchableService()
-while( service != None ) :
+maxCount = ServiceGroup.getLargestGroupCount()
+if DEBUG: print 'maxCount: ', maxCount
+for i in range (1, maxCount+1):
 	for serviceGroup in serviceGroups:
-		pool.put( serviceGroup.getDispatchableService() )
+		service = serviceGroup.getDispatchableService()
+		if service != None:
+			pool.put( service )
 #
 # Now observe the real work:
 # Print information while executing...
@@ -982,10 +1008,10 @@ while 1 :
 	p = pool.qinfo()
 	if FEEDBACK:
 		print "Time: %3d sec    Queued: %2d    Running: %2d    Finished: %2d" % \
-                                    (i, p[1], ServiceGroups.serviceCount-p[1]-p[3], p[3])
+                                    (i, p[1], ServiceGroup.totalServiceCount-p[1]-p[3], p[3])
 	time.sleep(1)
 	i=i+1
-	if p[3]==ServiceGroups.serviceCount: break    
+	if p[3]==ServiceGroup.totalServiceCount: break    
 pool.stop_threads()
 #
 # We have to wait for threads to end to process the catalogue search results, 
