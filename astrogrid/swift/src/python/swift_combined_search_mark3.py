@@ -21,19 +21,12 @@ from urlparse import *
 #	    I think it is within the utils module...
 #=================================================================
 #
-# Global arguments passed in...
-ra = None
-dec = None
-radius = None
-ifile = None
-odir = None
-#
 # Global variables to control logging:
 FEEDBACK = True
 ERROR = True
 WARN = True
-DEBUG = True
-TRACE = True
+DEBUG = False
+TRACE = False
 EXTREME_DEBUG = False
 EXTREME_TRACE = False
 #
@@ -797,18 +790,17 @@ class TerminateFlag:
 # arg5: unique name for the overall search directory to hold results.
 #
 def validateArgs():
-	global ra, dec, radius, ifile, odir, ERROR
 	# If no arguments were given, print a helpful message
 	if len(sys.argv)!=6:
 		if ERROR: print 'Usage: ra dec radius file_of_ivorns results_directory'
 		sys.exit(1)
-	else:
-		ra = float( sys.argv[1] )
-		dec = float( sys.argv[2] )
-		radius = float( sys.argv[3] )
-		ifile = sys.argv[4]
-		odir = sys.argv[5]
-	return
+
+	ra = float( sys.argv[1] )
+	dec = float( sys.argv[2] )
+	radius = float( sys.argv[3] )
+	ifile = sys.argv[4]
+	odir = sys.argv[5]
+	return ra, dec, radius, ifile, odir
 # end of validateArgs()
 
 #
@@ -826,9 +818,8 @@ def stripBrackets( line ):
 		line = line[lbrace+1:rbrace]
 	return line
 
-def processCatalogueLine( line ):
+def processCatalogueLine( line, ra, dec, radius ):
 	# Don't like the use of global arguments here.
-	global ra, dec, radius
 	global ERROR
 	l = stripBrackets( line )
 	bits = l.split( '|' )
@@ -856,7 +847,7 @@ def processCatalogueLine( line ):
 	service = ConeSearch( service_name, ivorn, ra, dec, radius, table_name, col_names, search_function_name ) 
 	return service
 
-def processImageLine( line, minimages, maximages ):
+def processImageLine( line, minimages, maximages, ra, dec, radius ):
 	global FORMAT
 	l = stripBrackets( line )
 	bits = l.split( '|' )
@@ -879,7 +870,7 @@ def processImageLine( line, minimages, maximages ):
 # Returns a list of ServiceGroups
 #
 #
-def processControlFile( filePath ):
+def processControlFile( ra, dec, radius, filePath ):
 	global TRACE, DEBUG, ERROR
 	if TRACE: print( 'processControlFile() enter' )
 	bControlFile = False
@@ -949,7 +940,7 @@ def processControlFile( filePath ):
 		#
 		# Process one information line...
 		if bCatalogueSection == True:
-			serviceGroup.put( processCatalogueLine( l ) )
+			serviceGroup.put( processCatalogueLine( l, ra, dec, radius ) )
 		elif bImageSection == True:
 			if minimages == None and maximages == None:
 				l = stripBrackets( l )
@@ -957,7 +948,7 @@ def processControlFile( filePath ):
 				minimages = int( bits[0] )
 				maximages = int( bits[1] )	
 			else:
-				serviceGroup.put( processImageLine( l, minimages, maximages ) )
+				serviceGroup.put( processImageLine( l, minimages, maximages, ra, dec, radius ) )
 		else:
 			if ERROR: print 'Malformed line in control file.', l
 	# Save the last service group...
@@ -993,7 +984,7 @@ def outputResults( directoryPathString, fileName, results ) :
 	return
 
 
-def dispatchSearch( ra, service ):
+def dispatchSearch( service, dummyArg ):
 	global TRACE
 	if TRACE: print 'enter: dispatchSearch() for service ' + service.name
 	service.searchAndRetrieve()
@@ -1019,11 +1010,12 @@ def dispatchSearch( ra, service ):
 if FEEDBACK: print 'Started at: ' + time.strftime('%T') 
 #
 # Validate the input arguments passed to us...
-validateArgs()
+( ra, dec, radius, ifile, odir ) = validateArgs()
 if DEBUG: print ra, dec, radius, ifile, odir
+
 #
 # Retrieve ivorns for the sources we wish to search...
-serviceGroups = processControlFile( ifile )
+serviceGroups = processControlFile( ra, dec, radius, ifile )
 #
 # Create the overall search output directory...
 if DEBUG: print( 'Output folder is called ' + odir )
@@ -1041,7 +1033,7 @@ if DEBUG: print 'maxCount: ', maxCount
 for i in range (1, maxCount+1):
 	for serviceGroup in serviceGroups:
 		service = serviceGroup.getDispatchableService()
-		input = ( ra, service )
+		input = ( service, None )
 		if service != None:
 			pool.put( input )
 #
