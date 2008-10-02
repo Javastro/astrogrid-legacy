@@ -81,12 +81,24 @@ class Service:
 		self.dec = dec
 		self.radius = radius
 		self.vot = None
+		self.terminateFlag = None
 		return
 	#
 	#
 	# Generic searchAndRetrieve() meant to be overridden
 	def searchAndRetrieve( self ):	
 		return
+	#
+	#
+	#
+	def __str__( self ):
+		return 'Service Name: ' + self.name + '\n' \
+		       'Ivorn: ' +  self.ivorn + '\n' \
+	         'ra: ' + str(self.ra)  + '\n' \
+	         'dec: ' + str(self.dec)  + '\n' \
+	         'radius: ' + str(self.radius)  + '\n' \
+	         'dispatched: ' + str(self.dispatched) + '\n'
+
 		
 
 ##################################################################
@@ -111,6 +123,14 @@ class ConeSearch( Service ):
 		fullURL = Service.ar.ivoa.cone.addOption( query, "VERB", "3" )
 		doc = Service.tables.convertFromFile( fullURL, "votable", "votable" )
 		return doc
+
+	#
+	#
+	#
+	def __str__( self ):
+		return Service.__str__( self ) + 'Search function name: ' + self.searchFunctionName + '\n'
+
+
 
 	#
 	# The columns list is in fact a list of "pairs", with each pair consisting of 
@@ -143,7 +163,7 @@ class ConeSearch( Service ):
 				if EXTREME_DEBUG: 
 					print '=====attrs=====\n', attrs
 				nullValue = attrs[ 'null' ]
-				nullVals[ vot.getColumnIdx( name ) ] = nullValue
+				nullVals[ self.vot.getColumnIdx( name ) ] = nullValue
 		if EXTREME_DEBUG: 
 			print '=====nullVals=====\n', nullVals
 		if EXTREME_TRACE: print 'formNullValuesMap() exit'
@@ -172,38 +192,7 @@ class ConeSearch( Service ):
 		if x == None:
 			return ''
 		return x		
-		
-	def searchAndRetrieve( self ):
-		global TRACE, DEBUG, FEEDBACK, ERROR, WARN
-		if TRACE: print 'enter: searchAndRetrieve() for ' + self.name
-		if self.terminateFlag.isSet():
-			if FEEDBACK: print self.name + ' has been terminated prematurely!'
-			return 
-		try:
-			if DEBUG: print 'About to coneSearch: ' + self.name, self.ra, self.dec, self.radius	
-			res = self.execute()
-			if res: 
-				try:
-					self.vot = utils.read_votable( res, ofmt='votable' )
-					if len( self.vot.getDataRows() ) == 0 : 
-						if DEBUG: print self.name + ': no hits!'
-					elif self.terminateFlag.isSet():
-						if FEEDBACK: print self.service.name + ' has been terminated prematurely!'
-						return
-					else:
-						if DEBUG: print 'About to eval'
-						eval( self.searchFunctionName + '( self )' )
-				except Exception, e1:
-					if ERROR: print self.name + ': bad vot: ', e1
-			else:
-				if DEBUG: print self.name + ': no result vot!'	
-		except Exception, e2:
-			if DEBUG: print self.name + ' cone Search failed: ', e2
-			if FEEDBACK: print self.name + ' returned this number of rows: 0'	
-		self.terminateFlag.set()
-		if TRACE: print 'exit: coneSearchAndRetrieve() for ' + self.name
-		return	
-	# end of coneSearchAndRetrieve()
+	
 	
 	#
 	#
@@ -274,14 +263,14 @@ class ConeSearch( Service ):
 		#
 		# We need to decide between stars and galaxies.
 		# These are just the indices for the criteria...
-		b1cIndex = vot.getColumnIdx( 'B1s/g' ) 
-		b2cIndex = vot.getColumnIdx( 'B2s/g' ) 
-		r1cIndex = vot.getColumnIdx( 'R1s/g' ) 
-		r2cIndex = vot.getColumnIdx( 'R2s/g' ) 
-		icIndex = vot.getColumnIdx( 'Is/g' ) 
+		b1cIndex = self.vot.getColumnIdx( 'B1s/g' ) 
+		b2cIndex = self.vot.getColumnIdx( 'B2s/g' ) 
+		r1cIndex = self.vot.getColumnIdx( 'R1s/g' ) 
+		r2cIndex = self.vot.getColumnIdx( 'R2s/g' ) 
+		icIndex = self.vot.getColumnIdx( 'Is/g' ) 
 		#
 		# Form a map for those columns that can return a null value...
-		nullsMap = self.formNullValuesMap( self.vot )
+		nullsMap = self.formNullValuesMap()
 		#
 		# Here are the rest of the indices, found
 		# using the votable and the column names 
@@ -375,17 +364,17 @@ class ConeSearch( Service ):
 	# Searches for unfiltered stars.
 	def searchStars( self ):
 		global TRACE, DEBUG, stars
-		if TRACE: print 'enter: searchStars() for: ' + service.name
-		stars.push( self, genericRetrieval() )
-		if TRACE: print 'exit: searchStars() for: ' + service.name
+		if TRACE: print 'enter: searchStars() for: ' + self.name
+		stars.push( self, self.genericRetrieval() )
+		if TRACE: print 'exit: searchStars() for: ' + self.name
 		return
 	#
 	# Searches for unfiltered galaxies.
 	def searchGalaxies( self ):
 		global TRACE, DEBUG, gals
-		if TRACE: print 'enter: searchGalaxies() for: ' + service.name
-		gals.push( self, genericRetrieval() )
-		if TRACE: print 'exit: searchGalaxies() for: ' + service.name
+		if TRACE: print 'enter: searchGalaxies() for: ' + self.name
+		gals.push( self, self.genericRetrieval() )
+		if TRACE: print 'exit: searchGalaxies() for: ' + self.name
 		return
 	
 	def genericRetrieval( self ):
@@ -401,7 +390,7 @@ class ConeSearch( Service ):
 			colIndices.append( self.vot.getColumnIdx( column[0] ) )
 		#
 		# Form a map for those columns that can return a null value...
-		nullsMap = self.formNullValuesMap( vot )
+		nullsMap = self.formNullValuesMap()
 		#
 		# Form local list of hits
 		hitList = []
@@ -410,16 +399,50 @@ class ConeSearch( Service ):
 		dataRows = self.vot.getDataRows()
 		for row in dataRows:
 			cells = self.vot.getData(row)
-			# Begin each constructed row with the service name 
+			# Begin each constructed row with the self name 
 			# and then append all the data requested to each row...
 			subRow = [ self.name ]
 			for index in colIndices:
 				subRow.append( self.testAndSetEmpty( self.testAndSetNull( cells[ index ], index, nullsMap ) ) )
 			hitList.append( subRow )
-		if TRACE: print 'enter: genericRetrieval() for ' + self.name 
+		if TRACE: print 'exit: genericRetrieval() for ' + self.name 
 		return hitList
 
 
+
+	def searchAndRetrieve( self ):
+		global TRACE, DEBUG, FEEDBACK, ERROR, WARN
+		if TRACE: print 'enter: searchAndRetrieve() for ' + self.name
+		if self.terminateFlag.isSet():
+			if FEEDBACK: print self.name + ' has been terminated prematurely!'
+			return 
+		try:
+			if DEBUG: print 'About to coneSearch: ' + self.name, self.ra, self.dec, self.radius	
+			res = self.execute()
+			if res: 
+				try:
+					self.vot = utils.read_votable( res, ofmt='votable' )
+					if len( self.vot.getDataRows() ) == 0 : 
+						if DEBUG: print self.name + ': no hits!'
+					elif self.terminateFlag.isSet():
+						if FEEDBACK: print self.service.name + ' has been terminated prematurely!'
+						return
+					else:
+						if DEBUG: 
+							print 'About to eval...'
+							print 'Service: ', self
+						eval( 'self.' + self.searchFunctionName + '()' )
+				except Exception, e1:
+					if ERROR: print self.name + ': bad vot: ', e1
+			else:
+				if DEBUG: print self.name + ': no result vot!'	
+		except Exception, e2:
+			if DEBUG: print self.name + ' cone Search failed: ', e2
+			if FEEDBACK: print self.name + ' returned this number of rows: 0'	
+		self.terminateFlag.set()
+		if TRACE: print 'exit: coneSearchAndRetrieve() for ' + self.name
+		return	
+	# end of coneSearchAndRetrieve()
 
 ##################################################################
 # SiapSearch class to substitute for the standard one,
@@ -445,17 +468,17 @@ class SiapSearch( Service ):
 
 
 	#
-	# Search function to pass to thread pool.
+	# 
 	#
 	def searchAndRetrieve( self ) :
 		global FORMAT, FEEDBACK, DEBUG, TRACE, ERROR
 		if TRACE: print 'enter: searchAndRetrieve()'
-		if self.terminate.isSet():
+		if self.terminateFlag.isSet():
 			if DEBUG: print self.name + ' has been terminated prematurely!'
 			return 
 		try:
 			if DEBUG: print 'About to image search: ' + self.name, self.ra, self.dec, self.radius	
-			res = self.execute( self.ra, self.dec, self.radius )
+			res = self.execute()
 			if res: 
 				try:
 	#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -465,7 +488,7 @@ class SiapSearch( Service ):
 					self.vot = utils.read_votable( res, ofmt='votable' )
 					countImages = self.retrieveImages()
 					if countImages >= self.minimages :
-						self.terminate.set()
+						self.terminateFlag.set()
 				except:
 					if FEEDBACKL: print self.name + ': bad vot!'
 			else:
@@ -485,19 +508,19 @@ class SiapSearch( Service ):
 		global DEBUG, TRACE, FEEDBACK
 		if TRACE: print 'enter: retrieveImages()'
 		# Get column index for access url
-		urlColIdx = vot.getColumnIdx ('VOX:Image_AccessReference')
-		formatIdx = vot.getColumnIdx ('VOX:Image_Format')
+		urlColIdx = self.vot.getColumnIdx ('VOX:Image_AccessReference')
+		formatIdx = self.vot.getColumnIdx ('VOX:Image_Format')
 		if urlColIdx < 0:
 			if DEBUG: print "No access reference found in VOTable."
 		else:
 			# NB: Examine this. There's something lax here...
-			dataRows = self.vot.getDataRows ()
+			dataRows = self.vot.getDataRows()
 			getData = self.vot.getData
 			countImages = len( dataRows )
 			if FEEDBACK: print self.name + ' returned this number of images: ' + str( countImages )
 			cnt = 0
 			for row in dataRows:
-				if terminate.isSet():
+				if self.terminateFlag.isSet():
 					if FEEDBACK: print self.name + ' has been terminated prematurely!'
 					break 
 				cells = getData (row)
@@ -594,17 +617,21 @@ class ServiceGroup:
 	
 	serviceGroups = []
 	totalServiceCount = 0 
+	
 	#
 	# This is the function triggered on each thread.
-	def dispatchSearch( service ):
-		service.searchAndRetrieve()
-		return
-	dispatchSearch = Callable( dispatchSearch )
+#	def dispatchSearch( service ):
+#		if TRACE: print 'enter: dispatchSearch() for service ' + service.name
+#		service.searchAndRetrieve()
+#		if TRACE: print 'exit: dispatchSearch() for service ' + service.name
+#		return
+#	dispatchSearch = Callable( dispatchSearch )
 
 	def __init__( self ):
 		self.services = []
 		self.terminateFlag = TerminateFlag()
 		ServiceGroup.serviceGroups.append( self )
+		self.mySequenceNumber = len( ServiceGroup.serviceGroups )-1
 		return
 
 	def put( self, service ):
@@ -619,6 +646,7 @@ class ServiceGroup:
 		for service in self.services:
 			if service.dispatched == False:
 				service.dispatched = True	# We assume it gets dispatched.
+				if DEBUG: print 'found: ' + service.name
 				return service
 		return None
 	#
@@ -632,13 +660,15 @@ class ServiceGroup:
 				max = count
 		return max
 	getLargestGroupCount = Callable( getLargestGroupCount )
-
-
-
-
-
-
-
+	#
+	#
+	#
+	def __str__( self ):
+		b = 'Sequence Number: ' + str(self.mySequenceNumber) + '\n'
+		for service in self.services:
+			b += str( service )
+		return b
+		
 ###################################################################
 # A class to hold thread safe collections of stars / galaxies
 # 
@@ -674,6 +704,7 @@ class Hits:
 			return -1
 		else:
 			return 0
+	cmpOnSphericalDistance = Callable( cmpOnSphericalDistance )
 		
 
 	#
@@ -931,7 +962,9 @@ def processControlFile( filePath ):
 			if ERROR: print 'Malformed line in control file.', l
 	# Save the last service group...
 	serviceGroups.append( serviceGroup )			
-#	if DEBUG: print serviceGroups
+	if DEBUG: 
+		for serviceGroup in serviceGroups:
+			print serviceGroup
 	if TRACE: print( 'processControlFile() exit' )
 	return serviceGroups
 # end of processIvornFile( filePath )
@@ -958,6 +991,16 @@ def outputResults( directoryPathString, fileName, results ) :
 		except: 1
 	if TRACE: print 'exit: outputResults() for: ' + fileName
 	return
+
+
+def dispatchSearch( ra, service ):
+	global TRACE
+	if TRACE: print 'enter: dispatchSearch() for service ' + service.name
+	service.searchAndRetrieve()
+	if TRACE: print 'exit: dispatchSearch() for service ' + service.name
+	return
+
+
 
 
 ######################################################
@@ -987,7 +1030,7 @@ if DEBUG: print( 'Output folder is called ' + odir )
 os.mkdir( odir )
 #
 # Define the command to execute and the pool size
-pool = easy_pool( ServiceGroup.dispatchSearch )
+pool = easy_pool( dispatchSearch ) 
 pool.start_threads( ServiceGroup.totalServiceCount )
 #
 # We have a list of ServiceGroups.
@@ -998,8 +1041,9 @@ if DEBUG: print 'maxCount: ', maxCount
 for i in range (1, maxCount+1):
 	for serviceGroup in serviceGroups:
 		service = serviceGroup.getDispatchableService()
+		input = ( ra, service )
 		if service != None:
-			pool.put( service )
+			pool.put( input )
 #
 # Now observe the real work:
 # Print information while executing...
