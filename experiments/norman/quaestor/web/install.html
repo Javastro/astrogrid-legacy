@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Quaestor: installation notes</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="base.css"/>
+</head>
+
+<body>
+
+<h1>Quaestor: installation notes</h1>
+
+<p>You will need to use Java 6 to run Quaestor.</p>
+
+<h2>The .war file</h2>
+
+<p>Quaestor is distributed as a <code>.war</code> file and as a
+standalone web server
+(implemented using <a href='http://jetty.mortbay.com/'>Jetty</a>).</p>
+
+<p>To install the <code>.war</code> file, download that and install it in
+your Tomcat server in the usual way.</p>
+
+<h3>Configuration</h3>
+
+<p>You can configure the server by adjusting the unpacked
+<code>.war</code> file's <code>WEB-INF/web.xml</code>.  Most of the
+<code>&lt;init-param&gt;</code> parameters should be left alone, but
+you may well need to change the <code>persistence-directory</code>
+setting.  This indicates where Quaestor should persist knowledgebases,
+(when that functionality is enabled).  The default value isn't terribly
+useful, but should be harmless.</p>
+
+<h2>The standalone server</h2>
+
+<p>To start up the standalone server, download the
+<code>quaestor-standalone-x.x.jar</code> file (of a suitable version
+number), and either double-click it (if that's appropriate for your
+OS), or start it with a command like:</p>
+<pre>
+% java -jar quaestor-standalone-x.x.jar
+</pre>
+
+<p>As with the <code>.war</code> file, there is very little to
+configure in the standalone server.  To change the location of the
+persistence directory, give a value for the
+<code>persistence-directory</code> property when you start the server,
+by giving the <code>-Dpersistence-directory=/path</code> option to the
+<code>java</code> command.</p>
+
+</body>
+</html>

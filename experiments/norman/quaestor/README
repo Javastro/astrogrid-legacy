@@ -1,6 +1,14 @@
 
 Quaestor: a generic SPARQL endpoint.
 
+Installation
+------------
+
+See the file web/install.html for installation notes.
+
+Building from source
+--------------------
+
 To build, it requires Tomcat, Jena, SISC, Jetty and JUnit.  If you
 want to set up a triple store with the Jena SDB back-end, then you
 will need that distribution, too, along with a JDBC jar file for the
@@ -8,8 +16,8 @@ database you want SDB to sit on top of.  If you want to use TDB for
 persistence (and you probably should, since it's easier than TDB to
 set up, even though it's still more experimental).
 
-It works with Java 1.5 and 1.6 (possibly 1.4, though that's not tested),
-and with Tomcat 5.0.x and 5.5.x.
+Quaestor without TDB works with Java 1.5 and 1.6 (possibly 1.4, though
+that's not tested), and works with Tomcat 5.0.x and 5.5.x.
 
 It works with Jena 2.5.6 (it might work with 2.5.x).  See
 <http://jena.sourceforge.net>.
@@ -33,9 +41,7 @@ Jetty 6.1.7 at least.
 
 JUnit is at <http://junit.sourceforge.net/>  I've been using JUnit 3.8.1.
 
-The first Quaestor version which was released to anyone else was 0.3.  I'll
-follow the common practice and have even-numbered versions as beta
-releases, and odd-numbered ones as rather stable (-ish).
+The first Quaestor version which was released to anyone else was 0.3.
 
 
 Building Quaestor
@@ -62,7 +68,7 @@ document('war/WEB-INF/web.xml')/web-app/servlet[servlet-name="codemanager"]
 or war/WEB-INF/SchemeJettyServer.properties, as appropriate) to allow that.
 
 ant jetty: makes quaestor-jetty-<version>.zip, which contains a
-start-jetty.sh script
+quaestor-standalone.sh script
 
 
 Testing
@@ -75,7 +81,7 @@ Make the .war file ('ant dist'), or install it locally with 'ant
 install', after making sure that tomcat.hostport has the correct value
 in the build.xml file (or in build.properties, or on the ant command
 line).  Alternatively, make the Jetty server with 'ant jetty', and
-start it up with build/start-jetty.sh
+start it up with 'java -jar quaestor-standalone-x.x.jar'
 
   * 'ant scm-tests' tests the scheme support within the application,
     and is the real code self-test

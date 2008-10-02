@@ -1,10 +1,10 @@
 #! /bin/sh -
 #
-# Start the Jetty Scheme server.
+# Start the Jetty Scheme server.~
 #
 # Usage:
 #
-#    start-jetty.sh [--help] [--verbose] [--port=n]
+#    quaestor-standalone.sh [--help] [--verbose] [--port=n]
 #
 # This should be removed in the medium term, and replaced with 
 # a single jar file which can be run standalone.

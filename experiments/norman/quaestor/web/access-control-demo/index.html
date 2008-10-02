@@ -1,0 +1,215 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Quaestor access-control demo</title>
+<link rel="stylesheet" type="text/css" href="base.css"></link>
+
+</head>
+
+<body>
+
+<h1>Quaestor demo</h1>
+
+<div id="toc">
+<ul>
+<li><a href="#id54666">The HTTP demo</a></li>
+<li><a href="#id54989">The XML-RPC demo</a></li>
+<li><a href="#id55057">Links</a></li>
+</ul>
+</div>
+
+<p>This is a demo of the reasoning capabilities described
+<a href="http://nxg.me.uk/note/2006/access-control/">elsewhere</a>.  To
+work through the demo, you need to have a Quaestor service running
+inside a Tomcat server: I'll take that to be running at
+<code>http://localhost:8080/quaestor</code>.
+You need at least Quaestor v0.3.</p>
+
+<p>The Quaestor interface is documented on the front page of the
+Quaestor server.  It uses the HTTP protocol commands to manipulate
+then query the server, so you need <code>curl</code> or some other
+tool which can generate HTTP <code>GET</code>, <code>PUT</code> and
+<code>POST</code> commands (the <code>wget</code> program can do
+<code>POST</code>, but not <code>PUT</code>).  Or you can just talk
+HTTP yourself, using telnet.</p>
+
+<h2><a name="id54666" id="id54666">The HTTP demo</a></h2>
+
+
+<p>First, create a new knowledgebase, with a <code>PUT</code>
+command.  Call the knowledgebase `testing', and read a simple metadata
+string from stdin:</p>
+<pre>
+% curl --upload-file - \
+    --header content-type:text/plain \
+    http://localhost:8080/quaestor/kb/testing
+My test knowledgebase
+^D
+%
+</pre>
+<p>Note that we have to tell Quaestor that the input is plain text.
+As an alternative, you can describe the new knowledgebase using RDF.
+The backslashes in this command, by the way, let us break the command
+onto multiple lines – omit them if you put the command on a single line.</p>
+
+<p>If you add the <code>--verbose</code> flag to the <code>curl</code>
+command line, you will see (instructive?) protocol chatter, as well as
+the 204 (no content) return code from the server.</p>
+
+<p>Retrieving the URL <code>http://localhost:8080/quaestor/kb</code>,
+either using <code>curl</code> or in a web browser, will show you that
+you have created this knowledgebase.  You can delete the knowledgebase
+with the HTTP <code>DELETE</code> operation, though you have to do
+this by hand, since <code>curl</code> doesn't support this:</p>
+<pre>
+% telnet localhost 8080
+<span style="color: #888">Trying ::1...
+Connected to localhost.
+Escape character is '^]'.</span>
+DELETE /quaestor/kb/testing HTTP/1.0
+
+<span style="color: #888">HTTP/1.1 204 No Content
+Server: Apache-Coyote/1.1
+Date: Thu, 13 Apr 2006 10:02:53 GMT
+Connection: close
+
+Connection closed by foreign host.</span>
+%
+</pre>
+
+<p>Now you can add to the knowledgebase the three sets of assertions
+contained in files <code>access-control.owl</code>,
+<code>instances.n3</code> and <code>identity.n3</code>.  Add these to
+the knowledgebase <em>submodels</em> <code>ontology</code>,
+<code>people</code> and <code>identities</code> respectively (the
+names are arbitrary, and you can use alternatives if you wish).</p>
+<pre>
+% curl --upload-file access-control.owl \
+    http://localhost:8080/quaestor/kb/testing/ontology \
+    --header content-type:application/rdf+xml
+% curl --upload-file instances.n3 \
+    'http://localhost:8080/quaestor/kb/testing/people?instances'
+% curl --upload-file identity.n3 \
+    http://localhost:8080/quaestor/kb/testing/identities
+%
+</pre>
+<p>The two <code>.n3</code> files are written in <a href="http://www.w3.org/DesignIssues/Notation3">Notation 3</a>; this
+is the default MIME type which Quaestor expects.  The
+<code>access-control.owl</code> file, however, is written in the
+RDF/XML serialisation, and so we must add an appropriate
+<code>Content-Type</code> header to the upload.
+The <code>instances.n3</code> file is uploaded with a
+<code>?instances</code> query attached -- this tells the reasoner that
+these are assertions about individuals rather than types; this
+distinction is currently important.</p>
+
+<p>If you now look again at <a href="http://localhost:8080/quaestor/kb"><code>http://localhost:8080/quaestor/kb</code></a> you will see the
+knowledgebase and its submodels listed.</p>
+
+<p>You can retrieve the individual submodels from the Quaestor
+service:</p>
+<pre>
+% curl http://localhost:8080/quaestor/kb/testing/people
+</pre>
+<p>will respond with the contents of the <code>people</code> submodel
+in the default Notation3 format (MIME type <code>text/rdf+n3</code>),
+and if you add <code>--header accept:application/rdf+xml</code> to the
+<code>curl</code> command, you'll 
+get it in RDF/XML again.  If you retrieve
+<code>http://localhost:8080/quaestor/kb/testing</code> you'll get the
+union of the three submodels.</p>
+
+<p>There are several SPARQL queries in the demo for you to try.  The
+query <a href="access-all.rq"><code>access-all.rq</code></a> is:</p>
+<pre>
+prefix : &lt;http://eurovotech.org/access-control.owl#&gt;
+select ?person
+where { ?person a :CanSeeAllData }
+</pre>
+<p>You can post this file with an HTTP <code>POST</code> request:</p>
+<pre>
+% curl --header content-type:application/sparql-query \
+    --data-binary @access-all.rq \
+    http://localhost:8080/quaestor/kb/testing
+[...]
+%
+</pre>
+<p>This should respond with an XML document which conforms to the <a href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL response
+scheme</a>.  If you add <code>--header accept:text/plain</code> or
+<code>--header accept:text/csv</code> to the
+command, the reasoner will produce a response in the corresponding
+format.  There are several other queries you can try:</p>
+<dl>
+
+<dt><a href="access-flagged.rq">access-flagged.rq</a></dt>
+<dd>This query asks which individuals are in the flagged-data group</dd>
+
+<dt><a href="ask-norman.rq">ask-norman.rq</a></dt>
+<dd>This query asks the yes/no question of whether
+<code>norman@astro.gla.ac.uk</code> is allowed to see all the data.</dd>
+
+<dt><a href="construct-accessers.rq">construct-accessers.rq</a></dt>
+<dd>This uses a SPARQL <code>construct</code> query to obtain a query
+result in RDF.</dd>
+
+<dt><a href="ask-badly.rq">ask-badly.rq</a></dt>
+<dd>This query is malformed (there's a missing angle bracket).  The
+reasoner responds with an HTTP 400 status.</dd>
+</dl>
+
+<p>Finally, you can delete the knowledgebase with the HTTP
+<code>DELETE</code> command, as illustrated above.</p>
+
+
+<h2><a name="id54989" id="id54989">The XML-RPC demo</a></h2>
+
+
+<p>Quaestor also has an XML-RPC interface, with an endpoint at
+<code>http://localhost:8080/quaestor/xmlrpc</code>, though it has
+rather less functionality at present.</p>
+
+<p>The file <code><a href="xmlrpc-get-model.xml">xmlrpc-get-model.xml</a></code>
+contains an XML-RPC method call:</p>
+<pre>
+&lt;methodCall&gt;
+&lt;methodName&gt;get-model&lt;/methodName&gt;
+&lt;params&gt;
+&lt;param&gt;&lt;value&gt;&lt;string&gt;testing&lt;/string&gt;&lt;/value&gt;&lt;/param&gt;
+&lt;/params&gt;
+&lt;/methodCall&gt;
+</pre>
+<p>You can post this to the server as follows:</p>
+<pre>
+% curl --header content-type:text/xml \
+    --data-binary @xmlrpc-get-model.xml \
+    http://localhost:8080/quaestor/xmlrpc
+%
+</pre>
+<p>and get a response which simply indicates that you should
+dereference another URL.</p>
+
+<p>Slightly more useful is the <code>query-model</code> method,
+illustrated in <code><a href="xmlrpc-query-model.xml">xmlrpc-query-model.xml</a></code>.  This makes a 
+SPARQL query against the model, and returns a URL which can be
+dereferenced to pick up the query results.</p>
+
+
+<h2><a name="id55057" id="id55057">Links</a></h2>
+
+
+<p>There are SPARQL tutorials at 
+<a href="http://www-128.ibm.com/developerworks/xml/library/j-sparql/"><code>http://www-128.ibm.com/developerworks/xml/library/j-sparql/</code></a>
+and
+<a href="http://jena.sourceforge.net/ARQ/Tutorial/"><code>http://jena.sourceforge.net/ARQ/Tutorial/</code></a>.</p>
+
+<p>The (rather informal) XML-RPC spec is at
+<a href="http://www.xmlrpc.com/spec"><code>http://www.xmlrpc.com/spec</code></a>.</p>
+
+
+<div class="trailer">
+<a href="http://nxg.me.uk">Norman Gray</a><br />
+2006 August 24
+</div>
+
+</body>
+</html>

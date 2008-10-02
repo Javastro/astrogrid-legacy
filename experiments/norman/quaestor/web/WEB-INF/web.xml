@@ -53,10 +53,14 @@
       <param-value>/config</param-value>
     </init-param>
     <init-param>
+      <!-- Change this parameter to indicate where Quaestor should persist models,
+           (when that functionality is enabled).  The default value isn't terribly
+           useful (since /tmp isn't exactly persistent), but should be harmless. -->
       <param-name>persistence-directory</param-name>
-      <param-value>/tmp/quaestor-persistence</param-value>     <!--not a good value!-->
+      <param-value>/tmp/quaestor-persistence</param-value>
     </init-param>
-    <init-param>  <!-- chatter incessantly if this parameter is 'verbose', not otherwise -->
+    <init-param>
+      <!-- chatter incessantly if this parameter is 'verbose', not otherwise -->
       <param-name>logging</param-name>
       <param-value>verbose</param-value>
     </init-param>
@@ -67,6 +71,9 @@
     <description>Allows direct interaction with the SISC REPL</description>
     <servlet-class>org.eurovotech.quaestor.CodeManager</servlet-class>
     <init-param>
+      <!-- If this parameter is 'enabled', then we can evaluate Scheme
+           expressions within the Quaestor REPL.  This is mostly for
+           debugging, and should be 'disabled' in most cases. -->
       <param-name>status</param-name>
       <param-value>enabled</param-value> <!-- must be enabled/disabled -->
     </init-param>

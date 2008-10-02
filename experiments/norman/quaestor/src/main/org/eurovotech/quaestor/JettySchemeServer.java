@@ -108,6 +108,7 @@ public class JettySchemeServer {
                            + portNumber + "/");
 
         JettyServer s = new JettyServer(portNumber, chatter, configProperties);
+
         s.run();
     }
 
@@ -148,12 +149,13 @@ public class JettySchemeServer {
 
                 // log name and version number
                 Log.info("JettySchemeServer " + versionString);
-
                 org.mortbay.jetty.Server server = new org.mortbay.jetty.Server(portNumber);
 
                 // create and install the handlers which this server will manage
                 kbHandler = new JettySchemeHandler();
-                Handler docHandler = new JettyDocHandler(getInitParameter("doc-base", "war"));
+                Handler docHandler = new JettyDocHandler(ClassLoader.getSystemClassLoader().getResource(getInitParameter("doc-base", "Resources")));
+                //Handler docHandler = new JettyDocHandler(getInitParameter("doc-base", "Resources"));
+                //Handler docHandler = new JettyDocHandler(getInitParameter("doc-base", "war"));
 
                 Handler codeHandler = new JettyCodeHandler(getInitParameter("repl-status","disabled").equals("enabled"));
                 HandlerList handlerList = new HandlerList();
@@ -213,14 +215,14 @@ public class JettySchemeServer {
                 exitStatus = 0;
 
             } catch (ServletException e) {
-                Log.info("Error starting servlet: " + e);
+                Log.warn("Error starting servlet: " + e);
             } catch (java.io.IOException e) {
-                Log.info("Error starting SISC (code=" + mainScriptName + ") [" + e + "]");
+                Log.warn("Error starting SISC (code=" + mainScriptName + ") [" + e + "]");
             } catch (SchemeException e) {
-                Log.info("Scheme exception: " + e);
+                Log.warn("Scheme exception: " + e);
             } catch (Exception e) {
                 // thrown by server.start
-                Log.info("Server failed to start: " + e);
+                Log.warn("Server failed to start: " + e);
             }
             System.exit(exitStatus);
         }
@@ -419,13 +421,12 @@ public class JettySchemeServer {
 
         /**
          * Construct a documentation handler.
-         * @param base the location of the document base as a string naming a directory
+         * @param base the location of the document base
          */
-        public JettyDocHandler(String base) {
+        public JettyDocHandler(java.net.URL base) {
             docHandler = new org.mortbay.jetty.handler.ResourceHandler();
-            java.io.File docBase = new java.io.File(base);
-            Log.info("docBase=" + docBase + " absolute=" + docBase.getAbsolutePath());
-            docHandler.setResourceBase("file:" + docBase.getAbsolutePath() + "/");
+            Log.info("docbase=" + base);
+            docHandler.setResourceBase(base.toString());
         }
 
         public void handle(String target,

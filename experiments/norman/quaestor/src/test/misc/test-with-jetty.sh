@@ -4,30 +4,31 @@
 # regression test, then take down the server
 
 if test $# -lt 2; then
-    echo "Usage: $0 <quaestor-build-file> <quaestor-jetty.zip>" >&2
+    echo "Usage: $0 <quaestor-build-file> <quaestor-jetty.jar>" >&2
     exit 1
 fi
 buildfile=$1
-zipfile=$2
+jarfile=$2
 
 # we happen to know that this is the correct URL for the server
 PORT=8081
 URL=http://localhost:$PORT
 
-if ! expr "$zipfile" : /; then
-    # $zipfile doesn't start with a slash, so is relative
-    zipfile=$PWD/$zipfile
+if ! expr "$jarfile" : /; then
+    # $jarfile doesn't start with a slash, so is relative
+    jarfile=$PWD/$jarfile
 fi
-# we presume that the file path/foo.zip contains a directory 'foo'
-zipname=`expr "$zipfile" : '.*/\([^/]*\).zip'`
+# we presume that the file path/foo.jar contains a directory 'foo'
+jarname=`expr "$jarfile" : '.*/\([^/]*\).jar'`
 
 WORK=`mktemp -d -t jetty` || exit 1
 
-echo "Work directory $WORK, zipfile=$zipfile, zipname=$zipname"
+echo "Work directory $WORK, jarfile=$jarfile, jarname=$jarname"
 
 cd $WORK
-unzip $zipfile
-sh $zipname/start-jetty.sh --port=$PORT >jetty.log 2>&1 &
+#unzip $zipfile
+#sh $zipname/quaestor-standalone.sh --port=$PORT >jetty.log 2>&1 &
+java -jar $jarfile --port=$PORT >jetty.log 2>&1 &
 jettypid=$!
 
 jetty_status=0

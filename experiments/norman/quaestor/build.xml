@@ -98,7 +98,7 @@
 
   <!-- products -->
   <property name='quaestor.lib.jar' value='${app.name}-lib-${app.version}.jar'/>
-  <property name='quaestor.jetty' value='${app.name}-jetty-${app.version}'/>
+  <property name='quaestor.jetty' value='${app.name}-standalone-${app.version}'/>
   <property name='quaestor.client' value='${app.name}-client-${app.version}'/>
 
   <!-- The following properties must be set in build.properties
@@ -125,8 +125,6 @@
    !       jdbc.support.jar : a JDBC jar file, which must match the database
    !                          which you have chosen to use with SDB
    ! -->
-
-  <property name='tdb.jar' value=''/>
 
   <!-- ================= Custom Ant Task Definitions ====================== -->
   <!-- See also <http://localhost:8080/tomcat-docs/manager-howto.html> -->
@@ -234,11 +232,6 @@
     <include name='*.jar'/>
   </fileset>
 
-  <!--
-  <filelist id='sdb.support' dir='${sdb.lib}' files='sdb.jar'/>
-  <fileset id='tdb.support' file='${tdb.jar}'/>
-  -->
-
   <fileset id='jetty.support' dir='${jetty.home}/lib'>
     <include name='*.jar'/>
   </fileset>
@@ -257,14 +250,6 @@
                file="jena.jar"/>
     <fail unless="jena.present"
           message="Must have Jena to build: see jena.sourceforge.net"/>
-
-    <!--
-    <available property='sdb.present'
-               filepath='${sdb.lib}'
-               file='sdb.jar'/>
-    <fail unless='sdb.present'
-          message='Must have SDB; version at least SVN XXX'/>
-    -->
 
     <available property='jetty.present'
                filepath='${jetty.home}'
@@ -526,7 +511,6 @@
     <unjar dest="${build.home}/quaestorlib">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
-      <!--<filelist refid="sdb.support"/>-->
       <fileset file="${jdbc.support.jar}"/>
       <!-- jetty.support shouldn't be here, since the presence of
            javax.servlet.Servlet.class here violates the servlet spec
@@ -539,8 +523,7 @@
     <delete file='${build.home}/quaestorlib/log4j.properties'/>
     <!-- When working on the Java files below, it's convenient to have this
          next element commented out and to change the path to point to
-         .../WEB-INF/classes instead.  You need to adjust the classpath
-         in start-jetty.sh at the same time. -->
+         .../WEB-INF/classes instead. -->
     <copy todir="${build.home}/quaestorlib">
       <fileset dir="${build.war}/WEB-INF/classes">
         <include name="org/eurovotech/quaestor/**"/>
@@ -588,7 +571,7 @@
   <!-- ========== Jetty installation ========== -->
   <!--
       Build everything - specifically the quaestorlib and the quaestor.scm -
-      and install a script which can start the standalone Jetty service.
+      and bundle it into a jar file which can brings up the standalone Jetty service.
   -->
   <!-- When quaestorlib does not include quaestor.scm material (see above),
        remove quaestorlib from this dependency:
@@ -597,43 +580,44 @@
   <target name="jetty"
           depends="prepare,compile,dist,quaestorlib"
           description="Build for Jetty">
-    <!-- create the contents of the distributed zip file -->
-    <mkdir dir='${build.home}/${quaestor.jetty}/lib'/>
-    <mkdir dir="${build.home}/${quaestor.jetty}/war/WEB-INF/classes"/>
-    <copy todir="${build.home}/${quaestor.jetty}">
-      <fileset file="${src.etc}/start-jetty.sh"/>
-      <filterset>
-        <filter token='QUAESTORLIBJAR' value='${quaestor.lib.jar}'/>
-        <filter token="VERSION" value="${app.version}"/>
-        <filter token='RELEASEDATE' value='${release.date}'/>
-      </filterset>
-    </copy>
-    <chmod file='${build.home}/${quaestor.jetty}/start-jetty.sh' perm='ugo+x'/>
-    <copy todir="${build.home}/${quaestor.jetty}/war/WEB-INF/classes">
-      <fileset file="${src.etc}/JettySchemeServer.properties"/>
+    <!-- create the contents of the distributed jetty jar file -->
+    <mkdir dir='${build.home}/${quaestor.jetty}/Resources'/>
+    <copy todir="${build.home}/${quaestor.jetty}/Resources">
       <fileset file='${scm.src.home}/quaestor.scm'/>
+      <fileset dir='${build.home}/war'>
+        <include name='*'/> <!-- HTML files -->
+      </fileset>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
     <copy todir='${build.home}/${quaestor.jetty}'>
-      <fileset dir='${build.home}'>
-        <include name='war/*'/>
-        <include name='war/WEB-INF/classes/*'/>
-        <include name='war/WEB-INF/classes/org/eurovotech/quaestor/*.class'/>
+      <fileset file="${src.etc}/JettySchemeServer.properties"/>
+      <fileset file="${src.etc}/log4j.properties"/>
+      <fileset dir='${build.home}/war/WEB-INF/classes'>
+        <include name='*'/> <!-- quaestor.scm -->
+      </fileset>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+      </filterset>
+    </copy>
+    <copy todir='${build.home}/${quaestor.jetty}'>
+      <!-- as before, but without the filtering (potentially corrupts binary class files) -->
+      <fileset dir='${build.home}/war/WEB-INF/classes'>
+        <include name='org/eurovotech/quaestor/*.class'/>
       </fileset>
     </copy>
-    <copy todir='${build.home}/${quaestor.jetty}/lib'>
+    <unjar dest='${build.home}/${quaestor.jetty}'>
       <fileset dir='${dist.home}'>
         <include name='${quaestor.lib.jar}'/>
       </fileset>
       <fileset refid='jetty.support'/>
-    </copy>
-    <!-- ...and zip it up -->
+    </unjar>
+    <!-- ...and jar it up -->
     <mkdir dir='${dist.home}'/>
-    <zip destfile='${dist.home}/${quaestor.jetty}.zip'
-         basedir='${build.home}'
-         includes='${quaestor.jetty}/**'/>
+    <jar jarfile='${dist.home}/${quaestor.jetty}.jar'
+         basedir='${build.home}/${quaestor.jetty}'
+         manifest='src/etc/JettyManifest'/>
   </target>
 
   <!-- ==================== Installation/distribution ==================== -->
@@ -645,7 +629,7 @@
     <copy todir='${dist.home}/webpage-tarball'>
       <fileset file='${dist.home}/${app.name}-${app.version}.war'/>
       <fileset file='${dist.home}/${quaestor.client}.zip'/>
-      <fileset file='${dist.home}/${quaestor.jetty}.zip'/>
+      <fileset file='${dist.home}/${quaestor.jetty}.jar'/>
       <fileset file='${dist.home}/${quaestor.lib.jar}'/>
       <fileset file='${web.home}/base.css'/>
     </copy>
@@ -658,12 +642,15 @@
       </filterset>
     </copy>
 
+    <copy file='${docs.home}/install.html'
+          todir='${dist.home}/webpage-tarball'/>
+
     <copy file='${docs.home}/distrib.html'
           tofile='${dist.home}/webpage-tarball/index.html'>
       <filterset>
         <filter token="VERSION"     value="${app.version}"/>
         <filter token='RELEASEDATE' value='${release.date}'/>
-        <filter token='JETTYZIP'    value='${quaestor.jetty}.zip'/>
+        <filter token='JETTYJAR'    value='${quaestor.jetty}.jar'/>
         <filter token='WARFILE'     value='${app.name}-${app.version}.war'/>
         <filter token='CLIENTZIP'   value='${quaestor.client}.zip'/>
         <filter token='LIBJAR'      value='${quaestor.lib.jar}'/>
@@ -749,10 +736,7 @@
     <copy todir="${build.lib}">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
-      <!--<filelist refid="sdb.support"/>-->
-      <!--<fileset refid='tdb.support'/>                           <!- -may be missing-->
       <fileset file='${jdbc.support.jar}'/>
-      <!--<fileset refid='jetty.support'/>-->
     </copy>
 
     <copy todir="${build.war}/WEB-INF/classes">
@@ -767,13 +751,12 @@
 
   <target name='prepare-static'
           description='Prepare the static content of the webapp'>
-    <!-- This demo.tar.gz comes from Norman's repository, in the 
-         directory votech/access-control -->
-    <untar src='web/demo.tar.gz'
-           dest='web'
-           compression='gzip'/>
 
-    <!-- Copy static content of this web application -->
+    <mkdir dir='${build.war}/access-control-demo'/>
+    <copy todir='${build.war}/access-control-demo'>
+      <fileset file='${build.war}/base.css'/>
+    </copy>
+    <!-- Copy the static content of this web application -->
     <copy todir="${build.war}">
       <fileset dir="${web.home}"
                excludes="generate/**"/>
@@ -782,6 +765,8 @@
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
+    <zip destfile='${build.war}/demo.zip'
+         basedir='${build.war}/access-control-demo'/>
 
   </target>
 
@@ -883,7 +868,7 @@
     <exec executable='/bin/sh' failonerror='true'>
       <arg value='src/test/misc/test-with-jetty.sh'/>
       <arg file='build.xml'/> <!-- this file -->
-      <arg file='${dist.home}/${quaestor.jetty}.zip'/>
+      <arg file='${dist.home}/${quaestor.jetty}.jar'/>
     </exec>
   </target>
 

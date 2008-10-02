@@ -65,7 +65,7 @@ the following stanza to the build.xml:
 
 The list is based on the output from extract-classes.scsh, copied
 below.  That ran to completion, and produced a jar file which
-start-jetty.sh was able to start, but which crashed after the first
+quaestor-standalone.sh was able to start, but which crashed after the first
 few protocol-tests, with some error in an initialiser, apparently from
 within a call to rdf:new-empty-model, which seems to depend only on
 com.hp.hpl.jena.rdf.model.ModelFactory.  There are a variety of errors
