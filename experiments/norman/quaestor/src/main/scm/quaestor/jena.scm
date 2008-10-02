@@ -97,8 +97,9 @@
 ;; RDF:CREATE-PERSISTENT-MODEL-FACTORY : model -> procedure-or-false
 ;; Given a Jena model, return a procedure which will create persistent models.
 ;; The CONFIG model must include a resource which has a string-valued
-;; property quaestor:persistenceDirectory.  This names an existing directory
-;; which will be used to hold persistent models.
+;; property quaestor:persistenceDirectory.  This names a directory
+;; which will be used to hold persistent models, and which will be created 
+;; if it does not already exist.
 ;;
 ;; The resulting procedure has the contract
 ;;   ((uri (or (jstring? uri)
@@ -113,22 +114,29 @@
 (define/contract (rdf:create-persistent-model-factory (config jena-model?)
                                                       -> (lambda (x) (or (not x) (procedure? x))))
   (define-java-classes <java.io.file>)
-  (define-generic-java-methods exists)
+  (define-generic-java-methods exists mkdirs to-string)
   (if (java-class-present '|com.hp.hpl.jena.tdb.TDBFactory|)
       (let ((persistence-directory
-             (as-jstring
-              (rdf:select-object/string config #f (rdf:make-quaestor-resource "persistenceDirectory")))))
+             (cond ((as-jstring
+                     (rdf:select-object/string config #f (rdf:make-quaestor-resource "persistenceDirectory")))
+                    => (lambda (dirname) (java-new <java.io.file> dirname)))
+                   (else #f))))
+        ;; (attempt to) make the persistence-directory if it doesn't already exist
+        (if (and persistence-directory
+                 (not (->boolean (exists persistence-directory))))
+            (mkdirs persistence-directory))
+
         (cond ((and persistence-directory
-                    (->boolean (exists (java-new <java.io.file> persistence-directory))))
+                    (->boolean (exists persistence-directory)))
                (lambda/contract ((uri (or (jstring? uri)
                                           (string? uri)
                                           (is-java-type? uri '|java.net.URI|)))
                                  -> jena-model?)
                  (define-java-classes (<tdb-factory> |com.hp.hpl.jena.tdb.TDBFactory|) <java.io.file>)
-                 (define-generic-java-methods assemble-model to-string replace-all)
+                 (define-generic-java-methods assemble-model replace-all)
 
                  (define (make-persistence-file directory key)
-                   ;; jstring? jstring? -> <java.io.File>
+                   ;; <java.io.File> jstring? -> <java.io.File>
                    (define-java-classes <java.io.file-output-stream>)
                    (define-generic-java-methods
                      write concat close delete-on-exit
@@ -155,7 +163,7 @@
                        (add m graphspec type-property (create-resource m (tdb-ns "GraphTDB")))
                        (add-literal m graphspec
                                     (create-property m (tdb-ns "location") null-string)
-                                    (concat (concat directory (->jstring "/")) key))
+                                    (to-string (java-new <java.io.file> directory key)))
                        (let ((fos (java-new <java.io.file-output-stream> tfile)))
                          (write m fos)
                          (close fos))
@@ -169,7 +177,7 @@
                                                                                 (->jstring "[^A-Za-z0-9]")
                                                                                 (->jstring "-")))))))
               (persistence-directory
-               (error "Can't make persistent model handler: the persistence-directory ~s does not exist" persistence-directory))
+               (error "Can't make persistent model handler: the persistence-directory ~s does not exist and cannot be created" (->string (to-string persistence-directory))))
               (else
                (error "Can't make persistent model handler: the persistence info does not indicate a quaestor:persistenceDirectory"))))
       #f))                              ;no TDBFactory present
