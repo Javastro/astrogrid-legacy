@@ -6,18 +6,17 @@ from astrogrid import utils
 from astrogrid.threadpool import easy_pool
 from urllib import *
 from urlparse import *
+from math import *
 
 #=================================================================
 #		Swift combined image and catalogue search.
 #
 # Notes:
-# (1) I have the spherical distance calculated column name as _r.
-#     The problem is I don't know whether this is standard or not.
-# (2) What if the service has more than one table?
+# (1) What if the service has more than one table?
 #     The standard python ConeSearch seems to imply that this can
 #     be the case for dsa; it has the dsatab keyword on the 
 #     execute function.
-# (3) We have a windows problem with VOTables.
+# (2) We have a windows problem with VOTables.
 #	    I think it is within the utils module...
 #=================================================================
 #
@@ -36,20 +35,22 @@ EXTREME_TRACE = False
 #
 # Can be set to 'ALL', but you must be prepared to filter.
 # Some services provide lots of bumf, eg: html with requests.
-#
 FORMAT = 'image/fits'
-
+#
+# Some obscure python thing for enabling class methods.
 class Callable:
 	def __init__(self, anycallable):
 		self.__call__ = anycallable
 
 ##################################################################
-# Base class for services.
+# Base class for all services.
 # 
-#	
-#
+##################################################################
 class Service:
-	
+	#
+	# I assume this code is run at class loading time.
+	# I certainly hope so. It has global implications as it
+	# loads the Astrogrid runtime.
 	ar = None
 	tables = None
 	try:	
@@ -65,46 +66,69 @@ class Service:
 	except Exception, e:
 		if ERROR: print 'Could not use AR in establishing service environment: ', e
 		sys.exit(1)
-
+	#
+	# All services have a name and ivorn.
+	# Each service is also passed the search arguments (ra, dec, radius)
+	# rather than having them as global variables. This will facilitate 
+	# extending the script to searching a number of areas.
+	# The votable will hold the results of the search.
+	# The dispatched flag helps in selecting a service for dispatching
+	# on a separate thread. See ServiceGroup.
+	# The terminateFlag is used to signal termination across threads;
+	# it is provided by ServiceGroup.
+	# 
 	def __init__( self, name, ivorn, ra, dec, radius ):
-		self.dispatched = False
+		self.dispatchedFlag = False
 		self.name = name
 		self.ivorn = ivorn
 		self.ra = ra
 		self.dec = dec
 		self.radius = radius
-		self.vot = None
+		self.votable = None
 		self.terminateFlag = None
 		return
 	#
-	#
-	# Generic searchAndRetrieve() meant to be overridden
+	# Generic searchAndRetrieve() meant to be overridden.
 	def searchAndRetrieve( self ):	
 		return
 	#
-	#
-	#
+	# Stringify the instance. Used by print.
+	# Good for debugging purposes.
 	def __str__( self ):
 		return 'Service Name: ' + self.name + '\n' \
 		       'Ivorn: ' +  self.ivorn + '\n' \
 	         'ra: ' + str(self.ra)  + '\n' \
 	         'dec: ' + str(self.dec)  + '\n' \
 	         'radius: ' + str(self.radius)  + '\n' \
-	         'dispatched: ' + str(self.dispatched) + '\n'
+	         'dispatched: ' + str(self.dispatchedFlag) + '\n'
 
-		
 
 ##################################################################
 # ConeSearch class to substitute for the standard one,
-# which seems not to allow all columns to be returned
-#
+# which seems not to allow all columns to be returned.
+##################################################################
 class ConeSearch( Service ):
-
+	#
+	# table is the table to search. Currently left null and not used.
+	# At some point this will require change: the DSA allows you to
+	# choose which table to run a cone search upon.
+	# Columns is a list of column / variable names lifted from the control file.
+	# searchFunctionName is the function name within this script that must be
+	# invoked. Needs more thought to generalize the capability.
 	def __init__( self, name, ivorn, ra, dec, radius, table, columns, searchFunctionName ):
 		Service.__init__( self, name, ivorn, ra, dec, radius )
 		self.table = table             # table can be None where service expects only one table!
-		self.columns = columns         # self.columns is a list of column / variable name pairs!
 		self.searchFunctionName = searchFunctionName
+		# The columns list is in fact a list of "pairs", with each pair consisting of 
+  	# database column name and program variable name, separated by a colon. For example:
+		# B1mag:B1
+		# where B1mag is the database column name and B1 the program variable name.
+		# This code forms column entities as a list of lists. For example:
+		# [ [_r,Dist],[RAJ2000,RA],[DEJ2000,Dec],[rmag,R],[rDiam,RDiam],[bmag,B],[bDiam,BDiam],[APM-ID,id] ]
+		self.columnList = []
+		for column in columns:
+			cpair = column.split(':')
+			self.columnList.append( cpair )		
 		return
 	#
 	# Not sure what to make of the dsatab keyword.
@@ -116,37 +140,51 @@ class ConeSearch( Service ):
 		fullURL = Service.ar.ivoa.cone.addOption( query, "VERB", "3" )
 		doc = Service.tables.convertFromFile( fullURL, "votable", "votable" )
 		return doc
-
 	#
-	#
-	#
+	# Stringify the service instance.
+	# Good for debugging.
 	def __str__( self ):
 		return Service.__str__( self ) + 'Search function name: ' + self.searchFunctionName + '\n'
+	#
+	#
+	#
+	def sphericalDistance( ra1, dec1, ra2, dec2 ):
+		if TRACE: print 'entry: sphericalDistance()' 
+		ra1 = float( ra1 )
+		ra2 = float( ra2 )
+		dec1 = float( dec1 )
+		dec2 = float( dec2 ) 
+		if DEBUG: print 'ra1, dec1, ra2, dec2: ', ra1, dec1, ra2, dec2
+		if ra1 >= 180.0: ra1 = 360.0 - ra1
+		ra1 = ra1 * math.pi/180.0
 
+		if ra2 >= 180.0: ra2 = 360.0 - ra2
+		ra2 = ra2 * math.pi/180.0
 
+		if dec1 >= 180.0: dec1 = 360.0 - dec1
+		dec1 = dec1 * math.pi/180.0
+
+		if dec2 >= 180.0: dec2 = 360.0 - dec2
+		dec2 = dec2 * math.pi/180.0
+ 
+		ang = acos( cos(dec1)*cos(dec2)*cos(ra2-ra1) + sin(dec1)*sin(dec2) )
+		ang = abs(ang)
+#		asec = ang * 648000.0 / math.pi
+		if DEBUG: print 'calculated DIST: ', ang
+		if TRACE: print 'exit: sphericalDistance()' 
+		return ang
+	sphericalDistance = Callable( sphericalDistance )
 
 	#
-	# The columns list is in fact a list of "pairs", with each pair consisting of 
-  	# database column name and program variable name, separated by a colon. For example:
-	# B1mag:B1
-	# where B1mag is the database column name and B1 the program variable name.
-	# This routine returns these column entities as a list of lists. For example:
-	# [ [_r,Dist],[RAJ2000,RA],[DEJ2000,Dec],[rmag,R],[rDiam,RDiam],[bmag,B],[bDiam,BDiam],[APM-ID,id] ]
-	def getColumnList( self ):
-		columnList = []
-		for column in self.columns:
-			columnList.append( column.split( ':' ) )
-		return columnList
-		
-		
-	#
-	#
-	#
+	#	Uses the results votable to form a more friendly map of those
+	# columns that can have null values returned.
+	# The map is keyed on column index within a row...
+	# column index : null value
 	def formNullValuesMap( self ):
 		global EXTREME_TRACE, EXTREME_DEBUG
 		if EXTREME_TRACE: print 'formNullValuesMap() enter'
 		nullVals = {}
-		fields = self.vot.getFields()
+		fields = self.votable.getFields()
 		for field in fields:
 			vals = field.getNodesByName( 'VALUES' )
 			name = field.getAttributes()['name']
@@ -156,12 +194,15 @@ class ConeSearch( Service ):
 				if EXTREME_DEBUG: 
 					print '=====attrs=====\n', attrs
 				nullValue = attrs[ 'null' ]
-				nullVals[ self.vot.getColumnIdx( name ) ] = nullValue
+				nullVals[ self.votable.getColumnIdx( name ) ] = nullValue
 		if EXTREME_DEBUG: 
 			print '=====nullVals=====\n', nullVals
 		if EXTREME_TRACE: print 'formNullValuesMap() exit'
 		return nullVals
-	
+	#
+	# Uses the nullsMap, the value returned and the index
+	# to return a usable value (ie: not null) or the python
+	# equivalent of null (the None object).
 	def testAndSetNull( self, x, index, nullsMap ):
 		global EXTREME_TRACE, EXTREME_DEBUG
 		if EXTREME_TRACE: print 'testAndSetNull() enter'
@@ -180,13 +221,13 @@ class ConeSearch( Service ):
 		if EXTREME_DEBUG: print retVal
 		if EXTREME_TRACE: print 'testAndSetNull() exit'
 		return retVal
-	
+	#
+	# If the None object is undesirable as a value, 
+	# this returns an empty string instead.	
 	def testAndSetEmpty( self, x ):
 		if x == None:
 			return ''
-		return x		
-	
-	
+		return x			
 	#
 	#
 	# Returned values: RAJ2000 DEJ2000 umag gmag rmag imag zmag
@@ -194,10 +235,10 @@ class ConeSearch( Service ):
 	def searchSDSS( self ):
 		global TRACE, DEBUG, FEEDBACK, stars, gals
 		if TRACE: print 'enter: searchSDSS()'
-		if FEEDBACK: print self.name + ' returned this number of rows: ' + str( len( self.vot.getDataRows() ) )
+		if FEEDBACK: print self.name + ' returned this number of rows: ' + str( len( self.votable.getDataRows() ) )
 		#
 		# We decide between stars and galaxies by using the class column
-		clColIndex = self.vot.getColumnIdx( 'cl' )
+		clColIndex = self.votable.getColumnIdx( 'cl' )
 		#
 		# Form a map for those columns that can return a null value...
 		nullsMap = self.formNullValuesMap()
@@ -207,17 +248,17 @@ class ConeSearch( Service ):
 		# using the votable and the column names 
 		# passed to us in the control file...	
 		colIndices = []
-		for column in self.getColumnList():
-			colIndices.append( self.vot.getColumnIdx( column[0] ) )
+		for column in self.columnList:
+			colIndices.append( self.votable.getColumnIdx( column[0] ) )
 		#
 		# Form local lists of stars and galaxies
 		starList = []
 		galList = []
 		#
 		# Locate the data rows
-		dataRows = self.vot.getDataRows()
+		dataRows = self.votable.getDataRows()
 		for row in dataRows:
-			cells = self.vot.getData(row)
+			cells = self.votable.getData(row)
 			cl = self.testAndSetNull( cells[ clColIndex ], clColIndex, nullsMap )
 			if cl == None:
 				continue
@@ -252,15 +293,15 @@ class ConeSearch( Service ):
 	def searchUSNO( self ):
 		global TRACE, DEBUG, FEEDBACK, stars, gals
 		if TRACE: print 'enter: searchUSNO()'
-		if FEEDBACK: print self.name + ' returned this number of rows: ' + str( len( self.vot.getDataRows() ) )
+		if FEEDBACK: print self.name + ' returned this number of rows: ' + str( len( self.votable.getDataRows() ) )
 		#
 		# We need to decide between stars and galaxies.
 		# These are just the indices for the criteria...
-		b1cIndex = self.vot.getColumnIdx( 'B1s/g' ) 
-		b2cIndex = self.vot.getColumnIdx( 'B2s/g' ) 
-		r1cIndex = self.vot.getColumnIdx( 'R1s/g' ) 
-		r2cIndex = self.vot.getColumnIdx( 'R2s/g' ) 
-		icIndex = self.vot.getColumnIdx( 'Is/g' ) 
+		b1cIndex = self.votable.getColumnIdx( 'B1s/g' ) 
+		b2cIndex = self.votable.getColumnIdx( 'B2s/g' ) 
+		r1cIndex = self.votable.getColumnIdx( 'R1s/g' ) 
+		r2cIndex = self.votable.getColumnIdx( 'R2s/g' ) 
+		icIndex = self.votable.getColumnIdx( 'Is/g' ) 
 		#
 		# Form a map for those columns that can return a null value...
 		nullsMap = self.formNullValuesMap()
@@ -269,17 +310,17 @@ class ConeSearch( Service ):
 		# using the votable and the column names 
 		# passed to us in the control file...	
 		colIndices = []
-		for column in self.getColumnList():
-			colIndices.append( self.vot.getColumnIdx( column[0] ) )
+		for column in self.columnList:
+			colIndices.append( self.votable.getColumnIdx( column[0] ) )
 		#
 		# Form local lists of stars and galaxies
 		starList = []
 		galList = []
 		#
 		# Locate the data rows
-		dataRows = self.vot.getDataRows()
+		dataRows = self.votable.getDataRows()
 		for row in dataRows:
-			cells = self.vot.getData(row)
+			cells = self.votable.getData(row)
 			#
 			# Get data to decide between stars and galaxies
 			# and test for both stars and galaxies!
@@ -340,7 +381,7 @@ class ConeSearch( Service ):
 		global EXTREME_TRACE, EXTREME_DEBUG
 		if EXTREME_TRACE: print 'testForGalsUSNO() enter'
 		#
-	  	# If at least 1 s/g is set, and all those which are set are <6, call it gal
+	  # If at least 1 s/g is set, and all those which are set are <6, call it gal
 		clist = [ b1c, b2c, r1c, r2c, ic ]
 		set = False
 		for c in clist:
@@ -373,14 +414,15 @@ class ConeSearch( Service ):
 	def genericRetrieval( self ):
 		global TRACE, DEBUG, FEEDBACK
 		if TRACE: print 'enter: genericRetrieval() for ' + self.name
-		if FEEDBACK: print self.name + ' returned this number of rows: ' + str( len( self.vot.getDataRows() ) )
+		if FEEDBACK: print self.name + ' returned this number of rows: ' + str( len( self.votable.getDataRows() ) )
 		#
 		# Here are the column indices, found
 		# using the votable and the column names 
 		# passed to us from the control file...	
 		colIndices = []
-		for column in self.getColumnList():
-			colIndices.append( self.vot.getColumnIdx( column[0] ) )
+		for column in self.columnList:
+			colIndices.append( self.votable.getColumnIdx( column[0] ) )
+		if DEBUG: print 'colIndices: ', colIndices
 		#
 		# Form a map for those columns that can return a null value...
 		nullsMap = self.formNullValuesMap()
@@ -389,19 +431,18 @@ class ConeSearch( Service ):
 		hitList = []
 		#
 		# Locate the data rows
-		dataRows = self.vot.getDataRows()
+		dataRows = self.votable.getDataRows()
 		for row in dataRows:
-			cells = self.vot.getData(row)
-			# Begin each constructed row with the self name 
+			cells = self.votable.getData(row)
+			# Begin each constructed row with the service name 
 			# and then append all the data requested to each row...
 			subRow = [ self.name ]
 			for index in colIndices:
 				subRow.append( self.testAndSetEmpty( self.testAndSetNull( cells[ index ], index, nullsMap ) ) )
 			hitList.append( subRow )
+			if DEBUG: print 'subRow: ', subRow
 		if TRACE: print 'exit: genericRetrieval() for ' + self.name 
 		return hitList
-
-
 
 	def searchAndRetrieve( self ):
 		global TRACE, DEBUG, FEEDBACK, ERROR, WARN
@@ -414,8 +455,8 @@ class ConeSearch( Service ):
 			res = self.execute()
 			if res: 
 				try:
-					self.vot = utils.read_votable( res, ofmt='votable' )
-					if len( self.vot.getDataRows() ) == 0 : 
+					self.votable = utils.read_votable( res, ofmt='votable' )
+					if len( self.votable.getDataRows() ) == 0 : 
 						if DEBUG: print self.name + ': no hits!'
 					elif self.terminateFlag.isSet():
 						if FEEDBACK: print self.service.name + ' has been terminated prematurely!'
@@ -440,7 +481,7 @@ class ConeSearch( Service ):
 ##################################################################
 # SiapSearch class to substitute for the standard one,
 # With this one I can switch options on/off.
-#
+##################################################################
 class SiapSearch( Service ):
 
 	def __init__( self, name, ivorn, ra, dec, radius, minimages, maximages, format ):
@@ -478,7 +519,7 @@ class SiapSearch( Service ):
 	# We have a windows problem with VOTables.
 	#	I think it is here within the utils module...
 	#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-					self.vot = utils.read_votable( res, ofmt='votable' )
+					self.votable = utils.read_votable( res, ofmt='votable' )
 					countImages = self.retrieveImages()
 					if countImages >= self.minimages :
 						self.terminateFlag.set()
@@ -496,19 +537,18 @@ class SiapSearch( Service ):
 
 	#
 	# Download function (retrieves images).
-	# 
 	def retrieveImages( self ) :
 		global DEBUG, TRACE, FEEDBACK
 		if TRACE: print 'enter: retrieveImages()'
 		# Get column index for access url
-		urlColIdx = self.vot.getColumnIdx ('VOX:Image_AccessReference')
-		formatIdx = self.vot.getColumnIdx ('VOX:Image_Format')
+		urlColIdx = self.votable.getColumnIdx ('VOX:Image_AccessReference')
+		formatIdx = self.votable.getColumnIdx ('VOX:Image_Format')
 		if urlColIdx < 0:
 			if DEBUG: print "No access reference found in VOTable."
 		else:
 			# NB: Examine this. There's something lax here...
-			dataRows = self.vot.getDataRows()
-			getData = self.vot.getData
+			dataRows = self.votable.getDataRows()
+			getData = self.votable.getData
 			countImages = len( dataRows )
 			if FEEDBACK: print self.name + ' returned this number of images: ' + str( countImages )
 			cnt = 0
@@ -543,9 +583,6 @@ class SiapSearch( Service ):
 	
 	#
 	# Retrieve one image 
-	#
-	#
-	#
 	def retrieveOneImage( self, url, fname ) :
 		global TRACE, DEBUG, odir
 		if TRACE: print 'enter: retrieveOneImage() for:', url, fname 
@@ -602,10 +639,13 @@ class SiapSearch( Service ):
 
 
 ##################################################################
-# Base class for a group of services
-# 
+# Class for a group of services
+# Formed when a group of services is thought of as a set of 
+#	equivalent services, ie: mirrors or near mirrors. Really 
+# a judgement over whether good results from one member of the
+# group is sufficient on its own.
 #	
-#
+##################################################################
 class ServiceGroup:
 	
 	serviceGroups = []
@@ -613,12 +653,12 @@ class ServiceGroup:
 	
 	#
 	# This is the function triggered on each thread.
-#	def dispatchSearch( service ):
-#		if TRACE: print 'enter: dispatchSearch() for service ' + service.name
-#		service.searchAndRetrieve()
-#		if TRACE: print 'exit: dispatchSearch() for service ' + service.name
-#		return
-#	dispatchSearch = Callable( dispatchSearch )
+	def dispatchSearch( service, dummyArg ):
+		if TRACE: print 'enter: dispatchSearch() for service ' + service.name
+		service.searchAndRetrieve()
+		if TRACE: print 'exit: dispatchSearch() for service ' + service.name
+		return
+	dispatchSearch = Callable( dispatchSearch )
 
 	def __init__( self ):
 		self.services = []
@@ -637,8 +677,8 @@ class ServiceGroup:
 	# 
 	def getDispatchableService( self ):	
 		for service in self.services:
-			if service.dispatched == False:
-				service.dispatched = True	# We assume it gets dispatched.
+			if service.dispatchedFlag == False:
+				service.dispatchedFlag = True	# We assume it gets dispatched.
 				if DEBUG: print 'found: ' + service.name
 				return service
 		return None
@@ -665,6 +705,7 @@ class ServiceGroup:
 ###################################################################
 # A class to hold thread safe collections of stars / galaxies
 # 
+###################################################################
 class Hits:
 	
 	def __init__( self ):
@@ -683,8 +724,7 @@ class Hits:
 		else:
 			self.list.append( [service, builtRows ] )
 		self.lock.release()
-		return
-		
+		return		
 	#
 	#
 	#
@@ -716,7 +756,7 @@ class Hits:
 		# 20.42 into B1=20.42 
 		for dataCollection in self.list:
 			service = dataCollection[0]
-			colvarNames = service.getColumnList()
+			colvarNames = service.columnList
 			for row in dataCollection[1]:
 				formattedRow = []
 				i=0
@@ -725,15 +765,40 @@ class Hits:
 						# The first entry in the formatted row is the source designation:
 						formattedRow.append( 'Source=' + value )
 					else:
-						# The rest are driven by the columns list variable name:
 						varName = colvarNames[i-1][1]
-						formattedRow.append( varName + '=' + str(value) )
+ 						if i==1 and varName != 'Dist':
+							formattedRow.append( 'Dist=' + str( Hits.formDist( service, row ) ) )
+						# The rest are driven by the columns list variable name:						
+						formattedRow.append( varName + '=' + str(value) )				
 					i += 1
+				if DEBUG: print 'formattedRow: ', formattedRow
 				sortedList.append( formattedRow )
 		#
 		# We sort the combined lists on spherical offset...
 		sortedList.sort( Hits.cmpOnSphericalDistance )
 		return sortedList
+
+	def formDist( service, row ):
+		colvarNames = service.columnList
+		ra1 = service.ra
+		dec1 = service.dec
+		ra2 = None
+		dec2 = None
+		i=0
+		for value in row:
+			if i > 0:
+				varName = colvarNames[i-1][1]
+				if varName == 'RA':
+					ra2 = value
+				elif varName == 'Dec':
+					dec2 = value
+				if ra2 != None and dec2 != None:
+					break
+			i += 1
+		sd = ConeSearch.sphericalDistance( ra1, dec1, ra2, dec2 )
+		return sd
+	formDist = Callable( formDist )
+ 
 
 	#
 	# Simple print function for debug purposes.
@@ -819,7 +884,6 @@ def stripBrackets( line ):
 	return line
 
 def processCatalogueLine( line, ra, dec, radius ):
-	# Don't like the use of global arguments here.
 	global ERROR
 	l = stripBrackets( line )
 	bits = l.split( '|' )
@@ -960,7 +1024,6 @@ def processControlFile( ra, dec, radius, filePath ):
 	return serviceGroups
 # end of processIvornFile( filePath )
 
-
 #
 # Outputs the merged catalogue results as a comma separated file
 #
@@ -983,17 +1046,6 @@ def outputResults( directoryPathString, fileName, results ) :
 	if TRACE: print 'exit: outputResults() for: ' + fileName
 	return
 
-
-def dispatchSearch( service, dummyArg ):
-	global TRACE
-	if TRACE: print 'enter: dispatchSearch() for service ' + service.name
-	service.searchAndRetrieve()
-	if TRACE: print 'exit: dispatchSearch() for service ' + service.name
-	return
-
-
-
-
 ######################################################
 # Mainline                                           #
 #                                                    #
@@ -1012,7 +1064,6 @@ if FEEDBACK: print 'Started at: ' + time.strftime('%T')
 # Validate the input arguments passed to us...
 ( ra, dec, radius, ifile, odir ) = validateArgs()
 if DEBUG: print ra, dec, radius, ifile, odir
-
 #
 # Retrieve ivorns for the sources we wish to search...
 serviceGroups = processControlFile( ra, dec, radius, ifile )
@@ -1022,7 +1073,7 @@ if DEBUG: print( 'Output folder is called ' + odir )
 os.mkdir( odir )
 #
 # Define the command to execute and the pool size
-pool = easy_pool( dispatchSearch ) 
+pool = easy_pool( ServiceGroup.dispatchSearch ) 
 pool.start_threads( ServiceGroup.totalServiceCount )
 #
 # We have a list of ServiceGroups.
@@ -1033,8 +1084,11 @@ if DEBUG: print 'maxCount: ', maxCount
 for i in range (1, maxCount+1):
 	for serviceGroup in serviceGroups:
 		service = serviceGroup.getDispatchableService()
-		input = ( service, None )
+		# pool expects a tuple, and I don't seem to be able
+		# to create a tuple of one argument, so here is
+		# a tuple of two, one of which is null...
 		if service != None:
+			input = ( service, None )
 			pool.put( input )
 #
 # Now observe the real work:
@@ -1044,15 +1098,15 @@ while 1 :
 	p = pool.qinfo()
 	if FEEDBACK:
 		print "Time: %3d sec    Queued: %2d    Running: %2d    Finished: %2d" % \
-                                    (i, p[1], ServiceGroup.totalServiceCount-p[1]-p[3], p[3])
+                  (i, p[1], ServiceGroup.totalServiceCount-p[1]-p[3], p[3])
 	time.sleep(1)
 	i=i+1
 	if p[3]==ServiceGroup.totalServiceCount: break    
 pool.stop_threads()
 #
-# We have to wait for threads to end to process the catalogue search results, 
-# as the combined results have to be sorted on offset distance.
-# The getHits() method does the sorting too...
+# We have to wait for threads to end in order to process the catalogue search 
+# results, as the combined results have to be sorted on offset distance.
+# The getHits() method does the sorting...
 starHits = stars.getHits()
 galHits = gals.getHits()
 #
