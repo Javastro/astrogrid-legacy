@@ -338,32 +338,32 @@
         <wsdl:part element="impl:executeResponse" name="parameters"/>
     </wsdl:message>    
     <wsdl:portType name="CommonExecutionConnector">
-        <wsdl:operation name="init" parameterOrder="">
+        <wsdl:operation name="init" >
             <wsdl:input message="intf:initRequest" name="initRequest"/>
             <wsdl:output message="intf:initResponse" name="initResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
-        <wsdl:operation name="execute" parameterOrder="">
+        <wsdl:operation name="execute" >
             <wsdl:input message="intf:executeRequest" name="executeRequest"/>
             <wsdl:output message="intf:executeResponse" name="executeResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>        
-        <wsdl:operation name="abort" parameterOrder="">
+        <wsdl:operation name="abort" >
             <wsdl:input message="intf:abortRequest" name="abortRequest"/>
             <wsdl:output message="intf:abortResponse" name="abortResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
-       <wsdl:operation name="registerResultsListener" parameterOrder="">
+       <wsdl:operation name="registerResultsListener" >
             <wsdl:input message="intf:registerResultsListenerRequest" name="registerResultsListenerRequest"/>
             <wsdl:output message="intf:registerResultsListenerResponse" name="registerResultsListenerResponse" />
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
-       <wsdl:operation name="registerProgressListener" parameterOrder="">
+       <wsdl:operation name="registerProgressListener" >
             <wsdl:input message="intf:registerProgressListenerRequest" name="registerProgressListenerRequest"/>
             <wsdl:output message="intf:registerProgressListenerResponse" name="registerProgressListenerResponse" />
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>                
-        <wsdl:operation name="queryExecutionStatus" parameterOrder="">
+        <wsdl:operation name="queryExecutionStatus" >
             <wsdl:input
                 message="intf:queryExecutionStatusRequest"
                 name="queryExecutionStatusRequest"/>
@@ -372,7 +372,7 @@
                 name="queryExecutionStatusResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
-      <wsdl:operation name="getExecutionSummary" parameterOrder="">
+      <wsdl:operation name="getExecutionSummary" >
             <wsdl:input
                 message="intf:getExecutionSummaryRequest"
                 name="getExecutionSummaryRequest"/>
