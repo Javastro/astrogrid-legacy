@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.38 2007/06/28 11:58:33 nw Exp $ -->
+<!-- $Id: project.xml,v 1.39 2008/10/03 11:57:30 pah Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
     <groupId>org.astrogrid</groupId>
     <artifactId>astrogrid-master</artifactId>
-    <currentVersion>${astrogrid.release}</currentVersion>
+    <currentVersion>${astrogrid_release}</currentVersion>
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>
@@ -15,10 +15,10 @@
     <package>org.astrogrid</package>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <shortDescription>This base project contains sensible settings for most components.</shortDescription>
-    <url>http://www.astrogrid.org/maven/docs/${astrogrid.release}/${astrogrid.name}/index.html</url>
+    <url>http://software.astrogrid.org/doc/${astrogrid_release}/${astrogrid.name}/index.html</url>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-    <siteAddress>www.astrogrid.org</siteAddress>
-    <siteDirectory>${astrogrid.docs.root}/${astrogrid.name}</siteDirectory>
+    <siteAddress>maven.astrogrid.org</siteAddress>
+    <siteDirectory>/software/doc/${astrogrid_release}/${astrogrid.name}</siteDirectory>
 
  <!--set the property astrogrid.name in your component's project.properties file
   for the cvs repos data to be correct-->

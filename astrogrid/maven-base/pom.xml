@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: pom.xml,v 1.5 2008/10/03 08:35:41 pah Exp $ -->
+<!-- $Id: pom.xml,v 1.6 2008/10/03 11:56:33 pah Exp $ -->
    <!--
       This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
       In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
@@ -17,7 +17,7 @@
    <version>2009.1-SNAPSHOT</version>
    <properties>
      <!-- when on a snapshot version is being prepared then the release should be HEAD - otherwise have the ${pom.version} -->
-     <astrogrid.release>HEAD</astrogrid.release>
+     <astrogrid_release>HEAD</astrogrid_release>
    </properties>
    
    <packaging>pom</packaging>
@@ -29,7 +29,7 @@
          default yet.
       -->
    </modules>
-   <url>http://software.astrogrid.org/doc/${astrogrid.release}</url>
+   <url>http://software.astrogrid.org/doc/${astrogrid_release}</url>
    <issueManagement>
       <system>Bugzilla</system>
       <url>http://www.astrogrid.org/bugzilla/</url>
@@ -532,7 +532,7 @@
     <site>
       <id>agsite</id>
       <name>Default Site</name>
-      <url>scpexe://maven.astrogrid.org/software/doc/${astrogrid.release}</url>
+      <url>scpexe://maven.astrogrid.org/software/doc/${astrogrid_release}</url>
     </site>
     <repository>
        <id>agrepo</id>
@@ -556,7 +556,7 @@
    <site>
       <id>agsite</id>
       <name>Default Site</name>
-      <url>scpexe://maven.astrogrid.org/software/doc/${astrogrid.release}</url>
+      <url>scpexe://maven.astrogrid.org/software/doc/${astrogrid_release}</url>
     </site>
     <repository>
        <id>agrepo1</id> <!-- legacy maven 1 site for ag -->
