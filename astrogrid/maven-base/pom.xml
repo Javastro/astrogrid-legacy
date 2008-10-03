@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $id:$ -->
+<!-- $Id: pom.xml,v 1.5 2008/10/03 08:35:41 pah Exp $ -->
    <!--
-      this is an unofficial maven 2 pom to make my maven2 builds easier
-      pah
+      This pom is intended to contain the "version" information for the astrogrid (and other commonly used) components.
+      In addition it contains the basic project information - however it *must not* contain any specific build information - this is contained in the
+      various subprojects of this project. 
+      
+      For instance, a standard library project should declare the org.astrogrid:astrogrid-base project as its parent.
    -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.astrogrid</groupId>
-   <artifactId>astrogrid-base</artifactId>
-   <name>Astrogrid Master Maven POM</name>
-   <version>2008.2</version>
+   <artifactId>astrogrid-versions</artifactId>
+   <name>Astrogrid Master Version POM</name>
+   <version>2009.1-SNAPSHOT</version>
+   <properties>
+     <!-- when on a snapshot version is being prepared then the release should be HEAD - otherwise have the ${pom.version} -->
+     <astrogrid.release>HEAD</astrogrid.release>
+   </properties>
+   
    <packaging>pom</packaging>
    <modules>
       <module>ws</module>
+      <module>base</module>
       <!--
          <module>site-skin</module> site skin not any different from
          default yet.
       -->
    </modules>
-   <url>http://deployer.astrogrid.org/software/${pom.version}</url>
+   <url>http://software.astrogrid.org/doc/${astrogrid.release}</url>
    <issueManagement>
       <system>Bugzilla</system>
       <url>http://www.astrogrid.org/bugzilla/</url>
@@ -32,6 +41,259 @@
       <archive>http://forum.astrogrid.org</archive> </mailingList>
       </mailingLists>
    -->
+   
+   <licenses>
+      <license>
+         <name>The Academic Free License v. 2.0</name>
+         <url>http://www.opensource.org/licenses/afl-2.0.php</url>
+      </license>
+   </licenses>
+   <scm>
+      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/</developerConnection>
+      <url>http://www.astrogrid.org/viewcvs/astrogrid/</url>
+      <tag>HEAD</tag>
+   </scm>
+   <organization>
+      <name>AstroGrid</name>
+      <url>http://www.astrogrid.org</url>
+   </organization>
+   
+   
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-contracts</artifactId>
+            <version>2009.1-SNAPSHOT</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>2008.2</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+            <version>2008.0.a4r</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>2008.0.a4r</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-pal-oldquery</artifactId>
+            <version>2007.2pl</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-xml</artifactId>
+            <version>2007.2xml</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-utils</artifactId>
+            <version>2007.2ut</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>2008.0a6</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-server</artifactId>
+            <version>2008.2</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>2008.0a6</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>2008.0a6</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <version>2008.0b2</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <version>2007.2.01fm</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>2007.2.01fs</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>2007.2.01fs</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-jes-delegate</artifactId>
+            <version>2006.4j</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <version>2007.2wo</version>
+         </dependency>
+         <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-security</artifactId>
+            <version>2008.2</version>
+         </dependency>
+         <dependency>
+            <groupId>net.ivoa</groupId>
+            <artifactId>ivoa-objects</artifactId>
+            <version>2009.1-SNAPSHOT</version>
+         </dependency>
+         <!--
+            assuming that we will be using tomcat for the web container,
+            so we need this for the automated tomcat tasks...
+         -->
+         <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>catalina-ant</artifactId>
+            <version>5.5.15</version>
+         </dependency>
+         <dependency>
+            <groupId>picocontainer</groupId>
+            <artifactId>picocontainer</artifactId>
+            <version>1.1</version>
+         </dependency>
+         <dependency>
+            <groupId>concurrent</groupId>
+            <artifactId>concurrent</artifactId>
+            <version>1.3.1</version>
+         </dependency>
+         <dependency>
+            <groupId>org.codehaus.castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>1.1.2.1</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>xerces</groupId>
+                  <artifactId>xerces</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.0</version>
+         </dependency>
+         <dependency>
+            <groupId>regexp</groupId>
+            <artifactId>regexp</artifactId>
+            <version>1.3</version>
+         </dependency>
+         <dependency>
+            <groupId>oro</groupId>
+            <artifactId>oro</artifactId>
+            <version>2.0.7</version>
+         </dependency>
+         <dependency>
+            <artifactId>commons-jxpath</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <version>1.2</version>
+            <exclusions>
+               <!--
+                  this includes a really old version of xerces...before
+                  the split into the xercesImpl jar -v.bad...
+               -->
+               <exclusion>
+                  <artifactId>xerces</artifactId>
+                  <groupId>xerces</groupId>
+               </exclusion>
+               <exclusion>
+                  <artifactId>xml-apis</artifactId>
+                  <groupId>xml-apis</groupId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+         <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.0</version>
+         </dependency>
+         <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.6.1</version>
+         </dependency>
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+         </dependency>
+         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.15</version>
+         </dependency>
+         <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+         </dependency>
+         <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.0</version>
+         </dependency>
+         <!--
+            libs for ws attachments - both sun libs, so they will
+            probably not be on ibiblio, but are in opur local repository
+         -->
+         <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1</version>
+         </dependency>
+         <dependency><!-- might need the transports as well ... -->
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+         </dependency>
+         <dependency>
+            <artifactId>hibernate</artifactId>
+            <groupId>org.hibernate</groupId>
+            <version>3.2.1.ga</version>
+         </dependency>
+         <dependency>
+            <artifactId>acegi-security</artifactId>
+            <groupId>org.acegisecurity</groupId>
+            <version>1.0.3</version>
+         </dependency>
+         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+         </dependency>
+     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+     <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+ 
+      </dependencies>
+   </dependencyManagement>
    <developers>
       <developer>
          <id>ael</id>
@@ -183,460 +445,17 @@
             <role>Workflow Developer</role>
          </roles>
       </developer>
+      <developer>
+         <id>mbt</id>
+         <name>Mark Taylor</name>
+         <organization>Bristol University</organization>
+         <email>m.b.taylor@bris.ac.uk</email>
+         <roles>
+         <role>TOPCAT</role>
+         <role>SAMP</role></roles>
+      </developer>
    </developers>
-   <licenses>
-      <license>
-         <name>The Academic Free License v. 2.0</name>
-         <url>http://www.opensource.org/licenses/afl-2.0.php</url>
-      </license>
-   </licenses>
-   <scm>
-      <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/</connection>
-      <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/</developerConnection>
-      <url>http://www.astrogrid.org/viewcvs/astrogrid/</url>
-      <tag>HEAD</tag>
-   </scm>
-   <organization>
-      <name>AstroGrid</name>
-      <url>http://www.astrogrid.org</url>
-   </organization>
-   <build>
-      <sourceDirectory>src/java</sourceDirectory>
-      <testSourceDirectory>test/java</testSourceDirectory>
-      <resources>
-         <resource>
-            <directory>${basedir}/src/java</directory>
-            <includes>
-               <include>**/*.properties</include>
-               <include>**/*.xml</include>
-               <include>**/*.xsl</include>
-            </includes>
-         </resource>
-      </resources>
-      <testResources>
-         <testResource>
-            <directory>${basedir}/test/java</directory>
-            <includes>
-               <include>**/*.properties</include>
-               <include>**/*.xml</include>
-            </includes>
-         </testResource>
-      </testResources>
-      <plugins>
-         <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-               <argLine>-ea</argLine>
-               <testFailureIgnore>true</testFailureIgnore>
-               <includes>
-                  <include>**/*Test.java</include>
-               </includes>
-            </configuration>
-         </plugin>
-         <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-               <showDeprecation>true</showDeprecation>
-               <source>1.5</source>
-               <target>1.5</target>
-               <verbose>false</verbose>
-            </configuration>
-         </plugin>
-         <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-               <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory> <!-- consistent with current 1.0 practice -->
-            </configuration>
-         </plugin>
-         <plugin>
-            <artifactId>maven-site-plugin</artifactId>
-         </plugin>
-         <plugin>
-             <artifactId>maven-deploy-plugin</artifactId>
-             <version>2.4</version>
-         </plugin>
-         <plugin>
-            <artifactId>maven-eclipse-plugin</artifactId>
-            <configuration>
-               <downloadSources>true</downloadSources>
-               <downloadJavadocs>false</downloadJavadocs>
-            </configuration>
-         </plugin>
-       <plugin><!-- make sure that the source jar is created - early in build at verify.. -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-         
-         <!--
-            need to create a tomcat config first (as in instructions for
-            $CATALINA_BASE then point $tomcat.config.dir in you local
-            settings to that... <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId> <configuration>
-            <container> <containerId>tomcat5x</containerId>
-            <home>${env.CATALINA_HOME}</home> </container>
-            <configuration> <type>existing</type>
-            <home>${tomcat.config.dir}</home> <properties>
-            <cargo.remote.username>boss</cargo.remote.username>
-            <cargo.remote.password>boss</cargo.remote.password>
-            </properties> </configuration> <deployer> <type>local</type>
-            <deployables> <deployable> <groupId>${pom.groupId}</groupId>
-            <artifactId>${pom.artifactId}</artifactId> <type>war</type>
-            </deployable> </deployables> </deployer> </configuration>
-            </plugin> <plugin> <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-plugin</artifactId>
-            <version>1.0-beta-4</version> <configuration>
-            <connectionType>connection</connectionType> </configuration>
-            </plugin>
-         -->
-      </plugins>
-   </build>
-   <dependencies>
-      <dependency>
-         <groupId>commons-logging</groupId>
-         <artifactId>commons-logging</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>log4j</artifactId>
-      </dependency>
-   </dependencies>
-   <dependencyManagement>
-      <dependencies>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-contracts</artifactId>
-            <version>2008.2</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-common</artifactId>
-            <version>2008.2</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-registry-client-lite</artifactId>
-            <version>2008.0.a4r</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-registry-common</artifactId>
-            <version>2008.0.a4r</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-oldquery</artifactId>
-            <version>2007.2pl</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-xml</artifactId>
-            <version>2007.2xml</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-utils</artifactId>
-            <version>2007.2ut</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>2008.0a6</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-server</artifactId>
-            <version>2008.2</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-resolver</artifactId>
-            <version>2008.0a6</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-client</artifactId>
-            <version>2008.0a6</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filemanager-client</artifactId>
-            <version>2008.0b2</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filemanager-contract</artifactId>
-            <version>2007.2.01fm</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filestore-client</artifactId>
-            <version>2007.2.01fs</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-filestore-common</artifactId>
-            <version>2007.2.01fs</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-jes-delegate</artifactId>
-            <version>2006.4j</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-workflow-objects</artifactId>
-            <version>2007.2wo</version>
-         </dependency>
-         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-security</artifactId>
-            <version>2008.2</version>
-         </dependency>
-         <dependency>
-            <groupId>net.ivoa</groupId>
-            <artifactId>ivoa-objects</artifactId>
-            <version>2008.2</version>
-         </dependency>
-         <!--
-            assuming that we will be using tomcat for the web container,
-            so we need this for the automated tomcat tasks...
-         -->
-         <dependency>
-            <groupId>tomcat</groupId>
-            <artifactId>catalina-ant</artifactId>
-            <version>5.5.15</version>
-         </dependency>
-         <dependency>
-            <groupId>picocontainer</groupId>
-            <artifactId>picocontainer</artifactId>
-            <version>1.1</version>
-         </dependency>
-         <dependency>
-            <groupId>concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-            <version>1.3.1</version>
-         </dependency>
-         <dependency>
-            <groupId>org.codehaus.castor</groupId>
-            <artifactId>castor</artifactId>
-            <version>1.1.2.1</version>
-            <exclusions>
-               <exclusion>
-                  <groupId>xerces</groupId>
-                  <artifactId>xerces</artifactId>
-               </exclusion>
-            </exclusions>
-         </dependency>
-         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.8.0</version>
-         </dependency>
-         <dependency>
-            <groupId>regexp</groupId>
-            <artifactId>regexp</artifactId>
-            <version>1.3</version>
-         </dependency>
-         <dependency>
-            <groupId>oro</groupId>
-            <artifactId>oro</artifactId>
-            <version>2.0.7</version>
-         </dependency>
-         <dependency>
-            <artifactId>commons-jxpath</artifactId>
-            <groupId>commons-jxpath</groupId>
-            <version>1.2</version>
-            <exclusions>
-               <!--
-                  this includes a really old version of xerces...before
-                  the split into the xercesImpl jar -v.bad...
-               -->
-               <exclusion>
-                  <artifactId>xerces</artifactId>
-                  <groupId>xerces</groupId>
-               </exclusion>
-               <exclusion>
-                  <artifactId>xml-apis</artifactId>
-                  <groupId>xml-apis</groupId>
-               </exclusion>
-            </exclusions>
-         </dependency>
-         <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.0</version>
-         </dependency>
-         <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.6.1</version>
-         </dependency>
-         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-         </dependency>
-         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.15</version>
-         </dependency>
-         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1</version>
-         </dependency>
-         <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-            <version>1.0</version>
-         </dependency>
-         <!--
-            libs for ws attachments - both sun libs, so they will
-            probably not be on ibiblio, but are in opur local repository
-         -->
-         <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1</version>
-         </dependency>
-         <dependency><!-- might need the transports as well ... -->
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4</version>
-         </dependency>
-         <dependency>
-            <artifactId>hibernate</artifactId>
-            <groupId>org.hibernate</groupId>
-            <version>3.2.1.ga</version>
-         </dependency>
-         <dependency>
-            <artifactId>acegi-security</artifactId>
-            <groupId>org.acegisecurity</groupId>
-            <version>1.0.3</version>
-         </dependency>
-         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-         </dependency>
-     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <version>1.1.2</version>
-    </dependency>
-     <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <version>1.1.2</version>
-    </dependency>
- 
-      </dependencies>
-   </dependencyManagement>
-   <reporting>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changes-plugin</artifactId>
-            <configuration>
-               <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-        </configuration>
-        
-      </plugin>
-      
-       <plugin>
-       	<groupId>org.apache.maven.plugins</groupId>
-       	<artifactId>maven-changelog-plugin</artifactId>
-         <version>2.1</version><!-- this version avoids http://jira.codehaus.org/browse/MCHANGELOG-56 - was not automatically being picked up for me...-->
-         <configuration>
-          <type>range</type>
-          <range>30</range>
-          <connectionType>developerConnection</connectionType>           
-         </configuration>
-       </plugin>
-<plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-            <!-- reintroduce later perhaps
-               <links>
-               </links>  -->
-               <source>1.5</source>
-               <tags>
-                  <tag>
-                     <head>To Do:</head>
-                     <name>todo</name>
-                     <placement>a</placement>
-                  </tag>
-                  <tag>
-                     <head>Future:</head>
-                     <name>future</name>
-                  </tag>
-                  <tag>
-                     <head>Modified:</head>
-                     <name>modified</name>
-                     <placement>a</placement>
-                  </tag>
-                  <tag>
-                     <head>To be Refactored:</head>
-                     <name>IMPL</name>
-                  </tag>
-               </tags>
-            </configuration>
-         </plugin>
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-           <targetJdk>1.5</targetJdk>
-        </configuration>
-      </plugin>
-       <plugin>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <configuration>
-               <configLocation>
-                  ${maven.base.dir}/checkstyle.xml
-               </configLocation>
-            </configuration>
-          </plugin>
-         
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>taglist-maven-plugin</artifactId>
-            <configuration>
-               <tags><tag>FIXME</tag><tag>@TODO</tag></tags>
-            </configuration>
-         </plugin>
-       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-      </plugin>
-      
-        
-      </plugins>
-   </reporting>
+   
    <repositories>
    <!-- A local re reinstate when fuller...
       <repository>
@@ -713,7 +532,7 @@
     <site>
       <id>agsite</id>
       <name>Default Site</name>
-      <url>scpexe://terror.star.le.ac.uk/software_docs/${pom.version}</url>
+      <url>scpexe://maven.astrogrid.org/software/doc/${astrogrid.release}</url>
     </site>
     <repository>
        <id>agrepo</id>
@@ -737,7 +556,7 @@
    <site>
       <id>agsite</id>
       <name>Default Site</name>
-      <url>scpexe://terror.star.le.ac.uk/software_docs/${pom.version}</url>
+      <url>scpexe://maven.astrogrid.org/software/doc/${astrogrid.release}</url>
     </site>
     <repository>
        <id>agrepo1</id> <!-- legacy maven 1 site for ag -->
