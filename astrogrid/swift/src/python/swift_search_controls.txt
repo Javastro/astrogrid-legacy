@@ -11,7 +11,7 @@ IMAGE SECTION:
 # The first line contains the minimum and maximum number of images to retrieve 
 # from a given source of images, or its mirrors. If the minimum is achieved, 
 # any siblings will be terminated.
-[ 2 4 ]
+[ 1 2 ]
 #
 # The following lines obey this format...
 # integer
@@ -20,15 +20,14 @@ IMAGE SECTION:
 # where integer is the number of services to use as mirrors for a given source.
 ######################################################################################
 # DSS Image:
-1
+2
 [ESO_DSS | ivo://archive.eso.org/dss]
-#[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
+[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
 #
 # 2Mass Image:
-1
-#[IRSA2 | ivo://irsa.ipac/2MASS-QL]
+2
+[IRSA2 | ivo://irsa.ipac/2MASS-QL]
 [NED | ivo://ned.ipac/Image]
-
 
 CATALOGUE SECTION:
 ######################################################################################
@@ -70,3 +69,7 @@ CATALOGUE SECTION:
 # 2MASS for stars:
 1
 [2MASS | ivo://CDS.VizieR/II/246 |  | _r:Dist RAJ2000:RA DEJ2000:Dec Jmag:j Hmag:h Kmag:k | searchStars  ]
+#
+# 6df for galaxies:
+1
+[6df | ivo://wfau.roe.ac.uk/6df-dsa/wsa |  | RA:RA DEC:Dec J:j H:h K:k TARGETNAME:id | searchGalaxies ]
