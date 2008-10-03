@@ -1,0 +1,19 @@
+<document>
+  <properties>
+    <title>Changes since previous release</title>
+  </properties>
+  <!-- only put summary changes for each component here - put detailed changes in the  -->
+  <body>
+    <release version="2008.2" description="UWS, VOSpace, Delegation, SAMP" date="03/10/2008">
+       <action dev="pah" type="update" issue="1611">
+       CEA updates - UWS, New Schema, Delegation - The referenced bugzilla ticket and its dependencies detail the changes in this version 
+       </action>
+       <action dev="gtr" type="update">
+       Security Facade update to include IVOA delegation
+       </action>
+       <action dev="mbt" type="add">
+       JSAMP library added for IVOA SAMP support
+       </action>
+    </release>
+  </body>
+</document>

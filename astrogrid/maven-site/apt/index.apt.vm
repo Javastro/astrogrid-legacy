@@ -1,0 +1,22 @@
+         --- 
+         Astrogrid Software 
+         --- 
+         Paul Harrison	
+         --- 
+         03-Oct-2008 
+         --- 
+         
+Astrogrid Software Documentation for developers ${project.version}
+
+   This site has the detailed documentation for each of the components that make up the AstroGrid software suite.
+   
+   This release is known as ${project.version} and the versions of the individual components that make up this release can be found in the {{{dependency-management.html}dependency management}} page and 
+   important changes are summarised in the {{{changes-report.html}changes report}}
+   
+   The menu items on the left link to the major components
+   
+     * <<Deployable Components>> are the major software products that make up the Astrogrid software. The links here point to the top level projects for each component, and there are usually several subprojects
+
+     * <<Libraries>> are components that can be used in the building of other components - note that we recommend that these libraries are used via our maven repository.
+     
+     * <<Webservice Clients>> are small java libraries that make it easier to call the webservices in the deployable components.

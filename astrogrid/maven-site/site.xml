@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- $Id: site.xml,v 1.1 2008/10/03 12:00:30 pah Exp $ -->
+<project>
+  <bannerRight> <!-- find something else??? - composite of ivoa/eurovo/ etc.... -->
+    <name>AstroGrid</name>
+    <src>http://www.astrogrid.org/images/AGlogo.png</src>
+    <href>http://www.astrogrid.org/</href>
+  </bannerRight>
+  <version position="left"/>
+  <body>
+    <links>
+      <item name="Astrogrid" href="http://www.astrogrid.org/" />
+      <item name="Software" href="http://software.astrogrid.org/doc/${project.version}/index.html"/>
+      <item name="Deploying" href="http://deployer.astrogrid.org/"/>
+    </links>
+    <menu name="Deployable Components">
+       <item name="CEA" href="cea/"/>
+       <item name="Community" href="community"/>
+       <item name="Registry" href="registry"/>
+       <item name="DSA" href="dsa"/>
+       <item name="VOSpace" href="release"/>
+       <item name="VOExplorer" href="desktop"/>
+    </menu>
+   
+    <menu name="Libraries">
+	     <item name="Contracts" href="contracts"/>
+         <item name="Common" href="common" />
+         <item name="Security" href="security"/>
+         <item name="AR" href="desktop/api"/>
+         <item name="SAMP" href="samp"/>
+         <item name="ADQL" href="adql"/>
+    </menu>
+    <menu name="Webservice clients">
+    </menu>
+    <menu name="Developing">
+         <item name="Working with Maven" href="maven.html" collapse="true">
+           <item name="maven base" href="maven-base"></item>
+         </item>
+         <item name="Releasing" href="release.html"/>
+    </menu>
+    <menu name="Miscellaneous">
+         <item name="Deprecated Components" href="deprecated.html" collapse="true">
+            <item name="workflow objects" href="workflow-objects"/>
+         </item>
+         <item name="Obsolete Components" href="obsolete.html" collapse="true">
+            <item name="JES" href="jes"/>
+            <item name="Portal" href="portal"/>
+         </item>
+    </menu>
+    <menu name="Other Versions">
+       <item name="Nightly build" href="http://software.astrogrid.org/doc/HEAD"></item>
+    </menu>
+    <menu ref="reports"></menu>
+  </body>
+</project>

@@ -1,0 +1,36 @@
+		---
+		Using Maven
+		---
+		Paul Harrison
+		---
+		---
+
+Building with Maven
+
+        All astrogrid code must be build with {{{http://maven.apache.org}Maven}}. Note that the recommended version of Maven is Maven 2, but there 
+        are some components that are still built with Maven 1 - the maven 1 procedures are described on a {{{maven1.html}separate page}}.
+        
+        The recommended way of creating a new project is to inherit from the "astrogrid-base" POM - this POM defines all of the general project properties 
+        that are common to all astrogrid projects as well as standard dependency versions and build options. The way to inherit from this POM is to include the 
+        following at the top of your POM
+
++------+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-new-component</artifactId>
+  <packaging>jar</packaging>
+    <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2008.2</version>  
+    </parent>
+  <name>New Astrogrid component</name>
+  <version>1.2-SNAPSHOT</version>
++------+        
+       
+       where the artifactId and the name should be set to something appropriate for your component, and the version of the astrogrid-base POM that is used depends on which astrogrid release is being worked towards.
