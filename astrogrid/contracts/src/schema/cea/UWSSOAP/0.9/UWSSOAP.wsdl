@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $ID$ -->
+<!-- $Id: UWSSOAP.wsdl,v 1.1 2008/10/06 12:38:18 pah Exp $ -->
 <!-- UWS SOAP binding template -->
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:uwsws="http://www.ivoa.net/xml/UWS-WS/v0.9" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://www.w3.org/2005/08/addressing"
