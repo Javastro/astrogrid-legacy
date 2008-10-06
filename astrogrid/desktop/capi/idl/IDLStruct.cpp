@@ -214,7 +214,7 @@ void IDLArray::fillData(void * data)
 	    bool isStruct = false;
 	    IDL_StructDefPtr savedSdef = NULL;
 	    char * arrdata;
-	    IDL_VPTR arrvar; // need to create this temp var as otherwise cannot see a way of getting the correct array element size to use below
+	    IDL_VPTR arrvar = NULL; // need to create this temp var as otherwise cannot see a way of getting the correct array element size to use below
 	    if(base->getType() == IDL_TYP_STRUCT){ // yuk - IDL treats arrays of structs differently....
 //            std::cerr << "making array data - structure \n";
 	    	isStruct = true;
@@ -244,20 +244,8 @@ IDL_STRUCT_TAG_DEF IDLArray::makeStag(const std::string & name) {
 	if(mvec->size() >0){
 		if((*mvec)[0]->getType() == IDL_TYP_STRUCT)
 		{
-			std::cerr << " (struct) name="<< name << "\n";
-			std::map<std::string, IDLBase *> allTags = std::map<std::string, IDLBase *>();
-			//for arrays of structs need to create union tags list
-             for (int i = 0; i < mvec->size(); ++i) {
-				IDLStruct * s = (IDLStruct*)(*mvec)[i];
-				std::map<std::string, IDLBase *> theseTags = s->getTags();
-				allTags.insert(theseTags.begin(), theseTags.end());
-			}
-             // now iterate through to create the individual tag lists
-             for (int i = 0; i < mvec->size() -1; ++i) {
-				IDLStruct * s = (IDLStruct*)(*mvec)[i];
-				s->makeStags(name, allTags);
-             }
-             stag = ((IDLStruct*)(*mvec)[mvec->size() - 1])->makeStags(name,allTags);
+			// array of structs will be array of pointer to structs
+           stag = (*mvec)[0]->makeStag(name);
 
 
 		}
