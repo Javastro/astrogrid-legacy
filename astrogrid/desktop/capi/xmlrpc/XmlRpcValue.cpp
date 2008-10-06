@@ -44,7 +44,7 @@ namespace XmlRpc {
   static const char STRUCT_ETAG[]   = "</struct>";
 
 
-      
+
   // Format strings
   std::string XmlRpcValue::_doubleFormat("%f");
 
@@ -65,7 +65,7 @@ namespace XmlRpc {
     _value.asBinary = 0;
   }
 
-  
+
   // Type checking
   void XmlRpcValue::assertTypeOrInvalid(Type t)
   {
@@ -168,7 +168,7 @@ namespace XmlRpc {
         {
           if (_value.asStruct->size() != other._value.asStruct->size())
             return false;
-          
+
           ValueStruct::const_iterator it1=_value.asStruct->begin();
           ValueStruct::const_iterator it2=other._value.asStruct->begin();
           while (it1 != _value.asStruct->end()) {
@@ -212,7 +212,23 @@ namespace XmlRpc {
     return _type == TypeStruct && _value.asStruct->find(name) != _value.asStruct->end();
   }
 
-  // Set the value from xml. The chars at *offset into valueXml 
+  std::vector<std::string> XmlRpcValue::listMemberNames() const
+  {
+	  if(_type == TypeStruct){
+	  std::vector<std::string> retval = std::vector<std::string>(_value.asStruct->size());
+	  int j = 0;
+	  for (ValueStruct::iterator i = _value.asStruct->begin() ; i != _value.asStruct->end(); i++, j++)
+	  {
+		  retval[j]=i->first;
+	  }
+	  return retval;
+	  }
+	  else {
+		  throw XmlRpcException("type error: expected a struct");
+	  }
+  }
+
+  // Set the value from xml. The chars at *offset into valueXml
   // should be the start of a <value> tag. Destroys any existing value.
   bool XmlRpcValue::fromXml(std::string const& valueXml, int* offset)
   {
@@ -323,8 +339,8 @@ namespace XmlRpc {
   {
 	  return intToXmlHelper(_value.asLong);
    }
-  
-  std::string XmlRpcValue::intToXmlHelper(int const val) 
+
+  std::string XmlRpcValue::intToXmlHelper(int const val)
   {
 	   char buf[256];
 	    snprintf(buf, sizeof(buf)-1, "%d", val);
@@ -335,7 +351,7 @@ namespace XmlRpc {
 	    xml += I4_ETAG;
 	    xml += VALUE_ETAG;
 	    return xml;
-	  
+
   }
 
   // Double
@@ -414,7 +430,7 @@ namespace XmlRpc {
   {
     struct tm* t = _value.asTime;
     char buf[20];
-    snprintf(buf, sizeof(buf)-1, "%4d%02d%02dT%02d:%02d:%02d", 
+    snprintf(buf, sizeof(buf)-1, "%4d%02d%02dT%02d:%02d:%02d",
       t->tm_year,t->tm_mon,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec);
     buf[sizeof(buf)-1] = 0;
 
@@ -566,7 +582,7 @@ namespace XmlRpc {
         {
           struct tm* t = _value.asTime;
           char buf[20];
-          snprintf(buf, sizeof(buf)-1, "%4d%02d%02dT%02d:%02d:%02d", 
+          snprintf(buf, sizeof(buf)-1, "%4d%02d%02dT%02d:%02d:%02d",
             t->tm_year,t->tm_mon,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec);
           buf[sizeof(buf)-1] = 0;
           os << buf;
@@ -605,32 +621,32 @@ namespace XmlRpc {
           os << ']';
           break;
         }
-      
+
     }
-    
+
     return os;
   }
-  
+
   XmlRpcValue::operator ACRKeyValueMap() {
 	  //IMPL note that this only works for values as simple types at the moment
 	  assertTypeOrInvalid(TypeStruct);
 	  struct keyval * kv = new keyval[_value.asStruct->size()];
-	  
-	  std::map<std::string,XmlRpcValue>::iterator iter; 
+
+	  std::map<std::string,XmlRpcValue>::iterator iter;
 	  int i;
 	  for( iter = _value.asStruct->begin(),  i = 0; iter !=  _value.asStruct->end(); iter++, i++ ) {
-           kv[i].key = (new std::string(iter->first))->c_str(); //new string created to ensure that it is private to the 
+           kv[i].key = (new std::string(iter->first))->c_str(); //new string created to ensure that it is private to the
            //IMPL convert everything to a string for now....
            std::ostringstream  s;
-           s << iter->second; 
-           kv[i].val = (new std::string(s.str()))->c_str(); 
+           s << iter->second;
+           kv[i].val = (new std::string(s.str()))->c_str();
           // std::cerr << kv[i].key << " " << kv[i].val << "\n";
 	  }
 	  ACRKeyValueMap map;
 	  map.n = _value.asStruct->size();
 	  map.map = kv;
 	  return map;
-	  
+
   }
   XmlRpcValue::operator ACRList() {
  	  //IMPL note that this only works for values as simple types at the moment
@@ -639,27 +655,27 @@ namespace XmlRpc {
  	  for( int i = 0; i <  _value.asArray->size();  i++ ) {
             std::ostringstream  s;
             XmlRpcValue v = _value.asArray->at(i);
-            s << v; 
-            kv[i] = (new std::string(s.str()))->c_str(); 
-          
+            s << v;
+            kv[i] = (new std::string(s.str()))->c_str();
+
  	  }
  	  ACRList list;
  	  list.n = _value.asArray->size();
  	  list.list = kv;
  	  return list;
- 	  
+
    }
-   
-  
+
+
 
 } // namespace XmlRpc
 
 
 // ostream
-std::ostream& operator<<(std::ostream& os, XmlRpc::XmlRpcValue& v) 
-{ 
+std::ostream& operator<<(std::ostream& os, XmlRpc::XmlRpcValue& v)
+{
   // If you want to output in xml format:
-  //return os << v.toXml(); 
+  //return os << v.toXml();
   return v.write(os);
 }
 
