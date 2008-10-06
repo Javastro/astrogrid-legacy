@@ -1,7 +1,7 @@
 /*
 C interface to the AR
 Paul Harrison paul.harrison@manchester.ac.uk
-produced on 2008-01-04Z
+produced on 2008-10-06+01:00
 
 DO NOT EDIT - this file is produced automatically by the AR build process
 
@@ -33,13 +33,24 @@ void printCeaServerCapability( struct CeaServerCapability s);
 void printCeaApplication( struct CeaApplication s);
 void printAbstractInformation( struct AbstractInformation s);
 void printSesamePositionBean( struct SesamePositionBean s);
-void printSkyNodeTableBean( struct SkyNodeTableBean s);
-void printSkyNodeColumnBean( struct SkyNodeColumnBean s);
 void printFunctionBean( struct FunctionBean s);
 void printAvailabilityBean( struct AvailabilityBean s);
+void printWebServiceInterface( struct WebServiceInterface s);
 void printValidation( struct Validation s);
 void printTabularDB( struct TabularDB s);
+void printTableService( struct TableService s);
+void printTableDataType( struct TableDataType s);
+void printStcResourceProfile( struct StcResourceProfile s);
+void printStapService( struct StapService s);
+void printStapCapability( struct StapCapability s);
+void printStapCapability_Query( struct StapCapability_Query s);
+void printStandardSTC( struct StandardSTC s);
+void printSsapService( struct SsapService s);
+void printSsapCapability( struct SsapCapability s);
+void printSsapCapability_Query( struct SsapCapability_Query s);
+void printSsapCapability_PosParam( struct SsapCapability_PosParam s);
 void printSource( struct Source s);
+void printSimpleDataType( struct SimpleDataType s);
 void printSiapService( struct SiapService s);
 void printSiapCapability( struct SiapCapability s);
 void printSiapCapability_SkySize( struct SiapCapability_SkySize s);
@@ -53,8 +64,11 @@ void printResourceName( struct ResourceName s);
 void printResource( struct Resource s);
 void printRelationship( struct Relationship s);
 void printRegistryService( struct RegistryService s);
+void printRegistryCapability( struct RegistryCapability s);
+void printParamHttpInterface( struct ParamHttpInterface s);
 void printOrganisation( struct Organisation s);
 void printInterface( struct Interface s);
+void printInputParam( struct InputParam s);
 void printHasCoverage( struct HasCoverage s);
 void printHarvestCapability( struct HarvestCapability s);
 void printHandler( struct Handler s);
@@ -73,15 +87,17 @@ void printConeCapability_Query( struct ConeCapability_Query s);
 void printCatalogService( struct CatalogService s);
 void printCatalog( struct Catalog s);
 void printCapability( struct Capability s);
+void printBaseParam( struct BaseParam s);
 void printAuthority( struct Authority s);
+void printApplication( struct Application s);
 void printAccessURL( struct AccessURL s);
 void printVoMonBean( struct VoMonBean s);
 void printAbstractInformation_Base( struct AbstractInformation_Base s);
-void printTableBean_Base( struct TableBean_Base s);
+void printBaseParam_Base( struct BaseParam_Base s);
 void printCatalog_Base( struct Catalog_Base s);
-void printColumnBean_Base( struct ColumnBean_Base s);
 void printResource_Base( struct Resource_Base s);
 void printCapability_Base( struct Capability_Base s);
+void printInterface_Base( struct Interface_Base s);
 
 #endif
         

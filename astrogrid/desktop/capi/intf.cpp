@@ -1,7 +1,7 @@
 /*
 C interface to the AR
 Paul Harrison paul.harrison@manchester.ac.uk
-produced on 2008-01-04Z
+produced on 2008-10-06+01:00
 
 DO NOT EDIT - this file is produced automatically by the AR build process
 
@@ -19,16 +19,16 @@ DO NOT EDIT - this file is produced automatically by the AR build process
 
          
          /* begin class ivoa.adql
-    Support for working with ADQL queries. */
+    AR Service: Support for working with ADQL queries. */
 	 
 	
 			
 			
-/* function ivoa_adql_s2x(s)convert an adq/s string to an adql/x document
+/* function ivoa_adql_s2x(s)convert an adql/s string to an adql/x document
 		
 		s - (JString)
 		
-	Returns XMLString - 
+	Returns XMLString - xml equivalent of the adql/s input
        */
 XMLString ivoa_adql_s2x ( JString s)
    {
@@ -49,16 +49,14 @@ XMLString ivoa_adql_s2x ( JString s)
       ivoa.adql
       */
    /* begin class userInterface.applicationLauncher
-    Control the  Application Launcher GUI.
- 
- <img src="doc-files/applauncher.png"/>See: 
+    AR Service: Launch a new Task Runner / Query Builder GUISee: 
 				org.astrogrid.acr.astrogrid.Applications
 			  */
 	 
 	
 			
 			
-/* function userInterface_applicationLauncher_show()display a  application launcher UI
+/* function userInterface_applicationLauncher_show()display a new TaskRunner
 		
 		
 	Returns void - 
@@ -78,7 +76,7 @@ void userInterface_applicationLauncher_show ( )
       userInterface.applicationLauncher
       */
    /* begin class astrogrid.applications
-    Work with remote applications -  Compute and Data Query services.
+    AR Service: Query remote databases and execute remote applications.
  
  
  The Common Execution Architecture (CEA) provides a uniform way to describe and execute astronomical applications and data services on the VO.
@@ -111,8 +109,6 @@ void userInterface_applicationLauncher_show ( )
 			 
 				org.astrogrid.acr.ui.ApplicationLauncher
 			 
-				org.astrogrid.acr.astrogrid.ApplicationInformation
-			 
 				org.astrogrid.acr.dialogs.ToolEditor
 			 
 				org.astrogrid.acr.astrogrid.ExecutionInformation
@@ -138,6 +134,51 @@ ListOfIvornOrURI astrogrid_applications_list ( )
                 retval.n = s.size();
                 retval.list = copyArray<IvornOrURI, IvornOrURI>(s);
 
+     }
+    
+     return retval;
+    
+   };
+   
+			
+			
+/* function astrogrid_applications_getQueryToListApplications()
+		
+		
+	Returns JString - 
+       */
+JString astrogrid_applications_getQueryToListApplications ( )
+   {
+     XmlRpcValue _args, _result;
+   JString retval;
+   
+     if (myAR->execute("astrogrid.applications.getQueryToListApplications", _args, _result))
+     {
+         retval = _result;
+     }
+    
+     return retval;
+    
+   };
+   
+			
+			
+/* function astrogrid_applications_getRegistryQuery()helper method - returns the ADQL/s query that should be passed to the registry to
+ list all available applications.
+ 
+ can be used as a starting point to build up filters, etc.
+		
+		
+	Returns JString - an adql query string.
+       */
+JString astrogrid_applications_getRegistryQuery ( )
+   {
+     XmlRpcValue _args, _result;
+   JString retval;
+   
+     if (myAR->execute("astrogrid.applications.getRegistryQuery", _args, _result))
+     {
+         retval = _result;
      }
     
      return retval;
@@ -587,14 +628,12 @@ ACRKeyValueMap astrogrid_applications_getResults ( IvornOrURI executionid)
       astrogrid.applications
       */
    /* begin class userInterface.astroscope
-    Control  AstroScope.
- 
- <img src="doc-files/astroscope.png"/> */
+    AR Servuce: Launch a new AstroScope GUI */
 	 
 	
 			
 			
-/* function userInterface_astroscope_show()display a new instance of astroscope
+/* function userInterface_astroscope_show()Display a new instance of All-VO Astroscope
 		
 		
 	Returns void - 
@@ -614,7 +653,7 @@ void userInterface_astroscope_show ( )
       userInterface.astroscope
       */
    /* begin class ivoa.cache
-    data cache. */
+     */
 	 
 	
 			
@@ -639,19 +678,20 @@ void ivoa_cache_flush ( )
       ivoa.cache
       */
    /* begin class astrogrid.community
-    astogrid identity and authentication.
- 
- At the moment provides login ability. Later will provide access to permissioning and quota information for the current user.
- <img src="doc-files/login.png"/> */
+    AR Service: Single sign-on and authentication.See: 
+				<a href='http://www.ivoa.net/Documents/latest/SSOAuthMech.html'>IVOA Single-Sign On Specification</a>
+			  */
 	 
 	
 			
 			
-/* function astrogrid_community_login(username, password, community)login to astrogrid - identify yourself
+/* function astrogrid_community_login(username, password, community)login to virtual observatory.
+ 
+ {@example login("EdwardWoodward","ewarwoowar","uk.ac.le.star") }
 		
-		username - user name (e.g. <tt>fredbloggs</tt>)(JString)
+		username - user name (e.g. {@code fredbloggs})(JString)
 		password - password for this user(JString)
-		community - community the user is registered with (e.g. <tt>uk.ac.astogrid</tt> )(JString)
+		community - community the user is registered with (e.g. {@code uk.ac.astogrid} )(JString)
 		
 	Returns void - 
        */
@@ -671,9 +711,7 @@ void astrogrid_community_login ( JString username, JString password, JString com
    
 			
 			
-/* function astrogrid_community_getUserInformation()access information about the currently logged in user.
- 
- <b>This method forces login if not already logged in.</b>
+/* function astrogrid_community_getUserInformation()Access information about who the AR is currently logged in as.
 		
 		
 	Returns struct UserInformation - information about the current user.
@@ -695,7 +733,7 @@ struct UserInformation astrogrid_community_getUserInformation ( )
    
 			
 			
-/* function astrogrid_community_logout()log current user out of astrogrid
+/* function astrogrid_community_logout()logout of the virtual observatory
 		
 		
 	Returns void - 
@@ -713,7 +751,7 @@ void astrogrid_community_logout ( )
    
 			
 			
-/* function astrogrid_community_isLoggedIn()verify user is currently logged in.
+/* function astrogrid_community_isLoggedIn()check whether AR is currently logged in.
 		
 		
 	Returns BOOL - true if the user is logged in
@@ -734,7 +772,7 @@ BOOL astrogrid_community_isLoggedIn ( )
    
 			
 			
-/* function astrogrid_community_guiLogin()display the login dialogue to prompt the user for input, and then log in
+/* function astrogrid_community_guiLogin()display the login dialogue to prompt the user for input, and then log in.
 		
 		
 	Returns void - 
@@ -754,18 +792,51 @@ void astrogrid_community_guiLogin ( )
       astrogrid.community
       */
    /* begin class ivoa.cone
-    Query catalogs using Cone-search services. */
+    AR Service: Query for <b>Catalogs</b> from Cone-Search Services (DAL).
+ 
+ <p />
+ {@stickyNote This class provides functions to construct a DAL query. 
+ To execute that query, see the examples and methods in the {@link Dal} class.
+ }
+ <h2>Constructing a Query</h2>
+ The first stage in querying a cone-service is to select the service to query, find the position to query at, and then call the {@link #constructQuery(URI, double, double, double)}
+ function:
+ {@example "Contructing a Cone Query (Python)"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')        
+cone = ar.ivoa.cone #take a reference to the AR Cone component
+
+#the Cone service to query (selected using voexplorer)
+service = "ivo://irsa.ipac/2MASS-PSC"
+#resolve an object name to a position
+pos = ar.cds.sesame.resolve('m54')
+#build a query
+query = cone.constructQuery(service,pos['ra'],pos['dec'],0.001)
+print "QueryURL",query
+}
+This script produces a query URL (shown below), which can the be passed to the methods in the {@link Dal} class.
+<blockquote><tt>
+QueryURL http://irsa.ipac.caltech.edu/cgi-bin/Oasis/CatSearch/nph-catsearch?CAT=fp_psc&RA=283.7636667&DEC=-30.4785&SR=0.0010
+</tt></blockquote>See: 
+				<a href='http://www.ivoa.net/Documents/latest/ConeSearch.html'>IVOA Cone Search Standard Document</a>
+			 
+				Dal
+			  */
 	 
 	
 			
 			
-/* function ivoa_cone_addOption(query, optionName, optionValue)add an option to a previously constructed query
+/* function ivoa_cone_addOption(query, optionName, optionValue)Add an additional option to a previously constructed query.
+ <p/>
+ Sometimes neccessary, for some DAL protocols, to provide optional query parameters.
 		
 		query - the query url(URLString)
 		optionName - name of the option to add(JString)
 		optionValue - value for the new option(JString)
 		
-	Returns URLString - <tt>query</tt> with the option appended.
+	Returns URLString - {@code query} with the option appended.
        */
 URLString ivoa_cone_addOption ( URLString query, JString optionName, JString optionValue)
    {
@@ -786,11 +857,11 @@ URLString ivoa_cone_addOption ( URLString query, JString optionName, JString opt
    
 			
 			
-/* function ivoa_cone_execute(query)execute a DAL query, returning a datastructure
+/* function ivoa_cone_execute(query)Execute a DAL query, returning a datastructure
 		
 		query - query url to execute(URLString)
 		
-	Returns ListOfACRKeyValueMap - A model the DAL query response as a list of  of rows. Each row is represented is a map between UCD keys or datamodel names   and values from the response
+	Returns ListOfACRKeyValueMap - The service response parsed as a list of  of rows. Each row is represented is a map between UCD or datamodel keys    and values from the response
        */
 ListOfACRKeyValueMap ivoa_cone_execute ( URLString query)
    {
@@ -813,9 +884,7 @@ ListOfACRKeyValueMap ivoa_cone_execute ( URLString query)
    
 			
 			
-/* function ivoa_cone_executeVotable(query)execute a DAL query, returning a votable document.
- 
- This is a convenience method  - just performs a 'GET' on the query url- many programming languages support this functionality themselves
+/* function ivoa_cone_executeVotable(query)Execute a DAL query, returning a Votable document.
 		
 		query - query url to execute(URLString)
 		
@@ -838,10 +907,10 @@ XMLString ivoa_cone_executeVotable ( URLString query)
    
 			
 			
-/* function ivoa_cone_executeAndSave(query, saveLocation)execute a DAL query and save the resulting document.
+/* function ivoa_cone_executeAndSave(query, saveLocation)Execute a DAL query and save the resulting document.
 		
 		query - query url to execute(URLString)
-		saveLocation - location to save result document - may be file:/, ivo:// (myspace), ftp://(IvornOrURI)
+		saveLocation - location to save result document - May be {@code file:/}, {@code ivo://} (myspace), {@code ftp://} location(IvornOrURI)
 		
 	Returns void - 
        */
@@ -860,10 +929,12 @@ void ivoa_cone_executeAndSave ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function ivoa_cone_saveDatasets(query, saveLocation)save the datasets pointed to by this DAL query response
+/* function ivoa_cone_saveDatasets(query, saveLocation)Execute a DAL query, and save the datasets referenced by the response. 
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
-		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
+		query - query url to execute(URLString)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
 		
 	Returns int - number of datasets saved.
        */
@@ -885,11 +956,13 @@ int ivoa_cone_saveDatasets ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function ivoa_cone_saveDatasetsSubset(query, saveLocation, rows)save a subset of the datasets point to by this DAL query response
+/* function ivoa_cone_saveDatasetsSubset(query, saveLocation, rows)Execute a DAL query, and save a subset of the datasets referenced by the response.
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
 		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
-		rows - list of Integers - indexes of the rows in the query response for which to save the dataset.(ACRList)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
+		rows - list of Integers - indexes of the rows in the query response for which to save the dataset. (0= first row)(ACRList)
 		
 	Returns int - number of datasets saved.
        */
@@ -912,34 +985,38 @@ int ivoa_cone_saveDatasetsSubset ( URLString query, IvornOrURI saveLocation, ACR
    
 			
 			
-/* function ivoa_cone_getRegistryAdqlQuery()helper method - returns an ADQL/s query that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
-		
-		
-	Returns JString - an adql query string
-       */
-JString ivoa_cone_getRegistryAdqlQuery ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("ivoa.cone.getRegistryAdqlQuery", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_cone_getRegistryXQuery()helper method - returns an Xquery that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
+/* function ivoa_cone_getRegistryXQuery()Return an XQuery that, when passed to the registry, will return all known services of that type.
+ 
+ {@stickyWarning In the case of {@link Cone} the registry query will return far too many to be useful - it is necessary to use this xquery as a starting point
+ for building a more tightly-constrained query.}
+ {@example "Example of querying for cone services related to 'dwarf'"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc') 	 
+#call this method to get a query to list all Cone-search services.   
+coneQuery = ar.ivoa.cone.getRegistryXQuery()
+
+#combine it into a more tightly contrained query
+abellConeQuery = "let $cq := " + coneQuery + """
+for $r in $cq
+where contains($r/content/subject,'dwarf')
+return $r
+"""
+
+# perform the query
+rs = ar.ivoa.registry.xquerySearch(abellConeQuery)
+#inspect the results
+print len(rs)
+for r in rs:
+    print r['id']	    
+ } 
+ the output of this script is
+ <pre>
+2
+ivo://nasa.heasarc/rasswd
+ivo://nasa.heasarc/mcksion
+</pre>
 		
 		
 	Returns JString - an xquery string
@@ -960,14 +1037,17 @@ JString ivoa_cone_getRegistryXQuery ( )
    
 			
 			
-/* function ivoa_cone_constructQuery(service, ra, dec, sr)construct a query on RA, DEC, SR
+/* function ivoa_cone_constructQuery(service, ra, dec, sr)Construct a Cone-Search Query.
+ 
+ The cone search standard allows queries on Right Ascension, Declination and Search Radius,
+ all given in decimal degrees.
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
-		ra - right ascension(double)
-		dec - declination(double)
-		sr - search radius(double)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the Cone Search service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://irsa.ipac/2MASS-XSC}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link ConeCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
+		ra - right ascension e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		sr - search radius e.g. {@code 0.1}(double)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute the query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString ivoa_cone_constructQuery ( IvornOrURI service, double ra, double dec, double sr)
    {
@@ -1102,6 +1182,29 @@ void nvo_cone_saveResults ( URLString coneQuery, IvornOrURI saveLocation)
    
 			
 			
+/* function nvo_cone_getRegistryQuery()helper method - returns an ADQL/s query that should be passed to a registry to list all available cone services.
+
+ Can be used as a starting point for building filters, etc
+		
+		
+	Returns JString - an adql query string
+       */
+JString nvo_cone_getRegistryQuery ( )
+   {
+     XmlRpcValue _args, _result;
+   JString retval;
+   
+     if (myAR->execute("nvo.cone.getRegistryQuery", _args, _result))
+     {
+         retval = _result;
+     }
+    
+     return retval;
+    
+   };
+   
+			
+			
 /* function nvo_cone_getRegistryAdqlQuery()returns an ADQL/s query that should be passed to a registry to list all available cone services
 		
 		
@@ -1146,8 +1249,8 @@ JString nvo_cone_getRegistryXQuery ( )
       nvo.cone
       */
    /* begin class cds.coordinate
-    Astronomical Coordinate Web Service, from CDSSee: 
-				http://cdsweb.u-strasbg.fr/cdsws/astroCoo.gml
+    AR Service: Astronomical Coordinate Web Service, from CDSSee: 
+				<a href='http://cdsweb.u-strasbg.fr/cdsws/astroCoo.gml'>Webservice Description</a>
 			  */
 	 
 	
@@ -1283,47 +1386,35 @@ JString cds_coordinate_convertLE ( int frame1, int frame2, double lon, double la
       cds.coordinate
       */
    /* begin class ivoa.externalRegistry
-    Query an arbitrary registry service.
+    AR Service: Query an arbitrary IVOA Registry.
  
- This interface gives access to a range of querying functions - for querying using xQuery, 
- keyword, adlq/s and adql/x. The functions either return a raw XML document, or a series of
- datastructures that contain the parsed information of the registry entries.s
+ This component gives access to a range of querying functions - for querying using keywords or XQuery. 
+ The functions either return a raw XML document, or a series of
+ datastructures that contain the parsed information of the registry entries.
  
- The first parameter to each query method is the endpoint URL of the registry service to connect to.
- Such endpoints either need to be already known, or can be located using the RegistryOfRegistries.
- 
- In future, these functions will also accept the IVORN name of a registry - which 
- will then be resolved using the RegistryOfRegistries before processing the query.
- However, the RegistryOfRegistries isn't available yet.
-
-These functions are useful when you want to access records in a registry
+ {@stickyNote These functions are useful when you want to access records in a registry
  other than the 'system configured' registry,
  or if you wish to access the raw xml of the records.
- For other cases, we recommend using the simple 'ivoa.Registry' service.See: 
+ For other cases, we recommend using the simple {@link Registry} service.}
+
+ The first parameter to each query method is the endpoint URL of the registry service to connect to.
+ These functions will also accept the Resource Identifier of a registry service - which 
+ will then be resolved into an endpoint URL using the System Registry.See: 
 				<a href="http://www.ivoa.net/Documents/latest/IDs.html">IVOA Identifiers</a>
 			 
-				<a href="http://www.ivoa.net/twiki/bin/view/IVOA/ResourceMetadata">Resource Metadata</a>
+				<a href="http://www.ivoa.net/Documents/latest/VOResource.html">IVOA VOResource Definition</a>
 			 
-				<a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA Resource Metadata for the VO</a>
-			 
-				<a href="http://www.ivoa.net/Documents/latest/ADQL.html">ADQL Query Language Specification</a>
-			 
-				<a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaResReg">IVOA Registry Working Group</a>
+				<a href='http://www.ivoa.net/Documents/latest/RegistryInterface.html'>IVOA Registry Interface Standard</a>
 			 
 				<a href="http://www.w3schools.com/xquery/default.asp">XQuery Language Tutorial</a>
 			 
-				org.astrogrid.acr.ui.RegistryBrowser
-			 
-				org.astrogrid.acr.ivoa.Registry - queries the system-configured registry - suitable for most cases.
+				org.astrogrid.acr.ivoa.Registry Registry - simpler interface to system registry
 			  */
 	 
 	
 			
 			
 /* function ivoa_externalRegistry_adqlxSearchXML(registry, adqlx, identifiersOnly)Perform an ADQL/x query
- 
- Equivalent to  {@link #adqlsSearchXML} but expects the full xml form of ADQL - this is less
- error prone than the adql/s variant until someone defines adql/s properly and implements parsers for it.
 		
 		registry - (IvornOrURI)
 		adqlx - (XMLString)
@@ -1351,9 +1442,6 @@ XMLString ivoa_externalRegistry_adqlxSearchXML ( IvornOrURI registry, XMLString 
 			
 			
 /* function ivoa_externalRegistry_adqlxSearch(registry, adqlx)Perform an ADQL/x query, returning an array of datastructures.
- 
- Equivalent to  {@link #adqlsSearch} but expects the full xml form of ADQL - which is less
- error prone than the adql/s variant until someone defines adql/s properly and implements parsers for it.
 		
 		registry - (IvornOrURI)
 		adqlx - (XMLString)
@@ -1383,10 +1471,9 @@ ListOfResource_Base ivoa_externalRegistry_adqlxSearch ( IvornOrURI registry, XML
 			
 			
 /* function ivoa_externalRegistry_adqlsSearchXML(registry, adqls, identifiersOnly)Perform a ADQL/s query.
- Although convenient, prefer xquerySearch instead - as ADQL is less expressive and more poorly (especially adql/s) defined than xquery
 		
 		registry - identifier or endpoint of the registry to connect to(IvornOrURI)
-		adqls - (JString)
+		adqls - a string query (string form of ADQL)(JString)
 		identifiersOnly - (BOOL)
 		
 	Returns XMLString - xml document of search results -  a series of matching registry records contained within an element  called <tt>VOResources</tt> in the namespace <tt>http://www.ivoa.net/wsdl/RegistrySearch/v1.0</tt>
@@ -1411,8 +1498,6 @@ XMLString ivoa_externalRegistry_adqlsSearchXML ( IvornOrURI registry, JString ad
 			
 			
 /* function ivoa_externalRegistry_adqlsSearch(registry, adqls)Perform an ADQL/s query, returning an array of datastructures.
- 
- Equivalent to {@link #adqlsSearchXML} but returning results in form that can be more easily used.
 		
 		registry - (IvornOrURI)
 		adqls - (JString)
@@ -1441,13 +1526,13 @@ ListOfResource_Base ivoa_externalRegistry_adqlsSearch ( IvornOrURI registry, JSt
    
 			
 			
-/* function ivoa_externalRegistry_keywordSearchXML(registry, keywords, orValues)perform a keyword search
+/* function ivoa_externalRegistry_keywordSearchXML(registry, keywords, orValues)Perform a keyword search, returning an XML Document.
 		
-		registry - identifier or endpoint of the registry to connect to(IvornOrURI)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
 		keywords - space separated list of keywords to search for(JString)
 		orValues - - true to 'OR' together matches. false to 'AND' together matches(BOOL)
 		
-	Returns XMLString - xml document of search results, same format as result of {@link #adqlSearchXML}
+	Returns XMLString - xml document of search results -  A series of {@code VOResource} elements contained within an element  called {@code VOResources} in the namespace {@code http://www.ivoa.net/xml/RegistryInterface/v1.0}
        */
 XMLString ivoa_externalRegistry_keywordSearchXML ( IvornOrURI registry, JString keywords, BOOL orValues)
    {
@@ -1468,14 +1553,44 @@ XMLString ivoa_externalRegistry_keywordSearchXML ( IvornOrURI registry, JString 
    
 			
 			
-/* function ivoa_externalRegistry_keywordSearch(registry, keywords, orValues)Perform a keyword search and return a list of datastructures.
-        A more convenient variant of {@link #keywordSearchXML}
+/* function ivoa_externalRegistry_keywordSearch(registry, keywords, orValues)Perform a keyword search.
+         <p/>
+         A more convenient variant of {@link #keywordSearchXML}
+ <p />
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ regEndpoint = 'http://www.my.registry.endpoint'
+ rs = ar.ivoa.externalRegistry.keywordSearch(regEndpoint,"abell",False)
+ #see what we've got	
+ print len(rs)
+ #list first 10 identifiers
+ for r in rs[:10]
+    print r['id']:
+ }
+ The output is
+ <pre>
+150
+ivo://CDS.VizieR/J/A+A/486/755
+ivo://uk.ac.le.star.tmpledas/ledas/ledas/abell
+ivo://nasa.heasarc/wblgalaxy
+ivo://nasa.heasarc/wbl
+ivo://nasa.heasarc/twosigma
+ivo://nasa.heasarc/rassebcs
+ivo://nasa.heasarc/noras
+ivo://nasa.heasarc/eingalclus
+ivo://nasa.heasarc/abell
+ivo://CDS.VizieR/VII/96	
+ </pre>
 		
-		registry - (IvornOrURI)
-		keywords - (JString)
-		orValues - (BOOL)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
+		keywords - space separated list of keywords to search for(JString)
+		orValues - - true to 'OR' together matches. false to 'AND' together matches(BOOL)
 		
-	Returns ListOfResource_Base - 
+	Returns ListOfResource_Base - list of matching resources.
        */
 ListOfResource_Base ivoa_externalRegistry_keywordSearch ( IvornOrURI registry, JString keywords, BOOL orValues)
    {
@@ -1500,12 +1615,84 @@ ListOfResource_Base ivoa_externalRegistry_keywordSearch ( IvornOrURI registry, J
    
 			
 			
-/* function ivoa_externalRegistry_getResourceXML(registry, id)Retreive a record document from the registry
+/* function ivoa_externalRegistry_getResourceXML(registry, id)Retrieve a named resource from a registry, as an XML document.
+ 
+ {@stickyNote Try to use {@link #getResource(URI, URI)} instead, which
+ returns a result in a more usable format}
+ <p />
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ regEndpoint = 'http://www.my.registry.endpoint'
+ resourceID = 'ivo://uk.ac.cam.ast/IPHAS/images/SIAP'
+ xml = ar.ivoa.externalRegistry.getResourceXML(regEndpoint,resourceID)
+ } 
+      
+ {@example "Java Example" 
+ import org.astrogrid.acr.*;
+ import java.net.URI;
+ import org.astrogrid.acr.ivoa.ExternalRegistry;
+ import org.astrogrid.acr.builtin.ACR
+ Finder f = new Finder();
+ ACR acr = f.find();
+ ExternalRegistry reg = (ExternalRegistry)acr.getService(ExternalRegistry.class);
+ URI regEndpoint = new URI("http://www.my.registry.endpoint");
+ URI resourceID =new URI("ivo://uk.ac.cam.ast/IPHAS/images/SIAP");
+ Document xml = reg.getResourceXML(regEndpoint,resourceID);
+ }
+ 
+ The output will look something like
+ {@source
+<ri:Resource xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0rc1" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xmlns:va="http://www.ivoa.net/xml/VOApplication/v1.0rc1" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" created="2008-02-22T10:27:11" status="active" updated="2008-02-22T14:15:22" xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd" xsi:type="vr:Service">
+        <title>IPHAS images</title>
+        <identifier xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0">ivo://uk.ac.cam.ast/IPHAS/images/SIAP</identifier>
+        <curation>
+            <publisher ivo-id="ivo://uk.ac.cam.ast/CASU">CASU</publisher>
+            <creator>
+                <name>IPHAS collaboration</name>
+            </creator>
+            <contact>
+                <name>Guy Rixon</name>
+                <email>gtr@ast.cam.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>image, photometry, Halpha, INT-WFC</subject>
+            <description>Images from the initial data release (IDR) of the INT Photometric Halpha Survey (IPHAS). The survey as a wholeis mapping the northern Galactic Plane in the latitude range |b|&lt;5 deg in the Halpha, r' and i' bands using the Wide Field Camera on the 2.5-m INT telescope at La Palma to a depth of r'=20 (10????). The IDR (Gonzalez-Solares et al. 2007) contains the data obtained between September 2003 and December 2005 during a total of 212 nights. Between these dates, approximately 60 percent of the total survey area was covered in terms of final survey quality.</description>
+            <referenceURL>http://casu.ast.cam.ac.uk/surveys-projects/iphas</referenceURL>
+            <type>Other</type>
+            <contentLevel>Research</contentLevel>
+        </content>
+        <capability xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0" standardID="ivo://ivoa.net/std/SIA" xsi:type="sia:SimpleImageAccess">
+            <interface xsi:type="vs:ParamHTTP">
+                <accessURL use="base">http://astrogrid.ast.cam.ac.uk/iphas/siap-atlas/queryImage?</accessURL>
+            </interface>
+            <imageServiceType>Pointed</imageServiceType>
+            <maxQueryRegionSize>
+                <long>360</long>
+                <lat>360</lat>
+            </maxQueryRegionSize>
+            <maxImageExtent>
+                <long>360</long>
+                <lat>360</lat>
+            </maxImageExtent>
+            <maxImageSize>
+                <long>4096</long>
+                <lat>4096</lat>
+            </maxImageSize>
+            <maxFileSize>16800000</maxFileSize>
+            <maxRecords>15000</maxRecords>
+        </capability>
+    </ri:Resource>      
+     }
 		
-		registry - identifier or endpoint of the registry to connect to(IvornOrURI)
-		id - identifier of the registry entry to retrrieve(IvornOrURI)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
+		id - identifier of the registry resource to retrieve. e.g.{@code ivo://uk.ac.cam.ast/IPHAS/images/SIAP}(IvornOrURI)
 		
-	Returns XMLString - xml document of the registry entry - a <tt>Resource</tt> document   probably in the <tt>http://www.ivoa.net/xml/VOResource/v1.0</tt> namespace
+	Returns XMLString - xml document of the registry entry - a {@code Resource} document   in the {@code http://www.ivoa.net/xml/VOResource/v1.0} namespace
        */
 XMLString ivoa_externalRegistry_getResourceXML ( IvornOrURI registry, IvornOrURI id)
    {
@@ -1525,11 +1712,11 @@ XMLString ivoa_externalRegistry_getResourceXML ( IvornOrURI registry, IvornOrURI
    
 			
 			
-/* function ivoa_externalRegistry_getResource(registry, id)Retrieve a record from the registry, returning it as a datastructure
+/* function ivoa_externalRegistry_getResource(registry, id)Retrieve a named resource from a registry.
  
- For most uses, it's better to use this method instead of {@link #getResourceXML} as the result is easier to work with.
+ For most uses, it's better to use this method instead of {@link #getResourceXML}, because the result is easier to work with.
 		
-		registry - identifier or endpoint of the registry to connect to(IvornOrURI)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
 		id - identifier of the registry entry to retrieve(IvornOrURI)
 		
 	Returns struct Resource_Base - a  datastructue representing the registry entry - will be a {@link Resource} or one of it's   subclasses depending on the registry entry type.
@@ -1553,9 +1740,78 @@ struct Resource_Base ivoa_externalRegistry_getResource ( IvornOrURI registry, Iv
    
 			
 			
-/* function ivoa_externalRegistry_xquerySearchXML(registry, xquery)perform an XQuery
+/* function ivoa_externalRegistry_xquerySearchXML(registry, xquery)Search a registry using an XQuery, returning results as XML.
+ <p />
+ This method can accept an arbitrary XQuery, unlike {@link #xquerySearch(URI, String)}, which requires 
+ that the XQuery return a list of VOResource elements.
+ 
+ {@example "Python Example"	 
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ xquery ="""
+         <ssap-wavebands> 
+          {
+          (:find all spectral services :)
+           let $ssap := //vor:Resource[capability/@standardID="ivo://ivoa.net/std/SSA"]          
+           (: find the distinct set of wavebands these services cover  (no duplicates) :)
+           for $waveband in distinct-values($ssap/coverage/waveband)
+           order by $waveband
+           (: print each waveband in turn :)
+           return <band name="{data($waveband)}">
+                  {
+                  (: list IDs of all services that cover this band :)
+                    for $r in $ssap[coverage/waveband=$waveband]
+                    return $r/identifier
+                  }
+                  </band> 
+          }
+       </ssap-wavebands>
+          """   
+ regEndpoint = "http://www.my.registry.endpoint"
+ xml = ar.ivoa.externalRegistry.xquerySearchXML(regEndpoint,xquery)
+ }
+ 
+This will return the following result
+    {@source    
+<ssap-wavebands>
+    <band name="EUV">
+        <identifier>ivo://iap.fr/FUSE/SSA</identifier>
+        <identifier>ivo://www.g-vo.org/ssa.service.tmap</identifier>
+    </band>
+    <band name="Infrared">
+        <identifier>ivo://archive.eso.org/ESO-SAF-SSAP</identifier>
+        <identifier>ivo://basebe.obspm.fr/bess0.1</identifier>
+        ...
+    </band>
+    <band name="Millimeter">
+        <identifier>ivo://svo.laeff/models/dalessio</identifier>
+        <identifier>ivo://voparis.obspm.gepi/BeStars/BeSS/SSAP</identifier>
+    </band>
+    <band name="Optical">
+        <identifier>ivo://archive.eso.org/ESO-SAF-SSAP</identifier>
+        <identifier>ivo://basebe.obspm.fr/bess0.1</identifier>
+        ...
+    </band>
+    <band name="Radio">
+        <identifier>ivo://obspm.fr/SSA_HIG</identifier>
+        <identifier>ivo://voparis.obspm.gepi/BeStars/BeSS/SSAP</identifier>
+    </band>
+    <band name="UV">
+        <identifier>ivo://archive.eso.org/ESO-SAF-SSAP</identifier>
+        <identifier>ivo://basebe.obspm.fr/bess0.1</identifier>
+        ...
+    </band>
+    <band name="X-ray">
+        <identifier>ivo://svo.iaa/models/SSP/Xray</identifier>
+        <identifier>ivo://www.g-vo.org/ssa.service.tmap</identifier>
+    </band>
+</ssap-wavebands>
+     }
 		
-		registry - identifier or endpoint of the registry to connect to(IvornOrURI)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
 		xquery - the query to perform. Must return a well-formed xml document - i.e. starting with a single root element.(JString)
 		
 	Returns XMLString - the result of executing this xquery over the specified registry - a document of arbitrary structure.
@@ -1578,10 +1834,32 @@ XMLString ivoa_externalRegistry_xquerySearchXML ( IvornOrURI registry, JString x
    
 			
 			
-/* function ivoa_externalRegistry_xquerySearch(registry, xquery)Variant of xquerySearchXML that returns registry records as data structures
+/* function ivoa_externalRegistry_xquerySearch(registry, xquery)Search a registry using an XQuery.
+ <p />
+ {@stickyWarning This method returns an array of matching {@link Resource} objects - so the XQuery
+ used must produce whole {@code VOResource} elements}
+ 
+ {@example "Python Example"    
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ xquery ="//vor:Resource[@xsi:type &= '*DataCollection']"   
+ regEndpoint = "http://www.my.registry.endpoint"
+ rs = ar.ivoa.externalRegistry.xquerySearch(regEndpoint,xquery)
+ }
+ 
+ The above XQuery could be written in a longer equivalent form, which is 
+ convenient when there are many filter clauses:
+ {@source
+        for $r in //vor:Resource 
+        where $r/@xsi:type  &=  '*DataCollection' 
+        return $r     
+ }
 		
-		registry - endpoint of registry service to connect to.(IvornOrURI)
-		xquery - should return a document, or nodeset, containing &lt;vor:Resource&gt; elements.   Results are not required to be single-rooted, and resource elements may be embedded within other elements.(JString)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
+		xquery - An XQuery that should return a document, or nodeset, containing whole {@code <Resource>} elements.   Results are not required to be single-rooted, and resource elements may be embedded within other elements - although the  parser will fail in extreme cases.(JString)
 		
 	Returns ListOfResource_Base - an array containing any registry records present in the query result.
        */
@@ -1607,11 +1885,11 @@ ListOfResource_Base ivoa_externalRegistry_xquerySearch ( IvornOrURI registry, JS
    
 			
 			
-/* function ivoa_externalRegistry_getIdentityXML(registry)Retreive a a description of this registry, returning it asan xml document
+/* function ivoa_externalRegistry_getIdentityXML(registry)Access the  resource  describing a registry itself, as an XML Document.
 		
-		registry - identifier or endpoint of the registry to connect to(IvornOrURI)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
 		
-	Returns XMLString - that registries own service description - a single Resource documnt
+	Returns XMLString - that registry's own service description - a single Resource documnt
        */
 XMLString ivoa_externalRegistry_getIdentityXML ( IvornOrURI registry)
    {
@@ -1630,11 +1908,11 @@ XMLString ivoa_externalRegistry_getIdentityXML ( IvornOrURI registry)
    
 			
 			
-/* function ivoa_externalRegistry_getIdentity(registry)Retreive a a description of this registry, returning it as a datastructure
+/* function ivoa_externalRegistry_getIdentity(registry)Access the  resource  describing a registry itself
 		
-		registry - identifier or endpoint of the registry to connect to(IvornOrURI)
+		registry - resource identifier or endpoint URL  of the registry to connect to(IvornOrURI)
 		
-	Returns struct RegistryService - that registries own service description - a single ResourceDocument
+	Returns struct RegistryService - that registry's own service description
        */
 struct RegistryService ivoa_externalRegistry_getIdentity ( IvornOrURI registry)
    {
@@ -1654,11 +1932,11 @@ struct RegistryService ivoa_externalRegistry_getIdentity ( IvornOrURI registry)
    
 			
 			
-/* function ivoa_externalRegistry_buildResources(doc)convenience function - build an array of resouce objects from an xml document
+/* function ivoa_externalRegistry_buildResources(doc)Build an array of resource objects from an XML document.
 		
-		doc - (XMLString)
+		doc - an xml document of resources, for example one returned from a call to   {@link #keywordSearchXML(URI, String, boolean)}(XMLString)
 		
-	Returns ListOfResource_Base - 
+	Returns ListOfResource_Base - the parsed resource objects
        */
 ListOfResource_Base ivoa_externalRegistry_buildResources ( XMLString doc)
    {
@@ -1679,38 +1957,16 @@ ListOfResource_Base ivoa_externalRegistry_buildResources ( XMLString doc)
     
    };
    
-			
-			
-/* function ivoa_externalRegistry_getRegistryOfRegistriesEndpoint()returns the service endpoint of the standard IVOA registry of registries
- this registry can be used to query for other registry services
-		
-		
-	Returns IvornOrURI - 
-       */
-IvornOrURI ivoa_externalRegistry_getRegistryOfRegistriesEndpoint ( )
-   {
-     XmlRpcValue _args, _result;
-   IvornOrURI retval;
-   
-     if (myAR->execute("ivoa.externalRegistry.getRegistryOfRegistriesEndpoint", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
       /* end class
       ivoa.externalRegistry
       */
    /* begin class userInterface.fileManager
-     */
+    AR Service: Launch a new FileManager GUI */
 	 
 	
 			
 			
-/* function userInterface_fileManager_show()
+/* function userInterface_fileManager_show()Display a new instance of FileManager
 		
 		
 	Returns void - 
@@ -1731,9 +1987,9 @@ void userInterface_fileManager_show ( )
       */
    /* begin class cds.glu
     Deprecated: 
-				the webservice interface at CDS this client calls doesn't seem to be maintained
+				the webservice interface at CDS this client calls doesn't seem to be maintained, and this component of AR is no longer provided
 			Webservice to resolve  GLU  (Generateur de Liens Uniformes).tags.See: 
-				http://cdsweb.u-strasbg.fr/cdsws/glu_resolver.gml
+				<a href='http://cdsweb.u-strasbg.fr/cdsws/glu_resolver.gml'>Webservice Descritption</a>
 			  */
 	 
 	
@@ -1766,7 +2022,7 @@ JString cds_glu_getURLfromTag ( JString id)
    /* begin class userInterface.jobMonitor
     Deprecated: 
 				replaced by {@link Lookout}
-			Control the Job Monitor GUI.See: 
+			Control the Job Monitor GUI. (Unimplemented)See: 
 				org.astrogrid.acr.astrogrid.Jobs
 			  */
 	 
@@ -1887,17 +2143,7 @@ void userInterface_jobMonitor_displayJobTab ( )
       userInterface.jobMonitor
       */
    /* begin class astrogrid.jobs
-    Deprecated: 
-				JES is no longer supported.
-			Execute and control workflows on remote job servers.
-
-
- For now, an interface to a single JES server  - which is configured in the system properties for the ACR.
- In future, JES servers should be registered, and a default server associated with a user in a community .
- It may also be necessary to be able to browse a selection of job servers, and maybe aggregate a user's jobs from a set of servers.
- <br />
- Each workflow submitted is assigned a globally-unique identifier. This takes the form of a URI, but should be treated as opaque - the structure is
- liable to change  once JES servers are registered.See: 
+    AR Service: Execute and control workflows on remote job servers.See: 
 				<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/userguide-architecture.html">Workflow Userguide</a>
 			 
 				<a href="http://wiki.astrogrid.org/bin/view/Astrogrid/JesScriptingFAQ">Workflow Scripting FAQ</a> 
@@ -2164,9 +2410,7 @@ IvornOrURI astrogrid_jobs_submitStoredJob ( IvornOrURI workflowReference)
       astrogrid.jobs
       */
    /* begin class userInterface.lookout
-    Deprecated: Control the Lookout UI.
- 
- <img src="doc-files/lookout.png"/> */
+    Deprecated: Control the Lookout UI. (Unimplemented) */
 	 
 	
 			
@@ -2227,28 +2471,32 @@ void userInterface_lookout_refresh ( )
       userInterface.lookout
       */
    /* begin class astrogrid.myspace
-    Work with  Myspace - a distributed storage system, AstroGrid's implementation of VOSpace.
+    AR Service: A distributed storage system.
  
- All resources in myspace are uniquely identified by a myspace resource identifier - which is an URI of form
-  * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>. However, for convenience methods in this interface also accept an
- abridged form of reference - <tt>#<i>File-Path</i></tt> - this is resolved relative to the currently logged-in user. The abridged
- form is more concise, and means hard-coded file references can be avoided if needed.   
- <br/>
- <b>NB</b>: At present this interface doesn't contain suficient functionality to work with myspace in a truly efficient manner. Expect a cleaner, more efficient interface
- to myspace to be added later. However this interface and it's current methods will remain available, and won't be deprecated.See: 
-				<a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaGridAndWebServices#VO_Store_Proposal">IVOA VOStore</a>
+ <p/> Myspace is Astrogrid's prototype implementation of VOSpace.
+ 
+ {@stickyWarning At present this interface doesn't contain suficient functionality to work with myspace in a truly efficient manner.
+  Also, myspace is being replaced by an implementation of the VOSpace standard.
+  Expect a cleaner, more efficient interface
+ to VOSpace to be added later. However this interface and it's current methods will remain available, and won't be deprecated if at all possible.
+ }See: 
+				#createFile Example of creating a file
 			 
-				org.astrogrid.acr.ui.MyspaceBrowser
+				#getReadContentURL Example of reading from a file
 			 
-				org.astrogrid.acr.dialogs.ResourceChooser
+				#getWriteContentURL Example of writing to a file
 			 
-				org.astrogrid.acr.astrogrid.NodeInformation
+				NodeInformation
+			 
+				MyspaceBrowser  Myspace file browser component
+			 
+				ResourceChooser Dialogue for selecting myspace files
 			  */
 	 
 	
 			
 			
-/* function astrogrid_myspace_getHome()retreive the identifier of the current user's home folder in myspace. 
+/* function astrogrid_myspace_getHome()Retrieve the identifier of the current user's home folder in myspace. 
  
  Each user has a single root folder. this method returns the name of it.
 		
@@ -2271,17 +2519,17 @@ IvornOrURI astrogrid_myspace_getHome ( )
    
 			
 			
-/* function astrogrid_myspace_exists(ivorn)test whether a myspace resource exists.
+/* function astrogrid_myspace_exists(filename)test whether a myspace resource exists.
 		
-		ivorn - uri to check (full or abridged form)(IvornOrURI)
+		filename - uri to check (full or abridged form)(IvornOrURI)
 		
 	Returns BOOL - true if the resource exists
        */
-BOOL astrogrid_myspace_exists ( IvornOrURI ivorn)
+BOOL astrogrid_myspace_exists ( IvornOrURI filename)
    {
      XmlRpcValue _args, _result;
    BOOL retval;
-   _args[0] = ivorn;
+   _args[0] = filename;
    
      if (myAR->execute("astrogrid.myspace.exists", _args, _result))
      {
@@ -2294,18 +2542,18 @@ BOOL astrogrid_myspace_exists ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_getNodeInformation(ivorn)access metadata about a myspace resource.
- <b>NB: </b> At the moment, this is a costly operation.
+/* function astrogrid_myspace_getNodeInformation(filename)access metadata about a myspace resource.
+ {@stickyWarning At the moment, this is a costly operation }
 		
-		ivorn - resource to investigate(IvornOrURI)
+		filename - resource to investigate(IvornOrURI)
 		
 	Returns struct NodeInformation - a beanful of information
        */
-struct NodeInformation astrogrid_myspace_getNodeInformation ( IvornOrURI ivorn)
+struct NodeInformation astrogrid_myspace_getNodeInformation ( IvornOrURI filename)
    {
      XmlRpcValue _args, _result;
    struct NodeInformation retval;
-   _args[0] = ivorn;
+   _args[0] = filename;
    
      if (myAR->execute("astrogrid.myspace.getNodeInformation", _args, _result))
      {
@@ -2319,18 +2567,43 @@ struct NodeInformation astrogrid_myspace_getNodeInformation ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_createFile(ivorn)create a new myspace file. 
+/* function astrogrid_myspace_createFile(filename)create a new myspace file. 
  
  Any parent folders that are missing will be created too.
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+ ms = ar.astrogrid.myspace
+  #call this function
+ file = '#votable/a-new-file.vot'
+ if not (ms.exists(file)):
+    ms.createFile(file)
+ } 
+ 
+ {@example "Java Example"
+ import org.astrogrid.acr.*;
+ import java.net.URI;
+ import org.astrogrid.acr.astrogrid.Myspace;
+ import org.astrogrid.acr.builtin.ACR
+ Finder f = new Finder();
+ ACR acr = f.find();
+ Myspace ms = (Myspace)acr.getService(Myspace.class);
+ URI file =new URI("#votable/a-new-file.vot");
+ if (! ms.exists(file)) {
+    ms.createFile(file)
+ }
+ }
 		
-		ivorn - the resource to create.(IvornOrURI)
+		filename - the resource to create.(IvornOrURI)
 		
 	Returns void - 
        */
-void astrogrid_myspace_createFile ( IvornOrURI ivorn)
+void astrogrid_myspace_createFile ( IvornOrURI filename)
    {
      XmlRpcValue _args, _result;
-   _args[0] = ivorn;
+   _args[0] = filename;
    
      if (myAR->execute("astrogrid.myspace.createFile", _args, _result))
      {
@@ -2341,18 +2614,18 @@ void astrogrid_myspace_createFile ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_createFolder(ivorn)create a new myspace folder.
+/* function astrogrid_myspace_createFolder(foldername)create a new myspace folder.
  
  Any parent folders that are missing will be created too.
 		
-		ivorn - the resource to create.(IvornOrURI)
+		foldername - the resource to create.(IvornOrURI)
 		
 	Returns void - 
        */
-void astrogrid_myspace_createFolder ( IvornOrURI ivorn)
+void astrogrid_myspace_createFolder ( IvornOrURI foldername)
    {
      XmlRpcValue _args, _result;
-   _args[0] = ivorn;
+   _args[0] = foldername;
    
      if (myAR->execute("astrogrid.myspace.createFolder", _args, _result))
      {
@@ -2363,18 +2636,18 @@ void astrogrid_myspace_createFolder ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_createChildFolder(parentIvorn, name)create a child folder of  the specified resource.
+/* function astrogrid_myspace_createChildFolder(parentFolder, name)create a child folder of  the specified resource.
 		
-		parentIvorn - parent of the new resource (must be a folder)(IvornOrURI)
+		parentFolder - parent of the new resource (must be a folder)(IvornOrURI)
 		name - name of the new folder(JString)
 		
 	Returns IvornOrURI - the ivorn of the new folder
        */
-IvornOrURI astrogrid_myspace_createChildFolder ( IvornOrURI parentIvorn, JString name)
+IvornOrURI astrogrid_myspace_createChildFolder ( IvornOrURI parentFolder, JString name)
    {
      XmlRpcValue _args, _result;
    IvornOrURI retval;
-   _args[0] = parentIvorn;
+   _args[0] = parentFolder;
    _args[1] = name;
    
      if (myAR->execute("astrogrid.myspace.createChildFolder", _args, _result))
@@ -2388,18 +2661,18 @@ IvornOrURI astrogrid_myspace_createChildFolder ( IvornOrURI parentIvorn, JString
    
 			
 			
-/* function astrogrid_myspace_createChildFile(parentIvorn, name)create a child file of the specified resource.
+/* function astrogrid_myspace_createChildFile(parentFolder, name)create a child file of the specified resource.
 		
-		parentIvorn - parent of the new resource (must be a folder)(IvornOrURI)
+		parentFolder - parent of the new resource (must be a folder)(IvornOrURI)
 		name - name of the new file(JString)
 		
 	Returns IvornOrURI - the ivorn of the new file
        */
-IvornOrURI astrogrid_myspace_createChildFile ( IvornOrURI parentIvorn, JString name)
+IvornOrURI astrogrid_myspace_createChildFile ( IvornOrURI parentFolder, JString name)
    {
      XmlRpcValue _args, _result;
    IvornOrURI retval;
-   _args[0] = parentIvorn;
+   _args[0] = parentFolder;
    _args[1] = name;
    
      if (myAR->execute("astrogrid.myspace.createChildFile", _args, _result))
@@ -2413,17 +2686,17 @@ IvornOrURI astrogrid_myspace_createChildFile ( IvornOrURI parentIvorn, JString n
    
 			
 			
-/* function astrogrid_myspace_getParent(ivorn)retrieve the ID  of the parent of a myspace resource
+/* function astrogrid_myspace_getParent(filename)retrieve the ID  of the parent of a myspace resource.
 		
-		ivorn - uri of the resource to find parent for(IvornOrURI)
+		filename - uri of the resource to find parent for(IvornOrURI)
 		
 	Returns IvornOrURI - uri of the parent
        */
-IvornOrURI astrogrid_myspace_getParent ( IvornOrURI ivorn)
+IvornOrURI astrogrid_myspace_getParent ( IvornOrURI filename)
    {
      XmlRpcValue _args, _result;
    IvornOrURI retval;
-   _args[0] = ivorn;
+   _args[0] = filename;
    
      if (myAR->execute("astrogrid.myspace.getParent", _args, _result))
      {
@@ -2436,7 +2709,7 @@ IvornOrURI astrogrid_myspace_getParent ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_list(ivorn)list the names of the children (files and folders) of a myspace folder
+/* function astrogrid_myspace_list(ivorn)list the names of the children (files and folders) of a myspace folder.
 		
 		ivorn - uri of the folder to inspect(IvornOrURI)
 		
@@ -2463,7 +2736,7 @@ ListOfJString astrogrid_myspace_list ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_listIvorns(ivorn)list the identifiers of the children ( files and folders)  of a myspace folder
+/* function astrogrid_myspace_listIvorns(ivorn)list the identifiers of the children ( files and folders)  of a myspace folder.
 		
 		ivorn - uri of the folder to inspect(IvornOrURI)
 		
@@ -2490,9 +2763,9 @@ ListOfIvornOrURI astrogrid_myspace_listIvorns ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_listNodeInformation(ivorn)list the node information objects for the children ( files and folders)  of a myspace folder   
+/* function astrogrid_myspace_listNodeInformation(ivorn)list the node information objects for the children ( files and folders)  of a myspace folder.   
  
- <b>NB: </b> Expensive operation at present.
+ {@stickyWarning Expensive operation at present.}
 		
 		ivorn - uri of the folder to inspect(IvornOrURI)
 		
@@ -2520,9 +2793,9 @@ ListOfNodeInformation astrogrid_myspace_listNodeInformation ( IvornOrURI ivorn)
 			
 			
 /* function astrogrid_myspace_refresh(ivorn)refresh the metadata held about  a myspace resource with the server.
- <br/>
+ {stickyNote 
  For performance, metadata about myspace resources is used in a LRU cache. This method forces the ACR to re-query the myspace server
- about this resource.
+ about this resource.}
 		
 		ivorn - resource to refresh(IvornOrURI)
 		
@@ -2542,7 +2815,7 @@ void astrogrid_myspace_refresh ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_delete(ivorn)delete a myspace resource
+/* function astrogrid_myspace_delete(ivorn)delete a myspace resource.
 		
 		ivorn - uri of the resource to delete(IvornOrURI)
 		
@@ -2562,7 +2835,7 @@ void astrogrid_myspace_delete ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_rename(srcIvorn, newName)rename a myspace resource
+/* function astrogrid_myspace_rename(srcIvorn, newName)rename a myspace resource.
 		
 		srcIvorn - uri of the resource to renam(IvornOrURI)
 		newName - new name for this resource(JString)
@@ -2587,7 +2860,7 @@ IvornOrURI astrogrid_myspace_rename ( IvornOrURI srcIvorn, JString newName)
    
 			
 			
-/* function astrogrid_myspace_move(srcIvorn, newParentIvorn, newName)move a myspace resource
+/* function astrogrid_myspace_move(srcIvorn, newParentIvorn, newName)move a myspace resource.
 		
 		srcIvorn - ivorn of the resource to move(IvornOrURI)
 		newParentIvorn - ivorn of the new parent(IvornOrURI)
@@ -2667,8 +2940,6 @@ IvornOrURI astrogrid_myspace_copy ( IvornOrURI srcIvorn, IvornOrURI newParentIvo
 			
 			
 /* function astrogrid_myspace_read(ivorn)read the content of a myspace resource directly.
- 
- <b>NB:</b> not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
 		
 		ivorn - resource to read(IvornOrURI)
 		
@@ -2692,8 +2963,6 @@ JString astrogrid_myspace_read ( IvornOrURI ivorn)
 			
 			
 /* function astrogrid_myspace_write(ivorn, content)Write data to a myspace resource.
- 
- <b>NB: </b> not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
 		
 		ivorn - resource to write to(IvornOrURI)
 		content - the data to write(JString)
@@ -2716,8 +2985,6 @@ void astrogrid_myspace_write ( IvornOrURI ivorn, JString content)
 			
 			
 /* function astrogrid_myspace_readBinary(ivorn)read the binary content of a myspace resource directly.
- 
- <b>NB: </b> not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
 		
 		ivorn - resource to read(IvornOrURI)
 		
@@ -2741,8 +3008,6 @@ ListOfchar astrogrid_myspace_readBinary ( IvornOrURI ivorn)
 			
 			
 /* function astrogrid_myspace_writeBinary(ivorn, content)Write binary data to a myspace resource.
-
-<b>NB: </b> not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
 		
 		ivorn - resource to write to(IvornOrURI)
 		content - the data to write(ListOfchar)
@@ -2764,7 +3029,35 @@ void astrogrid_myspace_writeBinary ( IvornOrURI ivorn, ListOfchar content)
    
 			
 			
-/* function astrogrid_myspace_getReadContentURL(ivorn)compute a URL which can then be read to access the contents (data) of a myspace resource.
+/* function astrogrid_myspace_getReadContentURL(ivorn)Compute a URL which can then be read to access the contents (data) of a myspace resource.
+ 
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ from urllib2 import urlopen
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+ ms = ar.astrogrid.myspace
+  #get the data url for a myspace file
+ msfile = '#results/datafile.vot'
+ dataUrl = ms.getReadContentURL(msfile)
+  # read from the data url
+ urlFile = urlopen(dataUrl)
+ print urlFile
+  }
+ {@example  "Java Example"  
+ import org.astrogrid.acr.*;
+ import java.net.URI;
+ import org.astrogrid.acr.astrogrid.Myspace;
+ import org.astrogrid.acr.builtin.ACR
+ Finder f = new Finder();
+ ACR acr = f.find();
+ Myspace ms = (Myspace)acr.getService(Myspace.class);
+ URI file =new URI("#results/datafile.vot");
+ URL dataUrl = ms.getReadContentURL(file);
+ InputStream is = dataUrl.openStream();
+   // read in data..
+ }
 		
 		ivorn - resource to read(IvornOrURI)
 		
@@ -2787,7 +3080,38 @@ URLString astrogrid_myspace_getReadContentURL ( IvornOrURI ivorn)
    
 			
 			
-/* function astrogrid_myspace_getWriteContentURL(ivorn)compute  a URL which can then be written to set the contents (i.e. data) of a myspace resource.
+/* function astrogrid_myspace_getWriteContentURL(ivorn)Compute  a URL which can then be written to set the contents (i.e. data) of a myspace resource.
+
+ For the current filestore impleentation the result returned is a <tt>http://</tt> url, to which data should be <b>PUT</b> (not POST). 
+ {@stickyNote After the data has been written to the filestore, the filemanager needs to be notified that the data for this node has changed - by calling 
+ {@link #transferCompleted}
+ }
+ Here's how to PUT and then notify of completion:     
+ {@example "Java Example"
+ import org.astrogrid.acr.*;
+ import java.net.*;
+ import org.astrogrid.acr.astrogrid.Myspace;
+ import org.astrogrid.acr.builtin.ACR
+ Finder f = new Finder();
+ ACR acr = f.find();
+ Myspace ms = (Myspace)acr.getService(Myspace.class);
+ URI file =new URI("#results/datafile.vot");
+  //get the output url
+ URL url = ms.getWriteContentURL(file); 
+ HttpURLConnection conn  = (HttpURLConnection) url.openConnection() ;
+ conn.setDoOutput(true) ;
+ conn.setRequestMethod("PUT");
+   // connect
+ conn.connect();
+ OutputStream os = conn.getOutputStream(); 
+  //write the data
+  ...
+   //close
+ os.close();
+  // important - the URL connection class won't tranfer data unless you ask for a response - this is a nasty gotcha, not clear from the javadocs.
+ conn.getResponseCode() // necessary to force the whole thing to happen
+ ms.transferCompleted(file); // tell the filemanager that the content for this resource has changed.
+ }
 		
 		ivorn - resource to write to(IvornOrURI)
 		
@@ -2906,9 +3230,7 @@ ListOfService_Base astrogrid_myspace_listStores ( )
    /* begin class userInterface.myspaceBrowser
     Deprecated: 
 				prefer filemanager
-			Control the  Myspace Browser UI.
- 
- <img src="doc-files/filemanager.png"/>See: 
+			Control the  Myspace Browser UI.See: 
 				org.astrogrid.acr.astrogrid.Myspace
 			  */
 	 
@@ -2952,35 +3274,6 @@ void userInterface_myspaceBrowser_hide ( )
       /* end class
       userInterface.myspaceBrowser
       */
-   /* begin class astrogrid.publish
-    Publish to a registry. */
-	 
-	
-			
-			
-/* function astrogrid_publish_register(registry, entry)Publish a resource in a registry.
-		
-		registry - the IVOA identifier of the registry.(IvornOrURI)
-		entry - the resource to be published.(XMLString)
-		
-	Returns void - 
-       */
-void astrogrid_publish_register ( IvornOrURI registry, XMLString entry)
-   {
-     XmlRpcValue _args, _result;
-   _args[0] = registry;
-   _args[1] = entry;
-   
-     if (myAR->execute("astrogrid.publish.register", _args, _result))
-     {
-     
-     }
-    
-   };
-   
-      /* end class
-      astrogrid.publish
-      */
    /* begin class userInterface.queryBuilder
      */
 	 
@@ -3007,32 +3300,27 @@ void userInterface_queryBuilder_show ( )
       userInterface.queryBuilder
       */
    /* begin class ivoa.registry
-    Access  the system-configured  registry service.
+    AR Service: Query  the system-configured Registry.
  
- ACR uses an IVOA-compliant registry to retreive details of available resources
+ AstroRuntime uses an IVOA-compliant registry to retrieve details of available resources
   - servers, applications, catalogues, etc.
-  
+  <p/>
   The endpoint of this registry service can be inspected by calling {@link #getSystemRegistryEndpoint()}.
   In cases where this service is unavailable, registry queries will automatically fall-back to the
-  backup registry service, whose endpoint is defined by {@link #getFallbackSystemRegistryEndpoint()}
- 
+  backup registry service, whose endpoint is defined by {@link #getFallbackSystemRegistryEndpoint()}.
  The query functions in this interface are the equivalent to their counterparts in the 
- {@link ExternalRegistry} interface, but against the System and Fallback registries.See: 
+ {@link ExternalRegistry} interface, but operate against the System and Fallback registries.
+  {@stickyNote These endpoints can be altered by using the UI preferences pane, or the web interface, or via commandline properties, or
+  programmatically using the {@link Configuration} service.}See: 
 				<a href="http://www.ivoa.net/Documents/latest/IDs.html">IVOA Identifiers</a>
 			 
-				<a href="http://www.ivoa.net/twiki/bin/view/IVOA/ResourceMetadata">Resource Metadata</a>
+				<a href="http://www.ivoa.net/Documents/latest/VOResource.html">IVOA VOResource Definition</a>
 			 
-				<a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA Resource Metadata for the VO</a>
-			 
-				<a href="http://www.ivoa.net/Documents/latest/ADQL.html">ADQL Query Language Specification</a>
-			 
-				<a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaResReg">IVOA Registry Working Group</a>
+				<a href='http://www.ivoa.net/Documents/latest/RegistryInterface.html'>IVOA Registry Interface Standard</a>
 			 
 				<a href="http://www.w3schools.com/xquery/default.asp">XQuery Language Tutorial</a>
 			 
-				org.astrogrid.acr.ui.RegistryBrowser
-			 
-				org.astrogrid.acr.ivoa.ExternalRegistry - to query other IVOA registries, and the Registry of Registries.
+				ExternalRegistry External Registry - fuller interface to an arbitrary registry
 			  */
 	 
 	
@@ -3065,11 +3353,11 @@ ListOfResource_Base ivoa_registry_adqlxSearch ( XMLString adqlx)
    
 			
 			
-/* function ivoa_registry_adqlsSearch(adqls)Perform an ADQL/s registry search, return a list of matching resources
+/* function ivoa_registry_adqlsSearch(adqls)Perform an ADQL/s registry search, return a list of matching resources.
 		
-		adqls - (JString)
+		adqls - a string query (string form of ADQL)(JString)
 		
-	Returns ListOfResource_Base - 
+	Returns ListOfResource_Base - a list of matching resources
        */
 ListOfResource_Base ivoa_registry_adqlsSearch ( JString adqls)
    {
@@ -3092,12 +3380,40 @@ ListOfResource_Base ivoa_registry_adqlsSearch ( JString adqls)
    
 			
 			
-/* function ivoa_registry_keywordSearch(keywords, orValues)Perform a keyword registry search, return a list of matching resources
+/* function ivoa_registry_keywordSearch(keywords, orValues)Perform a keyword  search.
+ <p/>
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ rs = ar.ivoa.registry.keywordSearch("abell",False)
+ #see what we've got  
+ print len(rs)
+ #list first 10 identifiers
+ for r in rs[:10]
+    print r['id']:
+ }
+ The output is
+ <pre>
+150
+ivo://CDS.VizieR/J/A+A/486/755
+ivo://uk.ac.le.star.tmpledas/ledas/ledas/abell
+ivo://nasa.heasarc/wblgalaxy
+ivo://nasa.heasarc/wbl
+ivo://nasa.heasarc/twosigma
+ivo://nasa.heasarc/rassebcs
+ivo://nasa.heasarc/noras
+ivo://nasa.heasarc/eingalclus
+ivo://nasa.heasarc/abell
+ivo://CDS.VizieR/VII/96 
+ </pre>
 		
-		keywords - (JString)
-		orValues - (BOOL)
+		keywords - space separated list of keywords to search for(JString)
+		orValues - - true to 'OR' together matches. false to 'AND' together matches(BOOL)
 		
-	Returns ListOfResource_Base - 
+	Returns ListOfResource_Base - list of matching resources.
        */
 ListOfResource_Base ivoa_registry_keywordSearch ( JString keywords, BOOL orValues)
    {
@@ -3121,11 +3437,11 @@ ListOfResource_Base ivoa_registry_keywordSearch ( JString keywords, BOOL orValue
    
 			
 			
-/* function ivoa_registry_getResource(id)Retrieve a resource by identifier
+/* function ivoa_registry_getResource(id)Retrieve a named resource from the registry.
 		
-		id - (IvornOrURI)
+		id - identifier of the registry resource to retrieve. e.g.{@code ivo://uk.ac.cam.ast/IPHAS/images/SIAP}(IvornOrURI)
 		
-	Returns struct Resource_Base - 
+	Returns struct Resource_Base - a  datastructure representing the registry entry - will be a {@link Resource} or one of it's   subclasses depending on the registry entry type.
        */
 struct Resource_Base ivoa_registry_getResource ( IvornOrURI id)
    {
@@ -3145,11 +3461,32 @@ struct Resource_Base ivoa_registry_getResource ( IvornOrURI id)
    
 			
 			
-/* function ivoa_registry_xquerySearch(xquery)Perform an xquery registry search, return a list of matching resources
+/* function ivoa_registry_xquerySearch(xquery)Search the registry using an XQuery.
+ <p/>
+ {@stickyWarning This method returns an array of matching {@link Resource} objects - so the XQuery
+ used must produce whole {@code VOResource} elements}
+ 
+ {@example "Python Example"    
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ xquery ="//vor:Resource[@xsi:type &= '*DataCollection']" 
+ rs = ar.ivoa.registry.xquerySearch(xquery)
+ }
+ 
+ The above XQuery could be written in a longer equivalent form, which is 
+ convenient when there are many filter clauses:
+ {@source
+        for $r in //vor:Resource 
+        where $r/@xsi:type  &=  '*DataCollection' 
+        return $r     
+ }
 		
-		xquery - (JString)
+		xquery - An XQuery that should return a document, or nodeset, containing whole {@code <Resource>} elements.   Results are not required to be single-rooted, and resource elements may be embedded within other elements - although the  parser will fail in extreme cases.(JString)
 		
-	Returns ListOfResource_Base - 
+	Returns ListOfResource_Base - an array containing any registry records present in the query result.
        */
 ListOfResource_Base ivoa_registry_xquerySearch ( JString xquery)
    {
@@ -3172,11 +3509,79 @@ ListOfResource_Base ivoa_registry_xquerySearch ( JString xquery)
    
 			
 			
-/* function ivoa_registry_xquerySearchXML(xquery)Perform an xquery registry search, return a document
+/* function ivoa_registry_xquerySearchXML(xquery)Search the registry using an XQuery, returning results as XML.
+ <p />
+ This method can accept an arbitrary XQuery, unlike {@link #xquerySearch(String)}, which requires 
+ that the XQuery return a list of VOResource elements.
+ 
+ {@example "Python Example"    
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ xquery ="""
+     <ssap-wavebands> 
+          {
+          (:find all spectral services :)
+           let $ssap := //vor:Resource[capability/@standardID="ivo://ivoa.net/std/SSA"]          
+           (: find the distinct set of wavebands these services cover  (no duplicates) :)
+           for $waveband in distinct-values($ssap/coverage/waveband)
+           order by $waveband
+           (: print each waveband in turn :)
+           return <band name="{data($waveband)}">
+                  {
+                  (: list IDs of all services that cover this band :)
+                    for $r in $ssap[coverage/waveband=$waveband]
+                    return $r/identifier
+                  }
+                  </band> 
+          }
+       </ssap-wavebands>
+          """   
+ xml = ar.ivoa.registry.xquerySearchXML(regEndpoint,xquery)
+ }
+ 
+This will return the following result
+    {@source    
+<ssap-wavebands>
+    <band name="EUV">
+        <identifier>ivo://iap.fr/FUSE/SSA</identifier>
+        <identifier>ivo://www.g-vo.org/ssa.service.tmap</identifier>
+    </band>
+    <band name="Infrared">
+        <identifier>ivo://archive.eso.org/ESO-SAF-SSAP</identifier>
+        <identifier>ivo://basebe.obspm.fr/bess0.1</identifier>
+        ...
+    </band>
+    <band name="Millimeter">
+        <identifier>ivo://svo.laeff/models/dalessio</identifier>
+        <identifier>ivo://voparis.obspm.gepi/BeStars/BeSS/SSAP</identifier>
+    </band>
+    <band name="Optical">
+        <identifier>ivo://archive.eso.org/ESO-SAF-SSAP</identifier>
+        <identifier>ivo://basebe.obspm.fr/bess0.1</identifier>
+        ...
+    </band>
+    <band name="Radio">
+        <identifier>ivo://obspm.fr/SSA_HIG</identifier>
+        <identifier>ivo://voparis.obspm.gepi/BeStars/BeSS/SSAP</identifier>
+    </band>
+    <band name="UV">
+        <identifier>ivo://archive.eso.org/ESO-SAF-SSAP</identifier>
+        <identifier>ivo://basebe.obspm.fr/bess0.1</identifier>
+        ...
+    </band>
+    <band name="X-ray">
+        <identifier>ivo://svo.iaa/models/SSP/Xray</identifier>
+        <identifier>ivo://www.g-vo.org/ssa.service.tmap</identifier>
+    </band>
+</ssap-wavebands>
+     }
 		
-		xquery - (JString)
+		xquery - the query to perform. Must return a well-formed xml document - i.e. starting with a single root element.(JString)
 		
-	Returns XMLString - 
+	Returns XMLString - the result of executing this xquery over the specified registry - a document of arbitrary structure.
        */
 XMLString ivoa_registry_xquerySearchXML ( JString xquery)
    {
@@ -3195,7 +3600,10 @@ XMLString ivoa_registry_xquerySearchXML ( JString xquery)
    
 			
 			
-/* function ivoa_registry_getIdentity()Access the registry entry describing the system registry itself
+/* function ivoa_registry_getIdentity()Access the resource that describing the system registry itself.
+ 
+ <p />
+ This returned resource describes what search capabilities are provided by the registry
 		
 		
 	Returns struct RegistryService - 
@@ -3217,7 +3625,7 @@ struct RegistryService ivoa_registry_getIdentity ( )
    
 			
 			
-/* function ivoa_registry_getSystemRegistryEndpoint()gives the endpoint of the system registry
+/* function ivoa_registry_getSystemRegistryEndpoint()Access the endpoint of the system registry
 		
 		
 	Returns IvornOrURI - 
@@ -3238,7 +3646,7 @@ IvornOrURI ivoa_registry_getSystemRegistryEndpoint ( )
    
 			
 			
-/* function ivoa_registry_getFallbackSystemRegistryEndpoint()gives the endpoint of the fallback system registry
+/* function ivoa_registry_getFallbackSystemRegistryEndpoint()Access the endpoint of the fallback system registry
 		
 		
 	Returns IvornOrURI - 
@@ -3260,197 +3668,17 @@ IvornOrURI ivoa_registry_getFallbackSystemRegistryEndpoint ( )
       /* end class
       ivoa.registry
       */
-   /* begin class ivoa.registryAdqlBuilder
-    Builds ADQL queries for the registry */
-	 
-	
-			
-			
-/* function ivoa_registryAdqlBuilder_allRecords()query that returns all active records in the registry
-		
-		
-	Returns JString - 
-       */
-JString ivoa_registryAdqlBuilder_allRecords ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("ivoa.registryAdqlBuilder.allRecords", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryAdqlBuilder_fullTextSearch(recordSet, searchTerm)build a full text search
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryAdqlBuilder_fullTextSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryAdqlBuilder.fullTextSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryAdqlBuilder_summaryTextSearch(recordSet, searchTerm)build a summary text search 
- 
- searches on identifier, shortName, title and content/description
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryAdqlBuilder_summaryTextSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryAdqlBuilder.summaryTextSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryAdqlBuilder_identifierSearch(recordSet, searchTerm)build an identifier search
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryAdqlBuilder_identifierSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryAdqlBuilder.identifierSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryAdqlBuilder_shortNameSearch(recordSet, searchTerm)build a short-name search
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryAdqlBuilder_shortNameSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryAdqlBuilder.shortNameSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryAdqlBuilder_titleSearch(recordSet, searchTerm)build a search on title
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryAdqlBuilder_titleSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryAdqlBuilder.titleSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryAdqlBuilder_descriptionSearch(recordSet, searchTerm)build a search on description
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryAdqlBuilder_descriptionSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryAdqlBuilder.descriptionSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-      /* end class
-      ivoa.registryAdqlBuilder
-      */
    /* begin class userInterface.registryBrowser
-    Control the registry browser UI.
- 
- <img src="doc-files/registry.png"/>See: 
-				org.astrogrid.acr.astrogrid.Registry
+    AR Service: Launch a new VOExplorer GUISee: 
+				org.astrogrid.acr.ivoa.Registry
+			 
+				RegistryGoogle Registry Dialogue
 			  */
 	 
 	
 			
 			
-/* function userInterface_registryBrowser_show()show a new instance of registry browser ui
+/* function userInterface_registryBrowser_show()show a new instance of VOExplorer
 		
 		
 	Returns void - 
@@ -3468,7 +3696,7 @@ void userInterface_registryBrowser_show ( )
    
 			
 			
-/* function userInterface_registryBrowser_hide()hide the registry browser ui
+/* function userInterface_registryBrowser_hide()Not implmented
 		
 		
 	Returns void - 
@@ -3486,16 +3714,16 @@ void userInterface_registryBrowser_hide ( )
    
 			
 			
-/* function userInterface_registryBrowser_search(s)show an new instance of the registry browser, and perform the requiested search (keywords)
+/* function userInterface_registryBrowser_search(xquery)show an new instance of the VOExplorer, and populate it using an xquery
 		
-		s - (JString)
+		xquery - an xquery to populate the resource chooser with. Same format as in an xquery list in voexplorer UI - which is convenient for  constructing these queries.(JString)
 		
 	Returns void - 
        */
-void userInterface_registryBrowser_search ( JString s)
+void userInterface_registryBrowser_search ( JString xquery)
    {
      XmlRpcValue _args, _result;
-   _args[0] = s;
+   _args[0] = xquery;
    
      if (myAR->execute("userInterface.registryBrowser.search", _args, _result))
      {
@@ -3506,9 +3734,9 @@ void userInterface_registryBrowser_search ( JString s)
    
 			
 			
-/* function userInterface_registryBrowser_open(uri)display a particular record in a new instacne of the browser
+/* function userInterface_registryBrowser_open(uri)Show a new instance of VOExplorer, and display a single resource record in it
 		
-		uri - (IvornOrURI)
+		uri - the resource ID of the record to display(IvornOrURI)
 		
 	Returns void - 
        */
@@ -3528,76 +3756,39 @@ void userInterface_registryBrowser_open ( IvornOrURI uri)
       userInterface.registryBrowser
       */
    /* begin class dialogs.registryGoogle
-    prompt the user to select a registry resource by displaying  a more advanced registry chooser dialogue. */
+    AR Service: Dialogue that prompts the user to select a registry resourceSee: 
+				#selectResourcesFromList(String, boolean, URI[]) Example 1
+			 
+				#selectResourcesXQueryFilter(String, boolean, String) Example 2
+			 
+				Registry
+			  */
 	 
 	
 			
 			
-/* function dialogs_registryGoogle_selectResources(prompt, multiple)display the resource chooser dialogue.
+/* function dialogs_registryGoogle_selectResourcesXQueryFilter(prompt, multiple, xqueryFilter)Display the resource chooser dialogue, populated with resources from an xquery.
+ 
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ xquery = """
+ for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] 
+ where $r/@xsi:type  &=  '*DataCollection' 
+ return $r
+ """
+ rs = ar.dialogs.registryGoogle.selectResourcesXQueryFilter("Choose a DataCollection",True,xquery)
+ #list the selected identifiers
+ for r in rs:
+  print r['id']
+  }
 		
 		prompt - message to prompt user for input.(JString)
 		multiple - if true, allow multiple selections.(BOOL)
-		
-	Returns ListOfResource_Base - 0 or more selected resources. never null.
-       */
-ListOfResource_Base dialogs_registryGoogle_selectResources ( JString prompt, BOOL multiple)
-   {
-     XmlRpcValue _args, _result;
-   ListOfResource_Base retval;
-   _args[0] = prompt;
-   _args[1] = multiple;
-   
-     if (myAR->execute("dialogs.registryGoogle.selectResources", _args, _result))
-     {
-     ListOfBase<Resource_> s = ListOfBase<Resource_>(_result);
-
-                retval.n = s.size();
-                retval.list = copyArrayAsBaseStruct<Resource_, struct Resource_Base>(s);
-
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function dialogs_registryGoogle_selectResourcesAdqlFilter(prompt, multiple, adqlFilter)display the resource chooser dialogue, enabling only resources which match a filter.
-		
-		prompt - message to prompt user for input.(JString)
-		multiple - if true, allow multiple selections.(BOOL)
-		adqlFilter - adql-like 'where' clause.(JString)
-		
-	Returns ListOfResource_Base - 0 or more selected resources. never null.
-       */
-ListOfResource_Base dialogs_registryGoogle_selectResourcesAdqlFilter ( JString prompt, BOOL multiple, JString adqlFilter)
-   {
-     XmlRpcValue _args, _result;
-   ListOfResource_Base retval;
-   _args[0] = prompt;
-   _args[1] = multiple;
-   _args[2] = adqlFilter;
-   
-     if (myAR->execute("dialogs.registryGoogle.selectResourcesAdqlFilter", _args, _result))
-     {
-     ListOfBase<Resource_> s = ListOfBase<Resource_>(_result);
-
-                retval.n = s.size();
-                retval.list = copyArrayAsBaseStruct<Resource_, struct Resource_Base>(s);
-
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function dialogs_registryGoogle_selectResourcesXQueryFilter(prompt, multiple, xqueryFilter)display the resource chooser dialogue, enabling only resources which match a filter
-		
-		prompt - message to prompt user for input.(JString)
-		multiple - if true, allow multiple selections.(BOOL)
-		xqueryFilter - xpath-like condition(JString)
+		xqueryFilter - a xquery to populate the resource chooser with. Same format as in an xquery list in voexplorer UI - which is convenient for  constructing these queries.(JString)
 		
 	Returns ListOfResource_Base - 0 or more selected resources. never null.
        */
@@ -3622,191 +3813,60 @@ ListOfResource_Base dialogs_registryGoogle_selectResourcesXQueryFilter ( JString
     
    };
    
+			
+			
+/* function dialogs_registryGoogle_selectResourcesFromList(prompt, multiple, identifiers)Display the resource chooser dialogue, populated with a list of resources.
+ 
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ ids = ['ivo://irsa.ipac/2MASS-PSC'
+         ,'ivo://mast.stsci/siap-cutout/goods.hst'
+         ,'ivo://stecf.euro-vo/SSA/HST/FOS'
+         ,'ivo://uk.ac.cam.ast/iphas-dsa-catalog/IDR'
+         ,'ivo://uk.ac.cam.ast/IPHAS/images/SIAP'
+         ]
+ rs = ar.dialogs.registryGoogle.selectResourcesFromList("Choose a DataCollection",True,ids)
+ #list the selected identifiers
+ for r in rs:
+  print r['id']
+  }
+		
+		prompt - message to prompt user for input(JString)
+		multiple - if true, allow multiple selections.(BOOL)
+		identifiers - an array of resource identifiers that will be retrieved from registry and displayed in the dialogue.(ListOfIvornOrURI)
+		
+	Returns ListOfResource_Base - 0 or more selected resources. never null.
+       */
+ListOfResource_Base dialogs_registryGoogle_selectResourcesFromList ( JString prompt, BOOL multiple, ListOfIvornOrURI identifiers)
+   {
+     XmlRpcValue _args, _result;
+   ListOfResource_Base retval;
+   _args[0] = prompt;
+   _args[1] = multiple;
+   _args[2] = identifiers;
+   
+     if (myAR->execute("dialogs.registryGoogle.selectResourcesFromList", _args, _result))
+     {
+     ListOfBase<Resource_> s = ListOfBase<Resource_>(_result);
+
+                retval.n = s.size();
+                retval.list = copyArrayAsBaseStruct<Resource_, struct Resource_Base>(s);
+
+     }
+    
+     return retval;
+    
+   };
+   
       /* end class
       dialogs.registryGoogle
       */
-   /* begin class ivoa.registryXQueryBuilder
-    Builds XQueries for the registry */
-	 
-	
-			
-			
-/* function ivoa_registryXQueryBuilder_allRecords()query that returns all active records in the registry
-		
-		
-	Returns JString - 
-       */
-JString ivoa_registryXQueryBuilder_allRecords ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("ivoa.registryXQueryBuilder.allRecords", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryXQueryBuilder_fullTextSearch(recordSet, searchTerm)build a full text search
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryXQueryBuilder_fullTextSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryXQueryBuilder.fullTextSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryXQueryBuilder_summaryTextSearch(recordSet, searchTerm)build a summary text search 
- 
- searches on identifier, shortName, title and content/description
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryXQueryBuilder_summaryTextSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryXQueryBuilder.summaryTextSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryXQueryBuilder_identifierSearch(recordSet, searchTerm)build an identifier search
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryXQueryBuilder_identifierSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryXQueryBuilder.identifierSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryXQueryBuilder_shortNameSearch(recordSet, searchTerm)build a short-name search
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryXQueryBuilder_shortNameSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryXQueryBuilder.shortNameSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryXQueryBuilder_titleSearch(recordSet, searchTerm)build a search on title
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryXQueryBuilder_titleSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryXQueryBuilder.titleSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_registryXQueryBuilder_descriptionSearch(recordSet, searchTerm)build a search on description
-		
-		recordSet - (JString)
-		searchTerm - (JString)
-		
-	Returns JString - 
-       */
-JString ivoa_registryXQueryBuilder_descriptionSearch ( JString recordSet, JString searchTerm)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = recordSet;
-   _args[1] = searchTerm;
-   
-     if (myAR->execute("ivoa.registryXQueryBuilder.descriptionSearch", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-      /* end class
-      ivoa.registryXQueryBuilder
-      */
    /* begin class astrogrid.processManager
-    a general manager for the execution , monitoring, and control of all remote processes.
+    AR Service: A general manager for the execution , monitoring, and control of all remote processes.
 
  RemoteProcessManager unifies the  functionality in {@link org.astrogrid.acr.astrogrid.Jobs} and {@link org.astrogrid.acr.astrogrid.Applications}
  and provides additional features - notably ability to register callbacks for progress notifications. It is still valid to use the <tt>Jobs</tt> or <tt>Applications</tt>, 
@@ -3961,7 +4021,7 @@ void astrogrid_processManager_halt ( IvornOrURI executionId)
 			
 /* function astrogrid_processManager_delete(executionId)delete all record of a process
 		
-		executionId - (IvornOrURI)
+		executionId - identifier of the process to delete(IvornOrURI)
 		
 	Returns void - 
        */
@@ -4083,21 +4143,23 @@ JString astrogrid_processManager_getSingleResult ( IvornOrURI executionId, JStri
       astrogrid.processManager
       */
    /* begin class dialogs.resourceChooser
-    Prompt the user to select a local file / myspace resource / url by displaying a resource chooser dialogue.
-  
- This is a  generalisation of the 'open/save file' browser that also allows local and  remote ( myspace / vospace / URL) resources to be selected.See: 
+    AR Service: Dialogue that prompts the user to select a local file, vospace resource or URL. 
+  <p />
+ This is a  generalisation of the typical filechooser dialogue that allows local and  remote ( myspace / vospace / URL) resources to be selected.See: 
 				org.astrogrid.acr.astrogrid.Myspace
 			  */
 	 
 	
 			
 			
-/* function dialogs_resourceChooser_chooseResource(title, enableRemote)show the resource chooser, and block until user selects a file
+/* function dialogs_resourceChooser_chooseResource(title, enableRemote)Prompt the user to select a file.
+ 
+ Blocks until a file is selected, or user presses cancel.
 		
-		title - title for the dialogue - e.g.'choose file to open'(JString)
+		title - title for the dialogue - e.g.{@code choose file to open}(JString)
 		enableRemote - - if true,allow selection of a remote resource (myspace / vospace / URL). Selection of local resources is enabled always.(BOOL)
 		
-	Returns IvornOrURI - URI of the selected resource, or null if the user cancelled.
+	Returns IvornOrURI - URI of the selected resource, or null if the user pressed cancel
        */
 IvornOrURI dialogs_resourceChooser_chooseResource ( JString title, BOOL enableRemote)
    {
@@ -4117,12 +4179,14 @@ IvornOrURI dialogs_resourceChooser_chooseResource ( JString title, BOOL enableRe
    
 			
 			
-/* function dialogs_resourceChooser_chooseFolder(title, enableRemote)show the resource chooser, and block untiil user selects a folder.
+/* function dialogs_resourceChooser_chooseFolder(title, enableRemote)Prompt the user to select a folder.
+ 
+ Blocks until a folder is selected, or user presses cancel.
 		
-		title - title for the dialogue - e.g.'choose file to open'(JString)
+		title - title for the dialogue - e.g.{@code choose file to open}(JString)
 		enableRemote - - if true,allow selection of a remote resource (myspace / vospace / URL). Selection of local resources is enabled always.(BOOL)
 		
-	Returns IvornOrURI - URI of the selected folder, or null if the user cancelled.
+	Returns IvornOrURI - URI of the selected folder, or null if the user pressed cancel.
        */
 IvornOrURI dialogs_resourceChooser_chooseFolder ( JString title, BOOL enableRemote)
    {
@@ -4142,7 +4206,7 @@ IvornOrURI dialogs_resourceChooser_chooseFolder ( JString title, BOOL enableRemo
    
 			
 			
-/* function dialogs_resourceChooser_fullChooseResource(title, enableVospace, enableLocal, enableURL)fully-configurable resource chooser - a generalization of {@link #chooseResource}
+/* function dialogs_resourceChooser_fullChooseResource(title, enableVospace, enableLocal, enableURL)Fully-configurable resource chooser - a generalization of {@link #chooseResource}.
 		
 		title - title for the dialogue(JString)
 		enableVospace - if true,allow selection of a remote myspace / vospace resource.(BOOL)
@@ -4171,12 +4235,12 @@ IvornOrURI dialogs_resourceChooser_fullChooseResource ( JString title, BOOL enab
    
 			
 			
-/* function dialogs_resourceChooser_fullChooseFolder(title, enableVospace, enableLocal, enableURL)fully-configurable resource chooser - a generalization of {@link #chooseFolder}
+/* function dialogs_resourceChooser_fullChooseFolder(title, enableVospace, enableLocal, enableURL)Fully-configurable resource chooser - a generalization of {@link #chooseFolder}.
 		
 		title - title for the dialogue(JString)
 		enableVospace - if true,allow selection of a remote myspace / vospace folder(BOOL)
 		enableLocal - if true, allow selection of local folders(BOOL)
-		enableURL - if true, enable the 'enter a URL' tab, so an arbitrary URL can be entered. No verification that this _is_ a folder in some sense is performed.(BOOL)
+		enableURL - if true, enable the 'enter a URL' tab, so an arbitrary URL can be entered.   {@stickyWarning No verification that an entered URL <i>is</i> a folder is performed.}(BOOL)
 		
 	Returns IvornOrURI - the URI of the selected folder, or null if the user cancelled
        */
@@ -4202,23 +4266,50 @@ IvornOrURI dialogs_resourceChooser_fullChooseFolder ( JString title, BOOL enable
       dialogs.resourceChooser
       */
    /* begin class cds.sesame
-    Resolve object  names to position by querying  Simbad and/or NED and/or VizieR.
- 
+    AR Service: Sesame Object Name Resolver, from CDS.
+ Resolve object  names to position by querying  Simbad and/or NED and/or VizieR.
+ <p />
  {@link #resolve} resolves an object name to a datastructure containing position, error, aliases, etc.
- <br />
- {@link #sesame} and {@link #sesameChooseService(String, String, boolean, String)}
+ <p />
+ {@link #sesame} and {@link #sesameChooseService}
  provide low-level access to the raw webservice.See: 
-				http://cdsweb.u-strasbg.fr/cdsws/name_resolver.gml
+				<a href="http://cdsweb.u-strasbg.fr/cdsws/name_resolver.gml">Sesame Webservice Description</a>
 			 
-				http://vizier.u-strasbg.fr/xml/sesame_1.dtd
-			 
-				http://vizier.u-strasbg.fr/xml/sesame_1.xsd
+				#resolve Example of resolving object name to position.
 			  */
 	 
 	
 			
 			
-/* function cds_sesame_resolve(name)Resolve an object name to a position using Sesame
+/* function cds_sesame_resolve(name)Resolve an object name to a position using Sesame.
+ 
+ {@example "Python Example"
+  # connect to the AR
+ from xmlrpc import Server
+ from os.path import expanduser
+ ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')
+  #call this function
+ posBean = ar.cds.sesame.resolve('ngc123')
+  #see what we get
+ from pprint import pprint
+ pprint(posBean)
+  #access some variables
+ print "Position",posBean['ra'],posBean['dec']
+ } 
+ 
+ The output is 
+ <pre>
+ {'OName': '{NGC} 123',
+ 'aliases': [],
+ 'dec': -1.6000000000000001,
+ 'decErr': 0.0,
+ 'posStr': '00:27.8     -01:36     ',
+ 'ra': 6.9500000000000002,
+ 'raErr': 0.0,
+ 'service': 'VizieR',
+ 'target': 'ngc123'}
+ Position 6.95 -1.6
+ </pre>
 		
 		name - the object name to resolve(JString)
 		
@@ -4245,9 +4336,9 @@ struct SesamePositionBean cds_sesame_resolve ( JString name)
 /* function cds_sesame_sesame(name, resultType)resolve a name to position
 		
 		name - the name to resolve(JString)
-		resultType - <pre>            u = usual (corresponding to the deprecated Sesame(String name) output)                 H = html                  x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd, DTD at http://vizier.u-strasbg.fr/xml/sesame_1.dtd)                  p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x                 </pre>(JString)
+		resultType - <dl>            <dt>{@code u}</dt><dd>usual (corresponding to the deprecated Sesame(String name) output)</dd>                 <dt>{@code H}</dt><dd>html</dd>                  <dt>{@code x}</dt><dd>XML</dd>         </dl>                 {@code p}(for plain (text/plain)) and {@code i} (for all identifiers) options can be added to {@code H} or {@code x}(JString)
 		
-	Returns JString - format depending on the resultTtype parameter
+	Returns JString - format depending on the resultType parameter
        */
 JString cds_sesame_sesame ( JString name, JString resultType)
    {
@@ -4267,12 +4358,12 @@ JString cds_sesame_sesame ( JString name, JString resultType)
    
 			
 			
-/* function cds_sesame_sesameChooseService(name, resultType, all, service)resolve a name, selecing which services to use.
+/* function cds_sesame_sesameChooseService(name, resultType, all, service)resolve a name, selecting which services to use.
 		
 		name - the name to resolve(JString)
-		resultType - * <pre>            u = usual (corresponding to the deprecated Sesame(String name) output)                 H = html                x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd, DTD at http://vizier.u-strasbg.fr/xml/sesame_1.dtd)                 p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x                 </pre>(JString)
+		resultType - <dl>            <dt>{@code u}</dt><dd>usual (corresponding to the deprecated Sesame(String name) output)</dd>                 <dt>{@code H}</dt><dd>html</dd>                  <dt>{@code x}</dt><dd>XML</dd>         </dl>                 {@code p}(for plain (text/plain)) and {@code i} (for all identifiers) options can be added to {@code H} or {@code x}(JString)
 		all - true if all identifiers wanted(BOOL)
-		service - <pre>    S=Simbad         N=NED          V=VizieR         A=all         </pre>         (examples : S to query in Simbad, NS to query in Ned if not found in Simbad,         NS to query in Ned and Simbad, A to query in Ned, Simbad and VizieR, ...)(JString)
+		service - <dl>    <dt>{@code S}</dt><dd>Simbad</dd>         <dt>{@code N}</dt><dd>NED</dd>          <dt>{@code V}</dt><dd>VizieR</dd>         <dt>{@code A}</dt><dd>all</dd>         </dl>         (examples : {@code S} to query Simbad, {@code NS} to query  Ned if not found in Simbad,         A to query in Ned, Simbad and VizieR, ...)(JString)
 		
 	Returns JString - format depending on the resultTtype parameter
        */
@@ -4298,21 +4389,81 @@ JString cds_sesame_sesameChooseService ( JString name, JString resultType, BOOL 
       cds.sesame
       */
    /* begin class ivoa.siap
-    Query for Images from Simple Image Access Protocol (SIAP) servicesSee: 
-				http://www.ivoa.net/Documents/latest/SIA.html
+    AR Service: Query for <b>Images</b> from Simple Image Access Protocol (SIAP) services (DAL).
+ <p />
+ {@stickyNote This class provides functions to construct a DAL query. 
+ To execute that query, see the examples and methods in the {@link Dal} class.
+ }
+ 
+ <h2>Example</h2>
+ The following example constructs a query URL, performs the query, and then downloads the 
+ resulting images. See {@link Dal} for other things that can be done with a query URL.
+ {@example "Query a SIAP service and download images (Python)"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')        
+siap = ar.ivoa.siap #take a reference to the AR SIAP component
+
+#the SIAP service to query (selected using voexplorer)
+service = "ivo://irsa.ipac/MAST-Scrapbook"
+
+#resolve an object name to a position
+pos = ar.cds.sesame.resolve('m54')
+
+#build a query
+query = siap.constructQuery(service,pos['ra'],pos['dec'],0.001)
+print "QueryURL",query
+
+#execute the query
+rows = siap.execute(query)
+
+#inspect what we've got.
+print "Rows Returned",len(rows)
+print "Metadata Keys",rows[0].keys()
+print "Image URLs"
+for r in rows :
+    print r['AccessReference']
+
+#download these datasets into current directory
+#compute url for current directory
+from urlparse import urlunsplit
+from os import getcwd
+currentDirURL = urlunsplit(['file','',getcwd(),'',''])
+print "Downloading images to",currentDirURL
+siap.saveDatasets(query,currentDirURL)
+ } 
+ The output from this script is shown below. The result is that 3 files ({@code data-0.fits}, {@code data-1.fits}, {@code data-2.fits}) are downloaded to the current directory.
+ <blockquote><tt>
+QueryURL http://irsa.ipac.caltech.edu/cgi-bin/Atlas/nph-atlas?mission=Scrapbook&hdr_location=%5CScrapbookDataPath%5C&collection_desc=The+MAST+Image%2FSpectra+Scrapbook+%28Scrapbook%29&SIAP_ACTIVE=1&POS=283.7636667%2C-30.4785&SIZE=0.0010<br />
+Rows Returned 3<br />
+Metadata Keys ['Scale', 'crpix1', 'crpix2', 'Title', 'inst_id', 'cd2_1', 'ctype2', 'ctype1', 'cd2_2', 'DEC', 'size', 'RADAR', 'Format', 'naxis1', 'naxis2', 'object_id', 'MAST', 'bandpass_id', 'fname', '2mass_fits', 'Naxes', 'RA', 'mjd', 'AccessReference', 'crval2', 'crval1', 'bandpass_unit', 'Naxis', 'GIF', 'ra4', 'bandpass_lolimit', 'ra2', 'ra3', 'ra1', 'dec4', 'dec1', 'dec2', 'dec3', 'cd1_2', 'VOX:WCS_CDMatrix', 'cd1_1', 'data_id', '2mass_jpeg', 'bandpass_refvalue', 'bandpass_hilimit']<br />
+Image URLs<br />
+http://archive.stsci.edu/cgi-bin/hst_preview_search?imfmt=fits&name=U37GA405R<br />
+http://archive.stsci.edu/cgi-bin/hst_preview_search?imfmt=fits&name=U37GA40CR<br />
+http://archive.stsci.edu/cgi-bin/hst_preview_search?imfmt=fits&name=O5HJT3DYQ<br />
+Downloading images to file:///Users/noel/Documents/workspace/python 
+ </tt></blockquote>See: 
+				Dal
+			 
+				<a href="http://www.ivoa.net/Documents/latest/SIA.html">IVOA SIAP Standard Document</a>
+			 
+				Sesame Sesame - resolves object names to RA,Dec positions
+			 
+				#getRegistryXQuery() getRegistryXQuery() - a query to list all SIAP Services.
 			  */
 	 
 	
 			
 			
-/* function ivoa_siap_constructQuery(service, ra, dec, size)construct query on RA, DEC, SIZE
+/* function ivoa_siap_constructQuery(service, ra, dec, size)Construct a SIAP Query on Right Ascension, Declination and Search radius (decimal degrees).
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		size - radius of cone ( as described in siap spec)(double)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the SIAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://nasa.heasarc/skyview/halpha}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link SiapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		size - radius of cone  e.g. {@code 0.1}(double)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString ivoa_siap_constructQuery ( IvornOrURI service, double ra, double dec, double size)
    {
@@ -4334,15 +4485,15 @@ URLString ivoa_siap_constructQuery ( IvornOrURI service, double ra, double dec, 
    
 			
 			
-/* function ivoa_siap_constructQueryF(service, ra, dec, size, format)construct query on RA, DEC, SIZE, FORMAT
+/* function ivoa_siap_constructQueryF(service, ra, dec, size, format)Construct a SIAP Query on Right Ascension, Declination, Search radius (decimal degrees), and Format.
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		size - radius of cone ( as described in siap spec)(double)
-		format - format of images (as described in siap spec)(JString)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the SIAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://nasa.heasarc/skyview/halpha}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link SiapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination  e.g. {@code -1.6}(double)
+		size - radius of cone  e.g. {@code 0.1}(double)
+		format - format of images e.g. {@code FITS}(JString)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString ivoa_siap_constructQueryF ( IvornOrURI service, double ra, double dec, double size, JString format)
    {
@@ -4365,15 +4516,15 @@ URLString ivoa_siap_constructQueryF ( IvornOrURI service, double ra, double dec,
    
 			
 			
-/* function ivoa_siap_constructQueryS(service, ra, dec, ra_size, dec_size)construct query on RA, DEC, RA_SIZE, DEC_SIZE
+/* function ivoa_siap_constructQueryS(service, ra, dec, ra_size, dec_size)Construct a SIAP Query on Right Ascension, Declination, and Search area in RA and Dec
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		ra_size - size of ra ( as described in siap spec)(double)
-		dec_size - size of dec (as described in siap spec)(double)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the SIAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://nasa.heasarc/skyview/halpha}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link SiapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination  e.g. {@code -1.6}(double)
+		ra_size - size of {@code ra}  e.g. {@code 0.1}(double)
+		dec_size - size of {@code dec} e.g. {@code 0.2}(double)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString ivoa_siap_constructQueryS ( IvornOrURI service, double ra, double dec, double ra_size, double dec_size)
    {
@@ -4396,16 +4547,16 @@ URLString ivoa_siap_constructQueryS ( IvornOrURI service, double ra, double dec,
    
 			
 			
-/* function ivoa_siap_constructQuerySF(service, ra, dec, ra_size, dec_size, format)construct query on RA, DEC, RA_SIZE, DEC_SIZE, FORMAT
+/* function ivoa_siap_constructQuerySF(service, ra, dec, ra_size, dec_size, format)Construct a SIAP Query on Right Ascension, Declination, Search area in RA and Dec, and Format.
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		ra_size - size of ra ( as described in siap spec)(double)
-		dec_size - size of dec (as described in siap spec)(double)
-		format - format of images (as described in siap spec)(JString)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the SIAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://nasa.heasarc/skyview/halpha}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link SiapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl>   </blockquote>(IvornOrURI)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination  e.g. {@code -1.6}(double)
+		ra_size - size of {@code ra} e.g. {@code 0.1}(double)
+		dec_size - size of {@code dec} e.g. {@code 0.2}(double)
+		format - format of images {@code FITS}(JString)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString ivoa_siap_constructQuerySF ( IvornOrURI service, double ra, double dec, double ra_size, double dec_size, JString format)
    {
@@ -4429,13 +4580,15 @@ URLString ivoa_siap_constructQuerySF ( IvornOrURI service, double ra, double dec
    
 			
 			
-/* function ivoa_siap_addOption(query, optionName, optionValue)add an option to a previously constructed query
+/* function ivoa_siap_addOption(query, optionName, optionValue)Add an additional option to a previously constructed query.
+ <p/>
+ Sometimes neccessary, for some DAL protocols, to provide optional query parameters.
 		
 		query - the query url(URLString)
 		optionName - name of the option to add(JString)
 		optionValue - value for the new option(JString)
 		
-	Returns URLString - <tt>query</tt> with the option appended.
+	Returns URLString - {@code query} with the option appended.
        */
 URLString ivoa_siap_addOption ( URLString query, JString optionName, JString optionValue)
    {
@@ -4456,11 +4609,11 @@ URLString ivoa_siap_addOption ( URLString query, JString optionName, JString opt
    
 			
 			
-/* function ivoa_siap_execute(query)execute a DAL query, returning a datastructure
+/* function ivoa_siap_execute(query)Execute a DAL query, returning a datastructure
 		
 		query - query url to execute(URLString)
 		
-	Returns ListOfACRKeyValueMap - A model the DAL query response as a list of  of rows. Each row is represented is a map between UCD keys or datamodel names   and values from the response
+	Returns ListOfACRKeyValueMap - The service response parsed as a list of  of rows. Each row is represented is a map between UCD or datamodel keys    and values from the response
        */
 ListOfACRKeyValueMap ivoa_siap_execute ( URLString query)
    {
@@ -4483,9 +4636,7 @@ ListOfACRKeyValueMap ivoa_siap_execute ( URLString query)
    
 			
 			
-/* function ivoa_siap_executeVotable(query)execute a DAL query, returning a votable document.
- 
- This is a convenience method  - just performs a 'GET' on the query url- many programming languages support this functionality themselves
+/* function ivoa_siap_executeVotable(query)Execute a DAL query, returning a Votable document.
 		
 		query - query url to execute(URLString)
 		
@@ -4508,10 +4659,10 @@ XMLString ivoa_siap_executeVotable ( URLString query)
    
 			
 			
-/* function ivoa_siap_executeAndSave(query, saveLocation)execute a DAL query and save the resulting document.
+/* function ivoa_siap_executeAndSave(query, saveLocation)Execute a DAL query and save the resulting document.
 		
 		query - query url to execute(URLString)
-		saveLocation - location to save result document - may be file:/, ivo:// (myspace), ftp://(IvornOrURI)
+		saveLocation - location to save result document - May be {@code file:/}, {@code ivo://} (myspace), {@code ftp://} location(IvornOrURI)
 		
 	Returns void - 
        */
@@ -4530,10 +4681,12 @@ void ivoa_siap_executeAndSave ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function ivoa_siap_saveDatasets(query, saveLocation)save the datasets pointed to by this DAL query response
+/* function ivoa_siap_saveDatasets(query, saveLocation)Execute a DAL query, and save the datasets referenced by the response. 
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
-		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
+		query - query url to execute(URLString)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
 		
 	Returns int - number of datasets saved.
        */
@@ -4555,11 +4708,13 @@ int ivoa_siap_saveDatasets ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function ivoa_siap_saveDatasetsSubset(query, saveLocation, rows)save a subset of the datasets point to by this DAL query response
+/* function ivoa_siap_saveDatasetsSubset(query, saveLocation, rows)Execute a DAL query, and save a subset of the datasets referenced by the response.
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
 		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
-		rows - list of Integers - indexes of the rows in the query response for which to save the dataset.(ACRList)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
+		rows - list of Integers - indexes of the rows in the query response for which to save the dataset. (0= first row)(ACRList)
 		
 	Returns int - number of datasets saved.
        */
@@ -4582,34 +4737,38 @@ int ivoa_siap_saveDatasetsSubset ( URLString query, IvornOrURI saveLocation, ACR
    
 			
 			
-/* function ivoa_siap_getRegistryAdqlQuery()helper method - returns an ADQL/s query that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
-		
-		
-	Returns JString - an adql query string
-       */
-JString ivoa_siap_getRegistryAdqlQuery ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("ivoa.siap.getRegistryAdqlQuery", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_siap_getRegistryXQuery()helper method - returns an Xquery that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
+/* function ivoa_siap_getRegistryXQuery()Return an XQuery that, when passed to the registry, will return all known services of that type.
+ 
+ {@stickyWarning In the case of {@link Cone} the registry query will return far too many to be useful - it is necessary to use this xquery as a starting point
+ for building a more tightly-constrained query.}
+ {@example "Example of querying for cone services related to 'dwarf'"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc') 	 
+#call this method to get a query to list all Cone-search services.   
+coneQuery = ar.ivoa.cone.getRegistryXQuery()
+
+#combine it into a more tightly contrained query
+abellConeQuery = "let $cq := " + coneQuery + """
+for $r in $cq
+where contains($r/content/subject,'dwarf')
+return $r
+"""
+
+# perform the query
+rs = ar.ivoa.registry.xquerySearch(abellConeQuery)
+#inspect the results
+print len(rs)
+for r in rs:
+    print r['id']	    
+ } 
+ the output of this script is
+ <pre>
+2
+ivo://nasa.heasarc/rasswd
+ivo://nasa.heasarc/mcksion
+</pre>
 		
 		
 	Returns JString - an xquery string
@@ -4631,331 +4790,76 @@ JString ivoa_siap_getRegistryXQuery ( )
       /* end class
       ivoa.siap
       */
-   /* begin class ivoa.skyNode
-    Query for data from SkyNode servicesSee: 
-				http://www.ivoa.net/Documents/latest/SkyNodeInterface.html
+   /* begin class ivoa.ssap
+    AR Service: Query for <b>Spectra</b> from Simple Spectral Access Protool (SSAP) Services (DAL).
+ <p />
+ {@stickyNote This class provides functions to construct a DAL query. 
+ To execute that query, see the examples and methods in the {@link Dal} class.
+ }
+ 
+ <h2>Example</h2>
+ The following example constructs a query URL, performs the query, and then downloads the 
+ first three spectra. See {@link Dal} for other things that can be done with a query URL.
+ 
+ {@example "Query a SSAP service and download a subset of spectra (Python)"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')        
+ssap = ar.ivoa.ssap #take a reference to the AR SSAP component
+
+#the SSAP service to query (selected using voexplorer)
+service = "ivo://archive.eso.org/ESO-SAF-SSAP"
+
+#resolve an object name to a position
+pos = ar.cds.sesame.resolve('m1')
+
+#build a query
+query = ssap.constructQuery(service,pos['ra'],pos['dec'],0.005)
+print "QueryURL",query
+
+#execute the query
+rows = ssap.execute(query)
+
+#inspect what we've got.
+print "Rows Returned",len(rows)
+print "Metadata Keys",rows[0].keys()
+
+#download first three datasets into current directory
+#compute url for current directory
+from urlparse import urlunsplit
+from os import getcwd
+currentDirURL = urlunsplit(['file','',getcwd(),'',''])
+print "Downloading images to",currentDirURL
+ssap.saveDatasetsSubset(query,currentDirURL,[0,1,2])
+ }
+ The output of this script is shown below.
+ <blockquote><tt>
+QueryURL http://archive.eso.org/apps/ssaserver/EsoProxySsap?POS=83.6332083%2C22.0144722&SIZE=0.0050&REQUEST=queryData <br />
+Rows Returned 63<br />
+Metadata Keys ['meta.bib.bibcode', 'SpectralLocation', 'time.duration;obs.exposure', 'meta.display.url', 'pos.eq', 'AssocID', 'time;meta.dataset', 'meta.id;obs.seq', 'SpectralAxisUnit', 'TimeCalibration', 'meta.code.class;obs', 'meta.ref.url', 'FluxCalibration', 'time.duration;obs', 'instr.fov', 'FovRef', 'Format', 'PublisherDate', 'Collection', 'meta.id;meta.dataset', 'meta.curation', 'meta.id;obs', 'DataLength', 'FluxAxisUnit', 'DatasetType', 'pos.eq.ra;meta.main', 'meta.id;instr', 'meta.title;obs.proposal', 'instr.bandwidth', 'meta.code.class;obs.param', 'time.start;obs', 'time.epoch', 'meta.version;meta.dataset', 'pos.eq.dec;meta.main', 'SpectralCalibration', 'instr.bandpass', 'time.equinox;pos.frame', 'PosAngle', 'meta.title;meta.dataset', 'Creator', 'meta.code.class', 'em;stat.min', 'CreationType', 'instr.setup', 'SpatialCalibration', 'meta.code.class;instr.setup', 'meta.id;src', 'SpaceFrameName', 'meta.code;obs.proposal', 'em;stat.max', 'DataSource', 'meta.id.PI', 'time.end;obs', 'DataModel', 'meta.id;instr.tel']<br />
+Downloading images to file:///Users/noel/Documents/workspace/python
+ </tt></blockquote>See: 
+				Dal
+			 
+				Sesame Sesame - resolves object names to RA,Dec positions
+			 
+				#getRegistryXQuery() getRegistryXQuery() - a query to list all SSAP Services.
+			 
+				<a href='http://www.ivoa.net/Documents/latest/SSA.html'>IVOA SSAP Standard Document</a>
 			  */
 	 
 	
 			
 			
-/* function ivoa_skyNode_getRegistryAdqlQuery()helper method - returns an adql query that should be passed to a registry to list all known skynode services
+/* function ivoa_ssap_constructQuery(service, ra, dec, size)Construct a SSAP Query on Right Ascension, Declination and Search radius (decimal degrees).
 		
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the SSAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://archive.eso.org/ESO-SAF-SSAP]   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link SsapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		size - radius of cone e.g. {@code 0.1}(double)
 		
-	Returns JString - an adql query string
-       */
-JString ivoa_skyNode_getRegistryAdqlQuery ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("ivoa.skyNode.getRegistryAdqlQuery", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getRegistryXQuery()returns an xquery that should be passed to a registry to list all known skynode services
-		
-		
-	Returns JString - an xquery string
-       */
-JString ivoa_skyNode_getRegistryXQuery ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("ivoa.skyNode.getRegistryXQuery", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getMetadata(service)interrogate skynode for  complete metadata about it's database
-		
-		service - identifier of the service to retrieve metadata for(IvornOrURI)
-		
-	Returns ListOfSkyNodeTableBean - a list of will use the tablebeans - actually, {@link SkyNodeTableBean} and   {@link SkyNodeColumnBean}  subclasses that present additional metadata
-       */
-ListOfSkyNodeTableBean ivoa_skyNode_getMetadata ( IvornOrURI service)
-   {
-     XmlRpcValue _args, _result;
-   ListOfSkyNodeTableBean retval;
-   _args[0] = service;
-   
-     if (myAR->execute("ivoa.skyNode.getMetadata", _args, _result))
-     {
-     ListOf<SkyNodeTableBean_> s = ListOf<SkyNodeTableBean_>(_result);
-
-                retval.n = s.size();
-                retval.list = copyArrayAsStruct<SkyNodeTableBean_, struct SkyNodeTableBean>(s);
-
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getFormats(service)interrogate skynode for supported output formats
-		
-		service - identifier of the service to retrieve metadata for(IvornOrURI)
-		
-	Returns ListOfJString - 
-       */
-ListOfJString ivoa_skyNode_getFormats ( IvornOrURI service)
-   {
-     XmlRpcValue _args, _result;
-   ListOfJString retval;
-   _args[0] = service;
-   
-     if (myAR->execute("ivoa.skyNode.getFormats", _args, _result))
-     {
-     ListOf<JString> s = ListOf<JString>(_result);
-
-                retval.n = s.size();
-                retval.list = copyArray<JString, JString>(s);
-
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getFunctions(service)interrogate skynode for the functions it supports
-		
-		service - identifier of the service to retrieve metadata for(IvornOrURI)
-		
-	Returns ListOfFunctionBean - 
-       */
-ListOfFunctionBean ivoa_skyNode_getFunctions ( IvornOrURI service)
-   {
-     XmlRpcValue _args, _result;
-   ListOfFunctionBean retval;
-   _args[0] = service;
-   
-     if (myAR->execute("ivoa.skyNode.getFunctions", _args, _result))
-     {
-     ListOf<FunctionBean_> s = ListOf<FunctionBean_>(_result);
-
-                retval.n = s.size();
-                retval.list = copyArrayAsStruct<FunctionBean_, struct FunctionBean>(s);
-
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getResults(service, adqlx)execute an adql query
-		
-		service - identifier of the service to execute query on(IvornOrURI)
-		adqlx - the query to execute(XMLString)
-		
-	Returns XMLString - a document containing a votable
-       */
-XMLString ivoa_skyNode_getResults ( IvornOrURI service, XMLString adqlx)
-   {
-     XmlRpcValue _args, _result;
-   XMLString retval;
-   _args[0] = service;
-   _args[1] = adqlx;
-   
-     if (myAR->execute("ivoa.skyNode.getResults", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_saveResults(service, adqlx, saveLocation)execute an adql query, saving results to specified location
-		
-		service - identifier of the service to execute query on(IvornOrURI)
-		adqlx - the query to execute(XMLString)
-		saveLocation - location to save result document - may be file:/, ivo:// (myspace), ftp://(IvornOrURI)
-		
-	Returns void - 
-       */
-void ivoa_skyNode_saveResults ( IvornOrURI service, XMLString adqlx, IvornOrURI saveLocation)
-   {
-     XmlRpcValue _args, _result;
-   _args[0] = service;
-   _args[1] = adqlx;
-   _args[2] = saveLocation;
-   
-     if (myAR->execute("ivoa.skyNode.saveResults", _args, _result))
-     {
-     
-     }
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getResultsF(service, adqlx, format)execute an adql query, specifying required output format
-		
-		service - identifier of the service to execute query on(IvornOrURI)
-		adqlx - the query to execute(XMLString)
-		format - required format for results (one of the results returned from {@link #getFormats()}(JString)
-		
-	Returns JString - a string of results @todo consider whether byte[] is a safer bet here.
-       */
-JString ivoa_skyNode_getResultsF ( IvornOrURI service, XMLString adqlx, JString format)
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   _args[0] = service;
-   _args[1] = adqlx;
-   _args[2] = format;
-   
-     if (myAR->execute("ivoa.skyNode.getResultsF", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_saveResultsF(service, adqlx, saveLocation, format)execute an adql query, saving results to specified location, specifying required output format.
-		
-		service - identifier of the service to execute query on(IvornOrURI)
-		adqlx - the query to execute(XMLString)
-		saveLocation - location to save result document - may be file:/, ivo:// (myspace), ftp://(IvornOrURI)
-		format - (JString)
-		
-	Returns void - 
-       */
-void ivoa_skyNode_saveResultsF ( IvornOrURI service, XMLString adqlx, IvornOrURI saveLocation, JString format)
-   {
-     XmlRpcValue _args, _result;
-   _args[0] = service;
-   _args[1] = adqlx;
-   _args[2] = saveLocation;
-   _args[3] = format;
-   
-     if (myAR->execute("ivoa.skyNode.saveResultsF", _args, _result))
-     {
-     
-     }
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getFootprint(service, region)query the server's footprint for this region (FULL Skynode only)
-      * @param service identifier of the service to interrogate
-      * @param region a STC document describing a region
-		
-		service - (IvornOrURI)
-		region - (XMLString)
-		
-	Returns XMLString - another STC document describing the intersection between the parameter <tt>region</tt> and the holdings of this skynode
-       */
-XMLString ivoa_skyNode_getFootprint ( IvornOrURI service, XMLString region)
-   {
-     XmlRpcValue _args, _result;
-   XMLString retval;
-   _args[0] = service;
-   _args[1] = region;
-   
-     if (myAR->execute("ivoa.skyNode.getFootprint", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_estimateQueryCost(planId, adql)interrogate the service to estimate the cost of a query (FULL Skynode only)
-		
-		planId - not known @todo(long)
-		adql - query to estimate cost for.(XMLString)
-		
-	Returns double - estimation of query cost
-       */
-double ivoa_skyNode_estimateQueryCost ( long planId, XMLString adql)
-   {
-     XmlRpcValue _args, _result;
-   double retval;
-   _args[0] = planId;
-   _args[1] = adql;
-   
-     if (myAR->execute("ivoa.skyNode.estimateQueryCost", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_skyNode_getAvailability(service)interrogate server for system information
-		
-		service - identifier of the service to interrogate(IvornOrURI)
-		
-	Returns struct AvailabilityBean - availability information for this server
-       */
-struct AvailabilityBean ivoa_skyNode_getAvailability ( IvornOrURI service)
-   {
-     XmlRpcValue _args, _result;
-   struct AvailabilityBean retval;
-   _args[0] = service;
-   
-     if (myAR->execute("ivoa.skyNode.getAvailability", _args, _result))
-     {
-     AvailabilityBean_* res = new AvailabilityBean_(_result);
-        res->asStruct(&retval);
-     }
-    
-     return retval;
-    
-   };
-   
-      /* end class
-      ivoa.skyNode
-      */
-   /* begin class ivoa.ssap
-    Querying for Spectra from Simple Spectral Access Protool (SSAP) Services.
- <b>NB:</b> working, but based on unfinished IVOA specification - interface may need to change to follow specificaiton. */
-	 
-	
-			
-			
-/* function ivoa_ssap_constructQuery(service, ra, dec, size)construct query on RA, DEC, SIZE
-		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
-		ra - right ascension (as described in ssap spec)(double)
-		dec - declination (as described in ssap spec)(double)
-		size - radius of cone ( as described in ssap spec)(double)
-		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString ivoa_ssap_constructQuery ( IvornOrURI service, double ra, double dec, double size)
    {
@@ -4977,15 +4881,15 @@ URLString ivoa_ssap_constructQuery ( IvornOrURI service, double ra, double dec, 
    
 			
 			
-/* function ivoa_ssap_constructQueryS(service, ra, dec, ra_size, dec_size)construct query on RA, DEC, RA_SIZE, DEC_SIZE
+/* function ivoa_ssap_constructQueryS(service, ra, dec, ra_size, dec_size)Construct a SSAP Query on Right Ascension, Declination, and Search area in RA and Dec
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
-		ra - right ascension (as described in ssap spec)(double)
-		dec - declination (as described in ssap spec)(double)
-		ra_size - size of ra ( as described in ssap spec)(double)
-		dec_size - size of dec (as described in ssap spec)(double)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the SSAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://archive.eso.org/ESO-SAF-SSAP}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link SsapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
+		ra - right ascension e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		ra_size - size of {@code ra} e.g. {@code 0.1}(double)
+		dec_size - size of {@code dec} e.g. {@code 0.2}(double)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString ivoa_ssap_constructQueryS ( IvornOrURI service, double ra, double dec, double ra_size, double dec_size)
    {
@@ -5008,13 +4912,15 @@ URLString ivoa_ssap_constructQueryS ( IvornOrURI service, double ra, double dec,
    
 			
 			
-/* function ivoa_ssap_addOption(query, optionName, optionValue)add an option to a previously constructed query
+/* function ivoa_ssap_addOption(query, optionName, optionValue)Add an additional option to a previously constructed query.
+ <p/>
+ Sometimes neccessary, for some DAL protocols, to provide optional query parameters.
 		
 		query - the query url(URLString)
 		optionName - name of the option to add(JString)
 		optionValue - value for the new option(JString)
 		
-	Returns URLString - <tt>query</tt> with the option appended.
+	Returns URLString - {@code query} with the option appended.
        */
 URLString ivoa_ssap_addOption ( URLString query, JString optionName, JString optionValue)
    {
@@ -5035,11 +4941,11 @@ URLString ivoa_ssap_addOption ( URLString query, JString optionName, JString opt
    
 			
 			
-/* function ivoa_ssap_execute(query)execute a DAL query, returning a datastructure
+/* function ivoa_ssap_execute(query)Execute a DAL query, returning a datastructure
 		
 		query - query url to execute(URLString)
 		
-	Returns ListOfACRKeyValueMap - A model the DAL query response as a list of  of rows. Each row is represented is a map between UCD keys or datamodel names   and values from the response
+	Returns ListOfACRKeyValueMap - The service response parsed as a list of  of rows. Each row is represented is a map between UCD or datamodel keys    and values from the response
        */
 ListOfACRKeyValueMap ivoa_ssap_execute ( URLString query)
    {
@@ -5062,9 +4968,7 @@ ListOfACRKeyValueMap ivoa_ssap_execute ( URLString query)
    
 			
 			
-/* function ivoa_ssap_executeVotable(query)execute a DAL query, returning a votable document.
- 
- This is a convenience method  - just performs a 'GET' on the query url- many programming languages support this functionality themselves
+/* function ivoa_ssap_executeVotable(query)Execute a DAL query, returning a Votable document.
 		
 		query - query url to execute(URLString)
 		
@@ -5087,10 +4991,10 @@ XMLString ivoa_ssap_executeVotable ( URLString query)
    
 			
 			
-/* function ivoa_ssap_executeAndSave(query, saveLocation)execute a DAL query and save the resulting document.
+/* function ivoa_ssap_executeAndSave(query, saveLocation)Execute a DAL query and save the resulting document.
 		
 		query - query url to execute(URLString)
-		saveLocation - location to save result document - may be file:/, ivo:// (myspace), ftp://(IvornOrURI)
+		saveLocation - location to save result document - May be {@code file:/}, {@code ivo://} (myspace), {@code ftp://} location(IvornOrURI)
 		
 	Returns void - 
        */
@@ -5109,10 +5013,12 @@ void ivoa_ssap_executeAndSave ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function ivoa_ssap_saveDatasets(query, saveLocation)save the datasets pointed to by this DAL query response
+/* function ivoa_ssap_saveDatasets(query, saveLocation)Execute a DAL query, and save the datasets referenced by the response. 
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
-		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
+		query - query url to execute(URLString)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
 		
 	Returns int - number of datasets saved.
        */
@@ -5134,11 +5040,13 @@ int ivoa_ssap_saveDatasets ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function ivoa_ssap_saveDatasetsSubset(query, saveLocation, rows)save a subset of the datasets point to by this DAL query response
+/* function ivoa_ssap_saveDatasetsSubset(query, saveLocation, rows)Execute a DAL query, and save a subset of the datasets referenced by the response.
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
 		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
-		rows - list of Integers - indexes of the rows in the query response for which to save the dataset.(ACRList)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
+		rows - list of Integers - indexes of the rows in the query response for which to save the dataset. (0= first row)(ACRList)
 		
 	Returns int - number of datasets saved.
        */
@@ -5161,34 +5069,38 @@ int ivoa_ssap_saveDatasetsSubset ( URLString query, IvornOrURI saveLocation, ACR
    
 			
 			
-/* function ivoa_ssap_getRegistryAdqlQuery()helper method - returns an ADQL/s query that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
-		
-		
-	Returns JString - an adql query string
-       */
-JString ivoa_ssap_getRegistryAdqlQuery ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("ivoa.ssap.getRegistryAdqlQuery", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function ivoa_ssap_getRegistryXQuery()helper method - returns an Xquery that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
+/* function ivoa_ssap_getRegistryXQuery()Return an XQuery that, when passed to the registry, will return all known services of that type.
+ 
+ {@stickyWarning In the case of {@link Cone} the registry query will return far too many to be useful - it is necessary to use this xquery as a starting point
+ for building a more tightly-constrained query.}
+ {@example "Example of querying for cone services related to 'dwarf'"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc') 	 
+#call this method to get a query to list all Cone-search services.   
+coneQuery = ar.ivoa.cone.getRegistryXQuery()
+
+#combine it into a more tightly contrained query
+abellConeQuery = "let $cq := " + coneQuery + """
+for $r in $cq
+where contains($r/content/subject,'dwarf')
+return $r
+"""
+
+# perform the query
+rs = ar.ivoa.registry.xquerySearch(abellConeQuery)
+#inspect the results
+print len(rs)
+for r in rs:
+    print r['id']	    
+ } 
+ the output of this script is
+ <pre>
+2
+ivo://nasa.heasarc/rasswd
+ivo://nasa.heasarc/mcksion
+</pre>
 		
 		
 	Returns JString - an xquery string
@@ -5211,20 +5123,90 @@ JString ivoa_ssap_getRegistryXQuery ( )
       ivoa.ssap
       */
    /* begin class astrogrid.stap
-    Query for Images from Simple Time Access Protocol (STAP) servicesSee: 
-				http://software.astrogrid.org/schema/vo-resource-types/Stap/v0.1/Stap.xsd
+    AR Service: Query for <b>Time series data</b> from Simple Time Access Protocol (STAP) services (DAL).
+ <p />
+ {@stickyNote This class provides functions to construct a DAL query. 
+ To execute that query, see the examples and methods in the {@link Dal} class.
+ }
+ 
+ <h2>Example</h2>
+ The following example constructs a queryURL, performs the query, and then downloads
+ the first of the resulting datasets. See {@link Dal} for other things that 
+ can be done with a query URL.
+ {@example "Query a Stap service and download a subset of the data (Python)"
+# connect to the AR
+from xmlrpc import Server, DateTime
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc')        
+stap = ar.ivoa.stap #take a reference to the AR STAP component
+
+#the STAP service to query (selected using voexplorer)
+service = "ivo://mssl.ucl.ac.uk/stap-lasco"
+
+#build a query
+start = DateTime('20000101T00:00:00')
+end = DateTime('20000102T00:00:00')
+query = stap.constructQuery(service,start,end)
+print "QueryURL",query
+
+#execute the query
+rows = stap.execute(query)
+
+#inspect what we've got.
+print "Rows Returned",len(rows)
+import pprint
+pprint.pprint(rows[0])
+
+
+#download first datasets into current directory
+#compute url for current directory
+from urlparse import urlunsplit
+from os import getcwd
+currentDirURL = urlunsplit(['file','',getcwd(),'',''])
+print "Downloading data to",currentDirURL
+stap.saveDatasetsSubset(query,currentDirURL,[0])
+ } 
+ The output from this script is shown below. 
+ <pre>
+ QueryURL http://msslxx.mssl.ucl.ac.uk:8080/stap-lasco/StapSearch?service=astrogrid_stap&START=2000-01-01T00%3A00%3A00&END=2000-01-02T00%3A00%3A00
+Rows Returned 3
+{'Concept': ' Coronal Mass Ejection',
+ 'Contact Email': ' eca@mssl.ucl.ac.uk',
+ 'Contact Name': ' Elizabeth Auden',
+ 'INST_ID': 'SOHO_LASCO',
+ 'IVORN': 'ivo://mssl.ucl.ac.uk/LASCO#LASCO20000101T065405_21',
+ 'Name': ' LASCO_20000101T065405_21',
+ 'Parameters': '  Central Position Angle=21 deg, Angular Width=76 deg, Linear Speed=337 km/s, Acceleration=8.8 m/s^2, Mass=5.0e+15 g, Kinetic Energy=2.8e+30 erg, Measurement Position Angle=11 deg',
+ 'References': '  C2 movie=http://lasco-www.nrl.navy.mil/daily_mpg/2000_01/000101_c2.mpg, C3 movie=http://lasco-www.nrl.navy.mil/daily_mpg/2000_01/000101_c3.mpg, SXT movie=http://cdaw.gsfc.nasa.gov/CME_list/daily_mpg/2000_01/sxt_almg.20000101.mpg, PHTX movie=http://cdaw.gsfc.nasa.gov/CME_list/daily_plots/sephtx/2000_01/sephtx.20000101.png, Java movie=http://cdaw.gsfc.nasa.gov/CME_list/daily_movies/2000/01/01, C2 movie / GOES light curve=http://cdaw.gsfc.nasa.gov/CME_list/UNIVERSAL/2000_01/jsmovies/2000_01/20000',
+ 'VOX:AccessReference': ' http://msslxx.mssl.ucl.ac.uk:8080/voevent/xml/LASCO/LASCO_20000101T065405_21.xml',
+ 'VOX:Format': 'VOEVENT',
+ 'meta': 'LASCO CME VOEvents',
+ 'meta.curation': 'CDAW (NASA/Goddard), via MSSL query',
+ 'meta.ref.url': 'http://cdaw.gsfc.nasa.gov/CME_list/',
+ 'meta.title': 'LASCO CMEs',
+ 'time.obs.end': '2000-01-01T06:54:05',
+ 'time.obs.start': '2000-01-01T06:54:05'}
+Downloading data to file:///Users/noel/Documents/workspace/python
+ </pre>See: 
+				<a href="http://wiki.astrogrid.org/bin/view/Astrogrid/SimpleTimeAccessProtocol">Proposed STAP Standard</a>
+			 
+				Dal
+			 
+				Sesame Sesame - resolves object names to RA,Dec positions
+			 
+				#getRegistryXQuery() getRegistryXQuery() - a query to list all STAP Services.
 			  */
 	 
 	
 			
 			
-/* function astrogrid_stap_constructQuery(service, start, end)construct query on time -  START, END
+/* function astrogrid_stap_constructQuery(service, start, end)Construct a STAP Query on Time.
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the STAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://mssl.ucl.ac.uk/stap-hinode-eis_2}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link StapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
 		start - start date and time(ACRDate)
 		end - end date and time(ACRDate)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString astrogrid_stap_constructQuery ( IvornOrURI service, ACRDate start, ACRDate end)
    {
@@ -5245,14 +5227,14 @@ URLString astrogrid_stap_constructQuery ( IvornOrURI service, ACRDate start, ACR
    
 			
 			
-/* function astrogrid_stap_constructQueryF(service, start, end, format)construct query on time and format -  START, DATE, FORMAT
+/* function astrogrid_stap_constructQueryF(service, start, end, format)Construct a STAP Query on Time and Format.
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the STAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://mssl.ucl.ac.uk/stap-hinode-eis_2}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link StapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
 		start - start date and time(ACRDate)
 		end - end date and time(ACRDate)
-		format - format of images or time series data (as described in stap spec)     *(JString)
+		format - format of images or time series data e.g. {@code ALL}(JString)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString astrogrid_stap_constructQueryF ( IvornOrURI service, ACRDate start, ACRDate end, JString format)
    {
@@ -5274,16 +5256,16 @@ URLString astrogrid_stap_constructQueryF ( IvornOrURI service, ACRDate start, AC
    
 			
 			
-/* function astrogrid_stap_constructQueryP(service, start, end, ra, dec, size)construct query on time and position - START, END RA, DEC, SIZE
+/* function astrogrid_stap_constructQueryP(service, start, end, ra, dec, size)Construct a STAP Query on Time and Position
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the STAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://mssl.ucl.ac.uk/stap-hinode-eis_2}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link StapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
 		start - start date and time(ACRDate)
 		end - end date and time(ACRDate)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		size - radius of cone ( as described in siap spec)(double)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		size - radius of cone e.g. {@code 0.1}(double)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString astrogrid_stap_constructQueryP ( IvornOrURI service, ACRDate start, ACRDate end, double ra, double dec, double size)
    {
@@ -5307,17 +5289,17 @@ URLString astrogrid_stap_constructQueryP ( IvornOrURI service, ACRDate start, AC
    
 			
 			
-/* function astrogrid_stap_constructQueryPF(service, start, end, ra, dec, size, format)construct query on time, position and format - START, END, RA, DEC, SIZE, FORMAT
+/* function astrogrid_stap_constructQueryPF(service, start, end, ra, dec, size, format)Construct a STAP Query on Time, Position and Format
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the STAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://mssl.ucl.ac.uk/stap-hinode-eis_2}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link StapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
 		start - start date and time(ACRDate)
 		end - end date and time(ACRDate)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		size - radius of cone ( as described in siap spec)(double)
-		format - format of images or time series data (as described in stap spec)     *(JString)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		size - radius of cone e.g. {@code 0.1}(double)
+		format - format of images or time series data e.g. {@code ALL}(JString)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString astrogrid_stap_constructQueryPF ( IvornOrURI service, ACRDate start, ACRDate end, double ra, double dec, double size, JString format)
    {
@@ -5342,17 +5324,17 @@ URLString astrogrid_stap_constructQueryPF ( IvornOrURI service, ACRDate start, A
    
 			
 			
-/* function astrogrid_stap_constructQueryS(service, start, end, ra, dec, ra_size, dec_size)construct query on time and full position START, END, RA, DEC, RA_SIZE, DEC_SIZE
+/* function astrogrid_stap_constructQueryS(service, start, end, ra, dec, ra_size, dec_size)Construct a STAP Query on Time and full Position
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the STAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://mssl.ucl.ac.uk/stap-hinode-eis_2}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link StapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
 		start - start date and time(ACRDate)
 		end - end date and time(ACRDate)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		ra_size - size of ra ( as described in siap spec)(double)
-		dec_size - size of dec (as described in siap spec)(double)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		ra_size - size of ra e.g. {@code 0.1}(double)
+		dec_size - size of dec  e.g. {@code 0.2}(double)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString astrogrid_stap_constructQueryS ( IvornOrURI service, ACRDate start, ACRDate end, double ra, double dec, double ra_size, double dec_size)
    {
@@ -5377,18 +5359,18 @@ URLString astrogrid_stap_constructQueryS ( IvornOrURI service, ACRDate start, AC
    
 			
 			
-/* function astrogrid_stap_constructQuerySF(service, start, end, ra, dec, ra_size, dec_size, format)construct query on time, full position and format START, END, RA, DEC, RA_SIZE, DEC_SIZE, FORMAT
+/* function astrogrid_stap_constructQuerySF(service, start, end, ra, dec, ra_size, dec_size, format)Construct a STAP Query on Time, full Position, and Format
 		
-		service - URL of the service endpoint, or ivorn of the service description(IvornOrURI)
+		service - Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.   <blockquote><dl>   <dt>Resource Identifier</dt><dd>   The resource ID of the STAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://mssl.ucl.ac.uk/stap-hinode-eis_2}   <br/>The {@link Registry} will be queried to    resolve the resource ID into a {@link Resource} object, from which the {@link StapCapability} will be found, from which in turn the first   {@link AccessURL} will be used.   </dd>   <dt>URL of the Service</dt><dd>   The endpoint URL. Can be any {@code http://} URL.   </dd>   </dl></blockquote>(IvornOrURI)
 		start - start date and time(ACRDate)
 		end - end date and time(ACRDate)
-		ra - right ascension (as described in siap spec)(double)
-		dec - declination (as described in siap spec)(double)
-		ra_size - size of ra ( as described in siap spec)(double)
-		dec_size - size of dec (as described in siap spec)(double)
-		format - format of images or time series data (as described in stap spec)     *(JString)
+		ra - right ascension  e.g {@code 6.950}(double)
+		dec - declination e.g. {@code -1.6}(double)
+		ra_size - size of ra e.g. {@code 0.1}(double)
+		dec_size - size of dec  e.g. {@code 0.2}(double)
+		format - format of images or time series data e.g. {@code ALL}(JString)
 		
-	Returns URLString - query URL that can be fetched using a HTTP GET to execute query
+	Returns URLString - A query URL. The query can then be performed by either   <ul>  <li>  programmatically performing a HTTP GET on the query URL  </li>  <li>  passing the query URL to one of the {@link Dal} {@code execute} methods - such as {@link #executeAndSave(URL, URI)}  </li>     </ul>
        */
 URLString astrogrid_stap_constructQuerySF ( IvornOrURI service, ACRDate start, ACRDate end, double ra, double dec, double ra_size, double dec_size, JString format)
    {
@@ -5414,13 +5396,15 @@ URLString astrogrid_stap_constructQuerySF ( IvornOrURI service, ACRDate start, A
    
 			
 			
-/* function astrogrid_stap_addOption(query, optionName, optionValue)add an option to a previously constructed query
+/* function astrogrid_stap_addOption(query, optionName, optionValue)Add an additional option to a previously constructed query.
+ <p/>
+ Sometimes neccessary, for some DAL protocols, to provide optional query parameters.
 		
 		query - the query url(URLString)
 		optionName - name of the option to add(JString)
 		optionValue - value for the new option(JString)
 		
-	Returns URLString - <tt>query</tt> with the option appended.
+	Returns URLString - {@code query} with the option appended.
        */
 URLString astrogrid_stap_addOption ( URLString query, JString optionName, JString optionValue)
    {
@@ -5441,11 +5425,11 @@ URLString astrogrid_stap_addOption ( URLString query, JString optionName, JStrin
    
 			
 			
-/* function astrogrid_stap_execute(query)execute a DAL query, returning a datastructure
+/* function astrogrid_stap_execute(query)Execute a DAL query, returning a datastructure
 		
 		query - query url to execute(URLString)
 		
-	Returns ListOfACRKeyValueMap - A model the DAL query response as a list of  of rows. Each row is represented is a map between UCD keys or datamodel names   and values from the response
+	Returns ListOfACRKeyValueMap - The service response parsed as a list of  of rows. Each row is represented is a map between UCD or datamodel keys    and values from the response
        */
 ListOfACRKeyValueMap astrogrid_stap_execute ( URLString query)
    {
@@ -5468,9 +5452,7 @@ ListOfACRKeyValueMap astrogrid_stap_execute ( URLString query)
    
 			
 			
-/* function astrogrid_stap_executeVotable(query)execute a DAL query, returning a votable document.
- 
- This is a convenience method  - just performs a 'GET' on the query url- many programming languages support this functionality themselves
+/* function astrogrid_stap_executeVotable(query)Execute a DAL query, returning a Votable document.
 		
 		query - query url to execute(URLString)
 		
@@ -5493,10 +5475,10 @@ XMLString astrogrid_stap_executeVotable ( URLString query)
    
 			
 			
-/* function astrogrid_stap_executeAndSave(query, saveLocation)execute a DAL query and save the resulting document.
+/* function astrogrid_stap_executeAndSave(query, saveLocation)Execute a DAL query and save the resulting document.
 		
 		query - query url to execute(URLString)
-		saveLocation - location to save result document - may be file:/, ivo:// (myspace), ftp://(IvornOrURI)
+		saveLocation - location to save result document - May be {@code file:/}, {@code ivo://} (myspace), {@code ftp://} location(IvornOrURI)
 		
 	Returns void - 
        */
@@ -5515,10 +5497,12 @@ void astrogrid_stap_executeAndSave ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function astrogrid_stap_saveDatasets(query, saveLocation)save the datasets pointed to by this DAL query response
+/* function astrogrid_stap_saveDatasets(query, saveLocation)Execute a DAL query, and save the datasets referenced by the response. 
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
-		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
+		query - query url to execute(URLString)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
 		
 	Returns int - number of datasets saved.
        */
@@ -5540,11 +5524,13 @@ int astrogrid_stap_saveDatasets ( URLString query, IvornOrURI saveLocation)
    
 			
 			
-/* function astrogrid_stap_saveDatasetsSubset(query, saveLocation, rows)save a subset of the datasets point to by this DAL query response
+/* function astrogrid_stap_saveDatasetsSubset(query, saveLocation, rows)Execute a DAL query, and save a subset of the datasets referenced by the response.
+ <p />
+ Applies to those DAL protocols ({@link Siap}, {@link Ssap}, {@link Stap}) where the response points to external data files.
 		
 		query - the DAL query(URLString)
-		saveLocation - location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference(IvornOrURI)
-		rows - list of Integers - indexes of the rows in the query response for which to save the dataset.(ACRList)
+		saveLocation - location of a directory in which to save the datasets. May be a {@code file:/}, {@code ivo://}(myspace) or {@code ftp://} location.(IvornOrURI)
+		rows - list of Integers - indexes of the rows in the query response for which to save the dataset. (0= first row)(ACRList)
 		
 	Returns int - number of datasets saved.
        */
@@ -5567,34 +5553,38 @@ int astrogrid_stap_saveDatasetsSubset ( URLString query, IvornOrURI saveLocation
    
 			
 			
-/* function astrogrid_stap_getRegistryAdqlQuery()helper method - returns an ADQL/s query that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
-		
-		
-	Returns JString - an adql query string
-       */
-JString astrogrid_stap_getRegistryAdqlQuery ( )
-   {
-     XmlRpcValue _args, _result;
-   JString retval;
-   
-     if (myAR->execute("astrogrid.stap.getRegistryAdqlQuery", _args, _result))
-     {
-         retval = _result;
-     }
-    
-     return retval;
-    
-   };
-   
-			
-			
-/* function astrogrid_stap_getRegistryXQuery()helper method - returns an Xquery that should be passed to a registry to list all 
- available DAL services of this type. 
- <br/>
- can be used as a starting point for filters, etc.
+/* function astrogrid_stap_getRegistryXQuery()Return an XQuery that, when passed to the registry, will return all known services of that type.
+ 
+ {@stickyWarning In the case of {@link Cone} the registry query will return far too many to be useful - it is necessary to use this xquery as a starting point
+ for building a more tightly-constrained query.}
+ {@example "Example of querying for cone services related to 'dwarf'"
+# connect to the AR
+from xmlrpc import Server
+from os.path import expanduser
+ar = Server(file(expanduser('~/.astrogrid-desktop')).next().strip() +'xmlrpc') 	 
+#call this method to get a query to list all Cone-search services.   
+coneQuery = ar.ivoa.cone.getRegistryXQuery()
+
+#combine it into a more tightly contrained query
+abellConeQuery = "let $cq := " + coneQuery + """
+for $r in $cq
+where contains($r/content/subject,'dwarf')
+return $r
+"""
+
+# perform the query
+rs = ar.ivoa.registry.xquerySearch(abellConeQuery)
+#inspect the results
+print len(rs)
+for r in rs:
+    print r['id']	    
+ } 
+ the output of this script is
+ <pre>
+2
+ivo://nasa.heasarc/rasswd
+ivo://nasa.heasarc/mcksion
+</pre>
 		
 		
 	Returns JString - an xquery string
@@ -5619,7 +5609,7 @@ JString astrogrid_stap_getRegistryXQuery ( )
    /* begin class util.tables
     Utility functions for working with tables.
  Exposes some of the functionality of STILSee: 
-				http://www.star.bris.ac.uk/~mbt/stil/
+				<a href="http://www.star.bris.ac.uk/~mbt/stil/">Stil Documentation</a>
 			  */
 	 
 	
@@ -5677,8 +5667,9 @@ void util_tables_convertToFile ( JString input, JString inFormat, IvornOrURI out
    
 			
 			
-/* function util_tables_convertFromFile(inLocation, inFormat, outFormat)Reads a table in a file into an in-memory table, converting between supported formats
- Will only give good results for text-based table formats.
+/* function util_tables_convertFromFile(inLocation, inFormat, outFormat)Reads a table in a file into an in-memory table, converting between supported formats.
+ 
+ {@stickyNote Will only give good results for text-based table formats.}
 		
 		inLocation - input location: may be a http://, file://, ivo:// , ftp://                      compressed using unix compress, gzip or bzip2(IvornOrURI)
 		inFormat - input handler name: generally one of                        fits, votable, ascii, csv, ipac, wdc or null(JString)
@@ -5706,7 +5697,8 @@ JString util_tables_convertFromFile ( IvornOrURI inLocation, JString inFormat, J
 			
 			
 /* function util_tables_convert(input, inFormat, outFormat)Converts an in-memory table between supported formats. 
- Will only give good results for text-based table formats.
+ 
+ {@stickyNote Will only give good results for text-based table formats.}
 		
 		input - the input table.(JString)
 		inFormat - input handler name: generally one of                        fits, votable, ascii, csv, ipac, wdc or null(JString)
@@ -5733,7 +5725,7 @@ JString util_tables_convert ( JString input, JString inFormat, JString outFormat
    
 			
 			
-/* function util_tables_listOutputFormats()list the names of the table formats this module can write out as
+/* function util_tables_listOutputFormats()list the table formats this component can write out to
 		
 		
 	Returns ListOfJString - 
@@ -5758,7 +5750,7 @@ ListOfJString util_tables_listOutputFormats ( )
    
 			
 			
-/* function util_tables_listInputFormats()list the names of the table formats this module can read in from
+/* function util_tables_listInputFormats()list the table formats this component can read in from
 		
 		
 	Returns ListOfJString - 
@@ -5785,35 +5777,20 @@ ListOfJString util_tables_listInputFormats ( )
       util.tables
       */
    /* begin class dialogs.toolEditor
-    Display the remote invocation document editor as a dialogue.
- 
- Can be used to construct calls to Remote applications, such as data processor and catalogues.
+    AR Service: Dialogue that allows user to select a remote application or database and fill in invocation parameters.
 
- <br />
- Displays the content of a invocation document, augmented with data about this application loaded from
- the registry. Enables user to edit input ad output parameters (including using the {@link org.astrogrid.acr.dialogs.ResourceChooser}
- dialogue to select indirect parameters.
- <br />
- <img src="doc-files/pw-params.png"/>See: 
-				<a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html#element_tool">Tool Document Schema-Documentation</a>
-			 
-				<a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameter">Value Parameter Element Schema-Documentation</a>
-			 
-				<a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schemas</a>
-			 
-				<a href="doc-files/example-tool.xml"> Example Tool Document</a>
-			 
+The output of the dialogue is a <i>Tool Document</i>, suitable for passing to the {@link Applications} service for execution.See: 
 				org.astrogrid.acr.astrogrid.Applications
 			  */
 	 
 	
 			
 			
-/* function dialogs_toolEditor_edit(t)Prompt the user to edit a tool document
+/* function dialogs_toolEditor_edit(t)Prompt the user to edit a tool document.
 		
 		t - document conforming to Tool schema(XMLString)
 		
-	Returns XMLString - an edited copy of this document
+	Returns XMLString - an edited copy of this document, or null if the user pressed cancel.
        */
 XMLString dialogs_toolEditor_edit ( XMLString t)
    {
@@ -5832,11 +5809,11 @@ XMLString dialogs_toolEditor_edit ( XMLString t)
    
 			
 			
-/* function dialogs_toolEditor_editStored(documentLocation)prompt the user to edit a tool document stored elsewhere
+/* function dialogs_toolEditor_editStored(documentLocation)Prompt the user to edit a tool document.
 		
 		documentLocation - location the tool document is stored at (http://, ftp://, ivo://)(IvornOrURI)
 		
-	Returns XMLString - edited copy of this document
+	Returns XMLString - edited copy of this document, or null if the user pressed cancel.
        */
 XMLString dialogs_toolEditor_editStored ( IvornOrURI documentLocation)
    {
@@ -5855,7 +5832,7 @@ XMLString dialogs_toolEditor_editStored ( IvornOrURI documentLocation)
    
 			
 			
-/* function dialogs_toolEditor_selectAndBuild()prompt the user to select a VO service (application, datacenter, or something else) and construct a query against it.
+/* function dialogs_toolEditor_selectAndBuild()prompt the user to select a remote application or database and construct an invocation/query against it.
 		
 		
 	Returns XMLString - a new tool document
@@ -5878,15 +5855,15 @@ XMLString dialogs_toolEditor_selectAndBuild ( )
       dialogs.toolEditor
       */
    /* begin class cds.ucd
-    Web Service for manipulating 
-Unified Content Descriptors (UCD).See: 
-				http://cdsweb.u-strasbg.fr/cdsws/ucdClient.gml
+    AR Service: Web Service for manipulating 
+Unified Content Descriptors, from CDS.See: 
+				<a href="http://cdsweb.u-strasbg.fr/cdsws/ucdClient.gml">Webservice Description</a>
 			  */
 	 
 	
 			
 			
-/* function cds_ucd_UCDList()list of UCD1
+/* function cds_ucd_UCDList()Return a list of UCD1.
 		
 		
 	Returns JString - html document containing all ucd1
@@ -5907,11 +5884,11 @@ JString cds_ucd_UCDList ( )
    
 			
 			
-/* function cds_ucd_resolveUCD(ucd)resolve a UCD1 (wont work with UCD1+)
+/* function cds_ucd_resolveUCD(ucd)Resolve a UCD1 (won't work with UCD1+)
 		
-		ucd - ucd  the UCD1 to resolve (example : PHOT_JHN_V)(JString)
+		ucd - the UCD1 to resolve (example : {@code PHOT_JHN_V})(JString)
 		
-	Returns JString - sentence corresponding to the UCD1 (example : Johnson magnitude V (JHN))
+	Returns JString - sentence corresponding to the UCD1 (example : {@code Johnson magnitude V (JHN)})
        */
 JString cds_ucd_resolveUCD ( JString ucd)
    {
@@ -5930,9 +5907,9 @@ JString cds_ucd_resolveUCD ( JString ucd)
    
 			
 			
-/* function cds_ucd_UCDofCatalog(catalog_designation)
+/* function cds_ucd_UCDofCatalog(catalog_designation)Access UCD1 for a catalogue
 		
-		catalog_designation - designes the catalog (example : I/239)(JString)
+		catalog_designation - designes the catalog (example : {@code I/239})(JString)
 		
 	Returns JString - list of UCD1 (in raw text) contained in a given catalog
        */
@@ -5953,11 +5930,11 @@ JString cds_ucd_UCDofCatalog ( JString catalog_designation)
    
 			
 			
-/* function cds_ucd_translate(ucd)makes the translation of old-style UCD1 into the newer UCD1+ easier:
+/* function cds_ucd_translate(ucd)Convert a legacy UCD1 to the equivalent UCD1+
 		
 		ucd - The argument is a UCD1 (not UCD1+ !).(JString)
 		
-	Returns JString - String ucd. This function returns the default UCD1+ corresponding to an old-style UCD1.
+	Returns JString - ucd. This function returns the default UCD1+ corresponding to an old-style UCD1.
        */
 JString cds_ucd_translate ( JString ucd)
    {
@@ -5976,11 +5953,11 @@ JString cds_ucd_translate ( JString ucd)
    
 			
 			
-/* function cds_ucd_upgrade(ucd)upgrade a ucd
+/* function cds_ucd_upgrade(ucd)Upgrade a deprecated UCD1+.
 		
 		ucd - a deprecated UCD1+ (word or combination).                     Useful when the 'validate' method returns with code 2.(JString)
 		
-	Returns JString - String ucd. This function returns a valid UCD1+ corresponding to a deprecated word.                       It is useful when some reference words of the UCD1+ vocabulary are changed,                       and ensures backward compatibility.
+	Returns JString - ucd. This function returns a valid UCD1+ corresponding to a deprecated word.                       It is useful when some reference words of the UCD1+ vocabulary are changed,                       and ensures backward compatibility.
        */
 JString cds_ucd_upgrade ( JString ucd)
    {
@@ -5999,11 +5976,12 @@ JString cds_ucd_upgrade ( JString ucd)
    
 			
 			
-/* function cds_ucd_validate(ucd)validate a ucd
+/* function cds_ucd_validate(ucd)validate a UCD1+.
+ This function checks that a UCD is well-formed
 		
-		ucd - (e.g. ivoa:phot.mag;em.opt.B)(JString)
+		ucd - (e.g. {@code ivoa:phot.mag;em.opt.B})(JString)
 		
-	Returns JString - String, this function checks that a UCD is well-formed <pre> The first word of the string is an error code, possibly followed by an explanation of the error.  A return value of 0 indicates no error (valid UCD).  The error-code results from the combination (logical OR) of the following values:   1: warning indicating use of non-standard namespace (not ivoa:)  2: use of deprecated word  4: use of non-existing word  8: syntax error (extra space or unallowed character)  </pre>
+	Returns JString - The first word of the return string is an error code, possibly followed by an explanation of the error.  A return value of 0 indicates no error (valid UCD).  The error-code results from the combination (logical OR) of the following values:     <ul>     <li>1: warning indicating use of non-standard namespace (not ivoa:)</li>     <li>2: use of deprecated word</li>     <li>4: use of non-existing word</li>     <li>8: syntax error (extra space or unallowed character)</li>      </ul>
        */
 JString cds_ucd_validate ( JString ucd)
    {
@@ -6022,11 +6000,11 @@ JString cds_ucd_validate ( JString ucd)
    
 			
 			
-/* function cds_ucd_explain(ucd)returns description of a ucd
+/* function cds_ucd_explain(ucd)Find the description of a UCD1+
 		
-		ucd - (e.g. ivoa:phot.mag;em.opt.B)(JString)
+		ucd - (e.g. {@code ivoa:phot.mag;em.opt.B})(JString)
 		
-	Returns JString - String, this function gives a human-readable explanation for a UCD composed of one or several words
+	Returns JString - This function gives a human-readable explanation for a UCD composed of one or several words
        */
 JString cds_ucd_explain ( JString ucd)
    {
@@ -6045,11 +6023,11 @@ JString cds_ucd_explain ( JString ucd)
    
 			
 			
-/* function cds_ucd_assign(descr)Find the UCD associated with a description
+/* function cds_ucd_assign(descr)Find the UCD1+ associated with a description.
 		
 		descr - Plain text description of a parameter to be described(JString)
 		
-	Returns JString - String ucd. This function returns the UCD1+ corresponding to the description
+	Returns JString - This function returns the UCD1+ corresponding to the description
        */
 JString cds_ucd_assign ( JString descr)
    {
@@ -6069,20 +6047,101 @@ JString cds_ucd_assign ( JString descr)
       /* end class
       cds.ucd
       */
+   /* begin class ivoa.vospace
+    Work with VOSpace - a distributed storage system.
+ 
+ VOSpace is the IVOA sanctioned distributed system @see <a href="http://www.ivoa.net/Documents/latest/VOSpace.html">VOSpace Specification</a>.
+ 
+ All resources within VOSpace are identified by a <tt>vos: </tt> URI that identifies the VOSpace server and location within that server of the file in question. */
+	 
+	
+			
+			
+/* function ivoa_vospace_getHome()Retrieve the URI of the current user's home folder in VOSpace. Each user in a community is assigned a home folder somewhere in VOSpace.
+		
+		
+	Returns IvornOrURI - The URI of the current user's home folder in VOSpace.
+       */
+IvornOrURI ivoa_vospace_getHome ( )
+   {
+     XmlRpcValue _args, _result;
+   IvornOrURI retval;
+   
+     if (myAR->execute("ivoa.vospace.getHome", _args, _result))
+     {
+         retval = _result;
+     }
+    
+     return retval;
+    
+   };
+   
+			
+			
+/* function ivoa_vospace_getNodeInformation(vosuri)access metadata about a VOSpace resource.
+		
+		vosuri - resource to investigate(IvornOrURI)
+		
+	Returns struct NodeInformation - a beanful of information
+       */
+struct NodeInformation ivoa_vospace_getNodeInformation ( IvornOrURI vosuri)
+   {
+     XmlRpcValue _args, _result;
+   struct NodeInformation retval;
+   _args[0] = vosuri;
+   
+     if (myAR->execute("ivoa.vospace.getNodeInformation", _args, _result))
+     {
+     NodeInformation_* res = new NodeInformation_(_result);
+        res->asStruct(&retval);
+     }
+    
+     return retval;
+    
+   };
+   
+			
+			
+/* function ivoa_vospace_listVOSpaces()List the known VOSpaces. This will query the registry to discover the vospaces that are available.
+		
+		
+	Returns ListOfService_Base - an array of service descriptions.
+       */
+ListOfService_Base ivoa_vospace_listVOSpaces ( )
+   {
+     XmlRpcValue _args, _result;
+   ListOfService_Base retval;
+   
+     if (myAR->execute("ivoa.vospace.listVOSpaces", _args, _result))
+     {
+     ListOfBase<Service_> s = ListOfBase<Service_>(_result);
+
+                retval.n = s.size();
+                retval.list = copyArrayAsBaseStruct<Service_, struct Service_Base>(s);
+
+     }
+    
+     return retval;
+    
+   };
+   
+      /* end class
+      ivoa.vospace
+      */
    /* begin class cds.vizier
-    Access VizieR catalogues from CDSSee: 
-				http://cdsweb.u-strasbg.fr/cdsws/vizierAccess.gml
+    AR Service: Access VizieR catalogues, from CDSSee: 
+				<a href="http://cdsweb.u-strasbg.fr/cdsws/vizierAccess.gml">Webservice Description</a>
 			  */
 	 
 	
 			
 			
-/* function cds_vizier_cataloguesMetaData(target, radius, unit, text)get metadata about catalogues.
+/* function cds_vizier_cataloguesMetaData(target, radius, unit, text)Get metadata about catalogues.
 		
-		target - (example : M31)(JString)
-		radius - (example : 1.0)(double)
-		unit - (example : arcmin)(JString)
-		text - (author, ..., example : Ochsenbein)(JString)
+		target - (example : {@code M32})(JString)
+		radius - (example : {@code 0.1})(double)
+		unit - (example : {@code arcsec})(JString)
+		text - (author, ..., example : {@code Ochsenbein})(JString)
 		
 	Returns XMLString - metadata about catalogues depending on the given parameters (VOTable format)
        */
@@ -6106,13 +6165,13 @@ XMLString cds_vizier_cataloguesMetaData ( JString target, double radius, JString
    
 			
 			
-/* function cds_vizier_cataloguesMetaDataWavelength(target, radius, unit, text, wavelength)get metadata about catalogues
+/* function cds_vizier_cataloguesMetaDataWavelength(target, radius, unit, text, wavelength)Get metadata about catalogues, with wavelength criteria.
 		
-		target - (example : M31)(JString)
-		radius - (example : 1.0)(double)
-		unit - (example : arcmin)(JString)
-		text - (author, ..., example : Ochsenbein)(JString)
-		wavelength - (example : optical, Radio, like in the VizieR Web interface)(JString)
+		target - (example : {@code M32})(JString)
+		radius - (example : {@code 0.1})(double)
+		unit - (example : {@code arcsec})(JString)
+		text - (author, ..., example : {@code Ochsenbein})(JString)
+		wavelength - (example : {@code optical, Radio} like in the VizieR Web interface)(JString)
 		
 	Returns XMLString - metadata about catalogues depending on the given parameters (VOTable format)
        */
@@ -6137,12 +6196,12 @@ XMLString cds_vizier_cataloguesMetaDataWavelength ( JString target, double radiu
    
 			
 			
-/* function cds_vizier_cataloguesData(target, radius, unit, text)get catalogue data
+/* function cds_vizier_cataloguesData(target, radius, unit, text)Get catalogue data.
 		
-		target - (example : M31)(JString)
-		radius - (example : 1.0)(double)
-		unit - (example : arcmin)(JString)
-		text - (author, ..., example : Ochsenbein)(JString)
+		target - (example : {@code M32})(JString)
+		radius - (example : {@code 0.1})(double)
+		unit - (example : {@code arcsec})(JString)
+		text - (author, ..., example : {@code Ochsenbein})(JString)
 		
 	Returns XMLString - data about catalogues depending on the given parameters (VOTable format)
        */
@@ -6166,13 +6225,13 @@ XMLString cds_vizier_cataloguesData ( JString target, double radius, JString uni
    
 			
 			
-/* function cds_vizier_cataloguesDataWavelength(target, radius, unit, text, wavelength)get catalogue data for a wavelength
+/* function cds_vizier_cataloguesDataWavelength(target, radius, unit, text, wavelength)Get catalogue data, with wavelength criteria.
 		
-		target - (example : M31)(JString)
-		radius - (example : 1.0)(double)
-		unit - (example : arcmin)(JString)
-		text - (author, ..., example : Ochsenbein)(JString)
-		wavelength - (example : optical, Radio, like in the VizieR Web interface)(JString)
+		target - (example : {@code M32})(JString)
+		radius - (example : {@code 0.1})(double)
+		unit - (example : {@code arcsec})(JString)
+		text - (author, ..., example : {@code Ochsenbein})(JString)
+		wavelength - (example : {@code optical, Radio}, like in the VizieR Web interface)(JString)
 		
 	Returns XMLString - data about catalogues depending on the given parameters (VOTable format)
        */
@@ -6197,7 +6256,8 @@ XMLString cds_vizier_cataloguesDataWavelength ( JString target, double radius, J
    
 			
 			
-/* function cds_vizier_metaAll()get metadata for all catalogues
+/* function cds_vizier_metaAll()get metadata for all catalogues.
+ {@stickyWarning Will return a large amount of data. }
 		
 		
 	Returns XMLString - all metadata about catalogues in VizieR (VOTable format)
@@ -6221,7 +6281,7 @@ XMLString cds_vizier_metaAll ( )
       */
    /* begin class votech.vomon
     Monitor service availability using the VoMon serviceSee: 
-				vomon.sourceforge.net
+				<a href="http://vomon.sourceforge.net">VoMon project page</a>
 			  */
 	 
 	

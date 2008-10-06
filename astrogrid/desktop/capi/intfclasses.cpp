@@ -1,7 +1,7 @@
 /*
 C interface to the AR
 Paul Harrison paul.harrison@manchester.ac.uk
-produced on 2008-01-04Z
+produced on 2008-10-06+01:00
 
 DO NOT EDIT - this file is produced automatically by the AR build process
 
@@ -53,7 +53,7 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
    
       return 0;
       };
-      TableBean_* TableBean_::create(XmlRpcValue & v) {
+      BaseParam_* BaseParam_::create(XmlRpcValue & v) {
        XmlRpcValue intf = v.mem("__interfaces");
        std::set<std::string> intfs;
        std::string s1 = intf[0];
@@ -63,15 +63,27 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
        }
        //order these with the deepest child first - ordering that appears in __interfaces is apparently random...
          
-         if(intfs.count( "org.astrogrid.acr.ivoa.SkyNodeTableBean") > 0)
+         if(intfs.count( "org.astrogrid.acr.astrogrid.ParameterBean") > 0)
          {
-            return new SkyNodeTableBean_(v);
+            return new ParameterBean_(v);
          }
    
    
-         if(intfs.count( "org.astrogrid.acr.astrogrid.TableBean") > 0)
+         if(intfs.count( "org.astrogrid.acr.astrogrid.ColumnBean") > 0)
          {
-            return new TableBean_(v);
+            return new ColumnBean_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.InputParam") > 0)
+         {
+            return new InputParam_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.BaseParam") > 0)
+         {
+            return new BaseParam_(v);
          }
    
    
@@ -101,30 +113,6 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
    
       return 0;
       };
-      ColumnBean_* ColumnBean_::create(XmlRpcValue & v) {
-       XmlRpcValue intf = v.mem("__interfaces");
-       std::set<std::string> intfs;
-       std::string s1 = intf[0];
-       for (int i = 0; i < intf.size(); ++i) {
-         std::string itf = intf[i];
-         intfs.insert(itf);
-       }
-       //order these with the deepest child first - ordering that appears in __interfaces is apparently random...
-         
-         if(intfs.count( "org.astrogrid.acr.ivoa.SkyNodeColumnBean") > 0)
-         {
-            return new SkyNodeColumnBean_(v);
-         }
-   
-   
-         if(intfs.count( "org.astrogrid.acr.astrogrid.ColumnBean") > 0)
-         {
-            return new ColumnBean_(v);
-         }
-   
-   
-      return 0;
-      };
       Resource_* Resource_::create(XmlRpcValue & v) {
        XmlRpcValue intf = v.mem("__interfaces");
        std::set<std::string> intfs;
@@ -138,6 +126,24 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
          if(intfs.count( "org.astrogrid.acr.astrogrid.CeaService") > 0)
          {
             return new CeaService_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.TableService") > 0)
+         {
+            return new TableService_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.StapService") > 0)
+         {
+            return new StapService_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.SsapService") > 0)
+         {
+            return new SsapService_(v);
          }
    
    
@@ -183,6 +189,12 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
          }
    
    
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.Application") > 0)
+         {
+            return new Application_(v);
+         }
+   
+   
          if(intfs.count( "org.astrogrid.acr.ivoa.resource.TabularDB") > 0)
          {
             return new TabularDB_(v);
@@ -192,6 +204,12 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
          if(intfs.count( "org.astrogrid.acr.ivoa.resource.DataCollection") > 0)
          {
             return new DataCollection_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.StandardSTC") > 0)
+         {
+            return new StandardSTC_(v);
          }
    
    
@@ -228,6 +246,24 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
          if(intfs.count( "org.astrogrid.acr.astrogrid.CeaService") > 0)
          {
             return new CeaService_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.TableService") > 0)
+         {
+            return new TableService_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.StapService") > 0)
+         {
+            return new StapService_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.SsapService") > 0)
+         {
+            return new SsapService_(v);
          }
    
    
@@ -305,6 +341,30 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
    
       return 0;
       };
+      Application_* Application_::create(XmlRpcValue & v) {
+       XmlRpcValue intf = v.mem("__interfaces");
+       std::set<std::string> intfs;
+       std::string s1 = intf[0];
+       for (int i = 0; i < intf.size(); ++i) {
+         std::string itf = intf[i];
+         intfs.insert(itf);
+       }
+       //order these with the deepest child first - ordering that appears in __interfaces is apparently random...
+         
+         if(intfs.count( "org.astrogrid.acr.astrogrid.CeaApplication") > 0)
+         {
+            return new CeaApplication_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.Application") > 0)
+         {
+            return new Application_(v);
+         }
+   
+   
+      return 0;
+      };
       DataCollection_* DataCollection_::create(XmlRpcValue & v) {
        XmlRpcValue intf = v.mem("__interfaces");
        std::set<std::string> intfs;
@@ -357,6 +417,18 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
          }
    
    
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.StapCapability") > 0)
+         {
+            return new StapCapability_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.SsapCapability") > 0)
+         {
+            return new SsapCapability_(v);
+         }
+   
+   
          if(intfs.count( "org.astrogrid.acr.ivoa.resource.SiapCapability") > 0)
          {
             return new SiapCapability_(v);
@@ -375,6 +447,12 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
          }
    
    
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.RegistryCapability") > 0)
+         {
+            return new RegistryCapability_(v);
+         }
+   
+   
          if(intfs.count( "org.astrogrid.acr.ivoa.resource.ConeCapability") > 0)
          {
             return new ConeCapability_(v);
@@ -384,6 +462,66 @@ AbstractInformation_* AbstractInformation_::create(XmlRpcValue & v) {
          if(intfs.count( "org.astrogrid.acr.ivoa.resource.Capability") > 0)
          {
             return new Capability_(v);
+         }
+   
+   
+      return 0;
+      };
+      RegistryCapability_* RegistryCapability_::create(XmlRpcValue & v) {
+       XmlRpcValue intf = v.mem("__interfaces");
+       std::set<std::string> intfs;
+       std::string s1 = intf[0];
+       for (int i = 0; i < intf.size(); ++i) {
+         std::string itf = intf[i];
+         intfs.insert(itf);
+       }
+       //order these with the deepest child first - ordering that appears in __interfaces is apparently random...
+         
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.SearchCapability") > 0)
+         {
+            return new SearchCapability_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.HarvestCapability") > 0)
+         {
+            return new HarvestCapability_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.RegistryCapability") > 0)
+         {
+            return new RegistryCapability_(v);
+         }
+   
+   
+      return 0;
+      };
+      Interface_* Interface_::create(XmlRpcValue & v) {
+       XmlRpcValue intf = v.mem("__interfaces");
+       std::set<std::string> intfs;
+       std::string s1 = intf[0];
+       for (int i = 0; i < intf.size(); ++i) {
+         std::string itf = intf[i];
+         intfs.insert(itf);
+       }
+       //order these with the deepest child first - ordering that appears in __interfaces is apparently random...
+         
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.WebServiceInterface") > 0)
+         {
+            return new WebServiceInterface_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.ParamHttpInterface") > 0)
+         {
+            return new ParamHttpInterface_(v);
+         }
+   
+   
+         if(intfs.count( "org.astrogrid.acr.ivoa.resource.Interface") > 0)
+         {
+            return new Interface_(v);
          }
    
    

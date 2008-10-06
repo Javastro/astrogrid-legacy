@@ -1,7 +1,7 @@
 /*
 C interface to the AR
 Paul Harrison paul.harrison@manchester.ac.uk
-produced on 2008-01-04Z
+produced on 2008-10-06+01:00
 
 DO NOT EDIT - this file is produced automatically by the AR build process
 
@@ -49,10 +49,9 @@ s->_type = AbstractInformation;
 
 class AccessURL_{
 public:
-URLString value_;
 IvornOrURI valueURI_;
 JString use_;
-AccessURL_( XmlRpcValue& v) : value_(v.mem("value")), valueURI_(v.mem("valueURI")), use_(v.mem("use")) {
+AccessURL_( XmlRpcValue& v) : valueURI_(v.mem("valueURI")), use_(v.mem("use")) {
 } 
 
 virtual ~AccessURL_() {
@@ -60,7 +59,6 @@ virtual ~AccessURL_() {
 }
 
 virtual void asStruct( struct AccessURL* s ) const {
-  s->value = value_;
   s->valueURI = valueURI_;
   s->use = use_;
 s->_type = AccessURL;
@@ -135,10 +133,9 @@ s->_type = Contact;
 
 class Creator_{
 public:
-URLString logo_;
 IvornOrURI logoURI_;
 ResourceName_ name_;
-Creator_( XmlRpcValue& v) : logo_(v.mem("logo")), logoURI_(v.mem("logoURI")), name_(v.mem("name")) {
+Creator_( XmlRpcValue& v) : logoURI_(v.mem("logoURI")), name_(v.mem("name")) {
 } 
 
 virtual ~Creator_() {
@@ -146,7 +143,6 @@ virtual ~Creator_() {
 }
 
 virtual void asStruct( struct Creator* s ) const {
-  s->logo = logo_;
   s->logoURI = logoURI_;
    name_.asStruct(&s->name);
 s->_type = Creator;
@@ -252,13 +248,12 @@ class Content_{
 public:
 ListOf<JString> contentLevel_;
 JString description_;
-URLString referenceURL_;
 IvornOrURI referenceURI_;
 ListOf<Relationship_> relationships_;
 ListOf<JString> subject_;
 ListOf<JString> type_;
 Source_ source_;
-Content_( XmlRpcValue& v) : contentLevel_(v.mem("contentLevel")), description_(v.mem("description")), referenceURL_(v.mem("referenceURL")), referenceURI_(v.mem("referenceURI")), relationships_(v.mem("relationships")), subject_(v.mem("subject")), type_(v.mem("type")), source_(v.mem("source")) {
+Content_( XmlRpcValue& v) : contentLevel_(v.mem("contentLevel")), description_(v.mem("description")), referenceURI_(v.mem("referenceURI")), relationships_(v.mem("relationships")), subject_(v.mem("subject")), type_(v.mem("type")), source_(v.mem("source")) {
 } 
 
 virtual ~Content_() {
@@ -269,7 +264,6 @@ virtual void asStruct( struct Content* s ) const {
    s->contentLevel.list = copyArray<JString, JString>(contentLevel_);
    s->contentLevel.n = contentLevel_.size();
   s->description = description_;
-  s->referenceURL = referenceURL_;
   s->referenceURI = referenceURI_;
    s->relationships.list = copyArrayAsStruct<Relationship_, struct Relationship>(relationships_);
    s->relationships.n = relationships_.size();
@@ -328,6 +322,38 @@ s->_type = Resource;
       
 };
 
+class Application_ : public Resource_{
+public:
+ListOf<IvornOrURI> applicationCapabilities_;
+Application_( XmlRpcValue& v) : Resource_(v), applicationCapabilities_(v.mem("applicationCapabilities")) {
+} 
+
+virtual ~Application_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct Application* s ) const {
+Resource_::asStruct((struct Resource *)s);
+   s->applicationCapabilities.list = copyArray<IvornOrURI, IvornOrURI>(applicationCapabilities_);
+   s->applicationCapabilities.n = applicationCapabilities_.size();
+s->_type = Application;
+  
+}
+
+   virtual void asStruct (struct Resource_Base* s) const {
+   asStruct(&s->d.application);
+   s->_type = Application;
+}
+
+   virtual void asStruct (struct Application_Base* s) const {
+   asStruct(&s->d.application);
+   
+}
+
+   static Application_* create(XmlRpcValue & v) ;
+      
+};
+
 class Authority_ : public Resource_{
 public:
 ResourceName_ managingOrg_;
@@ -380,6 +406,37 @@ s->_type = AvailabilityBean;
 
 };
 
+class BaseParam_{
+public:
+JString name_;
+JString description_;
+JString unit_;
+JString ucd_;
+BaseParam_( XmlRpcValue& v) : name_(v.mem("name")), description_(v.mem("description")), unit_(v.mem("unit")), ucd_(v.mem("ucd")) {
+} 
+
+virtual ~BaseParam_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct BaseParam* s ) const {
+  s->name = name_;
+  s->description = description_;
+  s->unit = unit_;
+  s->ucd = ucd_;
+s->_type = BaseParam;
+  
+}
+
+   virtual void asStruct (struct BaseParam_Base* s) const {
+   asStruct(&s->d.baseparam);
+   s->_type = BaseParam;
+}
+
+   static BaseParam_* create(XmlRpcValue & v) ;
+      
+};
+
 class SecurityMethod_{
 public:
 IvornOrURI standardID_;
@@ -424,12 +481,19 @@ s->_type = Interface;
   
 }
 
+   virtual void asStruct (struct Interface_Base* s) const {
+   asStruct(&s->d.interface);
+   s->_type = Interface;
+}
+
+   static Interface_* create(XmlRpcValue & v) ;
+      
 };
 
 class Capability_{
 public:
 JString description_;
-ListOf<Interface_> interfaces_;
+ListOfBase<Interface_> interfaces_;
 IvornOrURI standardID_;
 ListOf<Validation_> validationLevel_;
 JString type_;
@@ -442,7 +506,7 @@ virtual ~Capability_() {
 
 virtual void asStruct( struct Capability* s ) const {
   s->description = description_;
-   s->interfaces.list = copyArrayAsStruct<Interface_, struct Interface>(interfaces_);
+   s->interfaces.list = copyArrayAsBaseStruct<Interface_, struct Interface_Base>(interfaces_);
    s->interfaces.n = interfaces_.size();
   s->standardID = standardID_;
    s->validationLevel.list = copyArrayAsStruct<Validation_, struct Validation>(validationLevel_);
@@ -461,14 +525,30 @@ s->_type = Capability;
       
 };
 
-class ColumnBean_{
+class TableDataType_{
 public:
-JString datatype_;
-JString description_;
-JString name_;
-JString uCD_;
-JString unit_;
-ColumnBean_( XmlRpcValue& v) : datatype_(v.mem("datatype")), description_(v.mem("description")), name_(v.mem("name")), uCD_(v.mem("uCD")), unit_(v.mem("unit")) {
+JString type_;
+JString arraysize_;
+TableDataType_( XmlRpcValue& v) : type_(v.mem("type")), arraysize_(v.mem("arraysize")) {
+} 
+
+virtual ~TableDataType_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct TableDataType* s ) const {
+  s->type = type_;
+  s->arraysize = arraysize_;
+s->_type = TableDataType;
+  
+}
+
+};
+
+class ColumnBean_ : public BaseParam_{
+public:
+TableDataType_ columnDataType_;
+ColumnBean_( XmlRpcValue& v) : BaseParam_(v), columnDataType_(v.mem("columnDataType")) {
 } 
 
 virtual ~ColumnBean_() {
@@ -476,30 +556,26 @@ virtual ~ColumnBean_() {
 }
 
 virtual void asStruct( struct ColumnBean* s ) const {
-  s->datatype = datatype_;
-  s->description = description_;
-  s->name = name_;
-  s->uCD = uCD_;
-  s->unit = unit_;
+BaseParam_::asStruct((struct BaseParam *)s);
+   columnDataType_.asStruct(&s->columnDataType);
 s->_type = ColumnBean;
   
 }
 
-   virtual void asStruct (struct ColumnBean_Base* s) const {
+   virtual void asStruct (struct BaseParam_Base* s) const {
    asStruct(&s->d.columnbean);
    s->_type = ColumnBean;
 }
 
-   static ColumnBean_* create(XmlRpcValue & v) ;
-      
 };
 
 class TableBean_{
 public:
-ListOfBase<ColumnBean_> columns_;
+ListOf<ColumnBean_> columns_;
 JString description_;
 JString name_;
-TableBean_( XmlRpcValue& v) : columns_(v.mem("columns")), description_(v.mem("description")), name_(v.mem("name")) {
+JString role_;
+TableBean_( XmlRpcValue& v) : columns_(v.mem("columns")), description_(v.mem("description")), name_(v.mem("name")), role_(v.mem("role")) {
 } 
 
 virtual ~TableBean_() {
@@ -507,28 +583,22 @@ virtual ~TableBean_() {
 }
 
 virtual void asStruct( struct TableBean* s ) const {
-   s->columns.list = copyArrayAsBaseStruct<ColumnBean_, struct ColumnBean_Base>(columns_);
+   s->columns.list = copyArrayAsStruct<ColumnBean_, struct ColumnBean>(columns_);
    s->columns.n = columns_.size();
   s->description = description_;
   s->name = name_;
+  s->role = role_;
 s->_type = TableBean;
   
 }
 
-   virtual void asStruct (struct TableBean_Base* s) const {
-   asStruct(&s->d.tablebean);
-   s->_type = TableBean;
-}
-
-   static TableBean_* create(XmlRpcValue & v) ;
-      
 };
 
 class Catalog_{
 public:
 JString description_;
 JString name_;
-ListOfBase<TableBean_> tables_;
+ListOf<TableBean_> tables_;
 Catalog_( XmlRpcValue& v) : description_(v.mem("description")), name_(v.mem("name")), tables_(v.mem("tables")) {
 } 
 
@@ -539,7 +609,7 @@ virtual ~Catalog_() {
 virtual void asStruct( struct Catalog* s ) const {
   s->description = description_;
   s->name = name_;
-   s->tables.list = copyArrayAsBaseStruct<TableBean_, struct TableBean_Base>(tables_);
+   s->tables.list = copyArrayAsStruct<TableBean_, struct TableBean>(tables_);
    s->tables.n = tables_.size();
 s->_type = Catalog;
   
@@ -589,10 +659,28 @@ s->_type = Service;
       
 };
 
+class StcResourceProfile_{
+public:
+XMLString stcDocument_;
+StcResourceProfile_( XmlRpcValue& v) : stcDocument_(v.mem("stcDocument")) {
+} 
+
+virtual ~StcResourceProfile_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct StcResourceProfile* s ) const {
+  s->stcDocument = stcDocument_;
+s->_type = StcResourceProfile;
+  
+}
+
+};
+
 class Coverage_{
 public:
 ResourceName_ footprint_;
-XMLString stcResourceProfile_;
+StcResourceProfile_ stcResourceProfile_;
 ListOf<JString> wavebands_;
 Coverage_( XmlRpcValue& v) : footprint_(v.mem("footprint")), stcResourceProfile_(v.mem("stcResourceProfile")), wavebands_(v.mem("wavebands")) {
 } 
@@ -603,7 +691,7 @@ virtual ~Coverage_() {
 
 virtual void asStruct( struct Coverage* s ) const {
    footprint_.asStruct(&s->footprint);
-  s->stcResourceProfile = stcResourceProfile_;
+   stcResourceProfile_.asStruct(&s->stcResourceProfile);
    s->wavebands.list = copyArray<JString, JString>(wavebands_);
    s->wavebands.n = wavebands_.size();
 s->_type = Coverage;
@@ -641,7 +729,8 @@ class DataService_ : public Service_,public HasCoverage_{
 public:
 ListOf<ResourceName_> facilities_;
 ListOf<ResourceName_> instruments_;
-DataService_( XmlRpcValue& v) : Service_(v), HasCoverage_(v), facilities_(v.mem("facilities")), instruments_(v.mem("instruments")) {
+Coverage_ coverage_;
+DataService_( XmlRpcValue& v) : Service_(v), HasCoverage_(v), facilities_(v.mem("facilities")), instruments_(v.mem("instruments")), coverage_(v.mem("coverage")) {
 } 
 
 virtual ~DataService_() {
@@ -655,6 +744,7 @@ HasCoverage_::asStruct((struct HasCoverage *)s);
    s->facilities.n = facilities_.size();
    s->instruments.list = copyArrayAsStruct<ResourceName_, struct ResourceName>(instruments_);
    s->instruments.n = instruments_.size();
+   coverage_.asStruct(&s->coverage);
 s->_type = DataService;
   
 }
@@ -675,7 +765,7 @@ s->_type = DataService;
 
 class CatalogService_ : public DataService_{
 public:
-ListOfBase<TableBean_> tables_;
+ListOf<TableBean_> tables_;
 CatalogService_( XmlRpcValue& v) : DataService_(v), tables_(v.mem("tables")) {
 } 
 
@@ -685,7 +775,7 @@ virtual ~CatalogService_() {
 
 virtual void asStruct( struct CatalogService* s ) const {
 DataService_::asStruct((struct DataService *)s);
-   s->tables.list = copyArrayAsBaseStruct<TableBean_, struct TableBean_Base>(tables_);
+   s->tables.list = copyArrayAsStruct<TableBean_, struct TableBean>(tables_);
    s->tables.n = tables_.size();
 s->_type = CatalogService;
   
@@ -725,7 +815,8 @@ public:
 ListOf<ParameterReferenceBean_> inputs_;
 JString name_;
 ListOf<ParameterReferenceBean_> outputs_;
-InterfaceBean_( XmlRpcValue& v) : inputs_(v.mem("inputs")), name_(v.mem("name")), outputs_(v.mem("outputs")) {
+JString description_;
+InterfaceBean_( XmlRpcValue& v) : inputs_(v.mem("inputs")), name_(v.mem("name")), outputs_(v.mem("outputs")), description_(v.mem("description")) {
 } 
 
 virtual ~InterfaceBean_() {
@@ -738,24 +829,24 @@ virtual void asStruct( struct InterfaceBean* s ) const {
   s->name = name_;
    s->outputs.list = copyArrayAsStruct<ParameterReferenceBean_, struct ParameterReferenceBean>(outputs_);
    s->outputs.n = outputs_.size();
+  s->description = description_;
 s->_type = InterfaceBean;
   
 }
 
 };
 
-class ParameterBean_{
+class ParameterBean_ : public BaseParam_{
 public:
-JString defaultValue_;
-JString description_;
-JString name_;
+JString id_;
 ListOf<JString> options_;
-JString subType_;
 JString type_;
-JString ucd_;
 JString uiName_;
-JString units_;
-ParameterBean_( XmlRpcValue& v) : defaultValue_(v.mem("defaultValue")), description_(v.mem("description")), name_(v.mem("name")), options_(v.mem("options")), subType_(v.mem("subType")), type_(v.mem("type")), ucd_(v.mem("ucd")), uiName_(v.mem("uiName")), units_(v.mem("units")) {
+ListOf<JString> defaultValues_;
+JString uType_;
+JString mimeType_;
+JString arraysize_;
+ParameterBean_( XmlRpcValue& v) : BaseParam_(v), id_(v.mem("id")), options_(v.mem("options")), type_(v.mem("type")), uiName_(v.mem("uiName")), defaultValues_(v.mem("defaultValues")), uType_(v.mem("uType")), mimeType_(v.mem("mimeType")), arraysize_(v.mem("arraysize")) {
 } 
 
 virtual ~ParameterBean_() {
@@ -763,27 +854,34 @@ virtual ~ParameterBean_() {
 }
 
 virtual void asStruct( struct ParameterBean* s ) const {
-  s->defaultValue = defaultValue_;
-  s->description = description_;
-  s->name = name_;
+BaseParam_::asStruct((struct BaseParam *)s);
+  s->id = id_;
    s->options.list = copyArray<JString, JString>(options_);
    s->options.n = options_.size();
-  s->subType = subType_;
   s->type = type_;
-  s->ucd = ucd_;
   s->uiName = uiName_;
-  s->units = units_;
+   s->defaultValues.list = copyArray<JString, JString>(defaultValues_);
+   s->defaultValues.n = defaultValues_.size();
+  s->uType = uType_;
+  s->mimeType = mimeType_;
+  s->arraysize = arraysize_;
 s->_type = ParameterBean;
   
 }
 
+   virtual void asStruct (struct BaseParam_Base* s) const {
+   asStruct(&s->d.parameterbean);
+   s->_type = ParameterBean;
+}
+
 };
 
-class CeaApplication_ : public Resource_{
+class CeaApplication_ : public Application_{
 public:
 ListOf<InterfaceBean_> interfaces_;
 ListOf<ParameterBean_> parameters_;
-CeaApplication_( XmlRpcValue& v) : Resource_(v), interfaces_(v.mem("interfaces")), parameters_(v.mem("parameters")) {
+JString applicationKind_;
+CeaApplication_( XmlRpcValue& v) : Application_(v), interfaces_(v.mem("interfaces")), parameters_(v.mem("parameters")), applicationKind_(v.mem("applicationKind")) {
 } 
 
 virtual ~CeaApplication_() {
@@ -791,11 +889,12 @@ virtual ~CeaApplication_() {
 }
 
 virtual void asStruct( struct CeaApplication* s ) const {
-Resource_::asStruct((struct Resource *)s);
+Application_::asStruct((struct Application *)s);
    s->interfaces.list = copyArrayAsStruct<InterfaceBean_, struct InterfaceBean>(interfaces_);
    s->interfaces.n = interfaces_.size();
    s->parameters.list = copyArrayAsStruct<ParameterBean_, struct ParameterBean>(parameters_);
    s->parameters.n = parameters_.size();
+  s->applicationKind = applicationKind_;
 s->_type = CeaApplication;
   
 }
@@ -956,9 +1055,10 @@ ListOf<ResourceName_> facilities_;
 ListOf<ResourceName_> instruments_;
 ListOf<JString> rights_;
 ListOf<Format_> formats_;
+Coverage_ coverage_;
 ListOfBase<Catalog_> catalogues_;
 AccessURL_ accessURL_;
-DataCollection_( XmlRpcValue& v) : Resource_(v), HasCoverage_(v), facilities_(v.mem("facilities")), instruments_(v.mem("instruments")), rights_(v.mem("rights")), formats_(v.mem("formats")), catalogues_(v.mem("catalogues")), accessURL_(v.mem("accessURL")) {
+DataCollection_( XmlRpcValue& v) : Resource_(v), HasCoverage_(v), facilities_(v.mem("facilities")), instruments_(v.mem("instruments")), rights_(v.mem("rights")), formats_(v.mem("formats")), coverage_(v.mem("coverage")), catalogues_(v.mem("catalogues")), accessURL_(v.mem("accessURL")) {
 } 
 
 virtual ~DataCollection_() {
@@ -976,6 +1076,7 @@ HasCoverage_::asStruct((struct HasCoverage *)s);
    s->rights.n = rights_.size();
    s->formats.list = copyArrayAsStruct<Format_, struct Format>(formats_);
    s->formats.n = formats_.size();
+   coverage_.asStruct(&s->coverage);
    s->catalogues.list = copyArrayAsBaseStruct<Catalog_, struct Catalog_Base>(catalogues_);
    s->catalogues.n = catalogues_.size();
    accessURL_.asStruct(&s->accessURL);
@@ -1114,10 +1215,39 @@ s->_type = Handler;
 
 };
 
-class HarvestCapability_ : public Capability_{
+class RegistryCapability_ : public Capability_{
+public:
+RegistryCapability_( XmlRpcValue& v) : Capability_(v) {
+} 
+
+virtual ~RegistryCapability_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct RegistryCapability* s ) const {
+Capability_::asStruct((struct Capability *)s);
+s->_type = RegistryCapability;
+  
+}
+
+   virtual void asStruct (struct Capability_Base* s) const {
+   asStruct(&s->d.registrycapability);
+   s->_type = RegistryCapability;
+}
+
+   virtual void asStruct (struct RegistryCapability_Base* s) const {
+   asStruct(&s->d.registrycapability);
+   
+}
+
+   static RegistryCapability_* create(XmlRpcValue & v) ;
+      
+};
+
+class HarvestCapability_ : public RegistryCapability_{
 public:
 int maxRecords_;
-HarvestCapability_( XmlRpcValue& v) : Capability_(v), maxRecords_(v.mem("maxRecords")) {
+HarvestCapability_( XmlRpcValue& v) : RegistryCapability_(v), maxRecords_(v.mem("maxRecords")) {
 } 
 
 virtual ~HarvestCapability_() {
@@ -1125,7 +1255,7 @@ virtual ~HarvestCapability_() {
 }
 
 virtual void asStruct( struct HarvestCapability* s ) const {
-Capability_::asStruct((struct Capability *)s);
+RegistryCapability_::asStruct((struct RegistryCapability *)s);
   s->maxRecords = maxRecords_;
 s->_type = HarvestCapability;
   
@@ -1134,6 +1264,52 @@ s->_type = HarvestCapability;
    virtual void asStruct (struct Capability_Base* s) const {
    asStruct(&s->d.harvestcapability);
    s->_type = HarvestCapability;
+}
+
+};
+
+class SimpleDataType_{
+public:
+JString type_;
+JString arraysize_;
+SimpleDataType_( XmlRpcValue& v) : type_(v.mem("type")), arraysize_(v.mem("arraysize")) {
+} 
+
+virtual ~SimpleDataType_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct SimpleDataType* s ) const {
+  s->type = type_;
+  s->arraysize = arraysize_;
+s->_type = SimpleDataType;
+  
+}
+
+};
+
+class InputParam_ : public BaseParam_{
+public:
+JString use_;
+SimpleDataType_ dataType_;
+InputParam_( XmlRpcValue& v) : BaseParam_(v), use_(v.mem("use")), dataType_(v.mem("dataType")) {
+} 
+
+virtual ~InputParam_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct InputParam* s ) const {
+BaseParam_::asStruct((struct BaseParam *)s);
+  s->use = use_;
+   dataType_.asStruct(&s->dataType);
+s->_type = InputParam;
+  
+}
+
+   virtual void asStruct (struct BaseParam_Base* s) const {
+   asStruct(&s->d.inputparam);
+   s->_type = InputParam;
 }
 
 };
@@ -1198,6 +1374,35 @@ s->_type = Organisation;
 
 };
 
+class ParamHttpInterface_ : public Interface_{
+public:
+JString queryType_;
+JString resultType_;
+ListOf<InputParam_> params_;
+ParamHttpInterface_( XmlRpcValue& v) : Interface_(v), queryType_(v.mem("queryType")), resultType_(v.mem("resultType")), params_(v.mem("params")) {
+} 
+
+virtual ~ParamHttpInterface_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct ParamHttpInterface* s ) const {
+Interface_::asStruct((struct Interface *)s);
+  s->queryType = queryType_;
+  s->resultType = resultType_;
+   s->params.list = copyArrayAsStruct<InputParam_, struct InputParam>(params_);
+   s->params.n = params_.size();
+s->_type = ParamHttpInterface;
+  
+}
+
+   virtual void asStruct (struct Interface_Base* s) const {
+   asStruct(&s->d.paramhttpinterface);
+   s->_type = ParamHttpInterface;
+}
+
+};
+
 class RegistryService_ : public Service_{
 public:
 ListOf<JString> managedAuthorities_;
@@ -1223,12 +1428,12 @@ s->_type = RegistryService;
 
 };
 
-class SearchCapability_ : public Capability_{
+class SearchCapability_ : public RegistryCapability_{
 public:
 JString extensionSearchSupport_;
 int maxRecords_;
 ListOf<JString> optionalProtocol_;
-SearchCapability_( XmlRpcValue& v) : Capability_(v), extensionSearchSupport_(v.mem("extensionSearchSupport")), maxRecords_(v.mem("maxRecords")), optionalProtocol_(v.mem("optionalProtocol")) {
+SearchCapability_( XmlRpcValue& v) : RegistryCapability_(v), extensionSearchSupport_(v.mem("extensionSearchSupport")), maxRecords_(v.mem("maxRecords")), optionalProtocol_(v.mem("optionalProtocol")) {
 } 
 
 virtual ~SearchCapability_() {
@@ -1236,7 +1441,7 @@ virtual ~SearchCapability_() {
 }
 
 virtual void asStruct( struct SearchCapability* s ) const {
-Capability_::asStruct((struct Capability *)s);
+RegistryCapability_::asStruct((struct RegistryCapability *)s);
   s->extensionSearchSupport = extensionSearchSupport_;
   s->maxRecords = maxRecords_;
    s->optionalProtocol.list = copyArray<JString, JString>(optionalProtocol_);
@@ -1431,60 +1636,213 @@ s->_type = SiapService;
 
 };
 
-class SkyNodeColumnBean_ : public ColumnBean_{
+class SsapCapability_PosParam_{
 public:
-int byteSize_;
-int precision_;
-int rank_;
-SkyNodeColumnBean_( XmlRpcValue& v) : ColumnBean_(v), byteSize_(v.mem("byteSize")), precision_(v.mem("precision")), rank_(v.mem("rank")) {
+double lon_;
+double lat_;
+JString refframe_;
+SsapCapability_PosParam_( XmlRpcValue& v) : lon_(v.mem("lon")), lat_(v.mem("lat")), refframe_(v.mem("refframe")) {
 } 
 
-virtual ~SkyNodeColumnBean_() {
+virtual ~SsapCapability_PosParam_() {
       /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
 }
 
-virtual void asStruct( struct SkyNodeColumnBean* s ) const {
-ColumnBean_::asStruct((struct ColumnBean *)s);
-  s->byteSize = byteSize_;
-  s->precision = precision_;
-  s->rank = rank_;
-s->_type = SkyNodeColumnBean;
+virtual void asStruct( struct SsapCapability_PosParam* s ) const {
+  s->lon = lon_;
+  s->lat = lat_;
+  s->refframe = refframe_;
+s->_type = SsapCapability_PosParam;
   
-}
-
-   virtual void asStruct (struct ColumnBean_Base* s) const {
-   asStruct(&s->d.skynodecolumnbean);
-   s->_type = SkyNodeColumnBean;
 }
 
 };
 
-class SkyNodeTableBean_ : public TableBean_{
+class SsapCapability_Query_{
 public:
-JString primaryKey_;
-int rank_;
-ACRKeyValueMap relations_;
-int rows_;
-SkyNodeTableBean_( XmlRpcValue& v) : TableBean_(v), primaryKey_(v.mem("primaryKey")), rank_(v.mem("rank")), relations_(v.mem("relations")), rows_(v.mem("rows")) {
+SsapCapability_PosParam_ pos_;
+double size_;
+JString queryDataCmd_;
+SsapCapability_Query_( XmlRpcValue& v) : pos_(v.mem("pos")), size_(v.mem("size")), queryDataCmd_(v.mem("queryDataCmd")) {
 } 
 
-virtual ~SkyNodeTableBean_() {
+virtual ~SsapCapability_Query_() {
       /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
 }
 
-virtual void asStruct( struct SkyNodeTableBean* s ) const {
-TableBean_::asStruct((struct TableBean *)s);
-  s->primaryKey = primaryKey_;
-  s->rank = rank_;
-  s->relations = relations_;
-  s->rows = rows_;
-s->_type = SkyNodeTableBean;
+virtual void asStruct( struct SsapCapability_Query* s ) const {
+   pos_.asStruct(&s->pos);
+  s->size = size_;
+  s->queryDataCmd = queryDataCmd_;
+s->_type = SsapCapability_Query;
   
 }
 
-   virtual void asStruct (struct TableBean_Base* s) const {
-   asStruct(&s->d.skynodetablebean);
-   s->_type = SkyNodeTableBean;
+};
+
+class SsapCapability_ : public Capability_{
+public:
+JString complianceLevel_;
+ListOf<JString> dataSources_;
+ListOf<JString> creationTypes_;
+double maxSearchRadius_;
+int maxRecords_;
+int defaultMaxRecords_;
+double maxAperture_;
+ListOf<JString> supportedFrames_;
+int maxFileSize_;
+SsapCapability_Query_ testQuery_;
+SsapCapability_( XmlRpcValue& v) : Capability_(v), complianceLevel_(v.mem("complianceLevel")), dataSources_(v.mem("dataSources")), creationTypes_(v.mem("creationTypes")), maxSearchRadius_(v.mem("maxSearchRadius")), maxRecords_(v.mem("maxRecords")), defaultMaxRecords_(v.mem("defaultMaxRecords")), maxAperture_(v.mem("maxAperture")), supportedFrames_(v.mem("supportedFrames")), maxFileSize_(v.mem("maxFileSize")), testQuery_(v.mem("testQuery")) {
+} 
+
+virtual ~SsapCapability_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct SsapCapability* s ) const {
+Capability_::asStruct((struct Capability *)s);
+  s->complianceLevel = complianceLevel_;
+   s->dataSources.list = copyArray<JString, JString>(dataSources_);
+   s->dataSources.n = dataSources_.size();
+   s->creationTypes.list = copyArray<JString, JString>(creationTypes_);
+   s->creationTypes.n = creationTypes_.size();
+  s->maxSearchRadius = maxSearchRadius_;
+  s->maxRecords = maxRecords_;
+  s->defaultMaxRecords = defaultMaxRecords_;
+  s->maxAperture = maxAperture_;
+   s->supportedFrames.list = copyArray<JString, JString>(supportedFrames_);
+   s->supportedFrames.n = supportedFrames_.size();
+  s->maxFileSize = maxFileSize_;
+   testQuery_.asStruct(&s->testQuery);
+s->_type = SsapCapability;
+  
+}
+
+   virtual void asStruct (struct Capability_Base* s) const {
+   asStruct(&s->d.ssapcapability);
+   s->_type = SsapCapability;
+}
+
+};
+
+class SsapService_ : public Service_{
+public:
+SsapService_( XmlRpcValue& v) : Service_(v) {
+} 
+
+virtual ~SsapService_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct SsapService* s ) const {
+Service_::asStruct((struct Service *)s);
+s->_type = SsapService;
+  
+}
+
+   virtual void asStruct (struct Resource_Base* s) const {
+   asStruct(&s->d.ssapservice);
+   s->_type = SsapService;
+}
+
+};
+
+class StandardSTC_ : public Resource_{
+public:
+ListOf<StcResourceProfile_> resourceProfiles_;
+StandardSTC_( XmlRpcValue& v) : Resource_(v), resourceProfiles_(v.mem("resourceProfiles")) {
+} 
+
+virtual ~StandardSTC_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct StandardSTC* s ) const {
+Resource_::asStruct((struct Resource *)s);
+   s->resourceProfiles.list = copyArrayAsStruct<StcResourceProfile_, struct StcResourceProfile>(resourceProfiles_);
+   s->resourceProfiles.n = resourceProfiles_.size();
+s->_type = StandardSTC;
+  
+}
+
+   virtual void asStruct (struct Resource_Base* s) const {
+   asStruct(&s->d.standardstc);
+   s->_type = StandardSTC;
+}
+
+};
+
+class StapCapability_Query_{
+public:
+JString start_;
+JString end_;
+SiapCapability_SkyPos_ pos_;
+SiapCapability_SkySize_ size_;
+StapCapability_Query_( XmlRpcValue& v) : start_(v.mem("start")), end_(v.mem("end")), pos_(v.mem("pos")), size_(v.mem("size")) {
+} 
+
+virtual ~StapCapability_Query_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct StapCapability_Query* s ) const {
+  s->start = start_;
+  s->end = end_;
+   pos_.asStruct(&s->pos);
+   size_.asStruct(&s->size);
+s->_type = StapCapability_Query;
+  
+}
+
+};
+
+class StapCapability_ : public Capability_{
+public:
+ListOf<JString> supportedFormats_;
+int maxRecords_;
+StapCapability_Query_ testQuery_;
+StapCapability_( XmlRpcValue& v) : Capability_(v), supportedFormats_(v.mem("supportedFormats")), maxRecords_(v.mem("maxRecords")), testQuery_(v.mem("testQuery")) {
+} 
+
+virtual ~StapCapability_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct StapCapability* s ) const {
+Capability_::asStruct((struct Capability *)s);
+   s->supportedFormats.list = copyArray<JString, JString>(supportedFormats_);
+   s->supportedFormats.n = supportedFormats_.size();
+  s->maxRecords = maxRecords_;
+   testQuery_.asStruct(&s->testQuery);
+s->_type = StapCapability;
+  
+}
+
+   virtual void asStruct (struct Capability_Base* s) const {
+   asStruct(&s->d.stapcapability);
+   s->_type = StapCapability;
+}
+
+};
+
+class StapService_ : public Service_{
+public:
+StapService_( XmlRpcValue& v) : Service_(v) {
+} 
+
+virtual ~StapService_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct StapService* s ) const {
+Service_::asStruct((struct Service *)s);
+s->_type = StapService;
+  
+}
+
+   virtual void asStruct (struct Resource_Base* s) const {
+   asStruct(&s->d.stapservice);
+   s->_type = StapService;
 }
 
 };
@@ -1501,6 +1859,37 @@ virtual ~TableBeanComparator_() {
 virtual void asStruct( struct TableBeanComparator* s ) const {
 s->_type = TableBeanComparator;
   
+}
+
+};
+
+class TableService_ : public Service_{
+public:
+ListOf<ResourceName_> facilities_;
+ListOf<ResourceName_> instruments_;
+ListOf<TableBean_> tables_;
+TableService_( XmlRpcValue& v) : Service_(v), facilities_(v.mem("facilities")), instruments_(v.mem("instruments")), tables_(v.mem("tables")) {
+} 
+
+virtual ~TableService_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct TableService* s ) const {
+Service_::asStruct((struct Service *)s);
+   s->facilities.list = copyArrayAsStruct<ResourceName_, struct ResourceName>(facilities_);
+   s->facilities.n = facilities_.size();
+   s->instruments.list = copyArrayAsStruct<ResourceName_, struct ResourceName>(instruments_);
+   s->instruments.n = instruments_.size();
+   s->tables.list = copyArrayAsStruct<TableBean_, struct TableBean>(tables_);
+   s->tables.n = tables_.size();
+s->_type = TableService;
+  
+}
+
+   virtual void asStruct (struct Resource_Base* s) const {
+   asStruct(&s->d.tableservice);
+   s->_type = TableService;
 }
 
 };
@@ -1577,6 +1966,31 @@ virtual void asStruct( struct VoMonBean* s ) const {
   s->timestamp = timestamp_;
 s->_type = VoMonBean;
   
+}
+
+};
+
+class WebServiceInterface_ : public Interface_{
+public:
+ListOf<IvornOrURI> wsdlURLs_;
+WebServiceInterface_( XmlRpcValue& v) : Interface_(v), wsdlURLs_(v.mem("wsdlURLs")) {
+} 
+
+virtual ~WebServiceInterface_() {
+      /* TODO should only be virtual where there is a derived class  - also need to free resources...*/
+}
+
+virtual void asStruct( struct WebServiceInterface* s ) const {
+Interface_::asStruct((struct Interface *)s);
+   s->wsdlURLs.list = copyArray<IvornOrURI, IvornOrURI>(wsdlURLs_);
+   s->wsdlURLs.n = wsdlURLs_.size();
+s->_type = WebServiceInterface;
+  
+}
+
+   virtual void asStruct (struct Interface_Base* s) const {
+   asStruct(&s->d.webserviceinterface);
+   s->_type = WebServiceInterface;
 }
 
 };
