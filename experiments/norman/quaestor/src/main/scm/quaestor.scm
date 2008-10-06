@@ -44,7 +44,7 @@
     (sdb.version . ,(get-sdb-version))
     (tdb.version . ,(get-tdb-version))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.57 $ $Date: 2008/09/28 22:35:45 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.58 $ $Date: 2008/10/06 23:17:49 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -295,6 +295,7 @@
                (cons (rdf:language->mime-type deflang) deflang)))
             ((acceptable-mime (rdf:mime-type-list) acceptable-mimes)
              => (lambda (ok-mime)
+                  (chatter "find-acceptable-rdf-language: ~a -> ~a" acceptable-mimes ok-mime)
                   (cons ok-mime (rdf:mime-type->language ok-mime))))
             (else
              #f))))
@@ -517,7 +518,7 @@
               (make-fc '|SC_BAD_REQUEST|)
             (lambda ()
               (chatter "update-submodel: about to read ~s (base=~s)" submodel-name submodel-uri)
-              (let ((m (rdf:ingest-from-stream/language stream submodel-uri rdf-mime)))
+              (let ((m (rdf:ingest-from-stream/language stream submodel-uri (or rdf-mime "application/rdf+xml"))))
                 (chatter "update-submodel: kb=~s submodel=~s" kb submodel-name)
 
                 (cond ((and metadata?

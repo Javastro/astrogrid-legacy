@@ -243,8 +243,11 @@
 ;; The set of mappings from MIME types to RDF languages.
 ;; Used in both directions.
 (define mime-lang-mappings
-  '( ;; default type -- leave this first, so rdf:mime-type-list can strip it
-    ("*/*"                 . "TURTLE")    ;Turtle is the default type
+  '(;; The 'default' type is the first one in this list
+
+    ;; See http://www.w3.org/TR/rdf-syntax-grammar/#section-MIME-Type
+    ;; Generic RDF MIME type: http://www.ietf.org/rfc/rfc3870.txt
+    ("application/rdf+xml" . "RDF/XML")
 
     ;; ...http://www.w3.org/DesignIssues/Notation3
     ;; (and there's apparently an IANA registration pending)
@@ -261,10 +264,6 @@
     ;; see http://www.w3.org/TeamSubmission/turtle/#sec-mediaReg
     ("text/turtle"         . "TURTLE")
 
-    ;; ...http://www.w3.org/TR/rdf-syntax-grammar/#section-MIME-Type
-    ;; Generic RDF MIME type: http://www.ietf.org/rfc/rfc3870.txt
-    ("application/rdf+xml" . "RDF/XML")
-
     ;; ...http://www.dajobe.org/2001/06/ntriples/
     ("text/plain"          . "N-TRIPLE")
     ))
@@ -279,31 +278,36 @@
 ;; If the MIME type isn't recognised, return #f.
 (define/contract (rdf:mime-type->language (s string-or-false?)
                                           -> string-or-false?)
-  (let ((p (assoc (cond ((not s)
-                         "*/*")
-                        ((string-index s #\;)
-                         => (cut substring s 0 <>))
-                        (else
-                         s))
-                  mime-lang-mappings)))
-    (and p (cdr p))))
+  (cond ((not s)
+         (cdar mime-lang-mappings))
+        ((assoc (cond ((string-index s #\;)
+                       => (cut substring s 0 <>))
+                      (else
+                       s))
+                mime-lang-mappings)
+         => cdr)
+        (else #f)))
 
 ;; RDF:LANGUAGE->MIME-TYPE : string -> string-or-false
 ;;
 ;; Map RDF language to MIME type.  This is the inverse of
 ;; RDF:MIME-TYPE->LANGUAGE.  Return #f if LANG is not a legal language.
-(define/contract (rdf:language->mime-type (lang string?) -> string-or-false?)
-  (let loop ((l (cdr mime-lang-mappings))) ;strip initial "*/*"
-    (cond ((null? l)
-           #f)
-          ((string=? lang (cdar l))
-           (caar l))
-          (else
-           (loop (cdr l))))))
+;; If LANG is #f, return the MIME type of the default language.
+(define/contract (rdf:language->mime-type (lang string-or-false?) -> string-or-false?)
+  (if (not lang)
+      (caar mime-lang-mappings)
+      (let loop ((l mime-lang-mappings))
+        (cond ((null? l)
+               #f)
+              ((string=? lang (cdar l))
+               (caar l))
+              (else
+               (loop (cdr l)))))))
 
-;; Return a list of allowed mime-types.  This does not include "*/*".
+;; Return a list of allowed mime-types.  This does not include "*/*",
+;; however the first element of this list will be the same as the default type.
 (define (rdf:mime-type-list)
-  (map car (cdr mime-lang-mappings)))
+  (map car mime-lang-mappings))
 
 ;; RDF:INGEST-FROM-STREAM : java-stream string -> java-model
 ;; RDF:INGEST-FROM-STREAM : java-reader string -> java-model

@@ -17,16 +17,18 @@
 
 (define-java-classes (<uri> |java.net.URI|))
 
-
-(let ((maps '(("application/n3"                      . "TURTLE")      
-              ("text/rdf+n3"                         . "TURTLE")      
-              ("text/rdf+n3; charset=utf-8"          . "TURTLE")      
+;; The following list does not include tests for */* -- that's the province of
+;; any code elsewhere which does 'acceptable-header' parsing, whereas here
+;; we are simply concerned to provide the information on 'default mime type'
+;; which that processing will rely on.
+(let ((maps '(("application/n3"                      . "TURTLE")
+              ("text/rdf+n3"                         . "TURTLE")
+              ("text/rdf+n3; charset=utf-8"          . "TURTLE")
               ("application/x-turtle"                . "TURTLE")
               ("text/turtle"                         . "TURTLE")
-              ("application/rdf+xml"                 . "RDF/XML") 
-              ("application/rdf+xml; charset=wibble" . "RDF/XML") 
-              ("*/*"                                 . "TURTLE")      
-              (#f                                    . "TURTLE")
+              ("application/rdf+xml"                 . "RDF/XML")
+              ("application/rdf+xml; charset=wibble" . "RDF/XML")
+              (#f                                    . "RDF/XML")
               ("text/plain"                          . "N-TRIPLE")
               ("wibble"                              . #f))))
   (expect mime-type-1
@@ -52,6 +54,19 @@
           (map cdr maps)
           (map rdf:language->mime-type
                (map car maps))))
+
+;; Confirm that the 'default' MIME type is RDF/XML.
+;; The tests after this confirm the consistency of this with other functions.
+(expect mime-type-default
+        "RDF/XML"
+        (rdf:mime-type->language #f))
+(expect mime-type-default-inverse
+        ;; check the two operations agree when given argument #f
+        (rdf:language->mime-type (rdf:mime-type->language #f))
+        (rdf:language->mime-type #f))
+(expect mime-type-list-default
+        (rdf:language->mime-type #f)
+        (car (rdf:mime-type-list)))
 
 ;; Given a string containing Turtle, return the Jena model corresponding to it
 (define turtle->model rdf:ingest-from-string/turtle)

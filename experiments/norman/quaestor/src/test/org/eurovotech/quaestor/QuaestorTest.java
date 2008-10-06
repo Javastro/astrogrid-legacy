@@ -45,6 +45,8 @@ public class QuaestorTest
 
     private static final String quaestorNamespace = "http://ns.eurovotech.org/quaestor#";
 
+    private static final String defaultRdfMimeType = "application/rdf+xml";
+
     private static final String sparqlSelectC1 = "SELECT ?i where { ?i a <urn:example#c1> }";
     String[] sparqlQueryHeaders = new String[] {
         "Accept", "text/csv",
@@ -126,7 +128,7 @@ public class QuaestorTest
         // Does ?metadata work?
         r = QuaestorConnection.httpGet(makeKbUrl("?metadata"));
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "text/rdf+n3");
+        assertContentType(r, defaultRdfMimeType);
 
         // try creating the knowledgebase again -- should fail, since
         // we can't create the knowledgebase twice
@@ -161,7 +163,7 @@ public class QuaestorTest
                 // Does ?metadata work?
                 r = QuaestorConnection.httpGet(new URL(contextURL, kbName + "?metadata"));
                 assertStatus(r, HttpURLConnection.HTTP_OK);
-                assertContentType(r, "text/rdf+n3");
+                assertContentType(r, defaultRdfMimeType);
 
                 // try creating the knowledgebase again -- should fail, since
                 // we can't create the knowledgebase twice
@@ -211,7 +213,7 @@ public class QuaestorTest
             throws Exception {
         HttpResult r = QuaestorConnection.httpGet(makeKbUrl("ontology"), "*/*");
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "text/rdf+n3");
+        assertContentType(r, defaultRdfMimeType);
         assertNotNull(r.getContentAsString());
         // the actual content is a bit of a fuss to check
 
