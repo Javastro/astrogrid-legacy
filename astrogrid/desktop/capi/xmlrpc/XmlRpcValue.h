@@ -55,13 +55,13 @@ namespace XmlRpc {
     XmlRpcValue(long value)  : _type(TypeLong) { _value.asLong = value; }
     XmlRpcValue(double value)  : _type(TypeDouble) { _value.asDouble = value; }
 
-    XmlRpcValue(std::string const& value) : _type(TypeString) 
+    XmlRpcValue(std::string const& value) : _type(TypeString)
     { _value.asString = new std::string(value); }
 
     XmlRpcValue(const char* value)  : _type(TypeString)
     { _value.asString = new std::string(value); }
 
-    XmlRpcValue(const struct tm* value)  : _type(TypeDateTime) 
+    XmlRpcValue(const struct tm* value)  : _type(TypeDateTime)
     { _value.asTime = new struct tm(*value); }
 
 
@@ -69,7 +69,7 @@ namespace XmlRpc {
     {
       _value.asBinary = new BinaryData((char*)value, ((char*)value)+nBytes);
     }
-    
+
     // ACR
     XmlRpcValue (const ListOfchar & bin) : _type(TypeBase64)
     {
@@ -83,11 +83,11 @@ namespace XmlRpc {
         	XmlRpcValue val(map.map[i].val);
             const std::pair<const std::string, XmlRpcValue> p(name, val);
              _value.asStruct->insert(p);
-        	
+
 		}
-      	
+
       }
-    
+
     XmlRpcValue (const ACRList &list) : _type(TypeStruct)
       {
     	 _value.asArray = new ValueArray;
@@ -95,10 +95,12 @@ namespace XmlRpc {
     	 for (int i = 0; i < list.n; ++i) {
     		 v = new XmlRpcValue(list.list[i]);
     		 _value.asArray->push_back(v);
-			
+
 		}
       }
-      
+
+
+
     // - end ACR
 
     //! Construct from xml, beginning at *offset chars into the string, updates offset
@@ -123,6 +125,7 @@ namespace XmlRpc {
     XmlRpcValue& operator=(const struct tm& rhs) { return operator=(XmlRpcValue(&rhs)); }
     XmlRpcValue& operator=(const BinaryData& rhs) { return operator=(XmlRpcValue(&rhs)); }
     XmlRpcValue& operator=(const ListOfchar& rhs) { return operator=(XmlRpcValue(&rhs)); }
+    XmlRpcValue& operator=(const ListOfIvornOrURI& rhs) {return operator=(XmlRpcValue(&rhs)); } //TODO think that I need a constructor also... think the compiler is doing unwanted type conversion here in rhs...
 
     bool operator==(XmlRpcValue const& other) const;
     bool operator!=(XmlRpcValue const& other) const;
@@ -134,12 +137,12 @@ namespace XmlRpc {
     operator std::string&()   { assertTypeOrInvalid(TypeString); return *_value.asString; }
     operator BinaryData&()    { assertTypeOrInvalid(TypeBase64); return *_value.asBinary; }
     operator struct tm&()     { assertTypeOrInvalid(TypeDateTime); return *_value.asTime; }
-    operator  char *()    { assertTypeOrInvalid(TypeString); 
-    char * retval; 
-    retval = (char *)malloc((*_value.asString).size() +1); 
-    strcpy(retval,(*_value.asString).c_str()); 
-    return retval;} // return a copy...IMPL - it seems odd to me that just 
-    
+    operator  char *()    { assertTypeOrInvalid(TypeString);
+    char * retval;
+    retval = (char *)malloc((*_value.asString).size() +1);
+    strcpy(retval,(*_value.asString).c_str());
+    return retval;} // return a copy...IMPL - it seems odd to me that just
+
     //ACR
     operator ACRKeyValueMap();
     operator ACRList();
@@ -150,9 +153,9 @@ namespace XmlRpc {
     XmlRpcValue& operator[](int i)             { assertArray(i+1); return _value.asArray->at(i); }
 
     XmlRpcValue & operator[](std::string const & k)  { assertStruct(); return (*_value.asStruct)[k]; }
-    XmlRpcValue& mem(const char* k) { 
-    	assertStruct(); 
-    	std::string s(k); 
+    XmlRpcValue& mem(const char* k) {
+    	assertStruct();
+    	std::string s(k);
        	std::cerr << " accessing member " << k  << "\n";
          	return (*_value.asStruct)[s]; }
 
@@ -171,6 +174,9 @@ namespace XmlRpc {
 
     //! Check for the existence of a struct member by name.
     bool hasMember(const std::string& name) const;
+
+    //! Get list of member names
+    std::vector<std::string> listMemberNames() const;
 
     //! Decode xml. Destroys any existing value.
     bool fromXml(std::string const& valueXml, int* offset);
