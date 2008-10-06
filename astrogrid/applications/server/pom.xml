@@ -7,19 +7,20 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-server</artifactId><!--  would be better to rename to astrogrid-cea-common -->
-  <name>CEA common library</name>
-  <version>2008.2</version>
+  <name>CEA server library</name>
+  <version>2008.3-SNAPSHOT</version>
   <parent>
-      <artifactId>astrogrid-base</artifactId>
+      <artifactId>astrogrid-cea-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2008.2</version>
+      <version>2009.1-SNAPSHOT</version>
   </parent>
   <scm>
       <connection>scm:cvs:pserver:anonymous:@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/applications/server/</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/applications/server/</developerConnection>
       <url>http://www.astrogrid.org/viewcvs/astrogrid/applications/server/</url>
-      <tag>2008_2</tag>
+      <tag>cea_2008_2</tag>
   </scm>
+ <!--     <url>http://software.astrogrid.org/doc/${astrogrid_release}/cea/server/</url>  -->
   
   <packaging>jar</packaging>
   <description>A class library from which CEA services may be made.</description>
@@ -64,6 +65,12 @@
    </dependencies>
  </dependencyManagement>
  <dependencies>
+           <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-cea-common</artifactId>
+            <version>2008.3-SNAPSHOT</version>
+          </dependency>
+  
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-common</artifactId>
@@ -290,7 +297,7 @@
           	<artifactId>commons-httpclient</artifactId>
           	<version>3.0.1</version>
           </dependency>
-    
+  
    
  </dependencies>
  <profiles>
@@ -305,4 +312,4 @@
         </repositories>
      </profile>
   </profiles>
-</project>
+ </project>

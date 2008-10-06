@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataException.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: MetadataException.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
  * Created on 27 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -35,6 +35,9 @@ public class MetadataException extends CeaException {
 
 /*
  * $Log: MetadataException.java,v $
+ * Revision 1.1  2008/10/06 12:12:36  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

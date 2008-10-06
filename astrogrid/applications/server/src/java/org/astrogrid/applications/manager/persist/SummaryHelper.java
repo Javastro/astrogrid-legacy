@@ -1,4 +1,4 @@
-/*$Id: SummaryHelper.java,v 1.6 2008/09/25 00:19:50 pah Exp $
+/*$Id: SummaryHelper.java,v 1.7 2008/10/06 12:16:15 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.applications.manager.persist;
 
+import net.ivoa.uws.ErrorSummary;
+import net.ivoa.uws.ErrorType;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,6 +21,7 @@ import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.Status;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.InputListType;
 import org.astrogrid.applications.description.execution.ParameterValue;
@@ -57,6 +61,13 @@ public class SummaryHelper {
         summary.setApplicationName(app.getApplicationDescription().getId());
         summary.setJobId(execID);
         summary.setPhase(app.getStatus().toExecutionPhase());
+        if (app.getStatus().equals(Status.ERROR))
+        {
+            ErrorSummary esm = new ErrorSummary();
+            esm.setMessage(app.getErrorMessage().getContent());
+            esm.setType(ErrorType.FATAL);//TODO this is not necessarily true - do not know if error fatal or not.
+            summary.setErrorSummary(esm);
+        }
         if(app.getStartInstant() != null){
            summary.setStartTime(new DateTime(app.getStartInstant()));
             }
@@ -85,6 +96,9 @@ public class SummaryHelper {
 
 /* 
 $Log: SummaryHelper.java,v $
+Revision 1.7  2008/10/06 12:16:15  pah
+factor out classes common to server and client
+
 Revision 1.6  2008/09/25 00:19:50  pah
 change termination time to execution duration
 

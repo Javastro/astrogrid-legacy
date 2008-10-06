@@ -1,4 +1,4 @@
-/*$Id: SiapImageFetchDescription.java,v 1.8 2008/09/24 13:40:49 pah Exp $
+/*$Id: SiapImageFetchDescription.java,v 1.9 2008/10/06 12:16:14 pah Exp $
  * Created on 15-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,10 +22,10 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
-import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.intnl.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.security.SecurityGuard;
@@ -117,6 +117,9 @@ public class SiapImageFetchDescription extends InternallyConfiguredApplicationDe
 
 /* 
 $Log: SiapImageFetchDescription.java,v $
+Revision 1.9  2008/10/06 12:16:14  pah
+factor out classes common to server and client
+
 Revision 1.8  2008/09/24 13:40:49  pah
 package naming changes
 

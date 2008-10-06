@@ -1,7 +1,7 @@
 /*
- * $Id: ParameterValuesParseError.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: ParameterMySpaceReferenceNotFound.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
- * Created on 01-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
+ * Created on 19-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2004 AstroGrid. All rights reserved.
  *
@@ -16,17 +16,17 @@ package org.astrogrid.applications.description.exception;
 import org.astrogrid.applications.CeaException;
 
 /**
- * Error occured when parsing the parameter values that are part of the tool invocation.
- * @author Paul Harrison (pah@jb.man.ac.uk) 01-Apr-2004
+ * A MySpace reference cannot be found.
+ * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
  * @version $Name:  $
  * @since iteration5
  */
-public class ParameterValuesParseError extends CeaException {
+public class ParameterMySpaceReferenceNotFound extends CeaException {
 
    /**
     * @param message
     */
-   public ParameterValuesParseError(String message) {
+   public ParameterMySpaceReferenceNotFound(String message) {
       super(message);
    }
 
@@ -34,7 +34,7 @@ public class ParameterValuesParseError extends CeaException {
     * @param message
     * @param cause
     */
-   public ParameterValuesParseError(String message, Throwable cause) {
+   public ParameterMySpaceReferenceNotFound(String message, Throwable cause) {
       super(message, cause);
    }
 

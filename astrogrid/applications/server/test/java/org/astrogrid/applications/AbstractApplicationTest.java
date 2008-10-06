@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.10 2008/09/24 13:40:50 pah Exp $
+/*$Id: AbstractApplicationTest.java,v 1.11 2008/10/06 12:16:16 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,6 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
-import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
@@ -34,6 +33,7 @@ import org.astrogrid.applications.description.execution.MessageType;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.ResultListType;
 import org.astrogrid.applications.description.execution.Tool;
+import org.astrogrid.applications.description.intnl.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
@@ -339,6 +339,9 @@ public class AbstractApplicationTest  {
 
 /*
  * $Log: AbstractApplicationTest.java,v $
+ * Revision 1.11  2008/10/06 12:16:16  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.10  2008/09/24 13:40:50  pah
  * package naming changes
  *

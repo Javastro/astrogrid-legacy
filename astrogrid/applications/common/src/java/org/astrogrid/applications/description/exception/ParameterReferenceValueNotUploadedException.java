@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterMySpaceReferenceNotFound.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: ParameterReferenceValueNotUploadedException.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
  * Created on 19-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,17 +16,17 @@ package org.astrogrid.applications.description.exception;
 import org.astrogrid.applications.CeaException;
 
 /**
- * A MySpace reference cannot be found.
+ * The value of a parameter reference could not be uploaded in the pre-execution phase.
  * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
  * @version $Name:  $
  * @since iteration5
  */
-public class ParameterMySpaceReferenceNotFound extends CeaException {
+public class ParameterReferenceValueNotUploadedException extends CeaException {
 
    /**
     * @param message
     */
-   public ParameterMySpaceReferenceNotFound(String message) {
+   public ParameterReferenceValueNotUploadedException(String message) {
       super(message);
    }
 
@@ -34,7 +34,7 @@ public class ParameterMySpaceReferenceNotFound extends CeaException {
     * @param message
     * @param cause
     */
-   public ParameterMySpaceReferenceNotFound(String message, Throwable cause) {
+   public ParameterReferenceValueNotUploadedException(String message, Throwable cause) {
       super(message, cause);
    }
 

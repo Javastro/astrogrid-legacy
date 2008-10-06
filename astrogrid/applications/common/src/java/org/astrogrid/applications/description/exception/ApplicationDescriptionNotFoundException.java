@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescriptionNotFoundException.java,v 1.3 2008/09/03 14:18:59 pah Exp $
+ * $Id: ApplicationDescriptionNotFoundException.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *

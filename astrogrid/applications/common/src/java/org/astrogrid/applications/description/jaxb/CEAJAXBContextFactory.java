@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBContextFactory.java,v 1.3 2008/09/24 13:39:42 pah Exp $
+ * $Id: CEAJAXBContextFactory.java,v 1.1 2008/10/06 12:12:37 pah Exp $
  * 
  * Created on 12 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -43,6 +43,9 @@ public class CEAJAXBContextFactory {
 
 /*
  * $Log: CEAJAXBContextFactory.java,v $
+ * Revision 1.1  2008/10/06 12:12:37  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.3  2008/09/24 13:39:42  pah
  * include the uws types in the context
  *

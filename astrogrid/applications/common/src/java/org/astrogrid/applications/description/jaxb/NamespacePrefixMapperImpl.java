@@ -1,5 +1,5 @@
 /*
- * $Id: NamespacePrefixMapperImpl.java,v 1.2 2008/09/03 14:19:02 pah Exp $
+ * $Id: NamespacePrefixMapperImpl.java,v 1.1 2008/10/06 12:12:37 pah Exp $
  * 
  * Created on 17 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -10,7 +10,7 @@
  *
  */ 
 
-package org.astrogrid.applications.description.registry;
+package org.astrogrid.applications.description.jaxb;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -56,6 +56,9 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 
 /*
  * $Log: NamespacePrefixMapperImpl.java,v $
+ * Revision 1.1  2008/10/06 12:12:37  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.2  2008/09/03 14:19:02  pah
  * result of merge of pah_cea_1611 branch
  *

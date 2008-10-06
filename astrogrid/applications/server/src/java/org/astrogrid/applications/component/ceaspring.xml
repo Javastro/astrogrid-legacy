@@ -43,7 +43,7 @@
 <bean id="ApplicationEnvironmentRetriever" class="org.astrogrid.applications.environment.DefaultExecutionEnvRetriever">
 </bean>
 
-<bean id="ApplicationDescriptionEnvironment" class="org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment">
+<bean id="ApplicationDescriptionEnvironment" class="org.astrogrid.applications.description.ApplicationDescriptionEnvironment">
 </bean>
  
 <bean id="Idgen" class="org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen"> 

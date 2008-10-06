@@ -1,5 +1,5 @@
 /*
- * $Id: CEAJAXBUtils.java,v 1.3 2008/09/24 13:39:17 pah Exp $
+ * $Id: CEAJAXBUtils.java,v 1.1 2008/10/06 12:12:37 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -49,7 +49,6 @@ import net.ivoa.resource.registry.iface.VOResources;
 
 import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.execution.Tool;
-import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
 import org.astrogrid.contracts.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
 import org.w3c.dom.Document;
@@ -265,6 +264,9 @@ public class CEAJAXBUtils {
 
 /*
  * $Log: CEAJAXBUtils.java,v $
+ * Revision 1.1  2008/10/06 12:12:37  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.3  2008/09/24 13:39:17  pah
  * slightly better error reporting
  *

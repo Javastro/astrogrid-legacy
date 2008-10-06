@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.16 2008/09/24 13:40:49 pah Exp $
+/*$Id: JavaClassProviderTest.java,v 1.17 2008/10/06 12:16:14 pah Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,10 +16,10 @@ import org.astrogrid.applications.Application;
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.contracts.MockNonSpringConfiguredConfig;
 import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.TestServiceDefinition;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
 import org.astrogrid.applications.description.execution.ListOfParameterValues;
 import org.astrogrid.applications.description.execution.ParameterValue;
@@ -179,6 +179,9 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.17  2008/10/06 12:16:14  pah
+factor out classes common to server and client
+
 Revision 1.16  2008/09/24 13:40:49  pah
 package naming changes
 

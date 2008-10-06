@@ -1,90 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.astrogrid</groupId>
-  <artifactId>astrogrid-cea-client</artifactId>
-  <packaging>jar</packaging>
-    <parent>
-      <artifactId>astrogrid-base</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.astrogrid</groupId>
+   <artifactId>astrogrid-cea-client</artifactId>
+   <packaging>jar</packaging>
+   <parent>
+      <artifactId>astrogrid-cea-base</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>2008.2-SNAPSHOT</version>
-    </parent>
-  <name>CEA Client</name>
-  <version>2008.2-SNAPSHOT</version>
-  <description>Client library for communicating with CEA services.</description>
-  <properties>
-   <astrogrid.name>applications/client</astrogrid.name>
-  </properties>
-    
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <testSourceDirectory>test/java</testSourceDirectory>
-    <resources>
-      <resource>
-        <directory>${basedir}/src/java</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.properties</include>
-          <include>**/*.xsl</include>
-        </includes>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>${basedir}/test/java</directory>
-        <includes>
-          <include>app/**</include>
-          <include>**/*.xml</include>
-          <include>**/*.properties</include>
-          <include>**/*.sql</include>
-          <include>**/*.txt</include>
-          <include>**/*.csv</include>
-        </includes>
-      </testResource>
-      <testResource>
-        <directory>${basedir}/config</directory>
-        <includes>
-          <include>CeaApplicationConfig.xml</include>
-        </includes>
-      </testResource>
-    </testResources>
-          <plugins>
-         
+      <version>2009.1-SNAPSHOT</version>
+   </parent>
+   <name>CEA Client</name>
+   <version>2008.2-SNAPSHOT</version>
+   <description>Client library for communicating with CEA services.</description>
+   <properties>
+      <astrogrid.name>cea/client</astrogrid.name>
+   </properties>
+ <!--    <url>http://software.astrogrid.org/doc/${astrogrid_release}/cea/client</url>  --> 
+   
+   <build>
+      <sourceDirectory>src/java</sourceDirectory>
+      <testSourceDirectory>test/java</testSourceDirectory>
+      <resources>
+         <resource>
+            <directory>${basedir}/src/java</directory>
+            <includes>
+               <include>**/*.xml</include>
+               <include>**/*.properties</include>
+               <include>**/*.xsl</include>
+            </includes>
+         </resource>
+      </resources>
+      <testResources>
+         <testResource>
+            <directory>${basedir}/test/java</directory>
+            <includes>
+               <include>app/**</include>
+               <include>**/*.xml</include>
+               <include>**/*.properties</include>
+               <include>**/*.sql</include>
+               <include>**/*.txt</include>
+               <include>**/*.csv</include>
+            </includes>
+         </testResource>
+         <testResource>
+            <directory>${basedir}/config</directory>
+            <includes>
+               <include>CeaApplicationConfig.xml</include>
+            </includes>
+         </testResource>
+      </testResources>
+      <plugins>
       </plugins>
-    
-  </build>
-  <dependencies>
-    <dependency><!-- all the stuff needed for standard ws -->
-    <groupId>org.astrogrid</groupId>
-    <artifactId>astrogrid-base-ws</artifactId>
-    <version>1.4</version>
-    <type>pom</type>
-    </dependency>
-    <dependency>
-      <artifactId>astrogrid-common</artifactId>
-      <groupId>org.astrogrid</groupId>
-    </dependency>
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-workflow-objects</artifactId>
-   </dependency>
-     <dependency><groupId>commons-jxpath</groupId>
-     <artifactId>commons-jxpath</artifactId>
-     <version>1.2</version>
-     <scope>test</scope>
-     </dependency>
-       <dependency>
-      <artifactId>castor</artifactId>
-      <groupId>castor</groupId>
-      <version>0.9.5</version>
-      <type>jar</type>
-      <classifier>xml</classifier>
-      <scope>test</scope>
+   </build>
+   <dependencies>
+      <dependency><!-- all the stuff needed for standard ws -->
+         <groupId>org.astrogrid</groupId>
+         <artifactId>astrogrid-base-ws</artifactId>
+         <version>2008.2</version>
+         <type>pom</type>
       </dependency>
-   
+      <dependency>
+         <artifactId>astrogrid-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+      </dependency>
+      <dependency>
+         <groupId>org.astrogrid</groupId>
+         <artifactId>astrogrid-workflow-objects</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>commons-jxpath</groupId>
+         <artifactId>commons-jxpath</artifactId>
+         <version>1.2</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <artifactId>castor</artifactId>
+         <groupId>castor</groupId>
+         <version>0.9.5</version>
+         <type>jar</type>
+         <classifier>xml</classifier>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>net.ivoa</groupId>
+         <artifactId>ivoa-objects</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>httpclient</artifactId>
+         <version>4.0-beta1</version>
+      </dependency>
+      <dependency>
+         <groupId>org.astrogrid</groupId>
+         <artifactId>astrogrid-cea-common</artifactId>
+         <version>2008.3-SNAPSHOT</version>
+      </dependency>
    </dependencies>
-   
+   <developers>
+      <developer>
+         <name>Guy Rixon</name>
+         <id>gtr</id>
+         <email>gtr@ast.cam.ac.uk</email>
+         <organization>University of Cambridge</organization>
+      </developer>
+      <developer>
+         <name>Noel Winstanley</name>
+         <id>nw</id>
+         <email>Noel.Winstanley@manchester.ac.uk</email>
+         <organization>University of Manchester</organization>
+      </developer>
+      <developer>
+         <name>Paul Harrison</name>
+         <id>pah</id>
+         <email>pah@jb.man.ac.uk</email>
+         <organization>University of Manchester</organization>
+      </developer>
+   </developers>
 </project>

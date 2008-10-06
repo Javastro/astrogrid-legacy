@@ -17,6 +17,7 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
+import org.astrogrid.applications.description.execution.MessageType;
 import org.astrogrid.applications.description.execution.ParameterValue;
 import org.astrogrid.applications.description.execution.ResultListType;
 import org.astrogrid.applications.manager.ExecutionController;
@@ -216,5 +217,7 @@ public interface Application  {
  */
 void setDestruction(Date destruction);
 Date getDestruction();
+public MessageType getErrorMessage() ;
+
 }
    

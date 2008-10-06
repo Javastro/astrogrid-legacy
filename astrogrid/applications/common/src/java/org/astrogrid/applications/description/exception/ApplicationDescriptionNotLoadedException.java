@@ -1,7 +1,7 @@
 /*
- * $Id: ParameterReferenceValueNotUploadedException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: ApplicationDescriptionNotLoadedException.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
- * Created on 19-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
+ * Created on 12-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2004 AstroGrid. All rights reserved.
  *
@@ -16,25 +16,26 @@ package org.astrogrid.applications.description.exception;
 import org.astrogrid.applications.CeaException;
 
 /**
- * The value of a parameter reference could not be uploaded in the pre-execution phase.
- * @author Paul Harrison (pah@jb.man.ac.uk) 19-Mar-2004
+ * @author Paul Harrison (pah@jb.man.ac.uk) 12-Mar-2004
  * @version $Name:  $
  * @since iteration5
  */
-public class ParameterReferenceValueNotUploadedException extends CeaException {
+public class ApplicationDescriptionNotLoadedException extends CeaException {
 
+ 
    /**
     * @param message
     */
-   public ParameterReferenceValueNotUploadedException(String message) {
+   public ApplicationDescriptionNotLoadedException(String message) {
       super(message);
    }
+
 
    /**
     * @param message
     * @param cause
     */
-   public ParameterReferenceValueNotUploadedException(String message, Throwable cause) {
+   public ApplicationDescriptionNotLoadedException(String message, Throwable cause) {
       super(message, cause);
    }
 

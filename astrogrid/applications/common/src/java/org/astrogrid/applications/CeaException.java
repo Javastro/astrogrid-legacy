@@ -1,5 +1,5 @@
 /*
- * $Id: CeaException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: CeaException.java,v 1.1 2008/10/06 12:12:37 pah Exp $
  * 
  * Created on 17-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *

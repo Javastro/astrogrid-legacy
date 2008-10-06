@@ -1,5 +1,5 @@
 /*
- * $Id: BinaryEncodings.java,v 1.3 2008/09/13 09:51:04 pah Exp $
+ * $Id: BinaryEncodings.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -11,7 +11,7 @@
  */ 
 
 
-package org.astrogrid.applications.description.base;
+package org.astrogrid.applications.description.execution;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;

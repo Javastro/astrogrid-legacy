@@ -1,5 +1,5 @@
 /*
- * $Id: InternallyConfiguredApplicationDescription.java,v 1.4 2008/09/24 13:40:49 pah Exp $
+ * $Id: InternallyConfiguredApplicationDescription.java,v 1.1 2008/10/06 12:16:15 pah Exp $
  * 
  * Created on 13 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -10,11 +10,15 @@
  *
  */ 
 
-package org.astrogrid.applications.description.base;
+package org.astrogrid.applications.description.intnl;
 
 
 import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.AppMetadataAdapter;
+import org.astrogrid.applications.description.base.AbstractApplicationDescription;
+import org.astrogrid.applications.description.base.BaseParameterDefinition;
+import org.astrogrid.applications.description.base.InterfaceDefinition;
+import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.cea.CeaApplication;
 
 /**
@@ -56,6 +60,9 @@ public abstract class InternallyConfiguredApplicationDescription extends
 
 /*
  * $Log: InternallyConfiguredApplicationDescription.java,v $
+ * Revision 1.1  2008/10/06 12:16:15  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.4  2008/09/24 13:40:49  pah
  * package naming changes
  *

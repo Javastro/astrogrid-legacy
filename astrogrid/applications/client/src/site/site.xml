@@ -10,7 +10,9 @@
     <links>
       <item name="Astrogrid" href="http://www.astrogrid.org/" />
       <item name="IVOA" href="http://www.ivoa.net/"/>
-      <item name="Releases" href="http://deployer.astrogrid.org"/>
+      <item name="Deploying" href="http://deployer.astrogrid.org"/>
+      <item name="${astrogrid_release} Home" href="http://software.astrgrid.org/doc/${astrogrid_release}/index.html"/>
+      <item name="Software Home" href="http://software.astrgrid.org/"/>
     </links>
      <menu ref="reports"/>
   </body>

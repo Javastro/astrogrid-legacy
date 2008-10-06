@@ -1,7 +1,7 @@
 /*
- * $Id: ApplicationDescriptionNotLoadedException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: ParameterValuesParseError.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
- * Created on 12-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
+ * Created on 01-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2004 AstroGrid. All rights reserved.
  *
@@ -16,26 +16,25 @@ package org.astrogrid.applications.description.exception;
 import org.astrogrid.applications.CeaException;
 
 /**
- * @author Paul Harrison (pah@jb.man.ac.uk) 12-Mar-2004
+ * Error occured when parsing the parameter values that are part of the tool invocation.
+ * @author Paul Harrison (pah@jb.man.ac.uk) 01-Apr-2004
  * @version $Name:  $
  * @since iteration5
  */
-public class ApplicationDescriptionNotLoadedException extends CeaException {
+public class ParameterValuesParseError extends CeaException {
 
- 
    /**
     * @param message
     */
-   public ApplicationDescriptionNotLoadedException(String message) {
+   public ParameterValuesParseError(String message) {
       super(message);
    }
-
 
    /**
     * @param message
     * @param cause
     */
-   public ApplicationDescriptionNotLoadedException(String message, Throwable cause) {
+   public ParameterValuesParseError(String message, Throwable cause) {
       super(message, cause);
    }
 

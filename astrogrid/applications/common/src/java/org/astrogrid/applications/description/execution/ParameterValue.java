@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.astrogrid.applications.description.Identify;
-import org.astrogrid.applications.description.base.BinaryEncodings;
 
 
 /**

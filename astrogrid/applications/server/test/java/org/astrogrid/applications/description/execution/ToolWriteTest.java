@@ -1,5 +1,5 @@
 /*
- * $Id: ToolWriteTest.java,v 1.2 2008/09/03 14:19:07 pah Exp $
+ * $Id: ToolWriteTest.java,v 1.3 2008/10/06 12:16:16 pah Exp $
  * 
  * Created on 1 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -20,7 +20,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.ValidationEventCollector;
 
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
-import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
+import org.astrogrid.applications.description.jaxb.NamespacePrefixMapperImpl;
 import org.astrogrid.contracts.SchemaMap;
 import org.astrogrid.test.AstrogridAssert;
 import org.junit.Before;
@@ -55,6 +55,9 @@ public class ToolWriteTest {
 
 /*
  * $Log: ToolWriteTest.java,v $
+ * Revision 1.3  2008/10/06 12:16:16  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.2  2008/09/03 14:19:07  pah
  * result of merge of pah_cea_1611 branch
  *

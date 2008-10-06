@@ -1,4 +1,4 @@
-/*$Id: TestApplicationDescriptionLibrary.java,v 1.7 2008/09/24 13:40:49 pah Exp $
+/*$Id: TestApplicationDescriptionLibrary.java,v 1.8 2008/10/06 12:16:16 pah Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ package org.astrogrid.applications.description.base;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.contracts.MockCeaConfiguration;
 import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.AppMetadataAdapter;
 import org.astrogrid.applications.description.cea.CeaApplication;
@@ -92,6 +93,9 @@ public class TestApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: TestApplicationDescriptionLibrary.java,v $
+Revision 1.8  2008/10/06 12:16:16  pah
+factor out classes common to server and client
+
 Revision 1.7  2008/09/24 13:40:49  pah
 package naming changes
 

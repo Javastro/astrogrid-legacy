@@ -1,7 +1,7 @@
 /*
- * $Id: ParameterTypeNotDefinedException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: ParameterNotInInterfaceException.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
- * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
+ * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,22 +16,19 @@ package org.astrogrid.applications.description.exception;
 import org.astrogrid.applications.CeaException;
 
 /**
- * Thrown if an unknown parameter type is encountered when parsing a parameter definition file.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class ParameterTypeNotDefinedException extends CeaException {
+public class ParameterNotInInterfaceException extends CeaException {
+   
 
 
    /**
-    * @param type
+    * @param message
     */
-   public ParameterTypeNotDefinedException(String type) {
-      
-     super(type);
-   }
-   
-  
+   public ParameterNotInInterfaceException(String message) {
+      super(message);
+     }
 
 }

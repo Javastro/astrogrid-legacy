@@ -35,7 +35,7 @@ import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.description.impl.CeaHttpApplicationDefinition;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
 import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
-import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
+import org.astrogrid.applications.description.jaxb.NamespacePrefixMapperImpl;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

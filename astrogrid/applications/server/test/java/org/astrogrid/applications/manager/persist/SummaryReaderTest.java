@@ -1,5 +1,5 @@
 /*
- * $Id: SummaryReaderTest.java,v 1.3 2008/09/13 09:51:02 pah Exp $
+ * $Id: SummaryReaderTest.java,v 1.4 2008/10/06 12:16:16 pah Exp $
  * 
  * Created on 10 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.jaxb.CEAJAXBContextFactory;
-import org.astrogrid.applications.description.registry.NamespacePrefixMapperImpl;
+import org.astrogrid.applications.description.jaxb.NamespacePrefixMapperImpl;
 import org.astrogrid.contracts.Namespaces;
 import org.astrogrid.contracts.SchemaMap;
 import org.w3c.dom.ls.LSInput;
@@ -93,6 +93,9 @@ public class SummaryReaderTest extends TestCase {
 
 /*
  * $Log: SummaryReaderTest.java,v $
+ * Revision 1.4  2008/10/06 12:16:16  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.3  2008/09/13 09:51:02  pah
  * code cleanup
  *

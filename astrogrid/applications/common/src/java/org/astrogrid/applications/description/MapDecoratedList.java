@@ -1,5 +1,5 @@
 /*
- * $Id: MapDecoratedList.java,v 1.3 2008/09/18 09:13:39 pah Exp $
+ * $Id: MapDecoratedList.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
  * Created on 20 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -173,6 +173,9 @@ public class MapDecoratedList<E extends Identify> implements List<E> {
 
 /*
  * $Log: MapDecoratedList.java,v $
+ * Revision 1.1  2008/10/06 12:12:36  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.3  2008/09/18 09:13:39  pah
  * improved javadoc
  * Revision 1.2 2008/09/03 14:18:43 pah result

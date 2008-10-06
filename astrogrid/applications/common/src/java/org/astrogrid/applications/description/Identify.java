@@ -1,5 +1,5 @@
 /*
- * $Id: Identify.java,v 1.2 2008/09/03 14:18:43 pah Exp $
+ * $Id: Identify.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
  * Created on 13 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -26,6 +26,9 @@ public interface Identify {
 
 /*
  * $Log: Identify.java,v $
+ * Revision 1.1  2008/10/06 12:12:36  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.2  2008/09/03 14:18:43  pah
  * result of merge of pah_cea_1611 branch
  *

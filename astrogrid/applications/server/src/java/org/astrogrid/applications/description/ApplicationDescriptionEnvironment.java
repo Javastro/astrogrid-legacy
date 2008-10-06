@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.14 2008/09/13 09:51:04 pah Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.1 2008/10/06 12:16:15 pah Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.description.base;
+package org.astrogrid.applications.description;
 
 import org.astrogrid.applications.component.InternalCeaComponentFactory;
 import org.astrogrid.applications.manager.AppAuthorityIDResolver;
@@ -98,6 +98,9 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
+Revision 1.1  2008/10/06 12:16:15  pah
+factor out classes common to server and client
+
 Revision 1.14  2008/09/13 09:51:04  pah
 code cleanup
 

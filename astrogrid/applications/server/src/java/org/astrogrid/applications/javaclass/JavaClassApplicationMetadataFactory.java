@@ -1,5 +1,5 @@
 /*
- * $Id: JavaClassApplicationMetadataFactory.java,v 1.4 2008/09/24 13:40:49 pah Exp $
+ * $Id: JavaClassApplicationMetadataFactory.java,v 1.5 2008/10/06 12:16:16 pah Exp $
  * 
  * Created on 18 Mar 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -19,10 +19,10 @@ import org.astrogrid.applications.description.ServiceDescriptionException;
 import org.astrogrid.applications.description.base.ApplicationKind;
 import org.astrogrid.applications.description.base.BaseParameterDefinition;
 import org.astrogrid.applications.description.base.InterfaceDefinition;
-import org.astrogrid.applications.description.base.InternallyConfiguredApplicationDescription;
 import org.astrogrid.applications.description.base.ParameterTypes;
 import org.astrogrid.applications.description.cea.CeaApplication;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.intnl.InternallyConfiguredApplicationDescription;
 import org.joda.time.DateTime;
 
 
@@ -123,6 +123,9 @@ public class JavaClassApplicationMetadataFactory {
 
 /*
  * $Log: JavaClassApplicationMetadataFactory.java,v $
+ * Revision 1.5  2008/10/06 12:16:16  pah
+ * factor out classes common to server and client
+ *
  * Revision 1.4  2008/09/24 13:40:49  pah
  * package naming changes
  *

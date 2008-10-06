@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterNotInInterfaceException.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: InterfaceDescriptionNotFoundException.java,v 1.1 2008/10/06 12:12:36 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,19 +16,30 @@ package org.astrogrid.applications.description.exception;
 import org.astrogrid.applications.CeaException;
 
 /**
+ * Cannot find the iterface description for an application.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class ParameterNotInInterfaceException extends CeaException {
-   
+public class InterfaceDescriptionNotFoundException extends CeaException {
 
-
+ 
    /**
     * @param message
     */
-   public ParameterNotInInterfaceException(String message) {
+   public InterfaceDescriptionNotFoundException(String message) {
       super(message);
-     }
+      // TODO Auto-generated constructor stub
+   }
+
+   /**
+    * @param message
+    * @param cause
+    */
+   public InterfaceDescriptionNotFoundException(
+      String message,
+      Throwable cause) {
+      super(message, cause);
+   }
 
 }

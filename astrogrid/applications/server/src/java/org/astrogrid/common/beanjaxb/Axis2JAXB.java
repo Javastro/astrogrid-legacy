@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2JAXB.java,v 1.3 2008/09/13 09:51:05 pah Exp $
+ * $Id: Axis2JAXB.java,v 1.4 2008/10/06 12:16:16 pah Exp $
  *
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,7 +15,7 @@ package org.astrogrid.common.beanjaxb;
 
 import net.ivoa.uws.ExecutionPhase;
 
-import org.astrogrid.applications.description.base.BinaryEncodings;
+import org.astrogrid.applications.description.execution.BinaryEncodings;
 import org.astrogrid.applications.description.execution.ExecutionSummaryType;
 import org.astrogrid.applications.description.execution.InputListType;
 import org.astrogrid.applications.description.execution.ParameterValue;

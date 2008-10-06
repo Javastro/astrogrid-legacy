@@ -220,6 +220,9 @@ public static class ApplicationTask extends FutureTask<String> {
 
 protected final ApplicationEnvironment applicationEnvironment;
 
+
+private MessageType errorMessage = null;
+
   /**
    * Reveals the time in milliseconds for which the application has been
    * executing. This is zero if the application has been accepted by the server
@@ -483,6 +486,9 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    public final ApplicationInterface getApplicationInterface()  {
        return applicationInterface;
    }
+    public MessageType getErrorMessage() {
+    return errorMessage;
+    }
     public final String getId() {
         return applicationEnvironment.getExecutionId();
     }
@@ -570,6 +576,7 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
         pw.close();
         mt.setContent(sw.toString());
         mt.setLevel(LogLevel.ERROR);
+        this.errorMessage = mt;
         setChanged();
         notifyObservers(mt);
         setStatus(Status.ERROR);

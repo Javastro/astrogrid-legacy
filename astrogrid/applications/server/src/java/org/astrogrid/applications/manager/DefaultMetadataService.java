@@ -34,6 +34,7 @@ import org.astrogrid.applications.description.MetadataException;
 import org.astrogrid.applications.description.ServiceDefinitionFactory;
 import org.astrogrid.applications.description.cea.CeaCapability;
 import org.astrogrid.applications.description.cea.ManagedApplications;
+import org.astrogrid.applications.description.cea.UWSPA;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.contracts.Namespaces;
@@ -137,9 +138,16 @@ public class DefaultMetadataService extends AbstractMetadataService implements M
 	Interface intf = new WebService();
 	intf.setVersion("1.0");
 	AccessURL accessURL = new AccessURL();
-	accessURL.setValue(this.configuration.getServiceEndpoint().toString());
+	accessURL.setValue(this.configuration.getServiceEndpoint().toString()+"/services/CommonExecutionConnectorService");
 	intf.getAccessURL().add(accessURL);
 	ceaCap.getInterface().add(intf);
+	Interface uws = new UWSPA();
+	uws.setVersion("0.9");
+	AccessURL uwsURL = new AccessURL();
+	uwsURL.setValue(this.configuration.getServiceEndpoint().toString());
+	uws.getAccessURL().add(uwsURL);
+	ceaCap.getInterface().add(uws);
+	
 	// add the service description
 	service.getCapability().add(ceaCap);
 	return service;

@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.21 2008/09/13 09:51:02 pah Exp $
+ * $Id: InitServlet.java,v 1.22 2008/10/06 12:16:16 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -55,6 +55,8 @@ import org.w3c.dom.Document;
  * @author Paul Harrison (pah@jb.man.ac.uk) 14-Apr-2004
  * @version $Name:  $
  * @since iteration5
+ * 
+ * @deprecated the functionality of this servlet is duplicated elsewhere, but on different end points
  */
 public class InitServlet extends HttpServlet {
 
