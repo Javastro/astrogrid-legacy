@@ -967,7 +967,7 @@ struct  </xsl:text>
       </class>
       <!-- might be a better way of deciding what the bean properties are... -->
       <xsl:for-each
-         select="$t/methods/method[@visibility='public' and substring(@name,1,3)='get']" 
+         select="$t/methods/method[@visibility='public' and substring(@name,1,3)='get' and not(comment/attribute/@name='@deprecated')]" 
       >
          <xsl:element name="member">
             <xsl:attribute name="name">
