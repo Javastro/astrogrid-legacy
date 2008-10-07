@@ -35,7 +35,8 @@ public class Handler implements InvocationHandler, Serializable {
 					m.get("getId").equals(((Resource)args[0]).getId())
 					);
 		} else if (name.equals("hashCode")) {
-			return new Integer(m.get("getId").hashCode());
+			//return new Integer(m.get("getId").hashCode());		   
+		    return Integer.valueOf(m.get("getId").hashCode());
 		} else {
 			return m.get(name);
 		}
