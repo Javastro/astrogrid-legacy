@@ -1,0 +1,207 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix : <http://eurovotech.org/access-control.owl#> .
+
+<http://eurovotech.org/access-control.owl>
+    a owl:Ontology .
+
+:AfricanLocation
+    a owl:Class ;
+    rdfs:subClassOf :GeographicalLocation ;
+    owl:disjointWith :EuropeanLocation, :NorthAmericanLocation .
+
+:GeographicalLocation
+    a owl:Class ;
+    owl:disjointWith :GroupOfPeople, :Person .
+
+:NorthAmericanLocation
+    a owl:Class ;
+    rdfs:subClassOf :GeographicalLocation ;
+    owl:disjointWith :AfricanLocation, :EuropeanLocation .
+
+:EuropeanLocation
+    a owl:Class ;
+    rdfs:subClassOf :GeographicalLocation ;
+    owl:disjointWith :AfricanLocation, :NorthAmericanLocation .
+
+:LocatedPerson
+    a owl:Class ;
+    rdfs:subClassOf :Person .
+
+:Person
+    a owl:Class ;
+    owl:disjointWith :GeographicalLocation .
+
+:UnitedStatesOfAmerica
+    a owl:Class ;
+    rdfs:subClassOf :NorthAmericanLocation .
+
+:France
+    a owl:Class ;
+    rdfs:subClassOf :EuropeanLocation ;
+    owl:disjointWith :Germany, :UnitedKingdom .
+
+:UnitedKingdom
+    a owl:Class ;
+    rdfs:subClassOf :EuropeanLocation ;
+    owl:disjointWith :France, :Germany .
+
+:Germany
+    a owl:Class ;
+    rdfs:subClassOf :EuropeanLocation ;
+    owl:disjointWith :France, :UnitedKingdom .
+
+:GroupOfPeople
+    a owl:Class ;
+    owl:disjointWith :GeographicalLocation .
+
+:CentreDeDonnéesDeStrasbourgPerson
+    a owl:Class ;
+    rdfs:subClassOf :InstitutionalGroup, [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :France
+    ] ;
+    owl:disjointWith :CambridgeUniversityPerson, :EuropeanSouthernObservatoryPerson, :HarvardUniversityPerson, :UniversityOfCairoPerson, :UniversityOfCapeTownPerson, :UniversityOfLeicesterPerson .
+
+:EuropeanSouthernObservatoryPerson
+    a owl:Class ;
+    rdfs:subClassOf :InstitutionalGroup, [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :Germany
+    ] ;
+    owl:disjointWith :CambridgeUniversityPerson, :CentreDeDonnéesDeStrasbourgPerson, :HarvardUniversityPerson, :UniversityOfCairoPerson, :UniversityOfCapeTownPerson, :UniversityOfLeicesterPerson .
+
+:InstitutionalGroup
+    a owl:Class ;
+    rdfs:subClassOf :GroupOfPeople .
+
+:locatedIn
+    a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :GeographicalLocation .
+
+:HarvardUniversityPerson
+    a owl:Class ;
+    rdfs:subClassOf :InstitutionalGroup, [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :UnitedStatesOfAmerica
+    ] ;
+    owl:disjointWith :CambridgeUniversityPerson, :CentreDeDonnéesDeStrasbourgPerson, :EuropeanSouthernObservatoryPerson, :UniversityOfCairoPerson, :UniversityOfCapeTownPerson, :UniversityOfLeicesterPerson .
+
+:UniversityOfCairoPerson
+    a owl:Class ;
+    rdfs:subClassOf :InstitutionalGroup, [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :Egypt
+    ] ;
+    owl:disjointWith :CambridgeUniversityPerson, :CentreDeDonnéesDeStrasbourgPerson, :EuropeanSouthernObservatoryPerson, :HarvardUniversityPerson, :UniversityOfCapeTownPerson, :UniversityOfLeicesterPerson .
+
+:CambridgeUniversityPerson
+    a owl:Class ;
+    rdfs:subClassOf :InstitutionalGroup, [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :UnitedKingdom
+    ] ;
+    owl:disjointWith :CentreDeDonnéesDeStrasbourgPerson, :EuropeanSouthernObservatoryPerson, :HarvardUniversityPerson, :UniversityOfCairoPerson, :UniversityOfCapeTownPerson, :UniversityOfLeicesterPerson .
+
+:UniversityOfCapeTownPerson
+    a owl:Class ;
+    rdfs:comment "UniversityOfCapeTownPerson"^^xsd:string ;
+    rdfs:subClassOf :InstitutionalGroup, [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :RepublicOfSouthAfrica
+    ] ;
+    owl:disjointWith :CambridgeUniversityPerson, :CentreDeDonnéesDeStrasbourgPerson, :EuropeanSouthernObservatoryPerson, :HarvardUniversityPerson, :UniversityOfCairoPerson, :UniversityOfLeicesterPerson .
+
+:UniversityOfLeicesterPerson
+    a owl:Class ;
+    rdfs:subClassOf :InstitutionalGroup, [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :UnitedKingdom
+    ] ;
+    owl:disjointWith :CambridgeUniversityPerson, :CentreDeDonnéesDeStrasbourgPerson, :EuropeanSouthernObservatoryPerson, :HarvardUniversityPerson, :UniversityOfCairoPerson, :UniversityOfCapeTownPerson .
+
+:Egypt
+    a owl:Class ;
+    rdfs:subClassOf :AfricanLocation ;
+    owl:disjointWith :RepublicOfSouthAfrica .
+
+:RepublicOfSouthAfrica
+    a owl:Class ;
+    rdfs:subClassOf :AfricanLocation ;
+    owl:disjointWith :Egypt .
+
+:CanSeeFlaggedData
+    a owl:Class ;
+    rdfs:subClassOf :PersonWithAccessRights ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf [
+            rdf:first :PersonAtAfricanInstitution ;
+            rdf:rest [
+                rdf:first :CanSeeAllData ;
+                rdf:rest rdf:nil
+            ]
+        ]
+    ] .
+
+:PersonAtAfricanInstitution
+    a owl:Class ;
+    rdfs:subClassOf :LocatedPerson ;
+    owl:disjointWith :PersonAtUKInstitution ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :AfricanLocation
+    ] .
+
+:CanSeeAllData
+    a owl:Class ;
+    rdfs:subClassOf :PersonWithAccessRights ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf [
+            rdf:first :PersonAtUKInstitution ;
+            rdf:rest [
+                rdf:first :CollaborationXMember ;
+                rdf:rest rdf:nil
+            ]
+        ]
+    ] .
+
+:PersonWithAccessRights
+    a owl:Class ;
+    rdfs:subClassOf :Person .
+
+:Collaboration
+    a owl:Class ;
+    rdfs:subClassOf :GroupOfPeople .
+
+:PersonAtUKInstitution
+    a owl:Class ;
+    rdfs:subClassOf :LocatedPerson ;
+    owl:disjointWith :PersonAtAfricanInstitution ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty :locatedIn ;
+        owl:someValuesFrom :UnitedKingdom
+    ] .
+
+:CollaborationXMember
+    a owl:Class ;
+    rdfs:subClassOf :Collaboration .
+
+:memberOfGroup
+    a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :GroupOfPeople .
+

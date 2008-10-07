@@ -41,14 +41,14 @@ is controlled by the <code>Accept</code> header, which if present must
 contain one of the following MIME types (see <a href='mime.html'
 >note</a>):</p>
 <ul>
-  <li><code>text/rdf+n3</code> : Notation3 (default)</li>
   <li><code>text/turtle</code> :
-    <a href='http://www.w3.org/TeamSubmission/turtle/'>Turtle (very like Notation3)</a></li>
-  <li><code>application/rdf+xml</code> : RDF/XML serialisation</li>
+    <a href='http://www.w3.org/TeamSubmission/turtle/'>Turtle</a></li>
+  <li><code>text/rdf+n3</code> : Notation3 (like Turtle, but less standardised)</li>
+  <li><code>application/rdf+xml</code> : RDF/XML serialisation (default)</li>
   <li><code>text/plain</code> : N-triples format</li>
   <li><code>text/csv</code> : comma-separated values</li>
   <li><code>text/tab-separated-values</code></li>
-  <li><code>*/*</code> to accept any format (the default is Notation3)</li>
+  <li><code>*/*</code> to accept any format (the default is RDF/XML)</li>
 </ul>
 
 <p>You can add an optional query <code>?model</code> or
@@ -101,7 +101,9 @@ the following MIME types (see <a href='mime.html' >note</a>):</p>
   <li><code>application/rdf+xml</code> : RDF/XML</li>
   <li><code>text/plain</code> : N-Triples</li>
 </ul>
-<!-- defaults -->
+<p>If there is no <code>Content-Type</code> header present, the
+content is parsed as <code>application/rdf+xml</code>.</p>
+
 <p>The request may have a <em>query</em> appended, which may be
 <code>?abox</code>, <code>?instances</code> (which is equivalent to
 <code>?abox</code>) or <code>?tbox</code>.  This indicates the type of
@@ -224,7 +226,7 @@ discussed <a href='#delegation'>above</a>.</dd>
 <p>The available reasoners are as follows:</p>
 <dl>
 <dt>none</dt>
-<dd>Do not use a reasoner</dd>
+<dd>Do not use a reasoner (the default)</dd>
 
 <dt>simpleRDFS, defaultRDFS, or fullRDFS</dt>
 <dd>Three Jena reasoners supporting RDFS reasoning (able, for example,

@@ -1,0 +1,17 @@
+Release 0.5.1, 2008 October 7
+-----------------------------
+
+* Changed various defaults, so that now RDF/XML is much more
+  consistently the default RDF language for upload and download, and
+  Turtle is more consistently referred to instead of Notation3.
+  Corresponding changes to documentation.
+
+* Substantially reworked the access-control demo, bringing it up to
+  date with Quaestor 0.5, and changed defaults.
+
+
+Release 0.5, 2008 September 28
+------------------------------
+
+The first release to get fairly broad distribution.
+

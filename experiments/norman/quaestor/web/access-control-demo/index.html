@@ -10,6 +10,22 @@
 
 <h1>Quaestor demo</h1>
 
+<p>This is a demo of the reasoning capabilities described
+<a href="http://nxg.me.uk/note/2006/access-control/">elsewhere</a>.  To
+work through the demo, you need to have a Quaestor service running
+inside a Tomcat server: I'll take that to be running at
+<code>http://localhost:8080/quaestor</code>.
+You need at least Quaestor v0.5.</p>
+
+<p>The Quaestor interface is documented on the front page of the
+Quaestor server.  It uses the HTTP protocol commands to manipulate
+then query the server, so you need <code>curl</code> or some other
+tool which can generate HTTP <code>GET</code>, <code>PUT</code> and
+<code>POST</code> commands (the <code>wget</code> program can do
+<code>POST</code>, but not <code>PUT</code>).
+Or write a Java client.
+Or you can just talk HTTP yourself, using telnet to port 8080.</p>
+
 <div id="toc">
 <ul>
 <li><a href="#id54666">The HTTP demo</a></li>
@@ -18,21 +34,6 @@
 </ul>
 </div>
 
-<p>This is a demo of the reasoning capabilities described
-<a href="http://nxg.me.uk/note/2006/access-control/">elsewhere</a>.  To
-work through the demo, you need to have a Quaestor service running
-inside a Tomcat server: I'll take that to be running at
-<code>http://localhost:8080/quaestor</code>.
-You need at least Quaestor v0.3.</p>
-
-<p>The Quaestor interface is documented on the front page of the
-Quaestor server.  It uses the HTTP protocol commands to manipulate
-then query the server, so you need <code>curl</code> or some other
-tool which can generate HTTP <code>GET</code>, <code>PUT</code> and
-<code>POST</code> commands (the <code>wget</code> program can do
-<code>POST</code>, but not <code>PUT</code>).  Or you can just talk
-HTTP yourself, using telnet.</p>
-
 <h2><a name="id54666" id="id54666">The HTTP demo</a></h2>
 
 
@@ -40,17 +41,21 @@ HTTP yourself, using telnet.</p>
 command.  Call the knowledgebase `testing', and read a simple metadata
 string from stdin:</p>
 <pre>
-% curl --upload-file - \
-    --header content-type:text/plain \
+% curl --upload-file kb-metadata.ttl \
+    --header content-type:text/turtle \
     http://localhost:8080/quaestor/kb/testing
-My test knowledgebase
-^D
 %
 </pre>
-<p>Note that we have to tell Quaestor that the input is plain text.
-As an alternative, you can describe the new knowledgebase using RDF.
-The backslashes in this command, by the way, let us break the command
-onto multiple lines – omit them if you put the command on a single line.</p>
+<p>Note that we have to tell Quaestor that the input is Turtle, and
+not the default RDF/XML.  It is also possible to POST a plain text
+description at this point (it's equivalent to adding metadata with
+only a <code>dc:description</code> property), but that won't do here,
+as the work we want to do below requires us to use a reasoner within
+the knowledgebase, and so we must tell Quaestor to configure this, within the
+<code>kb-metadata.ttl</code> file.</p>
+
+<p>The backslashes in this command, by the way, let us break the command
+onto multiple lines – omit them if you type the command on a single line.</p>
 
 <p>If you add the <code>--verbose</code> flag to the <code>curl</code>
 command line, you will see (instructive?) protocol chatter, as well as
@@ -58,50 +63,50 @@ the 204 (no content) return code from the server.</p>
 
 <p>Retrieving the URL <code>http://localhost:8080/quaestor/kb</code>,
 either using <code>curl</code> or in a web browser, will show you that
-you have created this knowledgebase.  You can delete the knowledgebase
-with the HTTP <code>DELETE</code> operation, though you have to do
-this by hand, since <code>curl</code> doesn't support this:</p>
-<pre>
-% telnet localhost 8080
-<span style="color: #888">Trying ::1...
-Connected to localhost.
-Escape character is '^]'.</span>
-DELETE /quaestor/kb/testing HTTP/1.0
-
-<span style="color: #888">HTTP/1.1 204 No Content
-Server: Apache-Coyote/1.1
-Date: Thu, 13 Apr 2006 10:02:53 GMT
-Connection: close
-
-Connection closed by foreign host.</span>
-%
-</pre>
+you have created this knowledgebase.</p>
 
 <p>Now you can add to the knowledgebase the three sets of assertions
 contained in files <code>access-control.owl</code>,
-<code>instances.n3</code> and <code>identity.n3</code>.  Add these to
+<code>instances.ttl</code> and <code>identity.ttl</code>.  Add these to
 the knowledgebase <em>submodels</em> <code>ontology</code>,
 <code>people</code> and <code>identities</code> respectively (the
 names are arbitrary, and you can use alternatives if you wish).</p>
 <pre>
 % curl --upload-file access-control.owl \
-    http://localhost:8080/quaestor/kb/testing/ontology \
-    --header content-type:application/rdf+xml
-% curl --upload-file instances.n3 \
-    'http://localhost:8080/quaestor/kb/testing/people?instances'
-% curl --upload-file identity.n3 \
-    http://localhost:8080/quaestor/kb/testing/identities
+    http://localhost:8080/quaestor/kb/testing/ontology
+% curl --upload-file instances.ttl \
+    'http://localhost:8080/quaestor/kb/testing/people?instances' \
+    --header content-type:text/turtle
+% curl --upload-file identity.ttl \
+    http://localhost:8080/quaestor/kb/testing/identities \
+    --header content-type:text/turtle
 %
 </pre>
-<p>The two <code>.n3</code> files are written in <a href="http://www.w3.org/DesignIssues/Notation3">Notation 3</a>; this
-is the default MIME type which Quaestor expects.  The
+<p>The two <code>.ttl</code> files are written in
+<a href='http://www.w3.org/TeamSubmission/turtle/' >Turtle</a>;
+this is equivalent (in this context) to 
+<a href="http://www.w3.org/DesignIssues/Notation3">Notation 3</a>,
+which you may otherwise have heard of.
+Since this is not the default MIME type which Quaestor expects, we
+must include a <code>Content-Type</code> header.  The
 <code>access-control.owl</code> file, however, is written in the
-RDF/XML serialisation, and so we must add an appropriate
-<code>Content-Type</code> header to the upload.
-The <code>instances.n3</code> file is uploaded with a
-<code>?instances</code> query attached -- this tells the reasoner that
+default RDF/XML serialisation, so we do not need to add a
+<code>Content-Type</code> header to the upload, though it is not
+wrong, and generally better, to include it anyway.
+The <code>instances.ttl</code> file is uploaded with a
+<code>?instances</code> query attached – this tells the reasoner that
 these are assertions about individuals rather than types; this
 distinction is currently important.</p>
+
+<p>The <code>access-control.owl</code> file expresses an access policy
+(you can read it more legibly in the file
+<code>access-control.ttl</code>, and see the class hierarchy, but not
+the relevant class definitions, in the image
+<code>access-control.png</code>, obtained from
+<a href='http://protege.stanford.edu' >Protégé</a>).  The intent is
+that both members of UK instititions and members of the X
+Collaboration can see all of the data, and that members of African
+countries can see a flagged subset of the data.</p>
 
 <p>If you now look again at <a href="http://localhost:8080/quaestor/kb"><code>http://localhost:8080/quaestor/kb</code></a> you will see the
 knowledgebase and its submodels listed.</p>
@@ -112,10 +117,10 @@ service:</p>
 % curl http://localhost:8080/quaestor/kb/testing/people
 </pre>
 <p>will respond with the contents of the <code>people</code> submodel
-in the default Notation3 format (MIME type <code>text/rdf+n3</code>),
-and if you add <code>--header accept:application/rdf+xml</code> to the
+in the default RDF/XML format (MIME type <code>application/rdf+xml</code>),
+and if you add <code>--header accept:text/turtle</code> to the
 <code>curl</code> command, you'll 
-get it in RDF/XML again.  If you retrieve
+get it in Turtle again.  If you retrieve
 <code>http://localhost:8080/quaestor/kb/testing</code> you'll get the
 union of the three submodels.</p>
 
@@ -134,23 +139,56 @@ where { ?person a :CanSeeAllData }
 [...]
 %
 </pre>
-<p>This should respond with an XML document which conforms to the <a href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL response
+<p>This should respond with an XML document which conforms to the
+<a href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL response
 scheme</a>.  If you add <code>--header accept:text/plain</code> or
 <code>--header accept:text/csv</code> to the
 command, the reasoner will produce a response in the corresponding
-format.  There are several other queries you can try:</p>
+format.  For example:</p>
+<pre>
+curl --header content-type:application/sparql-query \
+     --data-binary @access-all.rq \
+     http://localhost:8080/quaestor/kb/testing \
+    --header accept:text/csv
+person
+mailto:norman@astro.gla.ac.uk
+urn:example#Norman
+urn:example#Guy
+urn:example#Nelson
+urn:example#Jonathan
+%
+</pre>
+<p>Compare this with the contents of the <code>instances.ttl</code>
+file.  Individuals <code>urn:example#Norman</code> and
+<code>urn:example#Guy</code> can see all the data because they are
+members of UK institutions; <code>mailto:norman@astro.gla.ac.uk</code>
+can see all the data because he is asserted to be identical with
+<code>urn:example#Norman</code>; Nelson and Jonathan can see all of
+the data because they are members of the collaboration; Markus,
+Sébastien and Tutankhamun are locked out (sorry!).</p>
+
+<p>There are several other queries you can try:</p>
 <dl>
 
 <dt><a href="access-flagged.rq">access-flagged.rq</a></dt>
-<dd>This query asks which individuals are in the flagged-data group</dd>
+<dd>This query asks which individuals are in the flagged-data group.
+If you run this query, you see that everyone who can see all of the
+data can also see the flagged subset (which makes sense), but that
+<code>urn:example#Tutankhamun</code> can also see the subset, because
+he’s at an African institution.</dd>
 
 <dt><a href="ask-norman.rq">ask-norman.rq</a></dt>
 <dd>This query asks the yes/no question of whether
-<code>norman@astro.gla.ac.uk</code> is allowed to see all the data.</dd>
+<code>norman@astro.gla.ac.uk</code> is allowed to see all the data
+(the answer is ‘yes’).
+Note that <code>text/csv</code> isn't an acceptable response format
+for an ASK query, so you'll have to use either
+<code>application/sparql-results+xml</code>, which is the default, or <code>text/plain</code>.</dd>
 
 <dt><a href="construct-accessers.rq">construct-accessers.rq</a></dt>
 <dd>This uses a SPARQL <code>construct</code> query to obtain a query
-result in RDF.</dd>
+result in RDF.  Only one or other of the RDF types is acceptable as a
+response format (the default is, as usual, RDF/XML).</dd>
 
 <dt><a href="ask-badly.rq">ask-badly.rq</a></dt>
 <dd>This query is malformed (there's a missing angle bracket).  The
@@ -158,8 +196,11 @@ reasoner responds with an HTTP 400 status.</dd>
 </dl>
 
 <p>Finally, you can delete the knowledgebase with the HTTP
-<code>DELETE</code> command, as illustrated above.</p>
-
+<code>DELETE</code> command, which you can produce using <code>curl</code>
+as follows:</p>
+<pre>
+% curl -X DELETE http://localhost:8080/quaestor/kb/testing
+</pre>
 
 <h2><a name="id54989" id="id54989">The XML-RPC demo</a></h2>
 
@@ -190,7 +231,7 @@ dereference another URL.</p>
 
 <p>Slightly more useful is the <code>query-model</code> method,
 illustrated in <code><a href="xmlrpc-query-model.xml">xmlrpc-query-model.xml</a></code>.  This makes a 
-SPARQL query against the model, and returns a URL which can be
+SPARQL query against the model, and returns a temporary URL which can be
 dereferenced to pick up the query results.</p>
 
 
@@ -205,10 +246,12 @@ and
 <p>The (rather informal) XML-RPC spec is at
 <a href="http://www.xmlrpc.com/spec"><code>http://www.xmlrpc.com/spec</code></a>.</p>
 
+<p>Thanks to Tom Doherty for his painstaking debugging of this
+walkthrough; his pain is your gain!</p>
 
 <div class="trailer">
 <a href="http://nxg.me.uk">Norman Gray</a><br />
-2006 August 24
+2008 October
 </div>
 
 </body>

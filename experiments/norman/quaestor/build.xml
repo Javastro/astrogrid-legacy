@@ -76,8 +76,8 @@
 
   <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="app.version"   value="0.5"/>
-  <property name='release.date'  value='2008 September 28'/>
+  <property name="app.version"   value="0.5.1"/>
+  <property name='release.date'  value='2008 October 7'/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.client"  value="${build.home}/client"/>
@@ -263,7 +263,7 @@
                classname="junit.framework.TestCase"/>
 
     <available property='quaestorlib.built'
-               filepath='${build.home}'
+               filepath='${dist.home}'
                file='${quaestor.lib.jar}'/>
 
   </target>
@@ -642,7 +642,10 @@
       </filterset>
     </copy>
 
-    <copy file='${docs.home}/install.html'
+    <copy file='${web.home}/install.html'
+          todir='${dist.home}/webpage-tarball'/>
+
+    <copy file='${basedir}/RELEASE-NOTES.txt'
           todir='${dist.home}/webpage-tarball'/>
 
     <copy file='${docs.home}/distrib.html'
@@ -765,7 +768,7 @@
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
-    <zip destfile='${build.war}/demo.zip'
+    <zip destfile='${build.war}/access-control-demo.zip'
          basedir='${build.war}/access-control-demo'/>
 
   </target>

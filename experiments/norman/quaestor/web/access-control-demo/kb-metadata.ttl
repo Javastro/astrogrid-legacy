@@ -1,0 +1,8 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
+
+<> dc:description "Test knowledgebase";
+    dc:creator "Norman";
+    quaestor:requiredReasoner [
+        quaestor:level "defaultOWL"
+    ].
