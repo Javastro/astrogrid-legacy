@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.7 2008/09/25 16:02:04 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.8 2008/10/07 10:00:53 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,7 +102,12 @@ public class AvailabilityBean implements Serializable {
      * @param upTime
      * @param timeOnServer
      */
-    public AvailabilityBean(final String serverName, final String location, final String message, final String validTo, final String upTime, final String timeOnServer) {
+    public AvailabilityBean(final String serverName, 
+            final String location, 
+            final String message, 
+            final String validTo, 
+            final String upTime, 
+            final String timeOnServer) {
         super();
         this.location = location;
         this.message = message;
@@ -159,6 +164,9 @@ public class AvailabilityBean implements Serializable {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.8  2008/10/07 10:00:53  nw
+reformatting
+
 Revision 1.7  2008/09/25 16:02:04  nw
 documentation overhaul
 
