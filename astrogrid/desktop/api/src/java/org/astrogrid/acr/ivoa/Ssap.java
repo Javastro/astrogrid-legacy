@@ -1,4 +1,4 @@
-/*$Id: Ssap.java,v 1.8 2008/09/25 16:02:03 nw Exp $
+/*$Id: Ssap.java,v 1.9 2008/10/07 10:01:35 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,10 +83,11 @@ public interface Ssap extends Dal {
     /** 
      * Construct a SSAP Query on Right Ascension, Declination and Search radius (decimal degrees).
      *  
-     * @param service Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against changes in service endpoint</i>.
+     * @param service Resource Identifier <i>or</i> URL of the Service to query.  <i>Prefer providing a Resource Identifier, as this insulates against 
+     * changes in service endpoint</i>.
      *  <blockquote><dl>
      *  <dt>Resource Identifier</dt><dd>
-     *  The resource ID of the SSAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://archive.eso.org/ESO-SAF-SSAP]
+     *  The resource ID of the SSAP service to query, as returned by {@link Resource#getId()}. Example: {@code ivo://archive.eso.org/ESO-SAF-SSAP}
      *  <br/>The {@link Registry} will be queried to 
      *  resolve the resource ID into a {@link Resource} object, from which the {@link SsapCapability} will be found, from which in turn the first
      *  {@link AccessURL} will be used.
@@ -153,6 +154,9 @@ public interface Ssap extends Dal {
 
 /* 
 $Log: Ssap.java,v $
+Revision 1.9  2008/10/07 10:01:35  nw
+documentation fixes
+
 Revision 1.8  2008/09/25 16:02:03  nw
 documentation overhaul
 

@@ -97,7 +97,7 @@ Row 1:
 }
 
 <h3>Produce a VOTable</h3>
-The query URL can also be executed using (@link #executeVotable(URL)} to return the raw 
+The query URL can also be executed using {@link #executeVotable(URL)} to return the raw 
 XML VOTable data, which could be useful if it 
 was to be passed to an external votable parser.
 
