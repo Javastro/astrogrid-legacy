@@ -150,6 +150,12 @@
     	<package></package> <!-- have to override that in maven-base to include org.votech-->
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
+                <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+                <unitTest>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </unitTest>
                 <resources>
                         <resource>
                                 <directory>${basedir}/src/java</directory>
@@ -262,18 +268,7 @@
 			<comment>only used within build</comment>
 		</properties>
 	</dependency>
-    <!-- 
-    <dependency>
-        <groupId>ktsdoclet</groupId>
-        <artifactId>ktsdoclet</artifactId>
-        <url>http://www.kpht.com/doclet.html</url>
-        <version>1.0</version>
-        <type>jar</type>
-        <properties>
-            <comment>only used within build</comment>
-        </properties>
-    </dependency>
-     -->
+
      <!-- Latest version of the javadoc plugin. -->
     <dependency>
         <groupId>maven</groupId>
@@ -313,7 +308,7 @@
             <comment>only used within build</comment>
         </properties>
 </dependency>   
-
+  
     <!-- Only used within build?
      !   Seems to be required for com.sun.* doclet classes. -->
     <dependency>
