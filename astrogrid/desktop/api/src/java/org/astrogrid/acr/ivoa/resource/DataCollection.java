@@ -22,9 +22,9 @@ public interface DataCollection extends Resource, HasCoverage {//should this ext
 	
 	/** list of the formats this data is available in */
 	public Format[] getFormats();
-	/** Extent of the content of the resource over space, time, 
-                     and frequency. */
-	public Coverage getCoverage();
+//	/** Extent of the content of the resource over space, time, 
+//                     and frequency. */
+//	public Coverage getCoverage();
 	/** The catalogues held in this collection */
 	public Catalog[] getCatalogues();
 	

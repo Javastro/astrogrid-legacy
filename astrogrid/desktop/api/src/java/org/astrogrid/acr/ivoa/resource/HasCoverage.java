@@ -8,7 +8,8 @@ package org.astrogrid.acr.ivoa.resource;
  * @author Noel.Winstanley@manchester.ac.uk
  */
 public interface HasCoverage {
-	
+    /** Extent of the content of the resource over space, time, 
+    and frequency. */
 	Coverage getCoverage();
 
 }
