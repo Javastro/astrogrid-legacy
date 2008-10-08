@@ -42,7 +42,7 @@
   </c:choose>
   <c:if test='${theJob.phase eq "ERROR"}'>
   <uws:errorSummary>
-    <uws:message>${theJob.errormessage}</uws:message>
+    <uws:message>${theJob.errorSummary.message}</uws:message>
     <uws:detail href="${base}/error"/>
   </uws:errorSummary>
   </c:if>

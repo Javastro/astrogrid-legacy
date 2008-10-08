@@ -70,7 +70,8 @@
 </table>
 
 <c:if test='${theJob.phase eq "ERROR"}'>
-<p><a href="${base}/error">Error message</a></p>
+<p>${theJob.errorSummary.message}</p>
+<p><a href="${base}/error">Detailed error message</a></p>
 </c:if>
 <p><a href="${base}/results">Results</a>
 
