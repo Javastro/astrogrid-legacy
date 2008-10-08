@@ -11,7 +11,9 @@
                                  org.astrogrid.applications.description.*,
                                  org.astrogrid.community.User "
      %>
-<html>
+     
+
+<%@page import="org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;"%><html>
 <head>
 <title>Test Application</title>
 </head>

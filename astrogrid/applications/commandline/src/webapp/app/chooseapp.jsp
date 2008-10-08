@@ -13,7 +13,7 @@
      %>
 <%@page import="org.astrogrid.applications.component.CEAComponentContainer"%>
 <%@page import="org.astrogrid.applications.component.CEAComponents"%>
-<html>
+<%@page import="org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;"%><html>
 <head>
 <title>Test Run Application</title>
 <%@ include file="../inc/header.jsp" %>

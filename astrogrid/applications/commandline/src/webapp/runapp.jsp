@@ -10,6 +10,11 @@
      %>
 <%@page import="org.astrogrid.applications.description.execution.MessageType"%>
 <%@page import="net.ivoa.uws.ExecutionPhase"%>
+<%@page import="org.astrogrid.applications.description.execution.Tool"%>
+<%@page import="org.astrogrid.applications.description.execution.ListOfParameterValues"%>
+<%@page import="org.astrogrid.applications.description.execution.ParameterValue"%>
+<%@page import="org.astrogrid.applications.uws.UWSUtils"%>
+<%@page import="org.astrogrid.security.SecurityGuard"%><html>
 <%
     CEAComponents pcontainer = CEAComponentContainer.getInstance();
 //  ApplicationDescriptionLibrary library = (ApplicationDescriptionLibrary) pcontainer.getComponentInstanceOfType(ApplicationDescriptionLibrary.class);
@@ -62,11 +67,6 @@
 		//out.print((started ? "Started OK" : "Failed to start") + "<br/>");
 		}
 		%>
-<%@page import="org.astrogrid.applications.description.execution.Tool"%>
-<%@page import="org.astrogrid.applications.description.execution.ListOfParameterValues"%>
-<%@page import="org.astrogrid.applications.description.execution.ParameterValue"%>
-<%@page import="org.astrogrid.applications.uws.UWSUtils"%>
-<%@page import="org.astrogrid.security.SecurityGuard"%><html>
 <head>
 <title>Test Application</title>
 <script language="JavaScript">
