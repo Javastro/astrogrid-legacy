@@ -42,6 +42,27 @@ This script produces a query URL (shown below), which can the be passed to the m
 QueryURL http://irsa.ipac.caltech.edu/cgi-bin/Oasis/CatSearch/nph-catsearch?CAT=fp_psc&RA=283.7636667&DEC=-30.4785&SR=0.0010
 </tt></blockquote>
  
+ <h2>Adding the VERB parameter</h2>
+ The optional {@code VERB} parameter determines how many columns are to be returned by the service. From the Cone specification:
+ <blockquote><i>
+ The query MAY contain the optional parameter, VERB, whose value is an integer - either {@code 1}, {@code 2}, or {@code 3} -  which determines 
+ how many columns are to be returned in the resulting table. Support for this parameter by a Cone Search service implementation is optional. 
+ If the service supports the parameter, then when the value is {@code 1}, the response should include the bare minimum of columns that the provider 
+ considers useful in describing the returned objects. 
+ When the value is {@code 3}, the service should return all of the columns that are available for describing the objects. A value of {@code 2} is 
+ intended for requesting a medium number of columns between the minimum and maximum (inclusive) that are considered by the provider to 
+ most typically useful to the user. When the VERB parameter is not provided, the server should respond as if {@code VERB=2}. 
+ If the {@code VERB} parameter is not supported by the service, the service should ignore the parameter and should always return the same columns for every request.
+</i></blockquote>
+
+A query that includes the VERB parameter can be constructed as follows: 
+{@example "Constructing a Query with the VERB parameter (Python)"
+#build a query, as before.
+query = cone.constructQuery(service,pos['ra'],pos['dec'],0.001)
+#add a 'verb' parameter
+query = cone.addOption(query,"VERB",3)
+}
+ 
  * @author Noel Winstanley
  * @service ivoa.cone
  * @see <a href='http://www.ivoa.net/Documents/latest/ConeSearch.html'>IVOA Cone Search Standard Document</a>
