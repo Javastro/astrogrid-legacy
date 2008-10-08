@@ -39,14 +39,14 @@
         <xsl:choose>
             <!-- input bound to 'date' or 'dateTime' type -->
             <!--<xsl:when test="chiba:data[@chiba:type='date' or @chiba:type='dateTime']">-->
-            <xsl:when test="($type='date' or $type='dateTime' or $type='time') and $scripted='true'">
+            <xsl:when test="($type='xsd-date' or $type='xsd-dateTime' or $type='xsd-time') and $scripted='true'">
                <script type="text/javascript">
                     dojo.require("chiba.widget.DropdownDatePicker");
                 </script>
 				<xsl:variable name="controlType">
 
 					<xsl:choose>
-						<xsl:when test="$type='dateTime' and @appearance='chiba:time'">chiba:DropdownDatePicker</xsl:when>
+						<xsl:when test="$type='xsd-dateTime' and @appearance='chiba:time'">chiba:DropdownDatePicker</xsl:when>
 						<xsl:otherwise>chiba:DropdownDatePicker</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
@@ -76,13 +76,13 @@
                             <xsl:value-of select="$incremental"/>
                         </xsl:attribute>
                         <xsl:attribute name="value">
-                            <xsl:value-of select="chiba:data/text()"/>
+                            <xsl:value-of select="chiba:data/@chiba:schema-value"/>
                         </xsl:attribute>
                     </xsl:if>
                     <xsl:apply-templates select="xforms:hint"/>
                 </input>
             </xsl:when>
-            <xsl:when test="$type='boolean'">
+            <xsl:when test="$type='xsd-boolean'">
                 <xsl:choose>
                     <xsl:when test="$scripted='true'">
                         <script type="text/javascript">
@@ -186,13 +186,13 @@
     <xsl:template name="getType">
         <xsl:choose>
             <xsl:when test="contains(chiba:data/@chiba:type,':')">
-                <xsl:value-of select="substring-after(chiba:data/@chiba:type,':')"/>
+                <xsl:value-of select="concat('xsd-',substring-after(chiba:data/@chiba:type,':'))"/>
             </xsl:when>
             <xsl:when test="chiba:data/@chiba:type">
-                <xsl:value-of select="chiba:data/@chiba:type"/>
+                <xsl:value-of select="concat('xsd-',chiba:data/@chiba:type)"/>
             </xsl:when>
             <xsl:otherwise/>
-        </xsl:choose>
+        </xsl:choose>        
     </xsl:template>
 
     <!-- build output -->
@@ -1017,12 +1017,14 @@
         <xsl:param name="parent"/>
 
 		<!-- add an empty item, because otherwise deselection is not possible -->
-		<option value="">
-			<xsl:if test="string-length($parent/chiba:data/text()) = 0">
-				<xsl:attribute name="selected">selected</xsl:attribute>
-			</xsl:if>
-		</option>
-		<xsl:for-each select="$parent/xforms:itemset|$parent/xforms:item|$parent/xforms:choices">
+        <xsl:if test="$parent/chiba:data/@chiba:required='false'">
+            <option value="">
+                <xsl:if test="string-length($parent/chiba:data/text()) = 0">
+                    <xsl:attribute name="selected">selected</xsl:attribute>
+                </xsl:if>
+            </option>
+        </xsl:if>
+        <xsl:for-each select="$parent/xforms:itemset|$parent/xforms:item|$parent/xforms:choices">
 			<xsl:call-template name="build-items-list"/>
 		</xsl:for-each>
     </xsl:template>
@@ -1076,7 +1078,7 @@
 	              		<xsl:attribute name="title" select="xforms:copy/@id"/>
     	          	</xsl:when>
         	      	<xsl:otherwise>
-            	   		<xsl:attribute name="value" select="xforms:value"/>
+            	   		<xsl:attribute name="value" select="normalize-space(xforms:value)"/>
               			<xsl:attribute name="title" select="xforms:hint"/>
                 	</xsl:otherwise>
 				</xsl:choose>

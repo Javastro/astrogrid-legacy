@@ -23,7 +23,7 @@
 	
 	<td valign="top">
 <%!
-    static Log cat = LogFactory.getLog("org.chiba.web.jsp");
+    static Log cat = LogFactory.getLog("org.chiba.agent.web.jsp");
 
     String chibaRoot = null;
     String rootDir = null;

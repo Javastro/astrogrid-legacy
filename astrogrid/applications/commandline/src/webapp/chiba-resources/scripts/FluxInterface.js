@@ -30,6 +30,28 @@ window.onbeforeunload = function(e) {
     return unload(e);
 }
 
+function getXFormsDOM() {
+    Flux.getXFormsDOM(document.getElementById("chibaSessionKey").value,printXFormsDOM);
+
+}
+
+function setLocale(aLocale){
+    dojo.debug("setLocale to " + aLocale);
+    Flux.setLocale(aLocale,document.getElementById("chibaSessionKey").value,updateLocale);
+}
+
+function updateLocale(data) {
+    activate(dojo.byId("refresh-value"));
+//    alert("now do it") ;
+
+    
+
+}
+
+function printXFormsDOM(data) {
+    dojo.debug("XForms DOM:", data);
+    dojo.byId("debug-section").appendChild(data.documentElement);
+}
 function unload(e) {
     if (isDirty) {
         var msg = confirmMsg;
@@ -305,6 +327,20 @@ function updateUI(data) {
     dojo.debug("updateUI: " + data);
 
     var eventLog = data.documentElement.childNodes;
+    var selects = [];
+    var tmpNr = 0;    
+    for (var i = 0; i < eventLog.length; i++) {    
+        var type = eventLog[i].getAttribute("type");
+        var targetName = eventLog[i].getAttribute("targetName");
+        if((targetName == "select1" || targetName == "select") && type=="chiba-state-changed" ){
+            selects[tmpNr] = eventLog[i]; 
+            data.documentElement.removeChild(eventLog[i]);
+            tmpNr++;
+        }
+    }
+    for (var i =0; i <selects.length; i++) {
+            data.documentElement.appendChild(selects[i]); 
+    }
 
     for (var i = 0; i < eventLog.length; i++) {
         var type = eventLog[i].getAttribute("type");

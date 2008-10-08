@@ -6,7 +6,7 @@
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:chiba="http://chiba.sourceforge.net/xforms"
     exclude-result-prefixes="xhtml xforms chiba xlink">
-    <!-- Copyright 2001-2007 ChibaXForms GmbH, $Revision: 1.2 $ -->
+    <!-- Copyright 2001-2007 ChibaXForms GmbH, $Revision: 1.3 $ -->
     
     <!-- ####################################################################################################### -->
     <!-- This stylesheet handles the XForms UI constructs [XForms 1.0, Chapter 9]'group', 'repeat' and           -->
@@ -56,7 +56,7 @@
                             <xsl:value-of select="concat($group-id, '-label')"/>
                         </xsl:attribute>
                         <xsl:attribute name="class">
-                            <xsl:call-template name="assemble-label-classes"/>
+                            <xsl:call-template name="assemble-group-label-classes"/>
                         </xsl:attribute>
                         <xsl:apply-templates select="xforms:label"/>
                     </xsl:when>
@@ -90,15 +90,15 @@
         <xsl:param name="group-classes"/>
         <xsl:param name="group-label" select="true()"/>
 
-        <fieldset id="{$group-id}" class="{$group-classes}">
-            <legend>
+        <div id="{$group-id}" class="{$group-classes}">
+            <div class="legend">
                 <xsl:choose>
                     <xsl:when test="$group-label and xforms:label">
                         <xsl:attribute name="id">
                             <xsl:value-of select="concat($group-id, '-label')"/>
                         </xsl:attribute>
                         <xsl:attribute name="class">
-                            <xsl:call-template name="assemble-label-classes"/>
+                            <xsl:call-template name="assemble-group-label-classes"/>
                         </xsl:attribute>
                         <xsl:apply-templates select="xforms:label"/>
                     </xsl:when>
@@ -106,10 +106,10 @@
                         <xsl:attribute name="style">display:none;</xsl:attribute>
                     </xsl:otherwise>
                 </xsl:choose>
-            </legend>
+            </div>
 
             <xsl:apply-templates select="*[not(self::xforms:label)]"/>
-        </fieldset>
+        </div>
     </xsl:template>
 
 
@@ -179,7 +179,7 @@
     <xsl:template name="processMinimalPrototype">
         <xsl:param name="id"/>
 
-        <div id="{$id}-prototype" class="repeat-prototype enabled readwrite optional valid" style="display:none;">
+        <div id="{$id}-prototype" class="repeat-prototype disabled readwrite optional valid" style="display:none;">
             <xsl:apply-templates/>
         </div>
     </xsl:template>
@@ -286,7 +286,7 @@
         <xsl:param name="id"/>
 
         <table style="display:none;">
-            <tr id="{$id}-prototype" class="repeat-prototype enabled readwrite optional valid">
+            <tr id="{$id}-prototype" class="repeat-prototype disabled readwrite optional valid">
                 <xsl:call-template name="processCompactChildren"/>
             </tr>
         </table>
@@ -380,8 +380,8 @@
                 <xsl:choose>
                     <xsl:when test="not($scripted='true')">
                         <xsl:variable name="outermost-id" select="ancestor-or-self::xforms:repeat/@id"/>
-                        <fieldset id="{$repeat-item-id}" class="{$repeat-item-classes}">
-                            <legend id="{$repeat-item-id}-label" style="display:none;"/>
+                        <div id="{$repeat-item-id}" class="{$repeat-item-classes}">
+                            <div id="{$repeat-item-id}-label" style="display:none;" class="legend"/>
                             <div class="repeat-selector">
                                 <input type="radio" name="{$selector-prefix}{$outermost-id}" value="{$repeat-id}:{position()}">
                                     <xsl:if test="string($outermost-id)=string($repeat-id) and string($repeat-index)=string(position())">
@@ -390,7 +390,7 @@
                                 </input>
                             </div>
                             <xsl:apply-templates/>
-                        </fieldset>
+                        </div>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:call-template name="group-body">
@@ -416,7 +416,7 @@
 
         <xsl:call-template name="group-body">
             <xsl:with-param name="group-id" select="concat($id, '-prototype')"/>
-            <xsl:with-param name="group-classes" select="'repeat-prototype enabled readwrite optional valid'"/>
+            <xsl:with-param name="group-classes" select="'repeat-prototype disabled readwrite optional valid'"/>
         </xsl:call-template>
     </xsl:template>
 
@@ -600,7 +600,7 @@
     <!-- assembles form control classes -->
     <xsl:template name="assemble-control-classes">
         <xsl:param name="appearance"/>
-
+                                    
         <xsl:variable name="name-classes">
             <xsl:call-template name="get-name-classes">
                 <xsl:with-param name="appearance" select="$appearance"/>
@@ -645,6 +645,24 @@
     </xsl:template>
 
     <!-- assembles label classes -->
+
+    <!-- ### largely redundant with 'assemble-label-classes' but sets 'group-label' instead of 'label' ### -->
+    <xsl:template name="assemble-group-label-classes">
+        <xsl:for-each select="xforms:label[1]">
+            <xsl:variable name="name-classes">group-label</xsl:variable>
+            <xsl:variable name="mip-classes">
+                <xsl:call-template name="get-mip-classes">
+                    <xsl:with-param name="limited" select="true()"/>
+                </xsl:call-template>
+            </xsl:variable>
+            <xsl:variable name="author-classes">
+                <xsl:call-template name="get-author-classes"/>
+            </xsl:variable>
+
+            <xsl:value-of select="normalize-space(concat($name-classes, ' ', $mip-classes, ' ', $author-classes))"/>
+        </xsl:for-each>
+    </xsl:template>
+
     <xsl:template name="assemble-label-classes">
         <xsl:for-each select="xforms:label[1]">
             <xsl:variable name="name-classes">

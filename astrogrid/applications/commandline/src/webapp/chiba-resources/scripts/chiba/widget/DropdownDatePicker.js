@@ -27,7 +27,8 @@ dojo.widget.defineWidget(
     },
 
     fillInTemplate: function(args, frag) {
-        chiba.widget.DropdownDatePicker.superclass.fillInTemplate.apply(this, arguments);
+        dojo.debug("Date.fillInTemplate", this, arguments);
+        chiba.widget.DropdownDatePicker.superclass.fillInTemplate.apply(this, arguments);        
         this.domNode.setAttribute("xfreadonly", this.xfreadonly);
         this.inputNode.setAttribute("class", "value");
 

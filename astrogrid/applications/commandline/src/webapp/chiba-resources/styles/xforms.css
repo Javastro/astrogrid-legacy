@@ -5,130 +5,98 @@
 
 /*********** GENERAL STUFF ***********/
 
-.inactive{
-    display:none;
+.inactive {
+    display: none;
 }
 
-#loading{
-    position:absolute;
-    z-index:1000;
-}
-.messagePane{
-    display:block;
-    position:fixed;
-    z-index:1000;
+#loading {
+    position: absolute;
+    z-index: 1000;
 }
 
-
-/* #################### GROUP STYLES #################### */
-/* xf:groups will be rendered as fieldsets and therefore            
-are styleable via this matcher or more specifically by their
-appearance class 'minimal-group|compact-group|full-group'. */
-
-
-/*********** group appearances ***********/
-.group div{
-    display:block;
-    clear:both;
+.messagePane {
+    display: block;
+    position: fixed;
+    z-index: 1000;
 }
-.group label{
-    float:left;
-}
-.group .value{
-    display:inline;}
 
-.minimal-group div{
-    display:inline; }
-
-.compact-group div{
-    display:block;
-    float:left; }
-
-.compact-group div label{
-    display:block;
-}
-.compact-group div .value{
-    display:inline; }
-
-.compact-group .disabled{
-    display:none;}
-
-.full-group div{
-    display:block;
-    clear:both;}
-
-.full-group label{
-    float:left;}
-
-.full-group .value{
-    display:inline;}
-
-.full-group .disabled{
-    display:none;}
-
-.minimal-group label{
-    display:inline;}
-
-.minimal-group .disabled{
-    display:none;}
 
 /* #################### GENERAL XFORMS MIP AND COMMON-CHILD STYLES #################### */
 .alert {
-    position:absolute;}
+    position: absolute;
+}
 
-.invalid > .alert{
-    position:absolute;}
+.invalid > .alert {
+    position: absolute;
+}
 
 .valid .alert {
-    display: none;}
+    display: none;
+}
 
 .invalid .alert {
-    display: inline;}
+    display: inline;
+}
 
 .disabled iframe {
-    display:none;}
+    display: none;
+}
 
-.disabled label{
-    display:none;}
+.disabled label {
+    display: none;
+}
 
-.disabled .value{
-    display:none;}
+.disabled .value {
+    display: none;
+}
 
 .disabled {
-    display:none;}
+    display: none;
+}
 
-.disabled .alert{
-    display:none;}
+.disabled .alert {
+    display: none;
+}
 
-.disabled .progressbar{
-    display:none;}
+.disabled .progressbar {
+    display: none;
+}
 
 .disabled .help-icon {
-   display:none;}
+    display: none;
+}
 
 .disabled span {
-    display:none;}
+    display: none;
+}
+
 /*********** styles character used for signaling 'required' (normally '*') ***********/
 
-.repeat .label .required-symbol{
-    display:inline;}
+.repeat .label .required-symbol {
+    display: inline;
+}
 
-.optional .required-symbol{
-    display:none;}
+.optional .required-symbol {
+    display: none;
+}
 
-.help-text{
-    position:absolute;
-    display:none;}
+.help-text {
+    position: absolute;
+    display: none;
+}
 
 /* #################### Repeat styles #################### */
 .repeat-prototype {
-    display: none;}
+    display: none;
+}
 
 .repeat-selector {
-    /*float: left;*/}
+/*float: left;*/
+}
 
 .selector-prototype {
-    display: none;}
+    display: none;
+}
 
 .minimal-repeat{
     display:block;}
@@ -146,28 +114,35 @@ appearance class 'minimal-group|compact-group|full-group'. */
 /* #################### SWITCH STYLES #################### */
 
 .switch .selected-case {
-    display: inherit;}
+    display: inherit;
+}
 
 .switch .deselected-case {
-    display: none;}
+    display: none;
+}
 
 .full-switch .filler-tab {
-    overflow: hidden;}
+    overflow: hidden;
+}
 
 /* #################### CONTROL STYLES #################### */
 
-.refresh-button{
-    display:block;
-    float:right;}
+.refresh-button {
+    display: block;
+    float: right;
+}
 
 /*********** Range specific styles ***********/
-.rangelabel td{
-    background:transparent;}
+.rangelabel td {
+    background: transparent;
+}
 
-.rangesteps td img{
-    border:none;
-    display:block;}
+.rangesteps td img {
+    border: none;
+    display: block;
+}
 
 /*********** Upload specific styles ***********/
-.progressbar{
-    display:none;}
+.progressbar {
+    display: none;
+}

@@ -34,21 +34,22 @@ function _setElementText (element, text) {
 }
 
 function _getElementById (element, id) {
-    if (element.getAttribute("id") == id) {
+    if (element.getAttribute && element.getAttribute("id") == id) {
         return element;
     }
-
-    var hit;
-    var children = element.childNodes;
-    for (var index = 0; index < children.length; index++) {
-        if (children[index].nodeType == 1) {
-            hit = _getElementById(children[index], id);
-            if (hit) {
-                return hit;
-            }
-        }
-    }
-
+	if (element.childNodes)
+	{
+	    var hit;
+	    var children = element.childNodes;
+	    for (var index = 0; index < children.length; index++) {
+	        if (children[index].nodeType == 1) {
+	            hit = _getElementById(children[index], id);
+	            if (hit) {
+	                return hit;
+	            }
+	        }
+	    }
+	}
     return null;
 }
 

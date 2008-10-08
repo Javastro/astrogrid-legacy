@@ -3,7 +3,7 @@
                 version="2.0"
                 xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
                 xmlns:chiba="http://chiba.sourceforge.net/xforms">
-    <!-- Copyright 2001-2007 ChibaXForms GmbH, $Revision: 1.2 $ -->
+    <!-- Copyright 2001-2007 ChibaXForms GmbH, $Revision: 1.3 $ -->
     
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 

@@ -8,7 +8,7 @@
 * TODOC: should the copyright be changed to Dojo Foundation?
 * @license Licensed under the Academic Free License 2.1 http://www.opensource.org/licenses/afl-2.1.php
 *
-* $Id: bootstrap1.js,v 1.2 2008/09/03 14:18:38 pah Exp $
+* $Id: bootstrap1.js,v 1.3 2008/10/08 14:52:09 pah Exp $
 */
 
 // TODOC: HOW TO DOC THE BELOW?

@@ -176,6 +176,8 @@
                 <!-- ############################# Debug section ################################ -->
 
 
+
+                <!-- ############################# Global Javascript ################################ -->
                 <script type="text/javascript">
                     <!--dojo.setModulePrefix("chiba","chiba");-->
                     dojo.require("dojo.event.*");
@@ -353,6 +355,14 @@
                 </script>
             </xsl:if>
             <div id="messagePane"/>
+            <!-- ############################# Debug section ################################ -->
+            <xsl:if test="$debug-enabled='true'">
+                <button onclick="getXFormsDOM();">
+                    <label>DEBUG</label>
+                </button>
+                <div  id="debug-section"/>
+            </xsl:if>
+            
         </body>
     </xsl:template>
 

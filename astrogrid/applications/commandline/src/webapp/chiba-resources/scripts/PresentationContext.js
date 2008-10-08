@@ -35,18 +35,20 @@ PresentationContext.prototype.handleRenderMessage = function(message, level) {
     }
     else {
         var ni = dojo.byId('messagePane');
-        if(PresentationContext.COUNTER > 0){ dojo.dom.removeChildren(ni); }
+        if (PresentationContext.COUNTER > 0) {
+            dojo.dom.removeChildren(ni);
+        }
         var newdiv = document.createElement('div');
         PresentationContext.COUNTER++;
         var divIdName = "messagePane-" + PresentationContext.COUNTER;
-        newdiv.setAttribute('id',divIdName);
-        newdiv.setAttribute('style',"display:none");
+        newdiv.setAttribute('id', divIdName);
+        newdiv.setAttribute('style', "display:none");
         newdiv.innerHTML = 'message';
         ni.appendChild(newdiv);
         dojo.require("dojo.widget.Toaster");
         var params = { type:"Chiba",showDelay: 5000, positionDirection: "bl-up", messageTopic: message};
 
-        dojo.widget.createWidget("Toaster",params, dojo.byId(divIdName));
+        dojo.widget.createWidget("Toaster", params, dojo.byId(divIdName));
         dojo.event.topic.publish(message, message);
     }
 };
@@ -57,239 +59,297 @@ PresentationContext.prototype.handleRenderMessage = function(message, level) {
 PresentationContext.prototype.handleReplaceAll = function(webcontext) {
     dojo.debug("PresentationContext.handleReplaceAll: ?");
     var sessionKey = document.getElementById("chibaSessionKey").value;
-    window.open(webcontext + "/SubmissionResponse?sessionKey="+sessionKey, "_self");
+    // add new parameter (params are located before the anchor sign # in an URI)
+    var anchorIndex = window.location.href.lastIndexOf("#");
+    var queryIndex = window.location.href.lastIndexOf("?");
+    var path = window.location.href;
+    if (anchorIndex != -1){
+      path =  window.location.href.substring(0, anchorIndex);
+    }
+    if(queryIndex == -1){
+      path += "?";
+    }
+    path += "&submissionResponse&sessionKey="+sessionKey;
+    if (anchorIndex != -1){
+      path +=  window.location.href.substring(anchorIndex);
+    }
+
+    //window.open(webcontext + "/SubmissionResponse?sessionKey="+sessionKey, "_self");
+    window.open(path, "_self");
 };
 
 /**
  * Handles chiba-state-changed.
  */
 PresentationContext.prototype.handleStateChanged = function(targetId, targetName, valid, readonly, required, enabled, value, type) {
-  dojo.debug("PresentationContext.handleStateChanged: targetId='" + targetId + "', targetName='" + targetName + "',  valid='" + valid + "',  readonly='" + readonly + "',  required='" + required + "',  enabled='" + enabled + "',  value='" + value + "'");
+    dojo.debug("PresentationContext.handleStateChanged: targetId='" + targetId + "', targetName='" + targetName + "',  valid='" + valid + "',  readonly='" + readonly + "',  required='" + required + "',  enabled='" + enabled + "',  value='" + value + "'");
 
-  var target = document.getElementById(targetId);
-  if (target == null) {
-    alert("target '" + targetId + "' not found");
-    return;
-  }
+    var target = document.getElementById(targetId);
+    if (target == null) {
+        if (type = " xs:string") {
+            var parrentId = targetId.substring(1, targetId.length)
+            parrentId = parrentId - 2;
+            parrentId = "C" + parrentId + "-label";
+            dojo.debug("dojo.byId(parrentId) :", parrentId, dojo.byId(parrentId));
 
-  if (value != null) {
-    PresentationContext._setControlValue(targetId, value);
+            dojo.require("chiba.widget.Image");
+            var imageWidget = dojo.widget.createWidget("chiba:Image",
+            {
+                widgetId: targetId,
+                id:targetId,
+                value:value,
+                alt:value,
+                name:"d_" + targetId,
+                title:value
+            }, dojo.byId(parrentId));
+
+        } else {
+            alert("Target " + targetId + " (" + targetName + ") does not exist")
+        }
+        return;
+    }
+
+    if (value != null) {
+        PresentationContext._setControlValue(targetId, value);
     //        var tmpColor = dojo.byId(targetId + "-value").style.backgroundColor;
-    //        new Effect.Highlight(dojo.byId(targetId + "-value"),{restorecolor:tmpColor});
-  }
+        //        new Effect.Highlight(dojo.byId(targetId + "-value"),{restorecolor:tmpColor});
+    }
 
-  if (valid != null) {
-    PresentationContext._setValidProperty(target, eval(valid));
-  }
-  if (readonly != null) {
-    PresentationContext._setReadonlyProperty(target, eval(readonly), target);
-  }
-  if (required != null) {
-    PresentationContext._setRequiredProperty(target, eval(required));
-  }
-  if (enabled != null) {
-    PresentationContext._setEnabledProperty(target, eval(enabled));
-  }
+    if (valid != null) {
+        PresentationContext._setValidProperty(target, eval(valid));
+    }
+    if (readonly != null) {
+        PresentationContext._setReadonlyProperty(target, eval(readonly), target);
+    }
+    if (required != null) {
+        PresentationContext._setRequiredProperty(target, eval(required));
+    }
+    if (enabled != null) {
+        PresentationContext._setEnabledProperty(target, eval(enabled));
+    }
   //    if(type != null){
-  //cutting any prefixes if present cause it can't be known beforehand which prefix is actually used for the types
-  if (type != null && type.indexOf(":") != -1) {
-    type = type.substring(type.indexOf(":") + 1, type.length);
-  }
-  var tmpControl = dojo.widget.getWidgetById(targetId + "-value");
+    //cutting any prefixes if present cause it can't be known beforehand which prefix is actually used for the types
+    if (type != null && type.indexOf(":") != -1) {
+        type = type.substring(type.indexOf(":") + 1, type.length);
+    }
+    var tmpControl = dojo.widget.getWidgetById(targetId + "-value");
 
   //    if(type ==null && getClassComponent(target.className, 1) != "string"){
-  //        type="string";
-  //    }
-  if(targetName == "output" && type == undefined){
-      type = "string";
-  }
-  if (!tmpControl) {
-    dojo.debug("PresentationContext.prototype.handleStateChanged: Create new " + type + " widget");
-      switch (type) {
-          case "boolean":
-              dojo.require("chiba.widget.Boolean");
-              if (value != null) {
-                  if (value == "false") {
-                      value = "";
-                  }
-                  var booleanWidget = dojo.widget.createWidget("chiba:Boolean",
-                  {
-                      widgetId:targetId + "-value",
-                      checked:value,
-                      name:"d_" + targetId,
-                      title:dojo.byId(targetId).title
-                  },
-                          dojo.byId(targetId + "-value"));
-              } else {
-                  var booleanWidget = dojo.widget.createWidget("chiba:Boolean",
-                  {
-                      widgetId:targetId + "-value",
-                      name:"d_" + targetId,
-                      title:dojo.byId(targetId).title
-                  },
-                          dojo.byId(targetId + "-value"));
-              }
-              break;
-
-          case "anyURI":
-              if (targetName == 'output') {
-                  dojo.require("chiba.widget.Link");
-
-                  var linkWidget = dojo.widget.createWidget("Link",
-                  {
-                      id:targetId + "-value",
-                      href:value
-                  },
-                          dojo.byId(targetId + "-value"));
-                  break;
-              }
-          case "hexBinary":
-          case "base64Binary":
-              if (targetName == 'output') break;
-
-              dojo.require("chiba.widget.Upload");
-
-              var uploadWidget = dojo.widget.createWidget("chiba:Upload",
-              {
-                  id:targetId + "-value",
-                  widgetId:targetId + "-value",
-                  css:type,
-                  name:"d_" + targetId,
-                  title:dojo.byId(targetId + "-value").title
-              },
-                      dojo.byId(targetId + "-value"));
-              break;
-
-          case "date":
-          case "time":
-          case "dateTime":
-              dojo.require("chiba.widget.DropdownDatePicker");
-
-              var dateWidget = dojo.widget.createWidget("chiba:DropdownDatePicker",
-              {
-                  id:targetId + "-value",
-                  widgetId:targetId + "-value",
-                  name:"d_" + targetId,
-                  value:value,
-                  datatype:"date"
-              },
-                      dojo.byId(targetId + "-value"));
-
-              break;
-
-          default:
-          //other types...
-              dojo.debug("PresentationContext.prototype.handleStateChanged: Unknown type for control:'", type, "'", this, dojo.byId(targetId));
-              break;
-
-
-      }
-
-  } else if (getClassComponent(target.className, 1) != type) {
-    dojo.debug("PresentationContext.prototype.handleStateChanged: Destroy existing widget and create new " + type + " widget");
-    tmpControl.destroy();
-    switch (type) {
-      case "boolean":
-        dojo.require("chiba.widget.Boolean");
-        if (value != null) {
-          if (value == "false") {
-            value = "";
-          }
-          dojo.debug("PresentationContext.js: value=" + value);
-          var booleanWidget = dojo.widget.createWidget("chiba:Boolean",
-          {
-            widgetId:targetId + "-value",
-            checked:value,
-            name:"d_" + targetId,
-            title:dojo.byId(targetId).title
-          },
-              dojo.byId(targetId), "last");
-        } else {
-          dojo.debug("PresentationContext: value=null");
-          var booleanWidget = dojo.widget.createAnewWidget("chiba:Boolean",
-          {
-            widgetId:targetId + "-value",
-            name:"d_" + targetId,
-            title:dojo.byId(targetId).title
-          },
-              dojo.byId(targetId), "last");
-        }
-        break;
-
-      case "anyURI":
-        if (targetName == 'output') {
-          dojo.require("chiba.widget.Link");
-
-          var linkWidget = dojo.widget.createWidget("Link",
-          {
-            id:targetId + "-value",
-            href:value
-          },
-              dojo.byId(targetId), "last");
-
-          break;
-        }
-      case "hexBinary":
-      case "base64Binary":
-        dojo.require("chiba.widget.Upload");
-
-        var uploadWidget = dojo.widget.createWidget("chiba:Upload",
-        {
-          id:targetId + "-value",
-          widgetId:targetId + "-value",
-          css:type,
-          name:"d_" + targetId,
-          title:dojo.byId(targetId + "-value").title
-        },
-            dojo.byId(targetId),
-            "last");
-        break;
-
-      case "date":
-      case "time":
-      case "dateTime":
-        dojo.require("chiba.widget.DropdownDatePicker");
-
-        var dateWidget = dojo.widget.createWidget("chiba:DropdownDatePicker",
-        {
-          id:targetId + "-value",
-          widgetId:targetId + "-value",
-          name:"d_" + targetId,
-          value:value,
-          datatype:"date"
-        },
-            dojo.byId(targetId), "last");
-        break;
-
-      case "string":
-        dojo.require("chiba.widget.Inputfield");
-        var inputfieldWidget = dojo.widget.createWidget("chiba:Inputfield",
-        {
-          widgetId:targetId + "-value",
-          name:"d_" + targetId,
-          value:value,
-          title:"title"
-        },
-            dojo.byId(targetId), "last");
-        break;
-      default:
-      //other types...
-        dojo.debug("Unknown type for control");
-        break;
+    //        type="string";
+    //    }
+    if (targetName == "output" && (type == undefined || type == "date")) {
+        type = "string";
     }
-  } else if(type == "boolean"){
-      tmpControl.checked = value;
-      tmpControl.xfreadonly = readonly;
-  }
+    if (!tmpControl) {
+        dojo.debug("PresentationContext.prototype.handleStateChanged: Create new " + type + " widget");
+        switch (type) {
+            case "boolean":
+                dojo.require("chiba.widget.Boolean");
+                if (value != null) {
+                    if (value == "false") {
+                        value = "";
+                    }
+                    var booleanWidget = dojo.widget.createWidget("chiba:Boolean",
+                    {
+                        widgetId:targetId + "-value",
+                        checked:value,
+                        name:"d_" + targetId,
+                        title:dojo.byId(targetId).title
+                    },
+                            dojo.byId(targetId + "-value"));
+                } else {
+                    var booleanWidget = dojo.widget.createWidget("chiba:Boolean",
+                    {
+                        widgetId:targetId + "-value",
+                        name:"d_" + targetId,
+                        title:dojo.byId(targetId).title
+                    },
+                            dojo.byId(targetId + "-value"));
+                }
+                break;
+
+            case "anyURI":
+                if (targetName == 'output') {
+                    dojo.require("chiba.widget.Link");
+
+                    var linkWidget = dojo.widget.createWidget("Link",
+                    {
+                        id:targetId + "-value",
+                        href:value
+                    },
+                            dojo.byId(targetId + "-value"));
+                    break;
+                }
+            case "hexBinary":
+            case "base64Binary":
+                if (targetName == 'output') break;
+
+                dojo.require("chiba.widget.Upload");
+
+                var uploadWidget = dojo.widget.createWidget("chiba:Upload",
+                {
+                    id:targetId + "-value",
+                    widgetId:targetId + "-value",
+                    css:type,
+                    name:"d_" + targetId,
+                    title:dojo.byId(targetId + "-value").title
+                },
+                        dojo.byId(targetId + "-value"));
+                break;
+
+            case "date":
+            case "time":
+            case "dateTime":
+                dojo.require("chiba.widget.DropdownDatePicker");
+
+                var dateWidget = dojo.widget.createWidget("chiba:DropdownDatePicker",
+                {
+                    id:targetId + "-value",
+                    widgetId:targetId + "-value",
+                    name:"d_" + targetId,
+                    value:value,
+                    datatype:"date"
+                },
+                        dojo.byId(targetId + "-value"));
+
+                break;
+            case "string":
+                dojo.debug("WARNING: type is String, No update mechan")
+                if (targetName == "select1") {
+                    dojo.debug("Select1.this", this)
+                    dojo.debug("Select1.target", target);
+                    dojo.debug("Select1.target.childNodes", target.childNodes);
+
+                }
+
+                break;
+
+            default:
+            //other types...
+                dojo.debug("PresentationContext.prototype.handleStateChanged: Unknown type for control:'", type, "'", this, dojo.byId(targetId));
+                break;
+
+
+        }
+
+    }
+     else if (target.className != null && target.className.indexOf("xsd-") != -1 && type != "group") {
+        dojo.debug("PresentationContext.prototype.handleStateChanged: Destroy existing widget and create new " + type + " widget");
+        var classType = target.className.substring(target.className.indexOf("xsd-"), target.className.length);
+        classType = classType.substring(0, classType.indexOf(" "));
+
+        if(classType != "xsd-"+type){
+            tmpControl.destroy();
+            switch (type) {
+                case "boolean":
+                    dojo.require("chiba.widget.Boolean");
+                    if (value != null) {
+                        if (value == "false") {
+                            value = "";
+                        }
+                        dojo.debug("PresentationContext.js: value=" + value);
+                        var booleanWidget = dojo.widget.createWidget("chiba:Boolean",
+                        {
+                            widgetId:targetId + "-value",
+                            checked:value,
+                            name:"d_" + targetId,
+                            title:dojo.byId(targetId).title
+                        },
+                                dojo.byId(targetId), "last");
+                    } else {
+                        dojo.debug("PresentationContext: value=null");
+                        var booleanWidget = dojo.widget.createWidget("chiba:Boolean",
+                        {
+                            widgetId:targetId + "-value",
+                            name:"d_" + targetId,
+                            title:dojo.byId(targetId).title
+                        },
+                                dojo.byId(targetId), "last");
+                    }
+                    break;
+
+                case "anyURI":
+                    if (targetName == 'output') {
+                        dojo.require("chiba.widget.Link");
+
+                        var linkWidget = dojo.widget.createWidget("Link",
+                        {
+                            id:targetId + "-value",
+                            href:value
+                        },
+                                dojo.byId(targetId), "last");
+
+                        break;
+                    }
+                case "hexBinary":
+                case "base64Binary":
+                    dojo.require("chiba.widget.Upload");
+
+                    var uploadWidget = dojo.widget.createWidget("chiba:Upload",
+                    {
+                        id:targetId + "-value",
+                        widgetId:targetId + "-value",
+                        css:type,
+                        name:"d_" + targetId,
+                        title:dojo.byId(targetId + "-value").title
+                    },
+                            dojo.byId(targetId),
+                            "last");
+                    break;
+
+                case "date":
+                case "time":
+                case "dateTime":
+                    dojo.require("chiba.widget.DropdownDatePicker");
+
+                    var dateWidget = dojo.widget.createWidget("chiba:DropdownDatePicker",
+                    {
+                        id:targetId + "-value",
+                        widgetId:targetId + "-value",
+                        name:"d_" + targetId,
+                        value:value,
+                        datatype:"date"
+                    },
+                            dojo.byId(targetId), "last");
+                    break;
+
+                case "string":
+                    dojo.require("chiba.widget.Inputfield");
+                    var inputfieldWidget = dojo.widget.createWidget("chiba:Inputfield",
+                    {
+                        widgetId:targetId + "-value",
+                        name:"d_" + targetId,
+                        value:value,
+                        title:"title"
+                    },
+                            dojo.byId(targetId), "last");
+                    break;
+                default:
+                //other types...
+                    dojo.debug("Unknown type for control");
+                    break;
+            }
+        }
+    }
+    else if (type == "xsd-boolean") {
+        tmpControl.checked = value;
+        tmpControl.xfreadonly = readonly;
+    } else if (type == "xsd-date" && value != undefined) {
+        tmpControl.setValue(value);
+    }
 
   //dojo.debug(dojo.byId(targetId).className);
-  //dojo.debug(getClassComponent(dojo.byId(targetId).className, 1));
+    //dojo.debug(getClassComponent(dojo.byId(targetId).className, 1));
 
-  if(type){
-      _replaceClass(target, getClassComponent(target.className, 1), type);
-  }
+    if (target.className != null && target.className.indexOf("xsd-") != -1 && type != "group") {
+        var newClassName = target.className.substring(target.className.indexOf("xsd-"), target.className.length);
+        newClassName = newClassName.substring(0, newClassName.indexOf(" "));
+        dojo.debug("CSS Type: " + newClassName, " New Type: xsd-" + type)
+        if (newClassName != "xsd-" + type) {
+            _replaceClass(target, getClassComponent(newClassName,0), "xsd-" + type);
+        }
+    }
 };
-
 
 
 /**
@@ -312,12 +372,12 @@ PresentationContext.prototype.handleHelperChanged = function(parentId, type, val
                         var table = tbody.parentNode;
                         if (table != null && table.nodeName.toLowerCase() == "table") {
                             if (_hasClass(table, "compact-repeat")) {
-                                var trhead =tbody.childNodes;
-                                for(var i=0; i < trhead.length; i++) {
-                                    if(_hasClass(trhead[i], "repeat-header")) {
+                                var trhead = tbody.childNodes;
+                                for (var i = 0; i < trhead.length; i++) {
+                                    if (_hasClass(trhead[i], "repeat-header")) {
                                         var th = trhead[i].cells;
-                                        for(var x = 0; x < th.length; x++) {
-                                            if(th[x].className ==  td.className) {
+                                        for (var x = 0; x < th.length; x++) {
+                                            if (th[x].className == td.className) {
                                                 var elem = th[x];
                                                 elem.firstChild.firstChild.nodeValue = value;
                                             }
@@ -328,7 +388,8 @@ PresentationContext.prototype.handleHelperChanged = function(parentId, type, val
                             }
                         }
                     }
-                }                  }
+                }
+            }
             PresentationContext._setControlLabel(parentId, value);
             return;
         case "help":
@@ -394,7 +455,7 @@ PresentationContext.prototype.handleItemDeleted = function(targetId, type, origi
     }
 };
 
-PresentationContext.prototype.handleFocus= function(targetId){
+PresentationContext.prototype.handleFocus = function(targetId) {
     dojo.byId(targetId + "-value").focus();
 }
 
@@ -429,7 +490,7 @@ PresentationContext.prototype.handleSwitchToggled = function(deselectedId, selec
 // static utilities
 
 PresentationContext._setValidProperty = function(target, valid) {
-//    dojo.debug("PresentationContext._setValidProperty: " + target + "='" + valid + "'");
+    //    dojo.debug("PresentationContext._setValidProperty: " + target + "='" + valid + "'");
 
     if (valid) {
         _replaceClass(target, "invalid", "valid");
@@ -440,7 +501,7 @@ PresentationContext._setValidProperty = function(target, valid) {
 };
 
 PresentationContext._setReadonlyProperty = function(target, readonly, type) {
-//    dojo.debug("PresentationContext._setReadonlyProperty: " + target + "='" + readonly + "'");
+    //    dojo.debug("PresentationContext._setReadonlyProperty: " + target + "='" + readonly + "'");
 
     if (readonly) {
         _replaceClass(target, "readwrite", "readonly");
@@ -449,9 +510,9 @@ PresentationContext._setReadonlyProperty = function(target, readonly, type) {
         _replaceClass(target, "readonly", "readwrite");
     }
     var targetId = target.getAttribute("id");
-    if (type=="date" || type=="dateTime" || type == "time"  || _hasClass(dojo.byId(target),"date")) {
+    if (type=="xsd-date" || type=="xsd-dateTime" || type == "xsd-time"  || _hasClass(dojo.byId(target),"xsd-date")) {
         var tmpWidget = dojo.widget.byId(targetId + "-value");
-        if(tmpWidget) {
+        if (tmpWidget) {
             tmpWidget.updateReadonly(readonly);
         }
     }
@@ -492,6 +553,18 @@ PresentationContext._setReadonlyProperty = function(target, readonly, type) {
             value.removeAttribute("disabled");
         }
     }
+    //dirty - but won't get better for this version
+    value = document.getElementById("clone-" + targetId + "-value");
+    if(value != null){
+        dojo.debug(value);
+        if (readonly) {
+            value.setAttribute("disabled", "disabled");
+        }
+        else {
+            value.removeAttribute("disabled");
+        }        
+    }
+
 };
 
 
@@ -504,7 +577,7 @@ PresentationContext._setReadonlyProperty = function(target, readonly, type) {
  * @param string original_id
  * @param string clone_id
  */
-initializeClone = function(original_id, clone_id){
+initializeClone = function(original_id, clone_id) {
     //first make sure the begin situation is cloned
     _updateSizeOfClone(original_id, clone_id);
     _updateValueOfClone(original_id, clone_id);
@@ -518,37 +591,47 @@ initializeClone = function(original_id, clone_id){
  * @param string clone_id
  * @param changedIndex (optional)
  */
-_updateSizeOfClone = function(original_id, clone_id, changedIndex){
-    var original = document.getElementById(original_id);
-    var clone = document.getElementById(clone_id);
+_updateSizeOfClone = function(original_id, clone_id, changedIndex, parent) {
+    var original;
+    var clone;
+    if (parent)
+    {
+        original = _getElementById(parent, original_id);
+        clone = _getElementById(parent, clone_id);
+    }
+    else
+    {
+        original = document.getElementById(original_id);
+        clone = document.getElementById(clone_id);
+    }
 
     var cloneSize = clone.childNodes.length;
     var originalSize = original.options.length;
-    if (changedIndex && changedIndex != -1){
-        if (cloneSize < originalSize){
+    if (changedIndex && changedIndex != -1) {
+        if (cloneSize < originalSize) {
             //option added
             var option = new Option("", "");
 
-            try{
+            try {
                 clone.add(option, clone.options[changedIndex]); // standards compliant
             }
-            catch(ex){
+            catch(ex) {
                 clone.add(option, changedIndex); // IE only
             }
         }
-        else{
+        else {
             //remove one
             clone.removeChild(clone.options[changedIndex]);
         }
     }
-    else{
-        while (cloneSize != originalSize){
-            if (cloneSize < originalSize){
+    else {
+        while (cloneSize != originalSize) {
+            if (cloneSize < originalSize) {
                 //add one
                 var option = new Option("", "");
                 clone.appendChild(option);
             }
-            else{
+            else {
                 //remove one
                 clone.removeChild(clone.options[0]);
             }
@@ -564,9 +647,19 @@ _updateSizeOfClone = function(original_id, clone_id, changedIndex){
  * @param string clone_id
  * @param changedIndex (optional)
  */
-_updateValueOfClone = function(original_id, clone_id, changedIndex){
-    var original = document.getElementById(original_id);
-    var clone = document.getElementById(clone_id);
+_updateValueOfClone = function(original_id, clone_id, changedIndex, parent) {
+    var original;
+    var clone;
+    if (parent)
+    {
+        original = _getElementById(parent, original_id);
+        clone = _getElementById(parent, clone_id);
+    }
+    else
+    {
+        original = document.getElementById(original_id);
+        clone = document.getElementById(clone_id);
+    }
 
     if (changedIndex && changedIndex != -1) {
         var originalOption = original.options[changedIndex];
@@ -575,42 +668,18 @@ _updateValueOfClone = function(original_id, clone_id, changedIndex){
         clonedOption.setAttribute("style", originalOption.getAttribute("style"));
         clonedOption.value = originalOption.value;
         clonedOption.selected = originalOption.selected;
-        if (document.createTextNode) {
-            //for IE
-            var text = document.createTextNode(originalOption.text);
-            if (clonedOption.childNodes[0]) {
-                clonedOption.replaceChild(text, clonedOption.childNodes[0]);
-            }
-            else {
-                clonedOption.appendChild(text);
-            }
-        }
-        else{
-            clonedOption.text = originalOption.text;
-        }
+        clonedOption.text = originalOption.text;
     }
     else {
-	    var originalSize = original.options.length;
-        for (var i = 0; i < originalSize; i++){
+        var originalSize = original.options.length;
+        for (var i = 0; i < originalSize; i++) {
             var originalOption = original.options[i];
             var clonedOption = clone.options[i];
             clonedOption.setAttribute("class", originalOption.getAttribute("class"));
             clonedOption.setAttribute("style", originalOption.getAttribute("style"));
             clonedOption.value = originalOption.value;
             clonedOption.selected = originalOption.selected;
-            if (document.createTextNode){
-                //for IE
-                var text = document.createTextNode(originalOption.text);
-                if (clonedOption.childNodes[0]){
-                    clonedOption.replaceChild(text, clonedOption.childNodes[0]);
-                }
-                else{
-                    clonedOption.appendChild(text);
-                }
-            }
-            else{
-                clonedOption.text = originalOption.text;
-            }
+            clonedOption.text = originalOption.text;
         }
     }
 };
@@ -622,11 +691,21 @@ _updateValueOfClone = function(original_id, clone_id, changedIndex){
  * @param string clone_id
  * @param changedIndex (optional)
  */
-_updateSelectionOfClone = function(original_id, clone_id){
-    var original = document.getElementById(original_id);
-    var clone = document.getElementById(clone_id);
+_updateSelectionOfClone = function(original_id, clone_id, parent) {
+    var original;
+    var clone;
+    if (parent)
+    {
+        original = _getElementById(parent, original_id);
+        clone = _getElementById(parent, clone_id);
+    }
+    else
+    {
+        original = document.getElementById(original_id);
+        clone = document.getElementById(clone_id);
+    }
 
-    for (var i = 0; i < original.options.length; i++){
+    for (var i = 0; i < original.options.length; i++) {
         clone.options[i].selected = original.options[i].selected;
     }
 };
@@ -636,15 +715,15 @@ _updateSelectionOfClone = function(original_id, clone_id){
  * @param string original_id
  * @param string clone_id
  */
-updateSelectionOfOriginal = function(original_id, clone_id){
+updateSelectionOfOriginal = function(original_id, clone_id) {
     //selection has changed on the clone so change the selection on the original
     var original = document.getElementById(original_id);
     var clone = document.getElementById(clone_id);
 
-    for (var i = 0; i < clone.options.length; i++){
+    for (var i = 0; i < clone.options.length; i++) {
         original.options[i].selected = clone.options[i].selected;
     }
-    if (original.onchange){
+    if (original.onchange) {
         setXFormsValue(original, true);
     }
 };
@@ -653,12 +732,12 @@ updateSelectionOfOriginal = function(original_id, clone_id){
 /**
  * Checks if the element has a clone.
  */
-_isCloned = function(element_id){
+_isCloned = function(element_id) {
     var clone = document.getElementById("clone-" + element_id);
-    if (clone){
+    if (clone) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
@@ -666,10 +745,10 @@ _isCloned = function(element_id){
 /**
  * finds the index of the option
  */
-_findIndexOfOption = function(selectElement, option){
+_findIndexOfOption = function(selectElement, option) {
     var len = selectElement.options.length;
-    for (var i = 0; i < len; ++i){
-        if (i in selectElement.options && selectElement.options[i] === option){
+    for (var i = 0; i < len; ++i) {
+        if (i in selectElement.options && selectElement.options[i] === option) {
             return i;
         }
     }
@@ -677,7 +756,7 @@ _findIndexOfOption = function(selectElement, option){
 };
 
 PresentationContext._setRequiredProperty = function(target, required) {
-//    dojo.debug("PresentationContext._setRequiredProperty: " + target + "='" + required + "'");
+    //    dojo.debug("PresentationContext._setRequiredProperty: " + target + "='" + required + "'");
 
     if (required) {
         _replaceClass(target, "optional", "required");
@@ -689,14 +768,34 @@ PresentationContext._setRequiredProperty = function(target, required) {
 };
 
 PresentationContext._setEnabledProperty = function(target, enabled) {
-//    dojo.debug("PresentationContext._setEnabledProperty: " + target + "='" + enabled + "'");
+    //    dojo.debug("PresentationContext._setEnabledProperty: " + target + "='" + enabled + "'");
+
+    //handle compact repeat
+    var wrappingElement = dojo.byId(target).parentNode;
 
     if (enabled) {
         _replaceClass(target, "disabled", "enabled");
+
+        if (wrappingElement.nodeName == "td") {
+            if (_hasClass(wrappingElement, "disabled")) {
+                _replaceClass(wrappingElement.id, "disabled", "enabled");
+            } else {
+                _addClass(wrappingElement, "enabled");
+            }
+
+        }
     }
     else {
         _replaceClass(target, "enabled", "disabled");
+        if (wrappingElement.nodeName == "td") {
+            if (_hasClass(wrappingElement, "enabled")) {
+                _replaceClass(wrappingElement.id, "enabled", "disabled");
+            } else {
+                _addClass(wrappingElement, "disabled");
+            }
+        }
     }
+
 
     // handle labels too, they might be rendered elsewhere
     var targetId = target.getAttribute("id");
@@ -712,9 +811,9 @@ PresentationContext._setEnabledProperty = function(target, enabled) {
 };
 
 PresentationContext._setControlValue = function(targetId, value) {
-	// SIDOC/CNAF : sidoc-infra-log
-  //  dojo.debug("PresentationContext.setControlValue: targetID = '" + targetId + "'");
-  //  dojo.debug("PresentationContext.setControlValue: value= '" + value + "'");
+    // SIDOC/CNAF : sidoc-infra-log
+    //  dojo.debug("PresentationContext.setControlValue: targetID = '" + targetId + "'");
+    //  dojo.debug("PresentationContext.setControlValue: value= '" + value + "'");
 
     var control = document.getElementById(targetId + "-value");
     if (control == null) {
@@ -729,33 +828,33 @@ PresentationContext._setControlValue = function(targetId, value) {
     var listValue = " " + value + " ";
     switch (control.nodeName.toLowerCase()) {
         case "a":
-            // <xf:output appearance="anchor"/>
+        // <xf:output appearance="anchor"/>
             control.href = value;
-            // SIDOC/CNAF : sidoc-infra-204, put the control value
+        // SIDOC/CNAF : sidoc-infra-204, put the control value
             _setElementText(control, value);
-            //dojo.debug("PresentationContext.setControlValue: href = '" + control.href + "'");
+        //dojo.debug("PresentationContext.setControlValue: href = '" + control.href + "'");
             break;
         case "div":
-            //TODO: Make save
+        //TODO: Make save
             break;
         case "img":
-            // <xf:output appearance="image"/>
+        // <xf:output appearance="image"/>
             control.src = value;
             break;
         case "input":
             if (control.type.toLowerCase() == "checkbox") {
-	            if (control.parentNode && _hasClass(control.parentNode, "selector-item")) {
-            		control.value = value;
-            	}
-            	else {
-            		// special treatment for a single checkbox
-               		control.checked = (value == "true") || (value == "1");
-               	}
+                if (control.parentNode && _hasClass(control.parentNode, "selector-item")) {
+                    control.value = value;
+                }
+                else {
+                    // special treatment for a single checkbox
+                    control.checked = (value == "true") || (value == "1");
+                }
                 break;
             }
-            
-            //TODO: check if "if" statement is still needed, can probably be removed
-            if(control.type.toLowerCase() == "hidden") {
+
+        //TODO: check if "if" statement is still needed, can probably be removed
+            if (control.type.toLowerCase() == "hidden") {
 
                 // special treatment for radiobuttons/checkboxes
                 var elements = eval("document.chibaform.elements");
@@ -775,15 +874,15 @@ PresentationContext._setControlValue = function(targetId, value) {
                 }
                 break;
             }
-            
+
             if (control.type.toLowerCase() == "checkbox") {
                 var tmpWidget = dojo.widget.byId(targetId + "-value");
                 tmpWidget.checked = value;
-                if(this.checked=="false"){
-                   control.removeAttribute("checked");
+                if (this.checked == "false") {
+                    control.removeAttribute("checked");
                 }
-                else{
-                   control.setAttribute("checked", this.checked);
+                else {
+                    control.setAttribute("checked", this.checked);
                 }
                 break;
             }
@@ -802,10 +901,11 @@ PresentationContext._setControlValue = function(targetId, value) {
             break;
         case "option":
             control.value = value;
-            if(control.parentNode && control.parentNode.nodeName.toLowerCase() == "optgroup")
+            if (control.parentNode && control.parentNode.nodeName.toLowerCase() == "optgroup")
             {
-                var select_id=control.parentNode.parentNode.getAttribute("id");
-                if(_isCloned(select_id))
+                //todo: select_id should be the targetId
+                var select_id = control.parentNode.parentNode.getAttribute("id");
+                if (_isCloned(select_id))
                 {
                     // find the index of the changed option
                     var changedIndex = _findIndexOfOption(control.parentNode.parentNode, control);
@@ -814,7 +914,7 @@ PresentationContext._setControlValue = function(targetId, value) {
             }
             break;
         case "span":
-            // <xf:output mediatype="text/html"/>
+        // <xf:output mediatype="text/html"/>
             if (_hasClass(control, "mediatype-text-html")) {
                 control.innerHTML = value;
                 break;
@@ -823,7 +923,7 @@ PresentationContext._setControlValue = function(targetId, value) {
             _setElementText(control, value);
             break;
         case "select":
-            // special treatment for options
+        // special treatment for options
             var options = control.options.length;
             var option;
             var optionValue;
@@ -843,25 +943,25 @@ PresentationContext._setControlValue = function(targetId, value) {
             }
             break;
         case "table":
-            if(_hasClass(control,"range-widget")){
+            if (_hasClass(control, "range-widget")) {
                 var oldValue = document.getElementsByClassName('rangevalue', document.getElementById(targetId))[0];
-                if(oldValue){
+                if (oldValue) {
                     oldValue.className = "step";
                 }
                 var newValue = document.getElementById(targetId + value);
-                if(newValue){
+                if (newValue) {
                     newValue.className = "step rangevalue";
                 }
             }
             break;
         case "textarea":
-            // <xf:textarea mediatype="text/html"/>
-			if (_hasClass(control, "mediatype-text-html")) {
-				 _styledTextareaSetInnerHTML(control, value);
-		    		 break;
+        // <xf:textarea mediatype="text/html"/>
+            if (_hasClass(control, "mediatype-text-html")) {
+                _styledTextareaSetInnerHTML(control, value);
+                break;
             }
 
-            // Classical textarea
+        // Classical textarea
             control.value = value;
             break;
         default:
@@ -870,7 +970,7 @@ PresentationContext._setControlValue = function(targetId, value) {
 };
 
 PresentationContext._setControlLabel = function(parentId, value) {
-//    dojo.debug("PresentationContext._setControlLabel: ParrentId" + parentId + ",Value:'" + value + "'");
+    //    dojo.debug("PresentationContext._setControlLabel: ParrentId" + parentId + ",Value:'" + value + "'");
 
     var element = document.getElementById(parentId + "-label");
     if (element != null) {
@@ -881,6 +981,7 @@ PresentationContext._setControlLabel = function(parentId, value) {
 
     // heuristics: look for implicit labels
     var control = document.getElementById(parentId + "-value");
+    if(control == null) return;
     switch (control.nodeName.toLowerCase()) {
         case "a":
         // <xf:output appearance="anchor"/>
@@ -892,10 +993,10 @@ PresentationContext._setControlLabel = function(parentId, value) {
             break;
         case "option":
             control.text = value;
-            if(control.parentNode && control.parentNode.nodeName.toLowerCase() == "optgroup")
+            if (control.parentNode && control.parentNode.nodeName.toLowerCase() == "optgroup")
             {
-                var select_id=control.parentNode.parentNode.getAttribute("id");
-                if(_isCloned(select_id))
+                var select_id = control.parentNode.parentNode.getAttribute("id");
+                if (_isCloned(select_id))
                 {
                     // find the index of the changed option
                     var changedIndex = _findIndexOfOption(control.parentNode.parentNode, control);
@@ -908,9 +1009,9 @@ PresentationContext._setControlLabel = function(parentId, value) {
                 control.value = value;
                 break;
             }
-            // fall through
+        // fall through
         default:
-            // dirty hack for compact repeats: lookup enclosing table
+        // dirty hack for compact repeats: lookup enclosing table
             var td = document.getElementById(parentId);
             if (td != null && td.nodeName.toLowerCase() == "div") {
                 td = td.parentNode;
@@ -931,19 +1032,19 @@ PresentationContext._setControlLabel = function(parentId, value) {
                 }
             }
 
-            // complain, finally
+        // complain, finally
             alert("label for '" + parentId + "' not found");
     }
 };
 
 PresentationContext._setControlHelp = function(parentId, value) {
-//    dojo.debug("PresentationContext._setControlHelp: " + parentId + "='" + value + "'");
+    //    dojo.debug("PresentationContext._setControlHelp: " + parentId + "='" + value + "'");
 
     alert("TODO: PresentationContext._setControlHelp: " + parentId + "='" + value + "'");
 };
 
 PresentationContext._setControlHint = function(parentId, value) {
-//    dojo.debug("PresentationContext._setControlHint: " + parentId + "='" + value + "'");
+    //    dojo.debug("PresentationContext._setControlHint: " + parentId + "='" + value + "'");
 
     var element = document.getElementById(parentId + "-value");
     if (element != null) {
@@ -966,7 +1067,7 @@ PresentationContext._setControlHint = function(parentId, value) {
 };
 
 PresentationContext._setControlAlert = function(parentId, value) {
-//    dojo.debug("PresentationContext._setControlAlert: " + parentId + "='" + value + "'");
+    //    dojo.debug("PresentationContext._setControlAlert: " + parentId + "='" + value + "'");
 
     var element = document.getElementById(parentId + "-alert");
     if (element != null) {
@@ -984,7 +1085,7 @@ PresentationContext._setControlAlert = function(parentId, value) {
  * @param value the prototype id (original repeat id).
  */
 PresentationContext._cloneRepeatPrototype = function(targetId, originalId, prototypeId) {
-//    dojo.debug("PresentationContext._cloneRepeatPrototype: [" + targetId + "/" + originalId + "]='" + prototypeId + "'");
+    //    dojo.debug("PresentationContext._cloneRepeatPrototype: [" + targetId + "/" + originalId + "]='" + prototypeId + "'");
 
     var clone = document.getElementById(originalId + "-prototype").cloneNode(true);
     clone.setAttribute("id", prototypeId);
@@ -1002,7 +1103,7 @@ PresentationContext._cloneRepeatPrototype = function(targetId, originalId, proto
  * @param value the prototype id (original selector id).
  */
 PresentationContext._cloneSelectorPrototype = function(targetId, originalId, prototypeId) {
-//    dojo.debug("PresentationContext._cloneSelectorPrototype: [" + targetId + "/" + originalId + "]='" + prototypeId + "'");
+    //    dojo.debug("PresentationContext._cloneSelectorPrototype: [" + targetId + "/" + originalId + "]='" + prototypeId + "'");
 
     // clone prototype and make it an item
     var clone;
@@ -1047,7 +1148,7 @@ PresentationContext._cloneSelectorPrototype = function(targetId, originalId, pro
  * @param value the original id.
  */
 PresentationContext._setGeneratedId = function(targetId, originalId) {
-//    dojo.debug("PresentationContext._setGeneratedId: " + targetId + "='" + originalId + "'");
+    //    dojo.debug("PresentationContext._setGeneratedId: " + targetId + "='" + originalId + "'");
 
     var array = PresentationContext.GENERATED_IDS[PresentationContext.GENERATED_IDS.length - 1];
     array[originalId] = targetId;
@@ -1073,7 +1174,7 @@ PresentationContext._setGeneratedId = function(targetId, originalId) {
  * @param value the insert position.
  */
 PresentationContext._insertRepeatItem = function(targetId, originalId, position) {
-//    dojo.debug("PresentationContext._insertRepeatItem: [" + targetId + "/" + originalId + "]='" + position + "'");
+    //    dojo.debug("PresentationContext._insertRepeatItem: [" + targetId + "/" + originalId + "]='" + position + "'");
 
     // apply generated ids to prototype
     var prototypeClone = PresentationContext.PROTOTYPE_CLONES.pop();
@@ -1123,15 +1224,15 @@ PresentationContext._insertRepeatItem = function(targetId, originalId, position)
     }
 
     // insert prototype clone
-    prototypeClone.setAttribute("style","display:none;");
-    Effect.Appear(prototypeClone,{duration:0.5});
+    prototypeClone.setAttribute("style", "display:none;");
+    Effect.Appear(prototypeClone, {duration:0.5});
     repeatElement.insertBefore(prototypeClone, referenceNode);
 
 	// A dirty hack for <textarea mediatype='text/html'> : need to initialize
-	// the textarea elements used to support the JScript Editor
-	var textareaControls = prototypeClone.getElementsByTagName("textarea");
-	for(var i = 0; i < textareaControls.length; i++) {
-        if(_hasClass(textareaControls[i], "mediatype-text-html")){
+    // the textarea elements used to support the JScript Editor
+    var textareaControls = prototypeClone.getElementsByTagName("textarea");
+    for (var i = 0; i < textareaControls.length; i++) {
+        if (_hasClass(textareaControls[i], "mediatype-text-html")) {
             initalizeStyledTextarea(textareaControls[i]);
         }
     }
@@ -1144,7 +1245,7 @@ PresentationContext._insertRepeatItem = function(targetId, originalId, position)
  * @param value the insert position.
  */
 PresentationContext._insertSelectorItem = function(targetId, originalId, position) {
-//    dojo.debug("PresentationContext._insertSelectorItem: [" + targetId + "/" + originalId + "]='" + position + "'");
+    //    dojo.debug("PresentationContext._insertSelectorItem: [" + targetId + "/" + originalId + "]='" + position + "'");
 
     // apply generated ids to prototype
     var prototypeClone = PresentationContext.PROTOTYPE_CLONES.pop();
@@ -1193,15 +1294,26 @@ PresentationContext._insertSelectorItem = function(targetId, originalId, positio
 
     // insert prototype clone
     itemsetElement.insertBefore(prototypeClone, referenceNode);
-    
-    if(itemsetElement && itemsetElement.nodeName.toLowerCase() == "optgroup")
+
+    if (itemsetElement && itemsetElement.nodeName.toLowerCase() == "optgroup")
     {
         //find the id of the select tag above
         var select_id = itemsetElement.parentNode.getAttribute("id");
-        if(_isCloned(select_id))
+        if (PresentationContext.PROTOTYPE_CLONES.length > 0)
         {
-            var optionIndex = _findIndexOfOption(itemsetElement.parentNode, prototypeClone);
-            _updateSizeOfClone(select_id, "clone-" + select_id, optionIndex);
+            if (_getElementById(enclosingPrototype, "clone-" + select_id))
+            {
+                var optionIndex = _findIndexOfOption(itemsetElement.parentNode, prototypeClone);
+                _updateSizeOfClone(select_id, "clone-" + select_id, optionIndex, enclosingPrototype);
+            }
+        }
+        else
+        {
+            if (_isCloned(select_id))
+            {
+                var optionIndex = _findIndexOfOption(itemsetElement.parentNode, prototypeClone);
+                _updateSizeOfClone(select_id, "clone-" + select_id, optionIndex);
+            }
         }
     }
 };
@@ -1257,11 +1369,12 @@ PresentationContext._deleteRepeatItem = function(targetId, originalId, position)
     }
 
     // delete item
-    Effect.Fade(deleteItem.id,{duration:0.5});
+    repeatElement.removeChild(deleteItem);
+    //Effect.Fade(deleteItem.id,{duration:0.5});
 //    repeatElement.removeChild(deleteItem);
-//    if (nextItem) {
-//        _addClass(nextItem, "repeat-index");
-//    }
+    //    if (nextItem) {
+    //        _addClass(nextItem, "repeat-index");
+    //    }
 };
 
 /**
@@ -1271,7 +1384,7 @@ PresentationContext._deleteRepeatItem = function(targetId, originalId, position)
  * @param value the delete position.
  */
 PresentationContext._deleteSelectorItem = function(targetId, originalId, position) {
-//    dojo.debug("PresentationContext._deleteSelectorItem: [" + targetId + "/" + originalId + "]='" + position + "'");
+    //    dojo.debug("PresentationContext._deleteSelectorItem: [" + targetId + "/" + originalId + "]='" + position + "'");
 
     var itemset = document.getElementById(targetId);
     var items = itemset.childNodes;
@@ -1290,21 +1403,21 @@ PresentationContext._deleteSelectorItem = function(targetId, originalId, positio
                 if (currentPosition == targetPosition) {
                     deleteIndex = i;
                     break;
-                }
+                }     
             }
         }
     }
 
     var deleteItem = items[deleteIndex];
-    var optionIndex = _findIndexOfOption(itemsetElement.parentNode, deleteItem);
     // delete item
     itemset.removeChild(deleteItem);
-    
-    if(itemset && itemset.nodeName.toLowerCase() == "optgroup")
+
+    if (itemset && itemset.nodeName.toLowerCase() == "optgroup")
     {
+        var optionIndex = _findIndexOfOption(itemset.parentNode, deleteItem);
         //find the id of the select tag above
         var select_id = itemset.parentNode.getAttribute("id");
-        if(_isCloned(select_id))
+        if (_isCloned(select_id))
         {
             _updateSizeOfClone(select_id, "clone-" + select_id, optionIndex);
         }
@@ -1318,7 +1431,7 @@ PresentationContext._deleteSelectorItem = function(targetId, originalId, positio
  * @param value the repeat index.
  */
 PresentationContext._setRepeatIndex = function(targetId, originalId, index) {
-//    dojo.debug("PresentationContext._setRepeatIndex: [" + targetId + "/" + originalId + "]='" + index + "'");
+    //    dojo.debug("PresentationContext._setRepeatIndex: [" + targetId + "/" + originalId + "]='" + index + "'");
 
     var currentPosition = 0;
     var targetPosition = parseInt(index);
@@ -1397,14 +1510,23 @@ PresentationContext._getRepeatNode = function(element) {
 
 PresentationContext._applyGeneratedIds = function(element, ids) {
     var id = element.getAttribute("id");
-    if(id == "-label") {
+    if (id == "-label") {
         element.id = element.parentNode.id + id;
     }
     if (id) {
         var generatedId = ids[id];
         if (generatedId) {
-//            dojo.debug("applying '" + generatedId + "' to '" + id + "'");
+            //            dojo.debug("applying '" + generatedId + "' to '" + id + "'");
             element.setAttribute("id", generatedId);
+
+            if (element.parentNode)
+            {
+                var clonedElement = _getElementById(element.parentNode, "clone-" + id);
+                if (clonedElement)
+                {
+                    clonedElement.setAttribute("id", "clone-" + generatedId);
+                }
+            }
 
             // apply to for-attribute of labels
             if (element.nodeName.toLowerCase() == "label") {
@@ -1426,7 +1548,7 @@ PresentationContext._applyGeneratedIds = function(element, ids) {
         id = element.name.substring(2, element.name.length);
         var otherId = ids[id];
         if (otherId) {
-//            dojo.debug("applying '" + CHIBA_DATA_PREFIX + otherId + "' to '" + CHIBA_DATA_PREFIX + id + "'");
+            //            dojo.debug("applying '" + CHIBA_DATA_PREFIX + otherId + "' to '" + CHIBA_DATA_PREFIX + id + "'");
             element.setAttribute("name", CHIBA_DATA_PREFIX + otherId);
             if (element.checked) {
                 element.checked = false;

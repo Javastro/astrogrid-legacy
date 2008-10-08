@@ -86,17 +86,6 @@
                 }
             %>
         </fieldset>
-        <fieldset class="group full-group">
-            <legend class="label">Request parameters</legend>
-            <%
-                Enumeration parameters = request.getParameterNames();
-                while (parameters.hasMoreElements()) {
-                   String name = parameters.nextElement().toString(); %>
-            <div class="output enabled readwrite optional valid"><label class="label"><%= name %></label><span class="value"><%= request.getParameter(name) %></span></div>
-            <%
-                }
-            %>
-        </fieldset>
 
         <fieldset class="group full-group">
             <legend class="label">Session</legend>
