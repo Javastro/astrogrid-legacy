@@ -136,6 +136,10 @@ public class QuaestorTest
                                "My test knowledgebase",
                                "text/plain");
         assertStatus(r, HttpURLConnection.HTTP_FORBIDDEN);
+
+        // Immediately retrieve the knowledgebase, before any submodels have been added
+        r = QuaestorConnection.httpGet(makeKbUrl());
+        assertStatus(r, HttpURLConnection.HTTP_OK);
     }
 
     // as before, but this time uploading metadata

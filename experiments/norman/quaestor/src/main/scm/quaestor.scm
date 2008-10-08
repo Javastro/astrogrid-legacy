@@ -44,7 +44,7 @@
     (sdb.version . ,(get-sdb-version))
     (tdb.version . ,(get-tdb-version))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.58 $ $Date: 2008/10/06 23:17:49 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.59 $ $Date: 2008/10/08 12:21:49 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -317,18 +317,20 @@
                      mime-and-lang) ;normal case
                 (let ((m (if submodel-name
                              (kb 'get-model submodel-name)
-                             (kb 'get-model))))
+                             (or (kb 'get-model) ;returns #f if there are no submodels
+                                 (rdf:new-empty-model)))))
                   (if m
                       (list '|SC_OK|
                             (lambda (stream set-mime-type)
                               (set-mime-type (car mime-and-lang))
                               (write m stream (->jstring (cdr mime-and-lang)))))
-                      (begin (chatter "get-model: failed to find model with kb-name=~s, submodel=~s"
-                                      kb-name submodel)
-                             (no-can-do request
-                                        '|SC_NOT_FOUND|
-                                        "There is no model to return: I failed to find model with kb-name=~s, submodel=~s"
-                                        kb-name submodel)))))
+                      (let ((kb-name-string (->string (to-string kb-name))))
+                        (chatter "get-model: failed to find model with kb-name=~a, submodel=~s"
+                                 kb-name-string submodel-name)
+                        (no-can-do request
+                                   '|SC_NOT_FOUND|
+                                   "There is no model to return: I couldn't find a submodel ~s in knowledgebase ~a"
+                                   submodel-name kb-name-string)))))
 
                ((and kb
                      (eq? query 'model))
