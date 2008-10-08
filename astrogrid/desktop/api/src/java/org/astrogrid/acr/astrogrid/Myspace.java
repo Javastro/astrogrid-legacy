@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.13 2008/09/25 16:02:04 nw Exp $
+/*$Id: Myspace.java,v 1.14 2008/10/08 17:28:57 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -271,7 +271,10 @@ URI rename(URI srcIvorn, String newName) throws NotFoundException, SecurityExcep
  * @throws SecurityException if the user is not permitted to relocate this resource
  * @throws NotApplicableException if this resource is not a file - folders can't be relocated.
  * @see #listStores()
+ * @deprecated
+ * @exclude
  */
+@Deprecated
 void changeStore(URI srcIvorn, URI storeIvorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
    /**make a copy of a resource 
@@ -470,13 +473,19 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      * @return an array of service descriptions.
      * @throws ServiceException if an error occurs while retreiveing the list of stores
      * @see #changeStore
+     * @deprecated
+     * @exclude
      */
+    @Deprecated
     Service[] listStores()  throws ServiceException;
 
 }
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.14  2008/10/08 17:28:57  nw
+ exluded unimplementable methods.
+
  Revision 1.13  2008/09/25 16:02:04  nw
  documentation overhaul
 
