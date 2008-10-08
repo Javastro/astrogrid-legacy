@@ -195,7 +195,6 @@ extends TestBase
         // Start the job running.
         log.debug("Executing job");
         delegate.execute(job);
-/*
         //    
         // Poll for completion.
         MessageType status = null ;
@@ -220,7 +219,6 @@ log.debug("  Result [" + result + "]");
                 location
                 );
             }
-*/
         }
   
     /**
