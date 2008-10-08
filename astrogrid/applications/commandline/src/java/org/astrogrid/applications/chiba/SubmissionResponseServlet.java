@@ -1,5 +1,5 @@
 /*
- * $Id: SubmissionResponseServlet.java,v 1.3 2008/09/18 08:46:45 pah Exp $
+ * $Id: SubmissionResponseServlet.java,v 1.4 2008/10/08 19:49:17 pah Exp $
  * 
  * Created on 2 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -28,14 +28,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.chiba.web.WebFactory;
-import org.chiba.web.servlet.WebUtil;
-import org.chiba.web.session.XFormsSession;
-import org.chiba.web.session.XFormsSessionManager;
+import org.chiba.agent.web.WebFactory;
+import org.chiba.agent.web.servlet.WebUtil;
+import org.chiba.agent.web.session.XFormsSession;
+import org.chiba.agent.web.session.XFormsSessionManager;
 
 /**
  * Companion class to {@link RedirectingHttpSubmissionHandler} that allows chiba to handle redirects from UWS.
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 17 Sep 2008
+ * @deprecated now using {@link XformsFilter}
  * @version $Name:  $
  * @since VOTech Stage 7
  */
@@ -139,6 +140,9 @@ public class SubmissionResponseServlet extends HttpServlet {
 
 /*
  * $Log: SubmissionResponseServlet.java,v $
+ * Revision 1.4  2008/10/08 19:49:17  pah
+ * update to chiba 1.5 cibaweb 2.3
+ *
  * Revision 1.3  2008/09/18 08:46:45  pah
  * improved javadoc
  *

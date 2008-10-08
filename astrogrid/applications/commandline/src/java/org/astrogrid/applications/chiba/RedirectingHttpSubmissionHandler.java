@@ -1,5 +1,5 @@
 /*
- * $Id: RedirectingHttpSubmissionHandler.java,v 1.3 2008/09/18 08:46:45 pah Exp $
+ * $Id: RedirectingHttpSubmissionHandler.java,v 1.4 2008/10/08 19:49:17 pah Exp $
  * 
  * Created on 2 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -27,11 +27,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.chiba.xml.xforms.connector.http.HTTPSubmissionHandler;
+import org.chiba.xml.xforms.connector.http.RedirectingHTTPSubmissionHandler;
 import org.chiba.xml.xforms.exception.XFormsException;
 
 /**
  * A specialisation of the submission handler for chiba. This is the needed because the UWS pattern uses HTTP redirects.
  * @author Paul Harrison (paul.harrison@manchester.ac.uk) 16 Sep 2008
+ * @deprecated chiba now has one of these itself {@link RedirectingHTTPSubmissionHandler}
  * @version $Name:  $
  * @since VOTech Stage 7
  */
@@ -113,6 +115,9 @@ public class RedirectingHttpSubmissionHandler extends HTTPSubmissionHandler {
 
 /*
  * $Log: RedirectingHttpSubmissionHandler.java,v $
+ * Revision 1.4  2008/10/08 19:49:17  pah
+ * update to chiba 1.5 cibaweb 2.3
+ *
  * Revision 1.3  2008/09/18 08:46:45  pah
  * improved javadoc
  *
