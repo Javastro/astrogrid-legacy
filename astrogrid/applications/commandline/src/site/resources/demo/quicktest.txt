@@ -1,0 +1,9 @@
+cd ~/Work/ag/src/applications/commandline/src/site/resources/demo/
+
+wget  http://localhost:8080/cea/uws/sync/built-in?in1=1\&in2=2\&in3=10
+curl -i -L http://localhost:8080/cea/uws/sync/built-in?in1=1\&in2=2\&in3=10
+
+curl -H Accept:application/xml  http://localhost:8080/cea/uws/jobs
+
+curl -Li  -H Accept:application/xml -d @tool.xml  http://localhost:8080/cea/uws/jobs
+curl -Li  -H Accept:application/xml -d phase=run  http://localhost:8080/cea/uws/jobs/cea-Macintosh-3.local-192.168.0.199-1222610326417-1135840241/phase

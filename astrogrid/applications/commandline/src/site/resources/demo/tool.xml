@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool xmlns="http://www.ivoa.net/xml/CEA/types/v1.1"
+   id="ivo://org.astrogrid.unregistered/default" interface="default"
+>
+   <input>
+      <parameter id="in1" indirect="false">
+         <value>1</value>
+      </parameter>
+      <parameter id="in2" indirect="false">
+         <value>2</value>
+      </parameter>
+      <parameter id="in3" indirect="false">
+         <value>3</value>
+      </parameter>
+   </input>
+   <output>
+      <parameter id="out" indirect="false">
+         <value />
+      </parameter>
+   </output>
+</tool>
