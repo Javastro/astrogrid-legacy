@@ -38,14 +38,14 @@
     <!--+
         | The full name of the project.
         +-->
-    <name>AstroGrid VoSpace delegate</name>
+    <name>AstroGrid VoSpace-1.1 delegate</name>
 
     <!--+
         | A short description of the project.
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        A wrapper for modifying the VoSpace delegate API to match the AstroGrid code base. 
+        A wrapper for the VOSpace-1.1 client to integrate it into the AstroGrid code base. 
     </shortDescription>
 
     <!--+
@@ -54,11 +54,95 @@
         +-->
     <description>
         <![CDATA[
-        A wrapper for modifying the VoSpace delegate API to match the AstroGrid code base. 
-        <br/>
-        AstroGrid specific changes to the delegate API can be added here, and then folded backin to the main vospace code base.
+            <p>
+                This component provides a wrapper for the VOSpace-1.1 client to integrate it into the AstroGrid code base.
+                <br/>
+                AstroGrid specific changes are added here, and then folded back into the main VOSpace client code later.
+            </p>
         ]]>
     </description>
+
+    <organization>
+        <name>AstroGrid</name>
+        <url>http://www.astrogrid.org/</url>
+        <logo>http://www.astrogrid.org/images/AGlogo.png</logo>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Academic Free License v2.1</name>
+            <url>http://opensource-definition.org/licenses/afl-2.1.html</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+
+    <mailingLists>
+        <mailingList>
+            <name>IVOA VOSpace specification discussion</name>
+            <!--subscribe/-->
+            <!--unsubscribe/-->
+            <!--post/-->
+            <archive>http://ivoa.net/forum/vospace/index.htm</archive>
+        </mailingList>
+    </mailingLists>
+
+    <!--siteAddress>terror.star.le.ac.uk</siteAddress-->
+    <!--siteDirectory>/software_docs/security-${pom.currentVersion}</siteDirectory-->
+  
+    <issueTrackingUrl>http://esavo02.esac.esa.int/trac/VOSpace/</issueTrackingUrl>
+  
+    <inceptionYear>2006</inceptionYear>
+  
+    <developers>
+        <developer>
+            <name>Dave Morris</name>
+            <id>dmorris</id>
+            <email>dave[at]ast.cam.ac.uk</email>
+            <organization>University of Cambridge</organization>
+            <organizationUrl>http://www.ast.cam.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <name>Catherine Qin</name>
+            <id>clq</id>
+            <email>catherine.qin[at]star.le.ac.uk</email>
+            <organization>University of Leicester</organization>
+            <organizationUrl>http://www.star.le.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <contributor>
+            <name>Guy Rixon</name>
+            <id>gtr</id>
+            <email>gtr[at]ast.cam.ac.uk</email>
+            <organization>University of Cambridge</organization>
+            <organizationUrl>http://www.ast.cam.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </contributor>
+        <developer>
+            <name>Kona Andrews</name>
+            <id>kea</id>
+            <email>kea[at]roe.ac.uk</email>
+            <organization>The Royal Observatory, Edinburgh</organization>
+            <organizationUrl>http://www.roe.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <name>Paul Harrison</name>
+            <id>pharrison</id>
+            <email>paul.harrison[at]manchester.ac.uk</email>
+            <organization>University of Manchester</organization>
+            <organizationUrl>http://www.manchester.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <name>Jeff Lusted</name>
+            <id>jeff</id>
+            <email>jl99[at]star.le.ac.uk</email>
+            <organization>University of Leicester</organization>
+            <organizationUrl>http://www.star.le.ac.uk/</organizationUrl>
+            <timezone>0</timezone>
+        </developer>
+    </developers>
 
     <!--+
         | The external libraries required to build our component.
@@ -73,7 +157,7 @@
             <artifactId>astrogrid-vospace-junit</artifactId>
             <version>${vospace.version}</version>
             <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <url>../junit/</url>
         </dependency>
 
         <!--+
@@ -84,7 +168,7 @@
             <artifactId>astrogrid-vospace-util</artifactId>
             <version>${vospace.version}</version>
             <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <url>../util/</url>
         </dependency>
 
         <!--+
@@ -95,7 +179,7 @@
             <artifactId>astrogrid-vospace-1.1-schema</artifactId>
             <version>${vospace.version}</version>
             <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <url>../vospace-1.1/schema/</url>
         </dependency>
 
         <!--+
@@ -106,7 +190,7 @@
             <artifactId>astrogrid-vospace-1.1-client</artifactId>
             <version>${vospace.version}</version>
             <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <url>../vospace-1.1/client/</url>
         </dependency>
 
         <!--+
@@ -212,15 +296,14 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-security</artifactId>
-            <version>2008.2</version>
+            <version>2008.2.02</version>
             <type>jar</type>
-            <url>http://www.astrogrid.org/maven/</url>
+            <url>http://deployer.astrogrid.org/software/security-2008.2.02/</url>
         </dependency>
         <dependency>
             <groupId>xmlsec</groupId>
             <type>jar</type>
             <artifactId>xmlsec</artifactId>
-            <!--version>1.2.1</version-->
             <version>1.3.0</version>
         </dependency>
         <dependency>
@@ -373,16 +456,18 @@
             </resources>
         </unitTest>
     </build>
+
     <reports>
         <report>maven-checkstyle-plugin</report>
         <report>maven-javadoc-plugin</report>
-        <report>maven-jdepend-plugin</report>
+        <!--report>maven-jdepend-plugin</report-->
         <report>maven-junit-report-plugin</report>
         <report>maven-jxr-plugin</report>
         <report>maven-license-plugin</report>
-        <report>maven-linkcheck-plugin </report>
-        <report>maven-pmd-plugin</report>
-        <report>maven-tasklist-plugin</report>
-        <report>maven-simian-plugin</report>
+        <!--report>maven-linkcheck-plugin </report-->
+        <!--report>maven-pmd-plugin</report-->
+        <!--report>maven-tasklist-plugin</report-->
+        <!--report>maven-simian-plugin</report-->
     </reports>
+
 </project>
