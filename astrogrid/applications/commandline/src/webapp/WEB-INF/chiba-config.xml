@@ -1,49 +1,66 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: chiba-config.xml,v 1.2 2008/09/03 14:18:52 pah Exp $ -->
+<!-- $Id: chiba-config.xml,v 1.3 2008/10/08 14:53:57 pah Exp $ -->
 <!-- Copyright 2001-2007 ChibaXForms GmbH -->
 <chiba-config>
 
     <properties>
- 	<property name="log4j.file" value="chiba-resources/log4j.xml" description="the location of the log4j configuration file relative to context"/>
-  
-		<property name="defaultRequestEncoding" value="UTF-8" description="The character encoding to use for the Request if none was set"/>
+        <property name="xforms.schema" value="XFormsDatatypes.xsd"
+                description="XForms Schema holding Simple Type Declarations"/>
 
-		<property name="uploadDir" value="upload" description="the name of the upload directory relative to context"/>
+        <property name="log4j.file" value="WEB-INF/log4j.xml"
+                  description="the location of the log4j configuration file relative to context"/>
 
-		<property name="useragent.ajax.path" value="/FluxHelper" description="request mapping for action url if in scripted mode (used to set the action attribute of the rendered form)"/>
-		<property name="useragent.plainhtml.path" value="/PlainHtml" description="request mapping for action url if in unscripted mode (used to set the action attribute of the rendered form)"/>
+        <property name="defaultRequestEncoding" value="UTF-8"
+                  description="The character encoding to use for the Request if none was set"/>
 
-		<property name="xslt.path" value="chiba-resources/xslt" description="directory location for XSLT files relative to context"/>
-		<property name="xslt.default" value="html4.xsl" description="default XSLT file to be used to generate the UI"/>
-		<property name="xslt.cache.enabled" value="true" description="flag for XSLT caching"/>
+        <property name="uploadDir" value="upload" description="the name of the upload directory relative to context"/>
 
-		<property name="scriptPath" value="/chiba-resources/scripts/" description="directory for script files relative to context"/>
-		<property name="CSSPath" value="/chiba-resources/styles/" description="directory for Chiba CSS files relative to context"/>
+        <property name="useragent.ajax.path" value="/FluxHelper"
+                  description="request mapping for action url if in scripted mode (used to set the action attribute of the rendered form)"/>
+        <property name="useragent.plainhtml.path" value="/PlainHtml"
+                  description="request mapping for action url if in unscripted mode (used to set the action attribute of the rendered form)"/>
 
-		<!--
-		wrt to DefaultSessionManagerImpl:
-		setting the value of XFormsSessionChecking to '0' means that no checking for expired sessions will take place.
-		Thus XFormsSessions won't expire with this setting though the Http Session might still time out making the
-		XFormsSession unavailable.
-		-->
-		<property name="sessionChecking" value="120000" description="the amount of time (in millis) between runs of wipe() method checking for expired XForms sessions"/>
-		<property name="sessionTimeout" value="600000" description="the amount of time of inactivity before XFormsSession expires"/>
-		<property name="sessionManager" value="org.chiba.web.session.impl.DefaultXFormsSessionManagerImpl" description="fully qualified classname of XFormsSessionManager implementation"/>
-		<!--<property name="sessionClass" value="org.chiba.web.session.impl.DefaultChibaSession" description="fully qualified classname of XFormsSession implementation"/>-->
+        <property name="xslt.path" value="chiba-resources/xslt"
+                  description="directory location for XSLT files relative to context"/>
+        <property name="xslt.default" value="html4.xsl" description="default XSLT file to be used to generate the UI"/>
+        <property name="xslt.cache.enabled" value="true" description="flag for XSLT caching"/>
 
-		<property name="defaultProcessorBase" value="remote" description="optional parameter - 'local' or 'remote' operation of Chiba XForms Processor"/>
+        <property name="scriptPath" value="/chiba-resources/scripts/"
+                  description="directory for script files relative to context"/>
+        <property name="CSSPath" value="/chiba-resources/styles/"
+                  description="directory for Chiba CSS files relative to context"/>
 
-		<property name="error.page" value="chiba-resources/jsp/error.jsp" description="location of error-page relative to context"/>
+        <!--
+          wrt to DefaultSessionManagerImpl:
+          setting the value of XFormsSessionChecking to '0' means that no checking for expired sessions will take place.
+          Thus XFormsSessions won't expire with this setting though the Http Session might still time out making the
+          XFormsSession unavailable.
+          -->
+        <property name="sessionChecking" value="120000"
+                  description="the amount of time (in millis) between runs of wipe() method checking for expired XForms sessions"/>
+        <property name="sessionTimeout" value="600000"
+                  description="the amount of time of inactivity before XFormsSession expires"/>
+        <property name="sessionManager" value="org.chiba.agent.web.session.impl.DefaultXFormsSessionManagerImpl"
+                  description="fully qualified classname of XFormsSessionManager implementation"/>
 
-		<property name="forms.uri.relative" value="false" description="use relative pathes for resources in generated UI"/>
+        <property name="defaultProcessorBase" value="remote"
+                  description="optional parameter - 'local' or 'remote' operation of Chiba XForms Processor"/>
 
-        <property name="filter.ignoreResponseBody" value="false" description="if 'true' XFormsFilter will not check reponse body for XForms markup" />
+        <property name="error.page" value="chiba-resources/jsp/error.jsp"
+                  description="location of error-page relative to context"/>
+
+        <property name="forms.uri.relative" value="false"
+                  description="use relative pathes for resources in generated UI"/>
+
+        <property name="filter.ignoreResponseBody" value="false"
+                  description="if 'true' XFormsFilter will not check reponse body for XForms markup"/>
 
         <!--
         script.param allows to define the string which is used to signal Chiba Web if scripting is wanted. By default
-        this param string is 'js' and if it's found on a GET request to Chiba Web a FluxAdapter will be created.
+        this param string is 'js' and if it's found on a GET request to Chiba Web a FluxProcessor will be created.
         -->
-        <property name="script.param" value="chibajs" description="string used for the param which signals scripted processing"/>
+        <property name="script.param" value="chibajs"
+                  description="string used for the param which signals scripted processing"/>
 
         <!--
             Language is not a config-property any more as soon as
@@ -51,6 +68,20 @@
             instance to instance or even from request to request
         -->
         <property name="language" value="de"/>
+        <property name="enable.l10n" value="true"/>
+
+        <!--
+           Property the XForms filter listens on, only if the pattern is present on the accept header
+           the XForms Filter is processing the request.
+
+                Sample Request Header ContentTypes
+                text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,* /*;q=0.5
+                image/png,* /*;q=0.5
+        -->
+        <property name="acceptContentTypePattern" value="application/xhtml"
+                description="Based on this property, the XFormsFilter decide if should start XForms processing. Value
+                             can be 'all_xml' (WebFactory.ALL_XML_TYPES) to accept all xml content types or a reg
+                             expression to allow only certain ones."/>
 
         <!--
             This property allows to switch the stylesheet compilation on.
@@ -61,7 +92,7 @@
         -->
         <property name="chiba.stylesheets.compiled" value="true"/>
 
-        <!-- ********* web adapter properties ********* -->
+        <!-- ********* web processor properties ********* -->
         <!--
             Normally there should be no reason to change the following prefixes unless they're
             in conflict with your application that uses Chiba.
@@ -96,7 +127,8 @@
     </properties>
 
     <error-messages>
-        <message id="session-invalid" value="Invalid session - You probably used the back button to visit an already finished form."/>
+        <message id="session-invalid"
+                 value="Invalid session - You probably used the back button to visit an already finished form."/>
     </error-messages>
 
     <stylesheets>
@@ -123,9 +155,11 @@
 
         <submission-handler scheme="context" class="org.chiba.xml.xforms.connector.context.ContextSubmissionHandler"/>
         <submission-handler scheme="file" class="org.chiba.xml.xforms.connector.file.FileSubmissionHandler"/>
-        <submission-handler scheme="http" class="org.astrogrid.applications.chiba.RedirectingHttpSubmissionHandler"/>
+        <submission-handler scheme="http" class="org.chiba.xml.xforms.connector.http.RedirectingHTTPSubmissionHandler"/>
         <submission-handler scheme="mailto" class="org.chiba.connectors.smtp.SMTPSubmissionHandler"/>
         <submission-handler scheme="xmlrpc" class="org.chiba.connectors.xmlrpc.XMLRPCSubmissionHandler"/>
+        <submission-handler scheme="echo" class="org.chiba.xml.xforms.connector.echo.EchoSubmissionHandler"/>
+	    <submission-handler scheme="xslt" class="org.chiba.xml.xforms.connector.xslt.XSLTSubmissionHandler"/>        
         <!--        <submission-handler scheme="jms" class="org.chiba.connectors.jms.JMSSubmissionHandler"/>-->
         <!--
             These connector types are deprecated. Their usage is strongly discouraged,
@@ -134,34 +168,16 @@
         <!--        <modelitem-calculator scheme="http" class="org.chiba.xml.xforms.connector.http.HTTPModelItemCalculator"/>-->
         <!--        <modelitem-validator scheme="http" class="org.chiba.xml.xforms.connector.http.HTTPModelItemValidator"/>-->
     </connectors>
-    <extension-functions>
-        <!--
-            Specifies external functions to be used in the XForms' XPath expressions. If the 'java-name' attribute
-            is ommitted, the Java function name is considered to be the same as that of the XPath function.
-        -->
-        <function namespace="http://chiba.sourceforge.net/xforms" name="declare" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="undeclare" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="context" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions" />
-        <!--<function namespace="http://exslt.org/regular-expressions" prefix="regexp" name="test" class="org.galasoft.util.xml.servlet.xforms.exslt.Regexp" java-name="test"/>-->
-        <function namespace="http://exslt.org/regular-expressions" name="test" class="org.galasoft.util.xml.servlet.xforms.exslt.Regexp" java-name="test"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="formatDateString" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="fileDate" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="fileSize" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="uploadContentLength" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="match" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="validate" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-        <function namespace="http://chiba.sourceforge.net/xforms" name="calculate" class="org.chiba.xml.xforms.xpath.ChibaExtensionFunctions"/>
-    </extension-functions>
 
-	<custom-elements>
-		<!--
-			In this section you can associate a foreign namespaced element with a class that implements any
-			arbitrary control. The element is identified by its namespace URI and element name. The implementing
-			class must extend XFormsElement and have a constructor corresponding to the following signature:
-			public YourClass(Element, Model);
-		-->
-		<!--element namespace="http://yourdomain.com/path" name="yourcontrol" class="com.yourdomain.yourpackage.YourClass"/-->
-	</custom-elements>
+    <custom-elements>
+        <!--
+              In this section you can associate a foreign namespaced element with a class that implements any
+              arbitrary control. The element is identified by its namespace URI and element name. The implementing
+              class must extend XFormsElement and have a constructor corresponding to the following signature:
+              public YourClass(Element, Model);
+          -->
+        <!--element namespace="http://yourdomain.com/path" name="yourcontrol" class="com.yourdomain.yourpackage.YourClass"/-->
+    </custom-elements>
 
 
 </chiba-config>

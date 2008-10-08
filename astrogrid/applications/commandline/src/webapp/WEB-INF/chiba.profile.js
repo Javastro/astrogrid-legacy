@@ -4,7 +4,7 @@ var dependencies = [
 ];
 
 dependencies.prefixes = [
-   ["chiba", "../chiba-resources/scripts/chiba"]
+   ["chiba", "../chiba-web/web/resources/scripts/chiba"]
 ];
 
 load("getDependencyList.js");

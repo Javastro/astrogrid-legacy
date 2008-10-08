@@ -2,7 +2,7 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
       
-  <display-name>CEA server for command-line applications</display-name>
+  <display-name>CEA CEC</display-name>
  
     <context-param>
       <param-name>contextConfigLocation</param-name> <!-- note that later definitions override earlier ones. -->
@@ -13,7 +13,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
  
    <context-param>
       <param-name>log4jConfigLocation</param-name>
-      <param-value>/WEB-INF/classes/log4j.properties</param-value>
+      <param-value>/WEB-INF/log4j.xml</param-value>
    </context-param>
    
     <context-param>
@@ -31,7 +31,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
   
  -->
    <listener>
-      <listener-class> org.springframework.web.context.ContextLoaderListener</listener-class>
+      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
    </listener>
    
    <!--
@@ -49,7 +49,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
    <!--  XForms Filter -->
    <filter>
       <filter-name>XFormsFilter</filter-name>                                                                                                                              
-      <filter-class>org.chiba.web.filter.XFormsFilter</filter-class>
+      <filter-class>org.astrogrid.applications.chiba.XformsFilter</filter-class>
         <init-param>
             <param-name>scripted</param-name>
             <param-value>true</param-value>
@@ -135,26 +135,26 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
    </servlet>
 -->
 
-   <servlet>
+	<servlet>
         <servlet-name>FluxHelper</servlet-name>
-        <servlet-class>org.chiba.web.flux.FluxHelperServlet</servlet-class>
+        <servlet-class>org.chiba.agent.web.flux.FluxHelperServlet</servlet-class>
     </servlet>
 
     <servlet>
         <servlet-name>PlainHtml</servlet-name>
-        <servlet-class>org.chiba.web.servlet.PlainHtmlServlet</servlet-class>
+        <servlet-class>org.chiba.agent.web.servlet.PlainHtmlServlet</servlet-class>
     </servlet>
 
     <servlet>
         <servlet-name>ViewServlet</servlet-name>
-        <servlet-class>org.chiba.web.servlet.ViewServlet</servlet-class>
+        <servlet-class>org.chiba.agent.web.servlet.ViewServlet</servlet-class>
     </servlet>
-
+<!-- 
     <servlet>
         <servlet-name>SubmissionResponse</servlet-name>
         <servlet-class>org.astrogrid.applications.chiba.SubmissionResponseServlet</servlet-class>
     </servlet>
-    
+  -->   
     <servlet>
       <servlet-name>Delegation</servlet-name>
       <servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class>
@@ -193,10 +193,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/n
         <url-pattern>/view</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
+<!-- <servlet-mapping>
         <servlet-name>SubmissionResponse</servlet-name>
         <url-pattern>/SubmissionResponse</url-pattern>
     </servlet-mapping>
+      -->   
  <!-- end of chiba stuff -->   
     
     <servlet-mapping>

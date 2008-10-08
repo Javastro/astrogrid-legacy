@@ -3,7 +3,7 @@
 <dwr>
     <allow>
         <create creator="new" javascript="Flux" scope="request">
-            <param name="class" value="org.chiba.web.flux.FluxFacade"/>
+            <param name="class" value="org.chiba.agent.web.flux.FluxFacade"/>
         </create>
     </allow>
 </dwr>
