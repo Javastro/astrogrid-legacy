@@ -66,8 +66,8 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.SystemFilter;
 public final class PrettierResourceFormatter {
 	
         
-	public static String renderResourceAsHTML(Resource r) {
-		HtmlBuilder sb = new HtmlBuilder();
+	public static String renderResourceAsHTML(final Resource r) {
+		final HtmlBuilder sb = new HtmlBuilder();
 // html header
 		sb.append("<head><style>");
 		sb.append("  body { font-family: Arial, Helvetica, sans-serif }");
@@ -103,7 +103,7 @@ public final class PrettierResourceFormatter {
 		            formatCoverage(sb, ((HasCoverage)r).getCoverage());
 		        }                           
 		        if (r instanceof DataService) {   
-		            DataService ds = (DataService)r;
+		            final DataService ds = (DataService)r;
 		            sb.appendTitledResourceNames("Facilities",ds.getFacilities())
 		            .appendTitledResourceNames("Instruments",ds.getInstruments());                   
 		        }        
@@ -123,7 +123,7 @@ public final class PrettierResourceFormatter {
 		}
         
         if (r instanceof Organisation) {
-            Organisation o = (Organisation)r;
+            final Organisation o = (Organisation)r;
             sb.append("<img src='classpath:/org/astrogrid/desktop/icons/organization16.png'>&nbsp;This resource describes an <b>Organization</b>");
             sb.br();
             sb.appendTitledResourceNames("Managed&nbsp;Facilities",o.getFacilities());
@@ -131,7 +131,7 @@ public final class PrettierResourceFormatter {
         }		
 
 		if (r instanceof DataCollection) {
-			DataCollection d = (DataCollection)r;			
+			final DataCollection d = (DataCollection)r;			
 			sb.append("<img src='classpath:/org/astrogrid/desktop/icons/datacollection16.png'>&nbsp;This resource describes a <b>Data&nbsp;Collection</b>");
 			sb.br();
 			sb.appendTitledResourceNames("Facilities",d.getFacilities())	;	
@@ -150,7 +150,7 @@ public final class PrettierResourceFormatter {
 	        }	
 						
 			sb.appendTitledSequence("Rights",d.getRights());
-			AccessURL accessURL = d.getAccessURL();
+			final AccessURL accessURL = d.getAccessURL();
 			if (accessURL != null) {
 			    sb.appendLabel("Access&nbsp;URL");
 			    formatAccessURL(sb, accessURL);
@@ -159,11 +159,11 @@ public final class PrettierResourceFormatter {
 		}
 
         if (r instanceof Service) {
-            Service s = (Service)r;
+            final Service s = (Service)r;
             if (r instanceof RegistryService) {
                 sb.append("This resource describes a <b>Registry&nbsp;Service</b>");
                 sb.br();
-                RegistryService rs = (RegistryService)r;
+                final RegistryService rs = (RegistryService)r;
                 sb.appendLabel("Registry&nbsp;Type");
                 sb.append(rs.isFull() ? "Full" : "Partial");
                 sb.br();
@@ -178,7 +178,7 @@ public final class PrettierResourceFormatter {
 
 // append cea at the end.
         if (r instanceof CeaApplication) {
-            CeaApplication cea = (CeaApplication) r;
+            final CeaApplication cea = (CeaApplication) r;
             if (BuildQueryActivity.hasAdqlParameter(cea)) {
                 sb.append("<img src='classpath:/org/astrogrid/desktop/icons/db16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Query&nbsp;Service&nbsp;(ADQL)</b>");
             } else {
@@ -186,7 +186,7 @@ public final class PrettierResourceFormatter {
             }
             sb.br();
                 
-            InterfaceBean[] ifaces =cea.getInterfaces();
+            final InterfaceBean[] ifaces =cea.getInterfaces();
             sb.appendLabel("Interfaces");
             for(int i = 0; i < ifaces.length; i++) {
                 if (i > 0) {
@@ -217,12 +217,12 @@ public final class PrettierResourceFormatter {
      * @param sb
      * @param coverage
      */
-    private static void formatCoverage(HtmlBuilder sb, final Coverage coverage) {
+    private static void formatCoverage(final HtmlBuilder sb, final Coverage coverage) {
         if (coverage != null) {
             appendServiceReference(sb,"Footprint&nbsp;Service",coverage.getFootprint());
             sb.appendTitledSequence("Waveband&nbsp;Coverage",coverage.getWavebands());
 
-            StcResourceProfile stc = coverage.getStcResourceProfile();
+            final StcResourceProfile stc = coverage.getStcResourceProfile();
             if (stc != null) {
                 sb.appendLabel("Spatial&nbsp;Coverage");
                 if (stc.isAllSky()) {
@@ -241,21 +241,21 @@ public final class PrettierResourceFormatter {
          }
     }
     
-    public static void appendServiceReference(HtmlBuilder sb,String title,ResourceName name) {
+    public static void appendServiceReference(final HtmlBuilder sb,final String title,final ResourceName name) {
         if (name != null) {
             sb.appendLabel(title);
             // see if the value is a valid URL.
             URL url;
             try {
                 url = new URL(name.getValue());
-            } catch (MalformedURLException e){
+            } catch (final MalformedURLException e){
                 url = null;
             }
             // now different cases depending on what we've got.
             if (url != null) {
                 try {
                     sb.appendURI(url.toURI());
-                } catch (URISyntaxException x) {
+                } catch (final URISyntaxException x) {
                     // unlikely.
                     sb.append(url.toString());
                 }
@@ -267,7 +267,7 @@ public final class PrettierResourceFormatter {
             } else { // not a valid url. treat it as a name.
                 if (name.getId() != null) {
                     sb.append("<a class='res' href='").append(name.getId()).append("'>");
-                    String v = name.getValue();
+                    final String v = name.getValue();
                     sb.append(v == null  ? name.getId().toString() : v);
                     sb.append("</a>");
                 } else {
@@ -286,7 +286,7 @@ public final class PrettierResourceFormatter {
      * @param sb
      * @param accessURL
      */
-    private static void formatAccessURL(HtmlBuilder sb, AccessURL accessURL) {
+    private static void formatAccessURL(final HtmlBuilder sb, final AccessURL accessURL) {
           //  sb.appendURI(accessURL.getUse() != null ? accessURL.getUse() : "link" ,accessURL.getValueURI());
         //bz 2520 - make accessURls accessible.
         sb.appendURI(accessURL.getValueURI().toString(),accessURL.getValueURI());
@@ -299,7 +299,7 @@ public final class PrettierResourceFormatter {
      * @param sb
      * @param validationLevel
      */
-    private static void formatValidation(HtmlBuilder sb,
+    private static void formatValidation(final HtmlBuilder sb,
             final Validation[] validationLevel) {
         if (validationLevel != null && validationLevel.length > 0) {
             sb.appendLabel("Validated");
@@ -323,7 +323,7 @@ public final class PrettierResourceFormatter {
     }
     
     /** converts an integer validation level into a formatted string roundel */
-    public static char[] createValidationRoundel(int validationLevel) {
+    public static char[] createValidationRoundel(final int validationLevel) {
         return Character.toChars(9311 +validationLevel );
     }
     
@@ -331,14 +331,14 @@ public final class PrettierResourceFormatter {
 
 
 	
-	public final static String formatType(String type) {
+	public final static String formatType(final String type) {
 		if (type == null) {
 			return "unspecified";
 		}
-		String unprefixed = type.indexOf(":") != -1 
+		final String unprefixed = type.indexOf(":") != -1 
 			? StringUtils.substringAfterLast( type,":")
 					: type;
-		String converted = (String)typeMapper.get(unprefixed);
+		final String converted = (String)typeMapper.get(unprefixed);
 		return converted == null ?  unprefixed : converted;
 		
 	}	
@@ -360,14 +360,14 @@ public final class PrettierResourceFormatter {
 	 * @param sb
 	 * @param curation
 	 */
-	private static void formatCuration(HtmlBuilder sb, final Curation curation) {
+	private static void formatCuration(final HtmlBuilder sb, final Curation curation) {
 	    sb.hr();
         
         sb.appendTitledObjectNoBR("Version",curation.getVersion());
 
         if (curation.getDates().length > 0) {
             sb.appendLabel("Dates");
-            Date[] arr = curation.getDates();
+            final Date[] arr = curation.getDates();
                 for (int i = 0; i < arr.length; i++) {
                     if (i > 0) {
                         sb.append(", ");
@@ -381,7 +381,7 @@ public final class PrettierResourceFormatter {
                 sb.br();
             }                   
         
-		Creator[] cres = curation.getCreators();
+		final Creator[] cres = curation.getCreators();
 		if (cres.length > 0) {
 		    sb.appendLabel("Creator");
 		    for (int i =0; i < cres.length; i++) {
@@ -413,7 +413,7 @@ public final class PrettierResourceFormatter {
 		        if (i > 0) {
 		            sb.br();
 		        }			
-		        Contact contact = contacts[i];
+		        final Contact contact = contacts[i];
 		        if (contact.getName() != null) {
 		            sb.appendResourceName(contact.getName());
 		            sb.append(", ");
@@ -440,14 +440,14 @@ public final class PrettierResourceFormatter {
 
 	}
 
-	private static void formatServiceCapabilities(HtmlBuilder sb, Service s) {
+	private static void formatServiceCapabilities(final HtmlBuilder sb, final Service s) {
 	    sb.appendTitledSequence("Service&nbsp;Rights",s.getRights());
 	    final Capability[] capabilities = s.getCapabilities();
 	    for (int capabilitiesIndex = 0; capabilitiesIndex < capabilities.length; capabilitiesIndex++) {
 	        if (capabilitiesIndex > 0) {
 	            sb.p();
 	        }
-	        Capability c = capabilities[capabilitiesIndex];
+	        final Capability c = capabilities[capabilitiesIndex];
 	        // display capability-specific info.
 	        if (c instanceof CeaServerCapability) {
 	            sb.append("This resource describes a <b>Remote&nbsp;Application&nbsp;(CEA)&nbsp;Service</b>");
@@ -462,7 +462,7 @@ public final class PrettierResourceFormatter {
 	            sb.append(((HarvestCapability)c).getMaxRecords());
 	            sb.br();
 	        } else    if (c instanceof SearchCapability) {
-	            SearchCapability sc = (SearchCapability)c;
+	            final SearchCapability sc = (SearchCapability)c;
 	            sb.append("<b>Search&nbsp;Capability</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
@@ -477,7 +477,7 @@ public final class PrettierResourceFormatter {
 	            sb.appendTitledSequenceNoBR("Additional&nbsp;Protocols",sc.getOptionalProtocol());
 	            sb.br();
 	        } else     if (c instanceof ConeCapability) {
-	            ConeCapability cc = (ConeCapability)c;
+	            final ConeCapability cc = (ConeCapability)c;
 	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/cone16.png'>&nbsp;This resource describes a <b>Catalog&nbsp;Cone&nbsp;Search&nbsp;Service</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
@@ -514,7 +514,7 @@ public final class PrettierResourceFormatter {
 	                sb.br();
 	            }
 	        } else if (c instanceof SiapCapability) {
-	            SiapCapability cc = (SiapCapability)c;
+	            final SiapCapability cc = (SiapCapability)c;
 	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/siap16.png'>&nbsp;This resource describes a <b>Image&nbsp;Access&nbsp;Service&nbsp;(SIAP)</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
@@ -536,7 +536,7 @@ public final class PrettierResourceFormatter {
 	                sb.append(sz.getLat()).append(",&nbsp;").append(sz.getLong());
 	                sb.append("&nbsp; ");
 	            }
-	            ImageSize isz = cc.getMaxImageSize();
+	            final ImageSize isz = cc.getMaxImageSize();
 	            if (isz != null) {
 	                sb.appendLabel("Maximum&nbsp;Image&nbsp;Size");
 	                sb.append(isz.getLat()).append(",&nbsp;").append(isz.getLong());
@@ -570,7 +570,7 @@ public final class PrettierResourceFormatter {
 	            }                        
 	            sb.br();
 	        } else if (c instanceof StapCapability) {
-	            StapCapability sc = (StapCapability)c;
+	            final StapCapability sc = (StapCapability)c;
 	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/latest16.png'>&nbsp;This resource describes a <b>Time&nbsp;Series&nbsp;Access&nbsp;Service&nbsp(STAP)</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
@@ -606,7 +606,7 @@ public final class PrettierResourceFormatter {
 	                sb.br();
 	            }	                       
 	        } else if (c instanceof SsapCapability) {
-	            SsapCapability sc = (SsapCapability)c;
+	            final SsapCapability sc = (SsapCapability)c;
 	            sb.append("<img src='classpath:/org/astrogrid/desktop/icons/ssap16.png'>&nbsp;This resource describes a <b>Spectrum&nbsp;Access&nbsp;Service&nbsp;(SSAP)</b>");
 	            sb.br();
 	            formatCapabilityDescription(sb, c);
@@ -661,16 +661,17 @@ public final class PrettierResourceFormatter {
 	            }            
 	        } else if (c.getStandardID() != null && StringUtils.containsIgnoreCase(c.getStandardID().toString(),"availability")) { // loose rule for availability.
 	            sb.append("This resource provides a <b>Service&nbsp;Availability&nbsp;Check</b>");
-	            sb.br();
-	            formatCapabilityDescription(sb, c);
-	            sb.append("<object classid='")
-	            .append(TestAvailabilityButton.class.getName())
-	            .append("'>")
-	            .append("</object>"); 
+	            //sb.br();
+	            //formatCapabilityDescription(sb, c);
+// removed - as availability is now a annotation source.	            
+//	            sb.append("<object classid='")
+//	            .append(TestAvailabilityButton.class.getName())
+//	            .append("'>")
+//	            .append("</object>"); 
 	            sb.br();
 	        }	else { // take a guess.
-	            String capType = c.getType();
-	            String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
+	            final String capType = c.getType();
+	            final String capTypeUnprefixed =capType != null &&  capType.indexOf(":") != -1 
 	            ? StringUtils.substringAfterLast( capType,":")
 	                    : capType;
 	            if ("WebBrowser".equals(capTypeUnprefixed)) {
@@ -695,7 +696,7 @@ public final class PrettierResourceFormatter {
 
 	        // examine the interfaces..
 	        for (int j = 0 ; j < c.getInterfaces().length; j++) {	            
-	            Interface iface = c.getInterfaces()[j];
+	            final Interface iface = c.getInterfaces()[j];
 	            sb.appendTitledObjectNoBR("Interface Type",formatInterfaceType(iface));
 	            sb.appendTitledObjectNoBR("Role",iface.getRole());
 	            sb.appendTitledObjectNoBR("Version",iface.getVersion());
@@ -732,7 +733,7 @@ public final class PrettierResourceFormatter {
 	                }
 	            }
 	            if (iface instanceof WebServiceInterface) {
-	                WebServiceInterface wInterface = (WebServiceInterface)iface;
+	                final WebServiceInterface wInterface = (WebServiceInterface)iface;
 	                final URI[] wsdlURLs = wInterface.getWsdlURLs();
 	                if (wsdlURLs.length > 0) {
 	                    sb.br();
@@ -745,15 +746,15 @@ public final class PrettierResourceFormatter {
 	                    }
 	                } 
 	            }  else if (iface instanceof ParamHttpInterface) {
-	                ParamHttpInterface phi = (ParamHttpInterface)iface;
+	                final ParamHttpInterface phi = (ParamHttpInterface)iface;
 	                sb.br();
 	                sb.appendTitledObjectNoBR("Query&nbsp;Type",phi.getQueryType());
 	                sb.appendTitledObject("Result&nbsp;Type",phi.getResultType());
-	                InputParam[] params = phi.getParams();
+	                final InputParam[] params = phi.getParams();
 	                if (params != null && params.length > 0) {
 	                    sb.append("<table><tr><th>Parameter</th><th>Description</th><th>Type</th><th>Use</th></tr>");
 	                    for (int i = 0; i < params.length; i++) {
-	                        InputParam inputParam = params[i];
+	                        final InputParam inputParam = params[i];
 	                        sb.append("<tr><td>");
 	                        sb.append(inputParam.getName());
 	                        sb.append("</td><td>");
@@ -768,7 +769,7 @@ public final class PrettierResourceFormatter {
 	                            sb.append("&nbsp; ");	                            
 	                        }
 	                        if (inputParam.getDataType() != null) {
-	                            SimpleDataType dataType = inputParam.getDataType();
+	                            final SimpleDataType dataType = inputParam.getDataType();
 	                            sb.append(dataType.getType());
 	                            if (dataType.getArraysize() != null && !  dataType.getArraysize().equals("1")){
 	                                sb.append("&nbsp; ");
@@ -802,7 +803,7 @@ public final class PrettierResourceFormatter {
      * @param sb
      * @param c
      */
-    private static void formatCapabilityDescription(HtmlBuilder sb, Capability c) {
+    private static void formatCapabilityDescription(final HtmlBuilder sb, final Capability c) {
         // validation, and description.
         formatValidation(sb,c.getValidationLevel());
         if (StringUtils.isNotEmpty(c.getDescription())) {
@@ -816,14 +817,14 @@ public final class PrettierResourceFormatter {
      * @param iface
      * @return
      */
-    private static String formatInterfaceType(Interface iface) {
+    private static String formatInterfaceType(final Interface iface) {
         if (iface instanceof WebServiceInterface) {
             return "Web Service";
         } else if (iface instanceof ParamHttpInterface) {
             return "Http Query";
         }
         
-        String type = iface.getType();
+        final String type = iface.getType();
         if (StringUtils.contains(type,"WebBrowser"))  {
                return "Web Form";
         } else if (StringUtils.contains(type,"OAIHTTP")) {
@@ -845,7 +846,7 @@ public final class PrettierResourceFormatter {
 	 * @param sb
 	 * @param content
 	 */
-	private static void formatContent(HtmlBuilder sb, final Content content) {
+	private static void formatContent(final HtmlBuilder sb, final Content content) {
 		if (content != null) {
 		    sb.br();
 	        sb.appendTitledSequenceNoBR("Content&nbsp;Type",content.getType());
@@ -872,7 +873,7 @@ public final class PrettierResourceFormatter {
 		    if ("bibcode".equalsIgnoreCase(source.getFormat())) {
 		        try {
                     sb.appendURI(source.getValue(),new URI(BIBCODE_URL + source.getValue()));
-                } catch (URISyntaxException x) {
+                } catch (final URISyntaxException x) {
                     sb.append(source.getValue());
                 }
 		    } else {
@@ -891,7 +892,7 @@ public final class PrettierResourceFormatter {
 		        if (i > 0) {
 		            sb.append("; ");
 		        }
-		        Relationship rel = rels[i];
+		        final Relationship rel = rels[i];
 		        sb.append(rel.getRelationshipType());
 		        sb.append("&nbsp; ");
 		        for (int j = 0; j < rel.getRelatedResources().length; j++) {

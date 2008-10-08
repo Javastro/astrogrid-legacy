@@ -97,6 +97,10 @@ ANNOTATION SERVICE
 		<inject object="literal:string:AG Science Team" />
 	</object>
 	
+    <object name="vosi" class="org.astrogrid.desktop.modules.votech.VosiAnnotationSource">
+        <inject object="service:ivoa.vosi" />
+    </object>
+    
 	<object name="vomon" class="org.astrogrid.desktop.modules.votech.VomonAnnotationSource">
 		<inject object="service:vomon" />
 	</object>

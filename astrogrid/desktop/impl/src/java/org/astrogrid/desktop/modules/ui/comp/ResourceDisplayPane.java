@@ -3,10 +3,10 @@ package org.astrogrid.desktop.modules.ui.comp;
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 
+import org.astrogrid.acr.ivoa.Vosi;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
-import org.astrogrid.desktop.modules.ivoa.VosiAvailability;
 import org.astrogrid.desktop.modules.ivoa.resource.CapabilityTester;
 import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 
@@ -20,10 +20,10 @@ import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
  */
 public class ResourceDisplayPane extends JEditorPane {
 	private final CapabilityTester capTester;
-    private final VosiAvailability vosiTester;
+    private final Vosi vosiTester;
 	
 	/** construct a display pane with additional support for following hyperlinks */
-	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, CapabilityTester capTester, VosiAvailability vosiTester) {
+	public ResourceDisplayPane(final BrowserControl browser, final RegistryBrowser regBrowser, CapabilityTester capTester, Vosi vosiTester) {
 		this.vosiTester = vosiTester;
         setContentType("text/html");
 		setBorder(null);
@@ -61,7 +61,7 @@ public class ResourceDisplayPane extends JEditorPane {
         return this.capTester;
     }
     /** get a component to fetch vosi availability infomation.*/
-    public final VosiAvailability getAvailabilityTester() {
+    public final Vosi getAvailabilityTester() {
         return this.vosiTester;
     }
 }

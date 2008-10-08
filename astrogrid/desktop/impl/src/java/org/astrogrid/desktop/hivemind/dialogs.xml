@@ -114,14 +114,14 @@ REGISTRY GOOGLE
 			<inject object="service:system.browser" />
 			<inject object="service:ui.registryBrowser" />
             <inject object="service:ivoa.capabilityTester" />
-            <inject object="service:ivoa.availability" />     
+            <inject object="service:ivoa.vosi" />     
 	</object>
 	<object name="annotatedResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.AnnotatedResourceViewer">
 			<inject object="service:system.browser" />
 			<inject object="service:ui.registryBrowser" />
 			<inject object="service:votech.annotate" />
             <inject object="service:ivoa.capabilityTester" />   
-            <inject object="service:ivoa.availability" />        
+            <inject object="service:ivoa.vosi" />        
 	</object>	
 	<object name="tableResourceView" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer">
     </object>

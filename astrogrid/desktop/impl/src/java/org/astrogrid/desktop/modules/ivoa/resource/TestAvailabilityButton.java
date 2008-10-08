@@ -6,20 +6,20 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import org.astrogrid.acr.ivoa.VosiAvailabilityBean;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ivoa.VosiAvailabilityBean;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.ProgrammerError;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
-import org.joda.time.format.PeriodFormat;
-import org.joda.time.format.PeriodFormatter;
 
 /** Button that allows user to test availability.
+ * 
+ * @todo - unused. should remove at some point.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 200810:30:51 PM
  */
@@ -36,7 +36,7 @@ public class TestAvailabilityButton extends ResourceDisplayPaneEmbeddedButton im
         CSH.setHelpIDString(this,"reg.test.availability");        
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         final ResourceDisplayPane displayPane = getResourceDisplayPane(e);
         final Resource r = displayPane.getCurrentResource();
         if (!(r instanceof Service)) {
@@ -48,32 +48,46 @@ public class TestAvailabilityButton extends ResourceDisplayPaneEmbeddedButton im
         (new BackgroundWorker(uiParent,"Checking availability of " + r.getTitle()) {
 
             protected Object construct() throws Exception {
-                return displayPane.getAvailabilityTester().getAvailability((Service)r);                
+                return displayPane.getAvailabilityTester().checkAvailability(r.getId());                
             }
-            protected void doFinished(Object result) {
-                VosiAvailabilityBean b = (VosiAvailabilityBean)result;
+            protected void doFinished(final Object result) {
+                final VosiAvailabilityBean b = (VosiAvailabilityBean)result;
                 if (b.isAvailable()) {
-                    if (b.getValidTill() != null) {
-                        setText("OK until " + b.getValidTill());
+                    setIcon(IconHelper.loadIcon("tick16.png"));
+                    if (b.getDownAt() != null) {
+                        setText("OK until " + b.getDownAt());
                     } else {
                         setText("Service OK");
                     }
-                    setIcon(IconHelper.loadIcon("tick16.png"));
-                    if (b.getUptime() != null) {
-                        setToolTipText("Uptime: " +pFormat.print(b.getUptime()));
-                    }
                     
                 } else {
-                    setText("Service Unavailable");
                     setIcon(IconHelper.loadIcon("no16.png"));                        
+                    if (b.getBackAt() != null) {
+                        setText("Unavailable until " + b.getBackAt());
+                    } else {
+                        setText("Service Unavailable");
+                    }
                 }
+                final StringBuilder sb = new StringBuilder("<html>");
+                if (b.getUpSince()!= null) {
+                    sb.append("Up Since: " +b.getUpSince());
+                }
+                if (b.getNotes() != null) {
+                    final String[] notes = b.getNotes();
+                    for (int i = 0; i < notes.length; i++) {
+                        sb.append("<p>")
+                            .append(notes[i])
+                            .append("</p>");
+                    }                 
+                }
+                
+                setToolTipText(sb.toString());
             }
-            protected void doError(Throwable ex) {
+            protected void doError(final Throwable ex) {
                 setText("Check Failed");
                 setIcon(IconHelper.loadIcon("no16.png"));    
                 setToolTipText(ExceptionFormatter.formatException(ex));
             }
         }).start();
     }
-    private final static PeriodFormatter pFormat = PeriodFormat.getDefault();
-}
+    }
