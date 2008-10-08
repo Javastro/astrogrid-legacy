@@ -9,12 +9,15 @@ See the file web/install.html for installation notes.
 Building from source
 --------------------
 
-To build, it requires Tomcat, Jena, SISC, Jetty and JUnit.  If you
+To build, it requires Tomcat, SISC, Jetty and JUnit.  If you
 want to set up a triple store with the Jena SDB back-end, then you
 will need that distribution, too, along with a JDBC jar file for the
 database you want SDB to sit on top of.  If you want to use TDB for
 persistence (and you probably should, since it's easier than TDB to
-set up, even though it's still more experimental).
+set up, even though it's still more experimental), you'll need that
+distribution.  If you don't want persistence, you need to download the
+plain Jena distribution (both SDB and TDB contain a copy of this,
+compatible with the SDB/TDB version).
 
 Quaestor without TDB works with Java 1.5 and 1.6 (possibly 1.4, though
 that's not tested), and works with Tomcat 5.0.x and 5.5.x.
@@ -22,9 +25,16 @@ that's not tested), and works with Tomcat 5.0.x and 5.5.x.
 It works with Jena 2.5.6 (it might work with 2.5.x).  See
 <http://jena.sourceforge.net>.
 
-SDB is available at <http://jena.sourceforge.net/SDB/>; the system works with SDB-1.0.
+SDB is available at <http://jena.sourceforge.net/SDB/>; the system
+works with SDB-1.0.
 
-TDB requires Java 1.6.
+TDB is available from <http://jena.sourceforge.net/TDB/>; I've used
+TDB-0.5.  TDB requires Java 1.6.
+
+As noted in the build.properties.template file, you choose between
+these possibilities -- SDB, TDB or neither -- by configuring as the
+value of the jena.lib property the .../lib directory in the SDB, TDB
+or Jena distribution.
 
 SISC is available from <http://sisc.sourceforge.net>.  Quaestor works
 with sisc-1.16.x at least, and probably later versions also.  It
