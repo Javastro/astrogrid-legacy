@@ -9,8 +9,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>UWS CEA Results for <c:out value="${JobId}"/> </title>
-</head>
-<body>
+<jsp:include page="../inc/header.jsp" flush="true" />
+<!-- body -->
+<div id="bodyColumn">
+
+<div class="contentBox">
 <c:set var="base" value="${requestContext.requestUri}"></c:set>
 
 <p>Results for <c:out value="${JobId}"/></p>
@@ -44,5 +47,6 @@
       </table>
 
 
-</body>
-</html>
+</div>
+</div>
+<jsp:include page="../inc/footer.jsp" flush="true" />

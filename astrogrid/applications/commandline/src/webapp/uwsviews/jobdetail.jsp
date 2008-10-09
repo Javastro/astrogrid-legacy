@@ -12,8 +12,11 @@
 <meta http-equiv="refresh" content="2" />
 <%} %>
 <title>UWS Job Detail for <c:out value="${JobId}"/></title>
-</head>
-<body>
+<jsp:include page="../inc/header.jsp" flush="true" />
+<!-- body -->
+<div id="bodyColumn">
+
+<div class="contentBox">
 <h1>Job Detail for <c:out value="${JobId}"/></h1>
 <c:set var="base" value="${requestContext.requestUri}"></c:set>
 <table>
@@ -75,6 +78,6 @@
 </c:if>
 <p><a href="${base}/results">Results</a>
 
-
-</body>
-</html>
+</div>
+</div>
+<jsp:include page="../inc/footer.jsp" flush="true" />

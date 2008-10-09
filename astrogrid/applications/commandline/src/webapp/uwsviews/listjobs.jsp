@@ -10,8 +10,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>UWS Jobs</title>
-</head>
-<body>
+<jsp:include page="../inc/header.jsp" flush="true" />
+<!-- body -->
+<div id="bodyColumn">
+
+<div class="contentBox">
 <c:set var="base" value="${requestContext.requestUri}"></c:set>
 
 <h1>UWS Jobs</h1>
@@ -58,6 +61,6 @@
 		</c:forEach>
 	</tbody>
 </table>
-
-</body>
-</html>
+</div>
+</div>
+<jsp:include page="../inc/footer.jsp" flush="true" />
