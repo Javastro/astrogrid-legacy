@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.4 2008/09/18 09:13:39 pah Exp $
+ * $Id: ConfigFileReadingDescriptionLibraryTest.java,v 1.5 2008/10/09 11:48:18 pah Exp $
  * 
  * Created on 26 Aug 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class ConfigFileReadingDescriptionLibraryTest {
     
-    private static ConfigFileReadingDescriptionLibrary lib;
+    private static BaseApplicationDescriptionLibrary lib;
 
     @BeforeClass
     static public void beforeClass() throws Exception{
@@ -89,6 +89,9 @@ public class ConfigFileReadingDescriptionLibraryTest {
 
 /*
  * $Log: ConfigFileReadingDescriptionLibraryTest.java,v $
+ * Revision 1.5  2008/10/09 11:48:18  pah
+ * add dynamic app description library & refactor more funtionality to base class
+ *
  * Revision 1.4  2008/09/18 09:13:39  pah
  * improved javadoc
  *
