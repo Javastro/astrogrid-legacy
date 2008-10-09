@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ceaimp:CeaApplication
+   xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+   xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+   xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+   created="1999-01-01T00:00:00" status="active" updated="2008-09-18T15:19:20.512+01:00"
+>
+   <title>Demo calculator</title>
+   <shortName>DemoCalc</shortName>
+   <identifier>ivo://org.astrogrid.test/Demo
+   </identifier>
+   <curation>
+      <publisher>Astrogrid</publisher>
+      <creator>
+         <name>Astrogrid</name>
+         <logo>http://www.astrogrid.org/images/AGlogo.png
+         </logo>
+      </creator>
+      <date>2004-03-26</date>
+      <version>0.0001</version>
+      <contact>
+         <name>Paul Harrison</name>
+         <email>pah@jb.man.ac.uk</email>
+      </contact>
+   </curation>
+   <content>
+      <subject>???</subject>
+      <description>This is a small application to demonstrate how
+         easy it is to wrap a command line application in CEA
+      </description>
+      <referenceURL>http://www.astrogrid.org/
+      </referenceURL>
+      <type>Other</type>
+   </content>
+   <applicationDefinition > <!-- needs xsi:type="ceaimp:CeaCmdLineApplicationDefinition" chiba cannot cope... -->
+      <applicationType>processing</applicationType>
+      <parameters>
+         <parameterDefinition id="N1" type="text"
+            commandPosition="1" fileRef="no"
+            
+         > <!-- xsi:type="ceaimp:CommandLineParameterDefinition" -->
+            <name>First number</name>
+            <description>The number that is the first argument of the
+               binary operator</description>
+         </parameterDefinition>
+         <parameterDefinition id="N2" type="text"
+            commandPosition="2" fileRef="no"
+            
+         >
+            <name>Second number</name>
+            <description>The number that is the first argument of the
+               binary operator</description>
+         </parameterDefinition>
+         <parameterDefinition id="operator" type="text"
+            commandSwitch="op" fileRef="no"
+           
+         >
+            <name>operator</name>
+            <description>the arithmetic operator to apply to the two
+               numbers</description>
+         </parameterDefinition>
+         <parameterDefinition id="Result" type="text"
+            fileRef="file" localFileName="answer.txt"
+           
+         >
+            <name>Result</name>
+            <description>The number that is the first argument of the
+               binary operand</description>
+         </parameterDefinition>
+      </parameters>
+      <interfaces>
+         <interfaceDefinition id="standard">
+            <input>
+               <pref ref="N1" />
+               <pref ref="N2" />
+               <pref ref="operator" />
+            </input>
+            <output>
+               <pref ref="Result"  />
+            </output>
+            <description>The interface</description>
+         </interfaceDefinition>
+      </interfaces>
+      <executionPath>/Users/pharriso/Work/ag/src/applications/commandline/src/site/resources/demo/myapp.sh</executionPath>
+   </applicationDefinition>
+</ceaimp:CeaApplication>
