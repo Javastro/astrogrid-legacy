@@ -42,10 +42,14 @@
             <li><input type="radio" name="xsiType" value="vr:Service"/>A virtual observatory service.</li>
             <li><input type="radio" name="xsiType" value="vs:CatalogService"/>Catalog service.</li>
             <li><input type="radio" name="xsiType" value="vs:DataCollection"/>A data collection.</li>
-            <li><input type="radio" name="xsiType" value="cea:CeaApplication"/>A CEA application.</li>
-            <li><input type="radio" name="xsiType" value="va:Application"/>A non-CEA application.</li>
+            <li><input type="radio" name="xsiType" value="va:Application"/>An application.</li>
 	    	<li><input type="radio" name="xsiType" value="vr:Organisation"/>An organization.</li>
 	    	<li><input type="radio" name="xsiType" value="vr:Resource"/>None of the above; just a generic resource.</li>
+	    	<!--
+	    		User can do an applicatin and then put in a harvestvosi to turn it into cea if needed.
+	    		But normally CEA will register everything the whole resource itself.
+            <li><input type="radio" name="xsiType" value="cea:CeaApplication"/>A CEA application.</li>	    	
+	    	-->
 	  </ul>
           <p><input type="submit" value="Create this entry"/></p>
         </form>

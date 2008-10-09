@@ -37,6 +37,9 @@ public class VOSIHarvest extends RegistrarServlet {
 			root = null;
 			throw new Exception("Could not determine Node Type to do VOSI Fetch/Harvest");
 		}
+		
+		String xsiType = root.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance","type");
+		System.out.println("xsiType in vosiharvest = " + xsiType);
 		//System.out.println("Element toString of incoming = " + DomHelper.ElementToString(root));
 		
 		//get rid of the tables if there using vosi the xsl
@@ -55,9 +58,11 @@ public class VOSIHarvest extends RegistrarServlet {
 			throw new Exception("No Capabilities to Analyze");
 		}
 		do {
-			//System.out.println("capList length = " + capList.getLength());
+			System.out.println("capList length = " + capList.getLength());
 			if(capList.getLength() > 0) {
-				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#capabilities") ) {
+				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#capabilities") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#capabilities")	||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#capabilities")) {
 					//System.out.println("try to set cap value");
 					urlText= ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
 					for(int j = 0;j < urlText.getLength();j++) {
@@ -68,7 +73,9 @@ public class VOSIHarvest extends RegistrarServlet {
 					}
 					System.out.println("cap url set = " + capURL);
 				}                                                                 ivo://org.astrogrid/std/VOSI/v0.3#tables
-				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#tables") ) {
+				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#tables") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#tables") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#tables")) {
 					//System.out.println("try to set tableURL");
 					urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
 					for(int j = 0;j < urlText.getLength();j++) {
@@ -79,7 +86,9 @@ public class VOSIHarvest extends RegistrarServlet {
 					}					
 					System.out.println("table url set = " + tableURL);
 				}
-				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#ceaApplication") ) {
+				if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#ceaApplication") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#ceaApplication") ||
+					((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#ceaApplication")) {
 					//System.out.println("try to set ceaURL");
 					urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
 					for(int j = 0;j < urlText.getLength();j++) {
@@ -100,7 +109,9 @@ public class VOSIHarvest extends RegistrarServlet {
 			}//if
 		}while(capList.getLength() != 1);
 		
-		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#capabilities") ) {
+		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#capabilities") ||
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#capabilities") ||
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#capabilities")) {
 			//System.out.println("try to set cap value");
 			urlText= ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
 			for(int j = 0;j < urlText.getLength();j++) {
@@ -110,8 +121,10 @@ public class VOSIHarvest extends RegistrarServlet {
 				}
 			}
 			System.out.println("cap url set = " + capURL);
-		}                                                                 ivo://org.astrogrid/std/VOSI/v0.3#tables
-		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#tables") ) {
+		}
+		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#tables") ||
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#tables") ||
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#tables") ) {
 			//System.out.println("try to set tableURL");			
 			urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
 			for(int j = 0;j < urlText.getLength();j++) {
@@ -122,7 +135,9 @@ public class VOSIHarvest extends RegistrarServlet {
 			}					
 			System.out.println("table url set = " + tableURL);
 		}
-		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#ceaApplication") ) {
+		if( ((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.3#ceaApplication") ||
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI/v0.4#ceaApplication") ||
+			((Element)capList.item(0)).getAttribute("standardID").equals("ivo://org.astrogrid/std/VOSI#ceaApplication")) {
 			//System.out.println("try to set ceaURL");
 			urlText = ((Element)capList.item(0)).getElementsByTagName("accessURL").item(0).getChildNodes();
 			for(int j = 0;j < urlText.getLength();j++) {
@@ -151,7 +166,8 @@ public class VOSIHarvest extends RegistrarServlet {
         Node importNode = reg.importNode(((Document)transformer.getResultAsDomNode()).getDocumentElement()/*.getElementsByTagNameNS("*","Resource").item(0)*/,true);
         reg.getDocumentElement().appendChild(importNode);
         
-        if(ceaURL != null && ceaURL.trim().length() > 0) {
+        if(ceaURL != null && ceaURL.trim().length() > 0 && 
+           xsiType != null && xsiType.indexOf("CatalogService") != -1) {
         	transformUrl = this.getClass().getResource("/xsl/VOSICEA.xsl");
         	transformer = new RegistryTransformer(transformUrl);
         	//transformer.setTransformationSource(reg);
