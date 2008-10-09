@@ -1,14 +1,19 @@
 +===============================================================+
-|          BNF for ADQL v2.0 plus RFC amendments                |
+|          BNF for ADQL v2.0 Plus RFC                           |
 +===============================================================+
-This file contains a BNF definition of ADQL, the Astronomical
-Data Query Language, plus amendments made during RFC. 
+This file contains a BNF definition of ADQL, 
+the Astronomical Data Query Language, at the level of v2.0 of 
+ADQL plus comments during the RFC period.
 The elements are arranged in alphabetical order. 
 ADQL is based upon a subset of SQL92 with extensions for
 astronomical usage.
 
 The select statement is found under <query_specification>.
-See also <system_defined_function> and <user_defined_function>
+For region and associated constructs, see...
+<geometry_value_expression>,
+<numeric_geometry_function>,
+<string_geometry_function>
+User defined function is found at <user_defined_function>
 
   <ADQL_language_character> ::=
       <simple_Latin_letter>
@@ -191,14 +196,14 @@ See also <system_defined_function> and <user_defined_function>
 
  <catalog_name> ::= <identifier>
 
-   <centroid> ::= CENTROID <left_paren> <geometry_expression> <right_paren>
+  <centroid> ::= CENTROID <left_paren> <geometry_value_expression> <right_paren>
 
   <character_factor> ::= <character_primary>
   !! For information only, SQL92 supports <collate_clause>
 
   <character_primary> ::= 
       <value_expression_primary>
-    | <user_defined_function>
+    | <string_value_function>
 
  <character_representation> ::= <nonquote_character> | <quote_symbol>
  !! A way of allowing a single quote to be escaped by a single quote.
@@ -246,9 +251,15 @@ See also <system_defined_function> and <user_defined_function>
 
  <concatenation_operator> ::= ||
 
-   <contains_function> ::= CONTAINS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>  
+   <contains> ::= CONTAINS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>  
+
+  <coord1> ::= COORD1 <left_paren> <coord_value> <right_paren>
+
+  <coord2> ::= COORD2 <left_paren> <coord_value> <right_paren>
 
   <coord_sys> ::= <string_value_expression>
+
+   <coord_value> ::= <point> | <column_reference>
 
    <coordinate1> ::= <numeric_value_expression>
 
@@ -293,7 +304,8 @@ See also <system_defined_function> and <user_defined_function>
 
  <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-   <distance_function> ::= DISTANCE <left_paren> <point> <comma> <point> <right_paren>
+  <distance> ::=     
+     DISTANCE <left_paren> <coord_value> <comma> <coord_value> <right_paren>
 
  <double_period> ::= ..
 
@@ -311,6 +323,8 @@ See also <system_defined_function> and <user_defined_function>
 
  <exponent> ::= <signed_integer> 
 
+   <extract_coordsys> ::= COORDSYS <left_paren> <geometry_value_expression> <right_paren>
+
  <factor> ::= [ <sign> ] <numeric_primary> 
 
   <from_clause> ::= FROM <table_reference>
@@ -321,11 +335,16 @@ See also <system_defined_function> and <user_defined_function>
   <general_set_function> ::=
      <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
 
-   <geometry_expression> ::= <point> | <circle> | <box> | <polygon> | <region>
+  <geometry_value_expression> ::= <value_expression_primary> | <geometry_value_function>
 
-   <geometry_value> ::= <column_reference>
-
-   <geometry_value_expression> ::= <geometry_expression> | <geometry_value> | <centroid>
+   <geometry_value_function> ::=
+       <box> 
+     | <centroid> 
+     | <circle> 
+     | <point> 
+     | <polygon> 
+     | <region> 
+     | <user_defined_function>
 
  <greater_than_operator> ::= >
 
@@ -351,7 +370,7 @@ See also <system_defined_function> and <user_defined_function>
   <in_value_list> ::=
       <value_expression> { <comma> <value_expression> } ...
 
-   <intersects_function> ::= INTERSECTS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>
+   <intersects> ::= INTERSECTS <left_paren> <geometry_value_expression> <comma> <geometry_value_expression> <right_paren>
 
  <join_column_list> ::= <column_name_list>
 
@@ -370,8 +389,6 @@ See also <system_defined_function> and <user_defined_function>
 
  <keyword> ::= <SQL_reserved_word> | <ADQL_reserved_word>
 
-   <latitude> ::= LATITUDE <left_paren> <point> <right_paren>
-
  <left_bracket> ::= [
 
  <left_paren> ::= (
@@ -382,8 +399,6 @@ See also <system_defined_function> and <user_defined_function>
 
   <like_predicate> ::=
       <match_value> [ NOT ] LIKE <pattern>
-
-   <longitude> ::= LONGITUDE <left_paren> <point> <right_paren>
 
  <mantissa> ::= <exact_numeric_literal>
 
@@ -413,6 +428,12 @@ See also <system_defined_function> and <user_defined_function>
   <newline> ::= 
   !! Implementation defined end of line indicator
 
+  <non_predicate_geometry_function> ::= 
+     <area>
+   | <coord1>
+   | <coord2> 
+   | <distance>
+
   <nondelimiter_token> ::= 
       <regular_identifier>
     | <keyword>
@@ -432,6 +453,9 @@ See also <system_defined_function> and <user_defined_function>
 
   <null_predicate> ::= <column_reference> IS [ NOT ] NULL
 
+   <numeric_geometry_function> ::=
+      <predicate_geometry_function> | <non_predicate_geometry_function>
+
   <numeric_primary> ::=
       <value_expression_primary>
     | <numeric_value_function>
@@ -441,11 +465,11 @@ See also <system_defined_function> and <user_defined_function>
     | <numeric_value_expression> <plus_sign> <term>
     | <numeric_value_expression> <minus_sign> <term>
 
-   <numeric_value_function> ::=
-       <trig_function>
-     | <math_function>
-     | <user_defined_function>
-     | <system_defined_function>
+  <numeric_value_function> ::= 
+     <trig_function> 
+   | <math_function>	
+   | <numeric_geometry_function>
+   | <user_defined_function>
 
   <order_by_clause> ::= ORDER BY <sort_specification_list>
 
@@ -478,6 +502,8 @@ See also <system_defined_function> and <user_defined_function>
    | <null_predicate>
    | <exists_predicate>
 
+   <predicate_geometry_function> ::= <contains> | <intersects>
+
   <qualified_join> ::=
       <table_reference> [ NATURAL ] [ <join_type> ] JOIN
       <table_reference> [ <join_specification> ]
@@ -500,8 +526,6 @@ See also <system_defined_function> and <user_defined_function>
    <radius> ::= <numeric_value_expression>
 
    <region> ::= REGION <left_paren> <string_value_expression> <right_paren>
-
-    <region_function> ::= <contains_function> | <intersects_function>
 
   <regular_identifier> ::=
       <simple_Latin_letter>... 
@@ -568,17 +592,16 @@ See also <system_defined_function> and <user_defined_function>
   <space> ::=
   !! Imagine there is a space character here
 
+   <string_geometry_function> ::= <extract_coordsys>
+
   <string_value_expression> ::=
       <character_value_expression>
 
-    <subquery> ::= <left_paren> <query_expression> <right_paren>
+   <string_value_function> ::=
+       <string_geometry_function>
+     | <user_defined_function>
 
-   <system_defined_function> ::=
-       <distance_function>
-     | <region_function>
-     | <longitude>
-     | <latitude>
-     | <area>
+    <subquery> ::= <left_paren> <query_expression> <right_paren>
 
   <table_expression> ::=
       <from_clause>
@@ -647,6 +670,7 @@ See also <system_defined_function> and <user_defined_function>
   <value_expression> ::=
       <numeric_value_expression>
     | <string_value_expression>
+    | <geometry_value_expression>
 
   <value_expression_primary> ::=
       <unsigned_value_specification>
