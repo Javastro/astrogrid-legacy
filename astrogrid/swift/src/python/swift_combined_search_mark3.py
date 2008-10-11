@@ -1,4 +1,109 @@
 #!/usr/bin/env python
+"""
+Swift script for combined image and catalogue search.
+
+Inputs: 
+  (1) ra, dec, radius in degrees
+  (2) control file of info regarding VO services
+  (3) path to a directory to contain results
+
+Outputs:
+  (1) image files received from services
+  (2) starHits.csv file of data regarding candidate stars
+  (3) galaxyHits.csv file of data regarding candidate galaxies
+
+Notes.
+  (1) The csv files are sorted rows of comma separated data merged from the different sources.
+      They are sorted on spherical outset distance from the input arguments.
+      Each row is tagged with the source name taken from the control file.
+      As each source can contribute different columns, each value is preceded
+      by a keyword giving its variable name (which maps to a column name).
+  (2) Here is a complete example of a control file, with appropriate comments:
+
+SWIFT SEARCH CONTROL FILE
+######################################################################################
+# Continuation lines are supported by the backslash convention...
+#      line one \
+#      line two
+# Be careful! Continuation lines are horrid if you make a mistake.
+#
+IMAGE SECTION:
+######################################################################################
+# The Image Section contains service ivorns for SIAP searches.
+# The first line contains the minimum and maximum number of images to retrieve 
+# from a given source of images, or its mirrors. If the minimum is achieved, 
+# any siblings will be terminated.
+[ 4 5 ]
+#
+# The following lines obey this format...
+# integer
+# [ short name for service | ivorn of service ]
+#
+# where integer is the number of services to use as alternatives for a given source.
+# What is an 'alternative' is down to your judgement. It could be a complete mirror,
+# or something much looser.
+######################################################################################
+# DSS Image:
+2
+[ESO_DSS | ivo://archive.eso.org/dss]
+[HEARSARC | ivo://nasa.heasarc/skyview/dss2]
+#
+# 2Mass Image:
+2
+[IRSA2 | ivo://irsa.ipac/2MASS-QL]
+[NED | ivo://ned.ipac/Image]
+
+CATALOGUE SECTION:
+######################################################################################
+# The Catalogue Section contains service ivorns and associated data for cone searches.
+#
+# The format is...
+# integer
+# [ short name for service | service ivorn | table name | column names | search function name ]
+#
+# where:
+#  . integer is the number of services to use as alternatives for a given source.
+#    What is an 'alternative' is down to your judgement. It could be a complete mirror,
+#    or something much looser.
+#  . table name (if required, but leave blank for the moment!)
+#  . column names are a set of paired mappings of column names to variables names 
+#    eg:  Bmag:B where Bmag is column name and B is variable name  
+#  . The search function name is a real function name in the code, so beware!
+#    There are three sorts: two generic functions (searchStars and searchGalaxies)
+#    and one where code has to be hand crafted to decide between stars and galaxies.
+#    Look at the comments below and the associated function names.   
+#  . If Dist appears as a partner in a column:variable name combination, it is 
+#    assumed to be the spherical offset distance calculated and returned by the 
+#    service. If it does not appear, it is calculated by the script and inserted
+#    into the final results (eg: see entries for 6df below).
+#####################################################################################
+# SDSS for stars and galaxies:
+1
+[SDSS | ivo://CDS.VizieR/II/276 |  | _r:Dist RAJ2000:RA DEJ2000:Dec umag:u gmag:g rmag:R imag:i zmag:z | searchSDSS ]
+#
+# APM for galaxies:
+1
+[APM-N | ivo://CDS.VizieR/I/267 |  | _r:Dist RAJ2000:RA DEJ2000:Dec rmag:R rDiam:RDiam bmag:B \ 
+  bDiam:BDiam APM-ID:id | searchGalaxies ]
+#
+# PSCz for galaxies:
+1
+[PSCz | ivo://CDS.VizieR/VII/221 |  | _r:Dist _RAJ2000:RA _DEJ2000:Dec Bmag:B MajAxiO:Maj \
+  MinAxiO:Min recno:recno | searchGalaxies  ]
+#
+# USNO for stars and galaxies:
+1
+[USNO-B1 | ivo://CDS.VizieR/I/284 |  | _r:Dist RAJ2000:RA DEJ2000:Dec B1mag:B1 R1mag:R1 B2mag:B2 \
+  R2mag:R2 Imag:I USNO-B1.0:id | searchUSNO ]
+#
+# 2MASS for stars:
+1
+[2MASS | ivo://CDS.VizieR/II/246 |  | _r:Dist RAJ2000:RA DEJ2000:Dec Jmag:j Hmag:h Kmag:k | searchStars  ]
+#
+# 6df for galaxies:
+1
+[6df | ivo://wfau.roe.ac.uk/6df-dsa/wsa |  | RA:RA DEC:Dec J:j H:h K:k TARGETNAME:id | searchGalaxies ]
+"""
 import string, sys, os, time, thread, math
 import xmlrpclib
 from astrogrid import acr
@@ -9,7 +114,8 @@ from urlparse import *
 from math import *
 
 #=================================================================
-#		Swift combined image and catalogue search.
+#   Look for comment 'Mainline' for the main process logic.
+#   It is at the bottom of this script.
 #
 # Notes:
 # (1) What if the service has more than one table?
@@ -145,35 +251,6 @@ class ConeSearch( Service ):
 	# Good for debugging.
 	def __str__( self ):
 		return Service.__str__( self ) + 'Search function name: ' + self.searchFunctionName + '\n'
-	#
-	#
-	#
-	def sphericalDistance( ra1, dec1, ra2, dec2 ):
-		if TRACE: print 'entry: sphericalDistance()' 
-		ra1 = float( ra1 )
-		ra2 = float( ra2 )
-		dec1 = float( dec1 )
-		dec2 = float( dec2 ) 
-		if DEBUG: print 'ra1, dec1, ra2, dec2: ', ra1, dec1, ra2, dec2
-		if ra1 >= 180.0: ra1 = 360.0 - ra1
-		ra1 = ra1 * math.pi/180.0
-
-		if ra2 >= 180.0: ra2 = 360.0 - ra2
-		ra2 = ra2 * math.pi/180.0
-
-		if dec1 >= 180.0: dec1 = 360.0 - dec1
-		dec1 = dec1 * math.pi/180.0
-
-		if dec2 >= 180.0: dec2 = 360.0 - dec2
-		dec2 = dec2 * math.pi/180.0
- 
-		ang = acos( cos(dec1)*cos(dec2)*cos(ra2-ra1) + sin(dec1)*sin(dec2) )
-		ang = abs(ang)
-#		asec = ang * 648000.0 / math.pi
-		if DEBUG: print 'calculated DIST: ', ang
-		if TRACE: print 'exit: sphericalDistance()' 
-		return ang
-	sphericalDistance = Callable( sphericalDistance )
 
 	#
 	#	Uses the results votable to form a more friendly map of those
@@ -200,7 +277,7 @@ class ConeSearch( Service ):
 		if EXTREME_TRACE: print 'formNullValuesMap() exit'
 		return nullVals
 	#
-	# Uses the nullsMap, the value returned and the index
+	# Uses the nullsMap, the value and the index
 	# to return a usable value (ie: not null) or the python
 	# equivalent of null (the None object).
 	def testAndSetNull( self, x, index, nullsMap ):
@@ -594,8 +671,34 @@ class SiapSearch( Service ):
 			filePath = odir + os.sep + fname
 			infile = urlopen( url )
 			outfile = file( filePath, "wb" )
-			outfile.write( infile.read () )
-			fileOK = True	
+#
+# Unfortunately, this strategy retrieves the whole file as one string
+# before writing...
+#			outfile.write( infile.read () )
+#			fileOK = True	
+
+#
+# This strategy allows the writing of large files without huge memory
+# consumption, and also allows the writing to be interrupted...
+			while True:
+				# Read a 32K chunk...
+				chunk = infile.read( 32768 ) 
+				#
+				# Test for EOF...
+				if not chunk: 
+					fileOK = True	
+					break
+				#
+				# Check to see whether we should end prematurely, by request.
+				# If so, close the file and delete it, otherwise we will have
+				# a corrupted/truncated file...
+				if self.terminateFlag.isSet():	
+					infile.close()				
+					os.remove( filePath )
+					if DEBUG: print "Removed file before completion: ", filePath
+					break 
+				outfile.write( chunk )
+		
 		except Exception, e:
 			if DEBUG: print "Failed to retrieve image from ", url, e
 	
@@ -653,7 +756,8 @@ class ServiceGroup:
 	
 	#
 	# This is the function triggered on each thread.
-	def dispatchSearch( service, dummyArg ):
+	# (The syntax is correct. It is passed a tuple of one argument)
+	def dispatchSearch( service, ):
 		if TRACE: print 'enter: dispatchSearch() for service ' + service.name
 		service.searchAndRetrieve()
 		if TRACE: print 'exit: dispatchSearch() for service ' + service.name
@@ -778,6 +882,36 @@ class Hits:
 		sortedList.sort( Hits.cmpOnSphericalDistance )
 		return sortedList
 
+	#
+	#
+	#
+	def sphericalDistance( ra1, dec1, ra2, dec2 ):
+		if TRACE: print 'entry: sphericalDistance()' 
+		ra1 = float( ra1 )
+		ra2 = float( ra2 )
+		dec1 = float( dec1 )
+		dec2 = float( dec2 ) 
+		if DEBUG: print 'ra1, dec1, ra2, dec2: ', ra1, dec1, ra2, dec2
+		if ra1 >= 180.0: ra1 = 360.0 - ra1
+		ra1 = ra1 * math.pi/180.0
+
+		if ra2 >= 180.0: ra2 = 360.0 - ra2
+		ra2 = ra2 * math.pi/180.0
+
+		if dec1 >= 180.0: dec1 = 360.0 - dec1
+		dec1 = dec1 * math.pi/180.0
+
+		if dec2 >= 180.0: dec2 = 360.0 - dec2
+		dec2 = dec2 * math.pi/180.0
+ 
+		ang = acos( cos(dec1)*cos(dec2)*cos(ra2-ra1) + sin(dec1)*sin(dec2) )
+		ang = abs(ang)
+#		asec = ang * 648000.0 / math.pi
+		if DEBUG: print 'calculated DIST: ', ang
+		if TRACE: print 'exit: sphericalDistance()' 
+		return ang
+	sphericalDistance = Callable( sphericalDistance )
+
 	def formDist( service, row ):
 		colvarNames = service.columnList
 		ra1 = service.ra
@@ -795,7 +929,7 @@ class Hits:
 				if ra2 != None and dec2 != None:
 					break
 			i += 1
-		sd = ConeSearch.sphericalDistance( ra1, dec1, ra2, dec2 )
+		sd = Hits.sphericalDistance( ra1, dec1, ra2, dec2 )
 		return sd
 	formDist = Callable( formDist )
  
@@ -857,7 +991,7 @@ class TerminateFlag:
 def validateArgs():
 	# If no arguments were given, print a helpful message
 	if len(sys.argv)!=6:
-		if ERROR: print 'Usage: ra dec radius file_of_ivorns results_directory'
+		if ERROR: print 'Usage: ra dec radius control_file results_directory'
 		sys.exit(1)
 
 	ra = float( sys.argv[1] )
@@ -929,7 +1063,7 @@ def processImageLine( line, minimages, maximages, ra, dec, radius ):
 # For each image source we wish to search, there is a list of alternative ivorns.
 # For example, if we wished to search three image sources and there were
 # two alternative services providing images for each source, that would
-# make 6 ivorns altogether. We would return 3 ServiceGroups
+# make 6 ivorns altogether. We would return 3 ServiceGroups.
 #
 # Returns a list of ServiceGroups
 #
@@ -1065,7 +1199,7 @@ if FEEDBACK: print 'Started at: ' + time.strftime('%T')
 ( ra, dec, radius, ifile, odir ) = validateArgs()
 if DEBUG: print ra, dec, radius, ifile, odir
 #
-# Retrieve ivorns for the sources we wish to search...
+# Retrieve ivorns plus controls for the sources we wish to search...
 serviceGroups = processControlFile( ra, dec, radius, ifile )
 #
 # Create the overall search output directory...
@@ -1084,14 +1218,13 @@ if DEBUG: print 'maxCount: ', maxCount
 for i in range (1, maxCount+1):
 	for serviceGroup in serviceGroups:
 		service = serviceGroup.getDispatchableService()
-		# pool expects a tuple, and I don't seem to be able
-		# to create a tuple of one argument, so here is
-		# a tuple of two, one of which is null...
+		# pool expects a tuple.
+		# Here it is passed a tuple of one argument.
 		if service != None:
-			input = ( service, None )
+			input = ( service, )
 			pool.put( input )
 #
-# Now observe the real work:
+# Now observe the real work happening on different threads:
 # Print information while executing...
 i=0
 while 1 :
