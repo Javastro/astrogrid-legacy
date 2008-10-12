@@ -78,6 +78,11 @@
         "<p>hello <![CDATA[ping<&and stuff]]></p>\n"
         (sexp-xml:sexp->xml '(p "hello " (*CDATA* "ping<&" "and stuff"))))
 
+;; Make sure we don't collapse if we get a #f unexpectedly
+(expect sexp->xml-false
+        "<p>hello !</p>\n"
+        (sexp-xml:sexp->xml '(p "hello " #f "!")))
+
 (expect escape-string-for-xml
         "hello&lt;there&amp;again&gt;"
         (sexp-xml:escape-string-for-xml "hello<there&again>"))

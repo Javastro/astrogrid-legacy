@@ -50,6 +50,14 @@
 ;;                       (body (p (@ (class simple)) hello))))
 ;;        => "<html>\n<head>\n<title>SEXPs</title>\n ..."
 ;;
+;; We can also handle PIs, CTYPE marked sections, and comments:
+;;     (sexp->xml '(*PI* "content")) => "<?content?>"
+;;     (sexp->xml '(*CDATA* "hello<&" "more")) => "<![CDATA[hello<&more]]>"
+;;     (sexp->xml '(*COMMENT* "comment" "stuff")) => "<!--commentstuff-->"
+;;
+;; Any content other than an element type which is #f, we simply ignore
+;;     (sexp->xml '(p "Hello" #f "!")) => "Hello!"
+;;
 ;; SEXP-XML:ESCAPE-STRING-FOR-XML string -> string
 ;;
 ;; Given a string, return the string with < and & characters escaped.
@@ -428,6 +436,8 @@
         (para-elems  (and (> (length opts) 1)
                           (cadr opts))))
     (cond
+     ((not s)                           ;we've found a #f in the list
+      #f)                               ;just skip it
      ((string? s)
       (display s port))
 
