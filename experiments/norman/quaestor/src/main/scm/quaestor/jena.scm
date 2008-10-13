@@ -433,10 +433,10 @@
                      (format-error-record m)
                      logger-msgs)
             (close stream)              ;might help...
-            (report-exception 'ingest-from-stream
+            (report-exception 'rdf:ingest-from-stream/language
                               (or exception
                                   '|SC_BAD_REQUEST|)
-                              "Error reading ~a~%~a~%~a"
+                              "Error reading ~a~%Error: ~a~%Logger:~a"
                               (as-scheme-string base-uri)
                               (format-error-record m)
                               logger-msgs)))
