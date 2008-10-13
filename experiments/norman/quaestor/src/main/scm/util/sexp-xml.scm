@@ -55,7 +55,9 @@
 ;;     (sexp->xml '(*CDATA* "hello<&" "more")) => "<![CDATA[hello<&more]]>"
 ;;     (sexp->xml '(*COMMENT* "comment" "stuff")) => "<!--commentstuff-->"
 ;;
-;; Any content other than an element type which is #f, we simply ignore
+;; If we fina a Java object, we include the result of calling its .toString() method.
+;;
+;; Any content other than an element type which is #f, we simply ignore:
 ;;     (sexp->xml '(p "Hello" #f "!")) => "Hello!"
 ;;
 ;; SEXP-XML:ESCAPE-STRING-FOR-XML string -> string
@@ -431,6 +433,7 @@
         (get-output-string string-port))))
 
 (define (sexp->xml* port s . opts)
+  (define-generic-java-method to-string)
   (let ((block-elems (and (> (length opts) 0)
                           (car opts)))
         (para-elems  (and (> (length opts) 1)
@@ -438,6 +441,8 @@
     (cond
      ((not s)                           ;we've found a #f in the list
       #f)                               ;just skip it
+     ((java-object? s)
+      (display (->string (to-string s)) port))
      ((string? s)
       (display s port))
 

@@ -71,9 +71,12 @@
         "<p>hello <em>there</em></p>\n"
         (sexp-xml:sexp->xml '(p "hello " (em there))))
 
+;; Check PIs
 (expect sexp->xml-pi
         "<p>hello<?xml version='1.0'?></p>\n"
         (sexp-xml:sexp->xml '(p "hello" (*PI* "xml version='1.0'"))))
+
+;; Check CDATA
 (expect sexp->xml-cdata
         "<p>hello <![CDATA[ping<&and stuff]]></p>\n"
         (sexp-xml:sexp->xml '(p "hello " (*CDATA* "ping<&" "and stuff"))))
@@ -82,6 +85,11 @@
 (expect sexp->xml-false
         "<p>hello !</p>\n"
         (sexp-xml:sexp->xml '(p "hello " #f "!")))
+
+;; Check we don't blow up if we're given a Java object
+(expect sexp->xml-java
+        "<p>Hello world</p>\n"
+        (sexp-xml:sexp->xml `(p "Hello " ,(->jstring "world"))))
 
 (expect escape-string-for-xml
         "hello&lt;there&amp;again&gt;"
