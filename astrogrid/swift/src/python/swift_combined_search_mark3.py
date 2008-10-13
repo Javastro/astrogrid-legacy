@@ -534,7 +534,7 @@ class ConeSearch( Service ):
 				try:
 					self.votable = utils.read_votable( res, ofmt='votable' )
 					if len( self.votable.getDataRows() ) == 0 : 
-						if DEBUG: print self.name + ': no hits!'
+						if WARN: print self.name + ': no hits!'
 					elif self.terminateFlag.isSet():
 						if FEEDBACK: print self.service.name + ' has been terminated prematurely!'
 						return
@@ -546,10 +546,9 @@ class ConeSearch( Service ):
 				except Exception, e1:
 					if ERROR: print self.name + ': bad vot: ', e1
 			else:
-				if DEBUG: print self.name + ': no result vot!'	
+				if WARN: print self.name + ': no result vot!'	
 		except Exception, e2:
-			if DEBUG: print self.name + ' cone Search failed: ', e2
-			if FEEDBACK: print self.name + ' returned this number of rows: 0'	
+			if ERROR: print self.name + ' cone Search failed. Incorrect URL?', e2
 		self.terminateFlag.set()
 		if TRACE: print 'exit: coneSearchAndRetrieve() for ' + self.name
 		return	
@@ -601,11 +600,11 @@ class SiapSearch( Service ):
 					if countImages >= self.minimages :
 						self.terminateFlag.set()
 				except:
-					if FEEDBACKL: print self.name + ': bad vot!'
+					if WARN: print self.name + ': bad vot!'
 			else:
-				if FEEDBACK: print self.name + ': no result!'
+				if WARN: print self.name + ': no result!'
 		except Exception, e2:
-			if ERROR: print self.name + ' image Search failed: ', e2	
+			if ERROR: print self.name + ' image Search failed. Incorrect URL? ', e2	
 		if TRACE: print 'exit: searchAndRetrieve()'
 		return
 	# end of searchAndRetrieve()
