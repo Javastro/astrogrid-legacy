@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.5 2008/03/18 17:30:28 kea Exp $
+/*$Id: ConeResources.java,v 1.6 2008/10/13 10:51:35 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,8 @@ package org.astrogrid.dataservice.service.cone.v1_0;
 
 import java.io.IOException;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.service.ServletHelper;
+//import org.astrogrid.dataservice.service.ServletHelper;
+import org.astrogrid.dataservice.metadata.MetadataHelper;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.metadata.TableInfo;
 
@@ -89,7 +90,7 @@ public class ConeResources {
              ", " +tabName +": cone search</description>\n" +
          "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\">\n" + 
          "      <accessURL use=\"base\">" + 
-            ServletHelper.getUrlStem()+"SubmitCone?DSACAT="+
+            MetadataHelper.getInstallationBaseURL()+"SubmitCone?DSACAT="+
                catName+"&amp;DSATAB="+tabName+"&amp;" + "</accessURL>\n" +
          "    </interface>\n" +
          "    <maxSR>" + Double.toString(maxRadius) + "</maxSR>\n" +

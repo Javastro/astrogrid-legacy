@@ -11,9 +11,11 @@ import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionGeneratorBase;
+import org.astrogrid.dataservice.metadata.MetadataHelper;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourceSupportBase;
+
 //import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 
 // v1.0 resources
@@ -224,6 +226,18 @@ public class VoDescriptionGenerator extends VoDescriptionGeneratorBase {
                   VORESOURCES_START+coreStuff, closeResource+VORESOURCES_END, 
                   CeaResources.class.toString());
          }
+			// Now add delegation servlet capability
+			capabilities = 
+				"<capability standardID=\"ivo://ivoa.net/std/Delegation\">" +
+				"  <interface xsi:type=\"vs:ParamHTTP\">" +
+				"    <accessURL use=\"full\">" +
+				MetadataHelper.getInstallationBaseURL()+"delegations"+
+				"</accessURL>" +
+				"  </interface>" +
+				"</capability>";
+          checkAndAppendSubelements(vod, capabilities, 
+                VORESOURCES_START+coreStuff, closeResource+VORESOURCES_END, 
+                VoDescriptionGenerator.class.toString());
 
          // Now add any table descriptions available
          String catID = 

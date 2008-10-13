@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.12 2008/02/07 17:27:45 clq2 Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.13 2008/10/13 10:51:35 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -174,6 +174,9 @@ public class DatacenterApplicationTest extends TestCase {
       
       //check query thinks it completed OK
       QuerierStatus qStat = ds.getQueryStatus(LoginAccount.ANONYMOUS, app.getQuerierId());
+      assertNotNull(app.getQuerierId());
+      assertNotNull(qStat.asFullMessage());
+      assertNotNull(qStat.getStage());
       assertEquals("Querier "+app.getQuerierId()+" error: "+qStat.asFullMessage(), QuerierStatus.COMPLETE, qStat.getStage());
       
       // check we completed ok.
@@ -310,6 +313,12 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.13  2008/10/13 10:51:35  clq2
+ PAL_KEA_2799
+
+ Revision 1.12.20.1  2008/09/09 13:14:30  gtr
+ I added extra "x not null" checks.
+
  Revision 1.12  2008/02/07 17:27:45  clq2
  PAL_KEA_2518
 

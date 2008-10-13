@@ -1,5 +1,5 @@
 /*
- * $Id: VoTypes.java,v 1.7 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: VoTypes.java,v 1.8 2008/10/13 10:51:35 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.dataservice.metadata;
 
 import java.util.Date;
+import java.math.BigInteger;
 
 
 /**
@@ -56,6 +57,9 @@ public class VoTypes  {
       else if (javatype == Integer.class) {  
         return "<dataType>" + INT + "</dataType>"; 
       }
+      else if (javatype == BigInteger.class) {  
+        return "<dataType>" + LONG + "</dataType>"; 
+      }
       else if (javatype == Long.class)    {  
         return "<dataType>" + LONG     + "</dataType>"; 
       }
@@ -97,7 +101,7 @@ public class VoTypes  {
       else if (javatype == Short.class)  {  
         return "datatype='"+SHORT+"'";    
       }
-      else if (javatype == Integer.class) {  
+      else if (javatype == java.math.BigInteger.class) {  
         return "datatype='"+INT+"'";     
       }
       else if (javatype == Long.class)    {  
@@ -141,6 +145,9 @@ public class VoTypes  {
         return "datatype='"+SHORT+"'";     
       }
       else if (javatype == Integer.class) {  
+        return "datatype='"+INT+"'";     
+      }
+      else if (javatype == java.math.BigInteger.class) {  
         return "datatype='"+INT+"'";     
       }
       else if (javatype == Long.class)    {  
@@ -200,6 +207,12 @@ public class VoTypes  {
 
 /*
  $Log: VoTypes.java,v $
+ Revision 1.8  2008/10/13 10:51:35  clq2
+ PAL_KEA_2799
+
+ Revision 1.7.50.1  2008/10/03 15:31:01  kea
+ Tweak for missing new java.math.BigInteger result.
+
  Revision 1.7  2007/02/20 12:22:16  clq2
  PAL_KEA_2062
 

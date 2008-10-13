@@ -36,6 +36,20 @@ public class MetadataHelper {
    protected static String errorMessage = 
       "Your configuration is incorrect!  Please run the DSA self-tests for more information.";
 
+	/** Supplies the base URL of the installation (extracted from config) */
+	public static String getInstallationBaseURL() throws MetadataException 
+	{
+		String serverRoot = ConfigFactory.getCommonConfig().getString(
+             "datacenter.url");
+      if ((serverRoot == null) || ("".equals(serverRoot))) {
+         throw new MetadataException(errorMessage);
+      }
+		if (!serverRoot.endsWith("/")) {
+			serverRoot = serverRoot+"/";
+		}
+		return serverRoot;
+	}
+
    /** Produces an HTML table containing links for viewing the XML
     * produced by the various VOSI-style endpoints
     */
@@ -57,11 +71,22 @@ public class MetadataHelper {
          throw new MetadataException("No catalogs are defined!"); 
       }
       // Get the required properties
-      String serverRoot = ConfigFactory.getCommonConfig().getString(
+		String serverRoot = "";
+
+		// HORRIBLE kludge for samplestars case - may fail if this 
+		// method is used in other jsp pages than admin/resources.jsp
+		String plugin = ConfigFactory.getCommonConfig().getString(
+				         "datacenter.querier.plugin");
+		if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+			serverRoot = "..";
+		}
+		else {
+      	serverRoot = ConfigFactory.getCommonConfig().getString(
              "datacenter.url");
-      if ((serverRoot == null) || ("".equals(serverRoot))) {
-         throw new MetadataException(errorMessage);
-      }
+			if ((serverRoot == null) || ("".equals(serverRoot))) {
+				throw new MetadataException(errorMessage);
+			}
+		}
       if (!serverRoot.endsWith("/")) {
          serverRoot = serverRoot + "/";
       }

@@ -1,3 +1,23 @@
+2008.2
+---------
+
+* Ticket BZ2799
+  Added the AstroGrid delegation servlet to the DSA, and added support
+  for authentication using delegated credentials.  At the moment, the
+  main use of these delegated credentials is to provide secured access
+  to VOSpace.
+
+* Ticket BZ2846
+  Added full support for VOSpace, so results may be delivered to 
+  VOSpace servers using VOSpace protocols (rather than the old 
+  MySpace protocols).
+
+* Ticket BZ2837
+* Ticket BZ2777
+  Bugfixes to Resources JSP page when running in sample mode against
+  test dataset.
+
+
 2008.1.01
 ---------
 

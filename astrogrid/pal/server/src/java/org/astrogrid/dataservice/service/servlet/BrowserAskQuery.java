@@ -1,5 +1,5 @@
 /*
- * $Id: BrowserAskQuery.java,v 1.6 2008/01/09 16:57:06 kea Exp $
+ * $Id: BrowserAskQuery.java,v 1.7 2008/10/13 10:51:35 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -13,6 +13,7 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.query.Query;
+import org.astrogrid.security.HttpsServiceSecurityGuard;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 
@@ -54,6 +55,12 @@ public class BrowserAskQuery extends DefaultServlet {
                server.askQuery(user, query, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via BrowserAskQuery servlet");
             }
             else {
+               // Cache credentials for use in call to VOSpace.
+               HttpsServiceSecurityGuard sg = new HttpsServiceSecurityGuard();
+               sg.loadHttpsAuthentication(request);
+               sg.loadDelegation();
+               query.setGuard(sg);
+               
                //target given, so ask query, returning status when complete
                String id = server.submitQuery(user, query, request.getRemoteAddr()+" via BrowserAskQuery servlet");
                response.sendRedirect("admin/queryStatus.jsp?ID="+id);

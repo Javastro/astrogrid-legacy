@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.11 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.12 2008/10/13 10:51:35 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,12 +93,25 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         pico.registerComponentImplementation(DataServer.class,DataServer.class);
         pico.registerComponentImplementation(QueuedExecutor.class,CeaQueuedExecutor.class);
         pico.registerComponentImplementation(Configuration.class, BaseConfiguration.class);
+        
+        // This is the generic protocol for VOSpace. Eventually, the CEA core
+        // will include this by default, at which point this line has to be
+        // taken out of DSA. We're superimposing it on an old version of the CEA 
+        // core.
+        pico.registerComponentImplementation(VosProtocol.class);
     }
+    
 }
 
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.12  2008/10/13 10:51:35  clq2
+PAL_KEA_2799
+
+Revision 1.11.36.1  2008/09/11 15:22:54  gtr
+It now adds a protocol module for vos://.
+
 Revision 1.11  2007/09/07 09:30:51  clq2
 PAL_KEA_2235
 

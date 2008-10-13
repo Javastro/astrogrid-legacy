@@ -1,8 +1,10 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.2 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: AxisDataService_v06.java,v 1.3 2008/10/13 10:51:36 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
+
+// "KONA FIXME REMOVE THIS CLASS"
 
 package org.astrogrid.dataservice.service.soap;
 
@@ -274,6 +276,12 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.3  2008/10/13 10:51:36  clq2
+PAL_KEA_2799
+
+Revision 1.2.70.1  2008/09/09 13:19:06  gtr
+Marked for disposal.
+
 Revision 1.2  2006/06/15 16:50:10  clq2
 PAL_KEA_1612
 

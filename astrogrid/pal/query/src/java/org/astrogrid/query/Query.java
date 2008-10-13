@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.14 2008/02/14 15:02:00 clq2 Exp $
+ * $Id: Query.java,v 1.15 2008/10/13 10:51:35 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.Piper;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
 
@@ -101,6 +102,11 @@ public class Query  {
    
    /** For xmlbeans validation against schema */
    private static XmlOptions xmlOptions;
+   
+   /**
+    * The collection of credentials associated with the query.
+    */
+   private SecurityGuard guard;
 
    /* NB THESE ARE FOR FUTURE USE - NOT USED AT THE MOMENT */
    public final static String ADQL_SOURCE = "adql"; 
@@ -319,6 +325,28 @@ public class Query  {
     */
    public void setResultsDef(ReturnSpec spec) {
       this.results = spec;
+   }
+   
+   /**
+    * Reveals the credentials associated with the query.
+    * The result of this method is never null but might be a SecurityGuard
+    * that contains no useful credentials.
+    *
+    * @return The credentials (never null).
+    */
+   public SecurityGuard getGuard() {
+     return (this.guard == null)? new SecurityGuard() : this.guard;
+   }
+   
+   /**
+    * Records the credentials associated with the query.
+    * Passing null credentials erases the memory of credentials previously
+    * stored.
+    *
+    * @param guard The credentials.
+    */
+   public void setGuard(SecurityGuard guard) {
+     this.guard = guard;
    }
 
    /**

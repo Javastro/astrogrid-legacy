@@ -1,5 +1,5 @@
 /*
- * $Id: StdDataTypes.java,v 1.3 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: StdDataTypes.java,v 1.4 2008/10/13 10:51:35 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,7 @@ package org.astrogrid.dataservice.metadata;
  */
 
 import java.util.Date;
+import java.math.BigInteger;
 import org.astrogrid.tableserver.out.VoTableWriter;
 
 public class StdDataTypes  {
@@ -45,6 +46,7 @@ public class StdDataTypes  {
       else if (javatype == Byte.class)      {  return SHORT;   }
       else if (javatype == Short.class)     {  return SHORT;   }
       else if (javatype == Integer.class)   {  return INT;     }
+      else if (javatype == java.math.BigInteger.class)   {  return INT;     }
       else if (javatype == Long.class)      {  return LONG;    }
       else if (javatype == Float.class)     {  return FLOAT;   }
       else if (javatype == Double.class)    {  return DOUBLE;  }
@@ -82,6 +84,12 @@ public class StdDataTypes  {
 
 /*
  $Log: StdDataTypes.java,v $
+ Revision 1.4  2008/10/13 10:51:35  clq2
+ PAL_KEA_2799
+
+ Revision 1.3.60.1  2008/10/03 15:31:01  kea
+ Tweak for missing new java.math.BigInteger result.
+
  Revision 1.3  2006/09/26 15:34:42  clq2
  SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
 

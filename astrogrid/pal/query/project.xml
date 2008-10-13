@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.14 2007/06/08 13:16:12 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.15 2008/10/13 10:51:35 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -89,6 +89,13 @@
          <artifactId>astrogrid-pal-slinger</artifactId>
          <groupId>org.astrogrid</groupId>
          <version>${astrogrid.pal.latest}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-security</artifactId>
+        <version>${astrogrid.security.version}</version>
+        <type>jar</type>
       </dependency>
 
       <!-- XMLUtils for unit tests - used by astrogrid/xml at the moment.

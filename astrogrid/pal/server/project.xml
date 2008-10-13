@@ -19,6 +19,29 @@
    </licenses>
 
   <dependencies>
+
+ <!-- For vospace -->
+  <dependency>
+     <artifactId>astrogrid-vospace-delegate</artifactId>
+     <groupId>org.astrogrid</groupId>
+     <version>${astrogrid.vospace.version}</version>
+  </dependency>
+  <dependency>
+     <artifactId>astrogrid-vospace-1.1-client</artifactId>
+     <groupId>org.astrogrid</groupId>
+     <version>${astrogrid.vospace.version}</version>
+  </dependency>
+  <dependency>
+     <artifactId>astrogrid-vospace-util</artifactId>
+     <groupId>org.astrogrid</groupId>
+     <version>${astrogrid.vospace.version}</version>
+  </dependency>
+  <dependency>
+     <artifactId>astrogrid-vospace-1.1-schema</artifactId>
+     <groupId>org.astrogrid</groupId>
+     <version>${astrogrid.vospace.version}</version>
+	</dependency>
+
     <!-- astrogrid -specific deps -->
     <dependency>
       <id>astrogrid-common</id>
@@ -174,6 +197,28 @@
       <groupId>org.astrogrid</groupId>
       <version>${astrogrid.pal.latest}</version>
     </dependency>
+    
+    
+        <dependency>
+            <artifactId>astrogrid-vospace-delegate</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-vospace-1.1-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-vospace-util</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-vospace-1.1-schema</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
 
     <dependency>
       <id>stil</id>

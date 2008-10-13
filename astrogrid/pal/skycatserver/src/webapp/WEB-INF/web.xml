@@ -73,6 +73,13 @@
     <servlet-class>org.astrogrid.dataservice.service.servlet.VosiServlet</servlet-class>
   </servlet>
 
+  <!-- Security/delegation servlet -->
+  <servlet>
+    <servlet-name>DelegationServlet</servlet-name>
+    <description>Manages delegated security credentials</description>
+    <servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class>
+  </servlet>
+
   <!-- Admin servlets -->
   <servlet>
     <servlet-name>GetLog</servlet-name>
@@ -118,6 +125,18 @@
      <servlet-name>DsaDefault</servlet-name>
      <servlet-class> org.astrogrid.dataservice.service.servlet.DsaDefaultServlet</servlet-class>
   </servlet>
+
+
+  <!-- Security/delegation servlet -->
+  <servlet-mapping>
+    <servlet-name>DelegationServlet</servlet-name>
+	 <url-pattern>/delegations</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DelegationServlet</servlet-name>
+	 <url-pattern>/delegations/*</url-pattern>
+  </servlet-mapping>
+
 
   <!-- Query Managing tasks -->
   <servlet-mapping>

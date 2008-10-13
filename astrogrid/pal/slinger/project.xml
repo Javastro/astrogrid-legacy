@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.8 2008/02/07 17:27:45 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.9 2008/10/13 10:51:35 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -23,6 +23,27 @@
     <shortDescription>AstroGrid Slinger API</shortDescription>
 
     <dependencies>
+		 <!-- For vospace -->
+        <dependency>
+            <artifactId>astrogrid-vospace-delegate</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-vospace-1.1-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-vospace-util</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-vospace-1.1-schema</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.vospace.version}</version>
+        </dependency>
 
         <!-- need common for the old User and Ivorns for FileManager -->
         <dependency>
@@ -132,6 +153,13 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
 
+        <dependency>
+          <groupId>org.astrogrid</groupId>
+          <artifactId>astrogrid-security</artifactId>
+          <version>${astrogrid.security.version}</version>
+          <type>jar</type>
+        </dependency>
+        
        <!--
         REMOVED BY KEA 06/09/06
         <dependency>

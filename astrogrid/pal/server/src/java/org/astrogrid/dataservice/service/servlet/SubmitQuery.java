@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitQuery.java,v 1.4 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: SubmitQuery.java,v 1.5 2008/10/13 10:51:35 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -70,7 +70,9 @@ public class SubmitQuery extends DefaultServlet {
       
       //has the adql been given as a URI to read?
       if (adqlUri != null) {
-         SourceIdentifier source = URISourceTargetMaker.makeSourceTarget(adqlUri);
+         SourceIdentifier source = 
+             URISourceTargetMaker.makeSourceTarget(adqlUri, 
+                                                   ServletHelper.getUser(request));
          query = new Query(source.openInputStream());
       }
       else if (adqlSql != null) {

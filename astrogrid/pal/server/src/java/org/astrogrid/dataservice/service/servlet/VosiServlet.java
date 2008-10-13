@@ -44,6 +44,7 @@ public class VosiServlet extends HttpServlet {
   public static final String AVAILABILITY_SUFFIX =  "/vosi/availability";
   public static final String TABLES_SUFFIX = "/vosi/tables";
   public static final String CEAAPP_SUFFIX = "/vosi/ceaapplication";
+  public static final String DELEGATIONS_SUFFIX = "delegations";
   
   /**
    * Initializes the servlet. Records the start time so that service
@@ -111,6 +112,7 @@ public class VosiServlet extends HttpServlet {
      String availabilityUri = endpoint + catalogName + AVAILABILITY_SUFFIX;
      String tablesUri = endpoint + catalogName + TABLES_SUFFIX;
      String ceaAppUri = endpoint + catalogName + CEAAPP_SUFFIX;
+     String delegationsUri = endpoint + DELEGATIONS_SUFFIX;
      String schemaUrl = endpoint + "schema/Capabilities.xsd";
      try {
 
@@ -172,7 +174,16 @@ public class VosiServlet extends HttpServlet {
           "   <queryType>GET</queryType>\n" + 
           "   <resultType>application/xml</resultType>\n" + 
           "   </interface>\n" + 
-          "</capability>\n"
+          "</capability>\n" +
+
+			 // Security/delegation capability
+          "<capability standardID=\"ivo://ivoa.net/std/Delegation\">" +
+          "  <interface xsi:type=\"vs:ParamHTTP\">" +
+          "    <accessURL use=\"full\">" + delegationsUri + "</accessURL>" +
+          "    <queryType>GET</queryType>" +
+          "    <resultType>application/xml</resultType>" +
+          "  </interface>" +
+          "</capability>" 
           );
 
        // End of capabilities
