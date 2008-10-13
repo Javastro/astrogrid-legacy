@@ -262,6 +262,18 @@ public class QuaestorTest
         assertEquals(new String[] { "i", "urn:example#i1" }, r.getContentAsStringList());
     }
 
+    public void testAddBadMIME()
+            throws Exception {
+        // Try adding valid RDF with an inappropriate MIME type
+        // (as much as anything else, this prompts us to make sure the error message
+        // is reasonable in this case).
+        HttpResult r = QuaestorConnection.httpPut(makeKbUrl("bad-instances"),
+                                                  "<urn:example#i2> a <urn:example#c1>.",
+                                                  "audio/mpeg");
+        assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
+        assertContentType(r, "text/html");
+    }    
+
     public void testAddSubmodelMetadata ()
             throws Exception {
         URL instancesURL = makeKbUrl("instances");
