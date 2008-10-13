@@ -44,7 +44,7 @@
     (sdb.version . ,(get-sdb-version))
     (tdb.version . ,(get-tdb-version))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.59 $ $Date: 2008/10/08 12:21:49 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.60 $ $Date: 2008/10/13 10:53:23 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -515,43 +515,47 @@
     (let ((kb (kb:get kb-name))
           (ok-headers '(type length))
           (submodel-uri (request->submodel-uri request)))
-      (if kb
-          (with/fc
-              (make-fc '|SC_BAD_REQUEST|)
-            (lambda ()
-              (chatter "update-submodel: about to read ~s (base=~s)" submodel-name submodel-uri)
-              (let ((m (rdf:ingest-from-stream/language stream submodel-uri (or rdf-mime "application/rdf+xml"))))
-                (chatter "update-submodel: kb=~s submodel=~s" kb submodel-name)
+      (cond ((not kb)
+             (no-can-do request '|SC_BAD_REQUEST| "No such knowledgebase ~a" kb-name))
+            ((rdf:mime-type->language rdf-mime)
+             => (lambda (rdf-language)
+                  (with/fc
+                      (make-fc '|SC_BAD_REQUEST|)
+                    (lambda ()
+                      (chatter "update-submodel: about to read ~s with language ~a (base=~s)"
+                               submodel-name rdf-language submodel-uri)
+                      (let ((m (rdf:ingest-from-stream/language stream submodel-uri rdf-language)))
+                        ;(chatter "update-submodel: kb=~s submodel=~s" kb submodel-name)
 
-                (cond ((and metadata?
-                            (not (null? (rdf:select-statements m submodel-uri "a"
-                                                               (rdf:make-quaestor-resource "PersistentModel")))))
-                       (if persistence-factory
-                           (let ((persistent-model (persistence-factory submodel-uri)))
-                             (chatter "Created persistent submodel with URI ~a" submodel-uri)
-                             (kb 'add-abox! submodel-name persistent-model)
-                             (kb 'set-metadata! submodel-name m)
-                             (list '|SC_NO_CONTENT|))
-                           (no-can-do request '|SC_NOT_IMPLEMENTED| "No persistence configured in Quaestor")))
-                      (metadata?
-                       (kb 'set-metadata! submodel-name m)
-                       '(|SC_NO_CONTENT|))
-                      ((kb 'replace-submodel! submodel-name m)
-                       ;; This submodel already exists.
-                       ;; Remove all the statements from it, and add the new ones.
-                       ;; Do this, rather than simply calling add-[at]box! with the new model M,
-                       ;; so that if the submodel is a persistent one, for example,
-                       ;; it stays that way.
-                       (chatter "Replaced model at URI ~a" submodel-uri)
-                       '(|SC_NO_CONTENT|))
-                      ((kb (if tbox? 'add-tbox! 'add-abox!) submodel-name m)
-                       (chatter "Created transient submodel with URI ~a" submodel-uri)
-                       '(|SC_NO_CONTENT|))
-                      (else
-                       (no-can-do request '|SC_INTERNAL_SERVER_ERROR| ;correct?
-                                  "Unable to update model!"))))))
-          (no-can-do request '|SC_BAD_REQUEST|
-                     "No such knowledgebase ~a" kb-name))))
+                        (cond ((and metadata?
+                                    (not (null? (rdf:select-statements m submodel-uri "a"
+                                                                       (rdf:make-quaestor-resource "PersistentModel")))))
+                               (if persistence-factory
+                                   (let ((persistent-model (persistence-factory submodel-uri)))
+                                     (chatter "Created persistent submodel with URI ~a" submodel-uri)
+                                     (kb 'add-abox! submodel-name persistent-model)
+                                     (kb 'set-metadata! submodel-name m)
+                                     (list '|SC_NO_CONTENT|))
+                                   (no-can-do request '|SC_NOT_IMPLEMENTED| "No persistence configured in Quaestor")))
+                              (metadata?
+                               (kb 'set-metadata! submodel-name m)
+                               '(|SC_NO_CONTENT|))
+                              ((kb 'replace-submodel! submodel-name m)
+                               ;; This submodel already exists.
+                               ;; Remove all the statements from it, and add the new ones.
+                               ;; Do this, rather than simply calling add-[at]box! with the new model M,
+                               ;; so that if the submodel is a persistent one, for example,
+                               ;; it stays that way.
+                               (chatter "Replaced model at URI ~a" submodel-uri)
+                               '(|SC_NO_CONTENT|))
+                              ((kb (if tbox? 'add-tbox! 'add-abox!) submodel-name m)
+                               (chatter "Created transient submodel with URI ~a" submodel-uri)
+                               '(|SC_NO_CONTENT|))
+                              (else
+                               (no-can-do request '|SC_INTERNAL_SERVER_ERROR| ;correct?
+                                          "Unable to update model!"))))))))
+            (else (no-can-do request '|SC_BAD_REQUEST|
+                             "I can't do anything with MIME type ~a" rdf-mime)))))
 
   (and (= (length path-list) 2)
        (let ((query-string (request->query-string request)))
