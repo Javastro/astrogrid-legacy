@@ -38,8 +38,8 @@ Or you can just talk HTTP yourself, using telnet to port 8080.</p>
 
 
 <p>First, create a new knowledgebase, with a <code>PUT</code>
-command.  Call the knowledgebase `testing', and read a simple metadata
-string from stdin:</p>
+command, as follows.  Call the knowledgebase `testing', and upload a simple bit of
+RDF, contained in the file <code>kb-metadata.ttl</code>:</p>
 <pre>
 % curl --upload-file kb-metadata.ttl \
     --header content-type:text/turtle \
