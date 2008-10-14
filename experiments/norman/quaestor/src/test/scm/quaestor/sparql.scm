@@ -126,6 +126,14 @@
                                               ask-query
                                               '("fandango" "*/*"))))
 
+;; similar calls, but this time operating directly on the KB's model
+(expect sparql-direct-1
+        #t
+        (procedure? (sparql:make-query-runner (test-kb 'get-query-model)
+                                              ask-query
+                                              '("*/*"))))
+
+;; Now tests on the results of the queries
 (define (run-runner-on-kb kb)
   (let ((runner (sparql:make-query-runner kb
                                           select-query

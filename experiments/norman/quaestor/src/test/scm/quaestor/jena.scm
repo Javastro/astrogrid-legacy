@@ -6,7 +6,8 @@
 (require-library 'quaestor/utils)
 (import* utils
          jobject->list
-         java-class-present)
+         java-class-present
+         is-java-type?)
 
 (require-library 'util/misc)
 (import* misc sort-list)
@@ -320,6 +321,31 @@
     (expect select-property-none        ;object is string
             #f
             (rdf:get-property-on-resource res "http://example.org/wibble"))))
+
+;; Tests of rdf:get-reasoner
+(define-java-classes (<reasoner> |com.hp.hpl.jena.reasoner.Reasoner|))
+(expect reasoner-none
+        'none
+        (rdf:get-reasoner "none"))
+(expect reasoner-owl
+        #t
+        (is-java-type? (rdf:get-reasoner "defaultOWL") <reasoner>))
+(expect reasoner-owl-from-model
+        #t
+        (is-java-type? (rdf:get-reasoner
+                        (turtle->model
+                         "@prefix q: <http://ns.eurovotech.org/quaestor#>. [] q:requiredReasoner [ q:level \"defaultOWL\" ]."))
+                       <reasoner>))
+(expect reasoner-bad
+        #f
+        (rdf:get-reasoner "wibble"))
+(expect reasoner-strings
+        #t
+        (let loop ((s (rdf:get-reasoner 'reasoner-list)))
+          ;; check this is a list of strings
+          (cond ((null? s) #t)
+                ((string? (car s)) (loop (cdr s)))
+                (else #f))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
