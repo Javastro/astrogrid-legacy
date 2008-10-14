@@ -192,8 +192,6 @@
   (let ((qef (java-null <query-execution-factory>)))
     (cond ((jena-model? x)
            (create qef query x))
-;;           ((kb:knowledgebase? kb)
-;;            (create qef query (kb 'get-query-model)))
           ((jstring? x)
            ;; otherwise assume it names a SPARQL endpoint
            ;; (FIXME: the following might throw MalformedURL exceptions,
