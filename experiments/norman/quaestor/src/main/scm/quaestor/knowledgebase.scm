@@ -342,8 +342,9 @@
           (define-java-classes (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
           (define-generic-java-methods create-inf-model to-string)
           (assert (and metadata kb-name))
-          (let ((reasoner (rdf:get-reasoner metadata)))
-            (cond ((not reasoner)
+          (let ((reasoner (with/fc (lambda (m e) 'invalid-reasoner)
+                            (lambda () (rdf:get-reasoner metadata)))))
+            (cond ((symbol? reasoner)
                    (error "level doesn't correspond to any reasoner I know about, in the statement ~s [recognised levels are ~s]"
                           (map (lambda (stmt) (->string (to-string stmt)))
                                (rdf:select-statements metadata #f (rdf:make-quaestor-resource "level") #f))
@@ -352,7 +353,7 @@
                    ;; There's nothing in this model at all.
                    ;; So return simply an empty model
                    (rdf:new-empty-model))
-                  ((or (eq? reasoner 'none)
+                  ((or (not reasoner); (eq? reasoner 'none)
                        (not tbox))
                    (get-merged-model))
                   (abox

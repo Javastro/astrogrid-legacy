@@ -325,7 +325,7 @@
 ;; Tests of rdf:get-reasoner
 (define-java-classes (<reasoner> |com.hp.hpl.jena.reasoner.Reasoner|))
 (expect reasoner-none
-        'none
+        #f
         (rdf:get-reasoner "none"))
 (expect reasoner-owl
         #t
@@ -336,8 +336,7 @@
                         (turtle->model
                          "@prefix q: <http://ns.eurovotech.org/quaestor#>. [] q:requiredReasoner [ q:level \"defaultOWL\" ]."))
                        <reasoner>))
-(expect reasoner-bad
-        #f
+(expect-failure reasoner-bad
         (rdf:get-reasoner "wibble"))
 (expect reasoner-strings
         #t

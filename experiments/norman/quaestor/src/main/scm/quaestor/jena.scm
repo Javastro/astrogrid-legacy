@@ -672,12 +672,14 @@
 ;; RDF:GET-REASONER : symbol -> list-of-string
 ;;
 ;; With a string argument, return a new Reasoner object indicated with the given name,
-;; or 'NONE if we are not to use a reasoner (the reasoner-name "none"),
-;; or #f on error.
+;; or #f if we are not to use a reasoner (if the reasoner-name is given as "none"),
+;; and throw an error if the reasoner is not recognised.
 ;;
 ;; With a <model> parameter, find any object in the model which matches
 ;; ?s quaestor:requiredReasoner [ quaestor:level ?o ]
-;; and return a Reasoner object indicated by the string ?o.  Return #f on error.
+;; and return a Reasoner object indicated by the string ?o.
+;; Return #f (no reasoner) if there are no such objects,
+;; and throw an error if the string ?o is not a recognised reasoner.
 ;;
 ;; With a symbol argument, if the symbol is 'reasoner-list,
 ;; return the list of reasoner names as a list of strings.
@@ -744,9 +746,9 @@
                         (eqv? name 'reasoner-list))
                    (map car reasoner-list))
                   ((string=? name "none")
-                   'none)
+                   #f)
                   ((not getter)
-                   #f)                       ;error
+                   (error "I don't recognise that reasoner name: valid ones are ~s" (map car reasoner-list)))
                   ((procedure? (cdr getter)) ;not cached yet
                    (chatter "Creating ~a reasoner" name)
                    ;; get a reasoner and cache it
