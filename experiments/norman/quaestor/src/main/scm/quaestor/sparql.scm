@@ -21,6 +21,21 @@
          rdf:mime-type->language
          rdf:select-statements)
 
+;; a few predicates for contracts
+(define (jstring? x)
+  (define-java-class <java.lang.string>)
+  (is-java-type? x <java.lang.string>))
+(define (jena-model? x)
+  (define-java-class <com.hp.hpl.jena.rdf.model.model>)
+  (is-java-type? x <com.hp.hpl.jena.rdf.model.model>))
+(define (java-query? x)
+  (define-java-class <com.hp.hpl.jena.query.query>)
+  (is-java-type? x <com.hp.hpl.jena.query.query>))
+(define (andf l)                        ; (and...) as a function
+  (cond ((null? l))
+        ((car l)
+         (andf (cdr l)))
+        (else #f)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -136,8 +151,10 @@
 
 ;; FIND-DELEGATES : knowledgebase -> listof knowledgebase-or-URIstring
 ;; Return the KB given as argument, at the head of a list of the KBs it delegates to
-;; (ie, without delegation, this returns simply (k)
-(define (find-delegates k)
+;; (ie, without delegation, this returns simply (k).
+;; The return values in the list are knowledgebases if the knowledgebase is in this quaestor,
+;; or a jstring containing a URI, if the delegated-to knowledgebase is at a different SPARQL endpoint
+(define/contract (find-delegates (k kb:knowledgebase?) -> list?)
   (define-generic-java-methods
     (get-uri |getURI|))
   (define (literal->string literal)
@@ -149,16 +166,16 @@
                                                            (k 'get-name-as-resource)
                                                            "http://ns.eurovotech.org/quaestor#delegatesTo"
                                                            #f)))
-              (external (member "externaldelegation"
+              (external? (member "externaldelegation"
                                 (map literal->string
                                      (rdf:select-statements (k 'get-metadata)
                                                             (k 'get-name-as-resource)
                                                             "http://ns.eurovotech.org/quaestor#debug"
                                                             #f)))))
-          (chatter "...KB ~s apparently delegates to ~s~a" (if (procedure? k) (k 'get-name-as-uri) k) kb-uris (if external " (EXTERNALDELEGATION)" ""))
+          (chatter "...KB ~s apparently delegates to ~s~a" (if (procedure? k) (k 'get-name-as-uri) k) kb-uris (if external? " (EXTERNALDELEGATION)" ""))
           (apply append
                  (map (lambda (kb-uri)
-                        (cond (external ;forced external for debugging/unit-testing
+                        (cond (external? ;forced external for debugging/unit-testing
                                (list kb-uri))
                               ((kb:get (java-new <uri> kb-uri))
                                => ;; this resource names a KB in this quaestor, so query that model directly
@@ -167,15 +184,17 @@
                                (list kb-uri))))
                       kb-uris)))))
 
-;; MAKE-EXECUTABLE-QUERY : kb-or-url <com.hp.hpl.jena.query.Query> -> <...QueryExecution>
-(define (make-executable-query kb query)
+;; MAKE-EXECUTABLE-QUERY : model-or-url <com.hp.hpl.jena.query.Query> -> <...QueryExecution>
+(define (make-executable-query x query)
   (define-java-classes
     (<query-execution-factory> |com.hp.hpl.jena.query.QueryExecutionFactory|))
   (define-generic-java-methods create sparql-service)
   (let ((qef (java-null <query-execution-factory>)))
-    (cond ((kb:knowledgebase? kb)
-           (create qef query (kb 'get-query-model)))
-          ((is-java-type? kb '|java.lang.String|)
+    (cond ((jena-model? x)
+           (create qef query x))
+;;           ((kb:knowledgebase? kb)
+;;            (create qef query (kb 'get-query-model)))
+          ((jstring? x)
            ;; otherwise assume it names a SPARQL endpoint
            ;; (FIXME: the following might throw MalformedURL exceptions,
            ;; either because it is indeed malformed, or because the protocol is
@@ -189,14 +208,14 @@
            ;; from the ARQ source, and its behaviour, that it constructs a
            ;; 'GET foo?query=<query>' interaction, and that it switches to a POST
            ;; of the query if the GET URL would be too long.
-           (sparql-service qef kb query))
+           (sparql-service qef x query))
           (else
            (error 'sparql-make-query-runner
-                  "can't happen: kb is ~s (expected KB or jstring)" kb)))))
+                  "can't happen: expected model or jstring, but found ~s" x)))))
 
 ;; sparql:make-query-runner knowledgebase string-or-jstring list-of-strings -> procedure
 ;;
-;; Given a knowledgebase KB, a SPARQL QUERY, and a MIME-TYPE-LIST
+;; Given a knowledgebase KB, a SPARQL QUERY, and a (non-null) MIME-TYPE-LIST
 ;; of acceptable MIME types, return a procedure which has the signature
 ;;
 ;;     (query-runner output-stream content-type-setter)
@@ -210,42 +229,56 @@
 ;; successfully, barring unforseen changes in the environment.
 ;;
 ;; The procedure will either succeed or throw an error.
-(define (sparql:make-query-runner kb query mime-type-list)
+(define/contract (sparql:make-query-runner (kb (or (kb:knowledgebase? kb) (jena-model? kb)))
+                                           (query (or (string? query)
+                                                      (jstring? query)))
+                                           (mime-type-list list?)
+                                           -> procedure?)
   (with/fc (lambda (m error-continuation)
              (if (pair? (error-message m))
-                 (throw m)              ;it came from report-exception; just pass it on
+                 (throw m) ;it came from report-exception; just pass it on
                  (report-exception 'sparql:make-query-runner
                                    '|SC_INTERNAL_SERVER_ERROR|
-                                   "Something bad happened in sparql:make-query-runner: ~a" (error-message m))))
-           (lambda ()
-             (sparql:make-query-runner* kb query mime-type-list))))
+                                   "Something bad happened in sparql:make-query-runner: ~a"
+                                   (format-error-record m))))
+    (lambda ()
+      (cond ((null? mime-type-list)
+             (error "sparql:make-query-runner called with no MIME types"))
+            ((kb:knowledgebase? kb)
+             (let ((query-model-list (map (lambda (one-kb)
+                                            (cond ((jstring? one-kb)    one-kb)
+                                                  ((procedure? one-kb) (one-kb 'get-query-model))
+                                                  (else (error "one-kb=~s (this shouldn't happen)" one-kb))))
+                                          (find-delegates kb))))
+               (if (andf query-model-list)
+                   (sparql:make-query-runner* query-model-list query mime-type-list)
+                   (report-exception 'sparql:make-query-runner '|SC_BAD_REQUEST| "I wasn't able to find a "))))
+            (else
+             (sparql:make-query-runner* (list kb) query mime-type-list))))))
 
-(define (sparql:make-query-runner* kb
-                                   query
-                                   mime-type-list)
-  (define-generic-java-methods
-    close
-    to-string)
+;; worker procedure for sparql:make-query-runner
+;; The elements of the QUERY-MODEL-LIST list are models if the model is held in this quaestor,
+;; or a jstring if it is at a remote SPARQL endpoint.
+;; The QUERY is the SPARQL query.
+;; The MIME-TYPE-LIST is a non-null list of MIME types from the Accept header.
+(define/contract (sparql:make-query-runner* (query-model-list (and (list? query-model-list)
+                                                                   (andf (map (lambda (x)
+                                                                                      (or (jena-model? x)
+                                                                                          (jstring? x))) ;url
+                                                                                    query-model-list))))
+                                            (query (or (string? query) (jstring? query)))
+                                            (mime-type-list (and (list? mime-type-list)
+                                                                 (not (null? mime-type-list)))))
+  (define-generic-java-methods close to-string)
 
-  (check kb
-         "cannot query null knowledgebase")
-  (check (kb:knowledgebase? kb)
-         "kb argument is not a knowledgebase!")
-  (check (not (null? mime-type-list))
-         "received null mime-type-list")
-
-  (let ((query-model (kb 'get-query-model))
-        (parsed-query (parse-sparql-query query)))
-    (check query-model
-           "failed to get query model from knowledgebase ~a with metadata ~s"
-           (kb 'get-name-as-uri) (kb 'get-metadata))
+  (let ((parsed-query (parse-sparql-query query)))
 
     ;; For each of the query models extracted above (in the simplest case, there will be only one,
     ;; but there will be multiple ones if there is delegation), create an executable query
     (let ((executable-queries        ;a list of QueryExecution objects
-           (map (lambda (one-kb)
-                  (make-executable-query one-kb parsed-query))
-                (find-delegates kb)))
+           (map (lambda (one-model)
+                  (make-executable-query one-model parsed-query))
+                query-model-list))
           (query-executor (find-query-executor parsed-query))
           (handler (make-result-set-handler 'sparql:make-query-runner
                                             mime-type-list
@@ -261,16 +294,15 @@
              "error creating ~a executable queries from query ~a"
              (length executable-queries) (->string query-jstring))
 
-      (if (not (and query-executor executable-queries))
-          (begin (or (java-null? executable-queries)
-                     (map close executable-queries))
+      ;; check we have a query-executor and a non-null list of queries
+      (if (not (and query-executor (not (null? executable-queries))))
+          (begin (map close executable-queries)
                  (error 'sparql:make-query-runner
                         "can't find a way of executing query ~a"
                         (->string query-jstring))))
+      ;; OK, we're fairly sure everything's OK
 
       (chatter "Produced list of queries: ~s" executable-queries)
-
-      ;; success!
 
       ;; Return the function which will run all of these executable queries (in principle in parallel)
       ;; and print out a result set consisting of the union of the result-sets returned.
@@ -587,26 +619,21 @@
             (loop))))
     (flush pw))) ; flush is necessary
 
-;; find-query-executor <Query> -> procedure
+;; FIND-QUERY-EXECUTOR : <Query> -> procedure-or-false
 ;;
 ;; Given a PARSED-QUERY, return one of the set QueryExecution.execSelect,
 ;; QueryExecution.execAsk, ..., based on the type of query returned by
 ;; Query.getQueryType.  If none of them match for some reason, return #f.
 (define find-query-executor
   (let ((alist #f))
-    (lambda (parsed-query)
-      (if (not alist)
-          (let ()
-            (define-generic-java-methods
-              exec-ask
-              exec-construct
-              exec-describe
-              exec-select)
-            (set! alist
-                  `((select    . ,exec-select)
-                    (ask       . ,exec-ask)
-                    (construct . ,exec-construct)
-                    (describe  . ,exec-describe)))))
+    (define-generic-java-methods exec-ask exec-construct exec-describe exec-select)
+    (set! alist
+          `((select    . ,exec-select)
+            (ask       . ,exec-ask)
+            (construct . ,exec-construct)
+            (describe  . ,exec-describe)))
+    (lambda/contract ((parsed-query java-query?)
+                      -> (lambda (x) (or (not x) (procedure? x))))
       (let ((result-pair (assq (determine-query-type parsed-query) alist)))
         ;; If we've found a suitable function to execute the query (in the cdr of this pair),
         ;; then return it, wrapped in a FC which means we don't fall over if the (remote?)
@@ -616,7 +643,7 @@
                (define-generic-java-method to-string)
                (with/fc (lambda (m e)
                           ;; There's been some error executing the query, possibly because a remote
-                          ;; service is down, or something like that.  It's not completely clear what;s
+                          ;; service is down, or something like that.  It's not completely clear what's
                           ;; the best thing to do, here, but for now, let's just note the error
                           ;; and return an empty result set.
                           (chatter "query execution failed: ~a" (->string (to-string (error-message m))))
@@ -653,3 +680,5 @@
 ;; End SPARQL stuff
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 )
+
+

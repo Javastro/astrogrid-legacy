@@ -344,38 +344,25 @@
           (define-generic-java-methods
             create-inf-model to-string)
           (assert (and metadata kb-name))
-          (let* ((levelres (rdf:select-statements metadata
-                                                  kb-name
-                                                  (rdf:make-quaestor-resource "requiredReasoner")
-                                                  #f))
-                 (level (cond ((and (not (null? levelres))
-                                    (rdf:get-property-on-resource (car levelres)
-                                                                  (rdf:make-quaestor-resource "level")))
-                               => (lambda (levelp)
-                                    (->string (to-string levelp))))
-                              (else
-                               "none"))))
-            (chatter "Level for ~s is ~s" kb-name level)
-            (let ((reasoner (rdf:get-reasoner level)))
-              (cond ((not reasoner)
-                     (error "level <~a> doesn't correspond to any reasoner I know about" level))
-                    ((and (not tbox)
-                          (not abox))
-                     ;; There's nothing in this model at all.
-                     ;; So return simply an empty model
-                     (rdf:new-empty-model))
-                    ((or (eq? reasoner 'none)
-                         (not tbox))
-                     (get-merged-model))
-                    (abox
-                     (create-inf-model (java-null <factory>)
-                                       reasoner
-                                       tbox
-                                       abox))
-                    (else
-                     (create-inf-model (java-null <factory>)
-                                       reasoner
-                                       tbox)))))))
+          (let ((reasoner (rdf:get-reasoner metadata)))
+            (cond ((not reasoner)
+                   (error "level <~a> doesn't correspond to any reasoner I know about" level))
+                  ((not (or abox tbox))
+                   ;; There's nothing in this model at all.
+                   ;; So return simply an empty model
+                   (rdf:new-empty-model))
+                  ((or (eq? reasoner 'none)
+                       (not tbox))
+                   (get-merged-model))
+                  (abox
+                   (create-inf-model (java-null <factory>)
+                                     reasoner
+                                     tbox
+                                     abox))
+                  (else
+                   (create-inf-model (java-null <factory>)
+                                     reasoner
+                                     tbox))))))
 
       (lambda (cmd . args)
 

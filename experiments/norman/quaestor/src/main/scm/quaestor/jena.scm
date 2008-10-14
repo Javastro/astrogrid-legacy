@@ -668,14 +668,24 @@
   (string-append "http://ns.eurovotech.org/quaestor#" fragment))
 
 ;; RDF:GET-REASONER : string -> reasoner
+;; RDF:GET-REASONER : <model> -> reasoner
+;; RDF:GET-REASONER : symbol -> list-of-string
 ;;
-;; Return a new Reasoner object,
-;; or 'NONE if we are not to use a reasoner,
+;; With a string argument, return a new Reasoner object indicated with the given name,
+;; or 'NONE if we are not to use a reasoner (the reasoner-name "none"),
 ;; or #f on error.
 ;;
-;; The REASONER-LEVEL parameter is one of the strings 
-;; defaultOWL, miniOWL, microOWL, defaultRDFS, simpleRDFS, fullRDFS or transitive
-(define (rdf:get-reasoner reasoner-level)
+;; With a <model> parameter, find any object in the model which matches
+;; ?s quaestor:requiredReasoner [ quaestor:level ?o ]
+;; and return a Reasoner object indicated by the string ?o.  Return #f on error.
+;;
+;; With a symbol argument, if the symbol is 'reasoner-list,
+;; return the list of reasoner names as a list of strings.
+;;
+;; The names of the reasoners are the strings 
+;; defaultOWL, miniOWL, microOWL, defaultRDFS, simpleRDFS, fullRDFS, transitive
+;; or none
+(define (rdf:get-reasoner reasoner-spec)
 
 ;;   (define (get-dig-reasoner)
 ;;     (define-java-classes
@@ -718,37 +728,22 @@
         (get-owl-mini-reasoner |getOWLMiniReasoner|)
         (get-owl-micro-reasoner |getOWLMicroReasoner|)
         get-transitive-reasoner)
-      (let ((reasoner-list (list (cons "defaultOWL"
-                                       (lambda ()
-                                         (get-owl-reasoner
-                                          (java-null <registry>))))
-                                 (cons "miniOWL"
-                                       (lambda ()
-                                         (get-owl-mini-reasoner
-                                          (java-null <registry>))))
-                                 (cons "microOWL"
-                                       (lambda ()
-                                         (get-owl-micro-reasoner
-                                          (java-null <registry>))))
-                                 (cons "defaultRDFS"
-                                       (lambda ()
-                                         (config-rdfs-reasoner "default")))
-                                 (cons "simpleRDFS"
-                                       (lambda ()
-                                         (config-rdfs-reasoner "simple")))
-                                 (cons "fullRDFS"
-                                       (lambda ()
-                                         (config-rdfs-reasoner "full")))
-                                 (cons "transitive"
-                                       (lambda ()
-                                         (get-transitive-reasoner
-                                          (java-null <registry>))))
-                                 ;; the reasoner-level "none" is a valid 'reasoner',
-                                 ;; but is special-cased below
-                                 )))
+      (let ((reasoner-list `(("defaultOWL" .  ,(lambda () (get-owl-reasoner (java-null <registry>))))
+                             ("miniOWL" .     ,(lambda () (get-owl-mini-reasoner (java-null <registry>))))
+                             ("microOWL" .    ,(lambda () (get-owl-micro-reasoner (java-null <registry>))))
+                             ("defaultRDFS" . ,(lambda () (config-rdfs-reasoner "default")))
+                             ("simpleRDFS" .  ,(lambda () (config-rdfs-reasoner "simple")))
+                             ("fullRDFS" .    ,(lambda () (config-rdfs-reasoner "full")))
+                             ("transitive" .  ,(lambda () (get-transitive-reasoner (java-null <registry>))))
+                             ;; the reasoner-level "none" is a valid 'reasoner',
+                             ;; but is special-cased below
+                             )))
         (lambda (name)
           (let ((getter (assoc name reasoner-list)))
-            (cond ((string=? name "none")
+            (cond ((and (symbol? name)
+                        (eqv? name 'reasoner-list))
+                   (map car reasoner-list))
+                  ((string=? name "none")
                    'none)
                   ((not getter)
                    #f)                       ;error
@@ -777,6 +772,26 @@
                           (:prop-set-rdfs-level (java-null <vocabulary>))
                           (->jstring level))))
 
-  (get-named-reasoner reasoner-level))
+  (cond ((string? reasoner-spec)
+         (get-named-reasoner reasoner-spec))
+        ((jena-model? reasoner-spec)
+         (let ((levelres (rdf:select-statements reasoner-spec
+                                                #f
+                                                (rdf:make-quaestor-resource "requiredReasoner")
+                                                #f)))
+           (define-generic-java-methods get-object to-string)
+           (cond ((null? levelres)
+                  (get-named-reasoner "none"))
+                 ((rdf:get-property-on-resource (get-object (car levelres))
+                                                (rdf:make-quaestor-resource "level"))
+                  => (lambda (level)
+                       (get-named-reasoner (->string (to-string level)))))
+                 (else
+                  (get-named-reasoner "none")))))
+        ((and (symbol? reasoner-spec)
+              (eqv? reasoner-spec 'reasoner-list))
+         (get-named-reasoner 'reasoner-list))
+        (else
+         #f)))
 
 )
