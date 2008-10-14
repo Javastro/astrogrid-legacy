@@ -44,7 +44,7 @@
     (sdb.version . ,(get-sdb-version))
     (tdb.version . ,(get-tdb-version))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.60 $ $Date: 2008/10/13 10:53:23 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.61 $ $Date: 2008/10/14 21:48:49 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -593,19 +593,15 @@
   (and (= (length path-list) 1)
        (not (request->query-string request))
        (string=? (request->content-type request) "application/sparql-query")
-;;        (let ((content-type (request->content-type request)))
-;;          (or (not content-type)
-;;              (string=? content-type "application/sparql-query")))
        (let ((kb (kb:get (request->kb-uri request))))
-         (or kb
-             (report-exception 'http-post
-                               '|SC_BAD_REQUEST|
-                               "don't know about knowledgebase ~a" (car path-list)))
-         (list
-          '|SC_OK|
-          (sparql:make-query-runner kb
-                                    (reader->jstring (get-reader request))
-                                    (request->accept-mime-types request))))))
+         (cond (kb
+                (list '|SC_OK|
+                      (sparql:make-query-runner kb
+                                                (reader->jstring (get-reader request))
+                                                (request->accept-mime-types request))))
+               (else
+                (no-can-do request '|SC_BAD_REQUEST|
+                           "don't know about knowledgebase ~a" (car path-list)))))))
 
 ;; Handle a POST of RDF to a submodel URL
 (define/contract (handle-post-appended-rdf (path-list list?) (request request?) -> list-or-false?)
@@ -656,35 +652,6 @@
 
 (define post-handlers (list handle-post-sparql-query handle-post-appended-rdf))
 
-;; Handle POST requests.  Return #t on success, or a string response
-(define/contract (xxx-http-post (request  request?) -> list?)
-  (define-generic-java-methods get-reader set-content-type)
-  (let ((path-list (request->path-list request))
-        (query-string (request->query-string request))
-        (content-type (request->content-type request)))
-    ;; First, insist that there's just one element in the path-list.
-    ;; If there is a content type on the incoming query, we check
-    ;; that it is application/sparql-query
-    ;; (see <http://www.w3.org/TR/rdf-sparql-query/>)
-    (if (and (= (length path-list) 1)
-             (not query-string)
-             (or (not content-type)
-                 (string=? content-type "application/sparql-query")))
-        (let ((kb (kb:get (request->kb-uri request) ;; (car path-list)
-                          )))
-          (or kb
-              (report-exception 'http-post
-                                '|SC_BAD_REQUEST|
-                                "don't know about knowledgebase ~a" (car path-list)))
-          (list
-           '|SC_OK|
-           (sparql:make-query-runner kb
-                                     (reader->jstring (get-reader request))
-                                     (request->accept-mime-types request))))
-        (no-can-do request
-                   '|SC_BAD_REQUEST|
-                   "POST SPARQL request must have one path element, no query, and content-type application/sparql-query~%(path=~s, query=~a, content-type=~a)"
-                   path-list query-string content-type))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
