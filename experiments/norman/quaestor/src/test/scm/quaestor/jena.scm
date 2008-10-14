@@ -327,6 +327,8 @@
 (expect reasoner-none
         #f
         (rdf:get-reasoner "none"))
+(expect-failure reasoner-bad
+        (rdf:get-reasoner "wibble"))
 (expect reasoner-owl
         #t
         (is-java-type? (rdf:get-reasoner "defaultOWL") <reasoner>))
@@ -336,8 +338,20 @@
                         (turtle->model
                          "@prefix q: <http://ns.eurovotech.org/quaestor#>. [] q:requiredReasoner [ q:level \"defaultOWL\" ]."))
                        <reasoner>))
-(expect-failure reasoner-bad
-        (rdf:get-reasoner "wibble"))
+(expect reasoner-none-from-model
+        #f
+        (rdf:get-reasoner
+         (turtle->model
+          "@prefix q: <http://ns.eurovotech.org/quaestor#>. [] q:requiredReasoner [ q:level \"none\" ].")))
+(expect reasoner-absent-from-model
+        #f
+        (rdf:get-reasoner
+         (turtle->model
+          "@prefix q: <http://ns.eurovotech.org/quaestor#>. [] q:NOTrequiredReasoner \"foo\".")))
+(expect-failure reasoner-bad-from-model
+                (rdf:get-reasoner
+                 (turtle->model
+                  "@prefix q: <http://ns.eurovotech.org/quaestor#>. [] q:requiredReasoner [ q:level \"wibble\" ].")))
 (expect reasoner-strings
         #t
         (let loop ((s (rdf:get-reasoner 'reasoner-list)))
