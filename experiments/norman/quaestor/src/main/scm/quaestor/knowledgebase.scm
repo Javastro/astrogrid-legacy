@@ -339,14 +339,15 @@
       (define (get-query-model)
         (let ((tbox (get-box 'tbox))
               (abox (get-box 'abox)))
-          (define-java-classes
-            (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
-          (define-generic-java-methods
-            create-inf-model to-string)
+          (define-java-classes (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
+          (define-generic-java-methods create-inf-model to-string)
           (assert (and metadata kb-name))
           (let ((reasoner (rdf:get-reasoner metadata)))
             (cond ((not reasoner)
-                   (error "level <~a> doesn't correspond to any reasoner I know about" level))
+                   (error "level doesn't correspond to any reasoner I know about, in the statement ~s [recognised levels are ~s]"
+                          (map (lambda (stmt) (->string (to-string stmt)))
+                               (rdf:select-statements metadata #f (rdf:make-quaestor-resource "level") #f))
+                          (rdf:get-reasoner 'reasoner-list)))
                   ((not (or abox tbox))
                    ;; There's nothing in this model at all.
                    ;; So return simply an empty model
