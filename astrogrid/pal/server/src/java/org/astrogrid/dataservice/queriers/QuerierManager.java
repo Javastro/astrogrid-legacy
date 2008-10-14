@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.6 2007/06/19 11:42:51 clq2 Exp $
+/*$Id: QuerierManager.java,v 1.7 2008/10/14 12:28:51 clq2 Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class QuerierManager implements QuerierListener {
    private static Hashtable managers = new Hashtable();
    
    /** Lookup table of initialised queriers.  These are queriers that have been
-    * created but are yet 'complete', or have not yet been told to run.  For
+    * created but aren't yet 'complete', or have not yet been told to run.  For
     * example, the CEA architecture has an 'init' which creates a query, and a
     * 'execute' which will kick it to the queue
     */
@@ -55,7 +55,7 @@ public class QuerierManager implements QuerierListener {
    
    /** lookup table of queued queriers.  These are queriers that are waiting on
     a 'free' spot on the asynchronous queries queue (synchronous queries are
-    simply rejected if the synchronous queries queue is full..
+    simply rejected if the synchronous queries queue is full.)
    */
    private Hashtable queuedQueriers = new Hashtable();
    
@@ -185,13 +185,17 @@ public class QuerierManager implements QuerierListener {
       }
    }
 
-   /** Return the querier with the given id */
+   /** Return the querier with the given id, or null if no matching querier 
+	 * could be found. */
    public Querier getQuerier(String qid) {
 
-      Querier q = (Querier) runningQueriers.get(qid);
+      Querier q = (Querier) heldQueriers.get(qid);
       if (q != null) return q;
-      
+
       q = (Querier) queuedQueriers.get(qid);
+      if (q != null) return q;
+
+      q = (Querier) runningQueriers.get(qid);
       if (q != null) return q;
 
       q = (Querier) closedQueriers.get(qid);
@@ -202,8 +206,8 @@ public class QuerierManager implements QuerierListener {
     * those that are on the active queue and those just initialised waiting on some external push
     */
    public QuerierStatus[] getQueued() {
-      Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
       Querier[] initialised = (Querier[]) heldQueriers.values().toArray(new Querier[] {} );
+      Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
       QuerierStatus[] statuses = new QuerierStatus[queued.length+initialised.length];
       for (int i = 0; i < queued.length; i++) {
          statuses[i] = queued[i].getStatus();
@@ -238,11 +242,15 @@ public class QuerierManager implements QuerierListener {
    
    /** Returns the status's of all the queriers in date/time order */
    public QuerierStatus[] getAllStatus() {
+      Querier[] held = (Querier[]) heldQueriers.values().toArray(new Querier[] {} );
       Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
       Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
       Querier[] ran = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
       
       TreeSet statuses = new TreeSet(new StatusStartTimeComparator());
+      for (int i = 0; i < held.length; i++) {
+         statuses.add(held[i].getStatus());
+      }
       for (int i = 0; i < queued.length; i++) {
          statuses.add(queued[i].getStatus());
       }
@@ -285,6 +293,36 @@ public class QuerierManager implements QuerierListener {
       querier.addListener(this);
       checkQueue();
    }
+
+	public synchronized void fullyDeleteQuery(String qid) throws IOException
+	{
+      Querier q = (Querier) heldQueriers.get(qid);
+      if (q != null) {
+			// Don't need to abort it, just kill it
+         heldQueriers.remove(qid);
+			return;
+		}
+      q = (Querier) queuedQueriers.get(qid);
+      if (q != null) {
+			// Don't need to abort it, just kill it
+         queuedQueriers.remove(qid);
+			return;
+		}
+      q = (Querier) runningQueriers.get(qid);
+      if (q != null) {
+			q.abort();
+			runningQueriers.remove(qid);
+		}
+      q = (Querier) closedQueriers.get(qid);
+      if (q != null) {
+			// Don't need to abort it as finished
+			// Need to clean up results too.
+         closedQueriers.remove(qid);
+			return;
+		}
+		throw new IOException("Query with ID " + qid + 
+				" could not be found, and therefore could not be deleted.");
+	}
 
 
   /** 
@@ -445,7 +483,10 @@ public class QuerierManager implements QuerierListener {
    
    /*
       Clean up jobs that finished > n days ago, to save memory
-      NB This method is only called from a synchronized method.
+      NB This method is only (and may only be) called from a 
+		synchronized method.  It's only called from checkQueue(),
+		so it might be better just to move this code back inside
+		that function.
     */
    protected void cleanupOldClosedJobs() 
    {
@@ -517,6 +558,12 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.7  2008/10/14 12:28:51  clq2
+ PAL_KEA_2804
+
+ Revision 1.6.40.1  2008/10/13 10:57:35  kea
+ Updating prior to maintenance merge.
+
  Revision 1.6  2007/06/19 11:42:51  clq2
  KEA_2213
 

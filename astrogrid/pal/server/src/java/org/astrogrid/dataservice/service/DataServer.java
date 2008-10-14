@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.7 2008/01/09 16:57:06 kea Exp $
+ * $Id: DataServer.java,v 1.8 2008/10/14 12:28:51 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,6 +30,7 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
+import org.astrogrid.status.TaskStatus;
 
 
 /**
@@ -211,7 +212,54 @@ public class DataServer
          throw th;
       }
       
-      return submitQuerier(querier);
+      return submitQuerier(querier, false);
+   }
+   /**
+    * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
+    * reference id.  Results will be output to given Agsl.  Source indicates
+    * which interface is submitting
+    */
+   public String submitPendingQuery(Principal user, Query query, Object source) throws Throwable {
+
+      Querier querier = null;
+      try {
+         querier = Querier.makeQuerier(user, query, source);
+      }
+      catch (Throwable th) {
+         //if there's an error, log it, make sure the querier state is correct, and rethrow to
+         //be dealt with correctly up the tree
+         if (querier != null) {
+            try {
+               if (!(querier.getStatus() instanceof QuerierError)) {
+                  querier.setStatus(new QuerierError(querier.getStatus(), "",th));
+               }
+            } catch (Throwable th2) {} ; //ignore
+         }
+         log.error("submitPendingQuery("+user+", "+query+")", th);
+         throw th;
+      }
+      
+      return submitQuerier(querier, true);
+   }
+
+   /**
+    * Request to start a pending query.  This might not be successful - 
+	 * depends on the back end.  NB the id given is the *datacenters* id.
+    */
+   public void startPendingQuery(Principal user, String queryId) throws IOException {
+      Querier querier = querierManager.getQuerier(queryId);
+      if (querier == null) {
+         throw new DatacenterException("No query found for ID="+queryId+" on this server");
+      }
+		if (querier.getStatus().getStage().equals(TaskStatus.INITIALISED)) {
+			querierManager.submitQuerier(querier); // Will remove from holding queue if present
+		}
+		else {
+      	log.error("Could not start query with ID " + queryId + 
+					" as its status was " + querier.getStatus().getStage());
+         throw new DatacenterException("Query with ID="+queryId+" cannot be started as it is not pending - its current status is " + querier.getStatus().getStage());
+		}
+      //return querier.start();
    }
 
    /**
@@ -252,7 +300,7 @@ public class DataServer
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
     */
-   public String submitQuerier(Querier querier) throws Throwable {
+   public String submitQuerier(Querier querier, boolean pending) throws Throwable {
 
       assert(querier != null);
       
@@ -261,7 +309,12 @@ public class DataServer
 //            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
 //         }
    
-         querierManager.submitQuerier(querier);
+			if (pending == true) {
+         	querierManager.holdQuerier(querier);
+			}
+			else {
+         	querierManager.submitQuerier(querier);
+			}
          return querier.getId();
       }
       catch (Throwable th) {
@@ -314,6 +367,10 @@ public class DataServer
       return querier.abort();
    }
    
+   public void deleteQuery(Principal user, String queryId) throws IOException {
+      log.warn(user+" is deleting query "+queryId);
+		querierManager.fullyDeleteQuery(queryId);
+   }
    /**
     * Returns the metadata file as a string
     */

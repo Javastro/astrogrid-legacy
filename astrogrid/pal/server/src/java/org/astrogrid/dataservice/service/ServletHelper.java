@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.9 2008/10/13 10:51:35 clq2 Exp $
+ * $Id: ServletHelper.java,v 1.10 2008/10/14 12:28:51 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,8 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
-import java.security.cert.CertificateException;
-import javax.security.auth.x500.X500Principal;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,9 +24,6 @@ import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
-import org.astrogrid.security.HttpsServiceSecurityGuard;
-import org.astrogrid.slinger.CredentialCache;
-import org.astrogrid.slinger.sourcetargets.SourceTargetIdentifier;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 
 /**
@@ -102,43 +97,12 @@ public class ServletHelper
    }
 
    /**
-    * Gets the user details from the request.
-    * If the user has been authenticated by HTPS-with-client-certificate, then
-    * the principal is the X500Principal from the user's certificate. Otherwise,
-    * the principal is the name from a user-name+password authentication. If
-    * neither kind of authentication has taken place, then a dummy principal,
-    * expressing an anonynous request, is returned.
-    *
-    * @param request The HTTP request.
-    * return The user identity (never null).
-    */
+    * Gets the user details from the request */
    public static Principal getUser(HttpServletRequest request)  {
-     
-      // Look for a client-certificate authentication.
-      // If there is none, then the X500Principal is null.
-      // If there is a failed authentication, signalled by an exception,
-      // log it and don't use it.
-      HttpsServiceSecurityGuard sg = new HttpsServiceSecurityGuard();
-      try {
-         sg.loadHttpsAuthentication(request);
-         sg.loadDelegation();
-         X500Principal p = sg.getX500Principal();
-         if (p != null) {
-            CredentialCache.put(p, sg);
-            return p;
-         }
-      } 
-      catch (CertificateException ex) {
-         log.info("Authentication with client certificates failed", ex);
-      }
-     
-      // Look for a user-name+password authentication.
       if (request.getParameter("UserName") != null) {
          //for information only
          return new LoginAccount(request.getParameter("UserName"), "Unknown");
       }
-      
-      // Always return some principal, even for an anoymous request.
       else {
          return LoginAccount.ANONYMOUS;
       }
@@ -217,9 +181,7 @@ public class ServletHelper
          if ((targetUri != null) && (targetUri.trim().length()>0)) {
 
             try {
-              SourceTargetIdentifier target = 
-                  URISourceTargetMaker.makeSourceTarget(targetUri, getUser(request));
-               returnSpec.setTarget(target);
+               returnSpec.setTarget(URISourceTargetMaker.makeSourceTarget(targetUri));
             }
             catch (URISyntaxException e) {
                throw new IllegalArgumentException("Invalid target: "+targetUri+" ("+e+")");
@@ -310,6 +272,18 @@ public class ServletHelper
       return new CircleCondition(ra, dec, radius);
    }
    */
+
+   /** Convenience routine for extracting the input Query string in a TAP
+	 * query*/
+   public static String getQuery(HttpServletRequest request)
+   {
+      String query = request.getParameter("QUERY");
+		if ((query == null) || ("".equals(query))) {
+			throw new IllegalArgumentException(
+					"QUERY parameter (input ADQL query string) is missing or empty");
+      }
+      return query;
+   }
    
    /** Convenience routine for extracting the catalog name of a conesearch */
    public static String getCatalogName(HttpServletRequest request)

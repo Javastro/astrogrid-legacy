@@ -6,8 +6,10 @@
  */
 
 package org.astrogrid.dataservice.impl.sec;
+/* NOTE: 13/10/2008: THIS WON'T COMPILE IN JAVA 1.5 */
 
 public class SECBindingStub extends org.apache.axis.client.Stub implements org.astrogrid.dataservice.impl.sec.SEC_Port {
+	/*
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -24,8 +26,8 @@ public class SECBindingStub extends org.apache.axis.client.Stub implements org.a
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "result"));
-        oper.setStyle(org.apache.axis.constants.Style.RPC);
-        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        oper.setStyle(org.apache.axis.enum.Style.RPC);
+        oper.setUse(org.apache.axis.enum.Use.ENCODED);
         _operations[0] = oper;
 
     }
@@ -108,5 +110,5 @@ public class SECBindingStub extends org.apache.axis.client.Stub implements org.a
             }
         }
     }
-
+	 */
 }

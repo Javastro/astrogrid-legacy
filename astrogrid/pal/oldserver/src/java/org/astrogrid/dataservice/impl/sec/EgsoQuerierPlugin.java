@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.3 2006/06/15 16:50:10 clq2 Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.2 2008/10/14 12:28:51 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -120,6 +120,12 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.2  2008/10/14 12:28:51  clq2
+ PAL_KEA_2804
+
+ Revision 1.1.2.1  2008/10/14 10:13:16  kea
+ Moving SEC stuff into oldserver.
+
  Revision 1.3  2006/06/15 16:50:10  clq2
  PAL_KEA_1612
 

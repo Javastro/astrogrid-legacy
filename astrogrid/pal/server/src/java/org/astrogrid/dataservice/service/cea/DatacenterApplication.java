@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.18 2008/10/13 10:51:35 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.19 2008/10/14 12:28:51 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,18 +20,14 @@ import java.io.ByteArrayInputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
-import java.security.cert.X509Certificate;
 import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.service.v1.cea.CeaSecurityGuard;
 
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
 
 import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
-import org.astrogrid.security.SecurityGuard;
-import org.astrogrid.slinger.CredentialCache;
 import org.astrogrid.store.Ivorn;
 
 import org.astrogrid.applications.AbstractApplication;
@@ -117,9 +113,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    
    public String getQuerierId() { return querierID;   }
    
-   /** 
-    * Constructs a DatacenterApplication.
-    *
+   /** Construct a new DatacenterApplication
     * @param arg0
     * @param arg1
     * @param arg2
@@ -175,7 +169,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             querier.addListener(this);
             
             setStatus(Status.INITIALIZED);
-            querierID = serv.submitQuerier(querier);
+            querierID = serv.submitQuerier(querier,false);
             logger.info("assigned QuerierID " + querierID);
          }
       }
@@ -267,21 +261,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             }
          }
          if (resultTarget.getIndirect()==true) {
-            // Indirect target may be in VOSpace and hence may need authentication.
-            SecurityGuard g = CeaSecurityGuard.getInstanceFromContext();
-            g.loadDelegation();
-            X509Certificate[] chain = g.getCertificateChain();
-            System.out.println("Certificate chain: " + chain.length + " items");
-            for (int i = 0; i < chain.length; i++) {
-              System.out.print(chain[i]);
-            }
-            System.out.println("Private key: " + g.getPrivateKey());
-            System.out.println("X500Principal" + g.getX500Principal());
-            Principal p = (g == null)? LoginAccount.ANONYMOUS : g.getX500Principal();
-            p = (p == null)? LoginAccount.ANONYMOUS : p;
-            System.out.println(p);
-            CredentialCache.put(p, g);
-            return URISourceTargetMaker.makeSourceTarget(resultTarget.getValue(), p);
+            return URISourceTargetMaker.makeSourceTarget(resultTarget.getValue());
          } else {
             //direct-to-cea target, so results must get written to a string 
             //to be inserted into the parametervalue when complete.  
@@ -706,20 +686,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
- Revision 1.18  2008/10/13 10:51:35  clq2
- PAL_KEA_2799
+ Revision 1.19  2008/10/14 12:28:51  clq2
+ PAL_KEA_2804
 
- Revision 1.17.14.4  2008/10/02 10:51:28  gtr
- I corrected the delegation code.
-
- Revision 1.17.14.3  2008/10/01 22:02:41  gtr
- I corrected the delegation code.
-
- Revision 1.17.14.2  2008/09/29 09:59:06  gtr
- I added a loadDelegations() call to the credential handling when making the SourceTarget. This should enable authentication to VOSpace.
-
- Revision 1.17.14.1  2008/09/11 09:40:27  gtr
- I added the code to recover the authenticated identity and use it when making the results target-identifier.
+ Revision 1.17.12.1  2008/10/13 10:57:35  kea
+ Updating prior to maintenance merge.
 
  Revision 1.17  2008/03/14 16:09:21  clq2
  PAL_KEA_2619

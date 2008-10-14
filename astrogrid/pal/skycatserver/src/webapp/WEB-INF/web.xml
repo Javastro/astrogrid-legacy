@@ -40,6 +40,12 @@
   </servlet>
 
   <servlet>
+    <servlet-name>TapServlet</servlet-name>
+    <description>Servlet for managing asynchronous TAP queries</description>
+    <servlet-class>org.astrogrid.dataservice.service.tap.TapServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>SubmitSimpleQuery</servlet-name>
     <description>Servlet for submitting simple ADQL/s queries via POST or GET</description>
     <servlet-class>org.astrogrid.dataservice.service.simplequery.SubmitSimpleQuery</servlet-class>
@@ -71,13 +77,6 @@
     <servlet-name>VosiServlet</servlet-name>
     <description>Handles VOSI methods</description>
     <servlet-class>org.astrogrid.dataservice.service.servlet.VosiServlet</servlet-class>
-  </servlet>
-
-  <!-- Security/delegation servlet -->
-  <servlet>
-    <servlet-name>DelegationServlet</servlet-name>
-    <description>Manages delegated security credentials</description>
-    <servlet-class>org.astrogrid.security.delegation.DelegationServlet</servlet-class>
   </servlet>
 
   <!-- Admin servlets -->
@@ -126,18 +125,6 @@
      <servlet-class> org.astrogrid.dataservice.service.servlet.DsaDefaultServlet</servlet-class>
   </servlet>
 
-
-  <!-- Security/delegation servlet -->
-  <servlet-mapping>
-    <servlet-name>DelegationServlet</servlet-name>
-	 <url-pattern>/delegations</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>DelegationServlet</servlet-name>
-	 <url-pattern>/delegations/*</url-pattern>
-  </servlet-mapping>
-
-
   <!-- Query Managing tasks -->
   <servlet-mapping>
     <servlet-name>BrowserAskQuery</servlet-name>
@@ -147,6 +134,11 @@
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
     <url-pattern>SubmitCone</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>TapServlet</servlet-name>
+	 <url-pattern>tapservice/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

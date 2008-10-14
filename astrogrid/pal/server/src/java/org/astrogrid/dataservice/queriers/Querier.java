@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.9 2007/06/08 13:16:12 clq2 Exp $
+ * $Id: Querier.java,v 1.10 2008/10/14 12:28:51 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.Vector;
+import java.rmi.server.UID;
 import org.apache.commons.logging.Log;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
@@ -412,7 +413,6 @@ public class Querier implements Runnable, PluginListener {
     * time to help us debug (ie we can look at the temporary directories and
     * see which was the last run). Later we could add service/user information
     * if available
-    * @todo not guaranteed to be unique...
     */
    protected static String generateQueryId() {
       Date todayNow = new Date();
@@ -429,8 +429,11 @@ public class Querier implements Runnable, PluginListener {
          + "."
          + doubleDigits(todayNow.getSeconds())
          + "_"
+			+ new UID().toString();	// To guarantee uniqueness
+			/*
          //plus botched bit... not really unique
          + (random.nextInt(8999999) + 1000000);
+			*/
       
    }
    
