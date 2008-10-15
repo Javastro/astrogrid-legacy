@@ -15,6 +15,9 @@
 ;; A knowledgebase is a procedure which takes a subcommand argument, and further arguments.
 ;; These subcommands manipulate the knowledgebase.  See the documentation for (internal) procedure
 ;; MAKE-KB below.
+;;
+;; This has become a bit of a mess, with a single monster function created by the MAKE-KB.
+;; It is overdue for some refactoring.
 
 
 (import s2j)
@@ -194,11 +197,16 @@
   ;;    (kb 'add-abox!/tbox SUBMODEL-NAME SUBMODEL)
   ;;        Add or update a abox/tbox with the given name.
   ;;        SUBMODEL-NAME may be a string or a symbol.  Return #t on success
+  ;;    (kb 'get-model)
+  ;;        Return the model, or #f if none exists.
   ;;    (kb 'get-query-model)
   ;;        As with GET-MODEL, except that it is an inferencing model.
   ;;        Return #f on error.
-  ;;    (kb 'get-model)
-  ;;        Return the model, or #f if none exists.
+  ;;    (kb 'get-bound-reasoner)
+  ;;        Return a reasoner which is bound to the knowledgebase's merged model
+  ;;        (which is presumably a tbox).  If there are no submodels, return
+  ;;        only a plain reasoner.  Returns false if the metadata doesn't indicate
+  ;;        a reasoner, or if it indicates an invalid reasoner.
   ;;    (kb 'get-model SUBMODEL-NAME)
   ;;        Return the named submodel, or #f if none exists.
   ;;        SUBMODEL-NAME may be a symbol or a string.
@@ -237,6 +245,7 @@
           (merged-tbox #f)              ;memo
           (merged-abox #f)              ;memo
           (query-model #f)              ;memo
+          (bound-reasoner #f)           ;memo
           (sync-object (->jstring "SYNC"))) ;a dummy Java object
 
       (define-syntax kb-synchronized
@@ -247,10 +256,10 @@
                form . forms)))))
 
       (define-syntax memoized
-        ;; (memoized settor memo-var)
+        ;; (memoized memo-var settor)
         ;; Returns the value of the SETTOR expression, memoizing it in the variable MEMO-VAR
         (syntax-rules ()
-          ((_ settor memo-var)
+          ((_ memo-var settor)
            (begin
              (if (not memo-var)
                  (set! memo-var settor))
@@ -260,7 +269,8 @@
         (set! merged-model #f)
         (set! merged-abox #f)
         (set! merged-tbox #f)
-        (set! query-model #f))
+        (set! query-model #f)
+        (set! bound-reasoner #f))
 
       ;; Return the abox or tbox: BOXNAME is either 'tbox or 'abox.
       ;; Caches result in merged-abox/tbox.
@@ -275,15 +285,15 @@
            (cond ((null? models)
                   #f)
                  (tbox?
-                  (memoized (if (= (length models) 1)
-                                (car models)
-                                (rdf:merge-models models))
-                            merged-tbox))
+                  (memoized merged-tbox
+                    (if (= (length models) 1)
+                        (car models)
+                        (rdf:merge-models models))))
                  (else
-                  (memoized (if (= (length models) 1)
-                                (car models)
-                                (rdf:merge-models models))
-                            merged-abox))))))
+                  (memoized merged-abox
+                    (if (= (length models) 1)
+                        (car models)
+                        (rdf:merge-models models))))))))
 
       (define (sdb-description->model model-or-resource)
         (with/fc (lambda (m e)
@@ -329,14 +339,53 @@
         (kb-synchronized
          (if (= (hashtable/size submodels) 0)
              #f
-             (memoized (rdf:merge-models (hashtable/map (lambda (k v) (submodel-model v)) submodels))
-                       merged-model))))
+             (memoized merged-model
+               (rdf:merge-models (hashtable/map (lambda (k v) (submodel-model v)) submodels))))))
 
       ;; Return the model which is to be queried, using the settings in METADATA.
-      ;; Return false on errors
-      ;; If there is no TBox, or if the requiredReasoner->level
+      ;; Throw an error if the metadata indicates an invalid reasoner.
+      ;; If there is no TBox, or if the requiredReasoner->level,
       ;; property is "none", then return simply the merged model
       (define (get-query-model)
+        (let ((tbox (get-box 'tbox))
+              (abox (get-box 'abox)))
+          (define-java-classes (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
+          (define-generic-java-methods create-inf-model to-string)
+          (assert (and metadata kb-name))
+          (with/fc (lambda (m e)
+                     ;; this is because GET-BOUND-REASONER found a bad reasoner spec in the metadata
+                     (error "level doesn't correspond to any reasoner I know about, in the statement ~s [recognised levels are ~s]"
+                            (map (lambda (stmt) (->string (to-string stmt)))
+                                 (rdf:select-statements metadata #f (rdf:make-quaestor-resource "level") #f))
+                            (rdf:get-reasoner 'reasoner-list)))
+            (lambda ()
+              (cond ((not (or abox tbox))
+                     ;; There's nothing in this model at all.
+                     ;; So return simply an empty model
+                     (rdf:new-empty-model))
+                    ((not tbox)
+                     ;; there's only an ABox, so no inferencing is required
+                     (get-merged-model))
+                    ((and abox
+                          (get-bound-reasoner))
+                     => (lambda (reasoner)
+                          (create-inf-model (java-null <factory>)
+                                            reasoner
+                                            abox)))
+                    ((get-bound-reasoner)
+                     => (lambda (reasoner)
+                          ;; There's no ABox in this model.
+                          ;; Is this right?  Since the reasoner is already bound to the tbox,
+                          ;; it rather looks as if we're doing something twice,
+                          ;; but there's no createInfModel method that doesn't take a model argument.
+                          (create-inf-model (java-null <factory>)
+                                            reasoner
+                                            tbox)))
+                    (else
+                     ;; there is a TBox, but there's no reasoner indicated,
+                     ;; so just return the merged model
+                     (get-merged-model)))))))
+      (define (xxx-get-query-model)
         (let ((tbox (get-box 'tbox))
               (abox (get-box 'abox)))
           (define-java-classes (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
@@ -366,6 +415,28 @@
                                      reasoner
                                      tbox))))))
 
+      ;; Return a reasoner, as indicated by the metadata, which is alread bound to this TBox.
+      ;; Return #f if the metadata doesn't indicate a reasoner, or the reasoner is "none"
+      ;; Throw an error if the metadata indicates an invalid reasoner.
+      (define (get-bound-reasoner)
+        (memoized bound-reasoner
+          (let ((reasoner (with/fc (lambda (m e) 'invalid-reasoner)
+                            (lambda () (rdf:get-reasoner metadata)))))
+            (define-generic-java-methods bind-schema)
+            (cond ((symbol? reasoner)
+                   (error 'kb:get-bound-reasoner
+                          "The metadata [~s] indicates an unrecognised reasoner.  The recognised reasoners are: ~s"
+                          metadata
+                          (rdf:get-reasoner 'reasoner-list)))
+                  ((not reasoner)
+                   #f)
+                  ((get-box 'tbox)
+                   => (lambda (m)
+                        (bind-schema reasoner m)))
+                  (else
+                   ;; there is no TBox here, so just return the plain reasoner
+                   reasoner)))))
+      
       (lambda (cmd . args)
 
         (define-syntax unless
@@ -497,8 +568,16 @@
            ;; return #f on error
            (eval-with args -> ()
             (kb-synchronized
-             (memoized (get-query-model)
-                       query-model))))
+             (memoized query-model
+               (get-query-model)))))
+
+          ((get-bound-reasoner)
+           ;; Return a reasoner, as indicated by the metadata, which is alread bound to this TBox.
+           ;; Return #f if the metadata doesn't indicate a reasoner, or the reasoner is "none"
+           ;; Throw an error if the metadata indicates an invalid reasoner.
+           (eval-with args -> ()
+             (kb-synchronized
+              (get-bound-reasoner))))
 
           ((get-model-tbox get-model-abox)
            ;; (kb 'get-model-tbox/abox)

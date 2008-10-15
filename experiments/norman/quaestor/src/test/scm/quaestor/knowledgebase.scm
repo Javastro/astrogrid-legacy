@@ -17,7 +17,8 @@
 (define-java-classes
   (<uri> |java.net.URI|)
   (<model> |com.hp.hpl.jena.rdf.model.Model|)
-  (<resource-factory> |com.hp.hpl.jena.rdf.model.ResourceFactory|))
+  (<resource-factory> |com.hp.hpl.jena.rdf.model.ResourceFactory|)
+  <com.hp.hpl.jena.reasoner.reasoner>)
 
 (define-generic-java-methods to-string)
 
@@ -282,18 +283,59 @@
 (let ((uri1 (java-new <uri> (->jstring "urn:example/simple1")))
       (uri2 (java-new <uri> (->jstring "urn:example/simple2")))
       (uri3 (java-new <uri> (->jstring "urn:example/simple3"))))
-  (let (;; metadata with a simpleRDFS reasoner
-        (simple-md1 (rdf:ingest-from-string/turtle "
+
+  ;; Tests of the metadata, and the reasoner indicated there
+  (let ((md-kb (expect-true kb-md-1
+                                (kb:new uri1 ;simple RDFS reasoner
+                                        (rdf:ingest-from-string/turtle "
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
 
 <> dc:creator \"Norman\";
   quaestor:requiredReasoner [
-    quaestor:level \"simpleRDFS\"
+    quaestor:level \"defaultRDFS\"
   ].
-" uri1))
-        ;; metadata with no reasoner
-        (simple-md2 (rdf:ingest-from-string/turtle "
+" uri1))))
+        (saved-reasoner1 #f)
+        (saved-reasoner2 #f)
+        (saved-reasoner3 #f))
+    (define (reasoner? x) (is-java-type? x <com.hp.hpl.jena.reasoner.reasoner>))
+
+    (expect-true kb-md1-query
+                 (jena-model? (md-kb 'get-query-model)))
+    (set! saved-reasoner1 (md-kb 'get-bound-reasoner))
+    (expect-true kb-md1-bound-reasoner-empty
+                 (reasoner? saved-reasoner1))
+    (expect-true kb-md1-bound-reasoner-add
+                 (md-kb 'add-tbox! "model1" model-1))
+
+    (set! saved-reasoner2 (md-kb 'get-bound-reasoner))
+    (expect-true kb-md1-bound-reasoner-2
+                 (reasoner? saved-reasoner2))
+    (expect kb-md1-bound-reasoner-different
+            #f
+            (eqv? saved-reasoner1 saved-reasoner2)) ;eqv? tests with Java ==
+
+    (set! saved-reasoner3 (md-kb 'get-bound-reasoner))
+    (expect-true kb-md1-bound-reasoner3
+                 (reasoner? saved-reasoner3))
+    ;; though it's not part of the interface, this third request for a bound
+    ;; reasoner should return the same (cached) object as the second one
+    (expect kb-md1-bound-reasoner-equality
+            #t
+            (eqv? saved-reasoner2 saved-reasoner3)))
+
+  ;; Very simple: add a model to a the new kb indicated by uri1, and get a query model
+  (let ((kb (kb:get uri1)))
+    (expect-true kb-tbox-1
+                 (kb 'add-tbox! "model1" model-1))
+    (expect-true kb-query-1
+                 (jena-model? (kb 'get-query-model))))
+
+  ;; Metadata indicates a "none" reasoner
+  (let ((simple-kb-no-reasoner (expect-true kb-md-2
+                                            (kb:new uri2 ;no reasoner
+                                                    (rdf:ingest-from-string/turtle "
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
 
@@ -301,9 +343,23 @@
   quaestor:requiredReasoner [
     quaestor:level \"none\"
   ].
-" uri2))
-        ;; metadata with invalid reasoner
-        (simple-md3 (rdf:ingest-from-string/turtle "
+" uri2)))))
+    (expect kb-md2-bound-reasoner
+            #f
+            (simple-kb-no-reasoner 'get-bound-reasoner)))
+
+  ;; Add a model to the uri2 KB, and get a query model
+  (let ((kb (kb:get uri2)))
+    (expect-true kb-tbox-2
+                 (kb 'add-tbox! "model1" model-1))
+    (expect-true kb-query-2
+                 (jena-model? (kb 'get-query-model))))
+
+  ;; Metadata indicates an invalid reasoner.
+  ;; We should be unable to get a bound reasoner for this.
+  (let ((simple-kb-bad-reasoner (expect-true kb-md-3
+                                             (kb:new uri3 ;bad reasoner
+                                                     (rdf:ingest-from-string/turtle "
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
 
@@ -311,39 +367,21 @@
   quaestor:requiredReasoner [
     quaestor:level \"invalid\"
   ].
-" uri3)))
+" uri3)))))
+    (expect-failure kb-md3-bound-reasoner
+                    (simple-kb-bad-reasoner 'get-bound-reasoner)))
 
-    (let ((simple-kb (expect-true kb-md-1
-                                  (kb:new uri1 simple-md1))))
-      (expect-true kb-md1-query
-                   (jena-model? (simple-kb 'get-query-model))))
+  ;; Since the metadata is bad, we should be unable to get a query model either.
+  (let ((kb (kb:get uri3)))
+    (expect-true kb-tbox-3
+                 (kb 'add-tbox! "model1" model-1))
+    (expect-failure kb-query-3
+                    (kb 'get-query-model)))
   
-;;     (expect-true kb-md-1
-;;                  (kb:new uri1 simple-md1))
-    (let ((kb (kb:get uri1)))
-      (expect-true kb-tbox-1
-                   (kb 'add-tbox! "model1" model-1))
-      (expect-true kb-query-1
-                   (jena-model? (kb 'get-query-model))))
-
-    (expect-true kb-md-2
-                 (kb:new uri2 simple-md2))
-    (let ((kb (kb:get uri2)))
-      (expect-true kb-tbox-2
-                   (kb 'add-tbox! "model1" model-1))
-      (expect-true kb-query-2
-                   (jena-model? (kb 'get-query-model))))
-
-    (expect-true kb-md-3
-                 (kb:new uri3 simple-md3))
-    (let ((kb (kb:get uri3)))
-      (expect-true kb-tbox-3
-                   (kb 'add-tbox! "model1" model-1))
-      (expect-failure kb-query-3
-                      (kb 'get-query-model)))
-  
-    ;; we could potentially test that the reasoner works, but...
-    ))
+  ;; We could potentially test that the reasoner works,
+  ;; and we could check that the reasoner is bound only to the tbox,
+  ;; but...
+  )
 
 ;; Tests of SDB support.
 ;; Unfortunately, these tests either are or are not run depending on whether 
