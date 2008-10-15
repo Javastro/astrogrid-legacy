@@ -1,8 +1,13 @@
-Release XXX
-------------
+Release 0.5.2, 2008 October 15
+------------------------------
 
 * You can now successfully retrieve a knowledgebase which has no
   submodels (you don't get any RDF, but you don't get an error, either)
+
+* Extensions and adjustments to library functionality,
+  as required by AGAST Qadi application.
+
+* Some changes to demo text.
 
 Release 0.5.1, 2008 October 7
 -----------------------------

@@ -76,8 +76,8 @@
 
   <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="app.version"   value="0.5.1"/>
-  <property name='release.date'  value='2008 October 7'/>
+  <property name="app.version"   value="0.5.2"/>
+  <property name='release.date'  value='2008 October 15'/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.client"  value="${build.home}/client"/>
@@ -798,7 +798,7 @@
           classpathref="sisc.test.classpath"
           failonerror="true">
       <sysproperty key="sisc.home" value="${build.lib}"/>
-      <!--<sysproperty key='single.test' value='${single.test}'/> mmm, don't think this works -->
+      <!-- <sysproperty key='single.test' value='${single.test}'/> this doesn't work like I'd expect it to... -->
       <arg value="-h"/>
       <arg value="${build.classes}/sisc.shp"/>
       <arg value="${scm.test.home}/run-tests.scm"/>
