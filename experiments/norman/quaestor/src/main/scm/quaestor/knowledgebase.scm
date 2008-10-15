@@ -566,7 +566,7 @@
 
           ((get-query-model)
            ;; return #f on error
-           (eval-with args -> ()
+           (eval-with args -> (-> (lambda (x) (or (not x) (jena-model? x))))
             (kb-synchronized
              (memoized query-model
                (get-query-model)))))
