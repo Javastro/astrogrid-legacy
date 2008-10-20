@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<%@page contentType="application/xml" pageEncoding="UTF-8"%>
+<%@ page contentType="application/xml" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -13,6 +13,7 @@ xmlns:ev="http://www.w3.org/2001/xml-events"
 		xsi:schemaLocation="http://www.w3.org/2002/xforms http://www.w3.org/MarkUp/Forms/2002/XForms-Schema.xsd">
 	<head>
 		<title>Tool submission</title>
+        <link rel="StyleSheet" HREF="../style/xforms.css" TYPE="text/css" />
 		<xf:model>
 			<xf:submission id="debug" method="post"
 					action="{$contextroot}/chiba-resources/jsp/debug-instance.jsp"/>
@@ -32,7 +33,10 @@ xmlns:ev="http://www.w3.org/2001/xml-events"
 			<xf:bind nodeset="instance('TOOL')/ceat:input/ceat:parameter" id="inpars">
 				<xf:bind id="inparId" nodeset="@name" />
 				<xf:bind nodeset="@indirect" type="xsd:boolean"  />
-				
+				<xf:bind id="inval" nodeset="ceat:value" />
+				<!-- 
+				<xf:bind id="invalopt" nodeset="value" relevant="count(instance('APPDESC')/applicationDefinition/parameters/parameterDefinition[@id=current()/@id]/optionList/optionVal) > 0"/>
+				 -->
 			</xf:bind>
 			<xf:bind nodeset="instance('TOOL')/ceat:output/ceat:parameter" id="outpars" >
 			  				<xf:bind nodeset="@indirect" type="xsd:boolean"  />
@@ -66,9 +70,19 @@ xmlns:ev="http://www.w3.org/2001/xml-events"
 							value="instance('APPDESC')/applicationDefinition/parameters/parameterDefinition[@id=current()/@id]/description">
 						<xf:label>Description</xf:label>
 					</xf:output>
-					<xf:input ref="ceat:value">
+					
+					<xf:input bind="inval">
 						<xf:label>value</xf:label>
 					</xf:input>
+				<!-- 
+					<xf:select1  ref="ceat:value" selection="open" appearance="compact">
+					        <xf:itemset nodeset="instance('APPDESC')/applicationDefinition/parameters/parameterDefinition[@id=current()/@id]/optionList">
+                                <xf:label ref="optionVal"/>
+                                <xf:value ref="optionVal"/>
+                            </xf:itemset>            	     
+					  </xf:select1>
+				-->
+					
 					<xf:input ref="@indirect">
 						<xf:label>indirect?</xf:label>
 					</xf:input>

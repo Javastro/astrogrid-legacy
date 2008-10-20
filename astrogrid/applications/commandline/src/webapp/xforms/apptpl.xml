@@ -1,112 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml"
-xmlns:ev="http://www.w3.org/2001/xml-events"
-      xmlns:xf="http://www.w3.org/2002/xforms"
-      xmlns:xhtml="http://www.w3.org/1999/xhtml"
-      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
-      xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
-      xsi:schemaLocation="http://www.w3.org/2002/xforms http://www.w3.org/MarkUp/Forms/2002/XForms-Schema.xsd
-                    http://www.astrogrid.org/schema/CEAImplementation/v2.0  /Users/pharriso/Work/ag/src/contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
-      >
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+   xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0" xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+   xsi:schemaLocation="http://www.w3.org/2002/xforms http://www.w3.org/MarkUp/Forms/2002/XForms-Schema.xsd
+   http://www.astrogrid.org/schema/CEAImplementation/v2.0  /Users/pharriso/Work/ag/src/contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd"
+>
    <head>
       <title>Application Definition</title>
       <link rel="StyleSheet" HREF="../style/xforms.css" TYPE="text/css" />
       <xf:model>
          <xf:submission id="debug" method="post"
-               action="{$contextroot}/chiba-resources/jsp/debug-instance.jsp"/>
-          <xf:submission id="define" method="post"
-                  action="{$contextroot}/uws/defineApp" />
-         <xf:instance id="APPDEF" xmlns="" src="{$contextroot}/ApplicationTemplate.xml">
+            action="{$contextroot}/chiba-resources/jsp/debug-instance.jsp" />
+         <xf:submission id="define" method="post"
+            action="{$contextroot}/uws/defineApp/new" />
+         <xf:instance id="APPDEF" xmlns=""
+            src="{$contextroot}/ApplicationTemplate.xml"
+         >
          </xf:instance>
          <xf:instance id="CONTROL" xmlns="">
             <data id="silly">
                <inside id="daft" />
             </data>
          </xf:instance>
-      <!-- bindings - these do not work with namespaces-->
-         <xf:bind nodeset="instance('APPDEF')/applicationDefinition/parameters/parameterDefinition" id="pars">
-           <!--  <xf:bind id="parId" nodeset="@id" /> -->
+         <!-- bindings - these do not work with namespaces-->
+         <xf:bind
+            nodeset="instance('APPDEF')/applicationDefinition/parameters/parameterDefinition"
+            id="pars"
+         >
+            <!--  <xf:bind id="parId" nodeset="@id" /> -->
          </xf:bind>
-         <xf:bind nodeset="instance('APPDEF')/applicationDefinition/interfaces/interfaceDefinition" id="intfs">
-           <xf:bind id="inprefs" nodeset="input/pref" />
-           <xf:bind id="outprefs" nodeset="output/pref"/>
-         </xf:bind>           
-         
-
-   
+         <xf:bind
+            nodeset="instance('APPDEF')/applicationDefinition/interfaces/interfaceDefinition"
+            id="intfs"
+         >
+            <xf:bind id="inprefs" nodeset="input/pref" />
+            <xf:bind id="outprefs" nodeset="output/pref" />
+         </xf:bind>
       </xf:model>
    </head>
    <body>
       <xf:group appearance="full">
          <xf:label>Application Definition</xf:label>
-      
          <xf:input ref="instance('APPDEF')/identifier">
             <xf:label>id:</xf:label>
          </xf:input>
          <br />
-         <xf:input ref="instance('APPDEF')/shortName" >
+         <xf:input ref="instance('APPDEF')/shortName">
             <xf:label>Short Name</xf:label>
          </xf:input>
          <xf:input ref="instance('APPDEF')/content/description">
             <xf:label>Description</xf:label>
          </xf:input>
-         <xf:input ref="instance('APPDEF')/curation/creator/name" appearance="full">
+         <xf:input ref="instance('APPDEF')/curation/creator/name"
+            appearance="full"
+         >
             <xf:label>Creating org</xf:label>
-         </xf:input >
-         <xf:input ref="instance('APPDEF')/applicationDefinition/executionPath">
+         </xf:input>
+         <xf:input
+            ref="instance('APPDEF')/applicationDefinition/executionPath"
+         >
             <xf:label>Execution path</xf:label>
          </xf:input>
          <br />
          <xf:group appearance="full">
-         <!--  would prefer to link to bind but does not work for some reason -->
+            <!--  would prefer to link to bind but does not work for some reason -->
             <xf:label>Parameters</xf:label>
-                <xf:trigger id="inspartrig">
-                    <xf:label xlink:href="images/add_new.gif">Insert after selected</xf:label>
-                    <xf:action >
-                        <xf:insert xf:at="xf:index('parlist')" xf:bind="pars" xf:position="after"/>
-                    </xf:action>
-                </xf:trigger>
-                <xf:trigger id="delpartrig">
-                    <xf:label  xlink:href="images/delete.gif">Delete selected</xf:label>
-                    <xf:action>
-                        <xf:delete  xf:at="xf:index('parlist')" xf:bind="pars"/>
-                    </xf:action>
-                </xf:trigger>
+            <xf:trigger id="inspartrig">
+               <xf:label xlink:href="images/add_new.gif">Insert after selected
+               </xf:label>
+               <xf:action>
+                  <xf:insert xf:at="xf:index('parlist')"
+                     xf:bind="pars" xf:position="after" />
+               </xf:action>
+            </xf:trigger>
+            <xf:trigger id="delpartrig">
+               <xf:label xlink:href="images/delete.gif">Delete selected
+               </xf:label>
+               <xf:action>
+                  <xf:delete xf:at="xf:index('parlist')"
+                     xf:bind="pars" />
+               </xf:action>
+            </xf:trigger>
             <xf:repeat id="parlist" bind="pars" appearance="compact">
-            
                <xf:input ref="./@id">
-                  <xf:label>ID </xf:label>
+                  <xf:label>ID</xf:label>
                </xf:input>
-               <xf:select1  ref="./@type">
-                   <xf:label>Type</xf:label>
-                   <xf:choices>
-                     <xf:item><xf:label>integer</xf:label><xf:value>integer</xf:value></xf:item>
-                     <xf:item><xf:label>real</xf:label><xf:value>real</xf:value></xf:item>
-                     <xf:item><xf:label>complex</xf:label><xf:value>complex</xf:value></xf:item>
-                     <xf:item><xf:label>text</xf:label><xf:value>text</xf:value></xf:item>
-                     <xf:item><xf:label>boolean</xf:label><xf:value>boolean</xf:value></xf:item>
-                     <xf:item><xf:label>anyURI</xf:label><xf:value>anyURI</xf:value></xf:item>
-                     <xf:item><xf:label>VOTable</xf:label><xf:value>VOTable</xf:value></xf:item>
-                     <xf:item><xf:label>angle</xf:label><xf:value>angle</xf:value></xf:item>
-                     <xf:item><xf:label>MJD</xf:label><xf:value>MJD</xf:value></xf:item>
-                     <xf:item><xf:label>ADQL</xf:label><xf:value>ADQL</xf:value></xf:item>
-                     <xf:item><xf:label>binary</xf:label><xf:value>binary</xf:value></xf:item>
-                     <xf:item><xf:label>STC-S</xf:label><xf:value>STC-S</xf:value></xf:item>
-                     <xf:item><xf:label>FITS</xf:label><xf:value>FITS</xf:value></xf:item>
-                     <xf:item><xf:label>Table</xf:label><xf:value>Table</xf:value></xf:item>
-                     <xf:item><xf:label>Image</xf:label><xf:value>Image</xf:value></xf:item>
-                     <xf:item><xf:label>Spectrum</xf:label><xf:value>Spectrum</xf:value></xf:item>
-                   </xf:choices>
+               <xf:select1 ref="./@type">
+                  <xf:label>Type</xf:label>
+                  <xf:choices>
+                     <xf:item>
+                        <xf:label>integer</xf:label>
+                        <xf:value>integer</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>real</xf:label>
+                        <xf:value>real</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>complex</xf:label>
+                        <xf:value>complex</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>text</xf:label>
+                        <xf:value>text</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>boolean</xf:label>
+                        <xf:value>boolean</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>anyURI</xf:label>
+                        <xf:value>anyURI</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>VOTable</xf:label>
+                        <xf:value>VOTable</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>angle</xf:label>
+                        <xf:value>angle</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>MJD</xf:label>
+                        <xf:value>MJD</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>ADQL</xf:label>
+                        <xf:value>ADQL</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>binary</xf:label>
+                        <xf:value>binary</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>STC-S</xf:label>
+                        <xf:value>STC-S</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>FITS</xf:label>
+                        <xf:value>FITS</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>Table</xf:label>
+                        <xf:value>Table</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>Image</xf:label>
+                        <xf:value>Image</xf:value>
+                     </xf:item>
+                     <xf:item>
+                        <xf:label>Spectrum</xf:label>
+                        <xf:value>Spectrum</xf:value>
+                     </xf:item>
+                  </xf:choices>
                </xf:select1>
-                <xf:input ref="./name">
+               <xf:input ref="./name">
                   <xf:label>name</xf:label>
                </xf:input>
-               <xf:input
-                     value="./description">
+               <xf:input value="./description">
                   <xf:label>Description</xf:label>
                </xf:input>
                <xf:input ref="@indirect">
@@ -116,73 +169,81 @@ xmlns:ev="http://www.w3.org/2001/xml-events"
          </xf:group>
          <xf:group appearance="full">
             <xf:label>Interfaces</xf:label>
-                <xf:trigger id="insintrig">
-                    <xf:label  xlink:href="images/add_new.gif">Insert interface after selected</xf:label>
-                    <xf:action >
-                        <xf:insert xf:at="xf:index('intflist')" xf:bind="intfs" xf:position="after"/>
-                    </xf:action>
-                </xf:trigger>
-                <xf:trigger id="delintrig">
-                    <xf:label  xlink:href="images/delete.gif">Delete selected interface</xf:label>
-                    <xf:action >
-                        <xf:delete  xf:at="xf:index('intflist')" xf:bind="intfs"/>
-                    </xf:action>
-                </xf:trigger>
+            <xf:trigger id="insintrig">
+               <xf:label xlink:href="images/add_new.gif">Insert interface
+                  after selected</xf:label>
+               <xf:action>
+                  <xf:insert xf:at="xf:index('intflist')"
+                     xf:bind="intfs" xf:position="after" />
+               </xf:action>
+            </xf:trigger>
+            <xf:trigger id="delintrig">
+               <xf:label xlink:href="images/delete.gif">Delete selected
+                  interface</xf:label>
+               <xf:action>
+                  <xf:delete xf:at="xf:index('intflist')"
+                     xf:bind="intfs" />
+               </xf:action>
+            </xf:trigger>
             <xf:repeat id="intflist" bind="intfs">
                <xf:input ref="./@id">
-                  <xf:label> id: </xf:label>
+                  <xf:label> id:</xf:label>
                </xf:input>
-               <xf:input
-                     value="description">
+               <xf:input value="description">
                   <xf:label>Description</xf:label>
                </xf:input>
                <xf:group appearance="compact">
-                <xf:trigger id="insireftrig">
-                    <xf:label  xlink:href="images/add_new.gif">Add</xf:label>
-                    <xf:action >
-                        <xf:insert xf:at="xf:index('inpreflist')" xf:bind="inprefs" xf:position="after"/>
-                    </xf:action>
-                </xf:trigger>
-                <xf:trigger id="delireftrig">
-                    <xf:label  xlink:href="images/delete.gif">Delete</xf:label>
-                    <xf:action >
-                        <xf:delete  xf:at="xf:index('inpreflist')" xf:bind="inprefs"/>
-                    </xf:action>
-                </xf:trigger>
-   <xf:label>Inputs</xf:label>
-   <xf:repeat id="inpreflist" bind="inprefs">
-      <xf:select1 ref="@ref" appearance="minimal">
-         <xf:itemset  bind="pars">
-            <xf:value ref="@id" />
-            <xf:label ref="@id" />
-         </xf:itemset>
-      </xf:select1>
-   </xf:repeat>
+                  <xf:trigger id="insireftrig">
+                     <xf:label xlink:href="images/add_new.gif">Add</xf:label>
+                     <xf:action>
+                        <xf:insert xf:at="xf:index('inpreflist')"
+                           xf:bind="inprefs" xf:position="after" />
+                     </xf:action>
+                  </xf:trigger>
+                  <xf:trigger id="delireftrig">
+                     <xf:label xlink:href="images/delete.gif">Delete
+                     </xf:label>
+                     <xf:action>
+                        <xf:delete xf:at="xf:index('inpreflist')"
+                           xf:bind="inprefs" />
+                     </xf:action>
+                  </xf:trigger>
+                  <xf:label>Inputs</xf:label>
+                  <xf:repeat id="inpreflist" bind="inprefs">
+                     <xf:select1 ref="@ref" appearance="minimal">
+                        <xf:itemset bind="pars">
+                           <xf:value ref="@id" />
+                           <xf:label ref="@id" />
+                        </xf:itemset>
+                     </xf:select1>
+                  </xf:repeat>
                </xf:group>
                <xf:group appearance="compact">
-                <xf:trigger id="insoreftrig">
-                    <xf:label  xlink:href="images/add_new.gif">Add</xf:label>
-                    <xf:action >
-                        <xf:insert xf:at="xf:index('outpreflist')" xf:bind="outprefs" xf:position="after"/>
-                    </xf:action>
-                </xf:trigger>
-                <xf:trigger id="deloreftrig">
-                    <xf:label  xlink:href="images/delete.gif">Delete</xf:label>
-                    <xf:action >
-                        <xf:delete  xf:at="xf:index('outpreflist')" xf:bind="outprefs"/>
-                    </xf:action>
-                </xf:trigger>
-               <xf:label>Outputs</xf:label>
-               <xf:repeat id="outpreflist" bind="outprefs" >
-      <xf:select1 ref="@ref" appearance="minimal">
-         <xf:itemset  bind="pars">
-            <xf:value ref="@id" />
-            <xf:label ref="@id" />
-         </xf:itemset>
-      </xf:select1>
-               </xf:repeat>
+                  <xf:trigger id="insoreftrig">
+                     <xf:label xlink:href="images/add_new.gif">Add</xf:label>
+                     <xf:action>
+                        <xf:insert xf:at="xf:index('outpreflist')"
+                           xf:bind="outprefs" xf:position="after" />
+                     </xf:action>
+                  </xf:trigger>
+                  <xf:trigger id="deloreftrig">
+                     <xf:label xlink:href="images/delete.gif">Delete
+                     </xf:label>
+                     <xf:action>
+                        <xf:delete xf:at="xf:index('outpreflist')"
+                           xf:bind="outprefs" />
+                     </xf:action>
+                  </xf:trigger>
+                  <xf:label>Outputs</xf:label>
+                  <xf:repeat id="outpreflist" bind="outprefs">
+                     <xf:select1 ref="@ref" appearance="minimal">
+                        <xf:itemset bind="pars">
+                           <xf:value ref="@id" />
+                           <xf:label ref="@id" />
+                        </xf:itemset>
+                     </xf:select1>
+                  </xf:repeat>
                </xf:group>
-         
             </xf:repeat>
          </xf:group>
          <xf:submit submission="define">
@@ -191,8 +252,6 @@ xmlns:ev="http://www.w3.org/2001/xml-events"
          <xf:submit submission="debug">
             <xf:label>Debug</xf:label>
          </xf:submit>
-
-   
       </xf:group>
    </body>
 </html>
