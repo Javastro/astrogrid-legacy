@@ -1,5 +1,5 @@
 /*
- * $Id: STAPApplicationDescription.java,v 1.5 2008/09/24 13:40:49 pah Exp $
+ * $Id: TAPApplicationDescription.java,v 1.1 2008/10/20 10:34:05 pah Exp $
  * 
  * Created on 16 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -10,7 +10,7 @@
  *
  */ 
 
-package org.astrogrid.applications.db.stap;
+package org.astrogrid.applications.dal.tap;
 
 
 import org.astrogrid.applications.Application;
@@ -24,23 +24,23 @@ import org.astrogrid.applications.description.jaxb.CEAJAXBUtils;
 import org.astrogrid.applications.environment.ApplicationEnvironment;
 import org.astrogrid.security.SecurityGuard;
 
-public class STAPApplicationDescription extends DBApplicationDescription {
+public class TAPApplicationDescription extends DBApplicationDescription {
 
    
     private static CeaApplication base;
     /** logger for this class */
     private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
-	    .getLog(STAPApplicationDescription.class);
+	    .getLog(TAPApplicationDescription.class);
     static {
 	try {
 	    //read the definition from an external file
-	    base = CEAJAXBUtils.unmarshall(STAPApplicationDescription.class.getResourceAsStream("StapConfig.xml"), CeaApplication.class);
+	    base = CEAJAXBUtils.unmarshall(TAPApplicationDescription.class.getResourceAsStream("SIAPConfig.xml"), CeaApplication.class);
 	} catch (Exception e) {
-	    logger.error("Problem reading STAP application definition",e);
+	    logger.error("Problem reading SIAP application definition",e);
 	}
     }
 
-    public STAPApplicationDescription(
+    public TAPApplicationDescription(
 	     Configuration conf, javax.sql.DataSource ds) {
 	super(new AppMetadataAdapter(base),  conf, ds);
     }
@@ -53,7 +53,7 @@ public class STAPApplicationDescription extends DBApplicationDescription {
 	        appInterface = this.getInterfaces()[0];
 	    }
 	
-	return new STAPApplication(tool,appInterface, ds, new ApplicationEnvironment(callerAssignedID, secGuard, getInternalComponentFactory().getIdGenerator(), conf),  lib);
+	return new TAPApplication(tool,appInterface, ds, new ApplicationEnvironment(callerAssignedID, secGuard, getInternalComponentFactory().getIdGenerator(), conf),  lib);
 	
     }
     
@@ -64,7 +64,12 @@ public class STAPApplicationDescription extends DBApplicationDescription {
 
 
 /*
- * $Log: STAPApplicationDescription.java,v $
+ * $Log: TAPApplicationDescription.java,v $
+ * Revision 1.1  2008/10/20 10:34:05  pah
+ * NEW - bug 2851: generalized DAL applications
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+ * safety checkin - going on holiday
+ *
  * Revision 1.5  2008/09/24 13:40:49  pah
  * package naming changes
  *

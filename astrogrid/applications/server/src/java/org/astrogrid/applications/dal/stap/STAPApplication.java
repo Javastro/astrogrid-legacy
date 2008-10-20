@@ -1,5 +1,5 @@
 /*
- * $Id: STAPApplication.java,v 1.2 2008/09/03 14:19:02 pah Exp $
+ * $Id: STAPApplication.java,v 1.1 2008/10/20 10:34:05 pah Exp $
  * 
  * Created on 16 Jun 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -10,7 +10,7 @@
  *
  */ 
 
-package org.astrogrid.applications.db.stap;
+package org.astrogrid.applications.dal.stap;
 
 import javax.sql.DataSource;
 
@@ -33,6 +33,11 @@ public class STAPApplication extends DBApplication {
 
 /*
  * $Log: STAPApplication.java,v $
+ * Revision 1.1  2008/10/20 10:34:05  pah
+ * NEW - bug 2851: generalized DAL applications
+ * http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2851
+ * safety checkin - going on holiday
+ *
  * Revision 1.2  2008/09/03 14:19:02  pah
  * result of merge of pah_cea_1611 branch
  *

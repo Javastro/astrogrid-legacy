@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                                           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+                                           xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+					                       xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+                                           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                                           xsi:schemaLocation="http://www.ivoa.net/xml/CEA/v1.0 ../../../../../../../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd"
+     created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z"
+     xsi:type="cea:CeaApplication">
+        <title>Test SSAP Application</title>
+        <shortName>SIAP</shortName>
+        <identifier>ivo://org.testit/SSAP</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>SSAP style application</description>
+            <referenceURL>http://www.ivoa.net/Documents/latest/SSA.html</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition>
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="POS"  type="angle" ><!-- should really make this an array -->
+                    <name>POS</name>
+                    <description>Search position in the form &quot;RA,Dec&quot;</description>
+                    <ucd>pos.eq</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="SIZE"  type="text" ><!-- should really make this an array -->
+                    <name>SIZE</name>
+                    <description>Size of the search region</description>
+                    <ucd></ucd>
+		     
+                </parameterDefinition>
+                <parameterDefinition id="FORMAT"  type="text" >
+                    <name>FORMAT</name>
+                    <description></description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="BAND"  type="text" >
+                    <name>Band</name>
+                    <description></description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="TIME"  type="text" >
+                    <name>Time</name>
+                    <description>The time coverage (epoch) specified in range-list form as defined in section 8.7.2, in ISO 8601 format.  If the time system used is not specified UTC is assumed.  The value specified may be a single value or an open or closed range.  If a single value is specified it matches any spectrum for which the time coverage includes the specified value.  If a two valued range is given, a dataset matches if any portion of it overlaps the given temporal region. </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+		<!-- optional parameters -->
+                <parameterDefinition id="APERTURE"  type="real" >
+                    <name>APERTURE</name>
+                    <description>The aperture parameter is used only for spectral extraction, i.e., computation of spectra derived from more fundamental data such as a spectral data cube or event list, using a synthetic aperture.  The aperture is specified as a diameter in decimal degrees.  The aperture parameter is only used for spectral extraction; a spectral extraction SSA service must support this parameter</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="SPECRP"  type="text" >
+                    <name>SPECRP</name>
+                    <description>The minimum spectral resolution, specified as the spectral resolving power λ/dλ in dimensionless units</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="SPATRES"  type="text" >
+                    <name>SPATRES</name>
+                    <description>The minimum spatial resolution (corresponding to the PSF of the observed signal) specified in decimal degrees.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="TIMERES"  type="text" >
+                    <name>TIMERES</name>
+                    <description>The minimum time resolution, specified in seconds.  For a typical spectrum the time resolution corresponds to the bounds of the time coverage of the exposure.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="SNR"  type="text" >
+                    <name>SNR</name>
+                    <description>The minimum signal-to-noise ratio of a candidate dataset, for example specified as the ratio of the mean signal to the RMS noise of the background (see the SSA data model document for more detailed recommendations on how to compute the SNR).</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="REDSHIFT"  type="text" >
+                    <name>REDSHIFT</name>
+                    <description>A photometric (observed) redshift range specified as a single element open or closed range-list as defined in section 8.7.2.   A negative redshift indicates a “blueshift”, e.g., an object in the local neighborhood with a proper motion towards the Earth.The optical redshift convention should be used (dλ/λ). </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="VARAMPL"  type="text" >
+                    <name>VARAMPL</name>
+                    <description>The acceptable range of variability amplitude, specified as a single element open or closed range-list, with values in the range 0.0 to 1.0.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="TARGETNAME"  type="text" >
+                    <name>TARGETNAME</name>
+                    <description>The target name, suitable for input to a name resolver.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="TARGETCLASS"  type="text" >
+                    <name>TARGETCLASS</name>
+                    <description>A comma delimited list of strings denoting the types of astronomical objects to be searched for.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="FLUXCALIB"  type="text" >
+                    <name>FLUXCALIB</name>
+                    <description>Specifies the minimum level of flux calibration for acceptable data.  Possible values are “absolute”, "relative", "normalized", and “any” (the default).  If "relative" is specified, spectra which have an absolute flux calibration will be found as well.  "Normalized" refers to spectra which have been normalized by dividing by a reference spectrum (including continuum normalization).</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="WAVECALIB"  type="text" >
+                    <name>WAVECALIB</name>
+                    <description>Specifies the minimum level of spectral coordinate calibration for acceptable data.  Possible values are “absolute”, "relative", and "any" (the default).  If "relative" is specified, spectra which have an absolute spectral coordinate calibration will be found as well.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="PUBDID"  type="text" >
+                    <name>PUBDID</name>
+                    <description>The IVOA publisher’s dataset identifier, assigned by the publisher of a dataset.  The same dataset published in different places may have a different PUBDID assigned by each publisher, however, unlike CREATORDID, where data creators may often not assign IVOA identifiers; it is guaranteed that a publisher can always assign a unique PUBDID when a dataset is published to the VO.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="CREATORDID"  type="text" >
+                    <name>CREATORDID</name>
+                    <description>An IVOA dataset identifier, assigned at creation time by the creator of the parent data collection (survey project, observatory, etc.). </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="COLLECTION"  type="text" >
+                    <name>COLLECTION</name>
+                    <description>The IVOA identifier or “shortName” of a data collection as defined by the service, for example SDSS-DR2, or NRAO-VLA.  By data collection we refer to an organized, uniform collection of datasets from a single source, for example a single data release from a survey, or an instrumental data collection from an observatory.  Unless an IVOA identifier is input, the service should treat the search term as a case insensitive, minimum match string.  For instance, “dss” would match either dss1 or ESO-DSS2.  Allowable data collection references are specified in the service capabilities.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="TOP"  type="text" >
+                    <name>TOP</name>
+                    <description>TOP limits the number of returned records in the query response table to the specified number of top ranking ones.  </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="MAXREC"  type="text" >
+                    <name>MAXREC</name>
+                    <description>The maximum number of records to be returned.  </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="MTIME"  type="text" >
+                    <name>MTIME</name>
+                    <description>Find only datasets modified, created, or deleted in the given range of dates, specified as a single element in range-list format, as an open or closed range, with the dates specified in ISO 8601 format. </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="COMPRESS"  type="text" >
+                    <name>COMPRESS</name>
+                    <description></description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="RUNID"  type="text" >
+                    <name>RUNID</name>
+                    <description></description>
+                    <ucd></ucd>
+                </parameterDefinition>
+		
+		<!-- end image generation parameters -->
+                <parameterDefinition id="OUT"  type="VOTable" >
+                    <name>Output</name>
+                    <description>The Standard DAL Style VOTable</description>
+                </parameterDefinition>
+                
+           </parameters>
+            <interfaces>
+                <interfaceDefinition id="default">
+                    <input>
+                        <pref ref="POS"/>
+                        <pref ref="SIZE"/>
+                        <pref ref="FORMAT"/>
+                        <pref ref="NAXIS" minOccurs="0"/>
+                        <pref ref="CFRAME" minOccurs="0"/>
+                        <pref ref="EQUINOX" minOccurs="0"/>
+                        <pref ref="CRPIX" minOccurs="0"/>
+                        <pref ref="CRVAL" minOccurs="0"/>
+                        <pref ref="CDELT" minOccurs="0"/>
+                        <pref ref="ROTANG" minOccurs="0"/>
+			 <pref ref="PROJ" minOccurs="0"/>
+                        <pref ref="VERB" minOccurs="0"/>
+
+                    </input>
+                    <output>
+                        <pref ref="OUT"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        </applicationDefinition>
+</ri:Resource>

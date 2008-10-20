@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:impl="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                                           xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
+                                           xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+					                       xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+                                           xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                                           xsi:schemaLocation="http://www.ivoa.net/xml/CEA/v1.0 ../../../../../../../../../contracts/src/schema/vo-resource-types/VOCEA/v1.0/VOCEA.xsd"
+     created="1999-01-01T00:00:00" status="active" updated="2008-03-12T18:15:21.03Z"
+     xsi:type="cea:CeaApplication">
+        <title>Test TAP Application</title>
+        <shortName>TAP</shortName>
+        <identifier>ivo://org.testit/TAP</identifier>
+        <curation>
+            <publisher>Astrogrid</publisher>
+            <creator>
+                <name>Astrogrid</name>
+                <logo>??</logo>
+            </creator>
+            <date role="representative">2004-03-26</date>
+            <version>1.0</version>
+            <contact>
+                <name>Paul Harrison</name>
+                <email>pah@jb.man.ac.uk</email>
+            </contact>
+        </curation>
+        <content>
+            <subject>???</subject>
+            <description>TAP style application</description>
+            <referenceURL>http://www.ivoa.net/Documents/latest/SIA.html</referenceURL>
+            <type>Other</type>
+        </content>
+        <applicationDefinition>
+            <applicationType>processing</applicationType>
+            <parameters>
+                <parameterDefinition id="POS"  type="angle" ><!-- should really make this an array -->
+                    <name>POS</name>
+                    <description>Search position in the form &quot;RA,Dec&quot;</description>
+                    <ucd>pos.eq</ucd>
+                </parameterDefinition>
+                <parameterDefinition id="SIZE"  type="text" ><!-- should really make this an array -->
+                    <name>SIZE</name>
+                    <description>Size of the search region</description>
+                    <ucd></ucd>
+		     
+                </parameterDefinition>
+                <parameterDefinition id="FORMAT"  type="text" >
+                    <name>FORMAT</name>
+                    <description></description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="INTERSECT"  type="text" >
+                    <name>Intersection</name>
+                    <description></description>
+                    <ucd>meta.id</ucd>
+                    <defaultValue>OVERLAPS</defaultValue>
+		    <optionList>
+		      <optionVal>COVERS</optionVal>
+		      <optionVal>ENCLOSED</optionVal>
+		      <optionVal>CENTER</optionVal>
+		      <optionVal>OVERLAPS</optionVal>
+		    </optionList>
+                   
+                </parameterDefinition>
+		<!-- Image generation parameters -->
+                <parameterDefinition id="NAXIS"  type="integer" >
+                    <name>NAXIS</name>
+                    <description>The size of the output image in pixels. This is a vector-valued quantity, expressed as	&quot;NAXIS=width,height&quot;</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="CFRAME"  type="text" >
+                    <name>Coordinate Frame</name>
+                    <description>The coordinate system reference frame, selected from ICRS, FK5, FK4, ECL, GAL, and SGAL</description>
+                    <ucd></ucd>
+		     <defaultValue>ICRS</defaultValue>
+                </parameterDefinition>
+                <parameterDefinition id="EQUINOX"  type="text" >
+                    <name>Equinox</name>
+                    <description>Epoch of the mean equator and equinox for the specified coordinate system reference frame (CFRAME). Not required for ICRS. Default: B1950 for FK4, otherwise J2000. </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="CRPIX"  type="integer" >
+                    <name>CRPIX</name>
+                    <description>The coordinates of the reference pixel, expressed in the pixel coordinates of the output image, with [1,1] being the center of the first pixel of the first row of the image. This is a vector-valued quantity; if only one value is given it applies to both image axes. Default: the image center.</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="CRVAL"  type="integer" >
+                    <name>CRVAL</name>
+                    <description>The world coordinates relative to CFRAME at the reference pixel. This is a vector-valued quantity; both array values are required. Default: the region center coordinates (POS) at the center of the image, transformed to the output coordinate system reference frame if other than ICRS. If CRPIX is specified to be other than the image center the corresponding CRVAL can be computed, but should be specified explicitly by the client. </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="CDELT"  type="real" >
+                    <name>CDELT</name>
+                    <description>The scale of the output image in decimal degrees per pixel. A negative value implies an axis flip. Since the default image orientation is N up and E to the left, the default sign of CDELT is [-1,1]. This is a vector-valued quantity; if only one value is given it applies to both image axes, with the sign defaulting as specified above</description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="ROTANG"  type="real" >
+                    <name>ROTANG</name>
+                    <description>The rotation angle of the image in degrees relative to CFRAME (an image which is unrotated in one reference frame may be rotated in another). This is the rotation of the WCS declination or latitude axis with respect to the second axis of the image, measured in the counterclockwise direction (as for FITS WCS, which is in turn based on the old AIPS convention). Default: 0 (no rotation). </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="PROJ"  type="text" >
+                    <name>Projection</name>
+                    <description>The celestial projection of the output image expressed as a three-character code as for FITS WCS, e.g., "TAN", "SIN",	"ARC", and so forth. Default: TAN. </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+                <parameterDefinition id="VERB"  type="integer" >
+                    <name>Verbosity</name>
+                    <description>The service may support an optional parameter with the name VERB (denoting "verbose") whose value is a nonnegative integer. This parameter indicates the desired level of information to be returned in the output table, particularly the number of columns to be returned to describe each image. The following guidelines are recommended for determining which columns should be output at different verbosity levels: 0 -- The output table should contain only the minimum columns required by section 4.2. 
+
+1 -- In addition to level 0, the output table should contain columns sufficient for uniquely describing the image. 
+
+2 -- In addition to level 1, the output table should contain, if possible, columns that contain values for all parameters supported as query constraints. 
+
+3 -- The output table should return as much information about the images as possible. A table metadata query automatically implies the highest level of verbosity. </description>
+                    <ucd></ucd>
+                </parameterDefinition>
+		
+		<!-- end image generation parameters -->
+                <parameterDefinition id="OUT"  type="VOTable" >
+                    <name>Output</name>
+                    <description>The Standard DAL Style VOTable</description>
+                </parameterDefinition>
+                
+           </parameters>
+            <interfaces>
+                <interfaceDefinition id="default">
+                    <input>
+                        <pref ref="POS"/>
+                        <pref ref="SIZE"/>
+                        <pref ref="FORMAT"/>
+                        <pref ref="NAXIS" minOccurs="0"/>
+                        <pref ref="CFRAME" minOccurs="0"/>
+                        <pref ref="EQUINOX" minOccurs="0"/>
+                        <pref ref="CRPIX" minOccurs="0"/>
+                        <pref ref="CRVAL" minOccurs="0"/>
+                        <pref ref="CDELT" minOccurs="0"/>
+                        <pref ref="ROTANG" minOccurs="0"/>
+			 <pref ref="PROJ" minOccurs="0"/>
+                        <pref ref="VERB" minOccurs="0"/>
+
+                    </input>
+                    <output>
+                        <pref ref="OUT"/>
+                    </output>
+                </interfaceDefinition>
+            </interfaces>
+        </applicationDefinition>
+</ri:Resource>
