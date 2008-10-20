@@ -1,5 +1,5 @@
 /*
- * $Id: SiapController.java,v 1.4 2008/09/25 23:14:28 pah Exp $
+ * $Id: SiapController.java,v 1.5 2008/10/20 10:35:41 pah Exp $
  * 
  * Created on 13 May 2008 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2008 Astrogrid. All rights reserved.
@@ -13,7 +13,6 @@
 package org.astrogrid.applications.uws;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,11 +21,6 @@ import net.ivoa.uws.ExecutionPhase;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.CEAComponents;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.ParameterDescription;
-import org.astrogrid.applications.description.base.ParameterTypes;
-import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.execution.Tool;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
@@ -53,13 +47,10 @@ public class SiapController extends AbstractAccessProtocolController {
     public void runApplication(HttpServletRequest request,
 	    HttpServletResponse response) throws CeaException, IOException {
 	
+            if(isMetadataQuery(request, response)) {
+            return;
+           }
 	    Tool tool = configureTool(request);
-	    if(request.getParameterMap().containsKey("FORMAT") && 
-		    request.getParameter("FORMAT").equals("METADATA")){
-		sendMetadata(manager.getApplicationDescriptionLibrary()
-	                    .getDescriptionByShortName(parsAppName(request)), response.getWriter());
-		return;
-	    }
 	    
             //FIXME - need split off POS into RA and DEC (if neccessary)
 
@@ -84,55 +75,14 @@ public class SiapController extends AbstractAccessProtocolController {
 	    response.sendRedirect(request.getContextPath()+"/uws/jobs/"+jobid+"/results/"+tool.getOutput().getParameter()[0].getId());
 	    
 	}
-    
-
-    private void sendMetadata(ApplicationDescription appdesc,
-	    PrintWriter pw)  {
-	pw.println("<?xml version='1.0'?>");
-	pw.println("<VOTABLE version='1.1' xmlns='http://www.ivoa.net/xml/VOTable/v1.1'>");
-	pw.println("<DESCRIPTION>Metadata response for "+appdesc.getId()+"</DESCRIPTION>");
-	pw.println("<COOSYS ID='J2000' equinox='J2000.' epoch='J2000.' system='eq_FK5'/>");
-	pw.println("<RESOURCE type='results'>");
-	pw.println(" <DESCRIPTION>Simple Image Access Service "+appdesc.getId()+"</DESCRIPTION>");
-	pw.println(" <INFO name='QUERY_STATUS' value='OK'/>");
-	ApplicationInterface iface = appdesc.getInterfaces()[0];
-	String[] inputs = iface.getArrayofInputs();
-	for (int i = 0; i < inputs.length; i++) {
-	    try {
-		ParameterDescription pdesc = appdesc.getParameterDescription(inputs[i]);
-		pw.print("<PARAM name='");
-		pw.print(pdesc.getId()+"'");
-		pw.print(" datatype='"+convertType(pdesc.getType())+"'");
-		pw.print(" ucd='"+pdesc.getUcd()+"'");
-		pw.print(" unit='"+pdesc.getUnit()+"'");
-		//FIXME get the default value in as well as any min/max
-		
-		pw.print(">");
-	        pw.println("<DESCRIPTION>"+pdesc.getDescription()+"</DESCRIPTION>");
-	        
-		
-		pw.println("</PARAM>");
-	    } catch (ParameterDescriptionNotFoundException e) {
-		logger.fatal("programming error", e);
-	    }
-
-	}
-	pw.println("<TABLE>");
-	//FIXME - need standardized way of getting the column information...
-	pw.println("</TABLE>");
-	pw.println("</RESOURCE>");
-	pw.println("</VOTABLE>");
-    }
-
-    private String convertType(ParameterTypes type) {
-	//FIXME the convert type is not really outputting legal types
-	return type.toString();
-    }
 
 }
 
 /*
  * $Log: SiapController.java,v $
+ * Revision 1.5  2008/10/20 10:35:41  pah
+ * pull functioality up
+ *
  * Revision 1.4  2008/09/25 23:14:28  pah
  * do not store appdesc - cannot be used in multi threaded environment anyway
  *
