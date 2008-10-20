@@ -9,7 +9,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>${param.title}</title>
-<jsp:include page="../inc/header.jsp" flush="true" />
+<%@ include file="../inc/header.jsp" %>
 <!-- body -->
 <div id="bodyColumn">
 
@@ -20,4 +20,4 @@
    <x:transform xml="${xml}" xslt="${xslt}"/>
 </div>
 </div>
-<jsp:include page="../inc/footer.jsp" flush="true" />
+<%@ include file="../inc/footer.jsp"%>
