@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ceaimp:CECConfig xmlns:ceaimp="http://www.astrogrid.org/schema/CEAImplementation/v2.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+                  xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+                  xmlns:cea="http://www.ivoa.net/xml/CEA/v1.0"
+                  xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.1"
+                  xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v2.0 ../../../../../../../contracts/src/schema/cea/CEAImplementation/v2.0/CEAImplementation.xsd">
+   <ceaimp:CeaApplication created="1999-01-01T00:00:00" status="active"
+                          updated="2008-10-15T12:36:26.222+02:00">
+      <title>Meudon PDR code - Version 2008</title>
+      <shortName>PDR08</shortName>
+      <identifier>ivo://obspm.fr/pdr</identifier>
+      <curation>
+         <publisher>Observatoire de Paris - Meudon - Nançay</publisher>
+         <creator>
+            <name>Observatoire de Paris - Meudon - Nançay</name>
+         </creator>
+          <date>2008-10-01</date>
+         <version>1</version>
+          <contact>
+            <name>Franck Le Petit</name>
+            <email>Franck.LePetit@obspm.fr</email>
+         </contact>
+      </curation>
+      <content>
+         <subject>???</subject>
+         <description>The Meudon PDR code is a tool to model the physics and the chemistry of interstellar gas at stationnary state. It considers a stationnary plan-parallel slab of gas and dust illuminated by a UV radiation field and solves radiative transfer, thermal balance and chemistry. It is then possible to deduce column densities and emissivities to compare to observations. The exact physics in the code is described on our website. </description>
+         <referenceURL>http://aristote.obspm.fr/MIS</referenceURL>
+         <type>Other</type>
+      </content>
+      <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+         <applicationType>processing</applicationType>
+         <parameters>
+            <parameterDefinition id="modele" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="file"
+                                 type="binary">
+               <name>Results file</name>
+               <description/>
+               <ucd/>
+               <defaultValue>dcl_3</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="chimie" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="file"
+                                 type="binary">
+               <name>Chemistry file</name>
+               <description>Name of the chemistry file to use. If no chemistry file is given then default chemistry file, Drcnosd.chi, is used</description>
+               <ucd/>
+            </parameterDefinition>
+            <parameterDefinition id="ifafm" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Number of global iterations</name>
+               <description>Number of iterations on the whole cloud before the program stops. ; The value to give depends on the problem. ; Typical value is 10 but for very diffuse clouds it can be far more. ; A result file is generated after each iteration. You MUST check that all the quantities you are interested in have converged between the two last files. If not, you have to relaunch the program with a higher number of iterations.</description>
+               <ucd/>
+               <defaultValue>10</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="Avmax" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Av integration limit</name>
+               <description>Maximum visual extinction up to which the calculation is done. Controls the size of the cloud</description>
+               <ucd/>
+               <defaultValue>1.00E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="densh" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Initial density (cm-3)</name>
+               <description>Density of the cloud in cm-3 defined as nH = n(H) + 2 n(H_2)</description>
+               <ucd/>
+               <defaultValue>1.00E+03</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="radm" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Scaling factor of the radiation field (left side)</name>
+               <description>UV field scaling factor on the left side of the cloud (observer's side); Standard UV field is the value given by Draine (1978) ApJS 36, 595. Typical values go from 1 for a diffuse cloud to 10E5-6 for a PDR near a young star.</description>
+               <ucd/>
+               <defaultValue>1.00E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="radp" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Scaling factor of the radiation field (right side)</name>
+               <description>UV field scaling factor on the right side of the cloud (back of the cloud). To get a semi-infinite cloud choose 0 and do not introduce a star on the right side of the cloud.</description>
+               <ucd/>
+               <defaultValue>1.00E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="srcpp" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="text">
+               <name>External radiation source (type spectral)</name>
+               <description>Add to the UV field the radiation field of a star (black body) of the specified spectral type. To not add a star, put any spectral type and write 0 in the next field.</description>
+               <ucd/>
+               <defaultValue>A 1</defaultValue>
+               <optionList>
+                  <optionVal>O 3</optionVal>
+                  <optionVal>O 5</optionVal>
+                  <optionVal>O 8</optionVal>
+                  <optionVal>B 0</optionVal>
+                  <optionVal>B 1</optionVal>
+                  <optionVal>B 3</optionVal>
+                  <optionVal>B 5</optionVal>
+                  <optionVal>B 8</optionVal>
+                  <optionVal>A 0</optionVal>
+                  <optionVal>A 1</optionVal>
+                  <optionVal>A 5</optionVal>
+                  <optionVal>G 2</optionVal>
+                  <optionVal>M 5</optionVal>
+                  <optionVal>B 5 I</optionVal>
+                  <optionVal>A 0 I</optionVal>
+                  <optionVal>A 5 I</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="d_sour" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Distance of the source (pc)</name>
+               <description>Distance of the star to the cloud in parsecs: d = 0 : no star ; d &lt; 0 : star radiation field added on the observer's side ; d &gt; 0 : star radiation field added on the back side of the cloud</description>
+               <ucd/>
+               <defaultValue>0.00E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="fmrc" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Ionization rate by cosmic rays</name>
+               <description>Cosmic rays flux in 10E-17 ionization per hydrogen atom per second. Typical value is between 1 and 5.</description>
+               <ucd/>
+               <defaultValue>5.00E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ieqth" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="boolean">
+               <name>Thermal equilibrium</name>
+               <description>check this field to solve thermal balance ; if uncheked, temperature will be fixed to the value in the next field</description>
+               <ucd/>
+               <defaultValue>true</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="tgaz" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Initial temperature (in Kelvin)</name>
+               <description>Temperature of the cloud if thermal balance is not solved ; If thermal balance is solved, this value is the initial guess for the temperature at the edge (in this case it has just an effect on the speed for convergence at the first iteration)</description>
+               <ucd/>
+               <defaultValue>1.00E+02</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ifisob" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="boolean">
+               <name>Isobaric Model</name>
+               <description>If checked, pressure will be kept constant at the value in the next field (density and temperature will vary accordingly)</description>
+               <ucd/>
+               <defaultValue>false</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="presse" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Initial Pressure (cm-3 K)</name>
+               <description>Used only for isobaric models ; Pressure (P = nH * T,  in cm-3 K) is kept constant at this value.</description>
+               <ucd/>
+               <defaultValue>6.00E+03</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="vturb" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Turbulent velocity for Doppler broadening (km s-1)</name>
+               <description>Turbulent velocity in km s-1 used for doppler broadening</description>
+               <ucd/>
+               <defaultValue>2.00E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="itrfer" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="text">
+               <name> UV Radiative transfer</name>
+               <description> 0 : FKG for all lines, 1 : Approximation, 2 : Exact radiative transfer. For cases 1 and 2, FGK will be used for H2 levels above the J levels given in next field</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+               <optionList>
+                  <optionVal>0</optionVal>
+                  <optionVal>1</optionVal>
+                  <optionVal>2</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="jfgkh2" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Use FGK approximation for J >= jfgkh2</name>
+               <description>Full radiative transfer in H2 lines with J lower than the value in this field are computed. ; FGK approximation is used for H2 levels with J >= to this value. Full radiative transfer means that the absorption in the lines from these levels is taken into account in the radiative transfer equation. Values above 0 will give a physicaly more precise result but it will increase dramaticaly computing time.</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="l0h2" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Maximum H2 levels</name>
+               <description>Number of ro-vibrationnal levels of H2 used in the computation ; Typical value is 150. High temperature may require higher value (computing time is then increase)  ; Maximum value is 318 (v= 4, J=29, E = 56641.590 K)</description>
+               <ucd/>
+               <defaultValue>150</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ichh2" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="text">
+               <name>Model for H+H2 collisions</name>
+               <description>Model for the collision rates H + H2 ; Typical value is Flower et al. with reactive collisions from Schofield</description>
+               <ucd/>
+               <defaultValue>2</defaultValue>
+               <optionList>
+                  <optionVal>0</optionVal>
+                  <optionVal>1</optionVal>
+                  <optionVal>2</optionVal>
+                  <optionVal>3</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="los_ext" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="text">
+               <name>Line of sight</name>
+               <description>Name of the studied line of sight. Example: HD73882, Orion_Bar, ... This parameter controls which extinction curve is used. If the extinction curve for your specific line of sight is not included the standard curve for Galaxy is used. Typical value : Galaxy</description>
+               <ucd/>
+               <defaultValue>Galaxy</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="rrr" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>R = Av / E(B-V)</name>
+               <description>Ratio between visual extinction and reddening. This value is linked to the choice of the ligne of sight. Typical value for the Galaxy is 3.1</description>
+               <ucd/>
+               <defaultValue>3.10</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="cdunit" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name> NH / E(B-V) (cm-2 mag-1)</name>
+               <description>Ratio [N(H) + 2*N(H_2)] / E(B-V) in atoms cm-2 mag-1 ; Typical value is 5.8E-21 (Bohlin et al. 1978, ApJ, 224, 132)</description>
+               <ucd/>
+               <defaultValue>5.80E+21</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="alb" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Dust albedo</name>
+               <description>Dust albedo ; Typical value: 0.42</description>
+               <ucd/>
+               <defaultValue>4.20E-01</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="gg" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>&lt;cos(theta)&gt; (diffusion) - Ici E-G</name>
+               <description>Anisotropy factor for diffusion by dust defined as &lt;cos(theta)&gt; ; Typical value: 0.6</description>
+               <ucd/>
+               <defaultValue>6.00E-01</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="gratio" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Dust to gas mass ratio</name>
+               <description>Mgrain / Mgas ; Typical value 0.01</description>
+               <ucd/>
+               <defaultValue>1.00E-02</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="rhogr" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Grain volumic mass (g/cm3)</name>
+               <description>Grain volumic mass in (g cm-3) ; Typical value: 3.0</description>
+               <ucd/>
+               <defaultValue>3.00E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="alpgr" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Index of grain size distribution</name>
+               <description>alpha : Exponent for the slope of the grain size distribution. Grains size distribution is assumed to follow Mathis's law : dn(a) proportional to a^(-alpha)*da  with dn(a) the density (in cm-3) of dust grains having a radius between a and a+da. Mathis et al. (1996) value is alpha=3.5</description>
+               <ucd/>
+               <defaultValue>3.50E+00</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="rgrmin" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Minimum grain radius</name>
+               <description>Minimal radius of dust grains in cm ; Typical value: 3.0E-7 cm</description>
+               <ucd/>
+               <defaultValue>3.00E-07</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="rgrmax" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Maximum grain radius</name>
+               <description>Maximum radius of dust grains in cm ; Typical value: 3.0E-5 cm</description>
+               <ucd/>
+               <defaultValue>3.00E-05</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="iforh2" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="text">
+               <name>H2 formation model on dust grains</name>
+               <description>Control the distribution of energy during H2 formation on dust ; Recommended value: internal energy is 1/3 of formation energy  (that is to say 17249 K)</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+               <optionList>
+                  <optionVal>0</optionVal>
+                  <optionVal>1</optionVal>
+                  <optionVal>2</optionVal>
+                  <optionVal>3</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="istic" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>H2 sticking model on dust</name>
+               <description>Choice between different H sticking models ; Recommended value: 4 (follows prescriptions by Flower and Pineau des Forets, 1998, MNRAS, 297, 1182)</description>
+               <ucd/>
+               <defaultValue>4</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="dernier_binaire.bin" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                 fileRef="file"
+                                 type="binary">
+               <name>dernier_binaire.bin</name>
+               <ucd/>
+            </parameterDefinition>
+            <parameterDefinition id="avant_dernier_binaire.bin" xsi:type="ceaimp:CommandLineParameterDefinition"
+                                 fileRef="file"
+                                 type="binary">
+               <name>avant_dernier_binaire.bin</name>
+               <ucd/>
+            </parameterDefinition>
+         </parameters>
+         <interfaces>
+            <interfaceDefinition id="simple">
+               <input>
+                  <pref ref="chimie" minOccurs="1"/>
+                  <pref ref="ifafm"/>
+                  <pref ref="Avmax"/>
+                  <pref ref="densh"/>
+                  <pref ref="radm"/>
+                  <pref ref="radp"/>
+                  <pref ref="srcpp"/>
+                  <pref ref="d_sour"/>
+                  <pref ref="fmrc"/>
+                  <pref ref="ieqth"/>
+                  <pref ref="tgaz"/>
+                  <pref ref="ifisob"/>
+                  <pref ref="presse"/>
+                  <pref ref="vturb"/>
+                  <pref ref="itrfer"/>
+                  <pref ref="jfgkh2"/>
+                  <pref ref="l0h2"/>
+                  <pref ref="ichh2"/>
+                  <pref ref="los_ext"/>
+                  <pref ref="rrr"/>
+                  <pref ref="cdunit"/>
+                  <pref ref="alb"/>
+                  <pref ref="gg"/>
+                  <pref ref="gratio"/>
+                  <pref ref="rhogr"/>
+                  <pref ref="alpgr"/>
+                  <pref ref="rgrmin"/>
+                  <pref ref="rgrmax"/>
+                  <pref ref="iforh2"/>
+                  <pref ref="istic"/>
+               </input>
+               <output>
+                  <pref ref="dernier_binaire.bin"/>
+                  <pref ref="avant_dernier_binaire.bin"/>
+                  <pref ref="modele"/>
+               </output>
+            </interfaceDefinition>
+         </interfaces>
+         <executionPath>/www/astrogrid-data/commandline-cec/apps/lancement_pdr.tcsh</executionPath>
+      </applicationDefinition>
+   </ceaimp:CeaApplication>
+   <ceaimp:CeaApplication created="1999-01-01T00:00:00" status="active"
+                          updated="2008-10-15T12:36:26.222+02:00">
+      <title>Meudon TITAN code</title>
+      <shortName>TITAN</shortName>
+      <identifier>ivo://obspm.fr/titan</identifier>
+      <curation>
+         <publisher >Observatoire de Paris - Meudon - Nançay</publisher>
+         <creator>
+            <name>Observatoire de Paris - Meudon - Nançay</name>
+         </creator>
+          <date>2008-10-01</date>
+         <version>1</version>
+          <contact>
+            <name>Franck Le Petit</name>
+            <email>Franck.LePetit@obspm.fr</email>
+         </contact>
+      </curation>
+      <content>
+         <subject>???</subject>
+         <description/>
+         <referenceURL>http://vo.obspm.fr/simulation/listecodes.html#Titan</referenceURL>
+         <type>Other</type>
+      </content>
+      <applicationDefinition xsi:type="ceaimp:CeaCmdLineApplicationDefinition">
+         <applicationType>processing</applicationType>
+         <parameters>
+            <parameterDefinition id="titre" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="text">
+               <name>Short model description</name>
+               <description>Short model description (one sentence), to appear in the output files? header (maximum length= 78 characters).</description>
+               <ucd/>
+               <defaultValue>TITAN constant density model</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="fich" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="text">
+               <name>Model name</name>
+               <description>Model name, used as prefix to identify the output files (no blanks, maximum length= 30 characters).</description>
+               <ucd/>
+               <defaultValue>titan_model</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="incid" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Incident spectrum SED</name>
+               <description>Choice of the incident spectrum Spectral Energy  Distribution: Power Law=1, Black Body=2, Laor (1997)=3, Cloudy AGN=4, Netzer (1996)=5, Krolik (1995)=6, NGC 5548=7, NGC 3783=8, X-ray thin (Lexington 2000)=9, Broken Power-Law=10, File with nu &amp;  F(nu)=15, File with nu &amp; nu.F(nu)=16, Exponential cut-off Power Law=17.</description>
+               <ucd/>
+               <defaultValue>1</defaultValue>
+               <optionList>
+                  <optionVal>1</optionVal>
+                  <optionVal>2</optionVal>
+                  <optionVal>3</optionVal>
+                  <optionVal>4</optionVal>
+                  <optionVal>5</optionVal>
+                  <optionVal>6</optionVal>
+                  <optionVal>7</optionVal>
+                  <optionVal>8</optionVal>
+                  <optionVal>9</optionVal>
+                  <optionVal>10</optionVal>
+                  <optionVal>15</optionVal>
+                  <optionVal>16</optionVal>
+                  <optionVal>17</optionVal>
+                  <optionVal>18</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="fifli" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="file"
+                                 type="binary">
+               <name>Incident spectrum file</name>
+               <description>Name of the file containing the incident spectrum SED (maximum length= 30 characters), for upload (only if Incident spectrum SED is 10, 15 or 16).</description>
+               <ucd/>
+               <defaultValue>fli</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="flindex" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Power law index</name>
+               <description>Incident spectrum Power Law index (alpha) (only if Incident spectrum SED is 1 or 17).</description>
+               <ucd/>
+               <defaultValue>1</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="hnumin" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Power law lower boundary</name>
+               <description>Incident spectrum Power Law lower boundary, in eV  (min value accepted: 0.01 eV) ? or cut-off of the Exponential cut-off Power Law (only if Incident spectrum SED is 1 or 17).</description>
+               <ucd/>
+               <defaultValue>1</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="hnumax" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Power law upper boundary</name>
+               <description>Incident spectrum Power Law upper boundary, in eV.  (NB: Compton heating/cooling are considered for energies >  25 keV) ? or cut-off of the Exponential cut-off Power Law (only if Incident spectrum SED is 1 or 17).</description>
+               <ucd/>
+               <defaultValue>1</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="Tbb1" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Black Body temperature (direct)</name>
+               <description>Incident spectrum Black Body temperature (direct illumination) (only if Incident spectrum SED is 2).</description>
+               <ucd/>
+               <defaultValue>10000</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="wbb1" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Black Body fraction (direct)</name>
+               <description>Incident spectrum Black Body fraction, between 0 and 1 (direct illumination) (only if Incident spectrum SED is 2).</description>
+               <ucd/>
+               <defaultValue/>
+            </parameterDefinition>
+            <parameterDefinition id="csit" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Ionization parameter</name>
+               <description>Ionization parameter of the incident flux, defined as zeta = F*4 pi/nH  where F is the total flux integrated upon the whole frequency range and nH is the number Hydrogen surface density (csit OR fluxex0 must be given).</description>
+               <ucd/>
+               <defaultValue>1000</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="fluxex0" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Incident flux at 13.6 eV</name>
+               <description>Value of the incident flux at 13.6 eV (csit OR fluxex0 must be given).</description>
+               <ucd/>
+               <defaultValue/>
+            </parameterDefinition>
+            <parameterDefinition id="irent" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Backwards illumination mode</name>
+               <description>Backwards illumination : NO=0, YES=1.</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+               <optionList>
+                  <optionVal>0</optionVal>
+                  <optionVal>1</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="Tbb" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Black Body temperature (backwards)</name>
+               <description>Black Body temperature (backwards illumination) (must be given if Backwards illumination mode is 1).</description>
+               <ucd/>
+               <defaultValue/>
+            </parameterDefinition>
+            <parameterDefinition id="wbb" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Black Body fraction (backwards)</name>
+               <description>Black Body fraction, between 0 and 1 (backwards illumination) (must be given if Backwards illumination mode is 1).</description>
+               <ucd/>
+               <defaultValue>1</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="coltot" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Column density</name>
+               <description>Hydrogen column density of the slab (NH), in cm-2.</description>
+               <ucd/>
+               <defaultValue>5e22</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="densinit" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Number hydrogen density</name>
+               <description>Number Hydrogen density at the illuminated surface of the slab (nH), in cm-3.</description>
+               <ucd/>
+               <defaultValue>1e7</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="idens" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Density variation mode</name>
+               <description>Constant density profile = 0,  Power Law density profile = 1.</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+               <optionList>
+                  <optionVal>0</optionVal>
+                  <optionVal>1</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="densex" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Power law index</name>
+               <description>Index of the Power Law density profile (must be given if Density variation mode is 1).</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="raymin" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Variation parameter R</name>
+               <description>The density profile varies as n = nH .R / (R+z), z being 0 at the illuminated side of the slab  and R being the variation parameter along the slab (must be given if Density variation mode is 1).</description>
+               <ucd/>
+               <defaultValue/>
+            </parameterDefinition>
+            <parameterDefinition id="vturbkm" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Turbulence velocity</name>
+               <description>Turbulence velocity taken into account in the transfer, in km s-1.</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="inr" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Line number mode</name>
+               <description>Line-transfer computations performed for 4141 lines = 2 (long run mode); for 1023 lines = 1 (short run mode).</description>
+               <ucd/>
+               <defaultValue>2</defaultValue>
+               <optionList>
+                  <optionVal>1</optionVal>
+                  <optionVal>2</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="ab2" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Helium abundance</name>
+               <description>Helium abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>0.085</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab3" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Carbon abundance</name>
+               <description>Carbon abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>3.3e-4</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab4" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Nitrogen abundance</name>
+               <description>Nitrogen abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>9.1e-5</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab5" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Oxygen abundance</name>
+               <description>Oxygen abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>6.6e-4</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab6" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Neon abundance</name>
+               <description>Neon abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>8.3e-5</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab7" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Magnesium abundance</name>
+               <description>Magnesium abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>2.6e-5</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab8" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Silicon abundance</name>
+               <description>Silicon abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>3.3e-5</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab9" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Sulfure abundance</name>
+               <description>Sulfure abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>1.6e-5</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ab10" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Iron abundance</name>
+               <description>Iron abundance with respect to Hydrogen.</description>
+               <ucd/>
+               <defaultValue>3.2e-5</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="incang" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Incident radiation direction</name>
+               <description>Direction in which the incident radiation hits the gas slab: isotropic illumination mode = 0, normal incidence mode = 1.</description>
+               <ucd/>
+               <defaultValue>1</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ndir" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Number of directions</name>
+               <description>Number of directions taken into account for the angular flux computations:  isotropic mode : 1, 3, 5 or 20 ; normal incidence mode : 4 or 6 (including the normal direction).</description>
+               <ucd/>
+               <defaultValue>4</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="igrid" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Slab slicing mode</name>
+               <description>Modes for slicing the gas slab in small layers: automatic column-grid = 0, column-grid given in a file = 10, automatic column-grid AND constant temperature along the slab = 20, column-grid AND temperature profile given in a file = 21.</description>
+               <ucd/>
+               <defaultValue>1</defaultValue>
+               <optionList>
+                  <optionVal>1</optionVal>
+                  <optionVal>10</optionVal>
+                  <optionVal>20</optionVal>
+                  <optionVal>21</optionVal>
+               </optionList>
+            </parameterDefinition>
+            <parameterDefinition id="fimzn" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="file"
+                                 type="binary">
+               <name>File name for the slab slicing</name>
+               <description>Name of the column-grid file to upload with the values of the column density for the slab slicing (must be given if Slab slicing mode is 10 or 21).</description>
+               <ucd/>
+               <defaultValue>mzn</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="Tinit" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Temperature value to keep constant</name>
+               <description>In the constant temperature mode, the initial temperature value (in K)  is kept constant along the gas slab (must be given if Slab slicing mode is 20).</description>
+               <ucd/>
+               <defaultValue>1.e5</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="nfmax" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Maximum number of iterations</name>
+               <description>Maximum number of iterations (main loops) to be performed by the code.</description>
+               <ucd/>
+               <defaultValue>100</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="resol" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="real">
+               <name>Output spectra resolution</name>
+               <description>Resolution nu/dnu of the lines in the output spectra.</description>
+               <ucd/>
+               <defaultValue>300</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="ifich1" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="no"
+                                 type="integer">
+               <name>Output level of information</name>
+               <description>Level of information in the output files: main output files only = 0, more detailed output = 1.</description>
+               <ucd/>
+               <defaultValue>0</defaultValue>
+            </parameterDefinition>
+            <parameterDefinition id="result" xsi:type="ceaimp:CommandLineParameterDefinition" fileRef="file"
+                                 type="binary">
+               <name>Results archive</name>
+               <description>Archive containing the results files.</description>
+               <ucd/>
+               <defaultValue>results.tgz</defaultValue>
+            </parameterDefinition>
+         </parameters>
+         <interfaces>
+            <interfaceDefinition id="simple">
+               <input>
+                  <pref ref="titre"/>
+                  <pref ref="fich"/>
+                  <pref ref="incid"/>
+                  <pref ref="fifli"/>
+                  <pref ref="flindex"/>
+                  <pref ref="hnumin"/>
+                  <pref ref="hnumax"/>
+                  <pref ref="Tbb1"/>
+                  <pref ref="wbb1"/>
+                  <pref ref="csit"/>
+                  <pref ref="fluxex0"/>
+                  <pref ref="irent"/>
+                  <pref ref="Tbb"/>
+                  <pref ref="wbb"/>
+                  <pref ref="coltot"/>
+                  <pref ref="densinit"/>
+                  <pref ref="idens"/>
+                  <pref ref="densex"/>
+                  <pref ref="raymin"/>
+                  <pref ref="vturbkm"/>
+                  <pref ref="inr"/>
+                  <pref ref="ab2"/>
+                  <pref ref="ab3"/>
+                  <pref ref="ab4"/>
+                  <pref ref="ab5"/>
+                  <pref ref="ab6"/>
+                  <pref ref="ab7"/>
+                  <pref ref="ab8"/>
+                  <pref ref="ab9"/>
+                  <pref ref="ab10"/>
+                  <pref ref="incang"/>
+                  <pref ref="ndir"/>
+                  <pref ref="igrid"/>
+                  <pref ref="fimzn"/>
+                  <pref ref="Tinit"/>
+                  <pref ref="nfmax"/>
+                  <pref ref="resol"/>
+                  <pref ref="ifich1"/>
+               </input>
+               <output>
+                  <pref ref="result"/>
+               </output>
+            </interfaceDefinition>
+         </interfaces>
+         <executionPath>/www/astrogrid-data/commandline-cec/apps/lancement_titan.tcsh</executionPath>
+      </applicationDefinition>
+   </ceaimp:CeaApplication>
+ </ceaimp:CECConfig>
