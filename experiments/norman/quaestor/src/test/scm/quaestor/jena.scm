@@ -439,3 +439,145 @@
           (lambda ()
             (delete-file-or-directory-tree persistence-dir))))
     (format #t "TDBFactory not found -- persistence tests skipped~%"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Talis changesets
+(let ((model (turtle->model "
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix : <urn:example#>.
+:x dc:title \"Title1\"."))
+      (cs-add (turtle->model "
+@prefix cs:      <http://purl.org/vocab/changeset/schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix : <urn:example#>.
+
+  [] rdf:type cs:ChangeSet ;
+      cs:subjectOfChange :x;
+      cs:addition
+              [ rdf:type rdf:Statement ;
+                rdf:subject :x;
+                rdf:predicate dc:title ;
+                rdf:object \"Title2\" ;
+              ].
+"))
+      (cs-replace (turtle->model "
+@prefix cs:      <http://purl.org/vocab/changeset/schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix : <urn:example#>.
+
+  [] rdf:type cs:ChangeSet ;
+      cs:subjectOfChange :x;
+      cs:addition
+              [ rdf:type rdf:Statement ;
+                rdf:subject :x;
+                rdf:predicate dc:title;
+                rdf:object \"Title3\" ;
+              ] ;
+      cs:removal
+              [ rdf:type rdf:Statement ;
+                rdf:subject :x;
+                rdf:predicate dc:title ;
+                rdf:object \"Title1\" ;
+              ] .
+"))
+      (cs-remove (turtle->model "
+@prefix cs:      <http://purl.org/vocab/changeset/schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix : <urn:example#>.
+
+  [] rdf:type cs:ChangeSet ;
+      cs:subjectOfChange :x;
+      cs:removal
+              [ rdf:type rdf:Statement ;
+                rdf:subject :x;
+                rdf:predicate dc:title ;
+                rdf:object \"Title2\" ;
+              ].
+"))
+      (cs-no-subject (turtle->model "
+@prefix cs:      <http://purl.org/vocab/changeset/schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix : <urn:example#>.
+
+  [] rdf:type cs:ChangeSet ;
+      cs:removal
+              [ rdf:type rdf:Statement ;
+                rdf:subject :x;
+                rdf:predicate dc:title ;
+                rdf:object \"Title1\" ;
+              ].
+"))
+      (cs-bad-subject (turtle->model "
+@prefix cs:      <http://purl.org/vocab/changeset/schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix : <urn:example#>.
+
+  [] rdf:type cs:ChangeSet ;
+      cs:subjectOfChange :y;
+      cs:removal
+              [ rdf:type rdf:Statement ;
+                rdf:subject :x;
+                rdf:predicate dc:title ;
+                rdf:object \"Title1\" ;
+              ].
+")))
+  ;; check we start off OK
+  (expect changeset-model0
+          '("(urn:example#x http://purl.org/dc/elements/1.1/title 'Title1')")
+          (print-model-statements model))
+
+  ;; various failure modes:
+  ;; no changeset mentions
+  (expect-failure changeset-no-changeset
+                  (rdf:mutate/changeset! model (turtle->model "<urn:example2#foo> <http://purl.org/dc/elements/1.1/title> \"boo!\".")))
+  ;; two changesets
+  (expect-failure changeset-two-changesets
+                  (rdf:mutate/changeset! model (turtle->model "@prefix cs: <http://purl.org/vocab/changeset/schema#> . <urn:example#1> a cs:ChangeSet. <urn:example#2> a cs:ChangeSet.")))
+  ;; must mention subjectOfChange
+  (expect-failure changeset-no-subject
+                  (rdf:mutate/changeset! model cs-no-subject))
+  ;; and each changeset must refer to subjectOfChange
+  (expect-failure changeset-bad-subject
+                  (rdf:mutate/changeset! model cs-bad-subject))
+  ;; each removal must refer to a statement in the model
+  (expect-failure changeset-missing-statement
+                  (rdf:mutate/changeset! model (turtle->model "
+@prefix cs: <http://purl.org/vocab/changeset/schema#>.
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix : <urn:example#>.
+  [] a cs:ChangeSet;
+     cs:subjectOfChange :x;
+     cs:removal [ rdf:type rdf:Statement;
+                  rdf:subject :x;
+                  rdf:predicate dc:title;
+                  rdf:object \"MISSING TITLE\"; # there is no such statement
+                ].
+")))
+
+  ;; now a sequence of additions and removals
+  (let ((model1 (rdf:mutate/changeset! model cs-add)))
+    (expect changeset-model1
+            '("(urn:example#x http://purl.org/dc/elements/1.1/title 'Title1')"
+              "(urn:example#x http://purl.org/dc/elements/1.1/title 'Title2')")
+            (print-model-statements model1))
+    (let ((model2 (rdf:mutate/changeset! model1 cs-replace)))
+      (expect changeset-model2
+              '("(urn:example#x http://purl.org/dc/elements/1.1/title 'Title2')"
+                "(urn:example#x http://purl.org/dc/elements/1.1/title 'Title3')")
+              (print-model-statements model2))
+      (let ((model3 (rdf:mutate/changeset! model2 cs-remove)))
+        (expect changeset-model3
+                '("(urn:example#x http://purl.org/dc/elements/1.1/title 'Title3')")
+                (print-model-statements model3))
+        ;; model2 is changed (is the same as model3 in fact)
+        (expect changeset-model3-2
+                '("(urn:example#x http://purl.org/dc/elements/1.1/title 'Title3')")
+                (print-model-statements model2)))))
+  )

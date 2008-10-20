@@ -26,7 +26,8 @@
   rdf:get-properties-on-resource
   rdf:select-statements
   rdf:select-object/string
-  rdf:make-quaestor-resource)
+  rdf:make-quaestor-resource
+  rdf:mutate/changeset!)
 
 (import* srfi-1
          fold)
@@ -80,6 +81,16 @@
   (is-java-type? x <com.hp.hpl.jena.rdf.model.property>))
 (define (jena-rdfnode? x)
   (is-java-type? x <rdfnode>))
+
+;; ANDF : list -> boolean
+;; Implements 'and' as a function -- returns true if all elements of the list are non-#f
+(define (andf l)
+  (cond ((null? l)
+         #t)
+        ((car l)
+         (andf (cdr l)))
+        (else
+         #f)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -795,5 +806,65 @@
          (get-named-reasoner 'reasoner-list))
         (else
          #f)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Apply Talis changeset.
+;;
+;; See <http://n2.talis.com/wiki/ChangeSets> for spec.
+;; We don't implement everything here:
+;;
+;; * The Talis Changeset Protocol <http://n2.talis.com/wiki/Changeset_Protocol>
+;;   says that there is no checking that the subjectOfChange is indeed the
+;;   subject of each of the addition/removal statement; we do indeed check this
+;;   and throw an error if it's not so
+;; 
+;; * The protocol permits multiple ChangeSet objects in a POST; we don't, for now.
+
+;; RDF:MUTATE/CHANGESET! : model model -> model
+;; Apply the CHANGESET, which is an RDF model conforming to <http://n2.talis.com/wiki/ChangeSets>,
+;; to the statements in the MODEL.  Return the (changed) input model, or throw an 
+;; error on any problems.
+;;
+;; We only look at the cs:subjectOfChange, cs:addition and cs:removal properties, 
+;; and we do so on any single object which is of type cs:ChangeSet.
+(define/contract (rdf:mutate/changeset! (model jena-model?) (changeset jena-model?) -> jena-model?)
+  (define-generic-java-methods as to-string get-statement get-subject equals add remove contains)
+  (define-java-classes
+    (<reified-statement> |com.hp.hpl.jena.rdf.model.ReifiedStatement|)
+    (<statement> |com.hp.hpl.jena.rdf.model.Statement|))
+  (define (cs-ns x)
+    (string-append "http://purl.org/vocab/changeset/schema#" x))
+  (define (reified->stmt reified-statement-node)
+    (with/fc (lambda (m e)
+               (error "object ~a is not a Reified Statment" (->string (to-string reified-statement-node))))
+      (lambda ()
+        (get-statement (as reified-statement-node <reified-statement>)))))
+  (let ((changeset-list (rdf:select-statements changeset #f "a" (cs-ns "ChangeSet"))))
+    (cond ((and (= (length changeset-list) 1)
+                (car changeset-list))
+           => (lambda (cs)
+                (let ((subject-of-change (rdf:get-property-on-resource cs (cs-ns "subjectOfChange")))
+                      (removals (map reified->stmt (rdf:get-properties-on-resource cs (cs-ns "removal"))))
+                      (additions (map reified->stmt (rdf:get-properties-on-resource cs (cs-ns "addition")))))
+                  (cond ((not subject-of-change)
+                         (error "rdf:mutate/changeset!: changeset has no subjectOfChange"))
+                        ((not (andf (map (lambda (stmt)
+                                           (->boolean (equals (get-subject stmt) subject-of-change)))
+                                         (append removals additions))))
+                         (error "rdf:mutate/changeset!: all addition/removal statements must have subjectOfChange as their subject"))
+                        ((not (andf (map (lambda (stmt)
+                                           (->boolean (contains model stmt)))
+                                         removals)))
+                         (error "rdf:mutate/changeset!: all removal statements must be initially present in the model"))
+                        (else
+                         ;; normal case
+                         (if (not (null? removals))
+                             (remove model (->jarray removals <statement>)))
+                         (if (not (null? additions))
+                             (add model (->jarray additions <statement>)))
+                         model)))))
+          (else
+           (error "rdf:mutate/changeset!: changeset must contain exactly one cs:ChangeSet")))))
 
 )
