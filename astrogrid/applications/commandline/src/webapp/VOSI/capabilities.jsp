@@ -33,7 +33,7 @@
       <accessURL use="full"><%=base%>services/CommonExecutionConnectorService</accessURL>
     </interface>
     <!-- would be better if this were its own interface type to make UWS -->
-    <interface xsi:type="vr:WebService" version="0.9"> 
+    <interface xsi:type="cea:UWS-PA" version="0.9"> 
       <accessURL use="full"><%=base%>uws/jobs</accessURL>
     </interface>
     
