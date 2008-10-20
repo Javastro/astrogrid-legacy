@@ -1,3 +1,9 @@
+Release 0.5.3, 2008 October 20
+------------------------------
+
+* Add RDF:MUTATE/CHANGESET! procedure to jena.scm, which supports
+  mutating a model using a 'Talis Changeset' specification.
+
 Release 0.5.2, 2008 October 15
 ------------------------------
 
