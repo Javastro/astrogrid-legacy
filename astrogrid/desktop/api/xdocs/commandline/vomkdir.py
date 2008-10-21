@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-# write data to a myspace file
+# make a new myspace directory.
 # Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
 # run with --help for usage information.
-import xmlrpclib
+import xmlrpclib 
 import sys
 import os
-import os.path
-import urlparse
 import optparse
 
-parser = optparse.OptionParser(usage="usage: %prog [options] <local file> <myspace ivorn or path>"
-                      ,description="Write contents of a myspace file")
+parser = optparse.OptionParser(usage="usage: %prog [options] <myspace ivorn or path>"
+                      ,description="Make myspace directories")
+parser.add_option('-d','--directory',action='store_true', default=False,
+                  help='allow removal of directories')
 parser.add_option('-e','--examples', action='store_true', default=False
                   , help='display some examples of use and exit.')
 #pare the options
@@ -19,9 +19,8 @@ parser.add_option('-e','--examples', action='store_true', default=False
 
 if options.examples:
       print """
-voput.py localdir/localfile.txt myspacedir/subdir/myspacefile.txt
-	: copy localfile.txt from localdisk to myspace as myspacefile.txt
-	: creating myspacedir and subdir if necessary
+vomkdir.py dir/subdir/subsubdir
+      : create subsubdir, and it's parent directories if required
       """
       sys.exit()
 
@@ -32,26 +31,15 @@ prefix = file(fname).next().rstrip()
 ar = xmlrpclib.Server(prefix + "xmlrpc")
 myspace = ar.astrogrid.myspace
 
-
-
-# build url from local file reference.
-if not os.path.exists(args[0]):
-	sys.exit(args[0] + ": file does not exist")
-	
-f = file(args[0])
-
-path = args[1]
+path = args[0]
 if not (path.startswith("ivo://") or path.startswith('#')) :
         #assume it's a path - add the required hash to indicate this.
         path = '#' + path
+        
+if myspace.exists(path):
+    sys.exit(path + " : Exists")
 
-url = urlparse.urlunsplit(["file","",os.path.abspath(f.name),"",""])
-
-
-try:
-# create node if needed.
-	if not myspace.exists(path):
-		myspace.createFile(path)
-	myspace.copyURLToContent(url,path)
+try:    
+      myspace.createFolder(path)
 except xmlrpclib.Fault,e:
       sys.exit(e.faultString)

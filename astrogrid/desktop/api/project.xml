@@ -3,13 +3,9 @@
   <extend>${basedir}/../template/project-template.xml</extend>
 
         <artifactId>acr-interface</artifactId>
-        <name>Astro Runtime API</name>
+        <name>Astro Runtime</name>
         <description>
-	Subproject for the public API to AR.
-	Run % maven astrogrid-install-artifact
-	 to create the pre-requisites required for the ../impl builds
-	Alternatively, run % maven install-materials
-	to do all this from the root project.
+    Astro Runtime Interfaces
 		  </description>
         <shortDescription>Astro Runtime Interfaces</shortDescription>
 
@@ -310,7 +306,7 @@
 </dependency>   
   
     <!-- Only used within build?
-     !   Seems to be required for com.sun.* doclet classes. -->
+     !   Seems to be required for com.sun.* doclet classes. 
     <dependency>
         <groupId>sun</groupId>
         <artifactId>tools</artifactId>
@@ -320,6 +316,7 @@
             <comment>only used within build</comment>
         </properties>
     </dependency>
+     -->
   
     </dependencies>
 </project>

@@ -1,18 +1,21 @@
 <html>
 <body>
 <h1>Datastructures for IVOA Registry Resources</h1>
-@serial exclude
 
-The classes in this package represent resources registered in an IVOA standard registry.
- The base class is {@link org.astrogrid.acr.ivoa.resource.Resource}.
- See {@link org.astrogrid.acr.ivoa.Registry} for how to query a registry.
- 
- description of multi-inheritance.
- 
- 
+
+The classes in this package represent resources registered in an IVOA resource registry.
+A registry can by queried for resources using the {@link org.astrogrid.acr.ivoa.Registry} component. The 
+result of a query will be one or more  {@link org.astrogrid.acr.ivoa.resource.Resource} objects.
+<p/>
  See <a href="http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html">IVOA Registry Metadata Document</a>
+
+<p/>
+
+The resources returned from a query will typically be instances of <b>one or more</b> 
+of the subclasses of {@code Resource} shown below:
+ 
 <br />
-{@textdiagram resources
+{@textdiagram resourceHierarchy
                 +-------------+    +----------------+
      /----------+ Application |<---+ CeaApplication |
      |          +-------------+    +----------------+
@@ -42,6 +45,107 @@ The classes in this package represent resources registered in an IVOA standard r
                                    \-+ ConeService |
                                      +-------------+
 }
+<p />
+
+Every resource is composed of the following elements
+<br />
+{@textdiagram resourceComposition
+
+                 +------------------------------+
+                 |           Resource           |
+                 +------------------------------+
+                 | id              URI          |
+                 | created         String       |
+                 | updated         String       |
+                 | title           String       |
+                 | shortName       String       |
+                 | status          String       |
+                 | type            String       |
+                 | validationLevel Validation[] |
+                 +-------+----------------+-----+
+                         |                |
+                         |                |
+ +-----------------------+------+   +-----+-----------------------+
+ |           Content            |   |          Curation           |
+ +------------------------------+   +-----------------------------+
+ | description   String         |   | creators     Creator[]      |
+ | referenceURI  URI            |   | contributors ResourceName[] |
+ | subject       String[]       |   | contacts     Contact[]      |
+ | type          String[]       |   | publisher    ResourceName   |
+ | source        String         |   | dates        Date[]         |
+ | relationships Relationship[] |   | version      String         |
+ | contentLevel  String[]       |   +-----------------------------+
+ +------------------------------+
+
+}
+
+<p />
+Furthermore, certain subclasses of resource contain additional elements:
+
+<h3>Table Metadata</h3>
+{@link org.astrogrid.acr.ivoa.resource.DataCollection }, 
+{@link org.astrogrid.acr.ivoa.resource.TableService} and 
+{@link org.astrogrid.acr.ivoa.resource.CatalogService} provide table and column metadata. 
+({@link org.astrogrid.acr.ivoa.resource.Catalog} and 
+{@link org.astrogrid.acr.astrogrid.TableBean})
+
+
+<h3>Coverage</h3>
+{@link org.astrogrid.acr.ivoa.resource.DataCollection} and 
+{@link org.astrogrid.acr.ivoa.resource.DataService} describe spatial and waveband coverage 
+({@link org.astrogrid.acr.ivoa.resource.Coverage})
+
+<h3>Capabilities</h3>
+A {@link org.astrogrid.acr.ivoa.resource.Service} is a resource that can be invoked to
+perform some action. The invokable actions are represented as
+a list of {@link org.astrogrid.acr.ivoa.resource.Capability}, accessed 
+from {@link org.astrogrid.acr.ivoa.resource.Service#getCapabilities()}. Many kinds of 
+invokable action are represented using a basic {@code Capability} object - however, 
+there are subclasses that provide further metadata:
+<br />
+{@textdiagram capabilityHierarchy
+
+                +---------------------+
+     /----------+ CeaServerCapability |
+     |          +---------------------+       +-------------------+
+     |                                    /---+ HarvestCapability |
+     |          +--------------------+<---/   +-------------------+
+     |   /------+ RegistryCapability |
+     |   |      +--------------------+<---\   +------------------+
+     v   v                                \---+ SearchCapability |
++------------+  +----------------+            +------------------+
+| Capability |<-+ ConeCapability |
++------------+  +----------------+
+ ^   ^   ^
+ |   |   |      +----------------+
+ |   |   \------+ SiapCapability |
+ |   |          +----------------+
+ |   |
+ |   |          +----------------+
+ |   \----------+ SsapCapability |
+ |              +----------------+
+ |
+ |              +----------------+
+ \--------------+ StapCapability |
+                +----------------+
+
+}
+
+<p />
+
+Each subclass of {@code Service}
+provides a convenience function to access the capability corresponding to that
+service. For example, {@link org.astrogrid.acr.ivoa.resource.ConeService} provides a function
+{@code findConeCapability()} which returns a 
+{@link org.astrogrid.acr.ivoa.resource.ConeCapability}.
+Therefore, if a resource provides a Cone and Image query services 
+(i.e. implements {@code ConeService} and {@code SiapService}), 
+then {@code Service.getCapabilities()}
+will return at least two {@code Capability} objects, of which one will be a {@code ConeCapability}
+and another a {@link org.astrogrid.acr.ivoa.resource.SiapCapability}
+
+
 
 </body>
 </html>
+@serial exclude

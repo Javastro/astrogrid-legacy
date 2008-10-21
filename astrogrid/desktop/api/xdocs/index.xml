@@ -1,73 +1,45 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
-<properties>
+    <properties>
         <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
         <title>Introduction</title>
-</properties>
-<body>
-	<section name="Astro Runtime : An API for the VO"><p>
-The Astro Runtime (AR) simplifies access to Virtual Observatory 
-(VO) services.  It implements the client side of many VO services,
- and provides an API that is higher-level, simple, consistent and 
- self-contained. It provides functionality for implementing data 
- analysis applications which use remote VO resources.  
- It is intended both for use in actual applications and science scripting.  
- Identical functionality is made available in multiple languages and 
- application environments.
-</p>
-<p>
-
-In general, scientific analysis applications want a higher level
-interface and want to be isolated from the details of, and changes to,
-the more fundamental VO protocols and related technology comprising
-the core VO infrastructure.  Astro Runtime hides most of the details of
-the VO infrastructure, provides a straightfoward way to deal with
-protocol versioning, and allows for more transparent infrastructure
-evolution.
-</p>
-
-<p>
-			Some current or potential uses of the AR are
-			<!--  check for concrete examples of these. -->
-			<ul>
-				<li>as  infrastructure for new VO clients and services.</li>
-				<li>to VO-integrate existing desktop applications</li>
-				<li>to provide VO functionality to existing packages (PyRaf, Parceltongue/AIPS) </li>
-				<li> simplify science scripting: e.g. programmatic access to VO
-					services from Python, Perl,  IDL
-				</li>
-				<li>to provide a commandline interface to the VO</li>
-			</ul>
-		</p>
-</section>
-	<section name="Motivation">
-		<p>
-			Virtual Observatory technology is becoming complex -
-			partly through necessity, and partly because of growing
-			pains. This complexity is challenging and time-consuming to
-			learn and may be a barrier to entry for some. Amongst the
-			causes of the complexity are:
-			<ul>
-				<li>growing number of standards</li>
-				<li>interaction between standards</li>
-				<li>variation between standard versions</li>
-				<li>non-compliance of service implementations</li>
-				<li>
-					use of existing computer-science technologies -
-					WS-*, SOAP, XML Schema
-				</li>
-				<li>
-					variation between implementations of these
-					technologies
-				</li>
-			</ul>
-		</p>
-		<p>
-			We hope that the Astro Runtime (AR) hides enough of this complexity
-			so that the VO becomes accessible to more developers - from professional
-			programmers to casual shell scripters.
-			</p>
-		
-	</section>
-</body>
+    </properties>
+    <body>
+        <section name="Introduction">
+        <p>
+        The Astro Runtime is middleware that makes it simple to use Virtual Observatory services.
+        The current implementation supports development in
+any language with a XML-RPC,  Java-RMI or basic HTTP library. It has been 
+successfully used from Python, Perl, C, C++, Java, and Bash.
+        </p>
+        </section>
+        <section name="Principal Directories">
+            <dl>
+                <dt>docs</dt>
+                <dd>This project documentation</dd>
+                <dt><a href="apidocs/index.html">docs/apidocs</a></dt>
+                <dd>Tutorial and API Documentation</dd>
+                <dt><a href="commandline/index.html">commandline</a></dt>
+                <dd>Commandline tools</dd>
+                <dt><a href="../rmi-lib">rmi-lib</a></dt>
+                <dd>Libraries to connect to AR from Java over RMI
+                </dd>                
+                <dt><a href="../xmlrpc-lib">xmlrpc-lib</a></dt>
+                <dd>Libraries to connect to AR from Java over XML-RPC</dd>
+            </dl>
+        </section>
+        <section name="External Dependencies">
+            <p>
+                Requires an installation of the Astro Runtime, which is
+                provided as part of 
+                <a href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop">VODesktop</a>
+            </p>
+        </section>
+        <section name="Status">
+            <p> The current Astro Runtime implementation is a stable
+                release that is used in a number of projects. Any
+                alterations to this public API will be made in a
+                backwards-compatible manner.</p>
+        </section>
+    </body>
 </document>

@@ -1,7 +1,7 @@
 <html>
 <body>
 <h1>IVOA Webservices</h1>
-@serial exclude
+
 
 This module provides access to <b>IVOA Registries</b> - <i>which list services and other resources available in the virtual observatory</i>,
  and <b>Data Access (DAL) services</b> - <i>which provide searchable catalog, image, spectra and time-series archives</i>.
@@ -26,5 +26,12 @@ The DAL components for accesing different kinds of data all inherit from the {@c
    <dt>{@link org.astrogrid.acr.astrogrid.Stap}</dt><dd>for time-series data</dd>
   </dl>  
 
+
+
+
+<h2>Service Availability</h2>
+The {@link org.astrogrid.acr.ivoa.Vosi} component provides a way to query services for their operational status, uptime and scheduled downtime. 
+
 </body>
 </html>
+@serial exclude

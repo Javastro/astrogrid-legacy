@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # perform an adql query and display results in a variety of ways.
+# Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
 # run with --help for usage information.
 
 #This is quite a straightforward implementation - but suitable for smaller queries.
@@ -24,47 +25,34 @@ ar = xmlrpclib.Server(prefix + "xmlrpc")
 apps = ar.astrogrid.applications
 myspace = ar.astrogrid.myspace
 plastic = ar.plastic.hub
+registry = ar.ivoa.registry
 
 #default cea app to query
-service = 'ivo://mssl.ucl.ac.uk/solar_events_dsa/ceaApplication'
+defaultService = 'ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa/ceaApplication'
 #default output format
-format = "vot"
+defaultFormat = "csv"
 #dictionary mapping from short keywords to full CEA parameter values.
 formatDict = {'vot':'VOTABLE','votbin':'VOTABLE-BINARY','csv':'COMMA-SEPARATED','plastic':'VOTABLE'}
 # default query
-query = "select top 100 * from yohkoh_flare_list as a"
-
-#earlier releases of workbench / AR have a broken adql/s parser - so will only work with adql/x a the moment.
-# for this version, uncomment the following statement.
-#query ="""
-#<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
-#    <?ag-adql-schema-version v1.0a1?>
-#    <Restrict Top="100"/>
-#    <SelectionList xsi:type="selectionListType">
-#        <Item xsi:type="allSelectionItemType"/>
-#    </SelectionList>
-#    <From xsi:type="fromType">
-#        <Table xsi:type="tableType" Alias="a" Name="yohkoh_flare_list"/>
-#    </From>
-#</Select>
-#"""
+query = "select * from Filter"
 
 #build an option parser.
-parser = optparse.OptionParser(usage="%prog [options] <adql/s-query> | <query-file>",
+parser = optparse.OptionParser(usage="%prog [options] <adql-query> | <query-file>",
                                description='''
-Perform an adql query against a cea service. Results can be returned in a 
-range of formats.
+Query a database service. (DSA) Results can be returned in a range of formats.
 ''')
-parser.add_option('-f','--format', default=format, choices=['vot','votbin','csv','plastic']
-                  ,help='format to return results in: vot, votbin, csv, plastic (default: %s)' % format)
-parser.add_option('-s','--service',metavar="ID", default=service
-                  ,help='RegistryID of the DSA to query (default: %s)' % service)
+parser.add_option('-f','--format', default=defaultFormat, choices=['vot','votbin','csv','plastic']
+                  ,help='format to return results in: vot, votbin, csv, plastic (default: %s)' % defaultFormat)
+parser.add_option('-s','--service',metavar="ID", default=defaultService
+                  ,help='RegistryID of the DSA to query (default: %s)' % defaultService)
 parser.add_option('-i','--inputfile',action='store_true', dest='fromFile', default=False
                   , help='read query from a file')
 parser.add_option('-q','--query',action='store_false',dest='fromFile'
                   ,help='read query from commandline (default)')
 parser.add_option('-m','--myspace',metavar='MYSPACE_LOCATION'
                 , help='use a myspace file to stage the result (useful for large queries)')
+parser.add_option('-l','--list',action='store_true',default=False
+                  ,help='list all known queryable database services, and exit')
 parser.add_option('-e','--examples', action='store_true', default=False
                   , help='display some examples of use and exit.')
 #maybe add more options in here later
@@ -74,29 +62,69 @@ parser.add_option('-e','--examples', action='store_true', default=False
 
 if opts.examples:
     print """
-examples:
-adql.py 
-   ---- run with default parameters
-adql.py -fvot "select top 100 * from yohkoh_flare_list as a" 
-   --- return a votable
-adql.py -format=plastic -q myQuery.adql
-   --- load adql (/s or /x) from a file, display result to a plastic app
-adql.py --service=ivo://org.astrogrid/IoA/FIRST/object-catalogue/ceaApplication -q aQuery.adql
-   --- query against the FIRST object catalogue, load query from a file.
-adql.py -myspace=/results/temp/adql1.vot -fplastic
-   --- stage results in the myspace location '/results/temp/adql1.vot' within the user's homespace
-       Display result in a plastic viewer
+adql.py "select * from Filter"
+   : run a query against default database, return results as CSV
+
+adql.py -fvot "select * from Filter" 
+   : run a query, return a votable
+   
+adql.py -i query.adql
+   : load query from a file,
+   
+adql.py --format=plastic -i query.adql   
+   : send results to a running plastic application (e.g. Topcat)
+
+adql.py --list
+   : list the names and identifiers of all queryable database services
+   
+adql.py --service=ivo://wfau.roe.ac.uk/twomass-dsa/wsa "select top 10 * from twomass_psc"
+   : query against 2MASS
+
+adql.py -myspace=/results/temp/adql1.vot -i query.adql
+   : stage results at '/results/temp/adql1.vot' within the user's myspace
+       
 """    
     sys.exit()
+elif opts.list:
+    #query to produce index of catalog services which provide a cea capability
+    xq = """
+<ul>
+{
+for $r in //vor:Resource[not (@status='inactive' or @status='deleted')
+   and @xsi:type &= '*CatalogService' 
+   and capability/@standardID="ivo://org.astrogrid/std/CEA/v1.0"]
+order by $r/title
+return <li>{$r/title/text()} : {$r/identifier/text()}</li>
+}
+</ul>
+    """
+    # do the query
+    s = registry.xquerySearchXML(xq)
+    #extract info from xml
+    import re
+    for l in re.finditer('<li>(.*)</li>',s):
+        print l.group(1)
+    sys.exit()    
     
 #on with the show. check we've got enough args left.
 if len(args) == 0:
-    sys.stderr.write( "No query provided - using default query\n" )
+    sys.stderr.write( "No query provided - using default query - %s\n" % duery )
 elif opts.fromFile:
     sys.stderr.write('Reading query from ' + args[0] + '\n')
     query = open(args[0]).read()
 else:
     query = args[0]
+
+#check what kind of resource opts.service is.
+#and if it's not a cea application, see if we can find the related cea app.
+if opts.service != defaultService:
+    res = registry.getResource(opts.service)
+    if not (res['type'].endswith("CeaApplication")) :
+        #guess it's the server - try to find the correct relationshop metadata
+        relationships = res['content']['relationships']
+        for r in relationships:
+            if r['relationshipType'] == 'service-for':
+                opts.service =  r['relatedResources'][0]['value']
 
 #fill in the execution details. from the commandline options and args
 #todo - should verify that the  service arg atually is an ADQL 
@@ -139,7 +167,9 @@ while progress['status'] not in ['ERROR','COMPLETED','UNKNOWN'] :
 
 #query finished
 if progress['status'] == "ERROR":
-    sys.exit("Query ended in error")
+    results = apps.getResults(execId)
+    sys.exit(results['cea-error'])
+
 
 #lovely. lets do something with the results
 if opts.format == 'plastic' : #broadcast the file to plastic viewers

@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.18 2008/09/25 16:02:09 nw Exp $
+/*$Id: Finder.java,v 1.19 2008/10/21 13:09:08 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,8 @@ import org.astrogrid.acr.system.ApiHelp;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
  *@see org.astrogrid.acr.builtin.ACR How to retrieve services from the ACR interface
  *@note This class can also be used for direct-java connection to an AstroRuntime, if the AR is running in the same JVM as the calling code.
- *@xmlrpc This class is not used for XML-RPC connections to AstroRuntime. For Python, Perl, C, etc see the examples elsewhere (TODO)
+ *@xmlrpc This class is not used for XML-RPC connections to AstroRuntime. For instructions for Python, Perl, C, etc 
+ *see the <a href="{@docRoot}/overview-summary.html">overview documentation</a>.
  */
 public class Finder {
     /** Part of the internal implementation
@@ -489,6 +490,13 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.19  2008/10/21 13:09:08  nw
+Incomplete - taskapi documentation
+
+Incomplete - taskUseful scripts / Examples.
+
+Complete - taskwrite up examples.
+
 Revision 1.18  2008/09/25 16:02:09  nw
 documentation overhaul
 

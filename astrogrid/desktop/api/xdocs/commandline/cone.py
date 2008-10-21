@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # perform a cone search and display results in a variety of ways.
+# Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
 # run with --help for usage information.
 import xmlrpclib 
 import sys
@@ -19,18 +20,18 @@ tables = ar.util.tables
 sesame = ar.cds.sesame
 
 #default cone search service to query
-service = 'ivo://nasa.heasarc/optical'
+defaultService = 'ivo://fs.usno/cat/usnob'
 #default output format
-format = "csv"
+defaultFormat = "csv"
 
 #build an option parser
 parser = optparse.OptionParser(usage='%prog [options] <radius> {<ra> <dec>| <object-name>}',
                                description='Perform a cone search and return results')
 parser.disable_interspersed_args()
-parser.add_option('-f','--format', default=format, choices=['votable','csv','plastic','browser']
-                  ,help='format to return results in: votable, csv, plastic, browser (default: %s)' % format)
-parser.add_option('-s','--service',metavar="ID", default=service
-                  ,help='RegistryID or URL endpoint of the Cone Service to query (default: %s)' % service)
+parser.add_option('-f','--format', default=defaultFormat, choices=['votable','csv','plastic','browser']
+                  ,help='format to return results in: votable, csv, plastic, browser (default: %s)' % defaultFormat)
+parser.add_option('-s','--service',metavar="ID", default=defaultService
+                  ,help='RegistryID or URL endpoint of the Cone Service to query (default: %s)' % defaultService)
 parser.add_option('-e','--examples', action='store_true', default=False
                   , help='display some examples of use and exit.')
 #parse the options
@@ -40,17 +41,25 @@ if opts.examples:
     print """
 examples:
 cone.py 0.1 m32 
-        --- resolve position of m32, perform a 0.1 decimal degree search around this position, display results as csv
+        : search of radius 0.1 decimal degree around m32, display results as csv
+
 cone.py 0.1 83.822083 -5.391111
-        --- perform a 0.1 decimal degree search around this position, return value as csv
-cone.py -fvotable 0.1 83.822083 -5.391111
-        --- do a search, return results as votable
-cone.py --format=plastic 0.1 83.822083 -5.391111
-        --- do a search, send results to a plastic viewer
-cone.py -fbrowser 0.1 83.822083 -5.391111
-        --- do a search, display result in the system browser       
+        : search of 0.1 decimal degree around a position, return results as csv
+
 cone.py --service=ivo://nasa.heasarc/abell 0.2 m54
-        --- search 0.2 decimal degrees about m54 using the specified service
+        : query a specific service by giving it's registry resource ID.
+
+cone.py --service=http://some.catalogue.service/endpoint 0.2 ngc123
+        : search a specific service by giving it's endpoint  
+
+cone.py -fvotable 0.1 83.822083 -5.391111
+        : do a search, return results as votable
+
+cone.py --format=plastic 0.1 83.822083 -5.391111
+        : send results to a running plastic application (e.g. Topcat)
+
+cone.py -fbrowser 0.1 83.822083 -5.391111
+        : do a search, display result in the system webbrowser       
 """
     sys.exit()
 #work out the position to search at
@@ -72,8 +81,9 @@ else: # assume position has been provided on commandlne
     ra = args[1]
     dec=  args[2]
 
+
 # use AR to buuild the query URL       
-query = ar.ivoa.cone.constructQuery(service,ra,dec,sz)
+query = ar.ivoa.cone.constructQuery(opts.service,ra,dec,sz)
 
 #decide what we're going to do with this query
 if opts.format == 'plastic':

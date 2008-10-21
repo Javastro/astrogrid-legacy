@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Example Workflows</title>
+</properties>
+<body>
+  
+    <section name="Example Workflows">
+    <p>Longer workflow scripts</p>
+    
+    <subsection name="conesearch.py">
+ query a series of catalog services for each position in a table
+VOTable.py - votable parsing library, used by conesearch.py
+sample-conesearch-input_veron.vot - sample input for the
+    conesearch workflow    
+    <p>
+    </p>
+    </subsection>
+    
+    <subsection name="run-sdss.py">
+    <p>
+an example of invoking, monitoring, and gettings results from an 
+asyncronous CEA service.    
+    </p>
+    </subsection>
+    
+
+    <subsection name="adass2006-exampl.py">
+    <p>
+    rename: - simple workflow based around a siap query.
+    </p>
+    </subsection>
+    
+    
+    </section>
+</body>
+</document>

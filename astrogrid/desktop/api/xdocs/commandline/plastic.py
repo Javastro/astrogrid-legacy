@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # send a file or URL (votable, fits, spectrum) to a plastic application. 
-#Usage - plastic.py [-vot|-fits|-spec] <file|url>
+# Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
+# run with --help for usage information.
 # todo add in support for myspace.
 import xmlrpclib 
 import sys
@@ -19,7 +20,7 @@ plastic = ar.plastic.hub
 
 #now work out what the user intended.
 parser = optparse.OptionParser(usage='%prog [options] <file | url>',
-                               description="Send a file or URL of votable/fits/spectrum to a plastic application")
+                               description="S  Send a file or URL containing votable, fits, or spectrum data to a PLASTIC application (such as Topcat or Aladin) ")
 parser.add_option('-v','--vot',action='store_true',help='Treat as a votable (default)')
 parser.add_option('-s','--spec',action='store_true',help='Treat as a spectrum')
 parser.add_option('-f','--fits',action='store_true',help='Treat as a fits image')
@@ -32,11 +33,13 @@ if opts.examples:
     print """
 examples:
 plastic.py mytable.vot
-    --- send the file 'mytable.vot' to any plastic table viewers
+    : send the file 'mytable.vot' to any plastic table viewer
+    
 plastic.py -s downloads/spectra.fits
-    -- send the file 'downloads/spectra.fits' to any plastic specra viewers
+    : send the file 'downloads/spectra.fits' to any plastic specra viewers
+    
 plastic.py -i http://someServer/foo/images.fits
-    --- send this http url to any plastic image viewers
+    : send this http url to any plastic image viewers
     """
     sys.exit()
     

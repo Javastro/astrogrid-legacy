@@ -1,9 +1,7 @@
 #!/usr/bin/env python
-#Noel Winstanley, AstroGrid, 2006
-#noel.winstanley@manchester.ac.uk
 #Fire an xquery at a vo registry.
-#Usage: start Workbench / AR
-# 	execute 'python xquery.py myquery.xquery'
+# Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
+# run with --help for usage information.
 import xmlrpclib 
 import sys
 import os
@@ -19,7 +17,7 @@ ar = xmlrpclib.Server(prefix + "xmlrpc")
 
 #parse options
 parser = optparse.OptionParser(usage='%prog [options] <xquery> | <query-file>',
-     description="Perform an XQuery against the registry server")
+     description="Perform an XQuery against the Registry Service")
 parser.add_option('-i','--inputfile',action='store_true',dest='fromFile', default=True
                       , help='read query from a file (default)')
 parser.add_option('-q','--query',action='store_false',dest='fromFile'
@@ -31,12 +29,27 @@ parser.add_option('-e','--examples',action='store_true',default=False
 
 if opts.examples:
     print """
-xquery.py
-    --- run with default parameters
-xquery query.xq
-    -- run a query stored in file 'query.xq'
-xquery -q "<size>{count(//vor:Resource)}</size>"
-   --- run a query provided on the commandline (counts number of records in registry)
+xquery.py query.xq
+    : run a query stored in file 'query.xq'
+
+xquery.py -q "<size>{count(//vor:Resource)}</size>"
+    :run a query provided on the commandline
+
+Sample XQueries
+<size>{count(//vor:Resource)}</size>
+    : count the number of resources held in the registry
+    
+//vor:Resource[@xsi:type &= '*DataCollection']
+    : list details of all DataCollection resources
+    
+<ul>
+{
+for $r in //vor:Resource[@xsi:type &= '*DataCollection']
+order by $r/title
+return <li>{$r/title/text()} : {$r/identifier/text()}</li>
+}
+</ul>
+    : produce a list of titles and identifers of all DataCollection resources
     """
     sys.exit()
 

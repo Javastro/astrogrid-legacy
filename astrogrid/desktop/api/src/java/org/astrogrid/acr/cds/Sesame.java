@@ -53,6 +53,22 @@ public interface Sesame {
      * Position 6.95 -1.6
      * </pre>
 	 * 
+	 * The example below shows how to do similar in Perl:
+	 * {@example "Perl Example"
+use File::Spec;
+use RPC::XML::Client;
+#connect to the AR
+open(F, File::Spec->catfile( "$ENV{HOME}", ".astrogrid-desktop" ));
+my $prefix = <F>;
+close( F );
+chomp( $prefix );
+my $ar = RPC::XML::Client->new($prefix . "xmlrpc");
+
+#now all this function
+my $pos = $ar->simple_request('cds.sesame.resolve','ngc123');
+print "$pos->{ra}, $pos->{dec}\n";	 
+	  
+	 * }
 
 	 * @param name the object name to resolve 
 	 * @return a datastructure of positional information about the object.

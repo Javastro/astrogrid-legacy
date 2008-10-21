@@ -1,15 +1,9 @@
-Example uses of AR
-
-recipes - examples of connecting to AR and calling basic functionality from 
-			a collection of languages
-			
+Various other examples / tests of AR - these are scripts which haven't made the XDocs.
+		
 java - examples of calling AR from java - Registry, Dal, Sesame, Plastic, Myspace
 
 java/dalclient - the examples from Doug Tody's DALClient, transcribed to use
 		the equivalent AR interfaces.
 		
-commandline - utility scripts for working with VO (python)
 
 xquery - example registry queries
-
-python-workflows - example science workflows, written as python scripts

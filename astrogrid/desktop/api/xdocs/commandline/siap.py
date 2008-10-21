@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # perform a siap search and display results in a  variety of ways, download imagses to local directoy.
+# Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
 # run with --help for usage information.
 import xmlrpclib 
 import sys
@@ -23,9 +24,9 @@ sesame = ar.cds.sesame
 siap = ar.ivoa.siap
 
 #default siap service to query
-service = 'ivo://adil.ncsa/targeted/SIA'
+defaultService = 'ivo://nasa.heasarc/skyview/rass'
 #default output format
-format = "csv"
+defaultFormat = "csv"
 #number of images to download
 download = 0
 
@@ -34,10 +35,10 @@ parser = optparse.OptionParser(usage='%prog [options] <radius> {<ra> <dec>| <obj
  Perform an image search and display results in a  variety of ways, download images to local directoy.                            
 """)
 parser.disable_interspersed_args()
-parser.add_option('-f','--format', default=format, choices=['votable','csv','plastic','browser']
-                  ,help='format to return results in:  votable, csv, plastic, browser (default: %s)' % format)
-parser.add_option('-s','--service',metavar="ID", default=service
-                  ,help='RegistryID of the Image Service to query (default: %s)' % service)
+parser.add_option('-f','--format', default=defaultFormat, choices=['votable','csv','plastic','browser']
+                  ,help='format to return results in:  votable, csv, plastic, browser (default: %s)' % defaultFormat)
+parser.add_option('-s','--service',metavar="ID", default=defaultService
+                  ,help='RegistryID or URL the Image Service to query (default: %s)' % defaultService)
 parser.add_option('-d','--download',metavar="n|ALL"
                   ,help="number of images to download (default: %d)" % download)
 parser.add_option('-e','--examples', action='store_true', default=False
@@ -46,22 +47,29 @@ parser.add_option('-e','--examples', action='store_true', default=False
 (opts,args) = parser.parse_args()
 
 if opts.examples:
-    print """
-siap.py 0.1 m32 
-        --- resolve m32 to a position, perform a 0.1 decimal degree search around it, display results as csv
+    print """siap.py 0.1 m32 
+        : search of radius 0.1 decimal degree around m32, display results as csv
+        
 siap.py --download=all 0.1 m32 
-        --- do same search, and save all images to local directory.
+        : do same search, and save all images to local directory.
+        
 siap.py -d4 0.1 m32 
-        --- same search, save first 4 images to local directory
-siap.py --format=browser 0.1 83.822083 -5.391111
-        --- perform a 0.1 decimal degree search around this position, display results in web browser
+        : same search, save first 4 images to local directory
+
+siap.py --service=ivo://adil.ncsa/targeted/SIA -d3 0.2 m54
+        : query a specific service by giving it's registry resource ID.  
+
+siap.py --service=http://some.siap.service/endpoint 0.1 45.6 -10.23
+        : search a specific service by giving it's endpoint
+        
 siap.py -fvotable 0.1 83.822083 -5.391111
-        --- do a search, return results as votable
-siap.py --format=plastic 0.1 83.822083 -5.391111
-        --- do a search, send results to a plastic viewer   
-siap.py --service=ivo://nasa.heasarc/abell -d3 0.2 m54
-        --- search 0.2 decimal degrees about m54 using the specified service, download first three images    
-    """
+        : do a search, return results as votable
+            
+siap.py --format=plastic 0.1 ngc123
+        : send results to a running plastic application (e.g. Topcat)
+    
+siap.py --format=browser 0.1 83.822083 -5.391111
+        : do a search, display result in the system webbrowser"""
     sys.exit()
 #work out the position to search at
 ra = 0.0
@@ -83,7 +91,7 @@ else: # assume position has been provided on commandlne
     dec=  args[2]
 
 #use AR to build the query URL
-query = siap.constructQuery(service,ra,dec,sz)
+query = siap.constructQuery(opts.service,ra,dec,sz)
 
 #decide what to do with this query    
 if opts.format == 'plastic':

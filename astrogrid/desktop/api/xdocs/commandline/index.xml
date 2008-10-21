@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
+        <title>Commandline Utilities</title>
+</properties>
+<body>
+    <section name="Commandline Utilities">
+    <p>
+    This page lists a number of command-line utilities that can be used to work with the VO.
+    These utilities display help when passed the <tt>--help</tt> flag, and show some examples of use when 
+    called with <tt>--examples</tt>.   
+    </p>
+    <p>
+    The utilities are implemented as Python scripts which call functions of the AstroRuntime. Therefore
+    <b>you must launch <a href="http://www.astrogrid.org/wiki/Home/AboutAGDesktop">VODesktop</a></b> (which contains AstroRuntime)
+     before making use of these utilities. 
+     </p>
+  </section>
+  <!-- most of this content is from running the scripts with -h and -e 
+  -->
+  <section name="Data Access"> 
+    <p>These utilities retrieve data from VO services</p>
+  
+    <subsection name="cone.py">
+    <p>
+    Performs a cone search against a catalogue. Returns the result as a VOTable, comma-separated-values,
+    or view to a web-browser or plastic application (e.g. <a href="http://www.star.bris.ac.uk/~mbt/topcat/">Topcat</a>)
+     </p>
+     <p><b><a href="cone.py">Download cone.py</a></b></p>
+     <source><![CDATA[ 
+Usage: cone.py [options] <radius> {<ra> <dec>| <object-name>}
+
+Options:
+  -h, --help            show this help message and exit
+  -f FORMAT, --format=FORMAT
+                        format to return results in: votable, csv, plastic,
+                        browser (default: csv)
+  -s ID, --service=ID   RegistryID or URL endpoint of the Cone Service to
+                        query (default: ivo://fs.usno/cat/usnob)
+  -e, --examples        display some examples of use and exit.     
+     ]]></source>    
+     <source>
+examples:
+cone.py 0.1 m32 
+        : search of radius 0.1 decimal degree around m32, display results as csv
+
+cone.py 0.1 83.822083 -5.391111
+        : search of 0.1 decimal degree around a position, return results as csv
+
+cone.py --service=ivo://nasa.heasarc/abell 0.2 m54
+        : query a specific service by giving it's registry resource ID.
+
+cone.py --service=http://some.catalogue.service/endpoint 0.2 ngc123
+        : search a specific service by giving it's endpoint  
+
+cone.py -fvotable 0.1 83.822083 -5.391111
+        : do a search, return results as votable
+
+cone.py --format=plastic 0.1 83.822083 -5.391111
+        : send results to a running plastic application (e.g. Topcat)
+
+cone.py -fbrowser 0.1 83.822083 -5.391111
+        : do a search, display result in the system webbrowser      
+     </source>
+    </subsection>
+
+
+    
+    <subsection name="siap.py">
+    <p>
+    Performs a search for images against a SIAP service. Returns the result as a VOTable, comma-separated-values,
+    or view in a plastic application (e.g. <a href="http://www.star.bris.ac.uk/~mbt/topcat/">Topcat</a>) or system webbrowser.
+    Can optionally download some or all of the images located. This script will work fairly well with SSAP (spectral access) services too.
+    </p>
+    <p><b><a href="siap.py">Download siap.py</a></b></p>
+     <source><![CDATA[ 
+Usage: siap.py [options] <radius> {<ra> <dec>| <object-name>}
+
+Options:
+  -h, --help            show this help message and exit
+  -f FORMAT, --format=FORMAT
+                        format to return results in:  votable, csv, plastic,
+                        browser (default: csv)
+  -s ID, --service=ID   RegistryID or URL the Image Service to query (default:
+                        ivo://nasa.heasarc/skyview/rass)
+  -d n|ALL, --download=n|ALL
+                        number of images to download (default: 0)
+  -e, --examples        display some examples of use and exit.     
+     ]]></source>
+     <source>
+
+siap.py 0.1 m32 
+        : search of radius 0.1 decimal degree around m32, display results as csv
+        
+siap.py --download=all 0.1 m32 
+        : do same search, and save all images to local directory.
+        
+siap.py -d4 0.1 m32 
+        : same search, save first 4 images to local directory
+
+siap.py --service=ivo://adil.ncsa/targeted/SIA -d3 0.2 m54
+        : query a specific service by giving it's registry resource ID.  
+
+siap.py --service=http://some.siap.service/endpoint 0.1 45.6 -10.23
+        : search a specific service by giving it's endpoint
+        
+siap.py -fvotable 0.1 83.822083 -5.391111
+        : do a search, return results as votable
+            
+siap.py --format=plastic 0.1 ngc123
+        : send results to a running plastic application (e.g. Topcat)
+    
+siap.py --format=browser 0.1 83.822083 -5.391111
+        : do a search, display result in the system webbrowser
+
+     </source>
+    </subsection>
+    
+    <subsection name="sesame.py">
+    <p>
+    Resolve an object name to a position in decimal degrees or sexagesimal, or display
+    all known aliases of the object name. Uses the CDS Sesame service.
+    </p>
+    <p><b><a href="sesame.py">Download sesame.py</a></b></p>
+     <source><![CDATA[ 
+Usage: sesame.py [options] <object-name>
+
+Options:
+  -h, --help      show this help message and exit
+  -a, --all       Display full information for this object
+  -d, --decimal   Return position in decimal degrees (default)
+  -s, --sexa      Return position in sexagesimal
+  -e, --examples  display some examples of use and exit.
+    
+    ]]></source>
+    <source>
+sesame.py m32
+    : resolve position of m32 in decimal degrees
+    
+sesame.py --sexa m54
+    : resolve position of m54 in sexagesimal
+    
+sesame.py --all crab
+    : display full information about object 'crab'    
+    </source>
+    </subsection>
+    
+    
+    
+    <subsection name="adql.py">
+    <p>
+    Use ADQL (a version of SQL) to query a database service (DSA).
+    </p>
+    <p><b><a href="adql.py">Download adql.py</a></b></p>
+     <source><![CDATA[     
+Usage: adql.py [options] <adql-query> | <query-file>
+
+Options:
+  -h, --help            show this help message and exit
+  -f FORMAT, --format=FORMAT
+                        format to return results in: vot, votbin, csv, plastic
+                        (default: csv)
+  -s ID, --service=ID   RegistryID of the DSA to query (default:
+                        ivo://wfau.roe.ac.uk/ukidssDR1-dsa/wsa/ceaApplication)
+  -i, --inputfile       read query from a file
+  -q, --query           read query from commandline (default)
+  -m MYSPACE_LOCATION, --myspace=MYSPACE_LOCATION
+                        use a myspace file to stage the result (useful for
+                        large queries)
+  -l, --list            list all known queryable database services, and exit
+  -e, --examples        display some examples of use and exit.
+    ]]></source>
+    <source>
+adql.py "select * from Filter"
+   : run a query against default database, return results as CSV
+
+adql.py -fvot "select * from Filter" 
+   : run a query, return a votable
+   
+adql.py -i query.adql
+   : load query from a file,
+   
+adql.py --format=plastic -i query.adql   
+   : send results to a running plastic application (e.g. Topcat)
+
+adql.py --list
+   : list the names and identifiers of all queryable database services
+   
+adql.py --service=ivo://wfau.roe.ac.uk/twomass-dsa/wsa "select top 10 * from twomass_psc"
+   : query against 2MASS
+
+adql.py -myspace=/results/temp/adql1.vot -i query.adql
+   : stage results at '/results/temp/adql1.vot' within the user's myspace            
+</source>    
+    </subsection>
+
+<!--  fill this in  later    
+     <subsection name="app.py">
+     <p>
+    run remote tasks using commandline args
+    </p>
+    <p><b><a href="app.py">Download app.py</a></b></p>
+    <source>
+    </source>
+    <source>
+    </source>
+    </subsection>
+-->
+
+    <subsection name="plastic.py">
+    <p>
+     Send a file or URL containing votable, fits, or spectrum data to a PLASTIC application (such as Topcat or Aladin)     
+   </p>
+   <p><b><a href="plastic.py">Download plastic.py</a></b></p>
+    <source><![CDATA[
+Usage: plastic.py [options] <file | url>
+
+Options:
+  -h, --help      show this help message and exit
+  -v, --vot       Treat as a votable (default)
+  -s, --spec      Treat as a spectrum
+  -f, --fits      Treat as a fits image
+  -e, --examples  display some examples of use and exit
+         
+    ]]></source>
+    <source>
+plastic.py mytable.vot
+    : send the file 'mytable.vot' to any plastic table viewer
+    
+plastic.py -s downloads/spectra.fits
+    : send the file 'downloads/spectra.fits' to any plastic specra viewers
+    
+plastic.py -i http://someServer/foo/images.fits
+    : send this http url to any plastic image viewers        
+    </source>    
+    </subsection>
+    </section>
+    
+    <section name="Registry">
+    <p>Utilities to query a VO Registry</p>
+        <subsection name="search.py">
+        <p>
+       Search the registry by keyword or ID, and display results in various ways.
+        </p>
+   <p><b><a href="search.py">Download search.py</a></b></p>
+    <source><![CDATA[   
+Usage: search.py [options] <keywords> | <identifier>
+
+Options:
+  -h, --help            show this help message and exit
+  -i, --id              treat search term as a full registry identifier
+  -k, --keyword         treat search term as keywords (default)
+  -f FORMAT, --format=FORMAT
+                        format to return results as: identifier, summary, xml,
+                        plastic (default: summary)
+  -e, --examples        display some examples of use and exit  
+    ]]></source>
+    <source>
+search.py "abell"
+    : display summary for resources matching 'abell'
+
+search.py "abell cluster" "noras"
+    : display summary for resources matching 'abell cluster' and 'noras'
+
+search.py --format==identifier "abell"
+    : list identifiers of all resources matching 'abell'
+
+search.py --format==plastic 'abell'
+    : display resources matching 'abell' in a PLASTIC viewer (e.g. VOExplorer)
+    
+search.py --format==xml "abell cluster" "noras"
+    : display xml of all resources matching 'abell cluster' and 'noras'
+    
+search.py -i "ivo://nasa.heasarc/skyview/first"
+    : display summary of the resource 'ivo://nasa.heasarc/skyview/first'
+
+search.py --format=xml -i "ivo://nasa.heasarc/skyview/first" 
+    : display xml of the resource 'ivo://nasa.heasarc/skyview/first'
+    
+    </source>            
+        </subsection>
+        
+        <subsection name="xquery.py">        
+        <p>
+        Perform an XQuery against the Registry Service
+        </p>
+   <p><b><a href="xquery.py">Download xquery.py</a></b></p>
+    <source><![CDATA[  
+Usage: xquery.py [options] <xquery> | <query-file>
+
+Options:
+  -h, --help       show this help message and exit
+  -i, --inputfile  read query from a file (default)
+  -q, --query      read query from commandline
+  -e, --examples   display some examples of use and exit
+       
+    ]]></source>
+    <source><![CDATA[  
+xquery.py query.xq
+    : run a query stored in file 'query.xq'
+
+xquery.py -q "<size>{count(//vor:Resource)}</size>"
+    :run a query provided on the commandline
+
+Sample XQueries
+<size>{count(//vor:Resource)}</size>
+    : count the number of resources held in the registry
+    
+//vor:Resource[@xsi:type &= '*DataCollection']
+    : list details of all DataCollection resources
+    
+<ul>
+{
+for $r in //vor:Resource[@xsi:type &= '*DataCollection']
+order by $r/title
+return <li>{$r/title/text()} : {$r/identifier/text()}</li>
+}
+</ul>
+    : produce a list of titles and identifers of all DataCollection resources
+    ]]></source>           
+    </subsection>
+    </section>
+    
+
+    <section name="Myspace">
+    <p>Utilities to read and write files in Myspace</p>
+    <subsection name="vols.py">
+    <p>
+    List contents of myspace directories
+    </p>
+       <p><b><a href="vols.py">Download vols.py</a></b></p>
+    <source><![CDATA[   
+Usage: vols.py [options] [node-ivorn or path]
+
+Options:
+  -h, --help          show this help message and exit
+  -l, --long          long format
+  -1, --one-per-line  list one file per line
+  -d, --directory     list directory instead of contents
+  -F, --classify      append indicator of type to entries
+  -Q, --quote         enclose filenames in quotes
+  -e, --examples      display some examples of use and exit.
+      
+    ]]></source>
+    <source>
+vols.py
+        : list contents of user's home myspace directory
+        
+vols.py foo/bar
+        : list contents of subdirectory 'foo/bar'
+        
+vols -l foo/bar
+        : list long details of subdirectory 'foo/bar'
+        
+vols -F foo
+        : list directory, indicating subdirectories    
+    </source>    
+    </subsection>
+    
+    <subsection name="voget.py">
+    <p>
+Read contents of a myspace file
+    </p>
+       <p><b><a href="voget.py">Download voget.py</a></b></p>
+    <source><![CDATA[   
+Usage: voget.py [options] [node-ivorn or path]
+
+Options:
+  -h, --help            show this help message and exit
+  -u, --url             display the download URL, instead of file contents
+  -o FILE, --output=FILE
+                        Save contents to file
+  -e, --examples        display some examples of use and exit.
+      
+    ]]></source>
+    <source>
+voget.py dsa/results.vot
+        : display contents of results.vot
+        
+voget.py --url dsa/results.vot
+        : display download url of results.vot
+
+voget.py -o myresults.vot dsa/results.vot
+        : download dsa/results.vot as ./myresults.vot    
+    </source>    
+    </subsection>
+    
+    <subsection name="voput.py">
+    <p>
+Write contents of a myspace file
+    </p>
+       <p><b><a href="voput.py">Download voput.py</a></b></p>
+    <source><![CDATA[     
+Usage: voput.py [options] <local file> <myspace ivorn or path>
+
+Options:
+  -h, --help      show this help message and exit
+  -e, --examples  display some examples of use and exit.
+    ]]></source>
+    <source>
+voput.py localdir/localfile.txt myspacedir/subdir/myspacefile.txt
+        : copy localfile.txt from localdisk to myspace as myspacefile.txt
+        : creating myspacedir and subdir if necessary 
+    </source>    
+    </subsection>
+    
+     <subsection name="vomkdir.py">
+     <p>
+Make myspace directories
+    </p>
+    <p><b><a href="vomkdir.py">Download vomkdir.py</a></b></p>
+    <source><![CDATA[
+Usage: vomkdir.py [options] <myspace ivorn or path>
+
+Options:
+  -h, --help       show this help message and exit
+  -d, --directory  allow removal of directories
+  -e, --examples   display some examples of use and exit.
+    ]]></source>
+    <source>
+vomkdir.py dir/subdir/subsubdir
+      : create subsubdir, and it's parent directories if required
+    </source>
+    </subsection>
+    
+    <subsection name="vorm.py">
+    <p>
+Delete a myspace file or directory
+    </p>
+   <p><b><a href="vorm.py">Download vorm.py</a></b></p>
+    <source><![CDATA[  
+Usage: vorm.py [options] <myspace ivorn or path>
+
+Options:
+  -h, --help       show this help message and exit
+  -d, --directory  allow removal of directories
+  -e, --examples   display some examples of use and exit.
+    ]]></source>
+    <source>
+vorm.py  dir/file.txt
+        : delete file.txt from myspace.
+vorm.py -d dir/subdir
+        : delete the directory 'subdir' and all it's contents.
+    </source>        
+    </subsection>        
+    </section>
+  
+</body>
+</document>

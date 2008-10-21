@@ -2,10 +2,9 @@
 # execute a long-running task (cea service)
 # takes an application name as first argument, and builds specific commandline args
 # for invoking this application
-# options: run with  --help flag
+# Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
+# run with --help for usage information.
 
-# future - allow user to select which server to run task on, if more than one.
-# add support for viewing the results?
 # add support for enumeration parameters.
 # add support for repeated parameters.
 
@@ -31,7 +30,7 @@ registry = ar.ivoa.registry
 
 #parse arguments
 #find the application name. - must be first argument, and first arg must not start wtih '-'
-#likewise, interface name can be the second interface
+#likewise, interface name can be the second argument
 application = None # if specified, will be a datastructure describing this application
 appId = None
 interfaces = None # if specified, will be a list of interfaces to document
@@ -136,9 +135,9 @@ elif opts.list:
     xq = apps.getRegistryXQuery()
     for i in registry.xquerySearch(xq):
         print i['title'], ":", i['id'] 
-        for l in textwrap.wrap(i['content']['description'],80):
-            print l
-        print "-" * 80
+    #    for l in textwrap.wrap(i['content']['description'],80):
+    #        print l
+    #    print "-" * 80
     sys.exit()
 elif application and opts.about:
     print apps.getDocumentation(appId)

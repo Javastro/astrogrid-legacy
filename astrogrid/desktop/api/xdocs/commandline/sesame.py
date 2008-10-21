@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # resolve an object name to a position using the Sesame service.
-#Usage - sesame.py [-a] objectName
+# Author: Noel Winstanley noel.winstanley@manchester.ac.uk 2006 - 2008
+# run with --help for usage information.
 import xmlrpclib
 import sys
 import os
@@ -27,21 +28,19 @@ parser.add_option('-e','--examples', action='store_true', default=False
 if opts.examples:
     print """
 examples:
-sesame.py
-        --- run with default parameters
 sesame.py m32
-        --- resolve position of m32 in decimal degrees
+    : resolve position of m32 in decimal degrees
 sesame.py --sexa m54
-        --- resolve position of m54 in sexagesimal
+    : resolve position of m54 in sexagesimal
 sesame.py --all crab
-        --- display full information about object 'crab'
+    : display full information about object 'crab'
 """
     sys.exit()
 #default object name                  
 object = "m1"
 #find object name
 if len(args) == 0:
-    sys.stderr.write("No objectname provided - using default object\n")
+    sys.stderr.write("No objectname provided - using default object %s\n" % object)
 else:
     object = args[0]
 
