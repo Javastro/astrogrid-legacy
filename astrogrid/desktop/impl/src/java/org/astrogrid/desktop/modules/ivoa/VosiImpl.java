@@ -182,7 +182,7 @@ public class VosiImpl implements Vosi {
         for (int i = 0; i < caps.length; i++) {
             final Capability capability = caps[i];
             // very loose parsing - hope the standardID will always contain 'availablity'
-            if (StringUtils.containsIgnoreCase(capability.getStandardID().toString(), "availability")) {
+            if (StringUtils.containsIgnoreCase(capability.getStandardID().toString(), "#availability")) {
                 final Interface[] ifaces = capability.getInterfaces();
                 Interface ifac = null;
                 if (ifaces.length == 1) {
