@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.2 2008/10/14 12:28:52 clq2 Exp $
+ * $Id: TapServlet.java,v 1.3 2008/10/21 19:50:03 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -471,6 +471,7 @@ public class TapServlet extends DefaultServlet
 			catch (RuntimeException re) {
 			}
 			String error = th.getMessage();
+                        error = (error == null)? "unknown error" : error;
 			error = error.replaceAll("&", "&amp;"); 
 			error = error.replaceAll("<", "&lt;");
 			error = error.replaceAll(">", "&gt;");
