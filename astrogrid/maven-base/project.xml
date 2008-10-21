@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.39 2008/10/03 11:57:30 pah Exp $ -->
+<!-- $Id: project.xml,v 1.40 2008/10/21 13:28:25 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -9,11 +9,11 @@
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>
-        <logo>http://www.astrogrid.org/images/AGlogo</logo>
+        <logo>http://www.astrogrid.org/chrome/site/images/ag-greyborder_s.png</logo>
     </organization>
     <inceptionYear>2002</inceptionYear>
     <package>org.astrogrid</package>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    <logo>http://www.astrogrid.org/chrome/site/images/ag-greyborder_s.png</logo>
     <shortDescription>This base project contains sensible settings for most components.</shortDescription>
     <url>http://software.astrogrid.org/doc/${astrogrid_release}/${astrogrid.name}/index.html</url>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
