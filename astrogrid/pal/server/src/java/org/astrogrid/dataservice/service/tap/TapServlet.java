@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.4 2008/10/22 08:04:11 kea Exp $
+ * $Id: TapServlet.java,v 1.5 2008/10/22 11:17:36 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.cfg.ConfigFactory;
@@ -55,6 +56,8 @@ import org.astrogrid.io.mime.MimeTypes;
  */
 public class TapServlet extends DefaultServlet 
 {
+        static private Log log = LogFactory.getLog(TapServlet.class);
+        
 	// Keep this in sync with the context specified in web.xml
 	private static String TAP_STEM = "tapservice";
 	private DataServer server = new DataServer();
@@ -550,16 +553,19 @@ public class TapServlet extends DefaultServlet
 
    protected String getJobID(HttpServletRequest request) throws IOException
    {
-      String fragments = getUrlFragments(request);
-      StringTokenizer tokenizer = new StringTokenizer(fragments,"/");
+      log.debug("getPathInfo() returned " + request.getPathInfo());
+      StringTokenizer tokenizer = new StringTokenizer(request.getPathInfo(),"/");
       // First token is /jobs/ (or whatever
       // Second token is JobID ID
       // Third token (if any) is task suffix
       if (tokenizer.hasMoreTokens()) {
-         tokenizer.nextToken(); //Throw this away
+         // Throw this away. Calling nextToken() without using the result doesn't
+         // work; the optimize removes the call.
+         log.debug("Discarded: " + tokenizer.nextToken());
          if (tokenizer.hasMoreTokens()) {
             String claimID = tokenizer.nextToken().trim();
             if ((claimID != null) && (!claimID.equals(""))) {
+               log.debug("Found job ID in request URL: " + claimID);
                return claimID;
             }
             return null;
