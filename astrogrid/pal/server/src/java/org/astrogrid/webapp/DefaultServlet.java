@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultServlet.java,v 1.3 2005/03/11 14:23:21 mch Exp $
+ * $Id: DefaultServlet.java,v 1.4 2008/10/22 08:04:11 kea Exp $
  */
 
 package org.astrogrid.webapp;
@@ -50,6 +50,29 @@ public abstract class DefaultServlet extends HttpServlet {
             return;
          }
          response.getWriter().print(ServletHelper.exceptionAsHtmlPage(title, th));
+      }
+      catch (IOException ioe) {
+         log.error("Could not getWriter() on response to give error details to user");
+      }
+   }
+   protected void doErrorMessage(HttpServletResponse response, String title, String error) throws IOException {
+//    response.sendError(response.SC_INTERNAL_SERVER_ERROR, title);
+      try {
+         try {
+            response.setContentType("text/html");
+         }
+         catch (RuntimeException re) {
+            //if we can't set the type, some stuff has probably already been written out. Write out the message in plain
+            response.getWriter().println("------------------------------------------------------------------");
+            if (title != null) {
+               response.getWriter().println(ServletHelper.makeSafeForHtml(title));
+            }
+            if (error != null) {
+               response.getWriter().println(ServletHelper.makeSafeForHtml(error));
+            }
+            return;
+         }
+         response.getWriter().print(ServletHelper.errorAsHtmlPage(title, error));
       }
       catch (IOException ioe) {
          log.error("Could not getWriter() on response to give error details to user");

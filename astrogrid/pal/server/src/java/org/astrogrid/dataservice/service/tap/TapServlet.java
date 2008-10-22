@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.3 2008/10/21 19:50:03 gtr Exp $
+ * $Id: TapServlet.java,v 1.4 2008/10/22 08:04:11 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -29,6 +29,8 @@ import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
+import org.astrogrid.dataservice.queriers.status.QuerierStatus;
+import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.slinger.targets.StreamTarget;
 /*
@@ -102,7 +104,7 @@ public class TapServlet extends DefaultServlet
 			"Unrecognised POST command has been rejected\n";
 			LogFactory.getLog(request.getContextPath()).error(errorResponseString);
 			//KLUDGE TOFIX
-			doTypedError(request, response, errorResponseString, new Exception());
+			doTypedError(request, response, errorResponseString, new Exception(errorResponseString));
 		}
 	}
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -111,12 +113,15 @@ public class TapServlet extends DefaultServlet
 		if (isResultsFetch(request)) {
 			returnResults(request,response);
 		}
+		else if (isErrorFetch(request)) {
+			returnError(request,response);
+		}
 		else {
 			String errorResponseString = 
 			"Unrecognised GET command has been rejected\n";
 			LogFactory.getLog(request.getContextPath()).error(errorResponseString);
 			//KLUDGE TOFIX
-			doTypedError(request, response, errorResponseString, new Exception());
+			doTypedError(request, response, errorResponseString, new Exception(errorResponseString));
 		}
 	}
 
@@ -131,7 +136,7 @@ public class TapServlet extends DefaultServlet
 			"Unrecognised POST command has been rejected\n";
 			LogFactory.getLog(request.getContextPath()).error(errorResponseString);
 			//KLUDGE TOFIX
-			doTypedError(request, response, errorResponseString, new Exception());
+			doTypedError(request, response, errorResponseString, new Exception(errorResponseString));
 		}
 	}
 
@@ -214,6 +219,34 @@ public class TapServlet extends DefaultServlet
 		Reader reader = new FileReader("/tmp/dsa/"+jobID);
 		Writer writer = response.getWriter();
 		Piper.bufferedPipe(reader,writer);
+	}
+	protected void returnError(HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException 
+	// TOFIX - in the end, have custom return here (don't rely on
+	// doTypedError etc)
+	{
+	
+		String msg = "";
+		String jobID = getJobID(request);
+		QuerierStatus status = server.getQueryStatus(
+				ServletHelper.getUser(request), jobID);
+		if (!(status instanceof QuerierError)) {
+			// There is no error
+			msg = "No error has occurred!";
+		}
+		else {
+			msg = status.getMessage() + " ";
+			String[] details= status.getDetails();
+         for (int i=0;i<details.length;i++) {
+				// TOFIX add <p> tags here for HTML returns?
+            msg = msg + details[i]+" \n";
+         }
+		}
+		// TOFIX:  Use headers to choose appropriate return mime type
+		// This one for HTML
+		doErrorMessage(response,"TAP job error",msg); // HTML version
+		// This one for VOTABLE
+		//doTypedError(request, response, msg, new Exception(msg));
 	}
 
 	/*
@@ -470,12 +503,17 @@ public class TapServlet extends DefaultServlet
 			}
 			catch (RuntimeException re) {
 			}
-			String error = th.getMessage();
-                        error = (error == null)? "unknown error" : error;
-			error = error.replaceAll("&", "&amp;"); 
-			error = error.replaceAll("<", "&lt;");
-			error = error.replaceAll(">", "&gt;");
-
+			String error = "There was no error information supplied";
+			if (th != null) {
+				error = th.getMessage();
+/*
+				if (error != null) {
+					error = error.replaceAll("&", "&amp;"); 
+					error = error.replaceAll("<", "&lt;");
+					error = error.replaceAll(">", "&gt;");
+				}
+*/
+			}
 			PrintWriter writer = response.getWriter();
 			writer.println("<?xml version='1.0' encoding='UTF-8'?>");
 			writer.println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");

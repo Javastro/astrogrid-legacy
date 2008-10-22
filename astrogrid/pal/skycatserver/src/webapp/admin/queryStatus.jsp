@@ -87,7 +87,6 @@
          if (status instanceof QuerierStatus) {
             out.write("<p>"+((QuerierStatus) status).getProgressMsg()+"</p>");
          }
-
          out.write("<hr>");
          status = status.getPrevious();
          if (status != null) {

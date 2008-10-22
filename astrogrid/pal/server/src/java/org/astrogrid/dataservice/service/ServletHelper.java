@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.10 2008/10/14 12:28:51 clq2 Exp $
+ * $Id: ServletHelper.java,v 1.11 2008/10/22 08:04:11 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -504,6 +504,19 @@ public class ServletHelper
          "<head><title>ASTROGRID DSA ERROR: "+makeSafeForHtml(title)+"</title></head>\n"+
          "<body>\n"+
          exceptionAsHtml(title, th, details)+
+         "</body>\n"+
+         "</html>\n";
+   }
+   /**
+    * Returns an error as string suitable for display in a browser as an html
+    * page
+    */
+   public static String errorAsHtmlPage(String title, String details) {
+      return
+         "<html>\n"+
+         "<head><title>ASTROGRID DSA ERROR: "+makeSafeForHtml(title)+"</title></head>\n"+
+         "<body>\n"+
+			"<p>"+makeSafeForHtml(details)+"</p>" +
          "</body>\n"+
          "</html>\n";
    }
