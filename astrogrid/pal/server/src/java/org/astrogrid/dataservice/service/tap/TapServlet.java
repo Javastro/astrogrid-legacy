@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.8 2008/10/22 13:29:46 gtr Exp $
+ * $Id: TapServlet.java,v 1.9 2008/10/22 16:02:28 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -178,7 +178,7 @@ public class TapServlet extends DefaultServlet
 
 			// Now return 303 with the job resource in the Location: header
 			response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-			response.setHeader("Location", baseUrl + TAP_STEM + "/" + id + "/");
+			response.setHeader("Location", baseUrl + TAP_STEM + "/jobs/" + id);
 			return;
 		}
 		catch (java.lang.IllegalArgumentException ex) {
@@ -458,10 +458,12 @@ public class TapServlet extends DefaultServlet
 		// In either case there should be no suffix after the job ID
 		// TOFIX
 		String jobID = getJobID(request);
+                log.debug("Job ID: " + jobID);
 		if (jobID == null) {
 			return false;	// No job specified
 		}
 		String taskSuffix = getTaskSuffix(request);
+                log.debug("Task suffix: " + taskSuffix);
 		if (taskSuffix != null) {
 			return false;	// Not a valid job deletion request
 		}
@@ -566,20 +568,23 @@ public class TapServlet extends DefaultServlet
 
 	protected String getTaskSuffix(HttpServletRequest request) throws IOException
    {
-      String fragments = getUrlFragments(request);
-      StringTokenizer tokenizer = new StringTokenizer(fragments,"/");
-      // First token is sac name
-      if (tokenizer.hasMoreTokens()) {
-        log.debug("Job list: " + tokenizer.nextToken()); //Throw second token (job list) away
-      	if (tokenizer.hasMoreTokens()) {
-           log.debug("Job ID: " + tokenizer.nextToken()); //Throw second token (job ID) away
-      		if (tokenizer.hasMoreTokens()) {
-         		String suffix = tokenizer.nextToken().trim();
-					if ((suffix != null) && (!suffix.equals(""))) {
-						return suffix;
-					}
-				}
-			}
+      //String fragments = getUrlFragments(request);
+      String pathBeyondServlet = request.getPathInfo();
+      if (pathBeyondServlet != null) {
+        StringTokenizer tokenizer = new StringTokenizer(pathBeyondServlet,"/");
+        // First token is sac name
+        if (tokenizer.hasMoreTokens()) {
+          log.debug("Job list: " + tokenizer.nextToken());
+      	  if (tokenizer.hasMoreTokens()) {
+            log.debug("Job ID: " + tokenizer.nextToken());
+      	    if (tokenizer.hasMoreTokens()) {
+              String suffix = tokenizer.nextToken().trim();
+	      if ((suffix != null) && (!suffix.equals(""))) {
+		return suffix;
+	      }
+	    }
+          }
+	}
       }
       return null;
    }
