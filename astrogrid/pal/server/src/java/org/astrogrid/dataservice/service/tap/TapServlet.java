@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.6 2008/10/22 11:19:43 kea Exp $
+ * $Id: TapServlet.java,v 1.7 2008/10/22 12:50:55 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -152,7 +152,12 @@ public class TapServlet extends DefaultServlet
 		String adqlString = "";
 		try {
 			// DEAL WITH A NEW JOB
-			adqlString = ServletHelper.getQuery(request);
+                        adqlString = request.getParameter("ADQL");
+                        adqlString = (adqlString == null)? "" : adqlString.trim();
+                        if (adqlString.length() == 0) {
+			    throw new IllegalArgumentException(
+					"ADQL parameter (input ADQL query-string) is missing or empty");
+                        }
 
 			ReturnSpec returnSpec = ServletHelper.makeReturnSpec(request);
 			// Create a new job from the input ADQL
