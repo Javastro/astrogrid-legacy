@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.9 2008/10/22 16:02:28 gtr Exp $
+ * $Id: TapServlet.java,v 1.10 2008/10/22 17:02:00 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -81,9 +81,9 @@ public class TapServlet extends DefaultServlet
 		super();
 		doInitialisation();
 		baseUrl = ServletHelper.getUrlStem();
-		if (!baseUrl.endsWith("/")) {
-			baseUrl = baseUrl + "/";
-		}
+                if (baseUrl.endsWith("/")) {
+                  baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/'));
+                }
 		//System.out.println("BASE URL IS " + baseUrl);
 	}
 
@@ -100,7 +100,7 @@ public class TapServlet extends DefaultServlet
 			abortJob(request,response);
 		}
 		else if (isJobDelete(request)) {
-			deleteJob(request,response);
+			deleteJob(request,response); 
 		}
 		else {
 			String errorResponseString = 
@@ -177,8 +177,9 @@ public class TapServlet extends DefaultServlet
 			adqlQuery.setResultsDef(returnSpec);
 
 			// Now return 303 with the job resource in the Location: header
-			response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-			response.setHeader("Location", baseUrl + TAP_STEM + "/jobs/" + id);
+			//response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+			//response.setHeader("Location", baseUrl + TAP_STEM + "/jobs/" + id);
+                        redirectToJob(request, id, response);
 			return;
 		}
 		catch (java.lang.IllegalArgumentException ex) {
@@ -207,6 +208,7 @@ public class TapServlet extends DefaultServlet
 	{
 		String jobID = getJobID(request);
 		server.startPendingQuery(ServletHelper.getUser(request), jobID);
+                redirectToJob(request, jobID, response);
 	}
 
 	protected void abortJob(HttpServletRequest request, 
@@ -214,13 +216,15 @@ public class TapServlet extends DefaultServlet
 	{
 		String jobID = getJobID(request);
 		server.abortQuery(ServletHelper.getUser(request), jobID);
+                redirectToJob(request, jobID, response);
 	}
 
 	protected void deleteJob(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException 
 	{
 		String jobID = getJobID(request);
-		server.deleteQuery(ServletHelper.getUser(request), jobID);
+		server.deleteQuery(ServletHelper.getUser(request), jobID);                   
+                redirectToJobList(request, response);
 	}
 
 	protected void returnResults(HttpServletRequest request, 
@@ -588,6 +592,39 @@ public class TapServlet extends DefaultServlet
       }
       return null;
    }
+   
+   /**
+    * Redirects the client to the web resource for a job.
+    * Sends HTTP code 303 "See other" with the Location header
+    * set to the job's URL.
+    */
+   protected void redirectToJob(HttpServletRequest  request,
+                                String              jobId, 
+                                HttpServletResponse response) {
+     String jobUrl = baseUrl +
+                     request.getServletPath() +
+                     "/jobs/" +
+                     jobId;
+     log.debug("Redirecting to job resource at " + jobUrl);
+     response.setHeader("Location", jobUrl);
+     response.setStatus(response.SC_SEE_OTHER);
+   }
+   
+   /**
+    * Redirects the client to the web resource for the job-list.
+    * Sends HTTP code 303 "See other" with the Location header
+    * set to the list's URL.
+    */
+   protected void redirectToJobList(HttpServletRequest  request,
+                                    HttpServletResponse response) {
+     String listUrl = baseUrl +
+                      request.getServletPath() +
+                      "/jobs";
+     log.debug("Redirecting to job-list resource at " + listUrl);
+     response.setHeader("Location", listUrl);
+     response.setStatus(response.SC_SEE_OTHER);
+   }
+
 
    protected String getJobID(HttpServletRequest request) throws IOException
    {
