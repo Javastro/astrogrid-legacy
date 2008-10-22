@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.5 2008/10/22 11:17:36 gtr Exp $
+ * $Id: TapServlet.java,v 1.6 2008/10/22 11:19:43 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -115,6 +115,9 @@ public class TapServlet extends DefaultServlet
 	{
 		if (isResultsFetch(request)) {
 			returnResults(request,response);
+		}
+		else if (isStatusFetch(request)) {
+			returnStatus(request,response);
 		}
 		else if (isErrorFetch(request)) {
 			returnError(request,response);
@@ -250,6 +253,25 @@ public class TapServlet extends DefaultServlet
 		doErrorMessage(response,"TAP job error",msg); // HTML version
 		// This one for VOTABLE
 		//doTypedError(request, response, msg, new Exception(msg));
+	}
+	protected void returnStatus(HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException 
+	{
+	
+		String msg = "";
+		String jobID = getJobID(request);
+		QuerierStatus status = server.getQueryStatus(
+				ServletHelper.getUser(request), jobID);
+		if (status == null) {
+			// Shouldn't get here
+			msg = "System error: job has no status!";
+		}
+		else {
+			msg = status.toString();
+		}
+		// TOFIX:  Use headers to choose appropriate return mime type
+		// This one for HTML
+		doInformationMessage(response,"TAP job status",msg); // HTML version
 	}
 
 	/*

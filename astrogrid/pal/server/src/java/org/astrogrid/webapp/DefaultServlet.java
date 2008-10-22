@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultServlet.java,v 1.4 2008/10/22 08:04:11 kea Exp $
+ * $Id: DefaultServlet.java,v 1.5 2008/10/22 11:19:43 kea Exp $
  */
 
 package org.astrogrid.webapp;
@@ -76,6 +76,28 @@ public abstract class DefaultServlet extends HttpServlet {
       }
       catch (IOException ioe) {
          log.error("Could not getWriter() on response to give error details to user");
+      }
+   }
+   protected void doInformationMessage(HttpServletResponse response, String title, String message) throws IOException {
+      try {
+         try {
+            response.setContentType("text/html");
+         }
+         catch (RuntimeException re) {
+            //if we can't set the type, some stuff has probably already been written out. Write out the message in plain
+            response.getWriter().println("------------------------------------------------------------------");
+            if (title != null) {
+               response.getWriter().println(ServletHelper.makeSafeForHtml(title));
+            }
+            if (message != null) {
+               response.getWriter().println(ServletHelper.makeSafeForHtml(message));
+            }
+            return;
+         }
+         response.getWriter().print(ServletHelper.messageAsHtmlPage(title, message));
+      }
+      catch (IOException ioe) {
+         log.error("Could not getWriter() on response to give message details to user");
       }
    }
 
