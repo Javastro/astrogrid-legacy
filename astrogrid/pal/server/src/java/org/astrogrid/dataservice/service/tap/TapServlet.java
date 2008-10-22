@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.7 2008/10/22 12:50:55 gtr Exp $
+ * $Id: TapServlet.java,v 1.8 2008/10/22 13:29:46 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -139,7 +139,7 @@ public class TapServlet extends DefaultServlet
 		}
 		else {
 			String errorResponseString = 
-			"Unrecognised POST command has been rejected\n";
+			"Unrecognised DELETE command has been rejected\n";
 			LogFactory.getLog(request.getContextPath()).error(errorResponseString);
 			//KLUDGE TOFIX
 			doTypedError(request, response, errorResponseString, new Exception(errorResponseString));
@@ -274,9 +274,15 @@ public class TapServlet extends DefaultServlet
 		else {
 			msg = status.toString();
 		}
+                response.setContentType("text/xml");
+                PrintWriter w = response.getWriter();
+                w.print("<uws:ExecutionPhase xmlns:uws='http://www.ivoa.net/xml/UWS/v0.9'>");
+                w.print(msg);
+                w.print("</uws:ExecutionPhase>");
+                w.flush();
 		// TOFIX:  Use headers to choose appropriate return mime type
 		// This one for HTML
-		doInformationMessage(response,"TAP job status",msg); // HTML version
+		//doInformationMessage(response,"TAP job status",msg); // HTML version
 	}
 
 	/*
@@ -564,9 +570,9 @@ public class TapServlet extends DefaultServlet
       StringTokenizer tokenizer = new StringTokenizer(fragments,"/");
       // First token is sac name
       if (tokenizer.hasMoreTokens()) {
-        	tokenizer.nextToken(); //Throw second token (job ID) away
+        log.debug("Job list: " + tokenizer.nextToken()); //Throw second token (job list) away
       	if (tokenizer.hasMoreTokens()) {
-         	tokenizer.nextToken(); //Throw second token (job ID) away
+           log.debug("Job ID: " + tokenizer.nextToken()); //Throw second token (job ID) away
       		if (tokenizer.hasMoreTokens()) {
          		String suffix = tokenizer.nextToken().trim();
 					if ((suffix != null) && (!suffix.equals(""))) {
