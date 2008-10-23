@@ -1,12 +1,17 @@
 +===============================================================+
-|          BNF for ADQL v2.0 plus RFC amendments                |
+|          BNF for ADQL v2.0 Plus RFC                           |
 +===============================================================+
-This file contains a BNF definition of ADQL, the Astronomical
-Data Query Language, plus amendments made during RFC. 
+This file contains a BNF definition of ADQL, 
+the Astronomical Data Query Language, at the level of v2.0 of 
+ADQL plus comments during the RFC period.
 The elements are arranged in alphabetical order. 
 ADQL is based upon a subset of SQL92 with extensions for
 astronomical usage.
 
 The select statement is found under <query_specification>.
-See also <system_defined_function> and <user_defined_function>
+For region and associated constructs, see...
+<geometry_value_expression>,
+<numeric_geometry_function>,
+<string_geometry_function>
+User defined function is found at <user_defined_function>
 

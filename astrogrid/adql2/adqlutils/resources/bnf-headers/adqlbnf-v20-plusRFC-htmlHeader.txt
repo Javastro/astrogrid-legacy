@@ -1,14 +1,19 @@
 <html>
 <head>
-<title>BNF for ADQL v2.0 plus RFC amendments</title>
+<title>BNF for ADQL v2.0 Plus RFC</title>
 </head>
 <body>
-<pre>
-This file contains a BNF definition of ADQL, the Astronomical Data Query Language, plus amendments made during RFC. 
-The elements are arranged in alphabetical order. 
-ADQL is based upon a subset of SQL92 with extensions for astronomical usage.
-The select statement is found at <a href="#query_specification">&lt;query_specification&gt;</a>.
-System defined functions are found at <a href="#system_defined_function">&lt;system_defined_function&gt;</a>.
-User defined function is found at <a href="#user_defined_function">&lt;user_defined_function&gt;</a>.
+<pre>This file contains a BNF definition of ADQL, the Astronomical
+Data Query Language. The elements are arranged in alphabetical
+order. ADQL is based upon a subset of SQL92 with extensions for
+astronomical usage.
+
+The definition reflects the ADQL spec version v2.0 plus RFC
+The select statement is found at <a href="#query_specification">&lt;query_specification&gt;</a>
+For region and associated constructs, see...
+<a href="#geometry_value_expression">&lt;geometry_value_expression&gt;</a>,
+<a href="#numeric_geometry_function">&lt;numeric_geometry_function&gt;</a>,
+<a href="#string_geometry_function">&lt;string_geometry_function&gt;</a>
+User defined function is found at <a href="#user_defined_function">&lt;user_defined_function&gt;</a>
 See <a href="http://savage.net.au/SQL/sql-92.bnf.html">SQL92</a> for a similar page describing SQL92 in full.
 
