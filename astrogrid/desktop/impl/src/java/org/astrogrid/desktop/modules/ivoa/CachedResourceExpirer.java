@@ -37,8 +37,8 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
     private static final Log logger = LogFactory
             .getLog(CachedResourceExpirer.class);
 
-    public CachedResourceExpirer(ExternalRegistryInternal reg, Preference endpoint2,
-            Ehcache resourceCache, Ehcache xmlCache) {
+    public CachedResourceExpirer(final ExternalRegistryInternal reg, final Preference endpoint2,
+            final Ehcache resourceCache, final Ehcache xmlCache) {
         super();
         this.reg = reg;
         this.endpoint = endpoint2;
@@ -69,8 +69,8 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
     }
 
     /** check for updates to the registry, and remove any obsolete cached copies */
-    public void execute(WorkerProgressReporter reporter) {
-        Element element = resourceCache.get(LAST_UPDATE_CHECK);
+    public void execute(final WorkerProgressReporter reporter) {
+        final Element element = resourceCache.get(LAST_UPDATE_CHECK);
         DateTime lastUpdate;
         if (element == null) { ///deduce a starttime from the cache contents
             lastUpdate = findEarliestUpdateInCache();
@@ -78,8 +78,8 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
             lastUpdate = (DateTime)element.getValue();
         }
         // add in a fudge factor of 30 mins
-        DateTime updatesAfter = lastUpdate.minusMinutes(30).minusDays(10);
-        StringBuilder xq = new StringBuilder();
+        final DateTime updatesAfter = lastUpdate.minusMinutes(30).minusDays(10);
+        final StringBuilder xq = new StringBuilder();
         // create the query.
         xq.append("let $now := current-dateTime()\n")
             .append("let $updatesAfter := xs:dateTime('").append(updatesAfter).append("')\n") // unsure whether this will work
@@ -92,12 +92,12 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
             .append("return <identifier updated='{$r/@updated}'>{$r/identifier/text()}</identifier>")            
             .append("}</update-check>");
         try {
-            URI u = new URI(endpoint.getValue());
+            final URI u = new URI(endpoint.getValue());
             reg.xquerySearchStream(u,xq.toString(),this);
-        } catch (ServiceException x) {
+        } catch (final ServiceException x) {
             logger.warn("Failed to check for updates",x);
             // wonder if I should just flush the entire cache here?
-        } catch (URISyntaxException x) {
+        } catch (final URISyntaxException x) {
             logger.warn("Failed to check for updates - invalid registry endpoint",x);
             // flush it all?
         }
@@ -107,15 +107,15 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
      * @return
      */
     public DateTime findEarliestUpdateInCache() {
-        List keys = resourceCache.getKeysNoDuplicateCheck();
+        final List keys = resourceCache.getKeysNoDuplicateCheck();
         long oldestElement = new DateTime().getMillis(); // start with now.
-        for (Object key : keys) {
-            Element e= resourceCache.get(key);           
+        for (final Object key : keys) {
+            final Element e= resourceCache.get(key);           
             if (e != null && ! e.isExpired() && oldestElement > e.getCreationTime()) {
                 oldestElement = e.getCreationTime();
             }                    
         }
-         DateTime firstCreation = new DateTime(oldestElement);
+         final DateTime firstCreation = new DateTime(oldestElement);
          return firstCreation.toDateTime(DateTimeZone.UTC); // convert from local timezone to UTC (the benefits of living in india)
     }
 
@@ -123,7 +123,7 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
      * @throws XMLStreamException 
      * @throws CacheException 
      * @throws IllegalStateException */
-    public void process(XMLStreamReader r) throws  XMLStreamException {
+    public void process(final XMLStreamReader r) throws  XMLStreamException {
         DateTime timestamp = null;
         while (r.hasNext()) {
             r.next();
@@ -133,27 +133,31 @@ class CachedResourceExpirer implements ScheduledTask, StreamProcessor {
             } else if (r.isStartElement() && "identifier".equals(r.getLocalName())) {
                 // for each updated index, compare with the local cached copy modification date.
                 try {
-                    DateTime latest = new DateTime(r.getAttributeValue(null,"updated"));
-                    URI u = new URI(r.getElementText());
-                    Element element = resourceCache.get(u);                        
-                    if (element != null) {
-                        if (element.getValue() instanceof Resource) {
-                            Resource res = (Resource)element.getValue();
-                            DateTime cached = new DateTime(res.getUpdated()); // or I could get a date from the cache itself - but the resource date will be in the same timezone
-                            if (latest.compareTo(cached) > 0) {
-                                resourceCache.remove(u);   
+                    final DateTime latest = new DateTime(r.getAttributeValue(null,"updated"));
+                    final String elementText = r.getElementText();
+                    if (elementText != null) {
+                        
+                        final URI u = new URI(elementText.trim());
+                        final Element element = resourceCache.get(u);                        
+                        if (element != null) {
+                            if (element.getValue() instanceof Resource) {
+                                final Resource res = (Resource)element.getValue();
+                                final DateTime cached = new DateTime(res.getUpdated()); // or I could get a date from the cache itself - but the resource date will be in the same timezone
+                                if (latest.compareTo(cached) > 0) {
+                                    resourceCache.remove(u);   
+                                }
+                            } else {
+                                // it's something else - remove it.
+                                resourceCache.remove(u);
                             }
-                        } else {
-                            // it's something else - remove it.
-                            resourceCache.remove(u);
+                        }
+                        if (xmlCache.isKeyInCache(u)) { // don't bother comparing dates with the document cache - just remove.
+                            xmlCache.remove(u);
                         }
                     }
-                    if (xmlCache.isKeyInCache(u)) { // don't bother comparing dates with the document cache - just remove.
-                        xmlCache.remove(u);
-                    }
-                } catch (URISyntaxException e) {
+                } catch (final URISyntaxException e) {
                     logger.warn("Failed to build uri from index response",e);
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     logger.warn("Failed to build date from index response",e);                    
                 }
             }
