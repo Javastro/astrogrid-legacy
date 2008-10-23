@@ -1,5 +1,5 @@
 /*
- * $Id: TapServlet.java,v 1.10 2008/10/22 17:02:00 gtr Exp $
+ * $Id: TapServlet.java,v 1.11 2008/10/23 16:23:26 gtr Exp $
  */
 
 package org.astrogrid.dataservice.service.tap;
@@ -230,6 +230,7 @@ public class TapServlet extends DefaultServlet
 	protected void returnResults(HttpServletRequest request, 
 			HttpServletResponse response) throws ServletException, IOException 
 	{
+                response.setContentType("application/x-votable+xml;tabledata");
 		String jobID = getJobID(request);
 		Reader reader = new FileReader("/tmp/dsa/"+jobID);
 		Writer writer = response.getWriter();
@@ -280,9 +281,9 @@ public class TapServlet extends DefaultServlet
 		}
                 response.setContentType("text/xml");
                 PrintWriter w = response.getWriter();
-                w.print("<uws:ExecutionPhase xmlns:uws='http://www.ivoa.net/xml/UWS/v0.9'>");
+                w.print("<uws:phase xmlns:uws='http://www.ivoa.net/xml/UWS/v0.9'>");
                 w.print(msg);
-                w.print("</uws:ExecutionPhase>");
+                w.print("</uws:phase>");
                 w.flush();
 		// TOFIX:  Use headers to choose appropriate return mime type
 		// This one for HTML
