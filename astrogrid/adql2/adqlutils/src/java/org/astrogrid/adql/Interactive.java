@@ -262,7 +262,7 @@ public class Interactive implements MetadataQuery {
          if( PARSER == null ) {
              PARSER = new AdqlParser( source );  
              PARSER.setSemanticProcessing( true ) ;
-             PARSER.setSyntax( AdqlParser.V20_AGX ) ;
+             PARSER.setSyntax( AdqlParser.V20 ) ;
              if( metaDataFileName != null ) {
                  metadata = MetaDataLoader.getMetaData( metaDataFileName ) ;
                  PARSER.setMetadataQuery( interactive ) ;
