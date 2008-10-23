@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ui;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
-import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.TapService;
 
 /** factory for the simplified app launcher.
  * @author Noel Winstanley
@@ -14,7 +14,7 @@ import org.astrogrid.acr.ivoa.resource.DataCollection;
  */
 public class QueryBuilderFactory implements QueryBuilderInternal{
 
-	public QueryBuilderFactory(TypesafeObjectBuilder builder) {
+	public QueryBuilderFactory(final TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}
 	private final TypesafeObjectBuilder builder;
@@ -34,28 +34,34 @@ public class QueryBuilderFactory implements QueryBuilderInternal{
 
 
 	public Object create() {
-		QueryBuilderInternal tr = newInstance();
+		final QueryBuilderInternal tr = newInstance();
 		tr.show();
 		return tr;
 	}
 
-    public void build(CeaApplication app) {
-        QueryBuilderInternal tr = newInstance();
+    public void build(final CeaApplication app) {
+        final QueryBuilderInternal tr = newInstance();
         tr.show();        
         tr.build(app);
     }
 
-    public void build(CatalogService coll) {
-        QueryBuilderInternal tr = newInstance();
+    public void build(final CatalogService coll) {
+        final QueryBuilderInternal tr = newInstance();
         tr.build(coll);   
         tr.show();        
     }
 
 
-    public void edit(FileObject fo) {
-        QueryBuilderInternal tr = newInstance();
+    public void edit(final FileObject fo) {
+        final QueryBuilderInternal tr = newInstance();
         tr.show();        
         tr.edit(fo);   
+    }
+
+    public void build(final TapService app) {
+        final QueryBuilderInternal tr = newInstance();
+        tr.build(app);   
+        tr.show();
     }
 
 }

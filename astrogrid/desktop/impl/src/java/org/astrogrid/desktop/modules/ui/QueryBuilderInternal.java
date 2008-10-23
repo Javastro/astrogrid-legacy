@@ -7,7 +7,7 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
-import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.acr.ui.QueryBuilder;
 
 /** Interface to a query builder component. Methods on this interface are called by VOExplorer to create new query builder windows
@@ -28,6 +28,9 @@ public interface QueryBuilderInternal extends QueryBuilder, Factory {
 	/** build a query against the specified data collection */
 	void build(CatalogService coll);
 
+	/** build a query agains tthe specified tap service */
+	void build(TapService app);
+	
 	
 	// irritatingly, dataCollection and catalogService don't have abase class that
 	// expresses 'has table metadata' - commonest baseclass is Resource. will 

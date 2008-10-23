@@ -15,7 +15,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2008.1.3" date="unreleased">
+<release version="1.2.1" date="unreleased">
+    <action dev="nw">
+    Experimental support for TAP
+    </action>
     <action dev="nw">
     Implemented support for 0.4 of Vosi Availability Standard (as well as existing 0.3), 
     exposed as an AR API.

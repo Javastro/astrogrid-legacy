@@ -209,6 +209,7 @@ HELIOSCOPE
 			<inject object="service:dialogs.registryGoogle" />	
             <inject object="service:ui.UiBuilder" />        	
             <inject object="service:votech.vomon" />
+            <inject object="service:ivoa.registry" />            
 		</object>
         
 		<object name="executionTracker" class="org.astrogrid.desktop.modules.ui.execution.ExecutionTracker">
@@ -553,15 +554,21 @@ ACTIONS
 		Configuration point for the list of 'invoke' tasks.
 	</configuration-point>
 		
-	<!--  lists of Actions  - name is ignored.-->
+	<!--  lists of Actions  - name is ignored.
+    NB: adding an action to the list is not enough - for it to appear in the UI, it 
+    must be called from actionsBuilder by classname.
+    -->
 	<contribution configuration-id="actions">
 		<object name="scope" class="org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity">
 			<inject object="service:astroscope" />
 		</object>		
 		<object name="query" class="org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity">
 			<inject object="service:queryBuilder"/>		
-		</object>		
-		<object name="task" class="org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity">
+		</object>
+        <object name="tap" class="org.astrogrid.desktop.modules.ui.actions.TapQueryActivity">
+            <inject object="service:queryBuilder"/>     
+        </object>
+        <object name="task" class="org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity">
 			<inject object="service:applicationLauncher"/>		
 		</object>
 		<object name="viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">

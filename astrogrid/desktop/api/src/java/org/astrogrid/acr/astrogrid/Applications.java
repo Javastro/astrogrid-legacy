@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.12 2008/09/25 16:02:04 nw Exp $
+/*$Id: Applications.java,v 1.13 2008/10/23 16:35:56 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.w3c.dom.Document;
 
@@ -57,13 +58,17 @@ public interface Applications {
      * @return a list of the registry identifiers of available applications
      * @throws ServiceException if error occurs while talking to server 
      * @see #getCeaApplication
-     * 
+     * @deprecated use {@link #getRegistryXQuery}
+     * @exclude
      * */
+    @Deprecated
     URI[] list() throws ServiceException;
     
 
 
-    /** @exclude @deprecated - use {@link #getRegistryQuery} */
+    /** @exclude
+     *  @deprecated - use {@link #getRegistryXQuery} */
+    @Deprecated
     String getQueryToListApplications(); 
     
     /** helper method - returns the ADQL/s query that should be passed to the registry to
@@ -72,8 +77,10 @@ public interface Applications {
      * can be used as a starting point to build up filters, etc.
      * @return an adql query string.
      * @see Registry
-     * @exclude @deprecated use getRegistryAdqlQuery
+     * @exclude 
+     * @deprecated use getRegistryAdqlQuery
      */ 
+    @Deprecated
     String getRegistryQuery();
     
     
@@ -83,7 +90,10 @@ public interface Applications {
      * can be used as a starting point to build up filters, etc.
      * @return an adql query string.
      * @see org.astrogrid.acr.ivoa.Registry
+     * @exclude
+     * @deprecated use getRegistryXQuery
      */ 
+    @Deprecated
     String getRegistryAdqlQuery();    
     
     /** helper method - returns the Xquery that should be passed to the registry to
@@ -103,7 +113,10 @@ public interface Applications {
      * @throws NotFoundException if this application could not be found
      * @throws InvalidArgumentException if the application name is malformed, or is not a CeaApplication, or can not be transformed into one.
      * @xmlrpc returns a structure containing attributes of {@link CeaApplication}
+     * @deprecated use {@link Registry#getResource(URI)}
+     * @exclude
      * */
+    @Deprecated
     CeaApplication getCeaApplication(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
     
     /** get formatted information about an application 
@@ -212,8 +225,11 @@ public interface Applications {
      * @throws NotFoundException if no provider of this application is found
      * @throws InvalidArgumentException if the tool document is invalid in some way
      * @see #submitStored(URI)
-     * @see #submitTo(Document, URI)    
+     * @see #submitTo(Document, URI)  
+     * @deprecated use {@link RemoteProcessManager#submit(Document)}  
+     * @exclude
      * */
+    @Deprecated
     URI submit(Document document) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
     
     /** submit an invocation document for execution  on a named remote server.
@@ -227,7 +243,10 @@ public interface Applications {
      * @throws SecurityException if user is prevented from executing this application.
      * @see #submitStored(URI)
      * @see #submitStoredTo(URI, URI)
+     * @deprecated use {@link RemoteProcessManager#submitTo(Document, URI)}
+     * @exclude
      *      * */
+    @Deprecated
     URI submitTo(Document document, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException;
 
     /** a variant of {@link #submit} where invocation document is stored somewhere and referenced by URI. 
@@ -237,8 +256,11 @@ public interface Applications {
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
      * @throws NotFoundException if no provider of this application is found
+     * @deprecated use {@link RemoteProcessManager#submitStored(URI)}
+     * @exclude
      */
-     URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException ;
+     @Deprecated
+    URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException ;
 
     /** variant of {@link #submitTo} where tool document is referenced by URI. 
      *      * @param documentLocation pointer to tool document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
@@ -247,8 +269,11 @@ public interface Applications {
      * @throws NotFoundException if the specified remote server could not be found
      * @throws InvalidArgumentException if the tool document is inacessible or ther service is inacesssible
      * @throws ServiceException if error occurs communicating with servers
-     * @throws SecurityException if user is prevented from executing this application 
+     * @throws SecurityException if user is prevented from executing this application
+     * @deprecated use {@link RemoteProcessManager#submitStoredTo(URI, URI)} 
+     * @exclude
      * */
+    @Deprecated
     URI submitStoredTo(URI documentLocation, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException ;
         
     /** cancel execution of an application.
@@ -256,8 +281,11 @@ public interface Applications {
      * @throws NotFoundException if this application cannot be found.
      * @throws InvalidArgumentException if the execution id is malformed
      * @throws ServiceException if an error occurs while communicating with server
-     * @throws SecurityException if the user is not permitted to cancel this application 
+     * @throws SecurityException if the user is not permitted to cancel this application
+     * @deprecated use {@link RemoteProcessManager#halt(URI)}
+     * @exclude 
      * */
+    @Deprecated
     void cancel(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException;
     
     /** retrive  information about an application execution.
@@ -267,8 +295,11 @@ public interface Applications {
      * @throws NotFoundException if this application invocation cannot be found
      * @throws SecurityException if the user cannot access ths invocation
      * @throws InvalidArgumentException if the invocation id is malformed in some way.
-     * @xmlrpc will return a struct containing keys documented in {@link ExecutionInformation} 
+     * @xmlrpc will return a struct containing keys documented in {@link ExecutionInformation}
+     * @exclude
+     * @deprecated use {@link RemoteProcessManager#getExecutionInformation(URI)} 
      * */
+    @Deprecated
     ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
     
     /** retreive results of the application execution .
@@ -279,7 +310,10 @@ public interface Applications {
      * @throws NotFoundException if this application invocation cannot be found
      * @throws SecurityException if the user cannot access ths invocation
      * @throws InvalidArgumentException if the invocation id is malformed in some way.
+     * @exclude 
+     * @deprecated use {@link RemoteProcessManager#getResults(URI)}
      */
+    @Deprecated
     Map getResults(URI executionid) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;               
     
     
@@ -287,6 +321,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.13  2008/10/23 16:35:56  nw
+ Incomplete - taskadd support for TAP
+
  Revision 1.12  2008/09/25 16:02:04  nw
  documentation overhaul
 

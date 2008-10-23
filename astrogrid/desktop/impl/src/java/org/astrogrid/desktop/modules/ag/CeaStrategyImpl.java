@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.1 2008/07/18 17:15:52 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.2 2008/10/23 16:34:02 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.desktop.modules.ag;
 
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +37,7 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
@@ -54,8 +54,6 @@ import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.core.exceptions.CastorException;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.joda.time.Duration;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 import org.w3c.dom.Document;
@@ -68,13 +66,11 @@ import org.w3c.dom.Document;
  * @TODO remove the concrete myspace ivorn hack
  *
  */
-public class CeaStrategyImpl implements RemoteProcessStrategy{
-    public static final Duration SHORTEST = new Duration(1000); // 1 second
-    public static final Duration LONGEST = new Duration(1000 * 60 * 10); // 10 minutes
-	/** monitor for a single remote cea task */
+public class CeaStrategyImpl extends AbstractToolBasedStrategy implements RemoteProcessStrategy{
+ 	/** monitor for a single remote cea task */
 	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor implements ProcessMonitor.Advanced {
 		
-		public RemoteTaskMonitor(Tool t,CeaApplication app) throws ServiceException {
+		public RemoteTaskMonitor(final Tool t,final CeaApplication app) throws ServiceException {
 		    super(vfs);
 			this.tool = t;
 			this.app = app;
@@ -101,22 +97,22 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 			try {
 			// ask server for interim results.
 	            final ResultListType results = delegate.getResults(ceaid);
-	            Map map = new HashMap();
-	            ParameterValue[] vals = results.getResult();        
+	            final Map map = new HashMap();
+	            final ParameterValue[] vals = results.getResult();        
 	            for (int i = 0; i < vals.length; i++) {
 	                map.put(vals[i].getName(),vals[i].getValue());
 	            }
 	            return map;
-	        } catch (CEADelegateException e) {
+	        } catch (final CEADelegateException e) {
 	            throw new ServiceException(e);
 	        }  
 	    }		
 		
-        public void start(URI server) throws ServiceException, NotFoundException{
+        public void start(final URI server) throws ServiceException, NotFoundException{
                 Service[] arr;
                 try {
                     arr = apps.listServersProviding(app.getId()); 
-                } catch (InvalidArgumentException x) {
+                } catch (final InvalidArgumentException x) {
                     error("Unable to start application",x);
                     throw new NotFoundException(x);
                 }
@@ -138,7 +134,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 Service[] arr;
                 try {
                     arr = apps.listServersProviding(app.getId());
-                } catch (InvalidArgumentException x) {
+                } catch (final InvalidArgumentException x) {
                     error("Unable to find servers providing this application",x);                    
                     throw new NotFoundException(x);
                 }
@@ -164,12 +160,12 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         }		
         
         // actually set the process running.
-        private void invoke(CeaService target) throws ServiceException {
+        private void invoke(final CeaService target) throws ServiceException {
             //check whether we need to login first.
             if (! community.isLoggedIn()) {
-                Interface[] interfaces = target.findCeaServerCapability().getInterfaces();
+                final Interface[] interfaces = target.findCeaServerCapability().getInterfaces();
                 for (int i = 0; i < interfaces.length; i++) {
-                    Interface ifa = interfaces[i];
+                    final Interface ifa = interfaces[i];
                     if (ifa.getSecurityMethods().length != 0) { //assume for now that any kind of security will require login
                         community.guiLogin();
                         break;
@@ -177,15 +173,15 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 }
             }
             try {
-            JobIdentifierType jid = new JobIdentifierType(target.getId().toString());
+            final JobIdentifierType jid = new JobIdentifierType(target.getId().toString());
             delegate = ceaHelper.createCEADelegate(target);                                   
             info("Initializing on server " + target.getId() );
 
             //make a version of the tool with concrete ivorns, just for the remote service
-            Tool remotetool = ceaHelper.makeMySpaceIvornsConcrete(tool);
+            final Tool remotetool = ceaHelper.makeMySpaceIvornsConcrete(tool);
             ceaid = delegate.init(remotetool,jid);
             info("Server returned taskID " + ceaid);            
-            setId(ceaHelper.mkRemoteTaskURI(ceaid,target));
+            setId(mkGlobalExecId(ceaid,target));
             // kick it off.
                 if (delegate.execute(ceaid)) {
                     info("Started application");
@@ -195,14 +191,14 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                     error("Failed to execute application");
                     throw new ServiceException("Failed to execute application");
                 }
-            } catch (CEADelegateException x) {
+            } catch (final CEADelegateException x) {
                 error("Failed to execute application ",x);
                 Throwable e = x; // get to the core of the problem - too much wrapping here.
                 while (e.getCause() != null) {
                     e = e.getCause();
                 }
                 throw new ServiceException(e.getMessage()); 
-            } catch (InvalidArgumentException x) {
+            } catch (final InvalidArgumentException x) {
                 error("Failed to execute application ",x);
                 throw new ServiceException(x);
 	    }       
@@ -218,11 +214,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
          * @param l
          * @return
          */
-        private List filterOnAvailability(List l) {
-            List results = new ArrayList();
-            for (Iterator i = l.iterator(); i.hasNext();) {
-                Service name = (Service) i.next();
-                VoMonBean b = vomon.checkAvailability(name.getId());
+        private List filterOnAvailability(final List l) {
+            final List results = new ArrayList();
+            for (final Iterator i = l.iterator(); i.hasNext();) {
+                final Service name = (Service) i.next();
+                final VoMonBean b = vomon.checkAvailability(name.getId());
                 if (b == null || b.getCode() == VoMonBean.UP_CODE) {
                     results.add(name);
                 }
@@ -249,7 +245,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	        try { 
 	            info("Halting");
 	            delegate.abort(ceaid);
-	        } catch (CEADelegateException e) {
+	        } catch (final CEADelegateException e) {
 	            error("Failed to halt" ,e);
 	            throw new ServiceException(e);
 	        } finally {
@@ -261,25 +257,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		//@todo find out how to cleanup a remote service.
 
 
-		public static final long FACTOR = 2; // double every time
-		/** increase the time before running again */
-		private void standOff(boolean increaseStandoff) {
-		    if (increaseStandoff) {
-		        Duration nu =new Duration(runAgain.getMillis() *FACTOR);
-		        runAgain = nu.isLongerThan(LONGEST) ? LONGEST : nu;
-		       int secs = (int)runAgain.getMillis() / 1000;
-		        info("No change: will re-check in " + (secs < 120 ? secs + " seconds" : secs/60 + " minutes" ));		        
-		    } else {
-		        info("No change");
-		    }
-		}
-		
-		public DelayedContinuation execute() {
-		    return execute(true);
-		}
+
 		
 		/** do a poll, and if increaseStandoff=true, increate the standoff value if nothing has happended */
-		public DelayedContinuation execute(boolean increaseStandoff) {
+		@Override
+		protected DelayedContinuation execute(final boolean increaseStandoff) {
 		    if (getStatus().equals(ExecutionInformation.ERROR) 
                             ||getStatus().equals(ExecutionInformation.COMPLETED)) {
 		        // we're done already (probably by an intermediate refresh..)
@@ -287,8 +269,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		    }
 			try {
 			    info("Checking progress");
-				MessageType qes = delegate.queryExecutionStatus(ceaid);
-				String newStatus = qes.getPhase().toString(); 
+				final MessageType qes = delegate.queryExecutionStatus(ceaid);
+				final String newStatus = qes.getPhase().toString(); 
 
 				if  (getStatus().equals(newStatus)) { // nothing changed.
 					standOff(increaseStandoff);
@@ -304,7 +286,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				}
 
 				// ok, send a status-change message
-				ExecutionMessage em = new ExecutionMessage(
+				final ExecutionMessage em = new ExecutionMessage(
 						getId().toString()
 						,"information"
 						,newStatus
@@ -318,13 +300,13 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				        ||newStatus.equals(ExecutionInformation.COMPLETED)) {
 				    finishTime = qes.getTimestamp();
 				    // retrive the results - might take us more than one execute() to get them all.
-				    ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
+				    final ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
 				    if (summ != null && summ.getResultList() != null) {
-				        ParameterBean[] descs = app.getParameters();
-				        ParameterValue[] arr = summ.getResultList().getResult();
+				        final ParameterBean[] descs = app.getParameters();
+				        final ParameterValue[] arr = summ.getResultList().getResult();
 				        for (int i = 0 ; i < arr.length; i++) {
 				            final ParameterValue val = arr[i];
-				            ParameterBean desc = findDescriptionFor(val,descs);
+				            final ParameterBean desc = findDescriptionFor(val,descs);
 						if (val.getIndirect()) { 
 					            String value = val.getValue(); 
 
@@ -334,14 +316,14 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				                    //@issue hope this doesn't force login. if it does, need to create an lazily-initialized file object here instead.
 				                    // however, user would probably have logged in to setup this indirection in the first place.
 				                    try {
-				                        FileObject src = vfs.resolveFile(value);
+				                        final FileObject src = vfs.resolveFile(value);
 				                            src.refresh();
 				                        if (! src.exists()) {
 				                            // caught by surrounding block.
 				                            throw new FileSystemException(value + " does not exist");
 				                        }
 				                        addResult(val.getName(),src);
-				                    } catch (FileSystemException e) {
+				                    } catch (final FileSystemException e) {
 				                        logger.debug("Failed to retrieve " + value,e);
 				                        warn("Failed to retrieve " + value + "<br>" + exFormatter.format(e,ExceptionFormatter.ALL));
 				                    }
@@ -356,7 +338,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				    }
 				}
 				return this;
-			} catch (Throwable x) {
+			} catch (final Throwable x) {
 			    standOff(increaseStandoff);
 			    logger.debug("Failed",x);
 			    warn("Failed: " + exFormatter.format(x,ExceptionFormatter.ALL));
@@ -369,11 +351,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		 * 
 		 *  not a good idea - as changes the key names- which is a pain.
 		 *  */
-	    private String suggestExtension(ParameterBean pb) {
+	    private String suggestExtension(final ParameterBean pb) {
 	        if (pb == null) {
 	            return "";
 	        }
-	        String type = pb.getType();
+	        final String type = pb.getType();
 	        if (type.equalsIgnoreCase("fits")) {
 	            return ".fits";
 	        } else if (type.equalsIgnoreCase("binary")) {
@@ -389,11 +371,6 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	        }
 	    }
 
-		private Duration runAgain = SHORTEST;
-		public Duration getDelay() {
-			return runAgain;
-		}
-
 		public Principal getPrincipal() {
 			return sess.currentSession();
 		}
@@ -402,9 +379,6 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
             return tool;
         }
 
-        public CeaApplication getApplicationDescription() {
-            return app;
-        }
 
         public String getTitle() {
            
@@ -431,13 +405,13 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     /** Construct a new CeaStrategyImpl
      * 
      */
-    public CeaStrategyImpl(Registry reg
-            ,VoMon vomon
-            , ApplicationsInternal apps
-            , CommunityInternal community
-            , FileSystemManager vfs
-            ,SessionManagerInternal sess, SchedulerInternal sched) {
-        super();         
+    public CeaStrategyImpl(final Registry reg
+            ,final VoMon vomon
+            , final ApplicationsInternal apps
+            , final CommunityInternal community
+            , final FileSystemManager vfs
+            ,final SessionManagerInternal sess, final SchedulerInternal sched) {
+        super(reg);      
         this.apps = apps;
         this.vomon = vomon;
         this.vfs = vfs;
@@ -447,46 +421,43 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         this.sched = sched;
     }
 
-    /** this strategy can process anything that's a cea document
+    /** this strategy can process a tool document intended for a cea service.
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#canProcess(org.w3c.dom.Document)
      */
-    public String canProcess(Document doc) {
-        try {
-            Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
-            return t.getName();
-        } catch(org.exolab.castor.core.exceptions.CastorException e) {
-            return null;
-        }         
+    public String canProcess(final Document doc) {
+       return canProcessSupport(doc,CeaApplication.class);
     }
 
-    /** @todo make this rule more precise when we've got more than one kind of strategy.
+    /** 
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#canProcess(java.net.URI)
      */
-    public boolean canProcess(URI execId) {
-        return "ivo".equals(execId.getScheme()) ;
+    public boolean canProcess(final URI execId) {
+        return canProcessSupport(execId,CeaService.class);
     }
 
-    public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException {
-            Tool tool = ceaHelper.parseTool(doc);
+    public ProcessMonitor create(final Document doc) throws InvalidArgumentException, ServiceException {
+            final Tool tool = CeaHelper.parseTool(doc);
 
-            URI appId;
             CeaApplication info;
             try {
-                appId = new URI("ivo://" + tool.getName());
-                info = apps.getCeaApplication(appId);
-            } catch (URISyntaxException x1) {
-                throw new InvalidArgumentException(x1);
-            } catch (NotFoundException x1) {
+                final URI appId = CeaHelper.getResourceId(tool);
+                final Resource res = reg.getResource(appId);
+                if (reg instanceof CeaApplication) {
+                    info = (CeaApplication)res;
+                } else {
+                    throw new InvalidArgumentException(appId +" : is not a ceaApplication");
+                }
+            } catch (final NotFoundException x1) {
                 throw new InvalidArgumentException(x1);                
             }            
             apps.translateQueries(info , tool); //@todo - maybe move this into manager too???
 
                 if (logger.isDebugEnabled()) { // log the adjusted tool document before executing it.
                     try {
-                        StringWriter sw = new StringWriter();
+                        final StringWriter sw = new StringWriter();
                         Marshaller.marshal(tool,sw);
                         logger.debug(sw.toString());
-                    } catch (CastorException x) {
+                    } catch (final CastorException x) {
                         logger.debug("MarshalException",x);
                     } 
                 }
@@ -497,7 +468,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         }
     
     // should this be elsewere?
-    static ParameterBean findDescriptionFor(ParameterValue pv,ParameterBean[] descs) {
+    static ParameterBean findDescriptionFor(final ParameterValue pv,final ParameterBean[] descs) {
         for (int i = 0; i < descs.length; i++) {
             if (pv.getName().equals(descs[i].getName())) {
                 return descs[i];
@@ -513,6 +484,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.2  2008/10/23 16:34:02  nw
+Incomplete - taskadd support for TAP
+
 Revision 1.1  2008/07/18 17:15:52  nw
 Complete - task 433: Strip out unused internal CEA
 

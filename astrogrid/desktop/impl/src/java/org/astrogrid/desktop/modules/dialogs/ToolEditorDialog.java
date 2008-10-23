@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.22 2008/08/21 12:56:30 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.23 2008/10/23 16:34:03 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,8 @@ import org.astrogrid.workflow.beans.v1.Tool;
 /** dialog that allows the user to edit a tool document - i.e. a set of parameters.
  * 
  * this class is just concerned with the dialogue side of thinigs
+ * 
+ * @todo extend to handle TAP and other similar protocols.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Mar-2005
  * 
  * @todo add a right-click menu - cut / copy / delete.
@@ -211,6 +213,9 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.23  2008/10/23 16:34:03  nw
+Incomplete - taskadd support for TAP
+
 Revision 1.22  2008/08/21 12:56:30  nw
 Complete - task 103: tool editor dialogue
 

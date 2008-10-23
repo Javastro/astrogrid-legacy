@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.34 2008/08/04 16:37:24 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.35 2008/10/23 16:34:02 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,8 +69,8 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(RemoteProcessManager manager,FileSystemManager vfs, 
-    		RegistryInternal nuReg, AdqlInternal adql) throws  ACRException{
+    public ApplicationsImpl(final RemoteProcessManager manager,final FileSystemManager vfs, 
+    		final RegistryInternal nuReg, final AdqlInternal adql) throws  ACRException{
         this.manager = manager;
         this.vfs = vfs;
         this.adql = adql;
@@ -85,9 +85,10 @@ public class ApplicationsImpl implements ApplicationsInternal {
     protected final ToolManipulator manipulator;
 
    
+    @Deprecated
     public URI[] list() throws ServiceException {   
-        	Resource[] arr = nuReg.xquerySearch(getRegistryXQuery()); 
-            URI[] results = new URI[arr.length];
+        	final Resource[] arr = nuReg.xquerySearch(getRegistryXQuery()); 
+            final URI[] results = new URI[arr.length];
             for (int i= 0;i < arr.length; i++) {
               results[i] = arr[i].getId();
             }
@@ -97,15 +98,18 @@ public class ApplicationsImpl implements ApplicationsInternal {
     
 
     
+    @Deprecated
     public String getQueryToListApplications() {
         return getRegistryQuery();
     }
     
+    @Deprecated
     public String getRegistryQuery() {
     	return getRegistryAdqlQuery();
     }
    
-	public String getRegistryAdqlQuery() {
+	@Deprecated
+    public String getRegistryAdqlQuery() {
 	     return "Select * from Registry r where " +
 	     " (@xsi:type like '%CeaApplicationType')" ; //+
 	     //@issue" and ( not( @status = 'inactive' or @status = 'deleted') )";
@@ -123,18 +127,21 @@ public class ApplicationsImpl implements ApplicationsInternal {
 
 
     
-    public CeaApplication getInfoForTool(Tool t) throws ServiceException, NotFoundException, InvalidArgumentException {
+    public CeaApplication getInfoForTool(final Tool t) throws ServiceException, NotFoundException, InvalidArgumentException {
         URI uri;
         try {
             uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new InvalidArgumentException(e);
         }
         return getCeaApplication(uri);
     }
     
-    public CeaApplication getCeaApplication(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
-        Resource resource = nuReg.getResource(arg0);
+    /** duff method - time to remove it ? 
+     * @deprecated*/
+    @Deprecated
+    public CeaApplication getCeaApplication(final URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+        final Resource resource = nuReg.getResource(arg0);
         if (resource == null) {
             throw new NotFoundException(arg0.toString());
         }
@@ -154,24 +161,24 @@ public class ApplicationsImpl implements ApplicationsInternal {
  
     
     
-  public String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
+  public String getDocumentation(final URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
 	  final CeaApplication app = getCeaApplication(applicationName);
 	  
     return getInfoFor(app);
   }
   
 
-  private String getInfoFor(CeaApplication descr) {      
-        StringBuffer result = new StringBuffer();
+  private String getInfoFor(final CeaApplication descr) {      
+        final StringBuffer result = new StringBuffer();
          result.append("Application: ")
                 .append(descr.getTitle())
                 .append("\n")
                 .append(descr.getContent().getDescription())
                 .append("\n");
          logger.debug("Added name and description");
-         ParameterBean[] params = descr.getParameters();
+         final ParameterBean[] params = descr.getParameters();
          for(int i = 0; i < params.length; i++ ) {
-             ParameterBean param = params[i];
+             final ParameterBean param = params[i];
             result.append("\nParameter ")
                 .append("\n")
                 .append(param.getUiName())
@@ -179,84 +186,98 @@ public class ApplicationsImpl implements ApplicationsInternal {
                 .append(param.getDescription());
 
          
-         if (param.getName() != null && param.getName().trim().length() > 0) result.append("\n\t").append("name :").append(param.getName());
-         if (param.getType() != null ) result.append("\n\t").append("type :").append(param.getType());
-         if (param.getSubType() != null && param.getSubType().trim().length() > 0) result.append("\n\t").append("subtype :").append(param.getSubType());
-         if (param.getUnits() != null && param.getUnits().trim().length() > 0) result.append("\n\t").append("units :").append(param.getUnits());
+         if (param.getName() != null && param.getName().trim().length() > 0) {
+            result.append("\n\t").append("name :").append(param.getName());
+        }
+         if (param.getType() != null ) {
+            result.append("\n\t").append("type :").append(param.getType());
+        }
+         if (param.getSubType() != null && param.getSubType().trim().length() > 0) {
+            result.append("\n\t").append("subtype :").append(param.getSubType());
+        }
+         if (param.getUnits() != null && param.getUnits().trim().length() > 0) {
+            result.append("\n\t").append("units :").append(param.getUnits());
+        }
          //if (param.getAcceptEncodings() != null && param.getAcceptEncodings().trim().length() > 0) result.append("\n\t").append("accept encodings :").append(param.getAcceptEncodings());
-         if (param.getDefaultValue() != null && param.getDefaultValue().trim().length() > 0) result.append("\n\t").append("default value :").append(param.getDefaultValue());
-         if (param.getUcd() != null && param.getUcd().trim().length() > 0) result.append("\n\t").append("UCD :").append(param.getUcd());  
-         if (param.getOptions() != null ) result.append("\n\t").append("option list :").append(Arrays.asList(param.getOptions()));         
+         if (param.getDefaultValue() != null && param.getDefaultValue().trim().length() > 0) {
+            result.append("\n\t").append("default value :").append(param.getDefaultValue());
+        }
+         if (param.getUcd() != null && param.getUcd().trim().length() > 0) {
+            result.append("\n\t").append("UCD :").append(param.getUcd());
+        }  
+         if (param.getOptions() != null ) {
+            result.append("\n\t").append("option list :").append(Arrays.asList(param.getOptions()));
+        }         
 
          }
          logger.debug("Added parameters");
-           InterfaceBean[] ifaces = descr.getInterfaces();
+           final InterfaceBean[] ifaces = descr.getInterfaces();
            for (int i = 0; i < ifaces.length; i++) {
-               InterfaceBean iface = ifaces[i];
+               final InterfaceBean iface = ifaces[i];
                result.append("\nInterface ")
                    .append(iface.getName())
                    .append("\nInputs\n");
                ParameterReferenceBean[] prefs = iface.getInputs();
                for (int j = 0; j < prefs.length; j++) {
-                   ParameterReferenceBean p = prefs[j];
+                   final ParameterReferenceBean p = prefs[j];
                    result.append("\t ").append(p.getRef()).append(" max ").append(p.getMax()).append(", min ").append(p.getMin()).append("\n");
                }
                result.append("\nOutputs\n");
                prefs = iface.getOutputs();
                for (int j = 0; j < prefs.length; j++) {
-                   ParameterReferenceBean p = prefs[j];
+                   final ParameterReferenceBean p = prefs[j];
                    result.append("\t ").append(p.getRef()).append("max ").append(p.getMax()).append(", min ").append(p.getMin()).append("\n");
                }               
            }
          return result.toString();
     }    
    
-  public Document createTemplateDocument(URI applicationName, String interfaceName) throws ServiceException, NotFoundException, InvalidArgumentException {
+  public Document createTemplateDocument(final URI applicationName, final String interfaceName) throws ServiceException, NotFoundException, InvalidArgumentException {
         try {
-        	CeaApplication descr = getCeaApplication(applicationName);
-        Tool t = createTemplateTool(interfaceName, descr);
-        Document doc = XMLUtils.newDocument();
+        	final CeaApplication descr = getCeaApplication(applicationName);
+        final Tool t = createTemplateTool(interfaceName, descr);
+        final Document doc = XMLUtils.newDocument();
         Marshaller.marshal(t,doc);
         return doc;
 
-        } catch (ParserConfigurationException e) {
+        } catch (final ParserConfigurationException e) {
             throw new ServiceException(e);
-        } catch (MarshalException e) {
+        } catch (final MarshalException e) {
             throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (final ValidationException e) {
             throw new ServiceException(e);
         }
     }
   
 
 
-public Map createTemplateStruct(URI applicationName, String interfaceName)
+public Map createTemplateStruct(final URI applicationName, final String interfaceName)
     throws ServiceException, NotFoundException, InvalidArgumentException {
-        Document t = createTemplateDocument(applicationName,interfaceName);
+        final Document t = createTemplateDocument(applicationName,interfaceName);
         return convertDocumentToStruct(t);
     }
     //@todo test.
-    public void validate(Document document) throws ServiceException, InvalidArgumentException {
+    public void validate(final Document document) throws ServiceException, InvalidArgumentException {
         Tool t;
         try {
             t = (Tool)Unmarshaller.unmarshal(Tool.class,document);
             t.validate();
-        } catch (ValidationException e) {
+        } catch (final ValidationException e) {
             throw new InvalidArgumentException(e);
-        } catch (MarshalException e) {
+        } catch (final MarshalException e) {
             throw new InvalidArgumentException(e);
         }
         CeaApplication desc;
         try {
-        URI uri = new URI("ivo://" + t.getName());
+        final URI uri = new URI("ivo://" + t.getName());
         desc = getCeaApplication(uri);
-        } catch(URISyntaxException e) {
+        } catch(final URISyntaxException e) {
             throw new InvalidArgumentException(e);
-        } catch (NotFoundException e) {
+        } catch (final NotFoundException e) {
             throw new InvalidArgumentException(e);
         }
         InterfaceBean iface = null;
-        InterfaceBean[] ifs = desc.getInterfaces();
+        final InterfaceBean[] ifs = desc.getInterfaces();
         for (int i = 0 ; i < ifs.length; i++) {
             if (ifs[i].getName().equals(t.getInterface())) {
                 iface = ifs[i];
@@ -280,8 +301,8 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
             }           
     }
 
-    private void validateReference( ParameterReferenceBean bean, BaseBean searchRoot) throws InvalidArgumentException {
-        Iterator results = searchRoot.findXPathIterator("/parameter[name = '" + bean.getRef() +"']");        
+    private void validateReference( final ParameterReferenceBean bean, final BaseBean searchRoot) throws InvalidArgumentException {
+        final Iterator results = searchRoot.findXPathIterator("/parameter[name = '" + bean.getRef() +"']");        
 //unused        ParameterBean pb = (ParameterBean)desc.getParameters().get(bean.getRef());
         int count = 0;
         while (results.hasNext()) {
@@ -296,17 +317,17 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
     }
         
 
-    public void validateStored(URI documentLocation) throws ServiceException, InvalidArgumentException, NotFoundException {
+    public void validateStored(final URI documentLocation) throws ServiceException, InvalidArgumentException, NotFoundException {
         Document doc;
         try {
-            InputStream r = vfs.resolveFile(documentLocation.toString()).getContent().getInputStream();
+            final InputStream r = vfs.resolveFile(documentLocation.toString()).getContent().getInputStream();
             doc = XMLUtils.newDocument(r);
   
-        } catch (ParserConfigurationException e) {
+        } catch (final ParserConfigurationException e) {
             throw new ServiceException(e);
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new InvalidArgumentException(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new NotFoundException(e);
         } 
         validate(doc);
@@ -316,18 +337,18 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
    
 
     //@todo return service info for other kinds of server.
-	public Service[] listServersProviding(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
-		CeaApplication c = getCeaApplication(arg0);
+	public Service[] listServersProviding(final URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+		final CeaApplication c = getCeaApplication(arg0);
 		if (c instanceof Service) { // it's already a service - this is a 'fake' cea application on a different protocol.
 			return new Service[]{(Service)c};
 		}
 			
-		Resource[] res =  nuReg.xquerySearch("//vor:Resource[not (@status='inactive' or @status='deleted') " +
+		final Resource[] res =  nuReg.xquerySearch("//vor:Resource[not (@status='inactive' or @status='deleted') " +
 	
 				"and capability[@xsi:type &= '*CeaCapability' or @standardID='"
 		        + StandardIds.CEA_1_0
 		        +"']/managedApplications/ApplicationReference='"+ arg0 +"']");
-		List result = new ArrayList();
+		final List result = new ArrayList();
 		// check ttypes.
 		for (int i = 0; i < res.length; i++) {
 			if (res[i] instanceof CeaService) {
@@ -338,20 +359,24 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
 	}           
     
 
-    public URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException {
+    @Deprecated
+    public URI submitStored(final URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException {
         return manager.submitStored(documentLocation);       
     }
            
-    public URI submitStoredTo(URI documentLocation, URI server) throws InvalidArgumentException, ServiceException, SecurityException, NotFoundException {
+    @Deprecated
+    public URI submitStoredTo(final URI documentLocation, final URI server) throws InvalidArgumentException, ServiceException, SecurityException, NotFoundException {
         return manager.submitStoredTo(documentLocation,server);    
     } 
     
 
-    public URI submit(Document doc) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+    @Deprecated
+    public URI submit(final Document doc) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
        return manager.submit(doc);
     }
     
-    public URI submitTo(Document doc, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException {
+    @Deprecated
+    public URI submitTo(final Document doc, final URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException {
       return manager.submitTo(doc,server); 
     }   
     
@@ -362,22 +387,22 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
      * @param document
      * @throws ServiceException
      */
-    public void translateQueries(Resource application, Tool document) throws  ServiceException {
+    public void translateQueries(final Resource application, final Tool document) throws  ServiceException {
         // fiddle any embedded queries..
-        String[] adqlParameters = ToolManipulator.listADQLParameters(document.getInterface(),application);
+        final String[] adqlParameters = ToolManipulator.listADQLParameters(document.getInterface(),application);
         if (adqlParameters.length > 0) {            
             for (int i = 0; i < adqlParameters.length; i++) {
-                ParameterValue val = (ParameterValue) document.findXPathValue("input/parameter[name='" + adqlParameters[i] + "']");
+                final ParameterValue val = (ParameterValue) document.findXPathValue("input/parameter[name='" + adqlParameters[i] + "']");
                 if (!val.getIndirect()) { // it's an inline value
-                    InputStream is = new ByteArrayInputStream(val.getValue().getBytes());
+                    final InputStream is = new ByteArrayInputStream(val.getValue().getBytes());
                     // try parsing the value as xml
                     try {
                         XMLUtils.newDocument(is);
-                    } catch (Exception e) { // aha - got a string query.
+                    } catch (final Exception e) { // aha - got a string query.
 						try {
-							String adqlx = adql.s2xs(val.getValue());
+							final String adqlx = adql.s2xs(val.getValue());
 							val.setValue(adqlx);
-						} catch (InvalidArgumentException x) {
+						} catch (final InvalidArgumentException x) {
 							throw new ServiceException(x);
 						}
                     }
@@ -388,34 +413,37 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
 
  
  
-    public void cancel(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
+    @Deprecated
+    public void cancel(final URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         manager.halt(executionId);
     }  
 
-    public ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException {
+    @Deprecated
+    public ExecutionInformation getExecutionInformation(final URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException {
         return manager.getExecutionInformation(executionId);
     }
-    public Map getResults(URI executionId) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+    @Deprecated
+    public Map getResults(final URI executionId) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
         return manager.getResults(executionId);
     }
 
 
 
-	public Map convertDocumentToStruct(Document arg0)
+	public Map convertDocumentToStruct(final Document arg0)
             throws InvalidArgumentException {
         return DocumentToStructureConversion.convertDocumentToStruct(arg0);
     }
 
 
 
-    public Document convertStructToDocument(Map arg0)
+    public Document convertStructToDocument(final Map arg0)
             throws InvalidArgumentException {
         return DocumentToStructureConversion.convertStructToDocument(arg0);
     }
 
 
 
-    public Tool createTemplateTool(String interfaceName, CeaApplication descr)
+    public Tool createTemplateTool(final String interfaceName, final CeaApplication descr)
             throws IllegalArgumentException {
         return this.manipulator.createTemplateTool(interfaceName, descr);
     }
@@ -431,6 +459,9 @@ public Map createTemplateStruct(URI applicationName, String interfaceName)
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.35  2008/10/23 16:34:02  nw
+Incomplete - taskadd support for TAP
+
 Revision 1.34  2008/08/04 16:37:24  nw
 Complete - task 441: Get plastic upgraded to latest XMLRPC
 

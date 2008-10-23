@@ -309,6 +309,30 @@ CEA EXECUTION STRATEGY
     <contribution configuration-id="processStrategies">
         <object>service:ceaStrategy</object> 
     </contribution>
+
+<!--  
+===============================
+TAP EXECUTION STRATEGY
+ -->
+    <service-point id="tapStrategy"  visibility="private" interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">
+        Strategy for executing TAP Queries
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ag.TapStrategyImpl" >
+                <service>ivoa.registry</service>
+                <service>system.vfs</service>                
+                <service>system.scheduler</service>
+                <service>builtin.sessionManager</service>                               
+            </construct>
+        </invoke-factory>   
+    </service-point>
+
+    <implementation service-id="tapStrategy" if="property background.tapStrategy.disabled">
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
+    </implementation>                   
+
+    <contribution configuration-id="processStrategies">
+        <object>service:tapStrategy</object> 
+    </contribution>
     
 <!-- 
 ==========================

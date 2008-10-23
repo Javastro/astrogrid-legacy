@@ -24,7 +24,7 @@ import org.astrogrid.acr.InvalidArgumentException;
  * @see <a href='http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/IvoaGridAndWebServices#Internal_Drafts'>VOSI Draft Specification</a>
  * @author Noel.Winstanley@manchester.ac.uk
  * @service ivoa.vosi
- * @since 1.3.0
+ * @since 1.2.1
  */
 public interface Vosi {
 

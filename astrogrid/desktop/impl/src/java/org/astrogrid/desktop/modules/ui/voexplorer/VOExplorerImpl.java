@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.25 2008/08/19 12:47:09 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.26 2008/10/23 16:34:02 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -66,6 +66,7 @@ import org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity;
 import org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity;
 import org.astrogrid.desktop.modules.ui.actions.SaveXoXoListActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
+import org.astrogrid.desktop.modules.ui.actions.TapQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
 import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
@@ -112,6 +113,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		acts = activityBuilder.create(this,new Class[]{
 		        QueryScopeActivity.class
 		       ,BuildQueryActivity.class
+		       ,TapQueryActivity.class
 		       ,TaskRunnerActivity.class
 		       ,WebInterfaceActivity.class
 		       ,PlasticScavenger.class

@@ -18,12 +18,12 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
+import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.RegistryGoogleInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
@@ -43,28 +43,22 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
             , final VoMonInternal vomon
             ,final Registry reg)
             throws HeadlessException {
-        super(context, apps, rpmi,rci, regChooser, builder,vomon);
+        super(context, apps, rpmi,rci, regChooser, builder,vomon,reg);
         this.reg = reg;
     }
 
     private final Registry reg;
     
-    // overridden - to prefer adql apps first.
-    @Override
-    protected void selectStartingInterface(final CeaApplication cea) {
-        // now that's working in the background, work out what we should be building a form for.
-        final String name = BuildQueryActivity.findNameOfFirstADQLInterface(cea);
-        if (name != null) {
-            pForm.buildForm(name,cea);
-            pForm.setExpanded(true);
-        } else { // show what we've got then
-            pForm.buildForm(cea);
-        }
-    }
+
     
 // cea internal interface - need to harmonize this with taskrunner at some point    
     public void build(final CeaApplication app) {
         buildForm(app);
+        super.showHideFullEditor.setEnabled(true);
+    }
+    
+    public void build(final TapService tap) {
+        buildForm(tap);
         super.showHideFullEditor.setEnabled(true);
     }
 

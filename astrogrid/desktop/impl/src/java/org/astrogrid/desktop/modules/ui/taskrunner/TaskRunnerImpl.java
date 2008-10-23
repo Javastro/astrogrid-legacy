@@ -53,9 +53,10 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.TapCapability;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
@@ -72,7 +73,6 @@ import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
 import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
@@ -85,7 +85,6 @@ import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEv
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.exolab.castor.core.exceptions.CastorException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
@@ -115,6 +114,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	public final static String POPULATE = "populate";
 	public final static String REFRESH = "refresh";
 	public final static String HALT = "halt";
+    private final Registry reg;
 	
     /**
 	 * @param context
@@ -123,8 +123,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	public TaskRunnerImpl(final UIContext context, final ApplicationsInternal apps
 	        ,final RemoteProcessManagerInternal rpmi,final ResourceChooserInternal rci
 	        ,final RegistryGoogleInternal regChooser,final TypesafeObjectBuilder builder
-	        ,final VoMonInternal vomon) throws HeadlessException {
+	        ,final VoMonInternal vomon
+	        ,final Registry reg) throws HeadlessException {
 		super(context,"Task Runner","window.taskrunner");
+        this.reg = reg;
 		logger.info("Constructing new TaskRunner");
         this.rpmi = rpmi;
 		this.fileChooser = rci;
@@ -257,7 +259,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	 private final RegistryGoogleInternal regChooser;
 	 private final RemoteProcessManagerInternal rpmi;
 	 private URI storageLocation;
-	   private ExecutingTaskRunnerToolbar toolbar;   
+	 protected ExecutingTaskRunnerToolbar toolbar;   
 	 
 	
 	  final ExecutionTracker tracker;
@@ -276,56 +278,27 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	final Action save = new SaveAction();
 	final Action saveAs = new SaveAsAction();
 	protected final ShowHideFullEditorAction showHideFullEditor = new ShowHideFullEditorAction();
+	
+	// @future - maybe pass this in, and populate through contribution?
+	private final TweaksSelector tweakSelector = new TweaksSelector();
+	protected ProtocolSpecificTweaks tweaks;
+	
 	public void buildForm(final Resource r) {
-		CeaApplication cea = null;
-		if (r instanceof CeaApplication) {
-			cea = (CeaApplication)r;
-		} else {
-			// try to find a 'synthetic' cea application.
-			try {
-				//@@todo causes a long pause - do this on bg threa somehow.
-			    // however, only happens for non cea-apps. (cone, etc)
-				cea = apps.getCeaApplication(r.getId());
-			} catch (final ACRException x) {
-				logger.error("ServiceException",x);
-				//should report an error somewhere.
-				return;
-			}		
-		}
-		
-		// start off a background process to find a list of servers that execute this app.
-		toolbar.executionServers.clear();
-		final URI appId = cea.getId();
-		(new ListServicesWorker(appId)).start();
-		
-		selectStartingInterface(cea);
+	    toolbar.executionServers.clear();	    
+	    tweaks = tweakSelector.findTweaks(r);
+	    tweaks.buildForm(this);
 		updateWindowTitle();
+		
 	}
 	
     public void edit(final FileObject o) {
         loadToolDocument(o);
     }
-	
-    public void buildForm(final Tool t,final String interfaceName,final Resource r) {
-		CeaApplication cea = null;
-		if (r instanceof CeaApplication) {
-			cea = (CeaApplication)r;
-		} else {
-			// try to find a 'synthetic' cea application.
-			try {
-				//@todo - should probably do this in a bg thread.
-				cea = apps.getCeaApplication(r.getId());
-			} catch (final ACRException x) {
-				logger.error("ServiceException",x);
-				//@todo report a fault somewherte..
-				return;
-			}
-		}
-		pForm.buildForm(t,interfaceName,cea);
 
-        // Update the list of servers which can execute this application.
+    public void buildForm(final Tool t,final Resource r) {
         toolbar.executionServers.clear();
-        (new ListServicesWorker(cea.getId())).start();
+        tweaks = tweakSelector.findTweaks(r);
+        tweaks.buildForm(t,this);
 	}
     public Object create() {
 		// deliberately not implemented. will work out how to do this later.
@@ -345,37 +318,48 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
     public void showDetails(final ShowDetailsEvent e) {
         final ProcessMonitor monitor = e.getMoitor();
         if (monitor instanceof ProcessMonitor.Advanced) {
-            Tool tool = ((ProcessMonitor.Advanced)monitor).getInvocationTool();
             // now need to take a copy of this tool, and load this copy into the editor.
             //can't use original, otherwise edits to the form will alter the original - rewriting history.
             // copy the tool object by marshalling to and from xml.
-            Writer sw = null;
-            Reader r = null;                  
-            try {
-                sw = new StringWriter();
-                tool.marshal(sw);
-                r = new StringReader(sw.toString());
-                tool = Tool.unmarshalTool(r);
-                final CeaApplication newApp =pForm.getModel().currentResource();
-                buildForm(tool,tool.getInterface(),newApp);
-            } catch (final CastorException x) {
-                logger.error("MarshalException",x);
-           } finally {
-                if (sw != null) {
+            (new BackgroundWorker(this,"Loading Parameters") {
+                private Tool nTool;
+                private Resource newRes;
+                @Override
+                protected Object construct() throws Exception {
+                    final Tool tool = ((ProcessMonitor.Advanced)monitor).getInvocationTool();
+                    Writer sw = null;
+                    Reader r = null;                  
                     try {
-                        sw.close();
-                    } catch (final IOException x) {
-                        // ignored
-                    }
+                        sw = new StringWriter();
+                        tool.marshal(sw);
+                        r = new StringReader(sw.toString());
+                        nTool = Tool.unmarshalTool(r);                        
+                        newRes= reg.getResource(new URI("ivo://" + tool.getName()));
+                        return null; // all passed back in member variables.
+                   } finally {
+                        if (sw != null) {
+                            try {
+                                sw.close();
+                            } catch (final IOException x) {
+                                // ignored
+                            }
+                        }
+                        if (r != null) {
+                            try {
+                                r.close();
+                            } catch (final IOException x) {
+                                //ignored
+                            }
+                        }
+                    }                    
                 }
-                if (r != null) {
-                    try {
-                        r.close();
-                    } catch (final IOException x) {
-                        //ignored
-                    }
+                @Override
+                protected void doFinished(final Object result) {
+                    buildForm(nTool,newRes);
+
                 }
-            }
+            }).start();
+          
         }
     }
 	private void clearStorageLocation() {
@@ -402,25 +386,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
         }
     }
     
-    /**
-     * @param cea
-     */
-    protected void selectStartingInterface(final CeaApplication cea) {
-        // now that's working in the background, work out what we should be building a form for.
-		final String name = BuildQueryActivity.findNameOfFirstNonADQLInterface(cea);
-		if (name != null) {
-		    pForm.buildForm(name,cea);
-		} else { // show what we've got then
-		    pForm.buildForm(cea);
-		}
-    }
+
     /** load a tool document from storage
      * @param o - either a vfs.FileObject, or a URI
      */
     private void loadToolDocument(final Object o) {
         (new BackgroundOperation("Opening task document",Thread.MAX_PRIORITY) {
-            private CeaApplication newApp;
-            private InterfaceBean newInterface;
+            private Resource newRes;            
             private FileObject fo;
             @Override
             protected Object construct() throws Exception {
@@ -437,17 +409,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                final Tool t = Tool.unmarshalTool(fr);
                reportProgress("Loaded file contents");
                
-               newApp = apps.getCeaApplication(new URI("ivo://" + t.getName()));      
+               
+               newRes =reg.getResource(new URI("ivo://" + t.getName()));      
                reportProgress("Found associated registry resource");
-               final InterfaceBean[] candidates = newApp.getInterfaces();
-               for (int i = 0; i < candidates.length; i++) {
-                   if (candidates[i].getName().equalsIgnoreCase(t.getInterface().trim())) {
-                       newInterface  = candidates[i];
-                   }
-               }
-               if (newInterface == null) {
-                   throw new IllegalArgumentException("Cannot find interface " + t.getInterface() + " in registry entry for " + t.getName());
-               }
                reportProgress("Completed");
                return t;
             	} finally {
@@ -462,7 +426,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             }
             @Override
             protected void doFinished(final Object o) {
-            	buildForm((Tool)o,newInterface.getName(),newApp);
+            	buildForm((Tool)o,newRes);
             	try {
                     setStorageLocation(new URI(StringUtils.replace(fo.getName().getURI().trim()," ","%20")));
                 } catch (final URISyntaxException x) {
@@ -498,7 +462,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	}
 
 	/** extended toolbar which adds an 'execute' button - not static, as more tightly integrated into the taskrunner */
-	private class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener {
+	public class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener {
 	    public ExecutingTaskRunnerToolbar(final JMenu menu) {
 	        super(pForm,newTask);
 	        menu.add(executeAction);
@@ -530,7 +494,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	    };
 	    
 	    /** list of servers that provide this application - should contain Service objects */
-	    private final EventList executionServers =  new BasicEventList();
+	    final EventList executionServers =  new BasicEventList();
 
 	    // enable / disable various bits of the exec button, depending on what is available.
 	    public void listChanged(final ListEvent listChanges) {
@@ -609,12 +573,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	}
 	/** worker which lists the services that provide the current application
+	 * cea specific
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 2, 200712:43:15 AM
      */
-    private final class ListServicesWorker extends RetriableBackgroundWorker {
+    final class ListServicesWorker extends RetriableBackgroundWorker {
 
-        private ListServicesWorker(final URI appId) {
+        public ListServicesWorker(final URI appId) {
             super(TaskRunnerImpl.this,"Listing task providers",Thread.MAX_PRIORITY);
             this.appId = appId;
         }
@@ -693,7 +658,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             final Resource[] rs = regChooser.selectResourceXQueryFilterWithParent(
                     "Choose a task to run"
                     ,false // single selection
-                    ,apps.getRegistryXQuery() // list all applications
+                    , "//vor:Resource[(not (@status = 'inactive' or @status='deleted')) and ( "
+                    + "(@xsi:type &= '*CeaApplication') or "
+                    + "( capability/@standardID = '" + TapCapability.CAPABILITY_ID + "')"
+                    + ")]"
                     , TaskRunnerImpl.this
                     );
 

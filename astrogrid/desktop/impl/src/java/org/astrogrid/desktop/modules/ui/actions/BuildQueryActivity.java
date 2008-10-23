@@ -4,10 +4,7 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.List;
-
-import javax.swing.KeyStroke;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
@@ -17,15 +14,12 @@ import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
-import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.QueryBuilderInternal;
-import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
-/** build a query from a selected resource.
+/** build a query from a selected resource.  (using CEA service interface)
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20074:13:13 PM
  * @TEST unit test where possible.
@@ -34,7 +28,7 @@ public final class BuildQueryActivity extends AbstractFileOrResourceActivity {
 /**
  * 
  */
-public BuildQueryActivity(QueryBuilderInternal t) {
+public BuildQueryActivity(final QueryBuilderInternal t) {
 	this.t = t;
 	setHelpID("activity.adql");	
 	setText("Build ADQL");
@@ -46,7 +40,7 @@ public BuildQueryActivity(QueryBuilderInternal t) {
 private final QueryBuilderInternal t;
 
 // unsure whether there's a better place to put these helper methods.
-	public static boolean hasAdqlParameter(CeaApplication a) {
+	public static boolean hasAdqlParameter(final CeaApplication a) {
 	    return findAdqlParameter(a) != null;
 	}
 	
@@ -55,7 +49,7 @@ private final QueryBuilderInternal t;
 	 *             <br>1 - query only 
 	 *             <br>-1 - application only.
 	 */
-	public static int whatKindOfInterfaces(CeaApplication a) {
+	public static int whatKindOfInterfaces(final CeaApplication a) {
 	    final ParameterBean pb = findAdqlParameter(a);
 	    if (pb == null) {
 	        return -1;
@@ -87,8 +81,8 @@ private final QueryBuilderInternal t;
         return (foundQuery ? 1 : 0) + (foundNonQuery ? -1 : 0);
 	}
 	/** find the first adql parameter, or return null */
-	   public static ParameterBean findAdqlParameter(CeaApplication a) {
-	        ParameterBean[] parameters = a.getParameters();
+	   public static ParameterBean findAdqlParameter(final CeaApplication a) {
+	        final ParameterBean[] parameters = a.getParameters();
 	        for (int i = 0; i < parameters.length; i++) {
 	            if (parameters[i].getType().equalsIgnoreCase("adql")) {
 	            return parameters[i];
@@ -99,16 +93,16 @@ private final QueryBuilderInternal t;
 
 	   /** find the name of the first interface contianing an adql input parameter
 	    * or null */
-	    public static String findNameOfFirstADQLInterface(CeaApplication app) {
-	        ParameterBean adql = findAdqlParameter(app);
+	    public static String findNameOfFirstADQLInterface(final CeaApplication app) {
+	        final ParameterBean adql = findAdqlParameter(app);
 	        if (adql == null) {
 	            return null;
 	        }
-	        String name = adql.getName();
+	        final String name = adql.getName();
 	        for (int i = 0; i < app.getInterfaces().length; i++) {
 	            // search through parameters.
 	            final InterfaceBean iface = app.getInterfaces()[i];
-                ParameterReferenceBean[] refs = iface.getInputs();
+                final ParameterReferenceBean[] refs = iface.getInputs();
 	            for (int j = 0; j < refs.length; j++) {
                     if (refs[j].getRef().equals(name)) {
                         return iface.getName();
@@ -119,17 +113,17 @@ private final QueryBuilderInternal t;
 	    }
 	    /** find the name of the first interface NOT contianing an adql input parameter
 	        * or null */
-	        public static String findNameOfFirstNonADQLInterface(CeaApplication app) {
-	            ParameterBean adql = findAdqlParameter(app);
+	        public static String findNameOfFirstNonADQLInterface(final CeaApplication app) {
+	            final ParameterBean adql = findAdqlParameter(app);
 	            if (adql == null) {
 	                return app.getInterfaces()[0].getName();
 	            }
-	            String name = adql.getName();
+	            final String name = adql.getName();
 	            for (int i = 0; i < app.getInterfaces().length; i++) {
 	                // search through parameters.
 	                boolean found = false;
 	                final InterfaceBean iface = app.getInterfaces()[i];
-	                ParameterReferenceBean[] refs = iface.getInputs();
+	                final ParameterReferenceBean[] refs = iface.getInputs();
 	                for (int j = 0; j < refs.length; j++) {
 	                    if (refs[j].getRef().equals(name)) {
 	                        found = true;
@@ -142,13 +136,13 @@ private final QueryBuilderInternal t;
 	            return null;
 	        }	   
 	
-	public void actionPerformed(ActionEvent e) {
-	    List resources = computeInvokableResources();
+	public void actionPerformed(final ActionEvent e) {
+	    final List resources = computeInvokableResources();
 	    switch(resources.size()) {
 	        case 0:
 	            break;
 	        case 1:
-	            Resource r = (Resource) resources.get(0);
+	            final Resource r = (Resource) resources.get(0);
 	            if (r instanceof CatalogService && r instanceof CeaService) {
 	                    t.build((CatalogService)r);
 	            } else if (r instanceof CeaApplication) {
@@ -159,12 +153,12 @@ private final QueryBuilderInternal t;
 	        default:
 	            //future for multi-table querying.	            
 	    }
-	    List files= computeInvokableFiles();
+	    final List files= computeInvokableFiles();
 	    switch(files.size()) {
 	        case 0:
 	            break;
 	        case 1:
-	            FileObject fo = (FileObject)files.get(0);
+	            final FileObject fo = (FileObject)files.get(0);
 	            t.edit(fo);
 	            break;
 	        default:
@@ -174,28 +168,28 @@ private final QueryBuilderInternal t;
 
 	 // can't operate on more than one file.
 	// ponder - should we open each selected adql file in a new viewer?
-	public void manySelected(FileObject[] l) {
+	public void manySelected(final FileObject[] l) {
 		noneSelected();
 	}
 
 	// accept a single adql file.
-	public boolean invokable(FileObject fo) {
+	public boolean invokable(final FileObject fo) {
 	    try {
 	        if (fo.getType().hasContent()) {
-	            String mime = fo.getContent().getContentInfo().getContentType();
+	            final String mime = fo.getContent().getContentInfo().getContentType();
 	            if (mime != null && mime.startsWith(VoDataFlavour.MIME_ADQL)) {
 	                // testing with start-with to match against adql and adqlx
 	                return true;
 	            } 	
 	        }
-	    } catch (FileSystemException e) {
+	    } catch (final FileSystemException e) {
 	        return false;
 	    }
 	    return false;
 	}
 	
 	// accept a single database schema, or a single queriable service.
-	public boolean invokable(Resource resource) {
+	public boolean invokable(final Resource resource) {
 		return
 		        (resource instanceof CatalogService && resource instanceof CeaService)
 		    ||
@@ -204,7 +198,7 @@ private final QueryBuilderInternal t;
 	}
 
 	// accept if any in selection are database schema.
-	public void someSelected(Resource[] list) {
+	public void someSelected(final Resource[] list) {
 		noneSelected();
 		// later - support multi-query later
 

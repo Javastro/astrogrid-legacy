@@ -9,7 +9,7 @@ import java.util.Date;
 /** Service Availability
  * @see Vosi
  * @author Noel.Winstanley@manchester.ac.uk
- * @since 1.3.0
+ * @since 1.2.1
  */
 public class VosiAvailabilityBean {
 

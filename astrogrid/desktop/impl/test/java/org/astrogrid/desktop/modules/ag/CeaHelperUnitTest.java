@@ -3,20 +3,18 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
+import static org.easymock.EasyMock.*;
+
 import java.net.URI;
-import java.net.URL;
 import java.security.PrivateKey;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
-import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Interface;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.contracts.StandardIds;
@@ -28,10 +26,6 @@ import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
-
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
 
 /** Unit test for cea helper.
  * @author Noel Winstanley
@@ -78,7 +72,7 @@ public class CeaHelperUnitTest extends TestCase {
         try {
             cea.createCEADelegate((CeaService)null);
             fail("expected to fail");
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             //ok
         }
         // serice with no capabilties
@@ -126,27 +120,27 @@ public class CeaHelperUnitTest extends TestCase {
           
     }
 	   
-	   private void doTestAndExpectToFail(Capability[] caps) throws CEADelegateException {
+	   private void doTestAndExpectToFail(final Capability[] caps) throws CEADelegateException {
 	       reset(service);
 	       expect(service.getCapabilities()).andStubReturn(caps);
 	       replay(service);
 	       try {
 	           cea.createCEADelegate(service);            
 	           fail("expected to fail");
-	       } catch (IllegalArgumentException e) {
+	       } catch (final IllegalArgumentException e) {
 	           //ok
 	       }      	    
 	   }
 	   
 	public void testCreateDelegate() throws Exception {
 	    // a guard that should fail.
-	    SecurityGuard sec1 = new SecurityGuard() {
+	    final SecurityGuard sec1 = new SecurityGuard() {
 	        public java.security.cert.X509Certificate[] getCertificateChain() {
 	            throw new RuntimeException("e");
 	        }
 	    };
 	    // a guard that should succeed - returns anything.
-        SecurityGuard sec2 = new SecurityGuard() {
+        final SecurityGuard sec2 = new SecurityGuard() {
             public java.security.cert.X509Certificate[] getCertificateChain() {
                return null;
             }
@@ -161,7 +155,7 @@ public class CeaHelperUnitTest extends TestCase {
         expect(community.getSecurityGuard()).andReturn(sec2).times(2); // second time a dig sig
         
         // skeleton resource object.
-        Capability[] caps = new Capability[]{
+        final Capability[] caps = new Capability[]{
                 new Capability() {{
                     setStandardID(URI.create(StandardIds.CEA_1_0));
                     setInterfaces(new Interface[]{
@@ -190,83 +184,17 @@ public class CeaHelperUnitTest extends TestCase {
     /**
      * @param client
      */
-    private void verifyDelegate(CommonExecutionConnectorClient client) {
+    private void verifyDelegate(final CommonExecutionConnectorClient client) {
         assertNotNull(client);
         assertEquals(endpoint.toString(),client.getTargetEndPoint());
     }
 	
-	
-	/** basically tests that we can round trip - between endpoint/id and execId */
-	public void testCreateCeaDelegateFromExecId() throws Exception {
-        // skeleton resource object.
-        Capability[] caps = new Capability[]{
-                new Capability() {{
-                    setStandardID(URI.create(StandardIds.CEA_1_0));
-                    setInterfaces(new Interface[]{
-                            new Interface() {{
-                                setAccessUrls(new AccessURL[]{
-                                        new AccessURL() {{
-                                            setValueURI(endpoint);
-                                        }}
-                                });
-                            }}
-                    });
-                }}
-        };                                           
-        expect(service.getCapabilities()).andStubReturn(caps);	   
-        expect(service.getId()).andStubReturn(this.serverId);                
-        expect(reg.getResource(serverId)).andReturn(service);
-        expect(community.isLoggedIn()).andReturn(false);
-        replayAll();
-        URI execId = cea.mkRemoteTaskURI("fred",service);
-        assertNotNull(execId);
-        CommonExecutionConnectorClient client = cea.createCEADelegate(execId);
-        verifyDelegate(client);        
-        verifyAll();
-    }
-	
-	   public void testCreateCeaDelegateFromExecIdInappropriateResourceType() throws Exception {
-	       Authority auth = createMock(Authority.class); // not a cea server.
-	        expect(reg.getResource(serverId)).andReturn(auth);
-	        expect(service.getId()).andStubReturn(this.serverId);   	        
-	        replay(auth);
-	        replayAll();
-	        URI execId = cea.mkRemoteTaskURI("fred",service);
-	        assertNotNull(execId);
-	        try {
-	        CommonExecutionConnectorClient client = cea.createCEADelegate(execId);
-	        fail("expected to throw");
-	        } catch (ServiceException e) {
-	            // ook
-	        }       
-	        verifyAll();
-	    }
 
-	
-	/** check we can round trip between local executionId and AppId */
-	public void testMkLocalTaskURI() throws ServiceException {
-		String appId = "fred";
-		URI u = cea.mkLocalTaskURI(appId);
-		assertNotNull(u);
-		assertEquals(appId,cea.getAppId(u));
-		assertTrue(cea.isLocal(u));
-	}
- 	
-	/** check we can round rtip between remote executionId and AppId */
-	public void testMkRemoteTaskURI() throws Exception {
-	    expect(service.getId()).andStubReturn(this.serverId);
-        replay(service);
-        String appId = "fred";
-        URI taskURI = cea.mkRemoteTaskURI(appId,service);
-        assertNotNull(taskURI);
-        assertFalse(cea.isLocal(taskURI));
-        assertEquals(appId,cea.getAppId(taskURI));
-        verify(service);
-    }
+
 	
 	public void testParseTool() throws Exception {
 	    // create a tool document
-        Tool t = new Tool();
+        final Tool t = new Tool();
         t.setInput(new Input());
         t.setOutput(new Output());
         t.setInterface("iface");

@@ -13,7 +13,6 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
@@ -110,7 +109,6 @@ public interface ProcessMonitor {
 	     * @return
 	     */
 	    Tool getInvocationTool();
-	    CeaApplication getApplicationDescription();
 	    
 	}
 
@@ -125,7 +123,7 @@ public interface ProcessMonitor {
 		/**
 		 * @param source
 		 */
-		public ProcessEvent(Object source) {
+		public ProcessEvent(final Object source) {
 			super(source);
 		}
 	}
