@@ -1,5 +1,9 @@
 Astro Runtime - An API for the VO
 ---------------------------------------
 
-See docs/index.html 
+docs/index.html : Documentation
+rmi-lib : supporting libraries for calling from Java via RMI
+xmlrpc-lib : supporting libraries for calling from Java via xmlrpc
 
+see Documentation for tutorial & examples of using AstroRuntime from
+perl, python & java.
