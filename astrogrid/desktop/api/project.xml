@@ -8,7 +8,8 @@
     Astro Runtime Interfaces
 		  </description>
         <shortDescription>Astro Runtime Interfaces</shortDescription>
-
+      <siteAddress>terror.star.le.ac.uk</siteAddress>
+      <siteDirectory>/software_docs/astro-runtime-${pom.currentVersion}</siteDirectory>
 <packageGroups>
     <packageGroup>
     	<title>Connecting to the Astro Runtime</title>

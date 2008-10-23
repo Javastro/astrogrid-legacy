@@ -5,14 +5,16 @@
 	<goal name="astrogrid-install-artifact" prereqs="jar:install,dist-install"
 	description="Installs interface jar, distribution zip in the local maven repository"
 	/>
-
+<!-- unused - upload by hand.
 	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin"
 	description="Deploys interface jar and distribution zip to central astrogrid maven repository" />
+ -->
 
-	<goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin"
+	<goal name="astrogrid-build-artifact" prereqs="dist:build-bin"
 	description="Build the interface jar, distribution zip, and leave all in the target directory"
 	/>
 
+    
 	
 	<goal name="astrogrid-clean" prereqs="clean" 
 	description="Clean the api project"/>
@@ -56,6 +58,10 @@
         /> 
         </goal>
         
+
+    <preGoal name="site:run-reports">
+        <attainGoal name="jar:jar" />
+    </preGoal>
         
  <!--  documentation and api descriptor generation 
   -->
@@ -104,9 +110,6 @@
         
 	</goal>
 
-<goal name="foo">
-<echo>${pom.getDependencyPath('taglets')}:${pom.getDependencyPath('ditaa:TextDiagramTaglet')}</echo>
-</goal>
 
 </project>
 
