@@ -21,11 +21,13 @@ successfully used from Python, Perl, C, C++, Java, and Bash.
                 <dd>Tutorial and API Documentation</dd>
                 <dt><a href="commandline/index.html">commandline</a></dt>
                 <dd>Commandline tools</dd>
+                <!-- 
                 <dt><a href="../rmi-lib">rmi-lib</a></dt>
                 <dd>Libraries to connect to AR from Java over RMI
                 </dd>                
                 <dt><a href="../xmlrpc-lib">xmlrpc-lib</a></dt>
                 <dd>Libraries to connect to AR from Java over XML-RPC</dd>
+                 -->
             </dl>
         </section>
         <section name="External Dependencies">
