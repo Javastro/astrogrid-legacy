@@ -35,6 +35,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.TapService;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
@@ -52,16 +53,18 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
     private final FileSystemManager vfs;
     private final SchedulerInternal sched;  
     private final SessionManagerInternal sess;
+    private final HttpClient http;
 
     /**
      * @param reg
      */
     public TapStrategyImpl(final Registry reg, final FileSystemManager vfs, final SchedulerInternal sched
-            ,final SessionManagerInternal sess) {
+            ,final SessionManagerInternal sess, final HttpClient http) {
         super(reg);
         this.vfs = vfs;
         this.sched = sched;
         this.sess = sess;
+        this.http = http;
     }
 
     
@@ -78,10 +81,10 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
     public ProcessMonitor create(final Document doc) throws InvalidArgumentException,
             ServiceException {
 
-        final Tool tool = CeaHelper.parseTool(doc);
+        final Tool tool = AbstractToolBasedStrategy.parseTool(doc);
         TapService service;
         try {
-            final URI id = CeaHelper.getResourceId(tool);
+            final URI id = AbstractToolBasedStrategy.getResourceId(tool);
             final Resource res = reg.getResource(id);
             if (res instanceof TapService) {
                 service = (TapService)res;
@@ -99,7 +102,6 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
         private final TapService service;
         private final Tool tool;
-        private final HttpClient http;
         private URL jobID;
         private String destinationURL;
         /** create a new tap task monitor
@@ -115,16 +117,20 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
             this.service = service;
             this.name = service.getTitle();
             this.description = service.getContent().getDescription();
-            this.http = new HttpClient(); //@todo see if we can share this impl - configure for retry, etc.
         }
 
         // getRTesults - seems to be overridden.
         
+        /** the method is called halt, but it's called by the 
+         * UI 'delete' button (as well as the AR api halt() method
+         * so, considering that abort doesn't seem to work, 
+         * should I implmenet delete instead? unsure yet.
+         */
         public void halt() throws NotFoundException, InvalidArgumentException,
                 ServiceException, SecurityException {
             info("Halting");
             postPhaseCommand("ABORT");
-            refresh();
+            // implement delete here instead.
         }
 
         /** not perfect - refreshes immediately, but inteacts badly with the shceduled task.
@@ -153,22 +159,26 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
             info("Endpoint: " + endpoint);
             final PostMethod createMethod = new PostMethod(endpoint.toString());
             try {
+
                 // extract the parameters we're interested with.
                 final String query = (String)tool.findXPathValue("input/parameter[name='ADQL']/value");
                 String format = (String)tool.findXPathValue("input/parameter[name='FORMAT']/value");
-                final org.astrogrid.applications.beans.v1.parameters.ParameterValue dest 
-                    = (org.astrogrid.applications.beans.v1.parameters.ParameterValue)tool.findXPathValue("output/parameter[name='DEST']");
+                final ParameterValue dest = (ParameterValue)tool.findXPathValue("output/parameter[name='DEST']");
                 if (format == null) {
                     format = "application/x-votable+xml;tabledata";
                 }
-                createMethod.setRequestBody(new NameValuePair[] {
+                createMethod.addParameters(new NameValuePair[] {
                         new NameValuePair("ADQL",query),
                         new NameValuePair("FORMAT",format) // this parameter is ignored by current dsa.                      
                 });
                 if (dest != null && dest.getIndirect()) {
+                    // store the original, unmangled destination
                     destinationURL = dest.getValue();
-                    createMethod.addParameter(new NameValuePair("DEST",dest.getValue()));
-                    createMethod.addParameter(new NameValuePair("TargetURI",dest.getValue()));
+                    final Tool mangled = tool; // try without mangling.makeMySpaceIvornsConcrete(tool);
+                    final ParameterValue mangledDest = (ParameterValue)mangled.findXPathValue("output/parameter[name='DEST']");
+
+                    createMethod.addParameter(new NameValuePair("DEST",mangledDest.getValue()));
+                    createMethod.addParameter(new NameValuePair("TargetURI",mangledDest.getValue()));
                 }
                 final int code = http.executeMethod(createMethod); 
                 checkCode(code,createMethod);
@@ -186,7 +196,10 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
             } catch (final IOException x) {
                 error("Failed to execute query",x);
-                throw new ServiceException(x.getMessage());
+                throw new ServiceException(x.getMessage());            
+     //       } catch (final InvalidArgumentException x) {
+     //           error("Failed to execute query",x);
+     //           throw new ServiceException(x.getMessage());                   
             } finally {
                 createMethod.releaseConnection();
             }
@@ -230,7 +243,8 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                 while (in.hasNext()){
                     in.next();
                     if (in.isStartElement() && "phase".equalsIgnoreCase(in.getLocalName())) {
-                        return StringUtils.trim(in.getElementText());
+                        // handles case when a fuller error message is returned. 
+                        return StringUtils.substringBefore(StringUtils.trim(in.getElementText()),":");
                     }
                 }
                 error("Unable to parse phase information");
@@ -259,13 +273,14 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
         private final String getError() throws ServiceException{
             info("Retrieving error details");
             GetMethod errorMethod = null;
-            final XMLStreamReader in = null;
             try {
                 final URL errorURL = mkSubURL(jobID,"error");
                 errorMethod = new GetMethod(errorURL.toString());       
                 final int code = http.executeMethod(errorMethod);
                 checkCode(HttpStatus.SC_OK,code,errorMethod);
-                return errorMethod.getResponseBodyAsString();
+                final String body =  errorMethod.getResponseBodyAsString();                                
+                // remove any html / xml formatting. - dirty.
+                return body.replaceAll("\\<.*?\\>", "");
             } catch (final IOException x) {
                error("Failed to check progress",x);
                throw new ServiceException(x.getMessage());                       
@@ -347,46 +362,59 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                 );
                 addMessage(em);
                 setStatus(nuStatus);
-                
+
                 // tackle different kinds of status code.
                 if ("ERROR".equals(nuStatus)) {
                     finishTime = new Date();
                     final String errorBody = getError();
                     final ExecutionMessage erm = new ExecutionMessage(
-                        getId().toString()
-                        ,"error"
-                        ,nuStatus
-                        , new Date()
-                        ,errorBody
-                        );
+                            getId().toString()
+                            ,"error"
+                            ,nuStatus
+                            , new Date()
+                            ,errorBody
+                    );
                     addMessage(erm);
                     return null;
                 } else if ("COMPLETED".equals(nuStatus)) {
                     finishTime = new Date();
                     try {
-                    if (destinationURL == null) { // user didn't specify a destination
-                        destinationURL = mkSubURL(jobID,"results/result").toString();
-                    }
-                        final FileObject src = vfs.resolveFile(destinationURL);
-                        src.refresh();
-                        addResult("query-result",src);
+                        if (destinationURL == null) { // user didn't specify a destination
+                            destinationURL = mkSubURL(jobID,"results/result").toString();
+                            final FileObject src = vfs.resolveFile(destinationURL);                         
+                            sys.addJunction("query-result.vot",src);
+                            resultMap.put("query-result",destinationURL);
+                        } else { // saved elsewhere - probably myspace.
+                            final FileObject src = vfs.resolveFile(destinationURL);
+                            src.refresh();
+                            if (! src.exists()) {
+                                System.err.println("Does not exist" + destinationURL);
+                            }
+                            addResult("query-result",src);
+                        }
                     } catch (final FileSystemException e) {
-                     warn("Failed to retreive result<br>" + exFormatter.format(e,ExceptionFormatter.ALL));   
+                        e.printStackTrace();
+                        warn("Failed to retreive result<br>" + exFormatter.format(e,ExceptionFormatter.ALL));   
                     } catch (final MalformedURLException x) {
                         warn("Failed to produce result url"); // unlikely.
                     }
+
                     fireResultsReceived(resultMap);
+                    return null;
+                } else if ("ABORTED".equals(nuStatus)) {
+                    setStatus("COMPLETED"); // dunno if this status is used elsewhere in the system
+                    // if it is, better set it to a known value.
                     return null;
                 } else {
                     return this; // continue to monitor
                 }
-                
+
             } catch (final ServiceException x) {
-               standOff(increaseStandoff);
-               warn("Failed: " + exFormatter.format(x,ExceptionFormatter.ALL));
-               return this;
+                standOff(increaseStandoff);
+                warn("Failed: " + exFormatter.format(x,ExceptionFormatter.ALL));
+                return this;
             }
-            
+
         }
         
         /** convert a tap phase to a cea execution phase

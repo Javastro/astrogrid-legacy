@@ -204,7 +204,7 @@ public class CeaHelperUnitTest extends TestCase {
         // convert it to a document..
         Document document = DomHelper.newDocument();
         Marshaller.marshal(t,document);
-        Tool t1 = cea.parseTool(document);
+        Tool t1 = AbstractToolBasedStrategy.parseTool(document);
         assertEquals(t.getName(),"ivo://" + t1.getName());
         
         t.setName("org.astrogrid.Galaxev"); // correct
@@ -213,7 +213,7 @@ public class CeaHelperUnitTest extends TestCase {
         // convert it to a document..
         document = DomHelper.newDocument();
         Marshaller.marshal(t,document);
-        t1 = cea.parseTool(document);
+        t1 = AbstractToolBasedStrategy.parseTool(document);
         assertEquals(t.getName(),t1.getName());
     }
 	

@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.2 2008/10/23 16:34:02 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.3 2008/10/24 12:33:07 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -178,7 +178,7 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
             info("Initializing on server " + target.getId() );
 
             //make a version of the tool with concrete ivorns, just for the remote service
-            final Tool remotetool = ceaHelper.makeMySpaceIvornsConcrete(tool);
+            final Tool remotetool = makeMySpaceIvornsConcrete(tool);
             ceaid = delegate.init(remotetool,jid);
             info("Server returned taskID " + ceaid);            
             setId(mkGlobalExecId(ceaid,target));
@@ -436,13 +436,13 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
     }
 
     public ProcessMonitor create(final Document doc) throws InvalidArgumentException, ServiceException {
-            final Tool tool = CeaHelper.parseTool(doc);
+            final Tool tool = AbstractToolBasedStrategy.parseTool(doc);
 
             CeaApplication info;
             try {
-                final URI appId = CeaHelper.getResourceId(tool);
+                final URI appId = AbstractToolBasedStrategy.getResourceId(tool);
                 final Resource res = reg.getResource(appId);
-                if (reg instanceof CeaApplication) {
+                if (res instanceof CeaApplication) {
                     info = (CeaApplication)res;
                 } else {
                     throw new InvalidArgumentException(appId +" : is not a ceaApplication");
@@ -484,6 +484,10 @@ public class CeaStrategyImpl extends AbstractToolBasedStrategy implements Remote
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.3  2008/10/24 12:33:07  nw
+Incomplete - taskadd support for TAP
+send to plastic now working.
+
 Revision 1.2  2008/10/23 16:34:02  nw
 Incomplete - taskadd support for TAP
 

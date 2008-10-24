@@ -25,15 +25,16 @@ public class RevealFileActivity extends AbstractFileActivity {
 	
 	
     // applies to all non-local files and folders.
-	protected boolean invokable(FileObject f) { 
+	protected boolean invokable(final FileObject f) { 
+	    final String innerScheme = AstroscopeFileObject.findInnermostFileObject(f).getName().getScheme();
             return AstroscopeFileObject.isDelegateOrAstroscopeFileObject(f)
-                    && ! AstroscopeFileObject.findInnermostFileObject(f).getName().getScheme().equals("tmp")
-                    ;
-
+                    && 
+                    !( innerScheme.equals("tmp") || innerScheme.equals("http")
+                    );
 	}
 
 
-	public RevealFileActivity(final FileSystemManager vfs, FileManagerFactory mgr) {
+	public RevealFileActivity(final FileSystemManager vfs, final FileManagerFactory mgr) {
 		super();
 		setHelpID("activity.reveal");
         this.vfs = vfs;
@@ -44,11 +45,11 @@ public class RevealFileActivity extends AbstractFileActivity {
 	}
 
     // can only handle a single selection.
-    public void manySelected(FileObject[] list) {
+    public void manySelected(final FileObject[] list) {
         noneSelected();
     }
     
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		final List l = computeInvokable();
         mgr.show(AstroscopeFileObject.findInnermostFileObject((FileObject)l.get(0)));
 		

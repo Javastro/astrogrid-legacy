@@ -321,7 +321,8 @@ TAP EXECUTION STRATEGY
                 <service>ivoa.registry</service>
                 <service>system.vfs</service>                
                 <service>system.scheduler</service>
-                <service>builtin.sessionManager</service>                               
+                <service>builtin.sessionManager</service>
+                <service>system.httpclient</service>                               
             </construct>
         </invoke-factory>   
     </service-point>
