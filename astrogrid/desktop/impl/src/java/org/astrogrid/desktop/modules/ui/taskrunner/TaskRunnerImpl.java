@@ -80,6 +80,7 @@ import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEvent;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
@@ -214,7 +215,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		final JScrollPane tasksScroll = new JScrollPane(tracker.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		tasksScroll.setBorder(BorderFactory.createEmptyBorder());
 		
-		final JSplitPane rightPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT
+		rightPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT
 				,execScroll
 				,tasksScroll);
 		rightPane.setDividerLocation(250);
@@ -238,13 +239,70 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             }
 		});
 		pForm.setToolbar(toolbar);
-		pForm.setRightPane("Execute",rightPane); 
-		getMainPanel().add(pForm,BorderLayout.CENTER);
+		pForm.setRightPane("Execute",rightPane);
+		
+		// construct a flip panel to keep both together.
+		flipper = new FlipPanel();
+		flipper.add(pForm,PARAMETER_VIEW);
+		adqlOnlyForm = new JPanel(new BorderLayout());	
+		flipper.add(adqlOnlyForm,ADQL_ONLY_VIEW);
+		getMainPanel().add(flipper,BorderLayout.CENTER);
 		clearStorageLocation();
 		setIconImage(IconHelper.loadIcon("applaunch16.png").getImage());
 		this.setSize(900,600);
 		logger.info("New TaskRunner - Completed");
-	}	
+	}
+	
+	private final String PARAMETER_VIEW = "parameter.view";
+	private final String ADQL_ONLY_VIEW = "adql.view";
+	
+	
+	   
+    /** instruct just the adql editor to show, and no other
+     * input widgets.
+     * @param b if true, show adql editor only.
+     */
+    public void showADQLOnly(final boolean b) {
+        if (adqlOnly == b) { // nothing to do.
+            return;
+        } else {
+            adqlOnly = b;
+        }
+
+        if (b) {
+            final AdqlTextFormElement adqlFormElement = pForm.getAdqlFormElement();
+           // find the adql editor, and relocate it
+            pForm.getBottomPane().removeAll();
+            adqlOnlyForm.add(adqlFormElement.getEditorPanel(),BorderLayout.CENTER);
+            //toolbar
+            pForm.remove(toolbar);
+            adqlOnlyForm.add(toolbar,BorderLayout.NORTH);
+            
+            // find the right-pane, and relocated it
+            pForm.remove(rightPane);
+            adqlOnlyForm.add(rightPane,BorderLayout.EAST);
+            
+            flipper.show(ADQL_ONLY_VIEW);
+        } else {
+            adqlOnlyForm.removeAll();
+            // adql editor
+            final AdqlTextFormElement adqlFormElement = pForm.getAdqlFormElement();
+            if (adqlFormElement != null) {
+                pForm.getBottomPane().add(adqlFormElement.getEditorPanel());
+            }
+            //toobar
+            pForm.setToolbar(toolbar);
+            //right-pane
+            pForm.setRightPane("Execute",rightPane);
+            
+            flipper.show(PARAMETER_VIEW);
+        }        
+    }
+    
+    private boolean adqlOnly = false;
+    
+
+    
 	private final JMenu contextMenu = new JMenu("Query extras") {
         {
             setEnabled(false);
@@ -282,6 +340,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	// @future - maybe pass this in, and populate through contribution?
 	private final TweaksSelector tweakSelector = new TweaksSelector();
 	protected ProtocolSpecificTweaks tweaks;
+    private final JSplitPane rightPane;
+    private final FlipPanel flipper;
+    private final JPanel adqlOnlyForm;
 	
 	public void buildForm(final Resource r) {
 	    toolbar.executionServers.clear();	    

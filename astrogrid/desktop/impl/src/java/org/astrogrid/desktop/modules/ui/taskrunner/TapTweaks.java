@@ -3,9 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
-import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.TapService;
-import org.astrogrid.desktop.modules.ui.QueryBuilderImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** taskrunner tweaks specific to TAP.
@@ -28,15 +26,16 @@ public class TapTweaks implements ProtocolSpecificTweaks {
     public void buildForm(final TaskRunnerImpl tr) {
         tr.toolbar.executionServers.add(r);
         tr.pForm.buildForm(cea); // only one interface at the moment.
-        if (tr instanceof QueryBuilderImpl) {
-            tr.pForm.setExpanded(true);
-        }
+        tr.showADQLOnly(true);
     }
 
     public void buildForm(final Tool t,final TaskRunnerImpl tr) {
         tr.toolbar.executionServers.add(r);
         tr.pForm.buildForm(t,t.getInterface(),cea);
+        tr.showADQLOnly(true);
     }
+    
+
 
 
 }

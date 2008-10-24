@@ -12,8 +12,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -34,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang.StringUtils;
@@ -52,12 +49,9 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
-import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.taskrunner.ParamBuilder.Param;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -68,7 +62,6 @@ import ca.odell.glazedlists.swing.JEventListPanel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.l2fprod.common.swing.JCollapsiblePane;
 
 /**Form which allows parameters of a tool document to be edited.
  * Displays as two columns - left hand column is input parameters.
@@ -107,7 +100,7 @@ private final CellConstraints cc;
 
 private final PanelBuilder pb;
 
-private FormLayout fl;
+private final FormLayout fl;
 
 private Dimension previousSize = null;
 private Dimension preservedPreferredSize = null ;
@@ -128,26 +121,39 @@ private Dimension preservedPreferredSize = null ;
      * method will show or hide the full adql editor.
      * @param b
      */
-    public void setExpanded(boolean b) {
+    public void setExpanded(final boolean b) {
         logger.debug("Setting expanded to " + b);
-        for (Iterator i = inputElements.iterator(); i.hasNext();) {
-            AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
-            if (el instanceof AdqlTextFormElement) {
-                AbstractButton butt = el.getOptionalButton();
-                if (butt != null && butt instanceof ExpandCollapseButton) {
-                    logger.debug("found button");
-                    ExpandCollapseButton ec = (ExpandCollapseButton) butt;
-                    if (ec.isSelected() != b) {
-                        logger.debug("state differs");
-                        ec.doClick();
-                    }
-                }
-            }            
+        final AdqlTextFormElement el = getAdqlFormElement();
+        if (el == null) {
+            return;
+        }
+
+        final AbstractButton butt = el.getOptionalButton();
+        if (butt != null && butt instanceof ExpandCollapseButton) {
+            logger.debug("found button");
+            final ExpandCollapseButton ec = (ExpandCollapseButton) butt;
+            if (ec.isSelected() != b) {
+                logger.debug("state differs");
+                ec.doClick();
+            }
+
         }
         // belt-and-braces. there's an error in my logic somewhere
         // that means that the expansion state of the form and the button
         // get out-of-synch sometimes. this corrects it.
         getBottomPane().setVisible( b);
+    }
+    
+    /** return a reference to the adql text form, if one exitsts, else null */
+    public AdqlTextFormElement getAdqlFormElement() {
+        for (final Iterator i = inputElements.iterator(); i.hasNext();) {
+            final AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
+            if (el instanceof AdqlTextFormElement) {
+                return (AdqlTextFormElement)el;            
+            }
+        }
+        return null;
+                   
     }
 
 	
@@ -168,7 +174,7 @@ private Dimension preservedPreferredSize = null ;
 	
 	
 	/** splice an externally created toolbar into the panel.*/
-	public void setToolbar(JPanel toolbar) {
+	public void setToolbar(final JPanel toolbar) {
 	    pb.add(toolbar,cc.xyw(1,1,5));
 	}
 	/** splice an externally created right-most pane into the panel 
@@ -177,7 +183,7 @@ private Dimension preservedPreferredSize = null ;
 	 * @param rightPane compoent to display in right-most column. If set to null,
 	 * the right column is removed from the layout instead. (HACK)
 	 */
-	public void setRightPane(String title,JComponent rightPane) {
+	public void setRightPane(final String title,final JComponent rightPane) {
 	    if (rightPane == null) {
 	        fl.removeColumn(5);
 	        fl.removeColumn(4);
@@ -187,7 +193,7 @@ private Dimension preservedPreferredSize = null ;
 	    }
 	}
 	
-	public TaskParametersForm(final UIComponentWithMenu parent, final ApplicationsInternal apps,TypesafeObjectBuilder builder, FileSystemManager vfs) {
+	public TaskParametersForm(final UIComponentWithMenu parent, final ApplicationsInternal apps,final TypesafeObjectBuilder builder, final FileSystemManager vfs) {
 		super();
 		this.parent = parent;
 		this.apps = apps;
@@ -199,7 +205,7 @@ private Dimension preservedPreferredSize = null ;
 		floatFormat = NumberFormat.getNumberInstance();
 		
 		// datastructure of all inputs and outputs.
-		CompositeList allElements = new CompositeList(); // a view of all parameterrs.
+		final CompositeList allElements = new CompositeList(); // a view of all parameterrs.
 		this.inputElements = allElements.createMemberList();
 		allElements.addMemberList(inputElements);
 		this.outputElements = allElements.createMemberList();
@@ -216,9 +222,9 @@ private Dimension preservedPreferredSize = null ;
 		// file upload assistant. - create it, and then leave it alone to do it's thing.
 		this.uploadAssist = new LocalFileUploadAssistant(parent,vfs,allElements);
 		
-		JEventListPanel inputsPanel = new JEventListPanel(inputElements, new ElementFormat());
+		final JEventListPanel inputsPanel = new JEventListPanel(inputElements, new ElementFormat());
 		inputsPanel.setBorder(BorderFactory.createEmptyBorder());
-		JEventListPanel outputsPanel = new JEventListPanel(outputElements, new ElementFormat());
+		final JEventListPanel outputsPanel = new JEventListPanel(outputElements, new ElementFormat());
 		outputsPanel.setBorder(BorderFactory.createEmptyBorder());
 
 		interfaceChooser = new JComboBox();
@@ -232,10 +238,10 @@ private Dimension preservedPreferredSize = null ;
 		infoPane.registerAdditional(resourceLabel);
 		
 		
-		JScrollPane inScroll = new JScrollPane(inputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
+		final JScrollPane inScroll = new JScrollPane(inputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
 		inScroll.setBorder(BorderFactory.createEtchedBorder());
 		
-		JScrollPane outScroll = new JScrollPane(outputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane outScroll = new JScrollPane(outputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		outScroll.setBorder(BorderFactory.createEtchedBorder());
 		this.setBorder(null);
 		
@@ -247,7 +253,7 @@ private Dimension preservedPreferredSize = null ;
         
 		this.addComponentListener( new ComponentAdapter() {
 
-		    public void componentResized(ComponentEvent e) {
+		    public void componentResized(final ComponentEvent e) {
 
 		        if( bottomPanel.getComponentCount() == 0 
 		                ||
@@ -262,7 +268,7 @@ private Dimension preservedPreferredSize = null ;
 		            previousSize = getSize();
 		        }
 		        else {
-                    ADQLEditorPanel ae = (ADQLEditorPanel)bottomPanel.getComponent(0) ;
+                    final ADQLEditorPanel ae = (ADQLEditorPanel)bottomPanel.getComponent(0) ;
 		            reclaimScreenRealEstate( ae ) ; 
                     ae.revalidate() ; 
 		        }
@@ -292,28 +298,29 @@ private Dimension preservedPreferredSize = null ;
 		
         // hide info pane when bottom pane appears.
 		bottomPanel.addComponentListener(new ComponentAdapter() {
-		        public void componentShown(ComponentEvent e) {
+		        public void componentShown(final ComponentEvent e) {
 		        infoScroll.setVisible(false);
 		        rightSplit.setDividerLocation(1.0);	
 		        rightSplit.setDividerSize(0);		        
 		    }
-		        public void componentHidden(ComponentEvent e) {
+		        public void componentHidden(final ComponentEvent e) {
 		        infoScroll.setVisible(true);
 		        rightSplit.setDividerLocation(0.5);		 
 		        rightSplit.setDividerSize(7);		        
 		    }
 		});
 	}
+	
 
 	/** build a form with controls to edit parameters for the default interface of this application */
-	public void buildForm(CeaApplication applicationResource) {
-		String iName = applicationResource.getInterfaces()[0].getName();
+	public void buildForm(final CeaApplication applicationResource) {
+		final String iName = applicationResource.getInterfaces()[0].getName();
 		buildForm(iName,applicationResource);
 	}
 	
 	/** build a form with controls to edit parameters for the specified interface of this application */
-	public void buildForm(String interfaceName,CeaApplication applicationResource) {
-		Tool t = apps.createTemplateTool(interfaceName,applicationResource);
+	public void buildForm(final String interfaceName,final CeaApplication applicationResource) {
+		final Tool t = apps.createTemplateTool(interfaceName,applicationResource);
 		buildForm(t,interfaceName,applicationResource);	
 	}
 
@@ -331,7 +338,7 @@ private Dimension preservedPreferredSize = null ;
 	}
 	/** populates the contents of the current model 
 	 * 	 * */
-	public void buildForm(Tool values,String interfaceName,CeaApplication applicationResource) {	    
+	public void buildForm(final Tool values,final String interfaceName,final CeaApplication applicationResource) {	    
 	    if (model.currentResource() != null && model.currentResource().getId().equals(applicationResource.getId())) { //application is unchanged.
 	        model.newApplication(applicationResource);
 	        interfaceChooser.setSelectedItem(interfaceName);
@@ -346,7 +353,7 @@ private Dimension preservedPreferredSize = null ;
 	        try {
 	            interfaceChooser.removeItemListener(this);
 	            interfaceChooser.removeAllItems();
-	            InterfaceBean[] ibs = applicationResource.getInterfaces();
+	            final InterfaceBean[] ibs = applicationResource.getInterfaces();
 	            for (int i = 0; i < ibs.length; i++) {
 	                interfaceChooser.addItem(ibs[i].getName());			
 	            }
@@ -363,15 +370,15 @@ private Dimension preservedPreferredSize = null ;
 	 * 
 	 * callback from the combo box - trigger a populate action
 	 */
-	public void itemStateChanged(ItemEvent e) {
+	public void itemStateChanged(final ItemEvent e) {
 		if (e.getSource() != interfaceChooser || e.getStateChange() != ItemEvent.SELECTED) {
 			return;
 		}
-		String interfaceName = (String)interfaceChooser.getSelectedItem();
+		final String interfaceName = (String)interfaceChooser.getSelectedItem();
 		model.changeInterface(interfaceName); 
 	}
     
-    private void reclaimScreenRealEstate( ADQLEditorPanel adqlEditor ) { 
+    private void reclaimScreenRealEstate( final ADQLEditorPanel adqlEditor ) { 
                        
             //
             // OK. This is the ADQL Editor...
@@ -380,12 +387,12 @@ private Dimension preservedPreferredSize = null ;
             // where we need to set the preferred size to recapture screen real estate.
             Dimension curr = getSize();
             if( previousSize != null ) {
-                double diffH = curr.getHeight() - previousSize.getHeight() ;
-                double diffW = curr.getWidth() - previousSize.getWidth() ;
+                final double diffH = curr.getHeight() - previousSize.getHeight() ;
+                final double diffW = curr.getWidth() - previousSize.getWidth() ;
                 previousSize = curr ;
                 // now alter the size of the component.
                 curr = adqlEditor.getPreferredSize() ;                   
-                Dimension nu = new Dimension((int)(curr.getWidth()+diffW),(int)(curr.getHeight() + diffH));
+                final Dimension nu = new Dimension((int)(curr.getWidth()+diffW),(int)(curr.getHeight() + diffH));
                 adqlEditor.setPreferredSize(nu) ; 
                 preservedPreferredSize = nu ;
             }
@@ -418,7 +425,7 @@ private Dimension preservedPreferredSize = null ;
 	    private String interfaceName;
 	    /** map to cache some info about ui state of different form elements 
 	     *  - a cache of interfaceName -> InterfaceState objects*/	    
-	    private Map m= new HashMap();
+	    private final Map m= new HashMap();
 	    
 	// state changing operations.
 	    /** empty the model */
@@ -431,21 +438,21 @@ private Dimension preservedPreferredSize = null ;
 	        m.clear();
 	    }
 	    /** setup model with new application */
-	    public void newApplication(CeaApplication app) {
+	    public void newApplication(final CeaApplication app) {
 	        clear();
 	        logger.debug("Setting new application");
 	        this.application = app;	      
 	    }
 	    
 	    /** change the interface to another in the same application */
-	    public void changeInterface(String interfacename) {
+	    public void changeInterface(final String interfacename) {
 	        logger.debug("Changing interface");
 	        // first of all, record the final configuratio of this interface..
 	        rememberCurrent();
 	        // now onto the new interface
 	        this.interfaceName = interfacename;
 	     // see if we've got a previously worked-on tool for this interface.
-	        InterfaceState previously = (InterfaceState)m.get(interfaceName);
+	        final InterfaceState previously = (InterfaceState)m.get(interfaceName);
 	        if (previously != null) {
 	            if (logger.isDebugEnabled()) {
 	                logger.debug("Found previous state for inteface" + interfaceName + " " + previously);
@@ -473,7 +480,7 @@ private Dimension preservedPreferredSize = null ;
          */
         private void rememberCurrent() {
             if (interfaceName != null) { // else we weren'te editing anything previously.
-	            InterfaceState leaving = (InterfaceState)m.get(interfaceName);
+	            final InterfaceState leaving = (InterfaceState)m.get(interfaceName);
 	            if (leaving != null) {
 	                leaving.collapsed = ! getBottomPane().isVisible();
 	                logger.debug("Recording window state of interface we're leaving as " + leaving.collapsed);
@@ -482,7 +489,7 @@ private Dimension preservedPreferredSize = null ;
         }
 	    
 	    /** change the tool to a different one in the same application */
-	    public void changeTool(Tool t, String iName) {
+	    public void changeTool(final Tool t, final String iName) {
 	        rememberCurrent();
 	        this.interfaceName = iName;
 	        this.tool = t;
@@ -508,7 +515,7 @@ private Dimension preservedPreferredSize = null ;
 	        
 	        public boolean collapsed = true;
 	        public Tool tool = null;
-	        public InterfaceState(Tool tool) {
+	        public InterfaceState(final Tool tool) {
 	            super();
 	            this.collapsed = ! getBottomPane().isVisible();
 	            this.tool = tool;
@@ -524,8 +531,8 @@ private Dimension preservedPreferredSize = null ;
          * 
          */
         public boolean isAdqlInterface() {
-            for (Iterator i = inputElements.iterator(); i.hasNext();) {
-                AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
+            for (final Iterator i = inputElements.iterator(); i.hasNext();) {
+                final AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
                 if (el instanceof AdqlTextFormElement) {
                     return true;
                 }            
@@ -555,17 +562,17 @@ private Dimension preservedPreferredSize = null ;
                 (new BackgroundWorker(parent,"Fetching creator logo",BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
                     
                     protected Object construct() throws Exception {
-                        Image currentResourceLogo = IconHelper.loadIcon(logoURI.toURL()).getImage();
+                        final Image currentResourceLogo = IconHelper.loadIcon(logoURI.toURL()).getImage();
                         return new ImageIcon(currentResourceLogo.getScaledInstance(-1,24,Image.SCALE_SMOOTH));
 
                     }
-                    protected void doFinished(Object result) {
+                    protected void doFinished(final Object result) {
                         if (result != null) {
-                            Icon i = (Icon)result;
+                            final Icon i = (Icon)result;
                             resourceLabel.setIcon(i);
                         }
                     }
-                    protected void doError(Throwable ex) {
+                    protected void doError(final Throwable ex) {
                         // ignore.
                     }
                 }).start();
@@ -578,14 +585,14 @@ private Dimension preservedPreferredSize = null ;
 	 * the  ui form 
 	 * @param interfaceName
 	 */
-	private void doBuildForm(String interfaceName) {
+	private void doBuildForm(final String interfaceName) {
 		logger.info("Populating from " + interfaceName + "@" + model.currentResourceId());	
 		// clear the element list list.
 		inputElements.clear();
 		outputElements.clear();
 
 		// build some metadata
-		ParamBuilder info = new ParamBuilder(interfaceName,model.currentResource(),model.tool());
+		final ParamBuilder info = new ParamBuilder(interfaceName,model.currentResource(),model.tool());
 		
 		// handle special cases first
 		// check for RA,DEC like parameters. a bit tricky.
@@ -596,11 +603,11 @@ private Dimension preservedPreferredSize = null ;
 		Param adql = null;
 		Param radius = null;
 		for (int i = 0; i < info.inputs.length; i++) { 
-		    Param p = info.inputs[i];
+		    final Param p = info.inputs[i];
 			if (p.isFiddly()) {
 			    continue; // don't handle repeated or optional params. too fiddly.
 			}
-			ParameterBean pb = p.description;
+			final ParameterBean pb = p.description;
 			if (pb.getType().equalsIgnoreCase("ra") 
 					|| "POS_EQ_RA_MAIN".equals(pb.getUcd())
 					|| "POS_RA_MAIN".equals(pb.getUcd())
@@ -651,7 +658,7 @@ private Dimension preservedPreferredSize = null ;
 		if (adql != null) {
 			// full adql editor..
 			final AdqlTextFormElement adqlElement = builder.createAdqlTextFormElement(adql.values[0],adql.description,model.currentResource(),parent);
-			ADQLEditorPanel adqlEditor = adqlElement.getEditorPanel();
+			final ADQLEditorPanel adqlEditor = adqlElement.getEditorPanel();
 			adqlEditor.setBorder( null );
             if( previousSize == null && preservedPreferredSize == null ) {
                 //
@@ -675,7 +682,7 @@ private Dimension preservedPreferredSize = null ;
 			adqlElement.setOptionalButton(ep);
 			// ep already shows / hides the fiull editor. now just need to make it do the same with the standard editor
 			ep.addActionListener(new ActionListener() {			
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(final ActionEvent e) {
 					adqlElement.setEnabled(! ep.isSelected());
 				}
 			});
@@ -684,11 +691,11 @@ private Dimension preservedPreferredSize = null ;
 	// end of the special cases
 		// process the rest of the parameters.
 		for (int i = 0; i < info.inputs.length; i++) {
-		    Param p = info.inputs[i];
+		    final Param p = info.inputs[i];
 			if (p == ra || p == dec || p == adql || p == radius) {
 				continue; // already handled these ones.
 			}
-			AbstractTaskFormElement el = createInputFormElement(p);
+			final AbstractTaskFormElement el = createInputFormElement(p);
 			inputElements.add(el);
 			if (p.isFiddly()) {
 				new FiddlyInputManager(el,p); // takes care of adding / removing parameters.
@@ -697,8 +704,8 @@ private Dimension preservedPreferredSize = null ;
 		
 		// now the outputs
 		for (int i = 0; i < info.outputs.length; i++) {
-		    Param p = info.outputs[i];
-            AbstractTaskFormElement el = createOutputFormElement(p);
+		    final Param p = info.outputs[i];
+            final AbstractTaskFormElement el = createOutputFormElement(p);
 			outputElements.add(el);
 			if (p.isFiddly()) {
 				new FiddlyOutputManager(el,p); // takes care of adding / removing parameters.
@@ -714,7 +721,7 @@ private Dimension preservedPreferredSize = null ;
 	 * @param desc
 	 * @return
 	 */
-	private AbstractTaskFormElement createInputFormElement(Param p) {
+	private AbstractTaskFormElement createInputFormElement(final Param p) {
 	    final ParameterBean desc = p.description;
 	    final ParameterValue value;
 	    if (p.values.length >0) { // at least one value provided - so use the first.
@@ -756,7 +763,7 @@ private Dimension preservedPreferredSize = null ;
 	 * @param desc
 	 * @return
 	 */
-	private AbstractTaskFormElement createOutputFormElement(Param p) {
+	private AbstractTaskFormElement createOutputFormElement(final Param p) {
 	    final ParameterBean desc = p.description;	    
         final ParameterValue value;
         if (p.values.length >0) { // at least one value provided - so use the first.
@@ -791,13 +798,13 @@ private Dimension preservedPreferredSize = null ;
 		 * @param el the optional / repeated elemenet
 		 * @param ref information on how this parameter may be repeated.
 		 */
-		public FiddlyParameterManager(List elementList, AbstractTaskFormElement el, Param p) {
+		public FiddlyParameterManager(final List elementList, final AbstractTaskFormElement el, final Param p) {
 		    this.p = p;
 		    logger.debug(p.ref.getRef() + " is a fiddly parameter");
 		    this.elementList = elementList;
 		    final int pos = elementList.indexOf(el);
 		    AbstractTaskFormElement current = null;
-		    int required = Math.max(1,Math.max(p.ref.getMax(),p.values.length)); // works 'cos p.ref.getMax()==0 when it means 'infinite'
+		    final int required = Math.max(1,Math.max(p.ref.getMax(),p.values.length)); // works 'cos p.ref.getMax()==0 when it means 'infinite'
 		    logger.debug("" + required + " fields required"); 
 		    for (int ix = 0; ix < required; ix++) {
 		        // create/ find current
@@ -850,9 +857,9 @@ private Dimension preservedPreferredSize = null ;
 		}
 		
 		/** adds a button to the compoonent to make it 'optional' / remove it. */
-		private void supplyOptionalButton(AbstractTaskFormElement el) {
+		private void supplyOptionalButton(final AbstractTaskFormElement el) {
 		//	JToggleButton optionalButton = new JToggleButton(IconHelper.loadIcon("remove16.png"));
-			JCheckBox optionalButton = new JCheckBox();
+			final JCheckBox optionalButton = new JCheckBox();
 			optionalButton.setSelected(true);
 			optionalButton.setToolTipText("This is an optional parameter: check to enable it");
 			optionalButton.setActionCommand("optional");
@@ -862,8 +869,8 @@ private Dimension preservedPreferredSize = null ;
 		}
 		
 		/** supply a 'remove' button and splice it into the form element */
-		private void supplyRemoveButton(AbstractTaskFormElement el) {
-			JButton removeButton = new JButton(IconHelper.loadIcon("editremove16.png"));
+		private void supplyRemoveButton(final AbstractTaskFormElement el) {
+			final JButton removeButton = new JButton(IconHelper.loadIcon("editremove16.png"));
 			removeButton.setToolTipText("Remove this parameter");
 			removeButton.setActionCommand("remove");
             CSH.setHelpIDString(removeButton,"task.form.remove");			
@@ -873,8 +880,8 @@ private Dimension preservedPreferredSize = null ;
 
 		
 		/** create an 'add' button and splice it into the formElement */
-		private void supplyAddButton(AbstractTaskFormElement el) {
-			JButton addButton = new JButton(IconHelper.loadIcon("editadd16.png"));
+		private void supplyAddButton(final AbstractTaskFormElement el) {
+			final JButton addButton = new JButton(IconHelper.loadIcon("editadd16.png"));
 			addButton.setToolTipText("Repeat this parameter");
 			addButton.setActionCommand("add");
             CSH.setHelpIDString(addButton,"task.form.add");			
@@ -882,13 +889,13 @@ private Dimension preservedPreferredSize = null ;
 			el.setAddButton(addButton);
 		}
 		/** handles button clicks. */
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(final ActionEvent e) {
 			// unpack the event.
-			AbstractButton butt = (AbstractButton)e.getSource();
-			AbstractTaskFormElement src = (AbstractTaskFormElement)butt.getClientProperty(AbstractTaskFormElement.class);
+			final AbstractButton butt = (AbstractButton)e.getSource();
+			final AbstractTaskFormElement src = (AbstractTaskFormElement)butt.getClientProperty(AbstractTaskFormElement.class);
 						
 			// work out what the command was
-			String cmd = butt.getActionCommand();
+			final String cmd = butt.getActionCommand();
 			if (cmd.equals("add")) {
 				// adjust buttons on the originating element.
 				src.getAddButton().setEnabled(false); // already added.
@@ -899,7 +906,7 @@ private Dimension preservedPreferredSize = null ;
 					src.getOptionalButton().setEnabled(false);
 				}
 				// create the new element
-				AbstractTaskFormElement nu = cloneFormElement(src,clone(src.pval));
+				final AbstractTaskFormElement nu = cloneFormElement(src,clone(src.pval));
 				nu.getLabel().setVisible(false); // don't want this for a repeated elelemnt
 				addParameter(nu.getValue());
 				supplyRemoveButton(nu);
@@ -909,7 +916,7 @@ private Dimension preservedPreferredSize = null ;
 					supplyAddButton(nu);
 				}
 				// splice into the list.
-				int ix = elementList.indexOf(src) + 1;
+				final int ix = elementList.indexOf(src) + 1;
 				elementList.add(ix,nu);
 			} else if (cmd.equals("remove")) {
 					elementList.remove(src);
@@ -917,7 +924,7 @@ private Dimension preservedPreferredSize = null ;
 					// must be the head of the stack - discard it.
 					myElementStack.pop();
 					// get the new head out.
-					AbstractTaskFormElement top = (AbstractTaskFormElement)myElementStack.peek();
+					final AbstractTaskFormElement top = (AbstractTaskFormElement)myElementStack.peek();
 					// enable it's buttons.
 					top.getAddButton().setEnabled(true); // obviously allowed, as must have been one added before.
 					if (p.ref.getMin() != myElementStack.size()) {// can remove, or is optional.
@@ -929,7 +936,7 @@ private Dimension preservedPreferredSize = null ;
 						}
 					}
 			} else if (cmd.equals("optional")) {
-				JToggleButton tb = (JToggleButton)butt;
+				final JToggleButton tb = (JToggleButton)butt;
 				if (! tb.isSelected()) { // removed.
 					src.setEnabled(false);
 					removeParameter(src.getValue());
@@ -944,8 +951,8 @@ private Dimension preservedPreferredSize = null ;
         protected abstract AbstractTaskFormElement cloneFormElement(AbstractTaskFormElement el,ParameterValue newValue);
     
 		/** duplicate a parameter value */
-		private ParameterValue clone(ParameterValue val) {
-			ParameterValue c = new ParameterValue();
+		private ParameterValue clone(final ParameterValue val) {
+			final ParameterValue c = new ParameterValue();
 			c.setEncoding(val.getEncoding());
 			c.setIndirect(val.getIndirect());
 			c.setName(val.getName());
@@ -967,20 +974,20 @@ private Dimension preservedPreferredSize = null ;
     /** manages a repeatable/optional input parameter */
     private class FiddlyInputManager extends FiddlyParameterManager {
 
-        public FiddlyInputManager(AbstractTaskFormElement el, Param ref) {
+        public FiddlyInputManager(final AbstractTaskFormElement el, final Param ref) {
             super(inputElements,el, ref);
         }
 
-        protected void addParameter(ParameterValue val) {
+        protected void addParameter(final ParameterValue val) {
             model.tool().getInput().addParameter(val);
         }
 
-        protected void removeParameter(ParameterValue val) {
+        protected void removeParameter(final ParameterValue val) {
             model.tool().getInput().removeParameter(val);
         }
 
         protected AbstractTaskFormElement cloneFormElement(
-                AbstractTaskFormElement el, ParameterValue newValue) {
+                final AbstractTaskFormElement el, final ParameterValue newValue) {
             return createInputFormElement(el.getDescription(),newValue);
         }
     }
@@ -988,20 +995,20 @@ private Dimension preservedPreferredSize = null ;
     /** manages a repeatable/optional output parameter */
     private class FiddlyOutputManager extends FiddlyParameterManager {
 
-        public FiddlyOutputManager(AbstractTaskFormElement el, Param ref) {
+        public FiddlyOutputManager(final AbstractTaskFormElement el, final Param ref) {
             super(outputElements,el, ref);
         }
 
-        protected void addParameter(ParameterValue val) {
+        protected void addParameter(final ParameterValue val) {
             model.tool().getOutput().addParameter(val);
         }
 
-        protected void removeParameter(ParameterValue val) {
+        protected void removeParameter(final ParameterValue val) {
             model.tool().getOutput().removeParameter(val);
         }
 
         protected AbstractTaskFormElement cloneFormElement(
-                AbstractTaskFormElement el, ParameterValue newValue) {
+                final AbstractTaskFormElement el, final ParameterValue newValue) {
             return createOutputFormElement(el.getDescription(),newValue);            
         }
     }
@@ -1012,11 +1019,11 @@ private Dimension preservedPreferredSize = null ;
 			super("top:d,d" ,"22px,fill:60dlu:grow,0dlu,22px,22px,22px","1dlu","0dlu"
 					,new String[]{"2,1,5,1","2,2","4,2","5,2","6,2","1,1"});
 		}
-		public JComponent getComponent(Object o, int ix) {
+		public JComponent getComponent(final Object o, final int ix) {
 			if (o instanceof JComponent) {
 				return ix == 0 ? ((JComponent)o) : null;
 			} else if (o instanceof AbstractTaskFormElement) {
-				AbstractTaskFormElement e = (AbstractTaskFormElement)o;
+				final AbstractTaskFormElement e = (AbstractTaskFormElement)o;
 				switch(ix) {
 				case 0:
 					return e.getLabel();

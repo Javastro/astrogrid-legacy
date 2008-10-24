@@ -39,12 +39,14 @@ public class CeaTweaks implements ProtocolSpecificTweaks {
             }
         } else { // show what we've got then
             tr.pForm.buildForm(cea);
-        }        
+        }  
+        tr.showADQLOnly(false);
     }
 
     public void buildForm(final Tool t,  final TaskRunnerImpl tr) {
         (tr.new ListServicesWorker(cea.getId())).start();
         tr.pForm.buildForm(t,t.getInterface(),cea);
+        tr.showADQLOnly(false);
     }
 
 

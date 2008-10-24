@@ -119,7 +119,6 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
             this.description = service.getContent().getDescription();
         }
 
-        // getRTesults - seems to be overridden.
         
         /** the method is called halt, but it's called by the 
          * UI 'delete' button (as well as the AR api halt() method
@@ -130,7 +129,7 @@ public class TapStrategyImpl extends AbstractToolBasedStrategy implements Remote
                 ServiceException, SecurityException {
             info("Halting");
             postPhaseCommand("ABORT");
-            // implement delete here instead.
+            // implement delete here instead.?
         }
 
         /** not perfect - refreshes immediately, but inteacts badly with the shceduled task.

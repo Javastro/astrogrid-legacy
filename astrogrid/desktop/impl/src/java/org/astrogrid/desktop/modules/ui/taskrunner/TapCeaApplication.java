@@ -40,15 +40,16 @@ public class TapCeaApplication  implements CeaApplication, TapService{
               }
                   , new ParameterReferenceBean[] {}
               )
-        ,new InterfaceBean("Full","Perform an ADQL Query"
-          ,new ParameterReferenceBean[] {// inputs
-                new ParameterReferenceBean("ADQL",1,1)
-                ,new ParameterReferenceBean("FORMAT",1,1)
-        }
-            , new ParameterReferenceBean[] { // outputs
-                new ParameterReferenceBean("DEST",1,1)
-        }
-        )
+// don't work at the moment.
+        //        ,new InterfaceBean("Full","Perform an ADQL Query"
+//          ,new ParameterReferenceBean[] {// inputs
+//                new ParameterReferenceBean("ADQL",1,1)
+//                ,new ParameterReferenceBean("FORMAT",1,1)
+//        }
+//            , new ParameterReferenceBean[] { // outputs
+//                new ParameterReferenceBean("DEST",1,1)
+//        }
+  //      )
     };
     private static final ParameterBean[] PARAMS = new ParameterBean[] {
       new ParameterBean() {{
