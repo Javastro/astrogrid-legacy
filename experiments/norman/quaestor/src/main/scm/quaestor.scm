@@ -44,7 +44,7 @@
     (sdb.version . ,(get-sdb-version))
     (tdb.version . ,(get-tdb-version))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.61 $ $Date: 2008/10/14 21:48:49 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.62 $ $Date: 2008/10/27 21:14:10 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -675,10 +675,7 @@
          (cond ((kb:get kb-name)
                 => (lambda (kb)
                      (cond ((kb 'drop-submodel! submodel)
-                            => (lambda (sm)
-                                 (define-generic-java-methods close)
-                                 ;(close sm)
-                                 '(|SC_NO_CONTENT|)))
+                            '(|SC_NO_CONTENT|))
                            (else
                             (no-can-do request
                                        '|SC_BAD_REQUEST|
