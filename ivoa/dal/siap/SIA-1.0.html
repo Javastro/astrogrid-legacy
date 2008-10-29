@@ -52,8 +52,8 @@ div.note, div.example {
 <!------------------------------------------------------------------------->
 
 <h1>Simple Image Access Specification<br/>
-Version 1.0</h1>
-<h2>IVOA WG Working Draft  [Editor's draft] $id:$</h2>
+Version 1.0.1</h1>
+<h2>IVOA WG Working Draft  [Editor's draft] $Id: SIA-1.0.html,v 1.3 2008/10/29 13:12:20 pah Exp $</h2>
 
 <dl>
     <dt>Working Group:</dt>
@@ -85,7 +85,7 @@ This specification defines a protocol for retrieving image data from a variety o
 This is a Working Draft. The first release of this document was
 2002 September 30.  Minor changes were made for the IVOA version
 prepared 2004 May 15.
-More substantial changes were made in September 2008 to prepare for Recommendation - these changes were made to reflect the fact that the Simple Image Access Protocol had been a <em>de facto</em> standard for some them, but that parts of the document did not reflect the established use.<br />
+More substantial changes were made in September 2008 to prepare for Recommendation - these changes were made to reflect the fact that the Simple Image Access Protocol had been a <em>de facto</em> standard for some time, but that parts of the document did not any longer reflect the established use.<br />
 
 <!------------------------------------------------------------------------->
 
@@ -168,10 +168,7 @@ http://www.ivoa.net/Documents/.
 This specification defines a prototype standard for retrieving image
 data from a variety of astronomical image repositories through a uniform
 interface.  The interface is meant to be reasonably simple to implement by
-curators of image repositories.  Through a few targeted implementations,
-this specification is meant to support VO applications prototypes and
-demonstrations.
-
+curators of image repositories.  
 <p>This specification is based primarily on two documents. The first
 document,<a href="http://www.us-vo.org/pubs/files/vo-simage.pdf"> &quot;Simple Image Retrieval: Interface Concepts and Issues&quot;</a>, describes a longer term view of how simple image access can fit into a more
 general framework for image access in the VO.  The URL-based implementation
@@ -231,45 +228,45 @@ service be maintained with the following characteristics:
 
 <ol>
 <li>
-<dl>
-    <dt>The <strong>Image Query</strong> web method MUST be
-	supported as defined in <a href="#query">section 4</a> below.</dt>
+
+    <P>The <strong>Image Query</strong> web method <strong>must</strong> be
+	supported as defined in <a href="#query">section 4</a> below.</p>
 
      
-        <dd>Through this web method, clients search for available images
+        <p>Through this web method, clients search for available images
 	that match certain client-specified criteria. The response is
 	a table that describes the available images, including image
 	metadata and access references (implemented here as URLs) for
 	retrieving them.  Images thus referenced may be <em>real</em>
 	(pre-existing static images) or <em>virtual</em> (images generated
-	on-the-fly when accessed).      </dd>
-    </dl>
+	on-the-fly when accessed).      </p>
+   
 </li>
 <li>
-  <dl>
+  
     
-    <dt>The <strong>Image Retrieval</strong> (getImage) web method MUST be
+    <p>The <strong>Image Retrieval</strong> (getImage) web method <strong>must</strong> be
       supported as defined in <a href="#retrieval">section 6</a> below.
       
-    </dt>
-    <dd>This method allows clients to retrieve single images through
+    </p>
+    <p>This method allows clients to retrieve single images through
       a simple synchronous HTTP GET request using the access reference
       (URL) returned earlier by the image query.  The response to the
       GET request is the requested image, returned with a MIME type
       such as &quot;image/fits&quot;, &quot;image/jpeg&quot;, and so forth.  Both FITS and
       graphics images (JPEG, PNG, etc.) can be retrieved.  Any FITS
       images returned by the service should contain a valid FITS world
-      coordinate system (WCS). </dd>
-  </dl>
+      coordinate system (WCS). </p>
+ 
 </li>
-<li>  <dl>
-    <dt>Finally the image service MUST be <strong>registered</strong> by
+<li> 
+    <p>Finally the image service <strong>must</strong> be <strong>registered</strong> by
 	providing the information defined in <a href="#regmd">section
-	7</a> below.     </dt>
-        <dd>Registration allows clients to use a central registry service
+	7</a> below.     </p>
+        <p>Registration allows clients to use a central registry service
 	to locate compliant image services and select an optimal subset
 	of services to query, based on the characteristics of each service
-	and the image data collections it serves.  </dd> </dl>
+	and the image data collections it serves.  </p> 
 </li>
 </ol>
 
@@ -280,25 +277,19 @@ must provide to implement a compliant image service.  A <strong>web
 method</strong> is a function defined by a web service and called via the
 web.  Since the Simple Image Access service described here is URL-based
 (e.g., as opposed to using SOAP/WSDL), the web methods described here
-are implemented as URLs using HTTP GET or POST.</p>
+are implemented as URLs using HTTP GET or POST request/response patterns as specified by the <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP Standard</a>.</p>
 <a name="compliance" id="compliance">
 <h3>2.1 Compliance</h3>
 </a>
 
-<p> The keywords &quot;MUST&quot;, &quot;REQUIRED&quot;, &quot;SHOULD&quot;, and &quot;MAY&quot; as used in this
+<p> The keywords &quot;<strong>must</strong>&quot;, &quot;<strong>required</strong>&quot;, &quot;<strong>should</strong>&quot;, and &quot;<strong>may</strong>&quot; as used in this
 document are to be interpreted as described in RFC 2119 <a rel='bibref'
-href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec17.html#bib34'>[34]</a>.
-</p>
-
-<p> An implementation is compliant if it satisfies all the MUST or REQUIRED
-level requirements for the protocols it implements.  An implementation
-that satisfies all the MUST or REQUIRED level and all the SHOULD level
-requirements for its protocols is said to be &quot;unconditionally compliant&quot;;
-one that satisfies all the MUST level requirements but not all the
-SHOULD level requirements for its protocols is said to be &quot;conditionally
-compliant&quot;.  </p>
-
-
+href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec17.html#bib34'>[34]</a>.</p>
+<p>An implementation is compliant if it satisfies all the <strong>must</strong> or <strong>required</strong> level requirements for the protocols it implements.  An implementation
+  that satisfies all the <strong>must</strong> or <strong>required</strong> level and all the <strong>should</strong> level
+  requirements for its protocols is said to be &quot;unconditionally compliant&quot;;
+  one that satisfies all the <strong>must</strong> level requirements but not all the <strong>should</strong> level requirements for its protocols is said to be &quot;conditionally
+  compliant&quot;.  </p>
 <br />
 <a name="types" id="types">
 <h2>3. Image Service Types</h2>
@@ -312,11 +303,11 @@ How an image service implements this specification depends on which
 category it falls in. The categories are defined as follows:
 
 <ol>
-<li> <dl>
-    <dt><strong><a name="cutout" id="cutout">Image Cutout Service</a></strong> 
-</dt>
+<li> 
+    <p><strong><a name="cutout" id="cutout">Image Cutout Service</a></strong> 
+
      
-        <dd>This is a service which extracts or &quot;cuts out&quot; rectangular
+        <br/>This is a service which extracts or &quot;cuts out&quot; rectangular
        regions of some larger image, returning an image of the requested
        size to the client.  Such images are usually drawn from a database
        or a collection of survey images that cover some large portion of
@@ -327,14 +318,14 @@ category it falls in. The categories are defined as follows:
        may mosaic image segments to cover a large region but is still
        considered a cutout service if it does not resample the data.
        Image cutout services are fast and avoid image degredation due to
-      resampling. </dd>     </dl>
+      resampling. </p>  
     
 </li>
-<li> <dl>
-    <dt><strong><a name="mosaic" id="mosaic">Image Mosaicing Service</a></strong> 
-</dt>
+<li> 
+    <p><strong><a name="mosaic" id="mosaic">Image Mosaicing Service</a></strong> 
+
      
-        <dd>This service is similar to the image cutout service but adds the
+        <br/>This service is similar to the image cutout service but adds the
 	capability to compute an image of the size, scale, and projection
 	specified by the client.  Mosaic services include services which
 	resample and reproject existing image data, as well as services
@@ -344,26 +335,26 @@ category it falls in. The categories are defined as follows:
 	they make it easier for the client to overlay image data from
 	different sources.  Image mosaicing services which resample
 	already pixelated data will degrade the data slightly, unlike
-	the simpler cutout service which returns the data unchanged.	</dd> </dl>
+	the simpler cutout service which returns the data unchanged.	</p> 
     
 </li>
-<li> <dl>
-    <dt><strong><a name="atlas" id="atlas">Atlas Image Archive</a></strong> 
-   </dt>
+<li>
+    <p><strong><a name="atlas" id="atlas">Atlas Image Archive</a></strong> 
+   <br/>
       
-        <dd>This category of service provides access to pre-computed
+       This category of service provides access to pre-computed
 	images that make up a survey of some large portion of the sky.
 	The service, however, is not capable of dynamically cutting out
 	requested regions, and the size of atlas images is predetermined
 	by the survey.	Atlas images may range in size from small cutouts
-	of extended objects to large calibrated survey data frames.      </dd></dl>
+	of extended objects to large calibrated survey data frames.      </p>
    
 </li>
-<li> <dl>
-    <dt><strong><a name="pointed" id="pointed">Pointed Image Archive</a></strong> 
-</dt>
+<li> 
+   <p><strong><a name="pointed" id="pointed">Pointed Image Archive</a></strong> 
+
       
-        <dd>This category of service provides access to collections of
+        <br/>This category of service provides access to collections of
 	images of many small, &quot;pointed&quot; regions of the sky. &quot;Pointed&quot;
 	images normally focus on specific sources in the sky
 	as opposed to being part of a sky survey. This type of
@@ -375,7 +366,7 @@ category it falls in. The categories are defined as follows:
 	be considered a Pointed Image Archive for the purposes of this
 	specification; if a differentiation between the types of data
 	is desired the pointed and survey data collections should be
-	registered as separate image services.	</dd> </dl>
+	registered as separate image services.	</p>
     
 </li>
 </ol>
@@ -471,7 +462,7 @@ defaults provided by the region of interest.</p>
 </a> 
 
 <ol>
-  <li>The image query input is transmitted as an HTTP GET request represented by a URL which conforms to standard URI syntax as defined by <a href="http://www.ietf.org/rfc/rfc3986.txt">RCF3986</a>. This URL may be considered to have  two parts: 
+  <li>The image query input is sent via HTTP GET method to a URL which conforms to standard URI syntax as defined by the IETF <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>. This URL may be considered to have  two parts: 
       <ol>
 
       <li>A base URL, which defines the address of the service, of the form: <br />
@@ -524,7 +515,7 @@ defaults provided by the region of interest.</p>
 
   </li>
   <li><strong>Region of Interest.</strong>
-  The service MUST support the following two parameters which are used
+  The service <strong>must</strong> support the following two parameters which are used
   to specify the rectangular region of interest (ROI) on the sky to be used
   to search for images.  
 
@@ -541,15 +532,15 @@ defaults provided by the region of interest.</p>
       <dt><strong>SIZE</strong> </dt>
 
 	
-	  <dd>The angular size of the region given in decimal degrees.
+	  <dd>The coordinate angular size of the region given in decimal degrees.
 	  The region may be specified using either one or two values.
 	  If only one value is given it applies to both coordinate axes.
 	  If two values are given the first value is the angular width in
 	  degrees of the right-ascension axis of the region, and the second
 	  value is the angular width in degrees of the declination axis.
 	  Note that the angular width along the right-ascension axis is
-	  <i>not</i> the width of the region in right-ascension, which
-	  is equal to the angular width divided by cos(DEC).
+	  <i>not</i> the coordinate width of the region in right-ascension, which
+	  is equal to the angular width multiplied by cos(DEC).
 
 	  <p>A special case is SIZE=0.	For an atlas or pointed image
 	  archive this tests whether the given point is in any image.
@@ -570,36 +561,22 @@ defaults provided by the region of interest.</p>
       
       <div class="note"><dl> 
 
-      <dt><strong>Technical Note</strong>      </dt>
-      <dd><tt> To determine the limits in right ascension and declination
-      for the query region one can do the following.  First compute
-      the angular extent of the ROI in RA and DEC <em>at the reference
-      point</em> (POS).  Let RASZ denote SIZE[0] and DECSZ denote SIZE[1].
-      The range in DEC is the value at the reference point plus and
-      minus DECSZ/2.  The range in RA is the value at the reference
-      point plus and minus (RASZ/2)/cos(DEC).  Since we are using the CAR
-      projection, the edges of the ROI then trace values of constant RA
-      and DEC at these limiting values (the angular width of the region
-      on the sky is however <em>not</em> a constant).  Candidate images
-      can be tested to see if they intersect the ROI by computing the
-      coordinates of each corner of the image and comparing these values
-      (and the edges they define) to the ROI.
+      <dt><strong>Technical Note</strong></dt>
+      <dd><strong></strong><tt><br />
+        Large query regions are well defined for the CAR projection
+        used for the ROI.  For example, a region with DECSZ=20 and RASZ=360,
+        with POS anywhere on the equator, defines a region 20 degrees wide
+        covering the entire celestial sphere at the equator.  A region with
+        DECSZ=90 and RASZ=180 at 45 degrees N would cover one half of the
+        northern hemisphere.  Regions which extend past the pole are defined
+        (they reflect about the pole) but are not likely to be very useful.
+        The ROI is undefined at the poles, but can be approximated well enough
+        for the purposes of a query by assuming RASZ=360. <br />
+      </tt></dd>
+      </dl>
+      </div>
 
-      <br />
-      <br />
-      Large query regions are well defined for the CAR projection
-      used for the ROI.  For example, a region with DECSZ=20 and RASZ=360,
-      with POS anywhere on the equator, defines a region 20 degrees wide
-      covering the entire celestial sphere at the equator.  A region with
-      DECSZ=90 and RASZ=180 at 45 degrees N would cover one half of the
-      northern hemisphere.  Regions which extend past the pole are defined
-      (they reflect about the pole) but are not likely to be very useful.
-      The ROI is undefined at the poles, but can be approximated well enough
-      for the purposes of a query by assuming RASZ=360.  <br /> </tt></dd>
-
-      </dl></div>
-
-      <p>In addition, the service MAY support the following query constraint
+      <p>In addition, the service <strong>may</strong> support the following query constraint
       which is used to pre-select images on the server side by specifying
       the type of intersection of a candidate image with the region of
       interest: </p>
@@ -631,23 +608,23 @@ defaults provided by the region of interest.</p>
    
 
 
-    <p>Note that case is important for these names: the service MUST permit
+    <p>Note that case is important for these names: the service <strong>must</strong> permit
     these parameter names to be input in upper-case (the service may permit
     parameter names to be case insensitive since this permits upper-case
     names).  By convention, upper case is used here for interface-defined
     terms in URLs, reserving lower case for service-defined parameters
     or parameter values.  </p>
   </li>
-  <li><p><strong>Image Generation Parameters.</strong> The service MAY
+  <li><p><strong>Image Generation Parameters.</strong> The service <strong>may</strong>
   support the following image generation parameters (IGP) which are used
   to specify the desired size, scale, and orientation of the output image.
   These parameters are provided for the cutout and mosaicing services
   which generate images upon demand.  Services which do not support these
-  parameters may ignore them, but MUST allow them to be present without
+  parameters may ignore them, but <strong>must</strong> allow them to be present without
   error; the client is allowed to pass these parameters to an image service
   whether it supports them or not.  If the image generation parameters
   are input the ROI must still be specified, and the position thus defined
-  MUST be consistent with the region (if any) defined by the IGP.  </p>
+  <strong>must</strong> be consistent with the region (if any) defined by the IGP.  </p>
    
       <dl> 
 
@@ -734,9 +711,9 @@ defaults provided by the region of interest.</p>
     the query region.  If any image generation parameters are specified
     these override the ROI-implied defaults.  </p>
   </li>
-  <li><a name="format" id="format"><strong>Image Format.</strong></a>
+  <li><a name="format" id="format"/><strong>Image Format.</strong>
 
-    The service MUST support a parameter with the name
+    The service <strong>must</strong> support a parameter with the name
     <strong>FORMAT</strong> to indicate the desired format or formats of the
     images referenced by the output table. The value is a comma-delimited
     list where each element can be any recognized MIME-type. Typically,
@@ -808,7 +785,7 @@ defaults provided by the region of interest.</p>
       implementing service, the returned table should be empty. If the
       format is not specified <strong>FORMAT=ALL</strong> is assumed.    </p>
   </li>
-  <li><strong>Table Verbosity.</strong> The service MAY support an optional
+  <li><strong>Table Verbosity.</strong> The service <strong>may</strong> support an optional
     parameter with the name <strong>VERB</strong> (denoting &quot;verbose&quot;)
     whose value is a nonnegative integer. This parameter indicates the
     desired level of information to be returned in the output table,
@@ -830,10 +807,10 @@ defaults provided by the region of interest.</p>
 
     </ul>
 
-    <p>Services that do not support this parameter MUST permit it to be
+    <p>Services that do not support this parameter <strong>must</strong> permit it to be
       present without error.    </p>
   </li>
-  <li><strong>Service-Defined Parameters.</strong> The service MAY
+  <li><strong>Service-Defined Parameters.</strong> The service <strong>may</strong>
     support additional service-specific parameters.  The names, meanings,
     and allowed values are defined by the service.  The names need not
     be upper-case; however, they should not match any of the reserved
@@ -848,19 +825,19 @@ defaults provided by the region of interest.</p>
 
 The output returned by an <strong>Image Query</strong> is a <a
 href="http://us-vo.org/VOTable/">VOTable</a>, an XML table format,
-returned with a MIME-type of <tt>text/xml</tt>. The table lists all
+returned with a MIME-type of <tt>text/xml;content=x-votable</tt>. The table lists all
 the images available to the client that match the query constraints.
 The following requirements are placed on the contents of the table when
 the query successfully returns a list of images:
 
 <ol>
 
-  <li>The VOTable MUST contain a RESOURCE element, identified with the tag      <code>type=&quot;results&quot;</code>, containing a single TABLE element which
+  <li>The VOTable <strong>must</strong> contain a RESOURCE element, identified with the tag      <code>type=&quot;results&quot;</code>, containing a single TABLE element which
     contains the results of the query.  The VOTable is permitted to contain
     additional RESOURCE elements, but the usage of any such elements is not
     defined here.  If multiple resources are present it is recommended that
     the query results be returned in the first resource element.  </li>
-  <li>The RESOURCE element SHOULD contain an INFO with
+  <li>The RESOURCE element <strong>should</strong> contain an INFO with
     <code>name=&quot;QUERY_STATUS&quot;</code>.  Its value attribute should set to
     &quot;OK&quot; if the query executed successfully, regardless of whether any
     matching images were found.  All other possible values for the value
@@ -875,7 +852,7 @@ the query successfully returns a list of images:
     </div>
   </li>
   <li>Each table row represents a different image available to the client.  </li>
-  <li>Each row of the output VOTable MUST contain FIELDs where the
+  <li>Each row of the output VOTable <strong>must</strong> contain FIELDs where the
     following <a href="http://vizier.u-strasbg.fr/doc/UCD.htx">UCDs</a>
     have been set.  These attributes apply to graphics images as well as
     to FITS images, and are required to associate standard image metadata
@@ -884,7 +861,7 @@ the query successfully returns a list of images:
     <p><strong>Image Metadata</strong>    </p>
     <ul>
 
-      <li>Exactly one field MUST have	    <code>ucd=<strong>&quot;VOX:Image_Title&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
+      <li>Exactly one field <strong>must</strong> have	    <code>ucd=<strong>&quot;VOX:Image_Title&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	containing a short (usually one line) description of the image.
 	This should concisely describe the image to a user, typically
 	identifying the image source (e.g., survey name), object name or
@@ -892,25 +869,25 @@ the query successfully returns a list of images:
 	client application may present the user with a combined list of
 	images from many different queries and sources: the title string
 	is important to identify each image to the user.      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;INST_ID&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;INST_ID&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	identifying the instrument or instruments used to make the
 	observation, e.g., <code>STScI.HST.WFPC2</code>.      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:Image_MJDateObs&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, representing the mean modified
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:Image_MJDateObs&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, representing the mean modified
 	Julian date of the observation.  By &quot;mean&quot; we mean the midpoint of
 	the observation in terms of normalized exposure times: this is
 	the &quot;characteristic observation time&quot; and is independent of
 	observation duration.	  </li>
-      <li>Exactly one field MUST have        <code>ucd=<strong>&quot;POS_EQ_RA_MAIN&quot;</strong></code>, with        <code>datatype=&quot;double&quot;</code>, representing the ICRS
+      <li>Exactly one field <strong>must</strong> have        <code>ucd=<strong>&quot;POS_EQ_RA_MAIN&quot;</strong></code>, with        <code>datatype=&quot;double&quot;</code>, representing the ICRS
        right-ascension of the center of the image.	  </li>
-      <li>Exactly one field MUST have        <code>ucd=<strong>&quot;POS_EQ_DEC_MAIN&quot;</strong></code>, with        <code>datatype=&quot;double&quot;</code>, representing the ICRS declination
+      <li>Exactly one field <strong>must</strong> have        <code>ucd=<strong>&quot;POS_EQ_DEC_MAIN&quot;</strong></code>, with        <code>datatype=&quot;double&quot;</code>, representing the ICRS declination
         of the center of the image.	  </li>
-      <li>Exactly one field MUST have	    <code>ucd=<strong>&quot;VOX:Image_Naxes&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, specifying the number of image axes.	  </li>
-      <li>Exactly one field MUST have	    <code>ucd=<strong>&quot;VOX:Image_Naxis&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, and <code>arraysize=&quot;*&quot;</code>, with
+      <li>Exactly one field <strong>must</strong> have	    <code>ucd=<strong>&quot;VOX:Image_Naxes&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, specifying the number of image axes.	  </li>
+      <li>Exactly one field <strong>must</strong> have	    <code>ucd=<strong>&quot;VOX:Image_Naxis&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, and <code>arraysize=&quot;*&quot;</code>, with
 	the array value giving the length in pixels of each image axis.	  </li>
-      <li>Exactly one field MUST have	    <code>ucd=<strong>&quot;VOX:Image_Scale&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
+      <li>Exactly one field <strong>must</strong> have	    <code>ucd=<strong>&quot;VOX:Image_Scale&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	with the array value giving the scale in degrees per pixel of
 	each image axis.	  </li>
-      <li>Exactly one field MUST have
+      <li>Exactly one field <strong>must</strong> have
 	<code>ucd=<strong>&quot;VOX:Image_Format&quot;</strong></code>, with
 	<code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	specifying the MIME-type of the object associated with the
@@ -934,31 +911,31 @@ the query successfully returns a list of images:
 
     <p><strong>Coordinate System Metadata</strong>    </p>
     <p>This defines a basic sky projection world coordinate system (WCS)
-    for the image.  Each image description SHOULD include coordinate system
+    for the image.  Each image description <strong>should</strong> include coordinate system
     metadata, but this is not required.  The WCS metadata included here is
     FITS WCS-like but has been simplified: if the image contains an actual
     FITS WCS this may contain additional information not provided here.    </p>
     <ul>
 
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:STC_CoordRefFrame&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:STC_CoordRefFrame&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	representing the coordinate system reference frame, selected from	&quot;ICRS&quot;, &quot;FK5&quot;, &quot;FK4&quot;, &quot;ECL&quot;, &quot;GAL&quot;, and &quot;SGAL&quot;.      </li>
-      <li>Exactly one field MAY have	    <code>ucd=<strong>&quot;VOX:STC_CoordEquinox&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, representing the Equinox (not
+      <li>Exactly one field <strong>may</strong> have	    <code>ucd=<strong>&quot;VOX:STC_CoordEquinox&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, representing the Equinox (not
 	required for ICRS) of the coordinate system used for the image
 	world coordinate system (WCS).	This should match whatever is in
 	the image WCS and may differ from the default ICRS coordinates
 	used elsewhere.      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:WCS_CoordProjection&quot;</strong></code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:WCS_CoordProjection&quot;</strong></code>,
 	with <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;3&quot;</code>,
 	with the array value being the three-character code (&quot;TAN&quot;, &quot;ARC&quot;,	&quot;SIN&quot;, and so forth) specifying the celestial projection, as for
 	FITS WCS.      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:WCS_CoordRefPixel&quot;</strong></code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:WCS_CoordRefPixel&quot;</strong></code>,
 	with <code>datatype=&quot;double&quot;</code>, and	<code>arraysize=&quot;*&quot;</code>, with the array value specifying the
 	image pixel coordinates of the WCS reference pixel.  This is
 	identical to &quot;CRPIX&quot; in FITS WCS.      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:WCS_CoordRefValue&quot;</strong></code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:WCS_CoordRefValue&quot;</strong></code>,
 	with <code>datatype=&quot;double&quot;</code>, and	<code>arraysize=&quot;*&quot;</code>, with the array value specifying the
 	world coordinates of the WCS reference pixel.  This is identical to	&quot;CRVAL&quot; in FITS WCS.      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:WCS_CDMatrix&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:WCS_CDMatrix&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	with the array (matrix) value specifying the WCS CD matrix.
 	This is identical to the &quot;CD&quot; term in FITS WCS, and defines
 	the scale and rotation (among other things) of the image.
@@ -984,7 +961,7 @@ the query successfully returns a list of images:
     all possible.    </p>
     <p><strong>Spectral Bandpass Metadata</strong>    </p>
     <p>This defines a simple model to characterize the spectral
-    bandpass of the image.  The image description SHOULD include
+    bandpass of the image.  The image description <strong>should</strong> include
     spectral bandpass metadata for the image, but this is not required
     (it is highly desirable to permit automated multiwavelength
     analysis).  The simplified model presented here is based on an <a
@@ -992,18 +969,18 @@ the query successfully returns a list of images:
     by Jonathan McDowell (CXC/SAO).  </p>
     <ul>
 
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:BandPass_ID&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:BandPass_ID&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	identifying the bandpass by name (e.g., &quot;V&quot;, &quot;SDSS_U&quot;, &quot;K&quot;,	&quot;K-Band&quot;, etc.).      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:BandPass_Unit&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:BandPass_Unit&quot;</strong></code>, with	    <code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	identifying the units used to represent spectral values, selected
 	from &quot;meters&quot;, &quot;hertz&quot;, and &quot;keV&quot;.  No other units are permitted
 	here; the client application may of course present a wider range
 	of units in the user interface.      </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:BandPass_RefValue&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, specifying the characteristic
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:BandPass_RefValue&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, specifying the characteristic
 	(reference) frequency, wavelength, or energy for the bandpass model.	  </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:BandPass_HiLimit&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, specifying the upper limit of
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:BandPass_HiLimit&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, specifying the upper limit of
 	the bandpass.	  </li>
-      <li>Exactly one field SHOULD have	    <code>ucd=<strong>&quot;VOX:BandPass_LoLimit&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, specifying the lower limit of
+      <li>Exactly one field <strong>should</strong> have	    <code>ucd=<strong>&quot;VOX:BandPass_LoLimit&quot;</strong></code>, with	    <code>datatype=&quot;double&quot;</code>, specifying the lower limit of
 	the bandpass.    </li>
     </ul>
 
@@ -1013,9 +990,7 @@ the query successfully returns a list of images:
     wavelength/frequency of the transmission function for the reference
     value, with the lower and upper cutoffs chosen to include essentially
     all (not necessary 100%) of the transmitted energy.  At this point there
-    is no provision for modeling the actual transmission function, e.g.,
-    as a reference to an external table stored in some online database,
-    although this may be added in the future.  Our intent here is merely
+    is no provision for modeling the actual transmission function.  Our intent here is merely
     to model the spectral bandpass of the image in the local rest frame
     (as for a filter), not to provide a full spectrophotometric calibration
     for the image.    </p>
@@ -1027,7 +1002,7 @@ the query successfully returns a list of images:
     into a pixel grid.    </p>
     <ul>
 
-      <li>Exactly one field SHOULD have
+      <li>Exactly one field <strong>should</strong> have
 	<code>ucd=<strong>&quot;VOX:Image_PixFlags&quot;</strong></code>, with
 	<code>datatype=&quot;char&quot;</code>, and <code>arraysize=&quot;*&quot;</code>,
 	specifying the type of processing done by the image service to
@@ -1063,7 +1038,7 @@ the query successfully returns a list of images:
     or the service which is needed to access the data.    </p>
     <ul>
 
-      <li>Exactly one field <strong>MUST</strong> have 
+      <li>Exactly one field <strong>must</strong> have 
 	<code>ucd=<strong>&quot;VOX:Image_AccessReference&quot;</strong></code>,
 	with <code>datatype=&quot;char&quot;</code> and <code>arraysize=&quot;*&quot;</code>,
 	specifying the URL to be used to access or retrieve the
@@ -1110,9 +1085,9 @@ the query successfully returns a list of images:
 	query time, and may be invalid after an interval of time (e.g.,
 	hours or days), as defined by the service.    </p>
       </li>
-      <li>Exactly one field MAY have <code>ucd=<strong>&quot;VOX:Image_AccessRefTTL&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, specifying the minimum time to live
+      <li>Exactly one field <strong>may</strong> have <code>ucd=<strong>&quot;VOX:Image_AccessRefTTL&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, specifying the minimum time to live
 	in seconds of the access reference.      </li>
-      <li>Exactly one field SHOULD have <code>ucd=<strong>&quot;VOX:Image_FileSize&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, representing the <em>actual or
+      <li>Exactly one field <strong>should</strong> have <code>ucd=<strong>&quot;VOX:Image_FileSize&quot;</strong></code>, with	    <code>datatype=&quot;int&quot;</code>, representing the <em>actual or
 	estimated size of the encoded image in bytes</em> (not pixels!).
 	This is useful for image selection and for optimizing distributed
 	computations.    </li>
@@ -1120,10 +1095,10 @@ the query successfully returns a list of images:
     <p><strong>Resource Metadata</strong>    </p>
     <ul>
 
-      <li>The table MAY contain other service-specific columns
+      <li>The table <strong>may</strong> contain other service-specific columns
         not specified above. Tagging of columns via the
         FIELD's UCD attribute is strongly encouraged where <a
-	href="http://vizier.u-strasbg.fr/doc/UCD.htx">ESO-CDS UCDs</a>        match the column values.  If a service-specific column contains
+	href="http://vizier.u-strasbg.fr/doc/UCD.htx"> UCDs</a>        match the column values.  If a service-specific column contains
         values associated with a query input parameter, it must be described
         according to the specification for table metadata query response
         (<a href="#query-in">section 4.1.5</a>).  If the column is not
@@ -1143,7 +1118,7 @@ the query successfully returns a list of images:
 </ol>
 
 
-<a name="query-err">
+<a name="query-err" id="query-err">
 <h3>4.3 Error Responses and Other Unsuccessful Results</h3>
 </a>
 
@@ -1156,7 +1131,7 @@ of whether any image rows are returned) the value attribute is set to
 indicate that the query was unsuccessful in some way.
 
 <p>When the query is unsuccessful, the contents of INFO element (i.e. its
-PCDATA child node) SHOULD contain an error message suitable for
+PCDATA child node) <strong>should</strong> contain an error message suitable for
 display. Implementation of this feature is encouraged but not required.  </p>
 <div class="note"> <dl> 
 
@@ -1207,7 +1182,7 @@ it is not an error to do so.</p>
       <dd>The query produced results that exceeded the limits of the
 	service in some way. This may be in the size of the images
 	requested or in the number of matching images.	In this case,
-	the service SHOULD include an error message indicating the nature
+	the service <strong>should</strong> include an error message indicating the nature
 	of the overflow condition. 
       </dd>
     </dl>
@@ -1251,7 +1226,7 @@ through a prior call to the <strong>Image Query</strong> web method.  <a name="r
 <h3>6.2 Successful Output</h3>
 </a>
 
-The output of getImage MUST be a single image or image document
+The output of getImage <strong>must</strong> be a single image or image document
 returned with a MIME-type identifying the file format.  If an image is
 returned it must conform to the simple image data model as outlined in <a
 href="#types">Image Service Types</a> above.  When the input acref points
@@ -1260,21 +1235,21 @@ Other MIME types are allowed, depending on the capabilities of the image
 service; for example, a MIME-type of &quot;text/html&quot; may be used when the
 acref URL points to an HTML description and/or preview of the image.
 
-<p> If a FITS image is returned the image SHOULD contain a valid
+<p> If a FITS image is returned the image <strong>should</strong> contain a valid
 <strong>FITS WCS</strong>.  Any areas of the image which do not contain
 valid data, e.g., because the requested region extends beyond the bounds
-of the source image, SHOULD be flagged with a blank value, using the FITS
+of the source image, <strong>should</strong> be flagged with a blank value, using the FITS
 keyword <strong>BLANK</strong> to identify the blank fill value used.</p>
 <a name="retrieval-err" id="retrieval-err"> 
 <h3>6.3 Error Response</h3>
 </a>
 
 If a condition is encountered that prevents the requested image from being
-downloaded, the output MUST be a VOTable with a single RESOURCE element
+downloaded, the output <strong>must</strong> be a VOTable with a single RESOURCE element
 containing an INFO child with <code>name=&quot;QUERY_STATUS&quot;</code>. The
 allowed values for this INFO are the same as those defined for the <a
 href="#query-err">Image Query</a>; in addition, the following additional
-attribute MAY be supported:
+attribute <strong>may</strong> be supported:
 
 <ul>
   <dl> 
@@ -1283,15 +1258,12 @@ attribute MAY be supported:
   <dd>This indicates that the requested image is not yet available for
     some reason but that it will be at some time in the future. Clients
     that receive this type of message can periodically try (poll) the given
-    acref URL until the image becomes available. </dd>
-
+    acref URL until the image becomes available. <br />
+    <a name="metadata" id="metadata">
+    </a></dd>
   </dl>
 </ul>
-
-
-<br />
-<a name="metadata" id="metadata">
-<h2>7. Service Metadata</h2>
+<a name="metadata" id="metadata"><h2>7. Service Metadata</h2>
 </a>
 
 Compliant image services describe themselves in two ways.  They
@@ -1308,7 +1280,7 @@ registry to discover the image services most appropriate for a
 particular computation.  <a name="mdquery" id="mdquery">
 <h3>7.1. Metadata Query</h3></a>
 
-A compliant service MUST support image queries with FORMAT=METADATA,
+A compliant service <strong>must</strong> support image queries with FORMAT=METADATA,
 used to query the service metadata; only metadata is returned by the
 service in this case.  In particular, the response to this query
 advertises two things about the
@@ -1355,42 +1327,11 @@ supports the optional parameters INTERSECT and VERB as well as its own
 non-standard parameter, &quot;telescope&quot;. 
 
 
-<pre>
-   &lt;RESOURCE type=&quot;results&quot;&gt;
-     &lt;DESCRIPTION&gt;ADIL Simple Image Access Service&lt;/DESCRIPTION&gt;
-     &lt;INFO name=&quot;QUERY_STATUS&quot; value=&quot;OK&quot;/&gt;
-     &lt;PARAM name=&quot;<font color="green">INPUT:POS</font>&quot; value=&quot;0,0&quot;&gt;
-       &lt;DESCRIPTION&gt;Search Position in the form &quot;ra,dec&quot; where
-                    ra and dec are given in decimal degrees in the ICRS
-		    coordinate system.&lt;/DESCRIPTION&gt;
-     &lt;/PARAM&gt;
-     &lt;PARAM name=&quot;<font color="green">INPUT:SIZE</font>&quot; value=&quot;0.05&quot;&gt;
-       &lt;DESCRIPTION&gt;Size of search region in the RA and Dec. directions&lt;/DESCRIPTION&gt;
-     &lt;/PARAM&gt;
-     &lt;PARAM name=&quot;<font color="green">INPUT:FORMAT</font>&quot; value=&quot;ALL&quot;&gt;
-       &lt;DESCRIPTION&gt;Requested format of images&lt;/DESCRIPTION&gt;
-       &lt;VALUES&gt;
-         &lt;OPTION&gt;image/fits&lt;/OPTION&gt;
-         &lt;OPTION&gt;image/gif&lt;/OPTION&gt;
-         &lt;OPTION&gt;text/html&lt;/OPTION&gt;
-         &lt;OPTION&gt;ALL&lt;/OPTION&gt;
-         &lt;OPTION&gt;GRAPHIC&lt;/OPTION&gt;
-         &lt;OPTION&gt;METADATA&lt;/OPTION&gt;
-       &lt;/VALUES&gt;
-     &lt;/PARAM&gt;
-     &lt;PARAM name=&quot;<font color="green">INPUT:INTERSECT</font>&quot; value=&quot;OVERLAPS&quot;&gt;
-       &lt;DESCRIPTION&gt;Choice of overlap with requested region&lt;/DESCRIPTION&gt;
-     &lt;/PARAM&gt;
-     &lt;PARAM name=&quot;<font color="green">INPUT:VERB</font>&quot; value=&quot;1&quot;&gt;
-       &lt;DESCRIPTION&gt;Verbosity level, controlling the number of columns returned&lt;/DESCRIPTION&gt;
-     &lt;/PARAM&gt;
-     &lt;PARAM name=&quot;<font color="green">INPUT:telescope</font>&quot;&gt;
-       &lt;DESCRIPTION&gt;Telescope name&lt;/DESCRIPTION&gt;
-     &lt;/PARAM&gt;
+<pre>    &lt;RESOURCE type=&quot;results&quot;&gt;<br />     &lt;DESCRIPTION&gt;ADIL Simple Image Access Service&lt;/DESCRIPTION&gt;<br />     &lt;INFO name=&quot;QUERY_STATUS&quot; value=&quot;OK&quot;/&gt;<br />     &lt;PARAM name=&quot;INPUT:POS&quot; value=&quot;0,0&quot; datatype=&quot;double&quot;&gt;<br />       &lt;DESCRIPTION&gt;Search Position in the form &quot;ra,dec&quot; where<br />                    ra and dec are given in decimal degrees in the ICRS<br />		    coordinate system.&lt;/DESCRIPTION&gt;<br />     &lt;/PARAM&gt;<br />     &lt;PARAM name=&quot;INPUT:SIZE&quot; value=&quot;0.05&quot;  datatype=&quot;double&quot;&gt;<br />       &lt;DESCRIPTION&gt;Size of search region in the RA and Dec. directions&lt;/DESCRIPTION&gt;<br />     &lt;/PARAM&gt;<br />     &lt;PARAM name=&quot;INPUT:FORMAT&quot; value=&quot;ALL&quot; datatype=&quot;char&quot; arraysize=&quot;*&quot;&gt;<br />       &lt;DESCRIPTION&gt;Requested format of images&lt;/DESCRIPTION&gt;<br />       &lt;VALUES&gt;<br />         &lt;OPTION value=&quot;image/fits&quot;/&gt;<br />         &lt;OPTION value=&quot;image/gif&quot;/&gt;<br />         &lt;OPTION value=&quot;text/html&quot;/&gt;<br />         &lt;OPTION value=&quot;ALL&quot;/&gt;<br />         &lt;OPTION value=&quot;GRAPHIC&quot;/&gt;<br />         &lt;OPTION value=&quot;METADATA&quot;/&gt;<br />       &lt;/VALUES&gt;<br />     &lt;/PARAM&gt;<br />     &lt;PARAM name=&quot;INPUT:INTERSECT&quot; value=&quot;OVERLAPS&quot; datatype=&quot;char&quot; arraysize=&quot;*&quot;&gt;<br />       &lt;DESCRIPTION&gt;Choice of overlap with requested region&lt;/DESCRIPTION&gt;<br />     &lt;/PARAM&gt;<br />     &lt;PARAM name=&quot;INPUT:VERB&quot; value=&quot;1&quot; datatype=&quot;int&quot;&gt;<br />       &lt;DESCRIPTION&gt;Verbosity level, controlling the number of columns returned&lt;/DESCRIPTION&gt;<br />     &lt;/PARAM&gt;<br />     &lt;PARAM name=&quot;INPUT:telescope&quot; datatype=&quot;char&quot; arraysize=&quot;*&quot; value=&quot;HST&quot;&gt;<br />       &lt;DESCRIPTION&gt;Telescope name&lt;/DESCRIPTION&gt;<br />     &lt;/PARAM&gt;<br />     &lt;/RESOURCE&gt;
      ...
 </pre>
-
-</div>  <p>
+</div>  
+<p>
 
 The columns that are returned by an image query are described with the
 FIELD elements exactly as they are described in a normal image query
@@ -1398,7 +1339,7 @@ response (section <a href="#query-out">4.2</a>).  </p>
 <p>
 
 When FORMAT=METADATA is given, all other input parameters are normally
-ignored.  An exception is the VERB parameter: if given, the service MAY
+ignored.  An exception is the VERB parameter: if given, the service <strong>may</strong>
 choose to describe only those columns that will be returned for that
 verbosity level.  If the service chooses to support
 the VERB parameter in this way, it must provide a PARAM with
@@ -1408,7 +1349,7 @@ actual verbosity level being described.  </p>
 <strong>Example:</strong>  The following PARAM could appear after the
 PARAM elements shown in the previous example:
 <pre>
-     &lt;PARAM name=&quot;<font color="green">VERB</font>&quot; value=&quot;1&quot;/&gt;
+     &lt;PARAM name=&quot;<font color="green">VERB</font>&quot; value=&quot;1&quot; datatype=&quot;int&quot; /&gt;
 </pre>
 </div>  <p>
 
@@ -1744,8 +1685,10 @@ since there are many ways to tile a large region.</p>
 generate a new image header as well as subset the image pixel array
 (at least for FITS format images).  In particular the cutout service
 should propagate valid WCS data to the generated image cutout.</p>
-<p>&nbsp;</p>
 <h2>Appendix A: Changes from Previous Versions </h2>
+<ol>
+  <li></li>
+</ol>
 <h2>Appendix B: Schema Extension for Simple Image Access Services</a></h2>
 <p>
 With the  adoption of the IVOA standard for Registry Interface
@@ -1843,19 +1786,20 @@ stc:AstroCoordSystem element.
 
 <p>
 
-Subsequent versions of this document will include the SIA
-extension schema as a formal part of the specification.
-</p>
+The SIA
+Resource extension schema is formally defined in a separate document.</p>
 
 
-<h2></h2>
 <h2>References</h2>
-<p>Simple Cone Search</p>
-<p>VOTable</p>
-<p>UCD</p>
-<p>STC</p>
-<p>RFC 2119</p>
-<p>Resource Metadata for the Virtual Observatory</p>
+<p>Williams et al. Simple Cone Search <a href="http://www.ivoa.net/Documents/latest/ConeSearch.html">http://www.ivoa.net/Documents/latest/ConeSearch.html</a></p>
+<p>Ochsenbein et al. VOTable Format Definition <a href="http://www.ivoa.net/Documents/latest/VOT.html">http://www.ivoa.net/Documents/latest/VOT.html</a></p>
+<p>Derriere et al. An IVOA Standard for Unified Content Descriptors <a href="http://www.ivoa.net/Documents/latest/UCD.html">http://www.ivoa.net/Documents/latest/UCD.html</a></p>
+<p>Rots Space-Time Coordinate Metadata for the Virtual Observatory <a href="http://www.ivoa.net/Documents/latest/STC.html">http://www.ivoa.net/Documents/latest/STC.html</a></p>
+<p>RFC 2119 Key words for use in RFCs to Indicate Requirement Levels <a href="http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</a></p>
+<p>HTTP Fielding et al. Hypertext Transfer Protocol -- HTTP/1.1  <a href="http://www.ietf.org/rfc/rfc2616.txt">http://www.ietf.org/rfc/rfc2616.txt</a> </p>
+<p>Hanish et al. Resource Metadata for the Virtual Observatory <a href="http://www.ivoa.net/Documents/latest/RM.html">http://www.ivoa.net/Documents/latest/RM.html</a></p>
+<p>Plante et al. VOResource: an XML Encoding Schema for Resource Metadata <a href="http://www.ivoa.net/Documents/latest/VOResource.html">http://www.ivoa.net/Documents/latest/VOResource.html</a></p>
+<p>FITS WCS <a href="http://fits.gsfc.nasa.gov/fits_wcs.html">http://fits.gsfc.nasa.gov/fits_wcs.html</a></p>
 <p>&nbsp;</p>
 </div>
 </body></html>
