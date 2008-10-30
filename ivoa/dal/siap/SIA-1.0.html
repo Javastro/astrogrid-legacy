@@ -52,8 +52,8 @@ div.note, div.example {
 <!------------------------------------------------------------------------->
 
 <h1>Simple Image Access Specification<br/>
-Version 1.0.1</h1>
-<h2>IVOA WG Working Draft  [Editor's draft] $Id: SIA-1.0.html,v 1.3 2008/10/29 13:12:20 pah Exp $</h2>
+Version 1.01</h1>
+<h2>IVOA WG Working Draft  [Editor's draft] $Id: SIA-1.0.html,v 1.4 2008/10/30 14:28:04 pah Exp $</h2>
 
 <dl>
     <dt>Working Group:</dt>
@@ -85,7 +85,7 @@ This specification defines a protocol for retrieving image data from a variety o
 This is a Working Draft. The first release of this document was
 2002 September 30.  Minor changes were made for the IVOA version
 prepared 2004 May 15.
-More substantial changes were made in September 2008 to prepare for Recommendation - these changes were made to reflect the fact that the Simple Image Access Protocol had been a <em>de facto</em> standard for some time, but that parts of the document did not any longer reflect the established use.<br />
+More substantial changes were made in October 2008 to prepare for Recommendation - these changes were made to reflect the fact that the Simple Image Access Protocol had been a <em>de facto</em> standard for some time, but that parts of the document did not any longer reflect the established use.<br />
 
 <!------------------------------------------------------------------------->
 
@@ -133,25 +133,21 @@ http://www.ivoa.net/Documents/.
 		<li><a href="#query-out">4.2 Successful Output</a></li>
 		<li><a href="#query-err">4.3 Error Responses and Other Unsuccessful Results</a></li>
 	</ul>
-	<li><a href="#staging">5. Image Staging</a></li>
+    <li><a href="#retrieval">5. Image Retrieval</a></li>
 	<ul class="toc">
-		<li><a href="#staging-in">5.1 Staging and Messaging Protocols (Preliminary)</a></li>
+		<li><a href="#retrieval-in">5.1 Input</a></li>
+		<li><a href="#retrieval-out">5.2 Successful Output</a></li>
+		<li><a href="#retrieval-err">5.3 Error Response</a></li>
 	</ul>
-	<li><a href="#retrieval">6. Image Retrieval</a></li>
+	<li><a href="#metadata">6. Service Metadata</a></li>
 	<ul class="toc">
-		<li><a href="#retrieval-in">6.1 Input</a></li>
-		<li><a href="#retrieval-out">6.2 Successful Output</a></li>
-		<li><a href="#retrieval-err">6.3 Error Response</a></li>
+		<li><a href="#mdquery">6.1 Metadata Query</a></li>
+		<li><a href="#regmd">6.2 Registering a Compliant Service</a></li>
 	</ul>
-	<li><a href="#metadata">7. Service Metadata</a></li>
+	<li><a href="#usage">7. Usage Examples</a></li>
 	<ul class="toc">
-		<li><a href="#mdquery">7.1 Metadata Query</a></li>
-		<li><a href="#regmd">7.2 Registering a Compliant Service</a></li>
-	</ul>
-	<li><a href="#usage">8. Usage Examples</a></li>
-	<ul class="toc">
-		<li><a href="#usage-client">8.1 Client Examples</a></li>
-		<li><a href="#usage-service">8.2 Service Examples</a></li>
+		<li><a href="#usage-client">7.1 Client Examples</a></li>
+		<li><a href="#usage-service">7.2 Service Examples</a></li>
 	</ul>
 </ul>
 <hr/>
@@ -219,9 +215,9 @@ section below.
 
 <br />
 </p>
-<a name="requirements" id="requirements"> 
+<a name="requirements" id="requirements"/> 
 <h2>2. Requirements for Compliance</h2>
-</a>
+
 
 Compliance with this specification requires that an image access web
 service be maintained with the following characteristics:
@@ -229,11 +225,11 @@ service be maintained with the following characteristics:
 <ol>
 <li>
 
-    <P>The <strong>Image Query</strong> web method <strong>must</strong> be
+    <p>The <strong>Image Query</strong> web method <strong>must</strong> be
 	supported as defined in <a href="#query">section 4</a> below.</p>
 
      
-        <p>Through this web method, clients search for available images
+      <p>Through this web method, clients search for available images
 	that match certain client-specified criteria. The response is
 	a table that describes the available images, including image
 	metadata and access references (implemented here as URLs) for
@@ -246,7 +242,7 @@ service be maintained with the following characteristics:
   
     
     <p>The <strong>Image Retrieval</strong> (getImage) web method <strong>must</strong> be
-      supported as defined in <a href="#retrieval">section 6</a> below.
+      supported as defined in <a href="#retrieval">section 5</a> below.
       
     </p>
     <p>This method allows clients to retrieve single images through
@@ -262,7 +258,7 @@ service be maintained with the following characteristics:
 <li> 
     <p>Finally the image service <strong>must</strong> be <strong>registered</strong> by
 	providing the information defined in <a href="#regmd">section
-	7</a> below.     </p>
+	6</a> below.     </p>
         <p>Registration allows clients to use a central registry service
 	to locate compliant image services and select an optimal subset
 	of services to query, based on the characteristics of each service
@@ -278,22 +274,20 @@ method</strong> is a function defined by a web service and called via the
 web.  Since the Simple Image Access service described here is URL-based
 (e.g., as opposed to using SOAP/WSDL), the web methods described here
 are implemented as URLs using HTTP GET or POST request/response patterns as specified by the <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP Standard</a>.</p>
-<a name="compliance" id="compliance">
+<a name="compliance" id="compliance"/>
 <h3>2.1 Compliance</h3>
-</a>
+
 
 <p> The keywords &quot;<strong>must</strong>&quot;, &quot;<strong>required</strong>&quot;, &quot;<strong>should</strong>&quot;, and &quot;<strong>may</strong>&quot; as used in this
-document are to be interpreted as described in RFC 2119 <a rel='bibref'
-href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec17.html#bib34'>[34]</a>.</p>
+document are to be interpreted as described in RFC 2119.</p>
 <p>An implementation is compliant if it satisfies all the <strong>must</strong> or <strong>required</strong> level requirements for the protocols it implements.  An implementation
   that satisfies all the <strong>must</strong> or <strong>required</strong> level and all the <strong>should</strong> level
   requirements for its protocols is said to be &quot;unconditionally compliant&quot;;
   one that satisfies all the <strong>must</strong> level requirements but not all the <strong>should</strong> level requirements for its protocols is said to be &quot;conditionally
-  compliant&quot;.  </p>
-<br />
-<a name="types" id="types">
+  compliant&quot;.<br />
+  <a name="types" id="types"/></a></p>
 <h2>3. Image Service Types</h2>
-</a>
+
 
 It is assumed that compliant image services fall into one of four
 categories.  These categories are used primarily to characterize the
@@ -406,9 +400,9 @@ masks associated with a pixel array, and so forth.
 
 <br />
 </p>
-<a name="query" id="query"> 
+<a name="query" id="query"/> 
 <h2>4. Image Query</h2>
-</a>
+
 
 The purpose of the <b>image query web method</b> is to allow users to
 search for image data for a given region on the sky.  Additional parameters
@@ -457,9 +451,9 @@ it can provide.  The default values for the optional image generation
 parameters are derived from the region of interest used for the image query.
 If the image generation parameters are fully specified these override the
 defaults provided by the region of interest.</p>
-<a name="query-in" id="query-in"> 
+<a name="query-in" id="query-in"/> 
 <h3>4.1 Input</h3>
-</a> 
+
 
 <ol>
   <li>The image query input is sent via HTTP GET method to a URL which conforms to standard URI syntax as defined by the IETF <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>. This URL may be considered to have  two parts: 
@@ -482,7 +476,7 @@ defaults provided by the region of interest.</p>
           an ampersand, <b>&amp;</b>; if there are no extra arguments, then it 
           ends in a question mark, <b>?</b>.	In addition if there are any extra arguments in the base URL, then they must not by one of the standard service arguments defined below in this section.</p>
         <p>Every query to a given image query service uses the same
-	base URL, and this is the URL which is registered as the &quot;accessURL&quot; for the service (see the &quot;<a href="regmd">Registering a Compliant Service</a>&quot; section below).</p>
+	base URL, and this is the URL which is registered as the &quot;accessURL&quot; for the service (see the &quot;<a href="#regmd">Registering a Compliant Service</a>&quot; section below).</p>
 
       </li>
       <li>Constraints expressed in the standard &quot;application/x-www-form-urlencoded&quot; form, which is a list of ampersand-delimited GET arguments,
@@ -540,7 +534,7 @@ defaults provided by the region of interest.</p>
 	  value is the angular width in degrees of the declination axis.
 	  Note that the angular width along the right-ascension axis is
 	  <i>not</i> the coordinate width of the region in right-ascension, which
-	  is equal to the angular width multiplied by cos(DEC).
+	  is equal to the coordinate angular width multiplied by cos(DEC).
 
 	  <p>A special case is SIZE=0.	For an atlas or pointed image
 	  archive this tests whether the given point is in any image.
@@ -562,7 +556,7 @@ defaults provided by the region of interest.</p>
       <div class="note"><dl> 
 
       <dt><strong>Technical Note</strong></dt>
-      <dd><strong></strong><tt><br />
+      <dd><tt><br />
         Large query regions are well defined for the CAR projection
         used for the ROI.  For example, a region with DECSZ=20 and RASZ=360,
         with POS anywhere on the equator, defines a region 20 degrees wide
@@ -744,7 +738,7 @@ defaults provided by the region of interest.</p>
       by web-browsers. </li>
       <li>&quot;METADATA&quot; -- Denotes a <em>Metadata Query</em>: no images
       are requested; only metadata should be returned.  This feature
-      is described in more detail in <a href="#mdquery">section 7.1</a>.    </li>
+      is described in more detail in <a href="#mdquery">section 6.1</a>.    </li>
     </ul>
     <p>The following optional syntax is defined for &quot;GRAPHIC&quot;:    </p>
     <ul>
@@ -819,9 +813,9 @@ defaults provided by the region of interest.</p>
 </ol>
 
 
-<a name="query-out" id="query-out"> 
+<a name="query-out" id="query-out"/> 
 <h3>4.2 Successful Output</h3>
-</a>
+
 
 The output returned by an <strong>Image Query</strong> is a <a
 href="http://us-vo.org/VOTable/">VOTable</a>, an XML table format,
@@ -904,7 +898,6 @@ the query successfully returns a list of images:
 	a temporary namespace for UCD-like terms defining experimental
 	concepts used in our VO prototypes.  Existing UCDs are shown in
 	all upper case without the &quot;VOX:&quot; namespace identifer.	</dd>
-
     </dl> </div>
       </li>
     </ul>
@@ -1042,19 +1035,10 @@ the query successfully returns a list of images:
 	<code>ucd=<strong>&quot;VOX:Image_AccessReference&quot;</strong></code>,
 	with <code>datatype=&quot;char&quot;</code> and <code>arraysize=&quot;*&quot;</code>,
 	specifying the URL to be used to access or retrieve the
-	image.	Since the URL will often contain metacharacters
-	the URL is normally enclosed in an XML CDATA section
-	(<code>&lt;![CDATA[...]]&gt;</code>) or otherwise encoded to
+	image.	Since the URL may contain XML metacharacters
+	the URL is can be enclosed in an XML CDATA section
+	(<code>&lt;![CDATA[...]]&gt;</code>) or otherwise URL encoded (see <a href="http://tools.ietf.org/html/rfc3986#section-2.1">URI Specification</a>) to
 	escape any embedded metacharacters.  
-	<div class="note"> 
-	  <dl>
-
-          <dt> <strong>Examples:</strong>          </dt>
-          <dd>
-<tt>&lt;![CDATA[http://www.myimages.org/m51/halpha.jpg]]&gt;</tt><br />
-<tt>&lt;![CDATA[http://www.myimages.org/cgi-bin/cutout?ra=180.0&amp;dec=20.0&amp;size=0.1]]&gt;</tt>          </dd>
-        </dl>
-        </div>
 
 	<p>It is possible and permissible for an image query to reference
 	an image which cannot be accessed, e.g., because the image metadata
@@ -1105,7 +1089,6 @@ the query successfully returns a list of images:
         associated with an input parameter, such a description is not
         required but is encouraged.    </li>
     </ul>
-
   </li>
   <li><strong>Constant Valued FIELDs.</strong> If a FIELD of the table
     will have the same value for every row of the table it is permissible
@@ -1118,9 +1101,9 @@ the query successfully returns a list of images:
 </ol>
 
 
-<a name="query-err" id="query-err">
+<a name="query-err" id="query-err"/>
 <h3>4.3 Error Responses and Other Unsuccessful Results</h3>
-</a>
+
 
 An INFO element within the &quot;results&quot; RESOURCE element of the
 the VOTable is used to indicate success or failure of the image
@@ -1153,39 +1136,34 @@ it is not an error to do so.</p>
 <p>The other allowed values for value attribute besides &quot;OK&quot; are:</p>
 <ol>
   <li> 
-    <dl> 
-
-      <dt>ERROR      </dt>
-      <dd>The server failed to process the query. Possible reasons include: 
-        <ul>
+  
+      <p><strong>ERROR</strong><br/>
+      The server failed to process the query. Possible reasons include: 
+      <ul>
 
           <li>The input query contained a syntax error.          </li>
           <li>The way the query was posed was invalid for some reason,
 	    e.g., due to an invalid query region specification.          </li>
           <li>A constraint parameter value was given an illegal value;
           e.g. <tt>DEC=91</tt>.          </li>
-          <li>The server trapped an internal error (e.g., failed to connect
-            to its database) preventing further processing. </li>
-
+        <li>The server trapped an internal error (e.g., failed to connect
+        to its database) preventing further processing. </li>
         </ul>
-
+        </p>
         <p>In this case, the inclusion of a descriptive error message is
         strongly encouraged.  </p>
 
-      </dd>
-    </dl>
+      
+   
   </li>
   <li> 
-    <dl> 
-
-      <dt>OVERFLOW      </dt>
-      <dd>The query produced results that exceeded the limits of the
+    <p><strong>OVERFLOW      </strong><br/>
+      The query produced results that exceeded the limits of the
 	service in some way. This may be in the size of the images
 	requested or in the number of matching images.	In this case,
 	the service <strong>should</strong> include an error message indicating the nature
 	of the overflow condition. 
-      </dd>
-    </dl>
+    </p>
   </li>
 </ol>
 
@@ -1204,9 +1182,9 @@ it is not an error to do so.</p>
 
 <br />
 </p>
-<a name="retrieval" id="retrieval"> 
-<h2>6. Image Retrieval</h2>
-</a>
+<a name="retrieval" id="retrieval"/> 
+<h2>5. Image Retrieval</h2>
+
 
 The image retrieval request (<strong>getImage</strong> web method) allows
 a client to retrieve a single image given an access reference or &quot;acref&quot;
@@ -1216,15 +1194,15 @@ obtain an acref, no requirements are placed on the form the acref takes.
 This has the effect of hiding the details of the acref URL from the client,
 making it easy to layer an implementation of the getImage web method on
 top of an existing image retrieval service, and making it easier to hide
-changes to the implementation of existing services.  <a name="retrieval-in" id="retrieval-in"> 
-<h3>6.1 Input</h3>
-</a>
+changes to the implementation of existing services.  <a name="retrieval-in" id="retrieval-in"/> 
+<h3>5.1 Input</h3>
+
 
 The input to the getImage web method is the image acref for the indicated
 image or virtual image.  The acref for a particular image is obtained
-through a prior call to the <strong>Image Query</strong> web method.  <a name="retrieval-out" id="retrieval-out"> 
-<h3>6.2 Successful Output</h3>
-</a>
+through a prior call to the <strong>Image Query</strong> web method.  <a name="retrieval-out" id="retrieval-out"/> 
+<h3>5.2 Successful Output</h3>
+
 
 The output of getImage <strong>must</strong> be a single image or image document
 returned with a MIME-type identifying the file format.  If an image is
@@ -1240,9 +1218,9 @@ acref URL points to an HTML description and/or preview of the image.
 valid data, e.g., because the requested region extends beyond the bounds
 of the source image, <strong>should</strong> be flagged with a blank value, using the FITS
 keyword <strong>BLANK</strong> to identify the blank fill value used.</p>
-<a name="retrieval-err" id="retrieval-err"> 
-<h3>6.3 Error Response</h3>
-</a>
+<a name="retrieval-err" id="retrieval-err"/> 
+<h3>5.3 Error Response</h3>
+
 
 If a condition is encountered that prevents the requested image from being
 downloaded, the output <strong>must</strong> be a VOTable with a single RESOURCE element
@@ -1251,7 +1229,7 @@ allowed values for this INFO are the same as those defined for the <a
 href="#query-err">Image Query</a>; in addition, the following additional
 attribute <strong>may</strong> be supported:
 
-<ul>
+
   <dl> 
 
   <dt>DEFERRED  </dt>
@@ -1262,9 +1240,10 @@ attribute <strong>may</strong> be supported:
     <a name="metadata" id="metadata">
     </a></dd>
   </dl>
-</ul>
-<a name="metadata" id="metadata"><h2>7. Service Metadata</h2>
-</a>
+
+<a name="metadata" id="metadata"/>
+<h2>6. Service Metadata</h2>
+
 
 Compliant image services describe themselves in two ways.  They
 advertise their availability by registering with a registry service,
@@ -1277,8 +1256,8 @@ registers an SIA service, the registry can execute the metadata query
 to collect the capability metadata.  The gathering of service and
 capability metadata from all SIA services enables a client to use the
 registry to discover the image services most appropriate for a
-particular computation.  <a name="mdquery" id="mdquery">
-<h3>7.1. Metadata Query</h3></a>
+particular computation.  <a name="mdquery" id="mdquery"/>
+<h3>6.1. Metadata Query</h3>
 
 A compliant service <strong>must</strong> support image queries with FORMAT=METADATA,
 used to query the service metadata; only metadata is returned by the
@@ -1356,9 +1335,9 @@ PARAM elements shown in the previous example:
 If the service chooses to ignore the VERB parameter,
 than it should describe all of the columns returned at the highest
 verbosity level supported.  </p>
-<a name="regmd" id="regmd	">
-<h3>7.2. Registering a Compliant Service</h3>
-</a>
+<a name="regmd" id="regmd"/>
+<h3>6.2. Registering a Compliant Service</h3>
+
 
 <p>In order to advertise an SIA service it should be registered with an IVOA compliant registry service. The general metadata that are associated with the service are drawn from the set  in
              <a href="http://www.ivoa.net/Documents/latest/RM.html">&quot;Resource and Service Metadata for the Virtual
@@ -1439,13 +1418,13 @@ verbosity level supported.  </p>
 
 
 The mapping between these metadata names and the element names in the V1.0 registry schema is given in appendix B.<br />
-<a name="usage" id="usage"> 
-<h2>8. Usage Examples</h2>
-</a>
+<a name="usage" id="usage"/> 
+<h2>7. Usage Examples</h2>
 
-<a name="usage-client" id="usage-client"> 
-<h3>8.1 Client Examples</h3>
-</a>
+
+<a name="usage-client" id="usage-client"/> 
+<h3>7.1 Client Examples</h3>
+
 
 <h4>Simple Query</h4>
 
@@ -1587,9 +1566,9 @@ images which should exactly duplicate the spatial characteristics of the
 reference image.  Other services will offer images which represent the
 best match to the requested image, in most cases using only the POS and
 SIZE parameters.</p>
-<a name="usage-service" id="usage-service"> 
-<h3>8.2 Service Examples</h3>
-</a>
+<a name="usage-service" id="usage-service"/> 
+<h3>7.2 Service Examples</h3>
+
 
 <h4>Atlas or Pointed Image Service</h4>
 
@@ -1687,13 +1666,17 @@ generate a new image header as well as subset the image pixel array
 should propagate valid WCS data to the generated image cutout.</p>
 <h2>Appendix A: Changes from Previous Versions </h2>
 <ol>
-  <li></li>
+  <li>Removed section on &quot;Staging&quot; of results, as the suggested implementation was not complete.</li>
+  <li>Removed the inconsistency in the description of the SIZE parameter with respect to the CAR projection.</li>
+  <li> The Service Metadata section has been altered to be compliant with the http://www.ivoa.net/Documents/latest/VOResource.html and current practice with the 1.0 WD SIA schema extension. An appendix has been added with a more extensive description of how the metadata terms map to the 1.0 generation of registry schema.</li>
+  <li>Corrected VOTable examples to be valid VOTable 1.0.</li>
+  <li>General addition of references.</li>
+  <li> Removal of text which descibed what might be done to develop the protocol in &quot;the future&quot;.</li>
 </ol>
 <h2>Appendix B: Schema Extension for Simple Image Access Services</a></h2>
 <p>
-With the  adoption of the IVOA standard for Registry Interface
-[<a href="#RI">RI</a>], resources are described using the VOResource
-schema, v1.0 [<a href="VOR">VOR</a>] and its family of extensions.
+ Resources are described using the VOResource
+schema, v1.0 [<a href="#VOR">VOR</a>] and its family of extensions.
 Simple Image Access services are specifically described using the
 <a href="http://www.ivoa.net/xml/VODataService/VODataService-v1.0.xsd">VODataService,
 v1.0</a>, and <a href="http://www.ivoa.net/xml/SIA/SIA-v1.0.xsd">
@@ -1791,15 +1774,16 @@ Resource extension schema is formally defined in a separate document.</p>
 
 
 <h2>References</h2>
-<p>Williams et al. Simple Cone Search <a href="http://www.ivoa.net/Documents/latest/ConeSearch.html">http://www.ivoa.net/Documents/latest/ConeSearch.html</a></p>
-<p>Ochsenbein et al. VOTable Format Definition <a href="http://www.ivoa.net/Documents/latest/VOT.html">http://www.ivoa.net/Documents/latest/VOT.html</a></p>
-<p>Derriere et al. An IVOA Standard for Unified Content Descriptors <a href="http://www.ivoa.net/Documents/latest/UCD.html">http://www.ivoa.net/Documents/latest/UCD.html</a></p>
-<p>Rots Space-Time Coordinate Metadata for the Virtual Observatory <a href="http://www.ivoa.net/Documents/latest/STC.html">http://www.ivoa.net/Documents/latest/STC.html</a></p>
-<p>RFC 2119 Key words for use in RFCs to Indicate Requirement Levels <a href="http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</a></p>
-<p>HTTP Fielding et al. Hypertext Transfer Protocol -- HTTP/1.1  <a href="http://www.ietf.org/rfc/rfc2616.txt">http://www.ietf.org/rfc/rfc2616.txt</a> </p>
-<p>Hanish et al. Resource Metadata for the Virtual Observatory <a href="http://www.ivoa.net/Documents/latest/RM.html">http://www.ivoa.net/Documents/latest/RM.html</a></p>
-<p>Plante et al. VOResource: an XML Encoding Schema for Resource Metadata <a href="http://www.ivoa.net/Documents/latest/VOResource.html">http://www.ivoa.net/Documents/latest/VOResource.html</a></p>
-<p>FITS WCS <a href="http://fits.gsfc.nasa.gov/fits_wcs.html">http://fits.gsfc.nasa.gov/fits_wcs.html</a></p>
+<p>[<a name="SCS" id="SCS"></a>SCS] Williams et al., Simple Cone Search <a href="http://www.ivoa.net/Documents/latest/ConeSearch.html">http://www.ivoa.net/Documents/latest/ConeSearch.html</a></p>
+<p>[<a name="URI" id="URI"></a>URI] Berners-Lee et al., Uniform Resource Identifier (URI): Generic Syntax <a href="http://tools.ietf.org/html/rfc3986">http://tools.ietf.org/html/rfc3986</a></p>
+<p>[<a name="VOT" id="VOT"></a>VOT] Ochsenbein et al., VOTable Format Definition <a href="http://www.ivoa.net/Documents/latest/VOT.html">http://www.ivoa.net/Documents/latest/VOT.html</a></p>
+<p>[<a name="UCD" id="UCD"></a>UCD] Derriere et al., An IVOA Standard for Unified Content Descriptors <a href="http://www.ivoa.net/Documents/latest/UCD.html">http://www.ivoa.net/Documents/latest/UCD.html</a></p>
+<p>[<a name="STC" id="STC"></a>STC] Rots, Space-Time Coordinate Metadata for the Virtual Observatory <a href="http://www.ivoa.net/Documents/latest/STC.html">http://www.ivoa.net/Documents/latest/STC.html</a></p>
+<p>[<a name="RFC2119" id="RFC2119"></a>RFC2119] Key words for use in RFCs to Indicate Requirement Levels <a href="http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</a></p>
+<p>[<a name="HTTP" id="HTTP"></a>HTTP] Fielding et al., Hypertext Transfer Protocol -- HTTP/1.1  <a href="http://www.ietf.org/rfc/rfc2616.txt">http://www.ietf.org/rfc/rfc2616.txt</a> </p>
+<p>[<a name="RM" id="RM"></a>RM] Hanish et al., Resource Metadata for the Virtual Observatory <a href="http://www.ivoa.net/Documents/latest/RM.html">http://www.ivoa.net/Documents/latest/RM.html</a></p>
+<p>[<a name="VOR" id="VOR"></a>VOR] Plante et al., VOResource: an XML Encoding Schema for Resource Metadata <a href="http://www.ivoa.net/Documents/latest/VOResource.html">http://www.ivoa.net/Documents/latest/VOResource.html</a></p>
+<p><a name="WCS" id="WCS"></a>FITS WCS <a href="http://fits.gsfc.nasa.gov/fits_wcs.html">http://fits.gsfc.nasa.gov/fits_wcs.html</a></p>
 <p>&nbsp;</p>
 </div>
 </body></html>
