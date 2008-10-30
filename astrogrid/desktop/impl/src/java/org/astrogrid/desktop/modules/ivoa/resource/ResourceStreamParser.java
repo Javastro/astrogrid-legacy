@@ -1239,7 +1239,7 @@ public final class ResourceStreamParser implements Iterator {
 				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 					try {
 					final String elementName = in.getLocalName();
-					if (elementName.equals("ApplicationReference")) {
+					if (elementName.equalsIgnoreCase("applicationReference")) { // work around for Paul's cosmetic changes to schema
 						final String s = (in.getElementText());
 						if (StringUtils.isNotBlank(s)) {
 						try {

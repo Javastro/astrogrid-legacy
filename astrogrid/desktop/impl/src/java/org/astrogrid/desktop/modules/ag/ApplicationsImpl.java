@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.35 2008/10/23 16:34:02 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.36 2008/10/30 11:53:50 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -347,8 +347,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 	
 				"and capability[@xsi:type &= '*CeaCapability' or @standardID='"
 		        + StandardIds.CEA_1_0
-		        +"']/managedApplications/ApplicationReference='"+ arg0 +"']");
-		final List result = new ArrayList();
+//		        +"']/managedApplications/ApplicationReference='"+ arg0 +"']");
+                +"']/managedApplications/*='"+ arg0 +"']");  // work around for pauls cosmetic changes to schema.
+		        final List result = new ArrayList();
 		// check ttypes.
 		for (int i = 0; i < res.length; i++) {
 			if (res[i] instanceof CeaService) {
@@ -459,6 +460,9 @@ public Map createTemplateStruct(final URI applicationName, final String interfac
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.36  2008/10/30 11:53:50  nw
+Complete - taskpaul cockup.
+
 Revision 1.35  2008/10/23 16:34:02  nw
 Incomplete - taskadd support for TAP
 
