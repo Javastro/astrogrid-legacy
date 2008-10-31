@@ -14,11 +14,9 @@
 	       in DEFINITIONS, use 'xs:sequence' rather than 'xs:all'
 .Version 1.0c: 12-Nov-2002 from Steve Lowe, use xs:choice in DEFINITIONS
 .Version 1.0d: 10-Dec-2002 Allow several INFO TABLE
+.Version 1.0e: 01-Oct-2003 Changes in LINK 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  elementFormDefault="qualified"
-  targetNamespace="http://www.ivoa.net/xml/VOTable/v1.0" 
-  xmlns:vot="http://www.ivoa.net/xml/VOTable/v1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
 <!-- Here we define some interesting new datatypes:
      - anyTEXT   may have embedded XHTML (conforming HTML)
@@ -81,10 +79,10 @@
   <xs:element name="VOTABLE">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="vot:DESCRIPTION" minOccurs="0"/>
-        <xs:element ref="vot:DEFINITIONS" minOccurs="0"/>
-        <xs:element ref="vot:INFO" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:RESOURCE" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="DESCRIPTION" minOccurs="0"/>
+        <xs:element ref="DEFINITIONS" minOccurs="0"/>
+        <xs:element ref="INFO" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="RESOURCE" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="ID" type="xs:ID"/>
       <xs:attribute name="version">
@@ -101,13 +99,13 @@
   <xs:element name="RESOURCE">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="vot:DESCRIPTION" minOccurs="0"/>
-        <xs:element ref="vot:INFO" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:COOSYS" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:PARAM" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:LINK" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:TABLE" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:RESOURCE" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="DESCRIPTION" minOccurs="0"/>
+        <xs:element ref="INFO" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="COOSYS" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="PARAM" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="LINK" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="TABLE" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="RESOURCE" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="name" type="xs:token"/>
       <xs:attribute name="ID" type="xs:ID"/>
@@ -122,13 +120,13 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="DESCRIPTION" type="vot:anyTEXT" />
+  <xs:element name="DESCRIPTION" type="anyTEXT" />
 
   <xs:element name="DEFINITIONS">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="vot:COOSYS" />
-        <xs:element ref="vot:PARAM" />
+        <xs:element ref="COOSYS" />
+        <xs:element ref="PARAM" />
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -136,7 +134,7 @@
 <!-- INFO is a name-value pair -->
   <xs:element name="INFO">
     <xs:complexType mixed="true"><xs:complexContent>
-      <xs:extension base="vot:anyTEXT">
+      <xs:extension base="anyTEXT">
         <xs:attribute name="ID" type="xs:ID"/>
         <xs:attribute name="name" type="xs:token" use="required"/>
         <xs:attribute name="value" type="xs:string" use="required"/>
@@ -148,20 +146,20 @@
   <xs:element name="PARAM">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="vot:DESCRIPTION" minOccurs="0"/>
-        <xs:element ref="vot:VALUES" minOccurs="0"/>
-        <xs:element ref="vot:LINK" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="DESCRIPTION" minOccurs="0"/>
+        <xs:element ref="VALUES" minOccurs="0"/>
+        <xs:element ref="LINK" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="ID" type="xs:ID"/>
       <xs:attribute name="unit" type="xs:token"/>
-      <xs:attribute name="datatype" type="vot:dataType"/>
-      <xs:attribute name="precision" type="vot:precType"/>
+      <xs:attribute name="datatype" type="dataType"/>
+      <xs:attribute name="precision" type="precType"/>
       <xs:attribute name="width" type="xs:positiveInteger"/>
       <xs:attribute name="ref" type="xs:IDREF"/>
       <xs:attribute name="name" type="xs:token" use="required"/>
       <xs:attribute name="ucd" type="xs:token"/>
       <xs:attribute name="value" type="xs:string"/>
-      <xs:attribute name="arraysize" type="vot:arrayDEF"/>
+      <xs:attribute name="arraysize" type="arrayDEF"/>
     </xs:complexType>
   </xs:element>
 
@@ -171,10 +169,10 @@
   <xs:element name="TABLE">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="vot:DESCRIPTION" minOccurs="0"/>
-        <xs:element ref="vot:FIELD" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:LINK" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="vot:DATA" minOccurs="0"/>
+        <xs:element ref="DESCRIPTION" minOccurs="0"/>
+        <xs:element ref="FIELD" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="LINK" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="DATA" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="ID" type="xs:ID"/>
       <xs:attribute name="name" type="xs:token"/>
@@ -186,14 +184,14 @@
   <xs:element name="FIELD">
     <xs:complexType>
       <xs:sequence minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="vot:DESCRIPTION" minOccurs="0"/>
-        <xs:element ref="vot:VALUES" minOccurs="0" maxOccurs="2"/>
-        <xs:element ref="vot:LINK" minOccurs="0"/>
+        <xs:element ref="DESCRIPTION" minOccurs="0"/>
+        <xs:element ref="VALUES" minOccurs="0" maxOccurs="2"/>
+        <xs:element ref="LINK" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="ID" type="xs:ID"/>
       <xs:attribute name="unit" type="xs:token"/>
-      <xs:attribute name="datatype" type="vot:dataType" use="required"/>
-      <xs:attribute name="precision" type="vot:precType"/>
+      <xs:attribute name="datatype" type="dataType" use="required"/>
+      <xs:attribute name="precision" type="precType"/>
       <xs:attribute name="width" type="xs:positiveInteger"/>
       <xs:attribute name="ref" type="xs:IDREF"/>
       <xs:attribute name="name" type="xs:token" use="required"/>
@@ -217,9 +215,9 @@
   <xs:element name="VALUES">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="vot:MIN" minOccurs="0"/>
-        <xs:element ref="vot:MAX" minOccurs="0"/>
-        <xs:element ref="vot:OPTION" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="MIN" minOccurs="0"/>
+        <xs:element ref="MAX" minOccurs="0"/>
+        <xs:element ref="OPTION" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="ID" type="xs:ID"/>
       <xs:attribute name="type" default="legal">
@@ -231,29 +229,25 @@
         </xs:simpleType>
       </xs:attribute>
       <xs:attribute name="null" type="xs:token"/>
-      <xs:attribute name="invalid" type="vot:yesno" default="no"/>
+      <xs:attribute name="invalid" type="yesno" default="no"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="MIN">
     <xs:complexType>
-      <xs:simpleContent><xs:extension base="xs:string">
-        <xs:attribute name="value" type="xs:string" use="required"/>
-        <xs:attribute name="inclusive" type="vot:yesno" default="yes"/>
-      </xs:extension></xs:simpleContent>
+      <xs:attribute name="value" type="xs:string" use="required"/>
+      <xs:attribute name="inclusive" type="yesno" default="yes"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="MAX">
     <xs:complexType>
-      <xs:simpleContent><xs:extension base="xs:string">
-        <xs:attribute name="value" type="xs:string" use="required"/>
-        <xs:attribute name="inclusive" type="vot:yesno" default="yes"/>
-      </xs:extension></xs:simpleContent>
+      <xs:attribute name="value" type="xs:string" use="required"/>
+      <xs:attribute name="inclusive" type="yesno" default="yes"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="OPTION">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="vot:OPTION" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="OPTION" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="name" type="xs:token"/>
       <xs:attribute name="value" type="xs:string" use="required"/>
@@ -262,8 +256,8 @@
 
 <!-- The LINK is a URL (href) or some other kind of reference (gref) -->
   <xs:element name="LINK">
-    <xs:complexType><xs:simpleContent><xs:extension base="xs:string">
-    <xs:attribute name="ID" type="xs:ID"/>
+    <xs:complexType mixed="true">
+      <xs:attribute name="ID" type="xs:ID"/>
       <xs:attribute name="content-role">
         <xs:simpleType>
           <xs:restriction base="xs:NMTOKEN">
@@ -279,63 +273,32 @@
       <xs:attribute name="href" type="xs:anyURI"/>
       <xs:attribute name="gref" type="xs:token"/>
       <xs:attribute name="action" type="xs:anyURI"/>
-  </xs:extension></xs:simpleContent></xs:complexType>
+    </xs:complexType>
   </xs:element>
 
 <!-- DATA is the actual table data, in one of three formats -->
   <xs:element name="DATA">
     <xs:complexType>
-      <xs:sequence>
-         <xs:element ref="vot:TABLEFORMAT"/>
-      </xs:sequence>
-<!--
       <xs:choice>
-        <xs:element ref="vot:TABLEDATA"/>
-        <xs:element ref="vot:BINARY"/>
-        <xs:element ref="vot:FITS"/>
+        <xs:element ref="TABLEDATA"/>
+        <xs:element ref="BINARY"/>
+        <xs:element ref="FITS"/>
       </xs:choice>
-  -->
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="TABLEFORMAT" type="vot:TABLEFORMATType" abstract="true">
-    <xs:annotation>
-      <xs:documentation>
-        an abstract representation of the tables storage form.  
-      </xs:documentation>
-    </xs:annotation>
-  </xs:element>
-
-  <xs:complexType name="TABLEFORMATType">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="StreamTABLEFORMATType">
-    <xs:complexContent>
-      <xs:extension base="vot:TABLEFORMATType">
-        <xs:sequence>
-          <xs:element ref="vot:STREAM"/>
-        </xs:sequence>
-      </xs:extension>    
-    </xs:complexContent>
-  </xs:complexType>
-
 <!-- Pure XML data -->
-  <xs:element name="TABLEDATA" substitutionGroup="vot:TABLEFORMAT">
+  <xs:element name="TABLEDATA">
     <xs:complexType>
-      <xs:complexContent>
-        <xs:extension base="vot:TABLEFORMATType">
-      	  <xs:sequence>
-      	    <xs:element ref="vot:TR" minOccurs="0" maxOccurs="unbounded"/>
-      	  </xs:sequence>
-        </xs:extension>    
-      </xs:complexContent>
+      <xs:sequence>
+        <xs:element ref="TR" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 
   <xs:element name="TD">
     <xs:complexType mixed="true"><xs:complexContent>
-      <xs:extension base="vot:anyTEXT">
+      <xs:extension base="anyTEXT">
         <xs:attribute name="ref" type="xs:IDREF"/>
       </xs:extension>
     </xs:complexContent></xs:complexType>
@@ -344,25 +307,29 @@
   <xs:element name="TR">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="vot:TD" maxOccurs="unbounded"/>
+        <xs:element ref="TD" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
 <!-- FITS file, perhaps with specification of which extension to seek to -->
-  <xs:element name="FITS" substitutionGroup="vot:TABLEFORMAT">
+  <xs:element name="FITS">
     <xs:complexType>
-      <xs:complexContent>
-        <xs:extension base="vot:StreamTABLEFORMATType">
-          <xs:attribute name="extnum" type="xs:positiveInteger"/>
-        </xs:extension>    
-      </xs:complexContent>
+      <xs:sequence>
+        <xs:element ref="STREAM"/>
+      </xs:sequence>
+      <xs:attribute name="extnum" type="xs:positiveInteger"/>
     </xs:complexType>
   </xs:element>
 
 <!-- BINARY data format -->
-  <xs:element name="BINARY" type="vot:StreamTABLEFORMATType"
-              substitutionGroup="vot:TABLEFORMAT"/>
+  <xs:element name="BINARY">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="STREAM"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
 <!-- STREAM can be local or remote, encoded or not -->
   <xs:element name="STREAM">
@@ -408,10 +375,10 @@
 <!-- Expresses the coordinate system we are using -->
   <xs:element name="COOSYS">
     <xs:complexType mixed="true"><xs:complexContent>
-      <xs:extension base="vot:anyTEXT">
+      <xs:extension base="anyTEXT">
         <xs:attribute name="ID" type="xs:ID"/>
-        <xs:attribute name="equinox" type="vot:astroYear"/>
-        <xs:attribute name="epoch" type="vot:astroYear"/>
+        <xs:attribute name="equinox" type="astroYear"/>
+        <xs:attribute name="epoch" type="astroYear"/>
         <xs:attribute name="system" default="eq_FK5">
           <xs:simpleType>
             <xs:restriction base="xs:NMTOKEN">
