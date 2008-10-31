@@ -279,7 +279,7 @@
     <site>
       <id>default</id>
       <name>Default Site</name>
-      <url>scp://terror.star.le.ac.uk/software_docs/community-${pom.currentVersion}</url>
+      <url>scp://terror.star.le.ac.uk/software_docs/community-${pom.version}</url>
     </site>
   </distributionManagement>
 </project>
