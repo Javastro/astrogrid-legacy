@@ -2,18 +2,14 @@ package org.astrogrid.security;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.FileOutputStream;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import javax.security.auth.Subject;
 import junit.framework.TestCase;
 import org.apache.axis.client.Call;
-import org.apache.axis.client.Stub;
 //import org.astrogrid.community.resolver.CommunityPasswordResolver;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.sample.SampleDelegate;
 
 
@@ -28,10 +24,11 @@ import org.astrogrid.security.sample.SampleDelegate;
  */
 public class EndToEndTest extends TestCase {
   
+  @Override
   public void setUp() throws Exception {
     TestUtilities.copyResourceToFile(this.getClass(),
                                      "/server-config.wsdd",
-                                     new File("server-config.wsdd"));
+                                     "server-config.wsdd");
   }
 
   public void testGoodCredentials() throws Exception {

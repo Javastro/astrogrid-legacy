@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Digital signatures for SOAP messages</title>
+  
+  <body>
+  	
+  <section name="Digital signatures for SOAP messages">
+    <p>
+      In the IVOA security standards, SOAP requests are authenticated by
+      digital signature in the XML, following the WS-Security standard.
+      The security facade includes an implementation of this authentication
+      method for clients and services built with Apache Axis 1. The implementation
+      is based on an old version of Apache WSS4J, adapted to support proxy
+      certificates.
+    </p>
+    
+    <subsection name="For the client">
+      <p>
+        The signature on the message is performed by an Axis handler which is
+        provided as a class in the security facade
+        <i>(org.astrogrid.security.AxisClientCredentialHandler)</i>. This
+        handler canonicalizes the XML of the message, signs it and records
+        the signature in a SOAP header.
+      </p>
+      <p>
+        The handler mechanism is specific to Axis; it is not the standard,
+  	JAX-RPC mechanism. If the client code can be broken into an Axis-specific
+        part and a part that works generally with SOAP, then the handler should 
+        be set up in the Ais specific part.
+      </p>
+      <p>
+  	The Axis handler must be configured when the
+  	<i>AxisEngine</i> for the client is configured. Axis' handler chains
+  	are effectively immutable and the security handler cannot easily be
+  	injected later.
+      </p>
+      <p>
+        If the client uses stub-classes created by Axis' WSDL2J, then 
+        the <i>AxisEngine</i> is configured programmatically. In this case,
+        the security configuration must be passed when constructing
+  	the 'locator' object for the service in question.
+     </p>
+     <pre>
+import org.astrogrid.security.AxisClientSecurityGuard;
+XyzLocator locator = new XyzLocator(AxisClientSecurityGuard.getEngineConfiguration());
+     </pre>
+     <p>
+       Note the use of a static method on <i>AxisClientSecurityGuard</i> to provide the
+       configuration object. This configures the 'java', 'local' and 'http' transports 
+       with the signature handler and no other special handlers.
+     </p>
+     <p>
+       With the locator configured in this way, all proxy objects created from 
+       the locator will have the signature handler.
+     </p>
+     <p>
+       If the client's <i>AxisEngine</i> is being configured from a WSDD document, 
+       then the method above does not work. Instead, the WSDD document should declare 
+       <i>org.astrogrid.security.AxisClientCredentialHandler</i> as a request handler.
+     </p>
+     <p>
+       Credentials for the signature must be provided in a
+       <i>SecurityGuard</i> object. The signature needs a certificate chain
+       and a matching private-key. These are normally obtained when a user
+       signs on to the IVO and are stored in the security guard.
+     </p>
+     <p>
+       The Axis part of the client needs an
+       <i>AxisClientSecurityGuard</i> (a sub-class of <i>SecurityGuard</i>)
+       to be able to pass the credentials to the signature handler. If the
+       entire client is Axis-specific, then it can construct the
+       <i>AxisClientSecurityGuard</i> directly and use that object to sign on. 
+     </p>
+     <pre>
+import org.astrogrid.security.AxisClientSecurityGuard;
+AxisClientSecurityGuard sg = new AxisClientSecurityGuard();
+sg.signOn( ... );
+     </pre>
+     <p>
+       More commonly, the object that signs on is a generic 
+       <i>SecurityGuard</i> driven from an Axis-independent part of the
+       application. In this case, the <i>AxisClientSecurityGuard</i>
+       is constructed from the given guard.
+     </p>
+     <pre>
+import org.astrogrid.security.AxisClientSecurityGuard;
+import org.astrogrid.security.SecurityGuard;
+SecurityGuard sg1 = new SecurityGuard();
+sg1.signOn( ... );
+...
+AxisClientSecurityGuard sg2 = new AxisClientSecurityGuard(sg1);
+     </pre>
+     <p>
+       The Axis-specific guard must then be told to pass its credentials to
+       the handler.
+     </p>
+     <pre>
+XyzPortType proxy = locator.getXyzPort(endpoint);
+axisGuard.configureStub((org.apache.axis.client.Stub)proxy);
+     </pre>
+     <p>
+        This stub will now send signed messages when activated.
+     </p>
+   
+   </subsection>
+   
+   <subsection name="For the service">
+     <p>
+       The signatures on incoming SOAP requests are checked by another
+       Axis handler. If a message is correctly signed, then the associated
+       principal (i.e. identity) is stored in the Axis message-context for
+       later use in authorization checks.
+     </p>
+     <p>
+       The handler should be declared in the WSDD deployment-descriptor for 
+       the service. This is an example of a service configured with the handler.
+     </p>
+     <pre>  			
+<![CDATA[<service name="SamplePort" provider="java:RPC">
+  <parameter name="className" value="org.astrogrid.security.sample.SampleImpl"/>
+  <requestFlow>
+    <handler type="java:org.astrogrid.security.AxisServiceCredentialHandler"/>
+  </requestFlow>
+</service>]]>
+     </pre>
+     <p>
+       The type (class) of the handler must be exactly as shown above. 
+     </p>
+     <p>
+       The service must be provided with a set of trust-anchor certificates written in
+       PEM format. Each certificate is stored in a <i>.pem</i> file. There is a naming
+       convention: the name of each file must be the hash value of the certificate it contains,
+       suffixed with <i>.0</i>. In the unlikely event of certificates having the same
+       has value, one should instead be given the suffix <i>.1</i>, <i>.2</i>, etc. as
+       necessary to produce unique names.
+     </p>
+     <p>
+       The certificates should be grouped in directories. Ideally, just one directory contains 
+       all the trust anchors. Grid conventions,
+       set by the Globus toolkit, say that the directory should be <i>/etc/grid-security/certificates</i>.
+     </p>
+   </subsection>
+  		
+   <subsection name="Supporting jars">
+     <p>
+       Your client will need a number of additional jars in order to operate the security handlers.
+     </p>
+     <dl>
+       <dt>Axis jars</dt>
+       <dd>Contains the SOAP framework. Only versions 1.2.1 and 1.3 of Axis 1 are
+           compatible. Version 1.4 does not work with the security facade (the
+           handlers transmitting the message alter the text, invalidating the
+           signatures).</dd>
+       <dt>xmlsec.jar (version 1.3.0 or later)</dt>
+       <dd>Contains the code for digital signature on XML.</dd>
+       <dt>bcprov-jdk15.jar ("the bouncy-castle jar"; version 139 or later)</dt>
+       <dd>Contains the cryptographic algorithms used in digital signature.</dd>
+       <dt>cog-jglobus.jar (version 1.4 or later)</dt>
+       <dd>The Java CoG kit, from which are drawn the classes supporting RFC3820.</dd>
+     </dl>
+   </subsection>
+  	
+  </section>
+  
+  </body>
+  
+</document>

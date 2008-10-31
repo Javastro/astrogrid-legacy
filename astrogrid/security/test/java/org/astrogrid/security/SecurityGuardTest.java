@@ -5,16 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.security.GeneralSecurityException;
-import java.util.Set;
-import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
 import org.astrogrid.community.server.sso.AccountServlet;
 import org.astrogrid.security.community.MockRegistry;
 import org.astrogrid.community.server.sso.PondLifeDb;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.authorization.AuthenticatedAccessPolicy;
-import org.astrogrid.security.authorization.OpenAccessPolicy;
 import org.astrogrid.security.community.MockRegistryClient;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
@@ -35,6 +31,7 @@ public class SecurityGuardTest extends TestCase {
   
   private Server jetty;
   
+  @Override
   public void setUp() throws Exception {
     
     // Create a DB with test accounts.
@@ -49,6 +46,7 @@ public class SecurityGuardTest extends TestCase {
     jetty.start();
   }
   
+  @Override
   protected void tearDown() throws Exception {
     jetty.stop();
   }

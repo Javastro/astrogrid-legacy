@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Background to scurity-facade features</title>
+  
+  <body>
+    <section name="Background">
+      <subsection name="Cryptography and digital signature">
+        <p>
+          Public-private key-pairs are used to encrypt and decrypt information
+          and hence are used in digital signatures. Information encrypted with
+          a private key can only be decrypted with the matching public key (and
+          <i>vice versa</i>).
+        </p>
+        <p>
+          In a digital signature, the signing party encrypts the signed
+          signed information (or some shorter digest of that information)
+          with their private key, then passes the encrypted version together
+          with their public key to another party. The relying party tries to
+          decrypt the given data with the public key. If they succeed then
+          the relying party knows that the signing party holds the private
+          key of the key-pair.
+        </p>
+        <p>
+          The presence of a valid signature means that the information has
+          been received in the same form that was signed by the signing party.
+          It demonstrates that there has been no corruption or tampering. A
+          digital signature does not directly authenticate the identity
+          of the signing party, but it can be used as part of an authentication.
+        </p>
+      </subsection>
+
+      <subsection name="Keys and certificates">
+        <p>
+          If a key pair is strongly and reliably associated with an identity,
+          then the presence of a digital signature using those keys
+          associates the signed information with that identity: it
+          <em>authenticates</em> the identity of the sender of the information.
+        </p>
+        <p>
+          Identities are bound to key-pairs by the use of identity certificates
+          following the X.509 standard. A certificate includes the identity,
+          in the form of a "distinguished name" (DN) and that party's public key.
+          The DN is a qualified name that is unique. DNs follow the X.500
+          standard. <i>C=UK,O=AstroGrid,OU=Cambridge,CN=Guy Rixon</i> is a
+          plausible example.
+        </p>
+        <p>
+          Identity certificates are digitally signed to bind the DN to the key.
+          Changing the information in a certificate, e.g. to bind a different key
+          to a DN, invalidates the certificate's
+          internal signature and hence invalidates the whole certificate.
+          The usefulness of a certificate in authentication depends on who
+          signed it: the replying party needs to trust the signatory of the
+          certificate.
+        </p>
+      </subsection>
+      <subsection name="Certificate chains and certificate authorities">
+        <p>
+          Certificates may be combined in chains of trust. In such chains,
+          the certificate at position <i>i</i> represents the signatory of
+          the certificate at position <i>i+1</i>. The final certificate
+          in the chain is self-signed. Such a certificate represents a
+          <i>certificate authority</i> (CA): an issuer of certificates that
+          a replying party trust implicitly. A CA certficate is sometimes
+          called a <i>trust anchor</i>.
+        </p>
+        <p>
+          A typical certificate chain contains two certificates: one
+          certificate issued to an end user (called an <i>end-entity certificate</i>
+          or EEC) and a CA certificate. However, in a message to be authenticated,
+          the sending party would include a chain of only one certificate, the EEC.
+          The relying party then adds the appropriate CA certificate from a
+          estbalished set of trusted CA's.
+        </p>
+        <p>
+          When verifying a certificate chain, a replying party confirms that
+          each certificate is correctly signed by its successor, then confirms
+          that the trust anchor is trusted. In an authentication, this
+          checking of the chain of trust is a second, separate step performed
+          after the intial checking of the digital signature on the message itself.
+        </p>
+      </subsection>
+      <subsection name="Proxy certificates and delegation">
+        <p>
+          Possession of a certificate chain does not allow a party to use that
+          chain to authenticate a request to another party; one needs the
+          matching private key. Hence if party B accepts
+          a request from party A, B cannot use the certificates from that
+          request to authenticate an onward request to a third party. To
+          authenticate an onward request, B needs credentials identifying B as
+          A's proxy. I.e., B adds a <i>proxy certificate</i> to the start of the
+          certificate chain received from A. The proxy certificate is signed with
+          the first certificate in the chain sent by A. The public key in the
+          proxy certificate matches a private key held by B.
+        </p>
+        <p>
+          In the example above, B cannot sign the proxy certificate as B does
+          not have a copy of A's private key. Instead, B generates a new key pair,
+          keeps the private key and returns the public key to A who then
+          creates and signs the proxy certificate; finally, A sends the proxy
+          certificate on to B. This is the process
+          embodied in IVOA's protocol for credential delegation.
+        </p>
+        <p>
+          This process delegates A's indentity to B. It is sometimes called
+          "delegation by impersonation", and the proxy certificate is sometimes
+          called an "impersonation proxy". More commonly, "proxy certificate"
+          is abbreviated to just "proxy" and you will find this usage in the
+          documentation of the security facade.
+        </p>
+        <p>
+          The use of impersonation proxies is an innovation from the
+          grid-computing movement. The industry-standard use of X.509
+          certificates, governed by IETF RFC 3280, distinguishes EECs and CA
+          certificates bu does not recognise proxy certificates. Under these rules,
+          CA certificates may be used to sign other certificates (and contain
+          annotations that assert this point), and EECs may not be so used.
+          Trust-checking software based on RFC 3280 will reject any chain in
+          which an EEC follows a proxy certificate.
+        </p>
+        <p>
+          IETF RFC 3820 defines proxy certificates. Under these revised rules,
+          an EEC may be used to sign a proxy certificate, and a proxy certificate
+          may also be used to sign another certificate. Trust-checking software
+          that supports RFC 3820 will accept certificate chains containing
+          proxy certifcates. A large part of the security facade concerns
+          adding RFC 3820 support to other software.
+        </p>
+      </subsection>
+
+      <subsection name="Message-level and transport-level authentication">
+        <p>
+         IVOA defines two methods for authenticating the sender of a request
+         to a service: digital signature on SOAP requests and client
+         certificates used with HTTPS. Both methods are based on digital
+         signature; in the SOAP case, the entire message is signed and in the
+         case of HTTPS some sample data are signed by the client during
+         negotation of the encrypted connection.
+        </p>
+        <p>
+         The authentication of SOAP messgaes is <i>message-level security</i>,
+         because the message carries all the authentication credentials in
+         the SOAP header. The message can, in principle, transcribed and sent
+         on, or archived without breaking the authentication.
+        </p>
+        <p>
+         HTTPS provides <i>transport-level security</i>. The authentication of
+         the sender only applies to information that flows over the encrypted
+         channel. If that information is trancribed or stored then the
+         authentication is lost.
+        </p>
+        <p>
+         In a Java implementation, with a servlet-based service,
+         HTTPS security is handled by the servlet container, e.g. Apache Tomcat.
+         The container performs the authentication and supplies the results to
+         the web application. Conversely, message-level authentication is
+         performed by code inside the web-application. Therefore, any
+         extensions to HTTPS, such as RFC3820 support, have to be added to the
+         container.
+        </p>
+      </subsection>
+    </section>
+  </body>
+  
+ </document>

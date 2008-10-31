@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <title>Authentication with HTTPS and client certificates</title>
+  
+  <body>
+  	
+  <section name="Authentication with HTTPS and client certificates">
+    <p>
+      In the IVOA security standards, requests to RESTful service can be
+      authenticated by HTTPS with client certificates. This is the
+      less-common form of HTTPS authentication in which the client is
+      authenticated to the service. The authentication is performed by the
+      web-server; for Java web-services this is typically Apache Tomcat.
+    </p>
+    <p>
+      The IVOA use of HTTPS matches the IETF standards except for two points:
+    </p>
+    <ol>
+      <li>the client need not authenticate the server;</li>
+      <li>the server must accept proxy certificates according to RFC 3820.</li>
+    </ol>
+    <p>
+      These extra requirements mean that HTTPS code in the JDK, and in web
+      servers is insufficient for the IVOA standard. The security facade
+      provides classes to fix this.
+    </p>
+    
+    <subsection name="For the client">
+      <p>
+        The details in HTTPS in the client are handled by the JDK class
+        <i>java.net.HttpsURLConnection</i>, which can be obtained from a
+        <i>java.net.URL</i> for an HTTPS URL.
+      </p>
+      <pre>
+import java.net.URL;
+import java.net.HttpsURLConnection;
+URL u = new URL("https://some.where/some/thing");
+HttpsURLConnection c = (HttpsURLConnection) u.openConnection();
+      </pre>
+      <p>
+        The connection can now be set up to suit the IVOA standard using a
+        <i>SecurityGuard</i>.
+      </p>
+      <pre>
+import org.astrogrid.security.SecurityGuard;
+SecurityGuard sg = new SecurityGuard();
+sg.signOn(...);
+sg.configureHttps(c);
+      </pre>
+      <p>
+        The <i>signOn()</i> call obtains the certificates and key needed to
+        authenticate the connection. See the
+        <a href="signing-on.html">guide to signing on to the IVO</a>
+        for details.
+      </p>
+      <p>
+        The <i>configureHttps()</i> call does two things sets the
+        <i>HttpsURLConnection</i> to trust all identity certificates sent
+        to the client by the service. This effectively disables authentication
+        of the service by the client. By doing so, it allows the client to work
+        with self-signed server-certficates which would normally be rejected
+        by the <i>HttpsURLConnection</i>.
+      </p>
+      <p>
+        The <i>configureHttps()</i> call also associates with the connection
+        the certificate chain and key obtained by the <i>SecurityGuard</i>
+        when the user signed on to the IVO. I.e., it authenticates the
+        connection in the user's name, not with some arbitrary identity
+        chosen by the JDK.
+      </p>
+      <p>
+        The <i>configureHttps()</i> call needs an
+        <i>HttpsURLConnection</i> to set up the authentication. If it gets
+        instead an <i>HttpURLConnection</i> (the superclass of
+        <i>HttpsURLConnection</i>), then it does nothing and returns sliently.
+        This is by design: it allows you to call <i>configureHttps()</i>
+        on all HTTP connections without distinguishing the HTTPS ones in the
+        application code.
+      </p>
+   </subsection>
+   
+   <subsection name="For the service">
+     <p>
+       The authentication is done by the web server before the web service
+       is informed of the request. The service can receive the results of
+       authentication in a specialized sub-class of <i>SecurityGuard</i>.
+     </p>
+     <pre>
+import org.astrogrid.security.HttpsServiceSecurityGuard;
+HttpsServiceSecurityGuard sg = new HttpsServiceSecurityGuard();
+// request is the HttpServletReqiest passed by the servlet container
+sg.loadHttpsAuthentication(request);
+     </pre>
+     <p>
+       If authentication was successful, the <i>loadHttpAuthentication()</i>
+       call will load into the security guard
+     </p>
+     <ul>
+       <li>an <i>X500Principal</i> stating the user's identity;</li>
+       <li>the certificate chain used in the authentication;</li>
+       <li>an identity certificate (i.e. the "end-entity" certificate
+          in the chain from which the user's <i>X500Principal</i>
+          was read.</li>
+     </ul>
+     <p>
+       If the authentication was unsuccessful, then the guard will not
+       contain the identity certificate and <i>X500Principal</i>. The
+       certficate chain may or may not be present, depending on how the
+       servlet container is configured. Note that failed authentication
+       may cause the HTTPS request to be rejected without the web service
+       being called at all. The <i>web.xml</i> configuration of the web
+       application determines this.
+     </p>
+   </subsection>
+
+   <subsection name="For Tomcat">
+     <p>
+       The security-facade package <i>org.astrogrid.security.rfc3820.tomcat</i>
+       contains an implementation of SSL that supports RFC3820 (proxy certificates).
+       This can be added to a Tomcat installation to bring that installation
+       up to IVOA standards.
+     </p>
+     <p>
+       The SSL code is an intimate part of the Tomcat server and the jars must
+       be added to the directory <i>server/lib</i> within the Tomcat
+       installation. Simply including the jars with a web-application doesn't work.
+     </p>
+     <p>
+       The following jars must be added.
+     </p>
+     <ul>
+       <li>astrogrid-security</li>
+       <li>cog-jglobus</li>
+       <li>cog-cryptix</li>
+       <li>cog-cryptix32</li>
+       <li>cog-cryptix-asn1</li>
+       <li>Bouncy Castle JCE "provider"</li>
+     </ul>
+     <p>
+                    Operation of HTTPS with client authentication requires two
+                    sets of cryptographic credentials: a private key and
+                    identity-certficate for the host; and a set of trust anchors
+                    against which to check the client credentials. There are
+                    many ways to encode these, but Tomcat only supports a few
+                    options. The SSL implementation in the security facade
+                    supports the same encodings as standard Tomcat.
+                  </p>
+                  <p>
+                    All the installed credentials must be in key-store files
+                    of JKS format (binary ".jks" files). PKCS#12 format
+                    (binary ".p12" files)
+                    is not supported, nor is the PEM format (the one with
+                    listable, base-64 encoded credentials, as used by OpenSSL).
+                    The host credentials may be in the same key-store as the
+                    trust anchors, or the trust anchors may be in one key-store
+                    and the host credentials in another. The credentials may not
+                    spread across more than two key-stores, and the host's
+                    private key and certificate must be in the same keystore.
+                  </p>
+                    <p>
+                      In a JKS store, each credential entry has an "alias" which must be known
+                      to retrieve the credentials. An entry under one alias may be
+                      the private key and certificate for a party - the host, in this
+                      case - or the trust anchor for one certificate authority.
+                    </p>
+                    <p>
+                      Tomcat needs to be able to pick out the entry for the
+                      host credentials. The default alias for these is "tomcat".
+                      If they are stored under a different alias then that alias
+                      must be declared when configuring Tomcat. Tomcat does not
+                      care what aliases are set for the trust-anchor entries.
+                    </p>
+                    <p>
+                      JKS stores have passwords to protect the credentials.
+                      Tomcat expects to unlock the store or stores with a
+                      password. The default password is "changeit". If a
+                      different password is set, then it must be declared in the
+                      Tomcat configuration. If two key-stores are used the
+                      password should be the same for both.
+                    </p>
+                    <p>
+                      Private keys within JKS stores may encrypted and the
+                      encryption unlocked by
+                      a own password. Tomcat expects either that the
+                      host's private key does not have a password or that the
+                      key-encryption password is the same as the password for
+                      the store.
+                    </p>
+      <p>
+                    Tomcat must be configured to use the AstroGrid implementation.
+                    Simply adding the extra jars to Tomcat does not activate the
+                    extra code.
+                  </p>
+                  <p>
+                    In Tomcat's <i>server.xml</i> file, there are <i>Connector</i>
+                    elements. Typically, there will be one HTTP connector bound
+                    to port 8080. For HTTPS, there must be another connector
+                    bound to another port, 8443 by default. For an HTTPS connection
+                    with the RC3820 support, the configuration follows this
+                    pattern.
+                </p>
+                <pre>
+     &lt;Connector port="8443"
+     acceptCount="100" connectionTimeout="20000" disableUploadTimeout="true"
+     maxSpareThreads="75" maxThreads="150" minSpareThreads="25"
+     scheme="https" secure="true" clientAuth="true" sslProtocol="TLS"
+     keystoreFile="/home/agrid/ag01.jks"
+     truststoreFile="/home/agrid/ag01.jks"
+     SSLImplementation="org.astrogrid.security.rfc3820.tomcat.RFC3820Implementation"/&gt;
+                </pre>
+                <p>
+                  The <i>SSLImplementation</i> attribute names the class
+                  that introduces the SSL implementation. If this attribute
+                  is ommited (or misspelt!) then Tomcat defaults silently to
+                  its native implemenation.
+                </p>
+                <p>
+                  The other important attributes work as follows.
+                </p>
+                  <dl>
+                    <dt>secure="true"</dt>
+                    <dd>This turns on SSL.</dd>
+                    <dt>sslProtocol="TLS"</dt>
+                    <dd>This selects the version of the SSL protocol. TLS (v1.0 implied)
+                    is the preferred value for all Tomcats.</dd>
+                    <dt>clientAuth="true"</dt>
+                    <dd>This forces Tomcat to authenticate all requests on this port.
+                      If this is set to false (Tomcat's default), then no requests
+                    are authenticated.</dd>
+                    <dt>keystoreFile</dt>
+                    <dd>This names the JKS store in which the host credentials are kept.</dd>
+                    <dt>truststoreFile</dt>
+                    <dd>This names the JKS store in which the trust anchors are kept.</dd>
+                    <dt>keystorePass</dt>
+                    <dd>This is the password for the JKS store holding the host credentials.
+                      If the password is set to the default value ("changeit"), then this
+                    attribute may be left out.</dd>
+                    <dt>truststorePass</dt>
+                    <dd>This is the password for the JKS store holding the trust anchors.
+                      If the password is set to the default value ("changeit"), then this
+                    attribute may be left out.</dd>
+                    <dt>keyAlias</dt>
+                    <dd>This is the alias under which the host credentials are stored in the
+                      JKS store. If the default alias ("tomcat") is used, or if the host
+                      credentials are the only entry in the store (i.e. the trust anchors are in
+                    a separate store) then this attribute may be left out.</dd>
+                  </dl>
+                  <p>
+                    The documentation for the Tomcat SSL implementation offers attributes to
+                    configure the type of store, implying that PKCS#12 stores can be used.
+                    This doesn't work (as of Tomcat 5.5.20) in either Tomcat's implementation
+                    or the AstroGrid extension.
+                  </p>
+   </subsection>
+  	
+  </section>
+  
+  </body>
+  
+</document>

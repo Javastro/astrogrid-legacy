@@ -8,9 +8,70 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <packaging>jar</packaging>
-  <version>2008.2.a03</version>
+  <version>2008.2.03</version>
   
-    <dependencies>
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>ag-m1-repository</id>
+      <name>AstroGrid's Maven-1 repository</name>
+      <url>http://www.astrogrid.org/maven</url>
+      <layout>legacy</layout>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <site>
+      <id>ag.deployer.security</id>
+      <name>Security on deployer, version ${pom.version}</name>
+      <url>scp://terror.star.le.ac.uk//software_docs/security-${pom.version}</url>
+    </site>
+  </distributionManagement>
+  
+  <dependencies>
+        
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-common</artifactId>
+        <version>2007.2.01</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-community-server</artifactId>
+        <version>2008.2</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-community-common</artifactId>
+        <version>2008.0</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>6.1.11</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>6.1.11</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>jetty</groupId>
+        <artifactId>jetty-servlet-tester</artifactId>
+        <version>6.1.11</version>
+        <scope>test</scope>
+      </dependency>
       
       <dependency>
         <groupId>axis</groupId>
@@ -21,9 +82,36 @@
       
       <dependency>
         <groupId>castor</groupId>
-        <type>jar</type>
         <artifactId>castor</artifactId>
-        <version>0.9.5</version>
+        <version>1.2</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>castor</groupId>
+        <artifactId>castor-jdo</artifactId>
+        <version>1.2</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>jta</groupId>
+        <artifactId>jta</artifactId>
+        <version>1.0.1</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>1.7.1</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.7.0</version>
       </dependency>
       
       <dependency>
@@ -37,7 +125,7 @@
         <groupId>bouncycastle</groupId>
         <type>jar</type>
         <artifactId>bcprov-jdk15</artifactId>
-        <version>139</version>
+        <version>140</version>
       </dependency>
       
       <dependency>
@@ -68,12 +156,6 @@
       
       <dependency>
         <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-common</artifactId>
-        <version>2007.2c</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-contracts</artifactId>
         <version>2008.0a2</version>
         <type>jar</type>
@@ -83,14 +165,7 @@
         <groupId>servletapi</groupId>
         <artifactId>servletapi</artifactId>
         <version>2.4</version>
-        <type>jar</type>
-      </dependency>
-      
-      <dependency>
-        <groupId>xalan</groupId>
-        <artifactId>xalan</artifactId>
-        <version>2.7.0</version>
-        <type>jar</type>
+        <scope>compile</scope>
       </dependency>
       
       <dependency>
@@ -140,34 +215,6 @@
     <distribution>manual</distribution>
   </license>
 </licenses>
-
-<!--
- <versions>
-   <version>
-     <id>2007.2.04</id>
-     <name>2007.2.04</name>
-     <tag>v2007_2_04</tag>
-   </version>
-   <version>
-     <id>2008.2.a01</id>
-     <name>2008.2.a01</name>
-     <tag>v2008_2_a01</tag>
-   </version>
-      <version>
-     <id>2008.2.a02</id>
-     <name>2008.2.a02</name>
-     <tag>v2008_2_a02</tag>
-   </version>
- </versions>
- -->
- 
- <reports>
-    <report>maven-license-plugin</report>
-    <report>maven-javadoc-plugin</report>
-    <report>maven-jxr-plugin</report>
-    <report>maven-junit-report-plugin</report>
-    <report>maven-pmd-plugin</report>
-  </reports> 
   
   <organization>
     <name>AstroGrid</name>
@@ -180,11 +227,6 @@
     <directory>${basedir}/target</directory>
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>test/java</testSourceDirectory>
-    <!--
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-      -->
     <testResources>
       <testResource>
         <directory>test/properties</directory>
@@ -221,18 +263,40 @@
       <plugin>  
         <artifactId>maven-compiler-plugin</artifactId>  
         <configuration>  
-          <source>1.5</source>  
-          <target>1.5</target>  
+          <source>1.5</source> 
+          <target>1.5</target>
         </configuration>  
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>org.astrogrid.test.directory</name>
+              <value>${basedir}/target</value>
+            </property>
+          </systemProperties>
+        </configuration>
       </plugin>
     </plugins>
   </build>
-  
-<properties>
-  <property>
-   
-  </property>
-</properties>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>
