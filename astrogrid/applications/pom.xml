@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $id:$ -->
+<!-- $Id: pom.xml,v 1.3 2008/11/04 14:01:43 pah Exp $ -->
 	<!--
 		this is an unofficial maven 2 pom to make my maven2 builds easier pah
 	-->
@@ -9,16 +9,21 @@
 	<groupId>org.astrogrid</groupId>
 	<artifactId>astrogrid-cea-base</artifactId>
 	<name>CEA Master POM</name>
-	<version>2008.2-SNAPSHOT</version>
+	<version>2009.1-SNAPSHOT</version>
+      <parent>
+      <artifactId>astrogrid-base</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2009.1-SNAPSHOT</version>  
+    </parent>
 	<packaging>pom</packaging>
+   <!-- multi module site generation is very broken in maven at the moment..... do not try...-->
 	<modules>
-     <module>client</module> <!-- for some reason this is not appearing in the module list -->
+     <module>client</module> 
 	 <module>commandline</module>
-    <!-- <module>javaclass</module> -->
-    <!--  <module>http</module> 0-->
+     <module>common</module>
 	<module>server</module>
-	</modules>
-	<url>http://deployer.astrogrid.org/software/${pom.version}/cea</url>
+	</modules> 
+    <url>http://software.astrogrid.org/doc/${astrogrid_release}/cea</url> 
 	<description>The base project that contains other projects that make
 		up the Common Execution Architecture implementation. </description>
    <!-- do not really need the developers section -->
