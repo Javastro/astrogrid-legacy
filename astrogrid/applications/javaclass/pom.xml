@@ -8,14 +8,13 @@
   <artifactId>astrogrid-cea-javaclass</artifactId>
   <packaging>jar</packaging>
     <parent>
-      <artifactId>astrogrid-cea-base</artifactId>
+      <artifactId>astrogrid-base</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>2008.2-SNAPSHOT</version>
     </parent>
-  <name>CEA Java-class-application server</name>
+  <name>CEA Java-class-applications</name>
   <version>2008.2-SNAPSHOT</version>
-  <description>A CEA application-server for running applications packaged as Java classes. 
-    The service provides CEA's standard SOAP interface, "CEC".</description>
+  <description>Examples of javaclass applications</description>
   <properties>
    <astrogrid.name>applications/javaclass</astrogrid.name>
   </properties> 
